@@ -61,7 +61,7 @@
 #pragma mark - In Preview Mode -
 
 @property (nonatomic) PinchView *pinchView;
-@property (nonatomic, strong) UIButton * rearrangeButton;
+@property (nonatomic, strong) UIButton * pauseToRearrangeButton;
 @property (nonatomic) OpenCollectionView * rearrangeView;
 
 // Tells whether should display smaller sized images
@@ -255,14 +255,14 @@
 #pragma mark - Rearrange content (preview mode) -
 
 -(void)createRearrangeButton {
-    [self.rearrangeButton setImage:[UIImage imageNamed:PAUSE_SLIDESHOW_ICON] forState:UIControlStateNormal];
-    self.rearrangeButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [self.rearrangeButton addTarget:self action:@selector(rearrangeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:self.rearrangeButton];
-    [self bringSubviewToFront:self.rearrangeButton];
+    [self.pauseToRearrangeButton setImage:[UIImage imageNamed:PAUSE_SLIDESHOW_ICON] forState:UIControlStateNormal];
+    self.pauseToRearrangeButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    [self.pauseToRearrangeButton addTarget:self action:@selector(pauseToRearrangeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:self.pauseToRearrangeButton];
+    [self bringSubviewToFront:self.pauseToRearrangeButton];
 }
 
--(void) rearrangeButtonPressed {
+-(void) pauseToRearrangeButtonPressed {
     if(!self.rearrangeView){
 		[self offScreen];
         CGFloat y_pos = (self.isPhotoVideoSubview) ? 0.f : CUSTOM_NAV_BAR_HEIGHT;
@@ -271,10 +271,15 @@
         self.rearrangeView = [[OpenCollectionView alloc] initWithFrame:frame
 													 andPinchViewArray:((CollectionPinchView*)self.pinchView).imagePinchViews];
         self.rearrangeView.delegate = self;
-        [self insertSubview:self.rearrangeView belowSubview:self.rearrangeButton];
-        [self.rearrangeButton setImage:[UIImage imageNamed:PLAY_SLIDESHOW_ICON] forState:UIControlStateNormal];
+        [self insertSubview:self.rearrangeView belowSubview:self.pauseToRearrangeButton];
+        [self.pauseToRearrangeButton setImage:[UIImage imageNamed:PLAY_SLIDESHOW_ICON] forState:UIControlStateNormal];
     } else {
-        [self.rearrangeButton setImage:[UIImage imageNamed:PAUSE_SLIDESHOW_ICON] forState:UIControlStateNormal];
+		for (UIView * view in self.imageContainerViews) {
+			if([view isKindOfClass:[EditMediaContentView class]]){
+				[((EditMediaContentView *)view) exiting];
+			}
+		}
+        [self.pauseToRearrangeButton setImage:[UIImage imageNamed:PAUSE_SLIDESHOW_ICON] forState:UIControlStateNormal];
         [self.rearrangeView exitView];
         [self playWithSpeed:2.f];
     }
@@ -297,8 +302,9 @@
 
 -(void)playWithSpeed:(CGFloat) speed {
     if(!self.animating){
-        CGRect h_frame = CGRectMake(0.f, 0.f, self.frame.size.width, self.rearrangeButton.frame.origin.y);
-        CGRect v_frame = CGRectMake(0.f, self.rearrangeButton.frame.origin.y,self.rearrangeButton.frame.origin.x - 10.f, self.frame.size.height - self.rearrangeButton.frame.origin.y);
+        CGRect h_frame = CGRectMake(0.f, 0.f, self.frame.size.width, self.pauseToRearrangeButton.frame.origin.y);
+        CGRect v_frame = CGRectMake(0.f, self.pauseToRearrangeButton.frame.origin.y,self.pauseToRearrangeButton.frame.origin.x - 10.f,
+									self.frame.size.height - self.pauseToRearrangeButton.frame.origin.y);
         
         //create view to sense swiping
         if(self.panGestureSensingViewHorizontal == nil){
@@ -355,7 +361,6 @@
 	[[PostInProgress sharedInstance] removePinchViewAtIndex:self.indexInPost andReplaceWithPinchView:self.pinchView];
 	[self.pinchView renderMedia];
 	[self addContentFromImagePinchViews: pinchViews];
-   // [self createRearrangeButton];
 }
 
 -(BOOL) goToPhoto:(CGPoint) touchLocation {
@@ -604,16 +609,16 @@
 	_imageContainerViews = imageContainerViews;
 }
 
--(UIButton *)rearrangeButton {
-    if(!_rearrangeButton){
-        _rearrangeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width -  EXIT_CV_BUTTON_WALL_OFFSET -
+-(UIButton *)pauseToRearrangeButton {
+    if(!_pauseToRearrangeButton){
+        _pauseToRearrangeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width -  EXIT_CV_BUTTON_WALL_OFFSET -
                                                                      EXIT_CV_BUTTON_WIDTH,
                                                                      self.frame.size.height - (EXIT_CV_BUTTON_HEIGHT*2) -
                                                                      (EXIT_CV_BUTTON_WALL_OFFSET*3),
                                                                      EXIT_CV_BUTTON_WIDTH,
                                                                      EXIT_CV_BUTTON_HEIGHT)];
     }
-    return _rearrangeButton;
+    return _pauseToRearrangeButton;
 }
 
 
