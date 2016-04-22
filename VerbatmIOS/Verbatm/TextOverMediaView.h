@@ -23,7 +23,7 @@
 -(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image;
 
 -(instancetype) initWithFrame:(CGRect)frame andImageURL:(NSURL*)imageUrl
-			   withSmallImage:(BOOL) small;
+			   withSmallImage: (UIImage*)smallImage asSmall:(BOOL) small;
 
 -(void) setText:(NSString *)text
 andTextYPosition:(CGFloat) textYPosition

@@ -20,6 +20,7 @@
 @interface UserInfoCache ()
 @property (nonatomic) NSMutableArray * userChannels;
 @property (nonatomic) NSUInteger currentChannelIndex;
+@property (nonatomic) NSInteger attemptedIndex; //if user sets index before channels are reloaded
 @end
 
 @implementation UserInfoCache
@@ -30,7 +31,7 @@
     dispatch_once(&onceToken, ^{
         sharedInstance = [[UserInfoCache alloc] init];
         [sharedInstance setCurrentChannelIndex:0];
-        
+		sharedInstance.attemptedIndex = -1;
         [[NSNotificationCenter defaultCenter] addObserver:sharedInstance
                                                  selector:@selector(reloadUserChannels)
                                                      name:NOTIFICATION_POST_PUBLISHED
@@ -40,12 +41,12 @@
 }
 
 -(void)loadUserChannelsWithCompletionBlock:(void(^)())block {
-	if (self.userChannels && self.userChannels.count > 0) {
-		block();
-		return;
-	}
     [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray * channels) {
         self.userChannels = channels;
+		if (self.attemptedIndex < self.userChannels.count && self.attemptedIndex >= 0) {
+			self.currentChannelIndex = self.attemptedIndex;
+			self.attemptedIndex = -1;
+		}
         block();
     }];
 }
@@ -64,7 +65,9 @@
 -(void) setCurrentChannelIndex:(NSUInteger)index{
     if(index < self.userChannels.count){
         _currentChannelIndex = index;
-    }
+    } else {
+		self.attemptedIndex = index;
+	}
 }
 
 -(void)reloadUserChannels{

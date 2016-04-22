@@ -145,9 +145,6 @@
 	if (!self.inPreviewMode) {
 		[self addPhotos: photosTextArray];
 	} else {
-		//add first photo again so it doesn't fade to black
-//		EditMediaContentView *firstPhotoEditContentView = [self getEditContentViewFromPinchView:pinchViewArray[0]];
-//		[self addSubview:firstPhotoEditContentView];
 		[self layoutContainerViews];
 		if(pinchViewArray.count > 1)
          	[self createRearrangeButton];
@@ -163,7 +160,6 @@
 		[editMediaContentView changeImageTo:image];
 	});
 
-	//Display low quality image before loading high quality version
 	[editMediaContentView displayImages:[pinchView filteredImages] atIndex:pinchView.filterImageIndex];
 
 	if(pinchView.text && pinchView.text.length) {
@@ -190,7 +186,7 @@
 #pragma mark - Not preview mode -
 
 /* photoTextArray is array containing subarrays of photo and text info
-  @[@[photo, text, textYPosition, textColor, textAlignment, textSize],...] */
+  @[@[photourl,photo, text, textYPosition, textColor, textAlignment, textSize],...] */
 -(void) addPhotos:(NSArray*)photosTextArray {
     
 	for (NSArray* photoText in photosTextArray) {
@@ -205,19 +201,20 @@
 
 -(TextOverMediaView*) getImageContainerViewFromPhotoTextArray: (NSArray*) photoTextArray {
 	NSURL *url = photoTextArray[0];
-	NSString* text = photoTextArray[1];
-	CGFloat textYPosition = [(NSNumber *)photoTextArray[2] floatValue];
-	UIColor *textColor = photoTextArray[3];
-	NSTextAlignment textAlignment = (NSTextAlignment) ([(NSNumber *)photoTextArray[4] integerValue]);
-	CGFloat textSize = [(NSNumber *)photoTextArray[5] floatValue];
+	UIImage *thumbnailimage = photoTextArray[1];
+	NSString* text = photoTextArray[2];
+	CGFloat textYPosition = [(NSNumber *)photoTextArray[3] floatValue];
+	UIColor *textColor = photoTextArray[4];
+	NSTextAlignment textAlignment = (NSTextAlignment) ([(NSNumber *)photoTextArray[5] integerValue]);
+	CGFloat textSize = [(NSNumber *)photoTextArray[6] floatValue];
 
 	if(self.isPhotoVideoSubview) {
 		textYPosition = textYPosition/2.f;
 	}
 
 	TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
-																		  andImageURL: url
-																	withSmallImage:self.small];
+																		  andImageURL: url withSmallImage:thumbnailimage
+																		   asSmall:self.small];
 	if (text && text.length) {
 		[textAndImageView setText: text
 				 andTextYPosition: textYPosition

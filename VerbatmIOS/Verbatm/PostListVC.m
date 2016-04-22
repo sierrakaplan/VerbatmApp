@@ -157,7 +157,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 	}
 }
 
--(void)reloadCurrentChannel{
+-(void)reloadCurrentChannel {
 	[self stopAllVideoContent];
     for(UIView * view in self.presentedPostList){
         [view removeFromSuperview];

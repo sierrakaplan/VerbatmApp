@@ -114,47 +114,62 @@
 }
 
 /* photoTextArray is array containing subarrays of photo and text info
- @[@[url, text, textYPosition, textColor, textAlignment, textSize],...] */
+ @[@[url, uiimage, text, textYPosition, textColor, textAlignment, textSize],...] */
 -(void) getUIImagesFromPage: (PFObject *) page withCompletionBlock:(void(^)(NSMutableArray *)) block{
 
 	[Photo_BackendObject getPhotosForPage:page andCompletionBlock:^(NSArray * photoObjects) {
 
-		NSMutableArray* uiImages = [[NSMutableArray alloc] init];
-
+		NSMutableArray* imageUrls = [[NSMutableArray alloc] init];
 		for (PFObject * imageAndTextObj in photoObjects) {
 			NSString * photoUrlString = [imageAndTextObj valueForKey:PHOTO_IMAGEURL_KEY];
-			// Tell google to give us high quality image
-			if (![photoUrlString hasSuffix:@"=s0"]) {
-				photoUrlString = [photoUrlString stringByAppendingString:@"=s0"];
-			}
-			NSURL *photoURL = [NSURL URLWithString:photoUrlString];
-
-			NSString *text =  [imageAndTextObj valueForKey:PHOTO_TEXT_KEY];
-			NSNumber *yOffset = [imageAndTextObj valueForKey:PHOTO_TEXT_YOFFSET_KEY];
-
-			NSData *textColorData = [imageAndTextObj valueForKey:PHOTO_TEXT_COLOR_KEY];
-			UIColor *textColor = textColorData == nil ? nil : [NSKeyedUnarchiver unarchiveObjectWithData:textColorData];
-			if (textColor == nil) textColor = [UIColor TEXT_PAGE_VIEW_DEFAULT_COLOR];
-			NSNumber *textAlignment = [imageAndTextObj valueForKey:PHOTO_TEXT_ALIGNMENT_KEY];
-			if (textAlignment == nil) textAlignment = [NSNumber numberWithInt:0];
-			NSNumber *textSize = [imageAndTextObj valueForKey:PHOTO_TEXT_SIZE_KEY];
-			if (textSize == nil) textSize = [NSNumber numberWithFloat:TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE];
-
-			[uiImages addObject: @[photoURL, text, yOffset, textColor, textAlignment, textSize]];
-
-			dispatch_async(dispatch_get_main_queue(), ^{
-				block(uiImages);
-			});
+			// Don't want high quality image for this - just loading thumbnails
+			[imageUrls addObject: photoUrlString];
 		}
+
+		[self getThumbnailDatafromUrls:imageUrls withCompletionBlock:^(NSArray *imageData) {
+			NSMutableArray* imageTextArrays = [[NSMutableArray alloc] init];
+			for (int i = 0; i < photoObjects.count; i++) {
+				PFObject * imageAndTextObj = photoObjects[i];
+				NSString * photoUrlString = [imageAndTextObj valueForKey:PHOTO_IMAGEURL_KEY];
+
+				// Tell google to give us high quality image
+				if (![photoUrlString hasSuffix:@"=s0"]) {
+					photoUrlString = [photoUrlString stringByAppendingString:@"=s0"];
+				}
+				NSURL *photoURL = [NSURL URLWithString:photoUrlString];
+
+				NSString *text =  [imageAndTextObj valueForKey:PHOTO_TEXT_KEY];
+				NSNumber *yOffset = [imageAndTextObj valueForKey:PHOTO_TEXT_YOFFSET_KEY];
+
+				NSData *textColorData = [imageAndTextObj valueForKey:PHOTO_TEXT_COLOR_KEY];
+				UIColor *textColor = textColorData == nil ? nil : [NSKeyedUnarchiver unarchiveObjectWithData:textColorData];
+				if (textColor == nil) textColor = [UIColor TEXT_PAGE_VIEW_DEFAULT_COLOR];
+				NSNumber *textAlignment = [imageAndTextObj valueForKey:PHOTO_TEXT_ALIGNMENT_KEY];
+				if (textAlignment == nil) textAlignment = [NSNumber numberWithInt:0];
+				NSNumber *textSize = [imageAndTextObj valueForKey:PHOTO_TEXT_SIZE_KEY];
+				if (textSize == nil) textSize = [NSNumber numberWithFloat:TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE];
+
+				[imageTextArrays addObject: @[photoURL, [UIImage imageWithData:imageData[i]], text,
+											  yOffset, textColor, textAlignment, textSize]];
+			}
+			dispatch_async(dispatch_get_main_queue(), ^{
+				block(imageTextArrays);
+			});
+		}];
 	}];
 }
 
--(void)getImagesfromUrls:(NSArray *) thumbnailUrls withCompletionBlock:(void(^)(NSArray *)) block {
+-(void)getThumbnailDatafromUrls:(NSArray *)urls withCompletionBlock:(void(^)(NSArray *)) block {
 
 	NSMutableArray* loadImageDataPromises = [[NSMutableArray alloc] init];
+	for (NSString *uri in urls) {
+		NSString *smallImageUri = uri;
+		NSString * suffix = @"=s0";
+		if ([uri hasSuffix:suffix] ) {
+			smallImageUri = [uri substringWithRange:NSMakeRange(0, uri.length-suffix.length)];
+		}
 
-	for (NSString * url in thumbnailUrls) {
-		AnyPromise* getImageDataPromise = [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString:url]];
+		AnyPromise* getImageDataPromise = [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString: uri]];
 		[loadImageDataPromises addObject: getImageDataPromise];
 	}
 	PMKWhen(loadImageDataPromises).then(^(NSArray* results) {
@@ -171,7 +186,7 @@
 		NSString * thumbNailUrl = [videoObject valueForKey:VIDEO_THUMBNAIL_KEY];
 
 		//download all thumbnail urls for videos
-		[self getImagesfromUrls:@[thumbNailUrl] withCompletionBlock:^(NSArray * videoThumbNails) {
+		[self getThumbnailDatafromUrls:@[thumbNailUrl] withCompletionBlock:^(NSArray * videoThumbNails) {
 			NSString * videoBlobKey = [videoObject valueForKey:BLOB_STORE_URL];
 			NSURLComponents *components = [NSURLComponents componentsWithString: GET_VIDEO_URI];
 			NSURLQueryItem* blobKey = [NSURLQueryItem queryItemWithName:BLOBKEYSTRING_KEY value: videoBlobKey];

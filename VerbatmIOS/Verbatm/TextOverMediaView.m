@@ -38,26 +38,12 @@
 @implementation TextOverMediaView
 
 -(instancetype) initWithFrame:(CGRect)frame andImageURL:(NSURL*)imageUrl
-			   withSmallImage:(BOOL) small {
+			   withSmallImage: (UIImage*)smallImage asSmall:(BOOL) small {
 	self = [self initWithFrame:frame];
 	if (self) {
 
-		NSURL *smallImageUrl = imageUrl;
-		NSString * imageUri = [imageUrl absoluteString];
-		NSString * suffix = @"=s0";
-		if ([imageUri hasSuffix:suffix] ) {
-			imageUri = [imageUri substringWithRange:NSMakeRange(0, imageUri.length-suffix.length)];
-			smallImageUrl = [NSURL URLWithString:imageUri];
-		}
-
-		// First set the small image while larger image loads
-		AnyPromise *loadSmallImageData = [UtilityFunctions loadCachedPhotoDataFromURL:smallImageUrl];
-		loadSmallImageData.then(^(NSData* smallImageData) {
-			UIImage *smallImage = [UIImage imageWithData:smallImageData];
-			if (!self.image || small) {
-				[self.imageView setImage: smallImage];
-			}
-		});
+		self.image = smallImage;
+		[self.imageView setImage: self.image];
 
 		// After larger image loads, crop it and set it in the image
 		if (!small) {
