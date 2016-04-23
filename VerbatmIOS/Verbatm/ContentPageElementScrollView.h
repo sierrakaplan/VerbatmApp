@@ -20,6 +20,7 @@
 -(void) pinchviewSelected:(PinchView *) pinchView;
 
 @optional
+
 -(void) deleteButtonPressedOnContentPageElementScrollView:(ContentPageElementScrollView*)scrollView;
 
 @end

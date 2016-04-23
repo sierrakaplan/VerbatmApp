@@ -12,6 +12,7 @@
 #import "CustomNavigationBar.h"
 #import "Durations.h"
 #import "Icons.h"
+#import "PostInProgress.h"
 #import "PostView.h"
 #import "PhotoPVE.h"
 #import "SizesAndPositions.h"
@@ -121,7 +122,11 @@
 	if(show)  {
         [self.delegate aboutToShowPreview];
 			self.frame = self.viewingFrame;
-	}else {
+	} else {
+		//Go through and save edited changes in PostInProgress
+		for (int i = 0; i < self.pinchViews.count; i++) {
+			[[PostInProgress sharedInstance] removePinchViewAtIndex:i andReplaceWithPinchView:self.pinchViews[i]];
+		}
         [self.delegate aboutToRemovePreview];
         self.frame = self.restingFrame;
         [self.postView clearPost];
@@ -144,12 +149,5 @@
 -(void) leftButtonPressed {
 	[self revealPreview:NO];
 }
-
-#pragma mark - Exit Display -
-
-- (void) exitDisplay{
-    [self revealPreview:NO];
-}
-
 
 @end

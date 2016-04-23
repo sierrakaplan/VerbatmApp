@@ -242,7 +242,6 @@
         [self.circleView removeFromSuperview];
         self.circleView = nil;
     }
-    
 }
 
 
@@ -531,7 +530,6 @@
 //sets image at given index to front by setting the opacity of all those in front of it to 0
 //and those behind it to 1
 -(void) setImageViewsToLocation:(NSInteger)index {
-	
     if(index >= self.imageContainerViews.count){
         index = 0;
         ((UIView *) self.imageContainerViews[index]).alpha = 1.f;
@@ -574,10 +572,6 @@
             [((EditMediaContentView *)view) exiting];
         }
     }
-	if (self.inPreviewMode) {
-		[[PostInProgress sharedInstance] removePinchViewAtIndex:self.indexInPost andReplaceWithPinchView:self.pinchView];
-	}
-
     if(self.rearrangeView)[self.rearrangeView exitView];
 }
 

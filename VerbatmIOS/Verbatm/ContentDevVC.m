@@ -876,6 +876,12 @@ andSaveInUserDefaults:(BOOL)save {
 	[self handleVerticlePinchGestureBegan:sender];
 }
 
+#pragma mark - ContentPageElementScrollView delegate -
+
+// Do nothing because we won't have open collection views in content dev vc
+-(void)pinchviewSelected:(PinchView *)pinchView {
+
+}
 
 #pragma mark - Horizontal Pinching
 

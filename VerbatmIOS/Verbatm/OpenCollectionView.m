@@ -16,7 +16,7 @@
 #import "SizesAndPositions.h"
 
 
-@interface OpenCollectionView ()<ContentPageElementScrollViewDelegate>
+@interface OpenCollectionView () <ContentPageElementScrollViewDelegate>
 
 @property (strong, nonatomic) ContentPageElementScrollView * scrollView;
 
@@ -90,6 +90,7 @@
 -(void) pinchviewSelected:(PinchView *) pinchView{
     [self.delegate pinchViewSelected:pinchView];
 }
+
 -(void) deleteButtonPressedOnContentPageElementScrollView:(ContentPageElementScrollView*)scrollView{
     
 }

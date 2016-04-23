@@ -12,7 +12,6 @@
 		A5076D141BF2B25100303746 /* TextOverMediaView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5076D131BF2B25100303746 /* TextOverMediaView.m */; };
 		A51A52F61BD6B8AB0048E62A /* MediaDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = A51A52F51BD6B8AB0048E62A /* MediaDownloader.m */; };
 		A51E74641C898C4E00CF8DEA /* PostInProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = A51E74631C898C4E00CF8DEA /* PostInProgress.m */; };
-		A51E74651C898C4E00CF8DEA /* PostInProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = A51E74631C898C4E00CF8DEA /* PostInProgress.m */; };
 		A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */ = {isa = PBXBuildFile; fileRef = A52919751B5DD24F00233712 /* UIView+Glow.m */; };
 		A535E4FD1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m in Sources */ = {isa = PBXBuildFile; fileRef = A535E4FC1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m */; };
 		A535E5001BC4459800A087D1 /* UIView+Effects.m in Sources */ = {isa = PBXBuildFile; fileRef = A535E4FF1BC4459800A087D1 /* UIView+Effects.m */; };
@@ -504,6 +503,7 @@
 		A5E860001B96249900E148D0 /* PostPublisher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostPublisher.m; sourceTree = "<group>"; };
 		A5E860051B97CC3C00E148D0 /* PreviewDisplayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreviewDisplayView.h; sourceTree = "<group>"; };
 		A5E860061B97CC3C00E148D0 /* PreviewDisplayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreviewDisplayView.m; sourceTree = "<group>"; };
+		A5F94ABC1CCC115500341D01 /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Verbatm-crpoxhdzscotzubuuulfnzwqpfct/Build/Products/Debug-iphoneos/PromiseKit.framework"; sourceTree = "<group>"; };
 		A5FB5D141BCB0B9700634A96 /* GMAlbumsViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMAlbumsViewCell.h; sourceTree = "<group>"; };
 		A5FB5D151BCB0B9700634A96 /* GMAlbumsViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMAlbumsViewCell.m; sourceTree = "<group>"; };
 		A5FB5D161BCB0B9700634A96 /* GMAlbumsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMAlbumsViewController.h; sourceTree = "<group>"; };
@@ -1367,6 +1367,7 @@
 		C7BC4374199D97F5004B91A1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A5F94ABC1CCC115500341D01 /* PromiseKit.framework */,
 				C7F3EBCF1C86249E007D23DF /* libcompression.tbd */,
 				C7F3EBCD1C859B8C007D23DF /* libbz2.1.0.tbd */,
 				A55AA12D1BD5B7DC00EB883A /* CoreMotion.framework */,
@@ -1925,7 +1926,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7BC43A1199D97F6004B91A1 /* VerbatmTests.m in Sources */,
-				A51E74651C898C4E00CF8DEA /* PostInProgress.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

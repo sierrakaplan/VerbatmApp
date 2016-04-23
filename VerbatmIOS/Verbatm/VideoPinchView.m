@@ -11,6 +11,8 @@
 #import "Icons.h"
 #import "Styles.h"
 
+#import <PromiseKit/PromiseKit.h>
+
 @interface VideoPinchView()
 
 @property (strong, nonatomic) UIImage* videoImage;

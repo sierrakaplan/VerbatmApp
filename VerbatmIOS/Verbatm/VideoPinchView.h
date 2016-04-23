@@ -9,7 +9,7 @@
 #import "PinchView.h"
 #import "SingleMediaAndTextPinchView.h"
 
-#import <PromiseKit/PromiseKit.h>
+@class AnyPromise;
 
 @interface VideoPinchView : SingleMediaAndTextPinchView
 

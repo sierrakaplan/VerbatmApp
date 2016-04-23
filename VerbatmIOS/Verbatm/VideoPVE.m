@@ -194,9 +194,6 @@
 		[self.videoPlayer stopVideo];
 	}
 	if(self.rearrangeView) [self.rearrangeView exitView];
-	if (self.inPreviewMode) {
-		[[PostInProgress sharedInstance] removePinchViewAtIndex:self.indexInPost andReplaceWithPinchView:self.pinchView];
-	}
 	self.hasBeenSetUp = NO;
 }
 

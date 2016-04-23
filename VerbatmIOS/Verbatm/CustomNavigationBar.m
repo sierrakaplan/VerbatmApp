@@ -17,7 +17,7 @@
 #define BUTTON_WIDTH self.frame.size.width/3.f
 #define BUTTON_HEIGHT self.frame.size.height
 #define TITLE_FONT_SIZE 24.f
-#define BUTTON_IMAGE_Y_OFFSET 11.f
+#define BUTTON_IMAGE_Y_OFFSET 5.f
 
 @end
 
