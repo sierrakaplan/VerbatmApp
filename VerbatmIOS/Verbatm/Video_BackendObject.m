@@ -75,6 +75,7 @@
     if(!self.mediaPublisher)self.mediaPublisher = [[PostPublisher alloc] init];
     
     [self.mediaPublisher storeImage:UIImagePNGRepresentation(thumbnail) withCompletionBlock:^(GTLVerbatmAppImage * gtlImage) {
+		NSLog(@"Now saving parse video object...");
         NSString * blobStoreImageUrl = gtlImage.servingUrl;
         PFObject * newVideoObj = [PFObject objectWithClassName:VIDEO_PFCLASS_KEY];
         [newVideoObj setObject:blobStoreVideoUrl forKey:BLOB_STORE_URL];

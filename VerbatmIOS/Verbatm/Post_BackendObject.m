@@ -49,12 +49,22 @@
 	[newPostObject setObject:[NSNumber numberWithInteger:pinchViews.count] forKey:POST_SIZE_KEY];
 	[newPostObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 		if(succeeded){
-			for (int i = 0; i< pinchViews.count; i++) {
-				PinchView * pv = pinchViews[i];
-				Page_BackendObject * newPage = [[Page_BackendObject alloc] init];
-				[self.pageArray addObject:newPage];
-				[newPage savePageWithIndex:i andPinchView:pv andPost:newPostObject];
+			Page_BackendObject * newPage = [[Page_BackendObject alloc] init];
+			AnyPromise *storePagePromise = [newPage savePageWithIndex:0 andPinchView:pinchViews[0] andPost:newPostObject];
+			[self.pageArray addObject:newPage];
+
+			for (int i = 1; i< pinchViews.count; i++) {
+				storePagePromise = storePagePromise.then(^(PFObject*pageObject) {
+					NSLog(@"Done storing page at index %d", i-1);
+					Page_BackendObject * newPage = [[Page_BackendObject alloc] init];
+					[self.pageArray addObject:newPage];
+					return [newPage savePageWithIndex:i andPinchView:pinchViews[i] andPost:newPostObject];
+				});
 			}
+
+			storePagePromise.then(^(PFObject *pageObject) {
+				NSLog(@"Done storing page at index %lu", pinchViews.count-1);
+			});
 		}
 	}];
 

@@ -35,7 +35,7 @@
 	return self;
 }
 
--(void)savePageWithIndex:(NSInteger) pageIndex andPinchView:(PinchView *) pinchView andPost:(PFObject *) post{
+-(AnyPromise*) savePageWithIndex:(NSInteger) pageIndex andPinchView:(PinchView *) pinchView andPost:(PFObject *) post {
 
 	//create and save page object
 	PFObject * newPageObject = [PFObject objectWithClassName:PAGE_PFCLASS_KEY];
@@ -51,11 +51,20 @@
 		[newPageObject setObject:[NSNumber numberWithInt:PageTypeVideo] forKey:PAGE_VIEW_TYPE];
 	}
 
-	[newPageObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-		if(succeeded){//now we save the media for the specific
-			[self storeImagesFromPinchView:pinchView withPageReference:newPageObject];
-			[self storeVideosFromPinchView:pinchView withPageReference:newPageObject];
-		}
+	return [self savePageObject:newPageObject].then(^(void) {
+		return [self storeImagesFromPinchView:pinchView withPageReference:newPageObject];
+	}).then(^(void) {
+		return [self storeVideosFromPinchView:pinchView withPageReference:newPageObject];
+	});
+}
+
+-(AnyPromise*) savePageObject: (PFObject*)newPageObject {
+	return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+		[newPageObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+			if(succeeded){//now we save the media for the specific
+				resolve (newPageObject);
+			} else resolve(error);
+		}];
 	}];
 }
 
@@ -63,8 +72,10 @@
 // when(stored every image)
 // Each storeimage promise should resolve to the id of the GTL Image just stored
 // So this promise should resolve to an array of gtl image id's
--(void) storeImagesFromPinchView: (PinchView*) pinchView withPageReference:(PFObject *) page {
-	if (!pinchView.containsImage) return;
+-(AnyPromise*) storeImagesFromPinchView: (PinchView*) pinchView withPageReference:(PFObject *) page {
+	if (!pinchView.containsImage) return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+		resolve(nil);
+	}];
 
 	NSArray* pinchViewPhotosWithText = [pinchView getPhotosWithText];
 	NSMutableArray *imagePinchViews = [[NSMutableArray alloc] init];
@@ -75,6 +86,7 @@
 	}
 
 	//Publishing images sequentially
+	//todo: actually publish sequentially not just get their data
 	AnyPromise *getImageDataPromise = [imagePinchViews[0] getImageData];
 	for (int i = 1; i < imagePinchViews.count; i++) {
 		getImageDataPromise = getImageDataPromise.then(^(NSData *imageData) {
@@ -84,7 +96,7 @@
 			return [imagePinchViews[i] getImageData];
 		});
 	}
-	getImageDataPromise.then(^(NSData *imageData) {
+	return getImageDataPromise.then(^(NSData *imageData) {
 		NSInteger index = imagePinchViews.count - 1;
 		NSArray* photoWithText = pinchViewPhotosWithText[index];
 		[self storeImageFromImageData:imageData andPhotoWithTextArray:photoWithText

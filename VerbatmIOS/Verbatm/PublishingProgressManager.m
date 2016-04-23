@@ -89,7 +89,7 @@
 	for(PinchView * pinchView in pinchViews){
 		if([pinchView isKindOfClass:[CollectionPinchView class]]){
 			totalProgressUnits+= [(CollectionPinchView *)pinchView imagePinchViews].count * IMAGE_PROGRESS_UNITS;
-			totalProgressUnits+= [(CollectionPinchView *)pinchView videoPinchViews].count > 1 ? (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS) : 0;
+			totalProgressUnits+= [(CollectionPinchView *)pinchView videoPinchViews].count > 0 ? (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS) : 0;
 		} else {
 			//Saves thumbnail for every video too
 			totalProgressUnits += ([pinchView isKindOfClass:[VideoPinchView class]]) ? (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS) : IMAGE_PROGRESS_UNITS;
@@ -106,8 +106,8 @@
 
 -(void)mediaSavingProgressed:(int64_t) newProgress {
 	self.progressAccountant.completedUnitCount += newProgress;
-//	NSLog(@"Media saving progressed %lld new units to completed %lld units of total %lld units", newProgress,
-//		  self.progressAccountant.completedUnitCount, self.progressAccountant.totalUnitCount);
+	NSLog(@"Media saving progressed %lld new units to completed %lld units of total %lld units", newProgress,
+		  self.progressAccountant.completedUnitCount, self.progressAccountant.totalUnitCount);
 	if (self.progressAccountant.completedUnitCount >= self.progressAccountant.totalUnitCount
 		&& self.currentlyPublishing && self.currentParsePostObject) {
 		[self postPublishedSuccessfully];
@@ -120,6 +120,7 @@
 	//register the relationship
 	[Post_Channel_RelationshipManager savePost:self.currentParsePostObject toChannels:[NSMutableArray arrayWithObject:self.currentPublishingChannel] withCompletionBlock:^{
 		self.progressAccountant.completedUnitCount = 0;
+		self.progressAccountant.totalUnitCount = 0;
 		self.currentlyPublishing = NO;
 		[[PostInProgress sharedInstance] clearPostInProgress];
 		[self.delegate publishingComplete];
