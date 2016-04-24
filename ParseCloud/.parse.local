@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "Verbatm": {
+      "applicationId": "rzSvJWHhiN8KUnhDVXTlapJkJ4eCe3xAlmEscSK3"
+    },
+    "_default": {
+      "link": "Verbatm"
+    }
+  }
+}
