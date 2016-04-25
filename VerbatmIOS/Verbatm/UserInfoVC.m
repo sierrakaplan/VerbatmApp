@@ -6,27 +6,34 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+#import "CustomNavigationBar.h"
+#import "Icons.h"
 #import "Notifications.h"
 #import "SegueIDs.h"
 #import "UserInfoVC.h"
 #import "ParseBackendKeys.h"
 #import "Parse/PFUser.h"
+#import "SizesAndPositions.h"
+#import "Styles.h"
 
-@interface UserInfoVC() <UITextFieldDelegate>
+@interface UserInfoVC() <UITextFieldDelegate, CustomNavigationBarDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *logoImageView;
 @property (weak, nonatomic) IBOutlet UITextField *nameTextField;
 @property (weak, nonatomic) IBOutlet UITextField *passwordTextField;
 @property (weak, nonatomic) IBOutlet UIButton *logInButton;
+@property (nonatomic) CustomNavigationBar * navigationBar;
 
 @end
 
 @implementation UserInfoVC
 
 -(void) viewDidLoad {
+	self.successfullyLoggedIn = NO;
 	[self.backgroundImageView setFrame:self.view.bounds];
 	[self centerViews];
+	[self createNavigationBar];
 	[self.nameTextField setReturnKeyType:UIReturnKeyNext];
 	self.nameTextField.delegate = self;
 	[self.passwordTextField setReturnKeyType:UIReturnKeyDone];
@@ -43,11 +50,27 @@
 	}
 }
 
+-(BOOL) prefersStatusBarHidden {
+	return YES;
+}
+
 -(void) centerViews {
 	self.logoImageView.center = CGPointMake(self.view.center.x, self.logoImageView.center.y);
 	self.nameTextField.center = CGPointMake(self.view.center.x, self.nameTextField.center.y);
 	self.passwordTextField.center = CGPointMake(self.view.center.x, self.passwordTextField.center.y);
 	self.logInButton.center = CGPointMake(self.view.center.x, self.logInButton.center.y);
+}
+
+-(void)createNavigationBar{
+	CGRect navBarFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT);
+	self.navigationBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor: [UIColor clearColor]];
+	self.navigationBar.delegate = self;
+	[self.navigationBar createLeftButtonWithTitle:nil orImage:[UIImage imageNamed:BACK_BUTTON_ICON]];
+	[self.view addSubview:self.navigationBar];
+}
+
+-(void) leftButtonPressed {
+	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_USER_SETTINGS_TO_LOGIN sender:self];
 }
 
 -(void) loginButtonPressed {
@@ -73,7 +96,7 @@
 		if (error || !succeeded) {
 			[self showAlertWithTitle:@"Error signing up" andMessage: error.localizedDescription];
 		} else {
-			[self unwindToMasterVC];
+			[self successfullyLoggedInAndUnwind];
 		}
 	}];
 }
@@ -84,7 +107,7 @@
 		if (error || !user) {
 			[self showAlertWithTitle:@"Error logging in" andMessage: @"Incorrect passoword. Please contact us if you need to reset it at feedback@verbatm.io"];
 		} else {
-			[self unwindToMasterVC];
+			[self successfullyLoggedInAndUnwind];
 		}
 	}];
 }
@@ -110,9 +133,10 @@
 }
 
 // Unwind segue back to master vc
--(void) unwindToMasterVC {
+-(void) successfullyLoggedInAndUnwind {
+	self.successfullyLoggedIn = YES;
 	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
-	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_USER_SETTINGS_TO_MASTER sender:self];
+	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_USER_SETTINGS_TO_LOGIN sender:self];
 }
 
 @end

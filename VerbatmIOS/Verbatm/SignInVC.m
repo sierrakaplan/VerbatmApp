@@ -318,10 +318,20 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 		userViewController.phoneNumber = self.phoneNumber;
 		userViewController.firstTimeLoggingIn = self.firstTimeLoggingIn;
 	} else {
-		UIViewController * vc =  [segue destinationViewController];
+		UIViewController *destinationViewController =  [segue destinationViewController];
 
-		if([vc isKindOfClass:[TermsAndConditionsVC class]]){
-			((TermsAndConditionsVC *)vc).userMustAcceptTerms = YES;
+		if([destinationViewController isKindOfClass:[TermsAndConditionsVC class]]){
+			((TermsAndConditionsVC *)destinationViewController).userMustAcceptTerms = YES;
+		}
+	}
+}
+
+- (IBAction) unwindToSignIn: (UIStoryboardSegue *)segue {
+	UIViewController *sourceViewController = [segue sourceViewController];
+	if ([sourceViewController isKindOfClass:[UserInfoVC class]]) {
+		UserInfoVC* userInfoVC = (UserInfoVC*)sourceViewController;
+		if (userInfoVC.successfullyLoggedIn) {
+			[self unwindToMasterVC];
 		}
 	}
 }
@@ -390,12 +400,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[\\s-\\(\\)]" options:NSRegularExpressionCaseInsensitive error:&error];
 	NSString* simpleNumber = [regex stringByReplacingMatchesInString:formattedPhoneNumber options:0 range:NSMakeRange(0, [formattedPhoneNumber length]) withTemplate:@""];
 	return simpleNumber;
-}
-
-#pragma mark - Unwind segue -
-
-- (IBAction) unwindToSignIn: (UIStoryboardSegue *)segue {
-	[self unwindToMasterVC];
 }
 
 #pragma mark - Lazy Instantiation -

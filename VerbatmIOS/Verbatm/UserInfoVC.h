@@ -12,5 +12,6 @@
 
 @property (weak, nonatomic) NSString *phoneNumber;
 @property (nonatomic) BOOL firstTimeLoggingIn;
+@property (nonatomic) BOOL successfullyLoggedIn;
 
 @end
