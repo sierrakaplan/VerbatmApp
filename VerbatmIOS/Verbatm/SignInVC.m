@@ -34,6 +34,7 @@
 #import "UserManager.h"
 
 @interface SignInVC () <UITextFieldDelegate, FBSDKLoginButtonDelegate, LoginKeyboardToolBarDelegate>
+
 @property (nonatomic) BOOL loginFirstTimeDone;
 @property (strong, nonatomic) UIView* animationView;
 @property (strong, nonatomic) UILabel* animationLabel;

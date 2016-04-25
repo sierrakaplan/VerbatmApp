@@ -8,7 +8,7 @@
 
 #import "Channel_BackendObject.h"
 #import "ExploreChannelCellView.h"
-#import "FeedQueryManager.h"
+#import "ChannelsQueryManager.h"
 #import "FeaturedContentVC.h"
 #import "FeaturedContentCellView.h"
 #import "Follow_BackendManager.h"
@@ -70,12 +70,12 @@ ExploreChannelCellViewDelegate>
 
 -(void) refreshChannels {
 
-	[[FeedQueryManager sharedInstance] loadFeaturedChannelsWithCompletionHandler:^(NSArray *featuredChannels) {
+	[[ChannelsQueryManager sharedInstance] loadFeaturedChannelsWithCompletionHandler:^(NSArray *featuredChannels) {
 		self.featuredChannels = nil;
 		[self.featuredChannels addObjectsFromArray:featuredChannels];
 		[self.tableView reloadData];
 	}];
-	[[FeedQueryManager sharedInstance] refreshExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
+	[[ChannelsQueryManager sharedInstance] refreshExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
 		self.exploreChannels = nil;
 		[self.refreshControl endRefreshing];
 		[self.exploreChannels addObjectsFromArray: exploreChannels];

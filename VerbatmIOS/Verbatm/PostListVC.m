@@ -10,7 +10,7 @@
 
 #import "Durations.h"
 
-#import "FeedQueryManager.h"
+#import "ChannelsQueryManager.h"
 
 #import "Icons.h"
 
@@ -37,7 +37,7 @@
 SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 
 @property (nonatomic) NSMutableArray * presentedPostList;
-@property (strong, nonatomic) FeedQueryManager * feedQueryManager;
+@property (strong, nonatomic) ChannelsQueryManager * feedQueryManager;
 @property (nonatomic, strong) UILabel * noContentLabel;
 
 @property (nonatomic) PostView *lastVisibleCell;
@@ -664,9 +664,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	return _presentedPostList;
 }
 
--(FeedQueryManager*) feedQueryManager {
+-(ChannelsQueryManager*) feedQueryManager {
 	if (!_feedQueryManager) {
-		_feedQueryManager = [FeedQueryManager sharedInstance];
+		_feedQueryManager = [ChannelsQueryManager sharedInstance];
 	}
 	return _feedQueryManager;
 }

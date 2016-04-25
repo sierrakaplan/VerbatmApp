@@ -8,12 +8,12 @@
 //
 
 #import "Channel.h"
-#import "FeedQueryManager.h"
+#import "ChannelsQueryManager.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFQuery.h>
 #import <PromiseKit/PromiseKit.h>
 
-@interface FeedQueryManager ()
+@interface ChannelsQueryManager ()
 
 @property (nonatomic) NSInteger postsInFeed;
 @property (nonatomic, strong) NSDate *currentFeedStart;
@@ -29,13 +29,13 @@
 
 @end
 
-@implementation FeedQueryManager
+@implementation ChannelsQueryManager
 
 +(instancetype) sharedInstance {
-	static FeedQueryManager* sharedInstance = nil;
+	static ChannelsQueryManager* sharedInstance = nil;
 	static dispatch_once_t onceToken;
 	dispatch_once(&onceToken, ^{
-		sharedInstance = [[FeedQueryManager alloc] init];
+		sharedInstance = [[ChannelsQueryManager alloc] init];
 	});
 	return sharedInstance;
 }

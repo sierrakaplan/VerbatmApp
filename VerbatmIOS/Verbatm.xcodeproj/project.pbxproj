@@ -15,6 +15,7 @@
 		A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */ = {isa = PBXBuildFile; fileRef = A52919751B5DD24F00233712 /* UIView+Glow.m */; };
 		A5337BBA1CCD60CF00551394 /* LoginKeyboardToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A5337BB91CCD60CF00551394 /* LoginKeyboardToolBar.m */; };
 		A5337BBD1CCD99D600551394 /* UserInfoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5337BBC1CCD99D600551394 /* UserInfoVC.m */; };
+		A5337BC11CCDD96E00551394 /* PostsQueryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A5337BC01CCDD96E00551394 /* PostsQueryManager.m */; };
 		A535E4FD1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m in Sources */ = {isa = PBXBuildFile; fileRef = A535E4FC1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m */; };
 		A535E5001BC4459800A087D1 /* UIView+Effects.m in Sources */ = {isa = PBXBuildFile; fileRef = A535E4FF1BC4459800A087D1 /* UIView+Effects.m */; };
 		A535E5031BC44B6900A087D1 /* UITextView+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A535E5021BC44B6900A087D1 /* UITextView+Utilities.m */; };
@@ -224,7 +225,7 @@
 		C7BF1AAE1C57F61F00CEDE4B /* Page_BackendObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BF1AAD1C57F61F00CEDE4B /* Page_BackendObject.m */; };
 		C7BF1AB21C59D6BF00CEDE4B /* Channel_BackendObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BF1AB11C59D6BF00CEDE4B /* Channel_BackendObject.m */; };
 		C7C69A071BF820FC006B5260 /* EditMediaContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C69A061BF820FC006B5260 /* EditMediaContentView.m */; };
-		C7D596381C66DC3A00161136 /* FeedQueryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C7D596371C66DC3A00161136 /* FeedQueryManager.m */; };
+		C7D596381C66DC3A00161136 /* ChannelsQueryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C7D596371C66DC3A00161136 /* ChannelsQueryManager.m */; };
 		C7D5963B1C66E47100161136 /* Follow_BackendManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C7D5963A1C66E47100161136 /* Follow_BackendManager.m */; };
 		C7E093EC1BF98BE200A3276A /* OpenCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E093EB1BF98BE200A3276A /* OpenCollectionView.m */; };
 		C7E2C88F1BB7E97600D83668 /* UtilityFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E2C88E1BB7E97600D83668 /* UtilityFunctions.m */; };
@@ -238,7 +239,6 @@
 		C7F22B381C3841AD00E56EA7 /* SelectSharingOption.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F22B371C3841AD00E56EA7 /* SelectSharingOption.m */; };
 		C7F22B3B1C38B2A600E56EA7 /* SelectOptionButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F22B3A1C38B2A600E56EA7 /* SelectOptionButton.m */; };
 		C7F3D46B1A4F84C000B43238 /* SignInVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46A1A4F84C000B43238 /* SignInVC.m */; };
-		C7F3EBC91C7D4D73007D23DF /* VideoPlayerItemManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3EBC81C7D4D73007D23DF /* VideoPlayerItemManager.m */; };
 		C7F3EBCC1C814313007D23DF /* VideoDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3EBCB1C814313007D23DF /* VideoDownloadManager.m */; };
 		C7F3EBCE1C859B8C007D23DF /* libbz2.1.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C7F3EBCD1C859B8C007D23DF /* libbz2.1.0.tbd */; };
 		C7F3EBD01C86249E007D23DF /* libcompression.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C7F3EBCF1C86249E007D23DF /* libcompression.tbd */; };
@@ -295,6 +295,8 @@
 		A5337BB91CCD60CF00551394 /* LoginKeyboardToolBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginKeyboardToolBar.m; sourceTree = "<group>"; };
 		A5337BBB1CCD99D600551394 /* UserInfoVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfoVC.h; sourceTree = "<group>"; };
 		A5337BBC1CCD99D600551394 /* UserInfoVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfoVC.m; sourceTree = "<group>"; };
+		A5337BBF1CCDD96E00551394 /* PostsQueryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostsQueryManager.h; sourceTree = "<group>"; };
+		A5337BC01CCDD96E00551394 /* PostsQueryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostsQueryManager.m; sourceTree = "<group>"; };
 		A535E4FB1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffectsAndTransforms.h"; sourceTree = "<group>"; };
 		A535E4FC1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffectsAndTransforms.m"; sourceTree = "<group>"; };
 		A535E4FE1BC4459800A087D1 /* UIView+Effects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Effects.h"; sourceTree = "<group>"; };
@@ -623,8 +625,8 @@
 		C7BF1AB11C59D6BF00CEDE4B /* Channel_BackendObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Channel_BackendObject.m; sourceTree = "<group>"; };
 		C7C69A051BF820FC006B5260 /* EditMediaContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditMediaContentView.h; sourceTree = "<group>"; };
 		C7C69A061BF820FC006B5260 /* EditMediaContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditMediaContentView.m; sourceTree = "<group>"; };
-		C7D596361C66DC3A00161136 /* FeedQueryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedQueryManager.h; sourceTree = "<group>"; };
-		C7D596371C66DC3A00161136 /* FeedQueryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedQueryManager.m; sourceTree = "<group>"; };
+		C7D596361C66DC3A00161136 /* ChannelsQueryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelsQueryManager.h; sourceTree = "<group>"; };
+		C7D596371C66DC3A00161136 /* ChannelsQueryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelsQueryManager.m; sourceTree = "<group>"; };
 		C7D596391C66E47100161136 /* Follow_BackendManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Follow_BackendManager.h; sourceTree = "<group>"; };
 		C7D5963A1C66E47100161136 /* Follow_BackendManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Follow_BackendManager.m; sourceTree = "<group>"; };
 		C7E093EA1BF98BE200A3276A /* OpenCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenCollectionView.h; sourceTree = "<group>"; };
@@ -651,8 +653,6 @@
 		C7F22B3A1C38B2A600E56EA7 /* SelectOptionButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectOptionButton.m; sourceTree = "<group>"; };
 		C7F3D4691A4F84C000B43238 /* SignInVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignInVC.h; sourceTree = "<group>"; };
 		C7F3D46A1A4F84C000B43238 /* SignInVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignInVC.m; sourceTree = "<group>"; };
-		C7F3EBC71C7D4D73007D23DF /* VideoPlayerItemManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlayerItemManager.h; sourceTree = "<group>"; };
-		C7F3EBC81C7D4D73007D23DF /* VideoPlayerItemManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayerItemManager.m; sourceTree = "<group>"; };
 		C7F3EBCA1C814313007D23DF /* VideoDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoDownloadManager.h; sourceTree = "<group>"; };
 		C7F3EBCB1C814313007D23DF /* VideoDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoDownloadManager.m; sourceTree = "<group>"; };
 		C7F3EBCD1C859B8C007D23DF /* libbz2.1.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.1.0.tbd; path = usr/lib/libbz2.1.0.tbd; sourceTree = SDKROOT; };
@@ -776,6 +776,71 @@
 			name = "Keyboard tool bars";
 			sourceTree = "<group>";
 		};
+		A5337BBE1CCDD95700551394 /* Feed Query Managers */ = {
+			isa = PBXGroup;
+			children = (
+				C7D596361C66DC3A00161136 /* ChannelsQueryManager.h */,
+				C7D596371C66DC3A00161136 /* ChannelsQueryManager.m */,
+				A5337BBF1CCDD96E00551394 /* PostsQueryManager.h */,
+				A5337BC01CCDD96E00551394 /* PostsQueryManager.m */,
+			);
+			name = "Feed Query Managers";
+			sourceTree = "<group>";
+		};
+		A5337BC21CCDD97A00551394 /* Elements of post */ = {
+			isa = PBXGroup;
+			children = (
+				C7BF1AA31C57EFC000CEDE4B /* Post_BackendObject.h */,
+				C7BF1AA41C57EFC000CEDE4B /* Post_BackendObject.m */,
+				C7BF1AA61C57F5F500CEDE4B /* Photo_BackendObject.h */,
+				C7BF1AA71C57F5F500CEDE4B /* Photo_BackendObject.m */,
+				C7BF1AA91C57F60600CEDE4B /* Video_BackendObject.h */,
+				C7BF1AAA1C57F60600CEDE4B /* Video_BackendObject.m */,
+				C7BF1AAC1C57F61F00CEDE4B /* Page_BackendObject.h */,
+				C7BF1AAD1C57F61F00CEDE4B /* Page_BackendObject.m */,
+			);
+			name = "Elements of post";
+			sourceTree = "<group>";
+		};
+		A5337BC31CCDD99000551394 /* Social Network objects */ = {
+			isa = PBXGroup;
+			children = (
+				A56B5D1E1CA49B1E00A61D27 /* Post_Channel_RelationshipManager.h */,
+				A56B5D1F1CA49B1E00A61D27 /* Post_Channel_RelationshipManager.m */,
+				A56B5D211CA49D0E00A61D27 /* Like_BackendManager.h */,
+				A56B5D221CA49D0E00A61D27 /* Like_BackendManager.m */,
+				A56B5D271CA4D39400A61D27 /* Share_BackendManager.h */,
+				A56B5D281CA4D39400A61D27 /* Share_BackendManager.m */,
+				C7D596391C66E47100161136 /* Follow_BackendManager.h */,
+				C7D5963A1C66E47100161136 /* Follow_BackendManager.m */,
+			);
+			name = "Social Network objects";
+			sourceTree = "<group>";
+		};
+		A5337BC41CCDD9B800551394 /* User Info + channels */ = {
+			isa = PBXGroup;
+			children = (
+				A56B5D1B1CA49A8100A61D27 /* UserInfoCache.h */,
+				A56B5D1C1CA49A8100A61D27 /* UserInfoCache.m */,
+				C75F155D1C2B4A1B0092912D /* Channel.h */,
+				C75F155E1C2B4A1B0092912D /* Channel.m */,
+				C7BF1AB01C59D6BF00CEDE4B /* Channel_BackendObject.h */,
+				C7BF1AB11C59D6BF00CEDE4B /* Channel_BackendObject.m */,
+				A56B5D241CA4A24300A61D27 /* User_BackendObject.h */,
+				A56B5D251CA4A24300A61D27 /* User_BackendObject.m */,
+			);
+			name = "User Info + channels";
+			sourceTree = "<group>";
+		};
+		A5337BC51CCDD9FA00551394 /* Video Download Manager */ = {
+			isa = PBXGroup;
+			children = (
+				C7F3EBCA1C814313007D23DF /* VideoDownloadManager.h */,
+				C7F3EBCB1C814313007D23DF /* VideoDownloadManager.m */,
+			);
+			name = "Video Download Manager";
+			sourceTree = "<group>";
+		};
 		A560EF991BA88F8B003FB041 /* User App Preferences */ = {
 			isa = PBXGroup;
 			children = (
@@ -790,36 +855,10 @@
 		A560EF9A1BA89552003FB041 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				A56B5D1B1CA49A8100A61D27 /* UserInfoCache.h */,
-				A56B5D1C1CA49A8100A61D27 /* UserInfoCache.m */,
-				C75F155D1C2B4A1B0092912D /* Channel.h */,
-				C75F155E1C2B4A1B0092912D /* Channel.m */,
-				C7BF1AA31C57EFC000CEDE4B /* Post_BackendObject.h */,
-				C7BF1AA41C57EFC000CEDE4B /* Post_BackendObject.m */,
-				C7BF1AA61C57F5F500CEDE4B /* Photo_BackendObject.h */,
-				C7BF1AA71C57F5F500CEDE4B /* Photo_BackendObject.m */,
-				C7BF1AA91C57F60600CEDE4B /* Video_BackendObject.h */,
-				C7BF1AAA1C57F60600CEDE4B /* Video_BackendObject.m */,
-				C7BF1AAC1C57F61F00CEDE4B /* Page_BackendObject.h */,
-				C7BF1AAD1C57F61F00CEDE4B /* Page_BackendObject.m */,
-				C7BF1AB01C59D6BF00CEDE4B /* Channel_BackendObject.h */,
-				C7BF1AB11C59D6BF00CEDE4B /* Channel_BackendObject.m */,
-				A56B5D241CA4A24300A61D27 /* User_BackendObject.h */,
-				A56B5D251CA4A24300A61D27 /* User_BackendObject.m */,
-				A56B5D1E1CA49B1E00A61D27 /* Post_Channel_RelationshipManager.h */,
-				A56B5D1F1CA49B1E00A61D27 /* Post_Channel_RelationshipManager.m */,
-				A56B5D211CA49D0E00A61D27 /* Like_BackendManager.h */,
-				A56B5D221CA49D0E00A61D27 /* Like_BackendManager.m */,
-				A56B5D271CA4D39400A61D27 /* Share_BackendManager.h */,
-				A56B5D281CA4D39400A61D27 /* Share_BackendManager.m */,
-				C7D596391C66E47100161136 /* Follow_BackendManager.h */,
-				C7D5963A1C66E47100161136 /* Follow_BackendManager.m */,
-				C7D596361C66DC3A00161136 /* FeedQueryManager.h */,
-				C7D596371C66DC3A00161136 /* FeedQueryManager.m */,
-				C7F3EBC71C7D4D73007D23DF /* VideoPlayerItemManager.h */,
-				C7F3EBC81C7D4D73007D23DF /* VideoPlayerItemManager.m */,
-				C7F3EBCA1C814313007D23DF /* VideoDownloadManager.h */,
-				C7F3EBCB1C814313007D23DF /* VideoDownloadManager.m */,
+				A5337BC41CCDD9B800551394 /* User Info + channels */,
+				A5337BC31CCDD99000551394 /* Social Network objects */,
+				A5337BC21CCDD97A00551394 /* Elements of post */,
+				A5337BBE1CCDD95700551394 /* Feed Query Managers */,
 				A51E74561C898AEA00CF8DEA /* GTL Files */,
 			);
 			name = Model;
@@ -1425,6 +1464,7 @@
 				C75985F91B85577900FE77F7 /* Internet Connectivity Monitor */,
 				A5CB82A41B5744B800195A2E /* Categories and Effects */,
 				C750A35919D768BD0006FA88 /* Media Capture Classes */,
+				A5337BC51CCDD9FA00551394 /* Video Download Manager */,
 				A560EF9E1BA8DFCC003FB041 /* Page Type Analyzer */,
 				C78B682719CA6C0A003D0AC5 /* Custom Views */,
 				C78B682219CA6C01003D0AC5 /* MediaSelectTile.h */,
@@ -1804,6 +1844,7 @@
 				A51A52F61BD6B8AB0048E62A /* MediaDownloader.m in Sources */,
 				A5AA31C81B9FCDDC00D8D20C /* GTLVerbatmAppVerbatmUser.m in Sources */,
 				A5E85FA51B911DA900E148D0 /* GTMHTTPFetcherService.m in Sources */,
+				A5337BC11CCDD96E00551394 /* PostsQueryManager.m in Sources */,
 				C7E093EC1BF98BE200A3276A /* OpenCollectionView.m in Sources */,
 				A57A93051B55E835006C2597 /* VerbatmCameraView.m in Sources */,
 				C7BF1AAE1C57F61F00CEDE4B /* Page_BackendObject.m in Sources */,
@@ -1911,7 +1952,6 @@
 				A560EFB51BB0AF64003FB041 /* CreateAccountView.m in Sources */,
 				A5FB5D2D1BCB0B9700634A96 /* GMAlbumsViewController.m in Sources */,
 				C7F79E801C3AACC600319330 /* CreateNewChannelView.m in Sources */,
-				C7F3EBC91C7D4D73007D23DF /* VideoPlayerItemManager.m in Sources */,
 				A56B5D291CA4D39400A61D27 /* Share_BackendManager.m in Sources */,
 				A5E860011B96249900E148D0 /* PostPublisher.m in Sources */,
 				C7F22B381C3841AD00E56EA7 /* SelectSharingOption.m in Sources */,
@@ -1919,7 +1959,7 @@
 				A5E85FA11B911DA900E148D0 /* GTLFramework.m in Sources */,
 				A535E4FD1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m in Sources */,
 				A5FB5D3A1BCB0B9700634A96 /* GMImagePickerController.m in Sources */,
-				C7D596381C66DC3A00161136 /* FeedQueryManager.m in Sources */,
+				C7D596381C66DC3A00161136 /* ChannelsQueryManager.m in Sources */,
 				A5E85FAB1B911DA900E148D0 /* GTMMIMEDocument.m in Sources */,
 				A5E85F9D1B911DA900E148D0 /* GTLUploadParameters.m in Sources */,
 				A5AA31BD1B9FCDDC00D8D20C /* GTLVerbatmAppConstants.m in Sources */,

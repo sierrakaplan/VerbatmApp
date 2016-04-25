@@ -12,7 +12,7 @@
 #import <Parse/PFObject.h>
 
 
-@interface FeedQueryManager : NSObject
+@interface ChannelsQueryManager : NSObject
 
 #define POST_DOWNLOAD_MAX_SIZE 10.f
 #define CHANNEL_DOWNLOAD_MAX_SIZE 20.f
