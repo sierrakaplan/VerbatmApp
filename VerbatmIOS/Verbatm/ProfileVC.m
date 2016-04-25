@@ -77,13 +77,16 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
     [self getChannelsWithCompletionBlock:^{
         [self.customActivityIndicator stopCustomActivityIndicator];
         [self createNavigationBar];
-		[self selectChannel:self.startChannel];
+		[self addClearScreenGesture];
+		[self checkIntroNotification];
+
+		if (self.channels.count == 0) return;
+
+		[self selectChannel: self.startChannel];
 		if(self.isCurrentUserProfile) {
 			//We stop the video because we start in the feed
 			[self.postListVC stopAllVideoContent];
 		}
-		[self addClearScreenGesture];
-		[self checkIntroNotification];
 	}];
 	self.view.clipsToBounds = YES;
 }
