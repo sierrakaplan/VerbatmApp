@@ -224,21 +224,6 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
 #pragma mark - Profile Nav Bar Delegate Methods -
 
-//current user selected to follow a channel
--(void) followOptionSelected{
-
-}
-
-//current user wants to see their own followers
--(void) followersOptionSelected{
-	[self.delegate presentFollowersListMyID:nil];//to-do
-}
-
-//current user wants to see who they follow
--(void) followingOptionSelected {
-	[self.delegate presentWhoIFollowMyID:nil];//to-do
-}
-
 -(void) settingsButtonClicked {
 	[self performSegueWithIdentifier:SETTINGS_PAGE_MODAL_SEGUE sender:self];
 }

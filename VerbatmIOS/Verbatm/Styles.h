@@ -10,6 +10,7 @@
 #define Styles_h
 
 #define VERBATM_GOLD_COLOR [UIColor colorWithRed:1.0 green:0.85 blue:0.20 alpha:1.0]
+#define ORANGE_COLOR [UIColor colorWithRed:0.8 green:0.4 blue:0.01 alpha:1.0]
 
 #define DEFAULT_FONT @"Raleway-Regular"//@"Quicksand-Regular"
 #define BUTTON_FONT @"Raleway-Bold" //@"Quicksand-Bold"

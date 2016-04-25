@@ -158,15 +158,15 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 }
 
 -(void)reloadCurrentChannel {
-//	[self stopAllVideoContent];
-//    for(UIView * view in self.presentedPostList){
-//        [view removeFromSuperview];
-//    }
-//    [self.presentedPostList removeAllObjects];
-//    self.collectionView.contentOffset = CGPointMake(0, 0);
-//    self.isReloading = NO;
-//    self.shouldPlayVideos  = YES;
-//    self.lastVisibleCell = nil;
+	[self stopAllVideoContent];
+    for(UIView * view in self.presentedPostList){
+        [view removeFromSuperview];
+    }
+    [self.presentedPostList removeAllObjects];
+    self.collectionView.contentOffset = CGPointMake(0, 0);
+    self.isReloading = NO;
+    self.shouldPlayVideos  = YES;
+    self.lastVisibleCell = nil;
     [self refreshPosts];
 }
 

@@ -6,10 +6,9 @@
     <customFonts key="customFonts">
         <mutableArray key="Quicksand-Bold.otf">
             <string>Quicksand-Bold</string>
-            <string>Quicksand-Bold</string>
-            <string>Quicksand-Bold</string>
         </mutableArray>
         <mutableArray key="Quicksand-Regular.otf">
+            <string>Quicksand-Regular</string>
             <string>Quicksand-Regular</string>
             <string>Quicksand-Regular</string>
             <string>Quicksand-Regular</string>
@@ -107,7 +106,7 @@
         <!--Login-->
         <scene sceneID="gIN-uk-7gC">
             <objects>
-                <viewController title="Login" id="waF-h7-lpu" customClass="SignIn" sceneMemberID="viewController">
+                <viewController title="Login" id="waF-h7-lpu" customClass="SignInVC" sceneMemberID="viewController">
                     <view key="view" autoresizesSubviews="NO" contentMode="scaleToFill" id="ZWl-f6-r1u">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -117,34 +116,33 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="verbatm_logo" id="Iqv-b5-e4e">
-                                <rect key="frame" x="106" y="66" width="109" height="121"/>
+                                <rect key="frame" x="106" y="28" width="109" height="121"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="86e-CU-3ZO">
-                                <rect key="frame" x="40" y="353" width="240" height="34"/>
+                                <rect key="frame" x="40" y="142" width="240" height="34"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="Quicksand-Bold" family="Quicksand" pointSize="35"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="to mobile blogging." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ZaS-l4-AcK">
-                                <rect key="frame" x="16" y="395" width="289" height="36"/>
+                                <rect key="frame" x="16" y="184" width="289" height="36"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="Quicksand-Regular" family="Quicksand" pointSize="26"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="be anyone you want," textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="BTw-pB-XOe">
-                                <rect key="frame" x="-3" y="439" width="263" height="83"/>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Login with your phone number" textAlignment="center" minimumFontSize="24" id="EfJ-sF-ht6">
+                                <rect key="frame" x="20" y="388" width="280" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="Quicksand-Bold" family="Quicksand" pointSize="20"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="make anything you want." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="pk3-Gr-fMr">
-                                <rect key="frame" x="60" y="465" width="263" height="83"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="or" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="7dv-hM-JUO">
+                                <rect key="frame" x="16" y="328" width="289" height="36"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="Quicksand-Bold" family="Quicksand" pointSize="20"/>
+                                <fontDescription key="fontDescription" name="Quicksand-Regular" family="Quicksand" pointSize="26"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -154,18 +152,72 @@
                     <connections>
                         <outlet property="backgroundImageView" destination="GKm-Mk-qgk" id="Nlf-Rk-NnE"/>
                         <outlet property="mobileBloggingLabel" destination="ZaS-l4-AcK" id="3e8-SA-sjk"/>
-                        <outlet property="mottoLabel1" destination="BTw-pB-XOe" id="O2I-wY-QgN"/>
-                        <outlet property="mottoLabel2" destination="pk3-Gr-fMr" id="3z1-bc-2UP"/>
+                        <outlet property="orLabel" destination="7dv-hM-JUO" id="UNB-Sk-sdk"/>
+                        <outlet property="phoneLoginField" destination="EfJ-sF-ht6" id="Qlf-hp-WDd"/>
                         <outlet property="verbatmLogoImageView" destination="Iqv-b5-e4e" id="Cgi-Cr-ost"/>
                         <outlet property="welcomeLabel" destination="86e-CU-3ZO" id="iD1-Hf-dBS"/>
                         <segue destination="sxR-fz-pfS" kind="unwind" identifier="unwind_to_master_vc_from_login" unwindAction="unwindToMasterNavVC:" id="SyP-B6-Kbt"/>
                         <segue destination="F9Z-t1-GN6" kind="modal" identifier="Accept_Terms_And_Conditions_Segue" id="FiA-Do-sEN"/>
+                        <segue destination="j4J-ow-fLD" kind="modal" identifier="segue_id_user_info" id="YbL-3h-FMN"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jhx-H8-RPm" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="sxR-fz-pfS" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="-3321" y="-2091"/>
+        </scene>
+        <!--User InfoVC-->
+        <scene sceneID="FQa-sz-QTB">
+            <objects>
+                <viewController id="j4J-ow-fLD" customClass="UserInfoVC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ZgH-Av-2Yf">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background_sign_in" id="88C-9H-sIB">
+                                <rect key="frame" x="-1" y="0.0" width="320" height="568"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Please create a password" textAlignment="natural" minimumFontSize="17" id="OH8-1q-k4l">
+                                <rect key="frame" x="38" y="269" width="243" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter a name" textAlignment="natural" minimumFontSize="17" id="tBv-Ww-b8y">
+                                <rect key="frame" x="38" y="202" width="243" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="verbatm_logo" id="o5g-CT-D62">
+                                <rect key="frame" x="105" y="20" width="109" height="121"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="XYO-VI-dOW">
+                                <rect key="frame" x="38" y="349" width="243" height="43"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <state key="normal" title="Log In">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <outlet property="backgroundImageView" destination="88C-9H-sIB" id="xgR-cC-NGv"/>
+                        <outlet property="logInButton" destination="XYO-VI-dOW" id="6g1-ww-Voa"/>
+                        <outlet property="logoImageView" destination="o5g-CT-D62" id="x1A-Fg-hRx"/>
+                        <outlet property="nameTextField" destination="tBv-Ww-b8y" id="hGE-DT-r4g"/>
+                        <outlet property="passwordTextField" destination="OH8-1q-k4l" id="lsk-4m-GRV"/>
+                        <segue destination="edp-CX-D8g" kind="unwind" identifier="unwind_to_master_from_settings" unwindAction="unwindToSignIn:" id="ZRk-dt-5UC"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Mgp-4x-GfN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="edp-CX-D8g" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="-2933" y="-2050"/>
         </scene>
         <!--SettingsVC-->
         <scene sceneID="3ai-B6-NpV">

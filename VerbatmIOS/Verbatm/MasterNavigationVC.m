@@ -38,7 +38,7 @@
 
 
 @interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate,
-								ProfileVCDelegate, UserAndChannelListsTVCDelegate>
+								ProfileVCDelegate>
 
 #pragma mark - Tab Bar Controller -
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
@@ -288,8 +288,7 @@
 
 //catches the unwind segue from login / create account or adk
 - (IBAction) unwindToMasterNavVC: (UIStoryboardSegue *)segue {
-	if ([segue.identifier  isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]) {
-	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER]) {
+	if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER]) {
 		//todo: figure out how to free memory
 //		[self.profileVC addPostListVC];
 //		[self.feedVC addPostListVC];
@@ -326,28 +325,6 @@
 	}
 }
 
-//show the list of followers of the current user
--(void)presentFollowersListMyID:(id) userID {
-    UserAndChannelListsTVC * newList = [[UserAndChannelListsTVC alloc] init];
-    [newList presentChannelsForUser:userID shouldDisplayFollowers:YES];
-    newList.listDelegate = self;
-    
-    [self presentViewController:newList animated:YES completion:^{
-    }];
-}
-
-//show list of people the user follows
--(void)presentWhoIFollowMyID:(id) userID {
-    
-    UserAndChannelListsTVC * newList = [[UserAndChannelListsTVC alloc] init];
-    [newList presentWhoIsFollowedBy:userID];
-    newList.listDelegate = self;
-    
-    [self presentViewController:newList animated:YES completion:^{
-        
-    }];
-}
-
 //show the channels the current user can select to follow
 -(void)presentChannelsToFollow{
     //[self presentShareSelectionViewStartOnChannels:YES];
@@ -355,30 +332,6 @@
 
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController{
     
-}
-
-
-#pragma mark - Delegate for channel list view -
-
--(void)openChannel:(Channel *) channel {
-	//todo:
-}
-
--(void)selectedUser:(id)userId {
-	//todo:
-}
-
-//either you specify a start channel or you send in nil which goes to default
--(void)presentUserProfileWithChannel:(Channel *) specificChannel {
-    if (specificChannel) {
-		//todo:
-    } else {
-        
-    }
-}
-
--(void)channelSelectedToPresent:(Channel *) channel{
-	//todo
 }
 
 #pragma mark - Memory Warning -

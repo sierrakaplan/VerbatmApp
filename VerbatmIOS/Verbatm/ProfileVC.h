@@ -17,11 +17,6 @@
 
 -(void) showTabBar: (BOOL) show;
 
--(void)presentWhoIFollowMyID:(id) userID ;//show list of people the user follows
--(void)presentFollowersListMyID:(id) userID ;//show the list of people who follow me
--(void)presentChannelsToFollow;//show the channels the current user can select
--(void)channelSelectedToPresent:(Channel *) channel;
-
 @end
 
 @interface ProfileVC : UIViewController

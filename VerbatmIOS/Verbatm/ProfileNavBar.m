@@ -30,12 +30,10 @@
 
 #import "User_BackendObject.h"
 
-@interface ProfileNavBar () <CustomScrollingTabBarDelegate, ProfileInformationBarProtocol, FollowInfoBarDelegate>
+@interface ProfileNavBar () <CustomScrollingTabBarDelegate, ProfileInformationBarProtocol>
 
 @property (nonatomic, strong) ProfileInformationBar * profileHeader;
 @property (nonatomic, strong) CustomScrollingTabBar* threadNavScrollView;
-
-@property (nonatomic) FollowInfoBar * followInfoBar;
 
 @property (nonatomic, strong) UIView * arrowExtension;
 
@@ -96,142 +94,6 @@
     }
 }
 
--(void)createFollowersInfoViewWithUser:(PFUser *) profileUser andStartChannel: (Channel *) startChannel {
-
-    self.followersInfoFrameClosed = CGRectMake(0.f, self.threadNavScrollView.frame.origin.y +
-                                      self.threadNavScrollView.frame.size.height,
-                                      self.frame.size.width, 0);
-    self.followersInfoFrameOpen = CGRectMake(0.f, self.threadNavScrollView.frame.origin.y +
-                                                self.threadNavScrollView.frame.size.height,
-                                                self.frame.size.width, USER_CELL_VIEW_HEIGHT);
-
-    self.followInfoBar = [[FollowInfoBar alloc] initWithFrame:self.followersInfoFrameClosed];
-    self.followInfoBar.delegate = self;
-    [self addSubview:self.followInfoBar];
-    [self createArrowExtesion];
-    [self createPanGesture];
-    [self createTapGesture];
-}
-
--(void)createTapGesture{
-    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(userDidTap:)];
-    [self addGestureRecognizer:tapGesture];
-}
-
--(void)createPanGesture{
-    UIPanGestureRecognizer * panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(userDidPan:)];
-    panGesture.maximumNumberOfTouches = 1;//for one finger panning
-    [self addGestureRecognizer:panGesture];
-}
-
--(void)userDidTap:(UIPanGestureRecognizer *) pan{
-    if(self.followInfoBar.frame.size.height == self.followersInfoFrameOpen.size.height){
-        //the bar is greater than halfway open
-        [self snapViewDown:NO];
-    }else{
-        [self snapViewDown:YES];
-    }
-}
-
--(void)userDidPan:(UIPanGestureRecognizer *) pan{
-    
-    if(pan.state == UIGestureRecognizerStateBegan){
-        if(pan.numberOfTouches != 1) return;
-        self.panLastLocation = [pan locationOfTouch:0 inView:self];
-    } else if (pan.state == UIGestureRecognizerStateChanged){
-        if(pan.numberOfTouches != 1) return;
-        CGPoint currentPoint = [pan locationOfTouch:0 inView:self];
-        CGFloat diff = currentPoint.y - self.panLastLocation.y;
-        self.panLastLocation = currentPoint;
-        CGFloat newFollowerFrameHeight = self.followInfoBar.frame.size.height + diff;
-        
-        if(newFollowerFrameHeight >= 0) {
-            if (newFollowerFrameHeight >= self.followersInfoFrameOpen.size.height) {
-                self.followInfoBar.frame = self.followersInfoFrameOpen;
-            } else {
-
-                CGRect followInfoBarFrame = CGRectMake(self.followInfoBar.frame.origin.x,
-                                                  self.followInfoBar.frame.origin.y,
-                                                  self.followInfoBar.frame.size.width,
-                                                  newFollowerFrameHeight);
-
-                self.followInfoBar.frame = followInfoBarFrame;
-                
-            }
-            
-            CGRect arrowBarFrame = CGRectMake(self.arrowExtension.frame.origin.x,
-                                              self.followInfoBar.frame.origin.y +
-                                              self.followInfoBar.frame.size.height,
-                                              self.arrowExtension.frame.size.width,
-                                              self.arrowExtension.frame.size.height);
-            self.arrowExtension.frame = arrowBarFrame;
-            [self adjustOurOwnFrame];
-        }
-    } else {
-        if (self.followInfoBar.frame.size.height >= self.followersInfoFrameOpen.size.height/2.f) {
-            //the bar is greater than halfway open
-            [self snapViewDown:YES];
-        } else{
-            [self snapViewDown:NO];
-        }
-    }
-}
-
--(void)snapViewDown:(BOOL) down{
-    if (down){
-        [UIView animateWithDuration:SNAP_ANIMATION_DURATION animations:^{
-            self.followInfoBar.frame = self.followersInfoFrameOpen;
-            CGRect arrowBarFrame = CGRectMake(self.arrowExtension.frame.origin.x,
-                                              self.followInfoBar.frame.origin.y +
-                                              self.followInfoBar.frame.size.height,
-                                              self.arrowExtension.frame.size.width,
-                                              self.arrowExtension.frame.size.height);
-            self.arrowExtension.frame = arrowBarFrame;
-            [self adjustOurOwnFrame];
-        }];
-    } else{
-        [UIView animateWithDuration:SNAP_ANIMATION_DURATION animations:^{
-            self.followInfoBar.frame = self.followersInfoFrameClosed;
-            CGRect arrowBarFrame = CGRectMake(self.arrowExtension.frame.origin.x,
-                                              self.followInfoBar.frame.origin.y +
-                                              self.followInfoBar.frame.size.height,
-                                              self.arrowExtension.frame.size.width,
-                                              self.arrowExtension.frame.size.height);
-            self.arrowExtension.frame = arrowBarFrame;
-            [self adjustOurOwnFrame];
-        }];
-    }
-}
-
--(void)adjustOurOwnFrame{
-    CGRect selfFrame = CGRectMake(self.frame.origin.x,
-                                  self.frame.origin.y,
-                                  self.frame.size.width,
-                                  self.arrowExtension.frame.origin.y +
-                                  self.arrowExtension.frame.size.height);
-    
-    self.frame = selfFrame;
-}
-
-
--(void)createArrowExtesion{
-    CGRect arrowBarFrame = CGRectMake(0.f, self.followInfoBar.frame.origin.y +
-                                      self.followInfoBar.frame.size.height,
-                                      self.frame.size.width, ARROW_EXTENSION_BAR_HEIGHT);
-    
-    UIColor * arrowBarBackgroundColor = CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED;
-    self.arrowExtension = [[UIView alloc] initWithFrame:arrowBarFrame];
-    [self.arrowExtension setBackgroundColor:arrowBarBackgroundColor];
-    
-    CGRect arrowFrame = CGRectMake(self.frame.size.width/2.f - (ARROW_FRAME_WIDTH/2), ARROW_IMAGE_WALL_OFFSET, ARROW_FRAME_WIDTH, ARROW_FRAME_HEIGHT - (ARROW_IMAGE_WALL_OFFSET*2));
-    UIImage * arrowImage = [UIImage imageNamed:DOWN_ARROW_ICON];
-    
-    UIImageView * arrowView = [[UIImageView alloc] initWithImage:arrowImage];
-    [arrowView setFrame:arrowFrame];
-    [self.arrowExtension addSubview:arrowView];
-    [self addSubview:self.arrowExtension];
-}
-
 -(void) createProfileHeaderWithUserName: (NSString*) userName isCurrentUser:(BOOL) isCurrentUser
 							  isBlocked: (BOOL) blocked isProfileTab: (BOOL) profileTab {
     CGRect barFrame = CGRectMake(0.f, 0.f, self.bounds.size.width, PROFILE_HEADER_HEIGHT);
@@ -262,31 +124,13 @@
 -(void)followButtonSelectedShouldFollowUser:(BOOL) followUser {
     if(followUser)[Follow_BackendManager currentUserFollowChannel:self.threadNavScrollView.currentChannel];
 	else [Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel:self.threadNavScrollView.currentChannel];
-    //[self.delegate followOptionSelected];
 }
 
 
 #pragma mark -Follow Infor Bar Delegate-
 
-//present the people that follow the current user and the specific channels
--(void)showWhoIsFollowingMeSelected {
-    [self.delegate followersOptionSelected];
-}
-
-//show the people that I am following
--(void)showWhoIAmFollowingButtonSelected {
-    [self.delegate followingOptionSelected];
-}
-
 -(void) selectChannel: (Channel*) channel {
 	[self.threadNavScrollView selectChannel: channel];
-	[self updateFollowersLabel: channel];
-}
-
--(void) updateFollowersLabel: (Channel*) channel {
-	[Follow_BackendManager numberUsersFollowingChannel:channel withCompletionBlock:^(NSNumber *numFollowers) {
-		[self.followInfoBar setNumFollowers: numFollowers];
-	}];
 }
 
 #pragma mark - CustomScrollingTabBarDelegate methods -

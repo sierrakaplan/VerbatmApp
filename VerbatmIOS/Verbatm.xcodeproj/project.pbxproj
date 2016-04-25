@@ -13,6 +13,8 @@
 		A51A52F61BD6B8AB0048E62A /* MediaDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = A51A52F51BD6B8AB0048E62A /* MediaDownloader.m */; };
 		A51E74641C898C4E00CF8DEA /* PostInProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = A51E74631C898C4E00CF8DEA /* PostInProgress.m */; };
 		A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */ = {isa = PBXBuildFile; fileRef = A52919751B5DD24F00233712 /* UIView+Glow.m */; };
+		A5337BBA1CCD60CF00551394 /* LoginKeyboardToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A5337BB91CCD60CF00551394 /* LoginKeyboardToolBar.m */; };
+		A5337BBD1CCD99D600551394 /* UserInfoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5337BBC1CCD99D600551394 /* UserInfoVC.m */; };
 		A535E4FD1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m in Sources */ = {isa = PBXBuildFile; fileRef = A535E4FC1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m */; };
 		A535E5001BC4459800A087D1 /* UIView+Effects.m in Sources */ = {isa = PBXBuildFile; fileRef = A535E4FF1BC4459800A087D1 /* UIView+Effects.m */; };
 		A535E5031BC44B6900A087D1 /* UITextView+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A535E5021BC44B6900A087D1 /* UITextView+Utilities.m */; };
@@ -235,7 +237,7 @@
 		C7F22B311C38408E00E56EA7 /* SharePostView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F22B301C38408E00E56EA7 /* SharePostView.m */; };
 		C7F22B381C3841AD00E56EA7 /* SelectSharingOption.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F22B371C3841AD00E56EA7 /* SelectSharingOption.m */; };
 		C7F22B3B1C38B2A600E56EA7 /* SelectOptionButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F22B3A1C38B2A600E56EA7 /* SelectOptionButton.m */; };
-		C7F3D46B1A4F84C000B43238 /* SignIn.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46A1A4F84C000B43238 /* SignIn.m */; };
+		C7F3D46B1A4F84C000B43238 /* SignInVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46A1A4F84C000B43238 /* SignInVC.m */; };
 		C7F3EBC91C7D4D73007D23DF /* VideoPlayerItemManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3EBC81C7D4D73007D23DF /* VideoPlayerItemManager.m */; };
 		C7F3EBCC1C814313007D23DF /* VideoDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3EBCB1C814313007D23DF /* VideoDownloadManager.m */; };
 		C7F3EBCE1C859B8C007D23DF /* libbz2.1.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C7F3EBCD1C859B8C007D23DF /* libbz2.1.0.tbd */; };
@@ -289,6 +291,10 @@
 		A52919731B5DA4C800233712 /* StringsAndAppConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StringsAndAppConstants.h; sourceTree = "<group>"; };
 		A52919741B5DD24F00233712 /* UIView+Glow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Glow.h"; sourceTree = "<group>"; };
 		A52919751B5DD24F00233712 /* UIView+Glow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Glow.m"; sourceTree = "<group>"; };
+		A5337BB81CCD60CF00551394 /* LoginKeyboardToolBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginKeyboardToolBar.h; sourceTree = "<group>"; };
+		A5337BB91CCD60CF00551394 /* LoginKeyboardToolBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginKeyboardToolBar.m; sourceTree = "<group>"; };
+		A5337BBB1CCD99D600551394 /* UserInfoVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfoVC.h; sourceTree = "<group>"; };
+		A5337BBC1CCD99D600551394 /* UserInfoVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfoVC.m; sourceTree = "<group>"; };
 		A535E4FB1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffectsAndTransforms.h"; sourceTree = "<group>"; };
 		A535E4FC1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffectsAndTransforms.m"; sourceTree = "<group>"; };
 		A535E4FE1BC4459800A087D1 /* UIView+Effects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Effects.h"; sourceTree = "<group>"; };
@@ -643,8 +649,8 @@
 		C7F22B371C3841AD00E56EA7 /* SelectSharingOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectSharingOption.m; sourceTree = "<group>"; };
 		C7F22B391C38B2A600E56EA7 /* SelectOptionButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectOptionButton.h; sourceTree = "<group>"; };
 		C7F22B3A1C38B2A600E56EA7 /* SelectOptionButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectOptionButton.m; sourceTree = "<group>"; };
-		C7F3D4691A4F84C000B43238 /* SignIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignIn.h; sourceTree = "<group>"; };
-		C7F3D46A1A4F84C000B43238 /* SignIn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignIn.m; sourceTree = "<group>"; };
+		C7F3D4691A4F84C000B43238 /* SignInVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignInVC.h; sourceTree = "<group>"; };
+		C7F3D46A1A4F84C000B43238 /* SignInVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignInVC.m; sourceTree = "<group>"; };
 		C7F3EBC71C7D4D73007D23DF /* VideoPlayerItemManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlayerItemManager.h; sourceTree = "<group>"; };
 		C7F3EBC81C7D4D73007D23DF /* VideoPlayerItemManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayerItemManager.m; sourceTree = "<group>"; };
 		C7F3EBCA1C814313007D23DF /* VideoDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoDownloadManager.h; sourceTree = "<group>"; };
@@ -759,6 +765,17 @@
 			name = "GTL Files";
 			sourceTree = "<group>";
 		};
+		A5337BB71CCD60AA00551394 /* Keyboard tool bars */ = {
+			isa = PBXGroup;
+			children = (
+				A56F68701B643B1400CE5744 /* VerbatmKeyboardToolBar.h */,
+				A56F68711B643B1400CE5744 /* VerbatmKeyboardToolBar.m */,
+				A5337BB81CCD60CF00551394 /* LoginKeyboardToolBar.h */,
+				A5337BB91CCD60CF00551394 /* LoginKeyboardToolBar.m */,
+			);
+			name = "Keyboard tool bars";
+			sourceTree = "<group>";
+		};
 		A560EF991BA88F8B003FB041 /* User App Preferences */ = {
 			isa = PBXGroup;
 			children = (
@@ -820,8 +837,10 @@
 		A560EFAF1BB09AF8003FB041 /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				C7F3D4691A4F84C000B43238 /* SignIn.h */,
-				C7F3D46A1A4F84C000B43238 /* SignIn.m */,
+				C7F3D4691A4F84C000B43238 /* SignInVC.h */,
+				C7F3D46A1A4F84C000B43238 /* SignInVC.m */,
+				A5337BBB1CCD99D600551394 /* UserInfoVC.h */,
+				A5337BBC1CCD99D600551394 /* UserInfoVC.m */,
 			);
 			name = Login;
 			sourceTree = "<group>";
@@ -862,8 +881,6 @@
 			children = (
 				A5446C941BBA3C33002177F4 /* CustomNavigationBar.h */,
 				A5446C951BBA3C33002177F4 /* CustomNavigationBar.m */,
-				A56F68701B643B1400CE5744 /* VerbatmKeyboardToolBar.h */,
-				A56F68711B643B1400CE5744 /* VerbatmKeyboardToolBar.m */,
 				C77A20911C03E39E00356465 /* ProfileNavBar.h */,
 				C77A20921C03E39E00356465 /* ProfileNavBar.m */,
 				A5934B991C10E2A3007C7830 /* CustomScrollingTabBar.h */,
@@ -1321,6 +1338,7 @@
 		C78B682719CA6C0A003D0AC5 /* Custom Views */ = {
 			isa = PBXGroup;
 			children = (
+				A5337BB71CCD60AA00551394 /* Keyboard tool bars */,
 				A560EFB21BB0AF42003FB041 /* Login */,
 				A56F68761B643D4B00CE5744 /* Video Player */,
 				F26894441A43641C00B1D4DB /* Page Viewing Experiences */,
@@ -1819,7 +1837,7 @@
 				C7E65F691B9245200042AD99 /* ProfileVC.m in Sources */,
 				C7E2C88F1BB7E97600D83668 /* UtilityFunctions.m in Sources */,
 				A5934C171C11EFBD007C7830 /* CustomTabBarController.m in Sources */,
-				C7F3D46B1A4F84C000B43238 /* SignIn.m in Sources */,
+				C7F3D46B1A4F84C000B43238 /* SignInVC.m in Sources */,
 				A5E85FAA1B911DA900E148D0 /* GTMGatherInputStream.m in Sources */,
 				C7BF1AB21C59D6BF00CEDE4B /* Channel_BackendObject.m in Sources */,
 				A535E5091BC45CC600A087D1 /* AVAsset+Utilities.m in Sources */,
@@ -1834,6 +1852,7 @@
 				C7F22B311C38408E00E56EA7 /* SharePostView.m in Sources */,
 				A56B5D1D1CA49A8100A61D27 /* UserInfoCache.m in Sources */,
 				A5E85FA61B911DA900E148D0 /* GTMHTTPFetcher.m in Sources */,
+				A5337BBA1CCD60CF00551394 /* LoginKeyboardToolBar.m in Sources */,
 				C7EF5BB61B0CD5E500E7915B /* MasterNavigationVC.m in Sources */,
 				A5E85F981B911DA900E148D0 /* GTLObject.m in Sources */,
 				A51E74641C898C4E00CF8DEA /* PostInProgress.m in Sources */,
@@ -1858,6 +1877,7 @@
 				A55A59E21BB5EB7300C7CE7A /* UserManager.m in Sources */,
 				C716E9D21BD6C338001B769D /* Analytics.m in Sources */,
 				C7D5963B1C66E47100161136 /* Follow_BackendManager.m in Sources */,
+				A5337BBD1CCD99D600551394 /* UserInfoVC.m in Sources */,
 				A5E85FAF1B911DA900E148D0 /* GTMOAuth2ViewControllerTouch.m in Sources */,
 				C7F3EBCC1C814313007D23DF /* VideoDownloadManager.m in Sources */,
 				A5C38ACA1CC1D1B80067D077 /* ExploreChannelCellView.m in Sources */,
