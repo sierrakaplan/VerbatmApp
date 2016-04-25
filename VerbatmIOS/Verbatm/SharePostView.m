@@ -270,7 +270,7 @@
 	self.facebookCommentTextField.backgroundColor = [UIColor blackColor];
 	self.facebookCommentTextField.textColor = [UIColor whiteColor];
 	UIColor * color = [UIColor whiteColor];
-	self.facebookCommentTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString: @"Add a comment..." attributes:@{NSForegroundColorAttributeName: color}];
+	self.facebookCommentTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString: @"Add a caption..." attributes:@{NSForegroundColorAttributeName: color}];
 	self.facebookCommentTextField.returnKeyType = UIReturnKeyDone;
 	[self addSubview:self.facebookCommentTextField];
 	[self.facebookCommentTextField becomeFirstResponder];
