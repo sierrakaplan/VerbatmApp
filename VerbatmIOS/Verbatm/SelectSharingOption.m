@@ -41,21 +41,21 @@
 
     //Facebook BAR -- center
     CGRect fb_barFrame = CGRectMake(0.f, self.frame.size.height/2.f -
-                                    (BAR_HEIGHT/2.f), self.frame.size.width/2, BAR_HEIGHT/2);
+                                    (BAR_HEIGHT/2.f), self.frame.size.width, BAR_HEIGHT/2);
     UIView * facebookBar = [self createBarWithFrame:fb_barFrame logo:[UIImage imageNamed:FACEBOOK_LOGO] andTitle:@"Facebook"];
     [self addSubview:facebookBar];
 
 	//VERBATM BAR -- top
 	CGFloat  remainingTopHeight = fb_barFrame.origin.y;
 	CGRect barFrame = CGRectMake(0.f, (remainingTopHeight/2.f) -
-								 (BAR_HEIGHT/2.f), self.frame.size.width/2, BAR_HEIGHT/2);
+								 (BAR_HEIGHT/6), self.frame.size.width, BAR_HEIGHT/2);
 	UIView * verbatmBar = [self createBarWithFrame:barFrame logo:[UIImage imageNamed:VERBATM_LOGO] andTitle:@"Verbatm"];
 	[self addSubview:verbatmBar];
     
     //Twitter BAR -- bottom
     CGRect tw_barFrame = CGRectMake(0.f, facebookBar.frame.origin.y +
                                     facebookBar.frame.size.height +
-                                    (remainingTopHeight/2.f) - (BAR_HEIGHT/2.f), self.frame.size.width/2, BAR_HEIGHT/2);
+                                    (remainingTopHeight/2.f) - (BAR_HEIGHT/2.f), self.frame.size.width, BAR_HEIGHT/2);
     UIView * twitterBar = [self createBarWithFrame:tw_barFrame logo:[UIImage imageNamed:TWITTER_LOGO] andTitle:@"Twitter"];
     [self addSubview:twitterBar];
 }
@@ -79,7 +79,7 @@
 //    [nameLabel setTextColor:[UIColor whiteColor]];
     
     
-    CGRect buttonFrame = CGRectMake(frame.size.width * 1.67,
+    CGRect buttonFrame = CGRectMake(frame.size.width - WALL_OFFSET_X *2,
                                     (imageHeight/2.f) - (SELECTION_BUTTON_WIDTH/2.f),
                                     SELECTION_BUTTON_WIDTH, SELECTION_BUTTON_WIDTH);
     

@@ -127,22 +127,22 @@
 		cancelButtonFrame = CGRectMake(0.f, 0.f, self.frame.size.width, SHARE_BUTTON_HEIGHT);
 	}else{
 		//we add the -2.f so that the right/left border lines aren't visible
-		CGRect reportButtonFrame = CGRectMake(-2.f, 0.f, (self.frame.size.width/2.f) + 2.f, SHARE_BUTTON_HEIGHT);
-
-		cancelButtonFrame = CGRectMake((self.frame.size.width/2.f), 0.f, (self.frame.size.width/2.f)+ 2.f, SHARE_BUTTON_HEIGHT);
-
-
-		self.reportButton =  [[UIButton alloc] initWithFrame:reportButtonFrame];
-		[self.reportButton  setTitle:@"REPORT" forState:UIControlStateNormal];
-		self.reportButton .backgroundColor = [UIColor clearColor];
-
-		self.reportButton .layer.cornerRadius = 1.f;
-		self.reportButton .layer.borderWidth = 1.f;
-		self.reportButton .layer.borderColor = [UIColor whiteColor].CGColor;
-
-		[self.reportButton addTarget:self action:@selector(reportButtonSelected) forControlEvents:UIControlEventTouchUpInside];
-
-		[self addSubview:self.reportButton];
+//		CGRect reportButtonFrame = CGRectMake(-2.f, 0.f, (self.frame.size.width/2.f) + 2.f, SHARE_BUTTON_HEIGHT);
+//
+		cancelButtonFrame = CGRectMake(0.f, 0.f, self.frame.size.width, SHARE_BUTTON_HEIGHT);
+//
+//
+//		self.reportButton =  [[UIButton alloc] initWithFrame:reportButtonFrame];
+//		[self.reportButton  setTitle:@"REPORT" forState:UIControlStateNormal];
+//		self.reportButton .backgroundColor = [UIColor clearColor];
+//
+//		self.reportButton .layer.cornerRadius = 1.f;
+//		self.reportButton .layer.borderWidth = 1.f;
+//		self.reportButton .layer.borderColor = [UIColor whiteColor].CGColor;
+//
+//		[self.reportButton addTarget:self action:@selector(reportButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+//
+//		[self addSubview:self.reportButton];
 	}
 
 
@@ -154,13 +154,13 @@
 	self.cancelButton .layer.cornerRadius = 1.f;
 	self.cancelButton .layer.borderWidth = 1.f;
 	self.cancelButton .layer.borderColor = [UIColor whiteColor].CGColor;
-	[self.cancelButton addTarget:self action:@selector(cancelButtonSelcted) forControlEvents:UIControlEventTouchUpInside];
+	[self.cancelButton addTarget:self action:@selector(cancelButtonSelected) forControlEvents:UIControlEventTouchUpInside];
 	[self addSubview:self.cancelButton];
 
 
 }
 
--(void)cancelButtonSelcted {
+-(void)cancelButtonSelected {
 	[self.delegate cancelButtonSelected];
 }
 
