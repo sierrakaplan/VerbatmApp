@@ -12,12 +12,16 @@
 
 @interface PostCollectionViewCell : UICollectionViewCell
 
--(void)presentPostView:(PostView *)postView;
--(void)onScreen;
--(void)offScreen;
-
-@property (nonatomic) BOOL isHomeProfileOrFeed;//profile of the current logged in user
 @property (nonatomic, readonly) PostView *currentPostView;
+
+-(void) presentPostFromPCActivityObj: (PFObject *) pfActivityObj andChannel:(Channel*) channelForList
+					withDeleteButton: (BOOL) withDelete;
+
+-(void) shiftLikeShareBarDown:(BOOL) down;
+
+-(void) almostOnScreen;
+-(void) onScreen;
+-(void) offScreen;
 
 
 @end

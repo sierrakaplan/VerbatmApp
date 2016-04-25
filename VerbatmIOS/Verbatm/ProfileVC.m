@@ -368,7 +368,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 			[self.profileNavBar setFrame: self.profileNavBarFrameOnScreen];
 		}];
 		[self.delegate showTabBar:YES];
-		if(self.isCurrentUserProfile) [self.postListVC footerShowing:YES];
+		if(self.isProfileTab) [self.postListVC footerShowing:YES];
 
 	} else {
 		self.profileNavBarOnScreen = NO;

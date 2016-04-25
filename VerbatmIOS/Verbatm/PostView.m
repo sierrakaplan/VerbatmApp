@@ -44,7 +44,7 @@
 @interface PostView ()<UIScrollViewDelegate, PhotoPVEDelegate,
 PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
-@property (nonatomic) CreatorAndChannelBar * creatorAndChannelBar;
+@property (nonatomic) CreatorAndChannelBar *creatorAndChannelBar;
 
 // mapping between NSNumber of type Integer and Page Views
 @property (strong, nonatomic) NSMutableDictionary * pageViews;
@@ -79,14 +79,10 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 @property (strong, nonatomic) PageViewingExperience *currentPage;
 
-//@property (nonatomic) UIImageView * swipeInstructionView
-
 @property (nonatomic) UIView * PagingLine;//line that moves up and down as the user swipes up and down
 
 @property (nonatomic) UIImageView * pageUpIndicator;
 @property (nonatomic) BOOL pageUpIndicatorDisplayed;
-
-@property (nonatomic) NSMutableArray * mediaPageContent;//TODO
 
 @property(nonatomic) BOOL postIsCurrentlyBeingShown;
 @property(nonatomic) BOOL postMuted;
@@ -586,9 +582,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	self.mainScrollView.scrollEnabled = YES;
 }
 
--(void) viewTapped {
-
-}
+-(void) viewTapped {}
 
 -(void)setApproprioateScrollViewContentSize{
 	self.mainScrollView.contentSize = CGSizeMake(0, self.pageViews.count * self.frame.size.height);

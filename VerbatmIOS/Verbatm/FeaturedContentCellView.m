@@ -12,6 +12,7 @@
 #import "ParseBackendKeys.h"
 #import "Page_BackendObject.h"
 #import "Post_BackendObject.h"
+#import "PostsQueryManager.h"
 
 @interface FeaturedContentCellView() <UIScrollViewDelegate, FeaturedChannelViewDelegate>
 
@@ -54,7 +55,7 @@
 	self.alreadyPresented = YES;
 	__block CGFloat xCoordinate = CHANNEL_VIEW_OFFSET;
 	for (Channel *channel in channels) {
-		[Post_BackendObject getPostsInChannel:channel withLimit:1 withCompletionBlock:^(NSArray *postChannelActivityObjects) {
+		[PostsQueryManager getPostsInChannel:channel withLimit:1 withCompletionBlock:^(NSArray *postChannelActivityObjects) {
 			if (postChannelActivityObjects.count < 1) return;
 			PFObject *postChannelActivityObj = postChannelActivityObjects[0];
 			PFObject *post = [postChannelActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];

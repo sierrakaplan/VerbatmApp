@@ -73,7 +73,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 + (AnyPromise*) loadCachedPhotoDataFromURL: (NSURL*) url {
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		NSURLRequest* request = [NSURLRequest requestWithURL:url
-												 cachePolicy: NSURLRequestReturnCacheDataElseLoad
+												 cachePolicy: NSURLRequestReloadIgnoringCacheData
 											 timeoutInterval:300];
 		NSURLSessionDataTask *task = [[NSURLSession sharedSession]
 									  dataTaskWithRequest:request
@@ -84,6 +84,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 										  } else {
 											  //NSLog(@"Successfully retrieved data from url");
 											  resolve(data);
+//											  [[NSURLCache sharedURLCache] removeAllCachedResponses];
 										  }
 		}];
 		[task resume];

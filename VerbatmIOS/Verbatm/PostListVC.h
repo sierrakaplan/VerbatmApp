@@ -38,7 +38,7 @@ typedef enum PostListType {
 //continues post that's on screen
 -(void) continueVideoContent;
 
--(void)reloadCurrentChannel;
+-(void) refreshPosts;
 
 //moves the tap/share bar up and down over the tab bar
 -(void) footerShowing: (BOOL) showing;

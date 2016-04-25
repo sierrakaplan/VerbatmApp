@@ -93,31 +93,6 @@
 	}];
 }
 
-+(void) getPostsInChannel:(Channel *)channel withLimit:(NSInteger)limit
-	  withCompletionBlock:(void(^)(NSArray *))block {
-	if(channel){
-		PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
-		[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
-		[postQuery orderByAscending:@"createdAt"];
-		[postQuery setLimit: limit];
-		[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
-													  NSError * _Nullable error) {
-			if(activities && !error) {
-				NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
-
-				for(PFObject * pc_activity in activities){
-
-					PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
-					[post fetchIfNeededInBackground];
-					[finalPostObjects addObject:pc_activity];
-				}
-
-				block(finalPostObjects);
-			}
-		}];
-	}
-}
-
 +(void)markPostAsFlagged:(PFObject *)flaggedPost {
     if(flaggedPost){
         [flaggedPost setValue:[NSNumber numberWithBool:YES] forKey:POST_FLAGGED_KEY];

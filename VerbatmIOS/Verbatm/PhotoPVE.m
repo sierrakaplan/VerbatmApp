@@ -114,20 +114,20 @@
 	[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
 }
 
--(void)prepareCirclePan{
-    if(self.dotViewsOnCircle.count){
-        for(UIView * view in self.dotViewsOnCircle){
-            [view removeFromSuperview];
-        }
-        self.pointsOnCircle = nil;
-        self.dotViewsOnCircle = nil;
-    }
-
-    [self createCircleViewAndPoints];
-    self.draggingFromPointIndex = -1;
-    self.currentPhotoIndex = 0;
-    [self highlightDot];
-}
+//-(void)prepareCirclePan{
+//    if(self.dotViewsOnCircle.count){
+//        for(UIView * view in self.dotViewsOnCircle){
+//            [view removeFromSuperview];
+//        }
+//        self.pointsOnCircle = nil;
+//        self.dotViewsOnCircle = nil;
+//    }
+//
+//    [self createCircleViewAndPoints];
+//    self.draggingFromPointIndex = -1;
+//    self.currentPhotoIndex = 0;
+//    [self highlightDot];
+//}
 
 #pragma mark - Preview mode -
 
@@ -359,171 +359,171 @@
 	[self addContentFromImagePinchViews: pinchViews];
 }
 
--(BOOL) goToPhoto:(CGPoint) touchLocation {
-	NSInteger indexOfPoint = [self getPointIndexFromLocation:touchLocation];
-	if (indexOfPoint >= 0) {
-		[self setImageViewsToLocation:indexOfPoint];
-		return YES;
-	}
-	return NO;
-}
+//-(BOOL) goToPhoto:(CGPoint) touchLocation {
+//	NSInteger indexOfPoint = [self getPointIndexFromLocation:touchLocation];
+//	if (indexOfPoint >= 0) {
+//		[self setImageViewsToLocation:indexOfPoint];
+//		return YES;
+//	}
+//	return NO;
+//}
 
 #pragma mark - Pan Gesture -
 
--(void) trackMovementOnCircle:(UIPanGestureRecognizer*) sender {
-	switch (sender.state) {
-		case UIGestureRecognizerStateBegan:
-			[self handleCircleGestureBegan:sender];
-			break;
-		case UIGestureRecognizerStateChanged:
-			[self handleCircleGestureChanged:sender];
-			break;
-		case UIGestureRecognizerStateEnded:
-			[self handleCircleGestureEnded:sender];
-			break;
-		case UIGestureRecognizerStateCancelled:
-		case UIGestureRecognizerStateFailed:
-			//TODO: clean up all state data created in touchesBegan
-			break;
-		default:
-			return;
-	}
-}
-
--(void) handleCircleGestureBegan:(UIPanGestureRecognizer*) sender {
-	if (sender.numberOfTouches < 1) return;
-	CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
-	self.draggingFromPointIndex = [self getPointIndexFromLocation:touchLocation];
-	if (self.draggingFromPointIndex >= 0) {
-		//[self.delegate startedDraggingAroundCircle];
-		[self displayCircle:YES];
-		[self setImageViewsToLocation:self.draggingFromPointIndex];
-		self.lastDistanceFromStartingPoint = 0.f;
-	}
-    
-    [self.textViewButton removeFromSuperview];
-}
-
--(void) handleCircleGestureChanged:(UIPanGestureRecognizer*) sender {
-	if (self.draggingFromPointIndex < 0 || sender.numberOfTouches < 1) {
-		return;
-	}
-	CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
-
-	if(![MathOperations point:touchLocation onCircleWithRadius:CIRCLE_RADIUS andOrigin:self.originPoint withThreshold:SLIDE_THRESHOLD]) {
-		return;
-	}
-    
-    if(self.draggingFromPointIndex < self.pointsOnCircle.count){
-    
-        PointObject * point = self.pointsOnCircle [self.draggingFromPointIndex];
-        float totalDistanceToTravel = (2.f * M_PI * CIRCLE_RADIUS)/[self.pointsOnCircle count];
-        float distanceFromStartingTouch = [MathOperations distanceClockwiseBetweenTwoPoints:[point getCGPoint] and:touchLocation onCircleWithRadius:CIRCLE_RADIUS andOrigin:self.originPoint];
-
-        [self fadeWithDistance:distanceFromStartingTouch andTotalDistance:totalDistanceToTravel];
-        self.lastDistanceFromStartingPoint = distanceFromStartingTouch;
-    }
-}
-
--(void) fadeWithDistance:(float)distanceFromStartingTouch andTotalDistance:(float)totalDistanceToTravel {
-	//switch current point and image
-	if (distanceFromStartingTouch > totalDistanceToTravel) {
-		self.draggingFromPointIndex = self.draggingFromPointIndex + 1;
-		self.currentPhotoIndex = self.currentPhotoIndex + 1;
-		self.lastDistanceFromStartingPoint = 0;
-		// if we're at the last photo reload photos behind it
-		if (self.currentPhotoIndex >= [self.imageContainerViews count]) {
-			self.currentPhotoIndex = 0;
-			self.draggingFromPointIndex = 0;
-			[self reloadImages];
-		}
-		[self highlightDot];
-		return;
-
-	}
-	// traveling backwards
-//	else if (self.lastDistanceFromStartingPoint > distanceFromStartingTouch
-//			   && distanceFromStartingTouch < POINTS_ON_CIRCLE_RADIUS*2
-//			   && self.draggingFromPointIndex > 0) {
-//		self.draggingFromPointIndex = self.draggingFromPointIndex -1;
-//		self.currentPhotoIndex = self.currentPhotoIndex -1;
-//		self.lastDistanceFromStartingPoint = 0;
-//	[self highlightDot];
+//-(void) trackMovementOnCircle:(UIPanGestureRecognizer*) sender {
+//	switch (sender.state) {
+//		case UIGestureRecognizerStateBegan:
+//			[self handleCircleGestureBegan:sender];
+//			break;
+//		case UIGestureRecognizerStateChanged:
+//			[self handleCircleGestureChanged:sender];
+//			break;
+//		case UIGestureRecognizerStateEnded:
+//			[self handleCircleGestureEnded:sender];
+//			break;
+//		case UIGestureRecognizerStateCancelled:
+//		case UIGestureRecognizerStateFailed:
+//			//TODO: clean up all state data created in touchesBegan
+//			break;
+//		default:
+//			return;
+//	}
+//}
+//
+//-(void) handleCircleGestureBegan:(UIPanGestureRecognizer*) sender {
+//	if (sender.numberOfTouches < 1) return;
+//	CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
+//	self.draggingFromPointIndex = [self getPointIndexFromLocation:touchLocation];
+//	if (self.draggingFromPointIndex >= 0) {
+//		//[self.delegate startedDraggingAroundCircle];
+//		[self displayCircle:YES];
+//		[self setImageViewsToLocation:self.draggingFromPointIndex];
+//		self.lastDistanceFromStartingPoint = 0.f;
+//	}
+//    
+//    [self.textViewButton removeFromSuperview];
+//}
+//
+//-(void) handleCircleGestureChanged:(UIPanGestureRecognizer*) sender {
+//	if (self.draggingFromPointIndex < 0 || sender.numberOfTouches < 1) {
 //		return;
 //	}
-	float fractionOfDistance = distanceFromStartingTouch / totalDistanceToTravel;
-
-	UIView* currentImageView = self.imageContainerViews[self.currentPhotoIndex];
-	float alpha = 1.f-fractionOfDistance;
-	[currentImageView setAlpha:alpha];
-}
-
--(void) handleCircleGestureEnded:(UIPanGestureRecognizer*) sender {
-	self.draggingFromPointIndex = -1;
-	[self displayCircle:NO];
-	[self.delegate stoppedDraggingAroundCircle];
-}
-
--(void) showAndRemoveCircle {
-	[self displayCircle:YES];
-	self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_FIRST_APPEAR_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
-    if(self.postScrollView && self.circlePanGesture){
-        [self.postScrollView.panGestureRecognizer requireGestureRecognizerToFail: self.circlePanGesture];
-    }
-}
-
--(void) displayCircle:(BOOL)display {
-	if (self.showCircleTimer) {
-		[self.showCircleTimer invalidate];
-		self.showCircleTimer = nil;
-	}
-	if(!display) {
-		self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
-	} else {
-		[self animateFadeCircleDisplay:YES];
-	}
-}
-
--(void) removeCircle {
-	if (self.showCircleTimer) {
-		[self.showCircleTimer invalidate];
-		self.showCircleTimer = nil;
-	}
-	[self animateFadeCircleDisplay:NO];
-}
-
--(void) animateFadeCircleDisplay:(BOOL) display {
-    if(display){//prevents circle fade from disappearing
-        [UIView animateWithDuration:CIRCLE_FADE_DURATION animations:^{
-            [self.circleView setAlpha: display ? CIRCLE_OVER_IMAGES_ALPHA : 0.f];
-            for (UIView* dotView in self.dotViewsOnCircle) {
-                [dotView setAlpha: display ? POINTS_ON_CIRCLE_ALPHA : 0.f];
-            }
-        } completion:^(BOOL finished) {
-        }];
-    }
-}
-
-#pragma mark Helper methods for gesture
-
--(NSInteger) getPointIndexFromLocation:(CGPoint)touchLocation {
-	for (int i = 0; i < [self.pointsOnCircle count]; i++) {
-		PointObject* point = self.pointsOnCircle[i];
-		if(fabs(point.x - touchLocation.x) <= TAP_THRESHOLD
-		   && fabs(point.y - touchLocation.y) <= TAP_THRESHOLD) {
-			return i;
-		}
-	}
-	return -1;
-}
-
--(void) highlightDot {
-	for (UIView* dot in self.dotViewsOnCircle) {
-		[dot setBackgroundColor:[UIColor CIRCLE_OVER_IMAGES_COLOR]];
-	}
-	UIView* highlightedDot = self.dotViewsOnCircle[self.currentPhotoIndex];
-	[highlightedDot setBackgroundColor:[UIColor CIRCLE_OVER_IMAGES_HIGHLIGHT_COLOR]];
-}
+//	CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
+//
+//	if(![MathOperations point:touchLocation onCircleWithRadius:CIRCLE_RADIUS andOrigin:self.originPoint withThreshold:SLIDE_THRESHOLD]) {
+//		return;
+//	}
+//    
+//    if(self.draggingFromPointIndex < self.pointsOnCircle.count){
+//    
+//        PointObject * point = self.pointsOnCircle [self.draggingFromPointIndex];
+//        float totalDistanceToTravel = (2.f * M_PI * CIRCLE_RADIUS)/[self.pointsOnCircle count];
+//        float distanceFromStartingTouch = [MathOperations distanceClockwiseBetweenTwoPoints:[point getCGPoint] and:touchLocation onCircleWithRadius:CIRCLE_RADIUS andOrigin:self.originPoint];
+//
+//        [self fadeWithDistance:distanceFromStartingTouch andTotalDistance:totalDistanceToTravel];
+//        self.lastDistanceFromStartingPoint = distanceFromStartingTouch;
+//    }
+//}
+//
+//-(void) fadeWithDistance:(float)distanceFromStartingTouch andTotalDistance:(float)totalDistanceToTravel {
+//	//switch current point and image
+//	if (distanceFromStartingTouch > totalDistanceToTravel) {
+//		self.draggingFromPointIndex = self.draggingFromPointIndex + 1;
+//		self.currentPhotoIndex = self.currentPhotoIndex + 1;
+//		self.lastDistanceFromStartingPoint = 0;
+//		// if we're at the last photo reload photos behind it
+//		if (self.currentPhotoIndex >= [self.imageContainerViews count]) {
+//			self.currentPhotoIndex = 0;
+//			self.draggingFromPointIndex = 0;
+//			[self reloadImages];
+//		}
+//		[self highlightDot];
+//		return;
+//
+//	}
+//	// traveling backwards
+////	else if (self.lastDistanceFromStartingPoint > distanceFromStartingTouch
+////			   && distanceFromStartingTouch < POINTS_ON_CIRCLE_RADIUS*2
+////			   && self.draggingFromPointIndex > 0) {
+////		self.draggingFromPointIndex = self.draggingFromPointIndex -1;
+////		self.currentPhotoIndex = self.currentPhotoIndex -1;
+////		self.lastDistanceFromStartingPoint = 0;
+////	[self highlightDot];
+////		return;
+////	}
+//	float fractionOfDistance = distanceFromStartingTouch / totalDistanceToTravel;
+//
+//	UIView* currentImageView = self.imageContainerViews[self.currentPhotoIndex];
+//	float alpha = 1.f-fractionOfDistance;
+//	[currentImageView setAlpha:alpha];
+//}
+//
+//-(void) handleCircleGestureEnded:(UIPanGestureRecognizer*) sender {
+//	self.draggingFromPointIndex = -1;
+//	[self displayCircle:NO];
+//	[self.delegate stoppedDraggingAroundCircle];
+//}
+//
+//-(void) showAndRemoveCircle {
+//	[self displayCircle:YES];
+//	self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_FIRST_APPEAR_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
+//    if(self.postScrollView && self.circlePanGesture){
+//        [self.postScrollView.panGestureRecognizer requireGestureRecognizerToFail: self.circlePanGesture];
+//    }
+//}
+//
+//-(void) displayCircle:(BOOL)display {
+//	if (self.showCircleTimer) {
+//		[self.showCircleTimer invalidate];
+//		self.showCircleTimer = nil;
+//	}
+//	if(!display) {
+//		self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
+//	} else {
+//		[self animateFadeCircleDisplay:YES];
+//	}
+//}
+//
+//-(void) removeCircle {
+//	if (self.showCircleTimer) {
+//		[self.showCircleTimer invalidate];
+//		self.showCircleTimer = nil;
+//	}
+//	[self animateFadeCircleDisplay:NO];
+//}
+//
+//-(void) animateFadeCircleDisplay:(BOOL) display {
+//    if(display){//prevents circle fade from disappearing
+//        [UIView animateWithDuration:CIRCLE_FADE_DURATION animations:^{
+//            [self.circleView setAlpha: display ? CIRCLE_OVER_IMAGES_ALPHA : 0.f];
+//            for (UIView* dotView in self.dotViewsOnCircle) {
+//                [dotView setAlpha: display ? POINTS_ON_CIRCLE_ALPHA : 0.f];
+//            }
+//        } completion:^(BOOL finished) {
+//        }];
+//    }
+//}
+//
+//#pragma mark Helper methods for gesture
+//
+//-(NSInteger) getPointIndexFromLocation:(CGPoint)touchLocation {
+//	for (int i = 0; i < [self.pointsOnCircle count]; i++) {
+//		PointObject* point = self.pointsOnCircle[i];
+//		if(fabs(point.x - touchLocation.x) <= TAP_THRESHOLD
+//		   && fabs(point.y - touchLocation.y) <= TAP_THRESHOLD) {
+//			return i;
+//		}
+//	}
+//	return -1;
+//}
+//
+//-(void) highlightDot {
+//	for (UIView* dot in self.dotViewsOnCircle) {
+//		[dot setBackgroundColor:[UIColor CIRCLE_OVER_IMAGES_COLOR]];
+//	}
+//	UIView* highlightedDot = self.dotViewsOnCircle[self.currentPhotoIndex];
+//	[highlightedDot setBackgroundColor:[UIColor CIRCLE_OVER_IMAGES_HIGHLIGHT_COLOR]];
+//}
 
 #pragma mark Change image views locations and visibility
 

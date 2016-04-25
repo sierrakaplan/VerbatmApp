@@ -12,6 +12,7 @@
 #import "ParseBackendKeys.h"
 #import "Page_BackendObject.h"
 #import "Post_BackendObject.h"
+#import "PostsQueryManager.h"
 #import "PostView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
@@ -105,7 +106,7 @@
 	}];
 
 	__block CGFloat xCoordinate = POST_VIEW_OFFSET;
-	[Post_BackendObject getPostsInChannel:channel withLimit:3 withCompletionBlock:^(NSArray *postChannelActivityObjects) {
+	[PostsQueryManager getPostsInChannel:channel withLimit:3 withCompletionBlock:^(NSArray *postChannelActivityObjects) {
 		for (PFObject *postChannelActivityObj in postChannelActivityObjects) {
 			PFObject *post = [postChannelActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
 			[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {

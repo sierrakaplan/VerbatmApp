@@ -41,6 +41,9 @@
 			   withSmallImage: (UIImage*)smallImage asSmall:(BOOL) small {
 	self = [self initWithFrame:frame];
 	if (self) {
+		if (small) {
+			smallImage = [smallImage imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width, self.bounds.size.height)];
+		}
 
 		self.image = smallImage;
 		[self.imageView setImage: self.image];

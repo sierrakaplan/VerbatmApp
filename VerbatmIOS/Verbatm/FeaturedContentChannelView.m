@@ -116,6 +116,10 @@
 	[self.postView preparepostToBePresented];
 }
 
+-(void) freeMemory {
+	
+}
+
 #pragma mark - Lazy Instantiation -
 
 //todo: make numbers constants

@@ -85,12 +85,12 @@
 	self.photoAveFrame = CGRectMake(0, videoAveHeight, self.frame.size.width, photoAveHeight);
 }
 
--(void) showAndRemoveCircle {
-    if(self.postScrollView){
-        self.photosView.postScrollView = self.postScrollView;
-    }
-    [self.photosView showAndRemoveCircle];
-}
+//-(void) showAndRemoveCircle {
+//    if(self.postScrollView){
+//        self.photosView.postScrollView = self.postScrollView;
+//    }
+//    [self.photosView showAndRemoveCircle];
+//}
 
 #pragma mark - PhotoAveTextEntry Delegate methods -
 

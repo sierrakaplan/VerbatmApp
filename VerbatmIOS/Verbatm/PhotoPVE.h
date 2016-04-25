@@ -13,11 +13,6 @@
 
 @protocol PhotoPVEDelegate <NSObject>
 
--(void) startedDraggingAroundCircle;
--(void) stoppedDraggingAroundCircle;
-
--(void) viewTapped;
-
 @end
 
 @protocol PhotoPVETextEntryDelegate <NSObject>
@@ -47,8 +42,5 @@
 // initializer for preview mode
 // PinchView can be either ImagePinchView or CollectionPinchView
 -(instancetype) initWithFrame:(CGRect)frame andPinchView:(PinchView *)pinchView inPreviewMode: (BOOL) inPreviewMode;
-
-//be sure to set povScrollView
--(void) showAndRemoveCircle;
 
 @end

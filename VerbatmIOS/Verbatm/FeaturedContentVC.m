@@ -8,7 +8,7 @@
 
 #import "Channel_BackendObject.h"
 #import "ExploreChannelCellView.h"
-#import "ChannelsQueryManager.h"
+#import "FeedQueryManager.h"
 #import "FeaturedContentVC.h"
 #import "FeaturedContentCellView.h"
 #import "Follow_BackendManager.h"
@@ -69,13 +69,12 @@ ExploreChannelCellViewDelegate>
 }
 
 -(void) refreshChannels {
-
-	[[ChannelsQueryManager sharedInstance] loadFeaturedChannelsWithCompletionHandler:^(NSArray *featuredChannels) {
+	[[FeedQueryManager sharedInstance] loadFeaturedChannelsWithCompletionHandler:^(NSArray *featuredChannels) {
 		self.featuredChannels = nil;
 		[self.featuredChannels addObjectsFromArray:featuredChannels];
 		[self.tableView reloadData];
 	}];
-	[[ChannelsQueryManager sharedInstance] refreshExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
+	[[FeedQueryManager sharedInstance] refreshExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
 		self.exploreChannels = nil;
 		[self.refreshControl endRefreshing];
 		[self.exploreChannels addObjectsFromArray: exploreChannels];
@@ -150,13 +149,9 @@ ExploreChannelCellViewDelegate>
 	return CELL_HEIGHT;
 }
 
-//todo: is this necessary?
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-//	if (indexPath.section == 0) {
-//		FeaturedContentCellView *cellVew = [self.tableView cellForRowAtIndexPath:indexPath];
-//	} else {
-//		ExploreChannelCellView *cellView = [self.tableView cellForRowAtIndexPath:indexPath];
-//	}
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	// All cells should be non selectable
+	return nil;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
