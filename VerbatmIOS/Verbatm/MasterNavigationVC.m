@@ -22,6 +22,7 @@
 
 #import "Notifications.h"
 
+#import "ParseBackendKeys.h"
 #import "ProfileVC.h"
 #import "PublishingProgressManager.h"
 
@@ -123,8 +124,8 @@
 
 -(void) loginSucceeded:(NSNotification*) notification {
 	PFUser * user = notification.object;
-	[[Crashlytics sharedInstance] setUserEmail: user.email];
-	[[Crashlytics sharedInstance] setUserName: [user username]];
+	[[Crashlytics sharedInstance] setUserIdentifier: [user username]];
+	[[Crashlytics sharedInstance] setUserName: [user objectForKey:VERBATM_USER_NAME_KEY]];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self setUpStartEnvironment];
     });

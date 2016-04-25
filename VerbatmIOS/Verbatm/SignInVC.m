@@ -21,10 +21,15 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 
+#import "ParseBackendKeys.h"
 #import <Parse/PFCloud.h>
+#import <Parse/PFUser.h>
+#import <Parse/PFObject.h>
+#import <Parse/PFQuery.h>
 
 #import "TermsAndConditionsVC.h"
 
+#import "UserInfoVC.h"
 #import "UserSetupParameters.h"
 #import "UserManager.h"
 
@@ -45,6 +50,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *phoneLoginField;
 @property (nonatomic) BOOL enteringPhoneNumber;
 @property (strong, nonatomic) NSString *phoneNumber;
+@property (nonatomic) BOOL firstTimeLoggingIn;
 
 #define BRING_UP_CREATE_ACCOUNT_SEGUE @"create_account_segue"
 
@@ -96,6 +102,20 @@
 	self.phoneLoginField.delegate = self;
 }
 
+-(void) setEnteringPhone {
+	self.enteringPhoneNumber = YES;
+	self.phoneLoginField.text = @"";
+	self.phoneLoginField.placeholder = @"Enter your phone number";
+	[self.toolBar setNextButtonText:@"Next"];
+}
+
+-(void) setEnteringCode {
+	self.enteringPhoneNumber = NO;
+	self.phoneLoginField.text = @"";
+	self.phoneLoginField.placeholder = @"Enter the 4-digit confirmation code:";
+	[self.toolBar setNextButtonText:@"Next"];
+}
+
 -(void) registerForNotifications {
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(loginFailed:)
@@ -129,7 +149,7 @@
 		[self codeEntered];
 		return;
 	}
-	[self.phoneLoginField resignFirstResponder];
+
 	NSString *simplePhoneNumber = [self getSimpleNumberFromFormattedPhoneNumber:self.phoneLoginField.text];
 	//todo: accept more phone numbers
 	if (simplePhoneNumber.length != 10) {
@@ -137,23 +157,43 @@
 		return;
 	}
 
-	self.enteringPhoneNumber = NO;
-	self.phoneNumber = simplePhoneNumber;
-	self.phoneLoginField.text = @"";
-	self.phoneLoginField.placeholder = @"Enter the 4-digit confirmation code:";
-	//			[self.toolBar setNextButtonText:@"Next"];
+	[self.phoneLoginField resignFirstResponder];
 
-	//todo: include more languages
-	NSDictionary *params = @{@"phoneNumber" : simplePhoneNumber, @"language" : @"en"};
-	[PFCloud callFunctionInBackground:@"sendCode" withParameters:params block:^(id  _Nullable response, NSError * _Nullable error) {
-		if (error) {
-			NSLog(@"Error sending code %@", error.description);
-			[self showAlertWithTitle:@"Phone Login" andMessage:@"Something went wrong. Please try again."];
-		} else {
-			// Parse has now created an account with this phone number and generated a random code,
-			// user must enter the correct code to be logged in
-
+	PFQuery *findUserQuery = [PFUser query];
+	[findUserQuery whereKey:@"username" equalTo:simplePhoneNumber];
+	[findUserQuery getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable user, NSError * _Nullable error) {
+		if (user && !error) {
+			PFUser *currentUser = (PFUser*)user;
+			NSString *name = [currentUser objectForKey:VERBATM_USER_NAME_KEY];
+			if (name == nil) {
+				//User never finished signing in so delete them
+				[user deleteInBackground];
+			} else {
+				self.firstTimeLoggingIn = NO;
+				self.phoneNumber = simplePhoneNumber;
+				[self performSegueWithIdentifier:USER_SETTINGS_SEGUE sender:self];
+				return;
+			}
 		}
+		self.firstTimeLoggingIn = YES;
+		self.phoneNumber = simplePhoneNumber;
+		[self setEnteringCode];
+
+		//todo: include more languages
+		NSDictionary *params = @{@"phoneNumber" : simplePhoneNumber, @"language" : @"en"};
+		[PFCloud callFunctionInBackground:@"sendCode" withParameters:params block:^(id  _Nullable response, NSError * _Nullable error) {
+			if (error) {
+				NSLog(@"Error sending code %@", error.description);
+				[self showAlertWithTitle:@"Error sending code" andMessage:@"Something went wrong. Please verify your phone number is correct."];
+				[self setEnteringPhone];
+				self.phoneLoginField.text = [self formatPhoneNumber:self.phoneNumber deleteLastChar:NO];
+				self.phoneNumber = nil;
+			} else {
+				// Parse has now created an account with this phone number and generated a random code,
+				// user must enter the correct code to be logged in
+			}
+		}];
+
 	}];
 }
 
@@ -170,16 +210,20 @@
 	NSDictionary *params = @{@"phoneNumber": self.phoneNumber, @"codeEntry": code};
 	[PFCloud callFunctionInBackground:@"logIn" withParameters:params block:^(id  _Nullable object, NSError * _Nullable error) {
 		if (error) {
-			[self showAlertWithTitle:@"Login Error" andMessage:error.description];
+			[self showAlertWithTitle:@"Login Error" andMessage: error.localizedDescription];
 		} else {
 			// This is the session token for the user
 			NSString *token = (NSString*)object;
+
 			[PFUser becomeInBackground:token block:^(PFUser * _Nullable user, NSError * _Nullable error) {
 				if (error) {
-					[self showAlertWithTitle:@"Login Error" andMessage:@"Something went wrong while trying to log in. Please try again."];
+					[self showAlertWithTitle:@"Login Error" andMessage:error.localizedDescription];
+					[self setEnteringCode];
 				} else {
-					// Go to setting name and password
-					[self performSegueWithIdentifier:USER_SETTINGS_SEGUE sender:self];
+					//delete so they can be recreated
+					[user deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+						[self performSegueWithIdentifier:USER_SETTINGS_SEGUE sender:self];
+					}];
 				}
 			}];
 		}
@@ -267,13 +311,18 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 #pragma mark - Navigation
 
-// Segue back to the MasterNavigationVC after logging in
-// Or segue to create account
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-	UIViewController * vc =  [segue destinationViewController];
+// Set data on segue to user settings vc
+-(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+	if ([[segue identifier] isEqualToString:USER_SETTINGS_SEGUE]) {
+		UserInfoVC* userViewController = [segue destinationViewController];
+		userViewController.phoneNumber = self.phoneNumber;
+		userViewController.firstTimeLoggingIn = self.firstTimeLoggingIn;
+	} else {
+		UIViewController * vc =  [segue destinationViewController];
 
-	if([vc isKindOfClass:[TermsAndConditionsVC class]]){
-		((TermsAndConditionsVC *)vc).userMustAcceptTerms = YES;
+		if([vc isKindOfClass:[TermsAndConditionsVC class]]){
+			((TermsAndConditionsVC *)vc).userMustAcceptTerms = YES;
+		}
 	}
 }
 
@@ -281,6 +330,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
 	if (self.enteringPhoneNumber) {
+		[self setEnteringPhone];
 		//todo: remove other buttons
 	}
 	return YES;

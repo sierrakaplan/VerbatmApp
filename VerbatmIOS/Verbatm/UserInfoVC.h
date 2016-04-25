@@ -10,4 +10,7 @@
 
 @interface UserInfoVC : UIViewController
 
+@property (weak, nonatomic) NSString *phoneNumber;
+@property (nonatomic) BOOL firstTimeLoggingIn;
+
 @end
