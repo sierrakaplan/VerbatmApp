@@ -34,6 +34,7 @@
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "UserAndChannelListsTVC.h"
 #import "UserInfoCache.h"
+#import "UserSetupParameters.h"
 
 #import <Crashlytics/Crashlytics.h>
 
@@ -155,7 +156,11 @@
     self.tabBarController.viewControllers = @[self.profileVC, deadView, self.feedVC, self.discoverVC];
     //add adk button to tab bar
 	[self addTabBarCenterButtonOverDeadView];
-    self.tabBarController.selectedViewController = self.feedVC;
+	if ([[UserSetupParameters sharedInstance] isFeed_InstructionShown]) {
+		self.tabBarController.selectedViewController = self.feedVC;
+	} else {
+		self.tabBarController.selectedViewController = self.discoverVC;
+	}
 	[self formatTabBar];
 }
 
