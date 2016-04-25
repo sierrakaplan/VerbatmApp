@@ -29,8 +29,6 @@
 // Initializer for when page view is in preview mode
 -(instancetype) initWithFrame:(CGRect)frame andPinchView:(CollectionPinchView*) pinchView inPreviewMode: (BOOL) previewMode;
 
--(void) showAndRemoveCircle;
-
 -(void) muteVideo: (BOOL) mute;
 
 @end

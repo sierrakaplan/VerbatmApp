@@ -53,7 +53,7 @@
 @property (nonatomic) UIImageView *publishSuccessful;
 @property (nonatomic) UIImageView *publishFailed;
 
-@property (nonatomic) void(^loadPostsCompletion)(NSArray * posts);
+@property (nonatomic) void(^refreshPostsCompletion)(NSArray * posts);
 
 #define LOAD_MORE_POSTS_COUNT 3 //number of posts left to see before we start loading more content
 #define POST_CELL_ID @"postCellId"
@@ -66,14 +66,14 @@
 
 @implementation PostListVC
 
--(void)viewDidLoad {
+-(void) viewDidLoad {
+	[self defineRefreshPostsCompletion];
 	[self setDateSourceAndDelegate];
 	[self registerClassForCustomCells];
 	[self refreshPosts];
 	self.shouldPlayVideos = YES;
     self.footerBarIsUp = (self.listType == listFeed || self.isCurrentUserProfile);
 	[self registerForNotifications];
-	[self defineLoadPostsCompletion];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
@@ -100,7 +100,7 @@
 		float h = size.width;
 		if(y > h + reload_distance) {
 			//todo:show indicator
-			NSLog(@"load more rows");
+			NSLog(@"load more items");
 		}
 	}
 }
@@ -160,13 +160,16 @@
 	}
 }
 
--(void) defineLoadPostsCompletion {
+-(void) defineRefreshPostsCompletion {
 	__weak typeof(self) weakSelf = self;
-	self.loadPostsCompletion = ^void(NSArray *posts) {
+	self.refreshPostsCompletion = ^void(NSArray *posts) {
 		[weakSelf.customActivityIndicator stopCustomActivityIndicator];
-		if(posts.count){
+		weakSelf.parsePostObjects = nil;
+		if(posts.count) {
+			[weakSelf.parsePostObjects addObjectsFromArray:posts];
 			[weakSelf removePresentLabel];
-		} else if(weakSelf.parsePostObjects.count == 0) {
+			[weakSelf.collectionView reloadData];
+		} else {
 			[weakSelf nothingToPresentHere];
 		}
 	};
@@ -175,10 +178,10 @@
 -(void) refreshPosts {
     [self.customActivityIndicator startCustomActivityIndicator];
 	if(self.listType == listFeed){
-		[self.feedQueryManager refreshFeedWithCompletionHandler:self.loadPostsCompletion];
+		[self.feedQueryManager refreshFeedWithCompletionHandler:self.refreshPostsCompletion];
     } else if (self.listType == listChannel) {
 		//todo: load in chunks
-        [PostsQueryManager getPostsInChannel:self.channelForList withLimit:20 withCompletionBlock:self.loadPostsCompletion];
+        [PostsQueryManager getPostsInChannel:self.channelForList withLimit:20 withCompletionBlock:self.refreshPostsCompletion];
     }
 }
 
@@ -336,8 +339,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 // Marks all posts as off screen
 -(void) stopAllVideoContent {
 	self.shouldPlayVideos = NO;
-	for (NSInteger i = 0; i < [self.collectionView numberOfRowsInSection:0]; ++i) {
-		[(PostCollectionViewCell*)[self.collectionView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]] offScreen];
+	for (NSInteger i = 0; i < [self.collectionView numberOfItemsInSection:0]; ++i) {
+		[(PostCollectionViewCell*)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]] offScreen];
 	}
 }
 
@@ -346,7 +349,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	self.shouldPlayVideos = YES;
 	NSInteger visibleCellIndex = [self getVisibileCellIndex];
 	if(visibleCellIndex < self.parsePostObjects.count) {
-		[(PostCollectionViewCell*)[self.collectionView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:visibleCellIndex inSection:0]] onScreen];
+		[(PostCollectionViewCell*)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:visibleCellIndex inSection:0]] onScreen];
     }
 }
 
@@ -356,8 +359,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		[self setNeedsStatusBarAppearanceUpdate];
 	} completion:^(BOOL finished) {
 	}];
-	for (NSInteger i = 0; i < [self.collectionView numberOfRowsInSection:0]; ++i) {
-		[(PostCollectionViewCell*)[self.collectionView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]] shiftLikeShareBarDown:!showing];
+	for (NSInteger i = 0; i < [self.collectionView numberOfItemsInSection:0]; ++i) {
+		[(PostCollectionViewCell*)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]] shiftLikeShareBarDown:!showing];
 	}
 }
 

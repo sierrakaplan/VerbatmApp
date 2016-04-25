@@ -432,7 +432,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	self.publishingProgressView = nil;
 	//todo: bring this back
 	//if ([PublishingProgressManager sharedInstance].currentPublishingChannel == self.postListVC.channelForList) {
-		[self.postListVC reloadCurrentChannel];
+		[self.postListVC refreshPosts];
 	//}
 }
 

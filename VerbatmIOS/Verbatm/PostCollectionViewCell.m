@@ -18,6 +18,7 @@
 @property (nonatomic, readwrite) PostView *ourCurrentPost;
 @property (nonatomic) PFObject *postBeingPresented;
 @property (strong, nonatomic) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic) BOOL isOnScreen;
 
 @end
 
@@ -25,6 +26,9 @@
 
 -(instancetype)initWithFrame:(CGRect)frame{
 	self = [super initWithFrame:frame];
+	if (self) {
+		self.isOnScreen = NO;
+	}
 	return self;
 }
 
@@ -47,7 +51,11 @@
 
 		NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
 		[self.ourCurrentPost renderPostFromPageObjects: pages];
-		[self.ourCurrentPost postOffScreen];
+		if (self.isOnScreen) {
+			[self.ourCurrentPost postOnScreen];
+		} else {
+			[self.ourCurrentPost postOffScreen];
+		}
 		self.ourCurrentPost.delegate = self;
 		self.ourCurrentPost.listChannel = channelForList;
 		[self addSubview:self.ourCurrentPost];
@@ -79,13 +87,15 @@
 	}
 }
 
--(void)onScreen {
-	if(self.ourCurrentPost){
+-(void) onScreen {
+	self.isOnScreen = YES;
+	if(self.ourCurrentPost) {
 		[self.ourCurrentPost postOnScreen];
 	}
 }
 
--(void)offScreen {
+-(void) offScreen {
+	self.isOnScreen = NO;
 	if(self.ourCurrentPost){
 		[self.ourCurrentPost postOffScreen];
 	}
