@@ -161,7 +161,12 @@
 }
 
 -(void)cancelButtonSelected {
-	[self.delegate cancelButtonSelected];
+    if([self.cancelButton.titleLabel.text isEqualToString:@"CANCEL"]){
+       [self.delegate cancelButtonSelected];
+    }else{
+        [self showChannelSelection:NO];
+        [self.cancelButton setAttributedTitle:[self getButtonAttributeStringWithText:@"CANCEL"] forState:UIControlStateNormal];
+    }
 }
 
 -(void)reportButtonSelected {
@@ -244,9 +249,11 @@
 		[self removeFacebookCommentView];
 		[self showChannelSelection:YES];
 		[self.shareButton setTitle:@"POST" forState:UIControlStateNormal];
-		[self.reportButton setTitle:@"BACK" forState:UIControlStateNormal];
+		[self.cancelButton setAttributedTitle:[self getButtonAttributeStringWithText:@"BACK"] forState:UIControlStateNormal];
 	}else if (shareOption == Facebook){
-		[self createAndPrepareTextView];
+//		[self createAndPrepareTextView];
+        
+        [self.delegate postPostExternal:1];
 	}
 }
 
@@ -328,12 +335,13 @@
 		[UIView animateWithDuration:ANIMATION_DURATION animations:^{
 			self.channelSelectionOptions.frame = self.channelSelectionFrameOFFSCREEN;
 			self.sharingOption.frame = self.shareOptionSelectionStartFrameONSCREEN;
-			[self.sharingOption unselectAllOptions];
+//			[self.sharingOption unselectAllOptions];
 		}];
 
 	}
 
 }
+
 
 //frames of the channel list and the share options list
 -(void)createListFrames{

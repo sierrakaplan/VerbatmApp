@@ -24,6 +24,10 @@
 #import "PostCollectionViewCell.h"
 #import "Post_BackendObject.h"
 #import "Post_Channel_RelationshipManager.h"
+#import "Page_BackendObject.h"
+#import "Photo_BackendObject.h"
+#import "Video_BackendObject.h"
+#import "Channel_BackendObject.h"
 #import "ParseBackendKeys.h"
 #import "PostView.h"
 #import <PromiseKit/PromiseKit.h>
@@ -32,6 +36,10 @@
 #import "SharePostView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
+#import <Branch/BranchUniversalObject.h>
+#import <Branch/BranchLinkProperties.h>
+#import <FBSDKShareKit/FBSDKShareLinkContent.h>
+#import <FBSDKShareKit/FBSDKShareDialog.h>
 
 @interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource,
 SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
@@ -47,6 +55,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 @property (nonatomic) BOOL isReloading;
 @property (nonatomic) BOOL footerBarIsUp;//like share bar
 @property (nonatomic) PFObject *postToShare;
+@property (strong, nonatomic) BranchUniversalObject *branchUniversalObject;
 
 @property (nonatomic) UIImageView *reblogSucessful;
 @property (nonatomic) UIImageView *following;
@@ -551,7 +560,48 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         
 	}
     
+    if(YES){
+        BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
+        linkProperties.feature = @"share";
+        linkProperties.channel = @"facebook";
+        
+        [self.branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
+            if (!error) {
+                NSLog(@"got my Branch invite link to share: %@", url);
+                NSURL *link = [NSURL URLWithString:url];
+                FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
+                content.contentURL = link;
+                [FBSDKShareDialog showFromViewController:self
+                                             withContent:content
+                                                delegate:nil];
+            }
+        }];
+    }
+    
 	[self removeSharePOVView];
+}
+
+-(void)postPostExternal:(NSInteger)selection{
+    NSString *postId = self.postToShare.objectId;
+    
+    NSLog(@"%@",self.postToShare.allKeys);
+    
+    PFUser *user = [PFUser currentUser];
+    NSString *name = [user valueForKey:VERBATM_USER_NAME_KEY];
+    Channel_BackendObject *channelObj = [self.postToShare valueForKey:POST_CHANNEL_KEY];
+    
+    NSString *channelName = [channelObj valueForKey:CHANNEL_NAME_KEY];
+    
+    NSLog(@"%@", channelName);
+
+    self.branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:postId];
+    self.branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName];
+    self.branchUniversalObject.contentDescription = @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. A blogger profile can have multiple channels; bloggers can follow other bloggers' channels as well as 'like' and 're-blog' content. A given post can have mult...";
+    self.branchUniversalObject.imageUrl = @"http://imaging.nikon.com/lineup/lens/zoom/normalzoom/af-s_nikkor28-300mmf_35-56gd_ed_vr/img/sample/sample4_l.jpg";
+    [self.branchUniversalObject addMetadataKey:@"userId" value:@"12345"];
+    [self.branchUniversalObject addMetadataKey:@"userName" value:@"UserName"];
+    [self.branchUniversalObject addMetadataKey:@"monsterName" value:@"Mr. Squiggles"];
+    
 }
 
 -(void)successfullyReblogged{

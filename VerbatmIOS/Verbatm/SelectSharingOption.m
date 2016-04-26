@@ -52,12 +52,12 @@
 	UIView * verbatmBar = [self createBarWithFrame:barFrame logo:[UIImage imageNamed:VERBATM_LOGO] andTitle:@"Verbatm"];
 	[self addSubview:verbatmBar];
     
-    //Twitter BAR -- bottom
-    CGRect tw_barFrame = CGRectMake(0.f, facebookBar.frame.origin.y +
-                                    facebookBar.frame.size.height +
-                                    (remainingTopHeight/2.f) - (BAR_HEIGHT/2.f), self.frame.size.width, BAR_HEIGHT/2);
-    UIView * twitterBar = [self createBarWithFrame:tw_barFrame logo:[UIImage imageNamed:TWITTER_LOGO] andTitle:@"Twitter"];
-    [self addSubview:twitterBar];
+//    //Twitter BAR -- bottom
+//    CGRect tw_barFrame = CGRectMake(0.f, facebookBar.frame.origin.y +
+//                                    facebookBar.frame.size.height +
+//                                    (remainingTopHeight/2.f) - (BAR_HEIGHT/2.f), self.frame.size.width, BAR_HEIGHT/2);
+//    UIView * twitterBar = [self createBarWithFrame:tw_barFrame logo:[UIImage imageNamed:TWITTER_LOGO] andTitle:@"Twitter"];
+//    [self addSubview:twitterBar];
 }
 
 
@@ -90,12 +90,13 @@
         
     }else if ([title isEqualToString:@"Facebook"]){
         selectionButton.buttonSharingOption = Facebook;
-
-    }else if ([title isEqualToString:@"Twitter"]){
-        selectionButton.buttonSharingOption = Twitter;
     }
+
+//    }else if ([title isEqualToString:@"Twitter"]){
+//        selectionButton.buttonSharingOption = Twitter;
+//    }
         
-//    [selectionButton addTarget:self action:@selector(optionSelected:) forControlEvents:UIControlEventTouchUpInside];
+    [selectionButton addTarget:self action:@selector(optionSelected:) forControlEvents:UIControlEventTouchUpInside];
     
     ourBar.shareOptionButton = selectionButton;
     
@@ -137,7 +138,7 @@
         self.selectedButton = nil;
     }else{
         if(self.selectedButton){//only one button can be selected at once
-            [self.selectedButton setButtonSelected:NO];
+         //   [self.selectedButton setButtonSelected:NO];
         }
         
         [selectionButton setButtonSelected:YES];
