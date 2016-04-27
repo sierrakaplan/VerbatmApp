@@ -74,12 +74,11 @@
                                thumbnail:(UIImage *) thumbnail andPageObject:(PFObject *)pageObject{
     if(!self.mediaPublisher)self.mediaPublisher = [[PostPublisher alloc] init];
     
-    [self.mediaPublisher storeImage:UIImagePNGRepresentation(thumbnail) withCompletionBlock:^(GTLVerbatmAppImage * gtlImage) {
+    [self.mediaPublisher storeImage:UIImagePNGRepresentation(thumbnail)].then(^(NSString* blobstoreUrl) {
 		NSLog(@"Now saving parse video object...");
-        NSString * blobStoreImageUrl = gtlImage.servingUrl;
         PFObject * newVideoObj = [PFObject objectWithClassName:VIDEO_PFCLASS_KEY];
         [newVideoObj setObject:blobStoreVideoUrl forKey:BLOB_STORE_URL];
-        [newVideoObj setObject:blobStoreImageUrl forKey:VIDEO_THUMBNAIL_KEY];
+        [newVideoObj setObject:blobstoreUrl forKey:VIDEO_THUMBNAIL_KEY];
         [newVideoObj setObject:pageObject forKey:VIDEO_PAGE_OBJECT_KEY];
         [newVideoObj saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
             if(succeeded){
@@ -89,7 +88,7 @@
 				[[PublishingProgressManager sharedInstance] savingMediaFailed];
 			}
         }];
-    }];
+	});
 }
 
 +(void)getVideoForPage:(PFObject *) page andCompletionBlock:(void(^)(PFObject *))block {

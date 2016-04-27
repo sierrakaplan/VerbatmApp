@@ -17,6 +17,7 @@
 #import "ParseBackendKeys.h"
 #import "PostPublisher.h"
 #import "PublishingProgressManager.h"
+#import <PromiseKit/AnyPromise.h>
 
 @interface Photo_BackendObject ()
 
@@ -26,7 +27,7 @@
 
 @implementation Photo_BackendObject
 
--(void)saveImageData:(NSData *) imageData
+-(AnyPromise*) saveImageData:(NSData *) imageData
 		withText:(NSString *) text
 andTextYPosition:(NSNumber *) textYPosition
 	andTextColor:(UIColor *) textColor
@@ -35,13 +36,12 @@ andTextAlignment:(NSNumber *) textAlignment
 	atPhotoIndex:(NSInteger) photoIndex
    andPageObject:(PFObject *) pageObject {
     self.mediaPublisher = [[PostPublisher alloc] init];
-    [self.mediaPublisher storeImage:imageData withCompletionBlock:^(GTLVerbatmAppImage * gtlImage) {
-        NSString * blobStoreUrl = gtlImage.servingUrl;
-		if (![blobStoreUrl hasSuffix:@"=s0"]) {
-			blobStoreUrl = [blobStoreUrl stringByAppendingString:@"=s0"];
+    return [self.mediaPublisher storeImage:imageData].then(^(NSString* blobstoreUrl) {
+		if (![blobstoreUrl hasSuffix:@"=s0"]) {
+			blobstoreUrl = [blobstoreUrl stringByAppendingString:@"=s0"];
 		}
-        //in completion block of blobstore save
-        [self createAndSavePhotoObjectwithBlobstoreUrl:blobStoreUrl
+        //in completion
+        [self createAndSavePhotoObjectwithBlobstoreUrl:blobstoreUrl
 											  withText:text
 									  andTextYPosition:textYPosition
 										  andTextColor:textColor
@@ -49,7 +49,7 @@ andTextAlignment:(NSNumber *) textAlignment
 										   andTextSize:textSize
 										  atPhotoIndex:photoIndex
 										 andPageObject:pageObject];
-    }];
+    });
     
 }
 

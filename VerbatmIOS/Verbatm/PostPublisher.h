@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "GTLVerbatmAppImage.h"
 #import "GTLVerbatmAppVideo.h"
+#import <PromiseKit/PromiseKit.h>
 
 @interface PostPublisher : NSObject
 
@@ -17,6 +18,6 @@
 -(void) storeVideoFromURL: (NSURL*) url withCompletionBlock:(void(^)(GTLVerbatmAppVideo *))block;
 
 //stores an image for us and takes a completion block to handle the url
--(void) storeImage: (NSData*) imageData withCompletionBlock:(void(^)(GTLVerbatmAppImage *))block;
+-(AnyPromise*) storeImage: (NSData*) imageData;
 
 @end

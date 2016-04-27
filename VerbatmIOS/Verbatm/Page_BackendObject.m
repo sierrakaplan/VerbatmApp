@@ -91,20 +91,21 @@
 	for (int i = 1; i < imagePinchViews.count; i++) {
 		getImageDataPromise = getImageDataPromise.then(^(NSData *imageData) {
 			NSArray* photoWithText = pinchViewPhotosWithText[i-1];
-			[self storeImageFromImageData:imageData andPhotoWithTextArray:photoWithText
-								  atIndex:i withPageObject:page];
-			return [imagePinchViews[i] getImageData];
+			return [self storeImageFromImageData:imageData andPhotoWithTextArray:photoWithText
+								  atIndex:i withPageObject:page].then(^(void) {
+				return [imagePinchViews[i] getImageData];
+			});
 		});
 	}
 	return getImageDataPromise.then(^(NSData *imageData) {
 		NSInteger index = imagePinchViews.count - 1;
 		NSArray* photoWithText = pinchViewPhotosWithText[index];
-		[self storeImageFromImageData:imageData andPhotoWithTextArray:photoWithText
+		return [self storeImageFromImageData:imageData andPhotoWithTextArray:photoWithText
 							  atIndex:index withPageObject:page];
 	});
 }
 
--(void) storeImageFromImageData: (NSData *) imageData andPhotoWithTextArray: (NSArray *)photoWithText
+-(AnyPromise*) storeImageFromImageData: (NSData *) imageData andPhotoWithTextArray: (NSArray *)photoWithText
 						atIndex: (NSInteger) index withPageObject: (PFObject *) page {
 	NSString* text = photoWithText[1];
 	NSNumber* textYPosition = photoWithText[2];
@@ -114,7 +115,7 @@
 
 	Photo_BackendObject * photoObj = [[Photo_BackendObject alloc] init];
 	[self.photoAndVideoSavers addObject:photoObj];
-	[photoObj saveImageData:imageData withText:text
+	return [photoObj saveImageData:imageData withText:text
 	   andTextYPosition:textYPosition
 		   andTextColor:textColor
 	   andTextAlignment:textAlignment
