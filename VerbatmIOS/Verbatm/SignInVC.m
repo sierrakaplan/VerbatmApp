@@ -48,7 +48,9 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *orLabel;
 @property (strong, nonatomic) LoginKeyboardToolBar *toolBar;
+@property (nonatomic) BOOL nextButtonEnabled;
 @property (weak, nonatomic) IBOutlet UITextField *phoneLoginField;
+@property (nonatomic) CGFloat keyboardOffset;
 @property (nonatomic) BOOL enteringPhoneNumber;
 @property (strong, nonatomic) NSString *phoneNumber;
 @property (nonatomic) BOOL firstTimeLoggingIn;
@@ -61,9 +63,11 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
+	self.keyboardOffset = 0.f;
 	[self.backgroundImageView setFrame:self.view.bounds];
 	[self centerViews];
 	[self registerForNotifications];
+	[self registerForKeyboardNotifications];
 	[self addFacebookLoginButton];
 	self.loginFirstTimeDone = NO;
 	self.enteringPhoneNumber = YES;
@@ -98,6 +102,7 @@
 	self.toolBar = [[LoginKeyboardToolBar alloc] initWithFrame:toolBarFrame];
 	self.toolBar.delegate = self;
 	[self.toolBar setNextButtonText:@"Next"];
+	self.nextButtonEnabled = YES;
 	self.phoneLoginField.inputAccessoryView = self.toolBar;
 	self.phoneLoginField.keyboardType = UIKeyboardTypePhonePad;
 	self.phoneLoginField.delegate = self;
@@ -108,6 +113,7 @@
 	self.phoneLoginField.text = @"";
 	self.phoneLoginField.placeholder = @"Enter your phone number";
 	[self.toolBar setNextButtonText:@"Next"];
+	self.nextButtonEnabled = YES;
 }
 
 -(void) setEnteringCode {
@@ -115,6 +121,7 @@
 	self.phoneLoginField.text = @"";
 	self.phoneLoginField.placeholder = @"Enter the 4-digit confirmation code:";
 	[self.toolBar setNextButtonText:@"Next"];
+	self.nextButtonEnabled = YES;
 }
 
 -(void) registerForNotifications {
@@ -126,6 +133,20 @@
 											 selector:@selector(loginSucceeded:)
 												 name:NOTIFICATION_USER_LOGIN_SUCCEEDED
 											   object:nil];
+}
+
+- (void)registerForKeyboardNotifications {
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(keyboardWillShow:)
+												 name:UIKeyboardWillShowNotification
+											   object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(keyboardWillHide:)
+												 name:UIKeyboardWillHideNotification
+											   object:nil];
+
 }
 
 
@@ -143,6 +164,35 @@
 	[self.view bringSubviewToFront:self.loginButton];
 }
 
+#pragma mark - Keyboard moving up and down -
+
+-(void) keyboardWillShow:(NSNotification*)notification {
+	[self.loginButton setHidden:YES];
+	[self.orLabel setHidden:YES];
+
+	//Only set the keyboard offset once
+	if (self.keyboardOffset < 1) {
+		CGRect keyboardBounds;
+		[[notification.userInfo valueForKey:UIKeyboardFrameBeginUserInfoKey] getValue:&keyboardBounds];
+
+		CGFloat newYOrigin = self.view.frame.size.height - keyboardBounds.size.height - self.phoneLoginField.frame.size.height - 10.f;
+		self.keyboardOffset = newYOrigin - self.phoneLoginField.frame.origin.y;
+	}
+
+	[UIView animateWithDuration:0.2 animations:^{
+		self.phoneLoginField.frame = CGRectOffset(self.phoneLoginField.frame, 0, -self.keyboardOffset);
+	}];
+}
+
+-(void) keyboardWillHide:(NSNotification*)notification {
+	[self.loginButton setHidden:NO];
+	[self.orLabel setHidden:NO];
+
+	[UIView animateWithDuration:0.2 animations:^{
+		self.phoneLoginField.frame = CGRectOffset(self.phoneLoginField.frame, 0, self.keyboardOffset);
+	}];
+}
+
 #pragma mark - Phone login Delegate -
 
 -(void) nextButtonPressed {
@@ -151,6 +201,7 @@
 		return;
 	}
 
+	[self.phoneLoginField resignFirstResponder];
 	NSString *simplePhoneNumber = [self getSimpleNumberFromFormattedPhoneNumber:self.phoneLoginField.text];
 	//todo: accept more phone numbers
 	if (simplePhoneNumber.length != 10) {
@@ -158,7 +209,7 @@
 		return;
 	}
 
-	[self.phoneLoginField resignFirstResponder];
+	self.nextButtonEnabled = NO;
 
 	PFQuery *findUserQuery = [PFUser query];
 	[findUserQuery whereKey:@"username" equalTo:simplePhoneNumber];
@@ -199,6 +250,7 @@
 }
 
 -(void) codeEntered {
+	self.nextButtonEnabled = NO;
 	NSString *code = self.phoneLoginField.text;
 	if (code.length != 4) {
 		NSString *message = @"You must enter a 4 digit confirmation code.\
