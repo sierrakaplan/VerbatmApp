@@ -47,7 +47,10 @@
 			smallImage = [smallImage imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width, self.bounds.size.height)];
 		}
 
-		self.smallImageData = UIImagePNGRepresentation(smallImage);
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+			self.smallImageData = UIImagePNGRepresentation(smallImage);
+		});
+
 		[self.imageView setImage: smallImage];
 
 		// After larger image loads, crop it and set it in the image
@@ -60,7 +63,10 @@
 				if (largeImageData.length / 1024.f > 500) {
 					image = [image imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width*2, self.bounds.size.height*2)];
 				}
-				self.largeImageData = UIImagePNGRepresentation(image);
+				dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+					self.largeImageData = UIImagePNGRepresentation(image);
+				});
+
 				if (self.displayingLargeImage) [self.imageView setImage: image];
 			});
 		}
@@ -92,7 +98,7 @@
 	self.displayingLargeImage = display;
 	if (display && self.largeImageData) {
 		[self.imageView setImage: [UIImage imageWithData:self.largeImageData]];
-	} else {
+	} else if (self.smallImageData) {
 		[self.imageView setImage: [UIImage imageWithData:self.smallImageData]];
 	}
 }

@@ -387,7 +387,7 @@
             [self playWithSpeed:2.f];
         }
     } else {
-		if ([self.imageContainerViews[0] isKindOfClass:[TextOverMediaView class]]) {
+		if (self.imageContainerViews.count > 0 && [self.imageContainerViews[0] isKindOfClass:[TextOverMediaView class]]) {
 			[(TextOverMediaView*)self.imageContainerViews[0] displayLargeImage:YES];
 		}
 	}

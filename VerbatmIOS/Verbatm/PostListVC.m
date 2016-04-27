@@ -46,7 +46,8 @@
 @property (nonatomic) LoadingIndicator *customActivityIndicator;
 @property (nonatomic) SharePostView *sharePostView;
 @property (nonatomic) BOOL shouldPlayVideos;
-@property (nonatomic) BOOL isReloading;
+@property (nonatomic) BOOL isRefreshing;
+@property (nonatomic) BOOL isLoadingMore;
 @property (nonatomic) BOOL footerBarIsUp;//like share bar
 @property (nonatomic) PFObject *postToShare;
 
@@ -69,6 +70,8 @@
 @implementation PostListVC
 
 -(void) viewDidLoad {
+	self.isRefreshing = NO;
+	self.isLoadingMore = NO;
 	self.nextIndexToPresent = 0;
 	[self defineRefreshPostsCompletion];
 	[self setDateSourceAndDelegate];
@@ -173,18 +176,22 @@
 	__weak typeof(self) weakSelf = self;
 	self.refreshPostsCompletion = ^void(NSArray *posts) {
 		[weakSelf.customActivityIndicator stopCustomActivityIndicator];
-		weakSelf.parsePostObjects = nil;
 		if(posts.count) {
-			[weakSelf.parsePostObjects addObjectsFromArray:posts];
+			NSIndexSet *indices = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0,[posts count])];
+			[weakSelf.parsePostObjects insertObjects:posts atIndexes:indices];
+
 			[weakSelf removePresentLabel];
 			[weakSelf.collectionView reloadData];
-		} else {
+		} else if(!weakSelf.parsePostObjects.count){
 			[weakSelf nothingToPresentHere];
 		}
+		self.isRefreshing = NO;
 	};
 }
 
 -(void) refreshPosts {
+	if (self.isRefreshing) return;
+	self.isRefreshing = YES;
 	[self.customActivityIndicator startCustomActivityIndicator];
 	if(self.listType == listFeed){
 		[self.feedQueryManager refreshFeedWithCompletionHandler:self.refreshPostsCompletion];
@@ -332,8 +339,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	if (self.nextCellToPresent) [self.nextCellToPresent almostOnScreen];
 
 	// Load more posts
-	if(indexPath.row >= (self.parsePostObjects.count - LOAD_MORE_POSTS_COUNT) && !self.isReloading) {
-		self.isReloading = YES;
+	if(indexPath.row >= (self.parsePostObjects.count - LOAD_MORE_POSTS_COUNT)) {
 		//todo:
 		//		[self loadMorePosts];
 	}
