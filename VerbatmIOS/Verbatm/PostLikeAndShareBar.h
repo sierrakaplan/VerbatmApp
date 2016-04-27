@@ -47,6 +47,6 @@ typedef enum BarActivityOptions{
 //if it's another user's post we create a flag
 -(void)createDeleteButton;
 -(void)createFlagButton;
-@property (nonatomic) id <PostLikeAndShareBarProtocol> delegate;
+@property (nonatomic, weak) id <PostLikeAndShareBarProtocol> delegate;
 
 @end

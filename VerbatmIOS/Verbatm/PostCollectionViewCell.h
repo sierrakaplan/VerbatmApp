@@ -22,7 +22,7 @@
 
 @interface PostCollectionViewCell : UICollectionViewCell
 
-@property (nonatomic, strong) id<PostCollectionViewCellDelegate> cellDelegate;
+@property (nonatomic, weak) id<PostCollectionViewCellDelegate> cellDelegate;
 @property (nonatomic, readonly) PostView *currentPostView;
 @property (nonatomic, readonly) PFObject *currentPostActivityObject;
 

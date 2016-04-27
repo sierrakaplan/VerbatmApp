@@ -16,7 +16,7 @@
 
 @interface LoginKeyboardToolBar : UIView
 
-@property (strong, nonatomic) id<LoginKeyboardToolBarDelegate> delegate;
+@property (weak, nonatomic) id<LoginKeyboardToolBarDelegate> delegate;
 
 -(void) setNextButtonText:(NSString*)text;
 

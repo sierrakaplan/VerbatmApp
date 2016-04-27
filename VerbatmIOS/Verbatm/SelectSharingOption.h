@@ -32,7 +32,7 @@ typedef enum ShareOptions{
 
 @interface SelectSharingOption : UIScrollView
 
-@property (nonatomic) id <SelectSharingOptionProtocol> sharingDelegate;
+@property (nonatomic, weak) id <SelectSharingOptionProtocol> sharingDelegate;
 
 -(void)unselectAllOptions;
 

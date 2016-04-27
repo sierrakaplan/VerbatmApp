@@ -18,7 +18,7 @@
 @property (strong, nonatomic) Channel *postChannel; /* Original channel posted to */
 @property (strong, nonatomic) PFObject* parsePostChannelActivityObject;
 
-@property (nonatomic) id<PostViewDelegate> delegate;
+@property (nonatomic, weak) id<PostViewDelegate> delegate;
 
 // stores pov info associated with this view
 -(instancetype)initWithFrame:(CGRect)frame andPostChannelActivityObject:(PFObject*) postObject

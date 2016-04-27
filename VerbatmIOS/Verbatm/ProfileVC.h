@@ -21,7 +21,7 @@
 
 @interface ProfileVC : UIViewController
 
-@property (strong, nonatomic) id<ProfileVCDelegate> delegate;
+@property (weak, nonatomic) id<ProfileVCDelegate> delegate;
 
 @property (weak, nonatomic) PFUser* userOfProfile;
 

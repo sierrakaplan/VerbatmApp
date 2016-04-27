@@ -27,7 +27,7 @@
 
 @interface ContentPageElementScrollView : UIScrollView
 
-@property (nonatomic, strong) id<ContentPageElementScrollViewDelegate> contentPageElementScrollViewDelegate;
+@property (nonatomic, weak) id<ContentPageElementScrollViewDelegate> contentPageElementScrollViewDelegate;
 
 @property (strong, nonatomic, readonly) UIView<ContentDevElementDelegate>* pageElement;
 

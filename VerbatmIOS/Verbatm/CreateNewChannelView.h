@@ -18,5 +18,7 @@
 @end
 
 @interface CreateNewChannelView : UIView
-@property (nonatomic) id <CreateNewChannelViewProtocol> delegate;
+
+@property (nonatomic, weak) id <CreateNewChannelViewProtocol> delegate;
+
 @end

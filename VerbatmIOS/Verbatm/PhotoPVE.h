@@ -24,9 +24,9 @@
 
 @interface PhotoPVE : PageViewingExperience
 
-@property (strong, nonatomic) id<PhotoPVEDelegate> delegate;
+@property (weak, nonatomic) id<PhotoPVEDelegate> delegate;
 
-@property (strong, nonatomic) id<PhotoPVETextEntryDelegate> textEntryDelegate;
+@property (weak, nonatomic) id<PhotoPVETextEntryDelegate> textEntryDelegate;
 
 @property (nonatomic) BOOL isPhotoVideoSubview;
 

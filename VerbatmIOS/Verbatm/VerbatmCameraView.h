@@ -22,7 +22,7 @@ IB_DESIGNABLE
 
 @interface VerbatmCameraView : UIView <UIGestureRecognizerDelegate>
 
-@property (strong, nonatomic) id<VerbatmCameraViewDelegate> delegate;
+@property (weak, nonatomic) id<VerbatmCameraViewDelegate> delegate;
 
 @property (nonatomic) float effectiveScale;
 @property (nonatomic) float beginGestureScale;

@@ -22,6 +22,6 @@
 
 -(instancetype) initWithFrame:(CGRect)frame shouldStartOnChannels:(BOOL) showChannels;//this tells us if we should show
 
-@property (nonatomic) id <SharePostViewDelegate> delegate;
+@property (nonatomic, weak) id <SharePostViewDelegate> delegate;
 
 @end

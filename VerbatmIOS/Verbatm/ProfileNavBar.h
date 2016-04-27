@@ -24,7 +24,7 @@
 
 @interface ProfileNavBar : UIView
 
-@property (nonatomic, strong) id<ProfileNavBarDelegate> delegate;
+@property (nonatomic, weak) id<ProfileNavBarDelegate> delegate;
 
 -(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels
 					  andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser

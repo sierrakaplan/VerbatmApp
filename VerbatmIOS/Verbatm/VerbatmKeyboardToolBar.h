@@ -23,6 +23,6 @@
 
 @interface VerbatmKeyboardToolBar : UIView
 
-@property (nonatomic, strong) id<KeyboardToolBarDelegate> delegate;
+@property (nonatomic, weak) id<KeyboardToolBarDelegate> delegate;
 
 @end

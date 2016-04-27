@@ -44,6 +44,6 @@
 
 -(void)presentAllVerbatmChannels;
 
-@property (nonatomic) id<UserAndChannelListsTVCDelegate> listDelegate;
+@property (nonatomic, weak) id<UserAndChannelListsTVCDelegate> listDelegate;
 
 @end

@@ -18,7 +18,7 @@
 
 @interface CustomScrollingTabBar : UIScrollView
 
-@property (strong, nonatomic) id<CustomScrollingTabBarDelegate> customScrollingTabBarDelegate;
+@property (weak, nonatomic) id<CustomScrollingTabBarDelegate> customScrollingTabBarDelegate;
 
 @property (nonatomic) Channel * currentChannel;
 

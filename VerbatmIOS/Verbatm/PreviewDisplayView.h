@@ -21,7 +21,7 @@
 
 @interface PreviewDisplayView : UIView
 
-@property (strong, nonatomic) id<PreviewDisplayDelegate> delegate;
+@property (weak, nonatomic) id<PreviewDisplayDelegate> delegate;
 
 -(id) initWithFrame: (CGRect)frame;
 

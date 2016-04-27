@@ -32,7 +32,7 @@
 #define IMAGE_PROGRESS_UNITS 4
 #define VIDEO_PROGRESS_UNITS 11
 
-@property (nonatomic) id<PublishingProgressProtocol> delegate;
+@property (nonatomic, weak) id<PublishingProgressProtocol> delegate;
 @property (nonatomic, readonly) NSProgress * progressAccountant;
 @property (nonatomic, readonly) BOOL currentlyPublishing;
 @property (nonatomic, readonly) Channel* currentPublishingChannel;

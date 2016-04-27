@@ -35,7 +35,7 @@ typedef enum NotificationTypes{
 @interface Intro_Instruction_Notification_View : UIImageView
 
 -(instancetype)initWithCenter:(CGPoint) center andType:(NotificationType) type;
-@property (nonatomic) id<Intro_Notification_Delegate> custom_delegate;
+@property (nonatomic, weak) id<Intro_Notification_Delegate> custom_delegate;
 
 
 @end
