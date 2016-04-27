@@ -485,28 +485,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	return _animationLabel;
 }
 
-//Declare a delegate, assign your textField to the delegate and then include these methods
-
--(BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
-    return YES;
-}
-
-
-- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
-    
-    [self.view endEditing:YES];
-    return YES;
-}
-
-
-- (void)keyboardDidShow:(NSNotification *)notification
-{
-
-    
-}
-
 -(void)keyboardDidHide:(NSNotification *)notification
 {
     [self.phoneLoginField resignFirstResponder];
