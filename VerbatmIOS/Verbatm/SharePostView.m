@@ -113,6 +113,7 @@
 		[self.shareButton addTarget:self action:@selector(followButtonSelected) forControlEvents:UIControlEventTouchUpInside];
 	}
 	[self addSubview:self.shareButton];
+    [self bringSubviewToFront:self.shareButton];
 
 }
 

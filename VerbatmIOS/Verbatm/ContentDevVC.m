@@ -55,6 +55,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 @property (strong, nonatomic) PHImageManager *imageManager;
 @property (strong, nonatomic) PHVideoRequestOptions *videoRequestOptions;
+@property (nonatomic) BOOL posted;
 
 #pragma mark Pinch Views
 

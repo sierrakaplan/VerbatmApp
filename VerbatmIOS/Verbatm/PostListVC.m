@@ -59,7 +59,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 @property (nonatomic) NSString *postVideoToShareLink;
 @property (nonatomic) NSString *postImageText;
 @property (nonatomic) PFObject *postToShare;
-@property (strong, nonatomic) BranchUniversalObject *branchUniversalObject;
+//@property (strong, nonatomic) BranchUniversalObject *branchUniversalObject;
 
 @property (nonatomic) UIImageView *reblogSucessful;
 @property (nonatomic) UIImageView *following;
@@ -552,6 +552,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 //todo: save share object
 -(void)postPostToChannels:(NSMutableArray *) channels andFacebook:(BOOL)externalSharing{
+    NSLog(@"Repost Blogs");
 	
     if(channels.count) {
 		
@@ -564,33 +565,18 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         
 	}
     
+    NSLog(@"%d", externalSharing);
     if(externalSharing){
         [self postPostExternal:externalSharing];
-        BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
-        linkProperties.feature = @"share";
-        linkProperties.channel = @"facebook";
-        
-        [self.branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
-            if (!error) {
-                NSLog(@"got my Branch invite link to share: %@", url);
-                NSURL *link = [NSURL URLWithString:url];
-                FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
-                content.contentURL = link;
-                [FBSDKShareDialog showFromViewController:self
-                                             withContent:content
-                                                delegate:nil];
-            }
-        }];
     }
     
+    self.postImageToShareLink = nil;
+    self.postVideoToShareLink = nil;
 	[self removeSharePOVView];
 }
 
 -(void)postPostExternal:(BOOL)selection{
-    self.fbShare = selection;
     if(selection){
-        NSString *postId = self.postToShare.objectId;
-        
         [Page_BackendObject getPagesFromPost:self.postToShare andCompletionBlock:^(NSArray *pages){
             PFObject *po = pages[0];
             [Photo_BackendObject getPhotosForPage:po andCompletionBlock:^(NSArray * photoObjects) {
@@ -601,32 +587,54 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
                 self.postImageToShareLink = photoLink;
                 self.postVideoToShareLink = videoLink;
                 self.postImageText = text;
-                }];
+                
+                [self postToFacebook];
+            }];
             
         }];
-    
-        PFUser *user = [PFUser currentUser];
-        NSString *name = [user valueForKey:VERBATM_USER_NAME_KEY];
-        Channel_BackendObject *channelObj = [self.postToShare valueForKey:POST_CHANNEL_KEY];
-        NSString *channelName = [channelObj valueForKey:CHANNEL_NAME_KEY];
-        
-        if([self.postImageText length] > 0)
-
-        self.branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:postId];
-        self.branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName];
-        self.branchUniversalObject.contentDescription = @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Get the app now at verbatm.io";
-        if(self.postVideoToShareLink == nil || [self.postVideoToShareLink length] == 0){
-            self.branchUniversalObject.imageUrl = self.postImageToShareLink;
-        }else{
-            self.branchUniversalObject.imageUrl = self.postVideoToShareLink;
-        }
-//        [self.branchUniversalObject addMetadataKey:@"userId" value:@"12345"];
-//        [self.branchUniversalObject addMetadataKey:@"userName" value:@"UserName"];
-//        [self.branchUniversalObject addMetadataKey:@"monsterName" value:@"Mr. Squiggles"];
     } else {
-        
+        NSLog(@"Link for external sharing not created");
     }
     
+}
+
+-(void) postToFacebook {
+    NSString *postId = self.postToShare.objectId;
+    PFUser *user = [PFUser currentUser];
+    NSString *name = [user valueForKey:VERBATM_USER_NAME_KEY];
+    Channel_BackendObject *channelObj = [self.postToShare valueForKey:POST_CHANNEL_KEY];
+    NSString *channelName = [channelObj valueForKey:CHANNEL_NAME_KEY];
+    
+    BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc]initWithCanonicalIdentifier:postId];
+    branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName];
+    branchUniversalObject.contentDescription = @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Get the app now at verbatm.io";
+
+            if(self.postVideoToShareLink == nil || [self.postVideoToShareLink length] == 0){
+                branchUniversalObject.imageUrl = self.postImageToShareLink;
+            }else{
+                branchUniversalObject.imageUrl = self.postVideoToShareLink;
+            }
+    //        [self.branchUniversalObject addMetadataKey:@"userId" value:@"12345"];
+    //        [self.branchUniversalObject addMetadataKey:@"userName" value:@"UserName"];
+    
+    BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
+    linkProperties.feature = @"share";
+    linkProperties.channel = @"facebook";
+    
+    NSLog(@"Facebook share");
+    [branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
+        if (!error) {
+            NSLog(@"got my Branch invite link to share: %@", url);
+            NSURL *link = [NSURL URLWithString:url];
+            FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
+            content.contentURL = link;
+            [FBSDKShareDialog showFromViewController:self
+                                         withContent:content
+                                            delegate:nil];
+        } else {
+            NSLog(@"An eerror occured %@", error);
+        }
+    }];
 }
 
 -(void)successfullyReblogged{
