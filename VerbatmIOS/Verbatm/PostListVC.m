@@ -62,6 +62,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 @property (nonatomic) UIImageView *publishFailed;
 
 @property (nonatomic) void(^refreshPostsCompletion)(NSArray * posts);
+@property (nonatomic) void(^loadMorePostsCompletion)(NSArray * posts);
 
 #define LOAD_MORE_POSTS_COUNT 3 //number of posts left to see before we start loading more content
 #define POST_CELL_ID @"postCellId"
@@ -136,9 +137,8 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 
 		float y = offset.x + bounds.size.width - inset.right;
 		float h = size.width;
-		if(y > h + reload_distance) {
+		if(y > h + reload_distance && !self.isRefreshing && !self.isLoadingMore) {
 			//todo:show indicator
-			NSLog(@"load more items");
 		}
 	}
 }
@@ -213,122 +213,35 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 		}
 		weakSelf.isRefreshing = NO;
 	};
+
+	self.loadMorePostsCompletion = ^void(NSArray *posts) {
+		[weakSelf.parsePostObjects addObjectsFromArray:posts];
+		[weakSelf.collectionView reloadData];
+		weakSelf.isLoadingMore = NO;
+	};
 }
 
 -(void) refreshPosts {
 	if (self.isRefreshing) return;
 	self.isRefreshing = YES;
+	self.isLoadingMore = NO;
 	[self.customActivityIndicator startCustomActivityIndicator];
 	if(self.listType == listFeed){
 		[self.feedQueryManager refreshFeedWithCompletionHandler:self.refreshPostsCompletion];
 	} else if (self.listType == listChannel) {
 		//todo: load in chunks
-		[PostsQueryManager getPostsInChannel:self.channelForList withLimit:20 withCompletionBlock:self.refreshPostsCompletion];
+		[PostsQueryManager getPostsInChannel:self.channelForList withLimit:30 withCompletionBlock:self.refreshPostsCompletion];
 	}
 }
 
-//TODO:
-//-(void) loadMorePosts {
-//	[self.customActivityIndicator startCustomActivityIndicator];
-//	if(self.listType == listFeed) {
-//		[self.feedQueryManager loadMorePostsWithCompletionHandler:^(NSArray * posts) {
-//			[self.customActivityIndicator stopCustomActivityIndicator];
-//			if(posts.count){
-//				[self loadNewBackendPosts:posts];
-//				[self removePresentLabel];
-//			} else if(self.presentedPostList.count == 0) {
-//				[self nothingToPresentHere];
-//			}
-//		}];
-//
-//	} else if (self.listType == listChannel) {
-//		[self loadCurrentChannel];
-//	}
-//}
-
-//todo:
-//-(void)clearOldPosts {
-	//	for(PostView * view in self.presentedPostList){
-	//		[view removeFromSuperview];
-	//		[view clearPost];
-	//	}
-	//	[self.presentedPostList removeAllObjects];
-//}
-
-//-(void)loadNewBackendPosts:(NSArray *) backendPostObjects{
-//	NSMutableArray * postLoadPromises = [[NSMutableArray alloc] init];
-//
-//	for(PFObject * postChannelActivityObject in backendPostObjects) {
-//		AnyPromise * promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
-//			PFObject * post = [postChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST];
-//			[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
-//				PostView *postView = [[PostView alloc] initWithFrame:self.view.bounds andPostChannelActivityObject:postChannelActivityObject
-//															   small:NO];
-//
-//				NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
-//
-//				[postView renderPostFromPageObjects: pages];
-//				[postView postOffScreen];
-//				postView.delegate = self;
-//				postView.listChannel = self.channelForList;
-//				[self.presentedPostList addObject:postView];
-//				resolve(nil);
-//
-//				AnyPromise *likesPromise = [Like_BackendManager numberOfLikesForPost:post];
-//				AnyPromise *sharesPromise = [Share_BackendManager numberOfSharesForPost:post];
-//				PMKWhen(@[likesPromise, sharesPromise]).then(^(NSArray *likesAndShares) {
-//					NSNumber *numLikes = likesAndShares[0];
-//					NSNumber *numShares = likesAndShares[1];
-//					[postView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
-//													   numberOfPages:numberOfPages
-//											   andStartingPageNumber:@(1)
-//															 startUp:self.footerBarIsUp
-//													withDeleteButton:self.isCurrentUserProfile];
-//					[postView addCreatorInfo];
-//				});
-//			}];
-//		}];
-//
-//		[postLoadPromises addObject:promise];
-//	}
-//
-//	//when all pages are loaded then we reload our list
-//	PMKWhen(postLoadPromises).then(^(id data){
-//		if (self.listType == listFeed) {
-//			[self sortOurPostListEarliestToLatest: NO];
-//		} else {
-//			[self sortOurPostListEarliestToLatest: YES];
-//		}
-//		dispatch_async(dispatch_get_main_queue(), ^{
-//			//prepare the first post object
-//			if(self.shouldPlayVideos && !self.isReloading)[(PostView *)self.presentedPostList.firstObject postOnScreen];
-//			[self.collectionView reloadData];
-//			self.isReloading = NO;
-//		});
-//	});
-//}
-
-//-(void)sortOurPostListEarliestToLatest: (BOOL) earliestToLatest {
-//	[self.presentedPostList sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
-//		PostView * view1 = obj1;
-//		PostView * view2 = obj2;
-//
-//		PFObject * pc_activityA = view1.parsePostChannelActivityObject;
-//		PFObject * pc_activityB = view2.parsePostChannelActivityObject;
-//
-//		NSTimeInterval distanceBetweenDates = [[pc_activityA createdAt] timeIntervalSinceDate:[pc_activityB createdAt]];
-//		double secondsInMinute = 60;
-//		NSInteger secondsBetweenDates = distanceBetweenDates / secondsInMinute;
-//
-//		if (secondsBetweenDates == 0)
-//			return NSOrderedSame;
-//		else if (secondsBetweenDates < 0)
-//			return earliestToLatest ? NSOrderedAscending : NSOrderedDescending;
-//		else
-//			return earliestToLatest ? NSOrderedDescending : NSOrderedAscending;
-//
-//	}];
-//}
+-(void) loadMorePosts {
+	self.isLoadingMore = YES;
+	if (self.listType == listFeed) {
+		[self.feedQueryManager loadMorePostsWithCompletionHandler:self.loadMorePostsCompletion];
+	} else if (self.listType == listChannel) {
+		//todo: load in chunks
+	}
+}
 
 #pragma mark - DataSource -
 
@@ -366,9 +279,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	if (self.nextCellToPresent) [self.nextCellToPresent almostOnScreen];
 
 	// Load more posts
-	if(indexPath.row >= (self.parsePostObjects.count - LOAD_MORE_POSTS_COUNT)) {
-		//todo:
-		//		[self loadMorePosts];
+	if(indexPath.row >= (self.parsePostObjects.count - LOAD_MORE_POSTS_COUNT)
+	   && !self.isLoadingMore && !self.isRefreshing) {
+		[self loadMorePosts];
 	}
 
 	return currentCell;
