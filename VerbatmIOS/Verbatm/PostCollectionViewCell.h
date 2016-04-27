@@ -10,8 +10,19 @@
 #import <Parse/PFObject.h>
 #import "PostView.h"
 
+@protocol PostCollectionViewCellDelegate <NSObject>
+
+-(void) shareOptionSelectedForParsePostObject: (PFObject* ) post;
+-(void) channelSelected:(Channel *) channel;
+-(void) deleteButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post andPostChannelActivityObj:(PFObject*)pfActivityObj
+							 reblogged:(BOOL)reblogged;
+-(void) flagButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post;
+
+@end
+
 @interface PostCollectionViewCell : UICollectionViewCell
 
+@property (nonatomic, strong) id<PostCollectionViewCellDelegate> cellDelegate;
 @property (nonatomic, readonly) PostView *currentPostView;
 @property (nonatomic, readonly) PFObject *currentPostActivityObject;
 

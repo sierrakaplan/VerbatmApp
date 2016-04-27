@@ -84,7 +84,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 										  } else {
 											  //NSLog(@"Successfully retrieved data from url");
 											  resolve(data);
-//											  [[NSURLCache sharedURLCache] removeAllCachedResponses];
+											  [[NSURLCache sharedURLCache] removeAllCachedResponses];
 										  }
 		}];
 		[task resume];

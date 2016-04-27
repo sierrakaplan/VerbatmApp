@@ -116,6 +116,25 @@
 	}
 }
 
+#pragma mark - Post view delegate -
+
+-(void) shareOptionSelectedForParsePostObject: (PFObject* ) post {
+	[self.cellDelegate shareOptionSelectedForParsePostObject:post];
+}
+
+-(void) channelSelected:(Channel *) channel {
+	[self.cellDelegate channelSelected:channel];
+}
+
+-(void) deleteButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post reblogged: (BOOL)reblogged {
+	[self.cellDelegate deleteButtonSelectedOnPostView:postView withPostObject:post
+							andPostChannelActivityObj:self.currentPostActivityObject reblogged:reblogged];
+}
+
+-(void) flagButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post {
+	[self.cellDelegate flagButtonSelectedOnPostView:postView withPostObject:post];
+}
+
 #pragma mark - Lazy Instantiation -
 
 -(UIActivityIndicatorView*) activityIndicator {

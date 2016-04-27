@@ -73,7 +73,8 @@
 -(void)createAndSaveParseVideoObjectWithBlobStoreUrl:(NSString *) blobStoreVideoUrl
                                thumbnail:(UIImage *) thumbnail andPageObject:(PFObject *)pageObject{
     if(!self.mediaPublisher)self.mediaPublisher = [[PostPublisher alloc] init];
-    
+
+	//todo:get data for thumbnail in background
     [self.mediaPublisher storeImage:UIImagePNGRepresentation(thumbnail)].then(^(NSString* blobstoreUrl) {
 		NSLog(@"Now saving parse video object...");
         PFObject * newVideoObj = [PFObject objectWithClassName:VIDEO_PFCLASS_KEY];

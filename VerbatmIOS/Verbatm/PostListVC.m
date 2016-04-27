@@ -34,7 +34,8 @@
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
-@interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource, SharePostViewDelegate, UIScrollViewDelegate>
+@interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource, SharePostViewDelegate,
+UIScrollViewDelegate, PostCollectionViewCellDelegate>
 
 @property (nonatomic) PostListType listType;
 @property (nonatomic) BOOL isCurrentUserProfile;
@@ -341,6 +342,7 @@
 }
 
 #pragma mark - ViewDelegate -
+
 - (BOOL)collectionView: (UICollectionView *)collectionView
 shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	return NO;
@@ -375,6 +377,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(PostCollectionViewCell*) postCellAtIndexPath:(NSIndexPath *)indexPath {
 	if (indexPath.row >= self.parsePostObjects.count) return nil;
 	PostCollectionViewCell *cell = (PostCollectionViewCell *) [self.collectionView dequeueReusableCellWithReuseIdentifier:POST_CELL_ID forIndexPath:indexPath];
+	cell.cellDelegate = self;
 	PFObject *postObject = self.parsePostObjects[indexPath.row];
 	if (cell.currentPostActivityObject != postObject) {
 		[cell clearViews];
@@ -396,14 +399,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	return self.collectionView.contentOffset.x / self.view.frame.size.width;
 }
 
-// Marks all posts as off screen
-//-(void) stopAllVideoContent {
-//	self.shouldPlayVideos = NO;
-//	for (NSInteger i = 0; i < [self.collectionView numberOfItemsInSection:0]; ++i) {
-//		[(PostCollectionViewCell*)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]] offScreen];
-//	}
-//}
-
 // Tells post it's on screen
 -(void) continueVideoContent {
 	self.shouldPlayVideos = YES;
@@ -424,189 +419,161 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}
 }
 
-#pragma mark - Scrollview delegate -
+#pragma mark - PostCollectionViewCell delegate -
 
-//todo:
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView  {
-	//    NSInteger visibleIndex = [self getVisibileCellIndex];
-	//    if(visibleIndex < self.presentedPostList.count){
-	//        PostView * currentView = self.presentedPostList[visibleIndex];
-	//        [self turnOffCellsOffScreenWithVisibleCell:currentView];
-	//        [self prepareNextViewAfterVisibleIndex:visibleIndex];
-	//
-	//    }
+#pragma mark - Deleting -
+
+-(void) deleteButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post
+			 andPostChannelActivityObj:(PFObject *)pfActivityObj reblogged:(BOOL)reblogged {
+	if (reblogged) {
+		[self deleteReblog:post onPostView:postView withPostChannelActivityObj:pfActivityObj];
+		return;
+	}
+	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
+																   message:@"Entire post will be deleted."
+															preferredStyle:UIAlertControllerStyleAlert];
+
+	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
+														 handler:^(UIAlertAction * action) {}];
+	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+		NSInteger postIndex = [self.parsePostObjects indexOfObject: pfActivityObj];
+		[self removePostAtIndex: postIndex];
+		[postView clearPost];
+		[Post_BackendObject deletePost:post];
+	}];
+
+	[alert addAction: cancelAction];
+	[alert addAction: deleteAction];
+	[self presentViewController:alert animated:YES completion:nil];
 }
 
-//-(void)prepareNextViewAfterVisibleIndex:(NSInteger) visibleIndex{
-//	for(NSInteger i = 0; i < self.presentedPostList.count; i++){
-//		PostView * view = self.presentedPostList[i];
-//		if((i > visibleIndex) && (i < (visibleIndex + NUM_POVS_TO_PREPARE_EARLY))){
-//			[view presentMediaContent];
-//		}
-//	}
-//}
+-(void) deleteReblog:(PFObject *)post onPostView:(PostView *)postView withPostChannelActivityObj:(PFObject *)pfActivityObj {
+	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
+																   message:@"Are you sure you want to delete this reblogged post from your channel?"
+															preferredStyle:UIAlertControllerStyleAlert];
 
--(void)turnOffCellsOffScreenWithVisibleCell:(PostView *)visibleCell{
-	//    if(visibleCell && (self.lastVisibleCell != visibleCell)){
-	//		if(self.lastVisibleCell) {
-	//			[self.lastVisibleCell postOffScreen];
-	//			self.lastVisibleCell = visibleCell;
-	//		}else{
-	//            if([self.presentedPostList indexOfObject:visibleCell] != 0){
-	//                [(PostView *)self.presentedPostList[0] postOffScreen];
-	//            }
-	//			self.lastVisibleCell = visibleCell;
-	//		}
-	//		[visibleCell postOnScreen];
-	//	}
+	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
+														 handler:^(UIAlertAction * action) {}];
+	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+		NSInteger postIndex = [self.parsePostObjects indexOfObject: pfActivityObj];
+		[self removePostAtIndex: postIndex];
+		[postView clearPost];
+		[postView.parsePostChannelActivityObject deleteInBackground];
+	}];
+
+	[alert addAction: cancelAction];
+	[alert addAction: deleteAction];
+	[self presentViewController:alert animated:YES completion:nil];
 }
-//
-//-(void) deleteButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post reblogged:(BOOL)reblogged {
-//	if (reblogged) {
-//		[self deleteReblog:post onPostView:postView];
-//		return;
-//	}
-//	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
-//																   message:@"Entire post will be deleted."
-//															preferredStyle:UIAlertControllerStyleAlert];
-//
-//	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
-//														 handler:^(UIAlertAction * action) {}];
-//	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-//		NSInteger postIndex = [self.presentedPostList indexOfObject: postView];
-//		[self removePostAtIndex: postIndex];
-//		[postView clearPost];
-//		[Post_BackendObject deletePost:post];
-//	}];
-//
-//	[alert addAction: cancelAction];
-//	[alert addAction: deleteAction];
-//	[self presentViewController:alert animated:YES completion:nil];
-//}
-//
-//-(void)flagButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post{
-//
-//    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Flag Post"
-//                                                                   message:@"Are you sure you want to flag the content of this post? We will review it ASAP."
-//                                                            preferredStyle:UIAlertControllerStyleAlert];
-//
-//    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
-//                                                         handler:^(UIAlertAction * action) {}];
-//    UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-//        [Post_BackendObject markPostAsFlagged:post];
-//    }];
-//
-//    [alert addAction: cancelAction];
-//    [alert addAction: deleteAction];
-//    [self presentViewController:alert animated:YES completion:nil];
-//
-//}
-//
-//
-//-(void) deleteReblog:(PFObject *)post onPostView:(PostView *)postView {
-//	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
-//																   message:@"Are you sure you want to delete this reblogged post from your channel?"
-//															preferredStyle:UIAlertControllerStyleAlert];
-//
-//	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
-//														 handler:^(UIAlertAction * action) {}];
-//	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-//		NSInteger postIndex = [self.presentedPostList indexOfObject: postView];
-//		[self removePostAtIndex: postIndex];
-//		[postView clearPost];
-//		[postView.parsePostChannelActivityObject deleteInBackground];
-//	}];
-//
-//	[alert addAction: cancelAction];
-//	[alert addAction: deleteAction];
-//	[self presentViewController:alert animated:YES completion:nil];
-//}
-//
-//-(void)removePostAtIndex:(NSInteger)i {
-//	[self.collectionView performBatchUpdates: ^ {
-//		[self.presentedPostList removeObjectAtIndex:i];
-//		NSIndexPath *indexPath =[NSIndexPath indexPathForRow:i inSection:0];
-//		[self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
-//		if (self.presentedPostList.count < 1) {
-//			[self nothingToPresentHere];
-//		}
-//	} completion:^(BOOL finished) {
-//
-//	}];
-//}
-//
-//-(void) shareOptionSelectedForParsePostObject: (PFObject* )post {
-//	[self.postListDelegate hideNavBarIfPresent];
-//	self.postToShare = post;
-//	[self presentShareSelectionViewStartOnChannels:YES];
-//}
-//
-//-(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels{
-//	if(self.sharePostView){
-//		[self.sharePostView removeFromSuperview];
-//		self.sharePostView = nil;
-//	}
-//
-//	CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
-//	CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-//	self.sharePostView = [[SharePostView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
-//	self.sharePostView.delegate = self;
-//	[self.view addSubview:self.sharePostView];
-//	[self.view bringSubviewToFront:self.sharePostView];
-//	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^ {
-//		self.sharePostView.frame = onScreenFrame;
-//	}];
-//}
-//
-//-(void)removeSharePOVView{
-//	if(self.sharePostView){
-//		CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-//		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-//			self.sharePostView.frame = offScreenFrame;
-//		}completion:^(BOOL finished) {
-//			if(finished){
-//				[self.sharePostView removeFromSuperview];
-//				self.sharePostView = nil;
-//			}
-//		}];
-//	}
-//}
+
+-(void)removePostAtIndex:(NSInteger)i {
+	[self.collectionView performBatchUpdates: ^ {
+		[self.parsePostObjects removeObjectAtIndex:i];
+		NSIndexPath *indexPath =[NSIndexPath indexPathForRow:i inSection:0];
+		[self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
+		if (self.parsePostObjects.count < 1) {
+			[self nothingToPresentHere];
+		}
+	} completion:^(BOOL finished) {
+
+	}];
+}
+
+#pragma mark Flagging
+
+-(void)flagButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post{
+
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Flag Post"
+                                                                   message:@"Are you sure you want to flag the content of this post? We will review it ASAP."
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) {}];
+    UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [Post_BackendObject markPostAsFlagged:post];
+    }];
+
+    [alert addAction: cancelAction];
+    [alert addAction: deleteAction];
+    [self presentViewController:alert animated:YES completion:nil];
+
+}
+
+#pragma mark Sharing
+
+-(void) shareOptionSelectedForParsePostObject: (PFObject* )post {
+	[self.postListDelegate hideNavBarIfPresent];
+	self.postToShare = post;
+	[self presentShareSelectionViewStartOnChannels:YES];
+}
+
+-(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels {
+	if(self.sharePostView){
+		[self.sharePostView removeFromSuperview];
+		self.sharePostView = nil;
+	}
+
+	CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
+	CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+	self.sharePostView = [[SharePostView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
+	self.sharePostView.delegate = self;
+	[self.view addSubview:self.sharePostView];
+	[self.view bringSubviewToFront:self.sharePostView];
+	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^ {
+		self.sharePostView.frame = onScreenFrame;
+	}];
+}
+
+-(void)removeSharePOVView{
+	if(self.sharePostView){
+		CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+			self.sharePostView.frame = offScreenFrame;
+		}completion:^(BOOL finished) {
+			if(finished){
+				[self.sharePostView removeFromSuperview];
+				self.sharePostView = nil;
+			}
+		}];
+	}
+}
 
 #pragma mark -Share Seletion View Protocol -
-//-(void)cancelButtonSelected{
-//	[self removeSharePOVView];
-//}
-//
-////todo: save share object
-//-(void)postPostToChannels:(NSMutableArray *) channels{
-//
-//    if(channels.count) {
-//
-//        [Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
-//			dispatch_async(dispatch_get_main_queue(), ^{
-//				[self successfullyReblogged];
-//			});
-//		}];
-//
-//
-//	}
-//
-//	[self removeSharePOVView];
-//}
-//
-//-(void)successfullyReblogged{
-//	[self.view addSubview:self.reblogSucessful];
-//	[self.view bringSubviewToFront:self.reblogSucessful];
-//
-//	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-//		self.reblogSucessful.alpha = 0.f;
-//	}completion:^(BOOL finished) {
-//
-//        [self.reblogSucessful removeFromSuperview];
-//		self.reblogSucessful = nil;
-//	}];
-//}
-//
+
+-(void)cancelButtonSelected{
+	[self removeSharePOVView];
+}
+
+//todo: save share object
+-(void)postPostToChannels:(NSMutableArray *) channels{
+
+    if(channels.count) {
+
+        [Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[self successfullyReblogged];
+			});
+		}];
+
+
+	}
+
+	[self removeSharePOVView];
+}
+
+-(void)successfullyReblogged{
+	[self.view addSubview:self.reblogSucessful];
+	[self.view bringSubviewToFront:self.reblogSucessful];
+
+	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
+		self.reblogSucessful.alpha = 0.f;
+	}completion:^(BOOL finished) {
+
+        [self.reblogSucessful removeFromSuperview];
+		self.reblogSucessful = nil;
+	}];
+}
+
 
 #pragma mark - Notifications (publishing, following) -
 

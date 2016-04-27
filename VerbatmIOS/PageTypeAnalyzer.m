@@ -165,7 +165,7 @@
 			smallImageUri = [uri substringWithRange:NSMakeRange(0, uri.length-suffix.length)];
 		}
 
-		AnyPromise* getImageDataPromise = [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString: uri]];
+		AnyPromise* getImageDataPromise = [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString: smallImageUri]];
 		[loadImageDataPromises addObject: getImageDataPromise];
 	}
 	PMKWhen(loadImageDataPromises).then(^(NSArray* results) {

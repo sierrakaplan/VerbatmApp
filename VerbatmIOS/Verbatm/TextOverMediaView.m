@@ -58,26 +58,23 @@
 			});
 
 			// After larger image loads, crop it and set it in the image
-			// Only load large image if small image is less than 300KB or it's been published already cropped (with s0 tag)
-			if (!small && (self.smallImageData.length / 1024.f < 300 || [imageUrl.absoluteString hasSuffix:@"=s0"])) {
-				NSURL *largeImageUrl = imageUrl;
-				if (![imageUrl.absoluteString hasSuffix:@"=s0"]) {
-					NSString *imageURI = [imageUrl.absoluteString stringByAppendingString:@"=s0"];
-					largeImageUrl = [NSURL URLWithString:imageURI];
-				}
-				AnyPromise *loadLargeImageData = [UtilityFunctions loadCachedPhotoDataFromURL:largeImageUrl];
+			// Only load large image if it's been published already cropped (with s0 tag)
+			if (!small && [imageUrl.absoluteString hasSuffix:@"=s0"]) {
+				AnyPromise *loadLargeImageData = [UtilityFunctions loadCachedPhotoDataFromURL:imageUrl];
 				loadLargeImageData.then(^(NSData* largeImageData) {
 					NSLog(@"small image data size: %fKB", self.smallImageData.length / 1024.f);
-					NSLog(@"large image data size: %fKB for url %@", largeImageData.length / 1024.f, largeImageUrl);
+					NSLog(@"large image data size: %fKB for url %@", largeImageData.length / 1024.f, imageUrl);
 					// Only display larger data if less than 1000 KB
 					if (largeImageData.length / 1024.f < 1000) {
 						UIImage *image = [UIImage imageWithData:largeImageData];
 						if (largeImageData.length / 1024.f > 500) {
 							image = [image imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width*2, self.bounds.size.height*2)];
 						}
-						self.largeImageData = UIImagePNGRepresentation(image);
-						dispatch_async(dispatch_get_main_queue(), ^{
-							if (self.displayingLargeImage) [self.imageView setImage: image];
+						dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+							self.largeImageData = UIImagePNGRepresentation(image);
+							dispatch_async(dispatch_get_main_queue(), ^{
+								if (self.displayingLargeImage) [self.imageView setImage: image];
+							});
 						});
 
 
