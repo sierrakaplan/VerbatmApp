@@ -41,6 +41,8 @@
 #import "VerbatmCameraView.h"
 #import "VideoPinchView.h"
 #import "SharePostView.h"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
 
 @interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,Intro_Notification_Delegate,
 GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNavigationBarDelegate, PreviewDisplayDelegate, VerbatmCameraViewDelegate, SharePostViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate>
@@ -484,7 +486,7 @@ rowHeightForComponent:(NSInteger)component{
 
 #pragma mark Preview Button
 -(void) rightButtonPressed {
-    
+//    
 //    self.sharePostView = [[SharePostView alloc] initWithFrame:CGRectMake(self.view.center.x/3, self.view.center.y/3, self.view.bounds.size.width * 0.67, self.view.bounds.size.height * 0.67) shouldStartOnChannels:NO];
 //    self.sharePostView.delegate = self;
 //    [self.view addSubview:self.sharePostView];
@@ -2043,6 +2045,26 @@ andSaveInUserDefaults:(BOOL)save {
 //todo: save share object
 -(void)postPostToChannels:(NSMutableArray *) channels andFacebook:(BOOL)externalSharing{
     
+//    if ([FBSDKAccessToken currentAccessToken]) {
+//        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+//                                       @"Damas", @"name",
+//                                       @"Yoooo! FB Graph API test", @"caption",
+//                                       @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content.", @"description",
+//                                       @"http://verbatm.io", @"link",
+//                                       //       @"http://i.imgur.com/g3Qc1HN.png", @"picture",
+//                                       nil];
+//        FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:params HTTPMethod:@"POST"];
+//        
+//       
+//
+//        [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+//             if (!error) {
+//                 NSLog(@"fetched user:%@", result);
+//             } else {
+//                 NSLog(@"An error has occured %@", error);
+//             }
+//         }];
+//    }
     
     [self removeSharePOVView];
 }
