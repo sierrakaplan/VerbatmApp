@@ -38,6 +38,8 @@
 
 @property (nonatomic) NSMutableArray *parsePostObjects;
 @property (strong, nonatomic) FeedQueryManager * feedQueryManager;
+@property (nonatomic) NSInteger nextIndexToPresent;
+@property (strong, nonatomic) PostCollectionViewCell *nextCellToPresent;
 @property (nonatomic, strong) UILabel * noContentLabel;
 
 @property (nonatomic) PostView *lastVisibleCell;
@@ -67,18 +69,25 @@
 @implementation PostListVC
 
 -(void) viewDidLoad {
+	self.nextIndexToPresent = 0;
 	[self defineRefreshPostsCompletion];
 	[self setDateSourceAndDelegate];
 	[self registerClassForCustomCells];
 	[self refreshPosts];
 	self.shouldPlayVideos = YES;
-    self.footerBarIsUp = (self.listType == listFeed || self.isCurrentUserProfile);
+	self.footerBarIsUp = (self.listType == listFeed || self.isCurrentUserProfile);
 	[self registerForNotifications];
 }
 
--(void) viewWillDisappear:(BOOL)animated {
-	[super viewWillDisappear:animated];
-	[self stopAllVideoContent];
+-(void) viewDidDisappear:(BOOL)animated {
+	[super viewDidDisappear:animated];
+	[self offScreen];
+}
+
+-(void) offScreen {
+	for (NSInteger i = 0; i < [self.collectionView numberOfItemsInSection:0]; ++i) {
+		[(PostCollectionViewCell*)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]] offScreen];
+	}
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -176,13 +185,13 @@
 }
 
 -(void) refreshPosts {
-    [self.customActivityIndicator startCustomActivityIndicator];
+	[self.customActivityIndicator startCustomActivityIndicator];
 	if(self.listType == listFeed){
 		[self.feedQueryManager refreshFeedWithCompletionHandler:self.refreshPostsCompletion];
-    } else if (self.listType == listChannel) {
+	} else if (self.listType == listChannel) {
 		//todo: load in chunks
-        [PostsQueryManager getPostsInChannel:self.channelForList withLimit:20 withCompletionBlock:self.refreshPostsCompletion];
-    }
+		[PostsQueryManager getPostsInChannel:self.channelForList withLimit:20 withCompletionBlock:self.refreshPostsCompletion];
+	}
 }
 
 //TODO:
@@ -206,11 +215,11 @@
 
 //todo:
 -(void)clearOldPosts {
-//	for(PostView * view in self.presentedPostList){
-//		[view removeFromSuperview];
-//		[view clearPost];
-//	}
-//	[self.presentedPostList removeAllObjects];
+	//	for(PostView * view in self.presentedPostList){
+	//		[view removeFromSuperview];
+	//		[view clearPost];
+	//	}
+	//	[self.presentedPostList removeAllObjects];
 }
 
 //-(void)loadNewBackendPosts:(NSArray *) backendPostObjects{
@@ -308,41 +317,61 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
 				  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
 
-	PostCollectionViewCell * nextCellToBePresented = (PostCollectionViewCell *) [collectionView dequeueReusableCellWithReuseIdentifier:POST_CELL_ID forIndexPath:indexPath];
-
-	if(indexPath.row < self.parsePostObjects.count) {
-		PFObject *postObject = self.parsePostObjects[indexPath.row];
-		[nextCellToBePresented presentPostFromPCActivityObj:postObject andChannel:self.channelForList
-										   withDeleteButton:self.isCurrentUserProfile];
-
-		if(indexPath.row == [self getVisibileCellIndex]) {
-			[nextCellToBePresented onScreen];
-			[self prepareNextViewAfterVisibleIndex:indexPath.row];
-		}
+	PostCollectionViewCell *currentCell;
+	if (indexPath.row == self.nextIndexToPresent) {
+		currentCell = self.nextCellToPresent;
 	}
+	if (currentCell == nil) {
+		currentCell = [self postCellAtIndexPath:indexPath];
+	}
+	[currentCell onScreen];
+
+	//Prepare next cell
+	self.nextIndexToPresent = indexPath.row+1;
+	self.nextCellToPresent = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextIndexToPresent inSection:indexPath.section]];
+	if (self.nextCellToPresent) [self.nextCellToPresent almostOnScreen];
 
 	// Load more posts
 	if(indexPath.row >= (self.parsePostObjects.count - LOAD_MORE_POSTS_COUNT) && !self.isReloading) {
 		self.isReloading = YES;
 		//todo:
-//		[self loadMorePosts];
+		//		[self loadMorePosts];
 	}
 
-	return nextCellToBePresented;
+	return currentCell;
 }
 
+-(PostCollectionViewCell*) postCellAtIndexPath:(NSIndexPath *)indexPath {
+	if (indexPath.row >= self.parsePostObjects.count) return nil;
+	PostCollectionViewCell *cell = (PostCollectionViewCell *) [self.collectionView dequeueReusableCellWithReuseIdentifier:POST_CELL_ID forIndexPath:indexPath];
+	PFObject *postObject = self.parsePostObjects[indexPath.row];
+	if (cell.currentPostActivityObject != postObject) {
+		[cell clearViews];
+		[cell presentPostFromPCActivityObj:postObject andChannel:self.channelForList
+						  withDeleteButton:self.isCurrentUserProfile];
+	}
+	return cell;
+}
 
+- (void) collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+	// If the indexpath is not within visible objects then it is offscreen
+	if ([collectionView.indexPathsForVisibleItems indexOfObject:indexPath] == NSNotFound) {
+		[(PostCollectionViewCell*)cell offScreen];
+	}
+}
+
+//todo: delete?
 -(CGFloat) getVisibileCellIndex{
 	return self.collectionView.contentOffset.x / self.view.frame.size.width;
 }
 
 // Marks all posts as off screen
--(void) stopAllVideoContent {
-	self.shouldPlayVideos = NO;
-	for (NSInteger i = 0; i < [self.collectionView numberOfItemsInSection:0]; ++i) {
-		[(PostCollectionViewCell*)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]] offScreen];
-	}
-}
+//-(void) stopAllVideoContent {
+//	self.shouldPlayVideos = NO;
+//	for (NSInteger i = 0; i < [self.collectionView numberOfItemsInSection:0]; ++i) {
+//		[(PostCollectionViewCell*)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]] offScreen];
+//	}
+//}
 
 // Tells post it's on screen
 -(void) continueVideoContent {
@@ -350,11 +379,11 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	NSInteger visibleCellIndex = [self getVisibileCellIndex];
 	if(visibleCellIndex < self.parsePostObjects.count) {
 		[(PostCollectionViewCell*)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:visibleCellIndex inSection:0]] onScreen];
-    }
+	}
 }
 
 -(void) footerShowing: (BOOL) showing {
-    self.footerBarIsUp = showing;
+	self.footerBarIsUp = showing;
 	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 		[self setNeedsStatusBarAppearanceUpdate];
 	} completion:^(BOOL finished) {
@@ -368,37 +397,37 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 //todo:
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView  {
-//    NSInteger visibleIndex = [self getVisibileCellIndex];
-//    if(visibleIndex < self.presentedPostList.count){
-//        PostView * currentView = self.presentedPostList[visibleIndex];
-//        [self turnOffCellsOffScreenWithVisibleCell:currentView];
-//        [self prepareNextViewAfterVisibleIndex:visibleIndex];
-//        
-//    }
+	//    NSInteger visibleIndex = [self getVisibileCellIndex];
+	//    if(visibleIndex < self.presentedPostList.count){
+	//        PostView * currentView = self.presentedPostList[visibleIndex];
+	//        [self turnOffCellsOffScreenWithVisibleCell:currentView];
+	//        [self prepareNextViewAfterVisibleIndex:visibleIndex];
+	//
+	//    }
 }
 
--(void)prepareNextViewAfterVisibleIndex:(NSInteger) visibleIndex{
+//-(void)prepareNextViewAfterVisibleIndex:(NSInteger) visibleIndex{
 //	for(NSInteger i = 0; i < self.presentedPostList.count; i++){
 //		PostView * view = self.presentedPostList[i];
 //		if((i > visibleIndex) && (i < (visibleIndex + NUM_POVS_TO_PREPARE_EARLY))){
 //			[view presentMediaContent];
 //		}
 //	}
-}
+//}
 
 -(void)turnOffCellsOffScreenWithVisibleCell:(PostView *)visibleCell{
-//    if(visibleCell && (self.lastVisibleCell != visibleCell)){
-//		if(self.lastVisibleCell) {
-//			[self.lastVisibleCell postOffScreen];
-//			self.lastVisibleCell = visibleCell;
-//		}else{
-//            if([self.presentedPostList indexOfObject:visibleCell] != 0){
-//                [(PostView *)self.presentedPostList[0] postOffScreen];
-//            }
-//			self.lastVisibleCell = visibleCell;
-//		}
-//		[visibleCell postOnScreen];
-//	}
+	//    if(visibleCell && (self.lastVisibleCell != visibleCell)){
+	//		if(self.lastVisibleCell) {
+	//			[self.lastVisibleCell postOffScreen];
+	//			self.lastVisibleCell = visibleCell;
+	//		}else{
+	//            if([self.presentedPostList indexOfObject:visibleCell] != 0){
+	//                [(PostView *)self.presentedPostList[0] postOffScreen];
+	//            }
+	//			self.lastVisibleCell = visibleCell;
+	//		}
+	//		[visibleCell postOnScreen];
+	//	}
 }
 //
 //-(void) deleteButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post reblogged:(BOOL)reblogged {
@@ -425,21 +454,21 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 //}
 //
 //-(void)flagButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post{
-//    
+//
 //    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Flag Post"
 //                                                                   message:@"Are you sure you want to flag the content of this post? We will review it ASAP."
 //                                                            preferredStyle:UIAlertControllerStyleAlert];
-//    
+//
 //    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
 //                                                         handler:^(UIAlertAction * action) {}];
 //    UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
 //        [Post_BackendObject markPostAsFlagged:post];
 //    }];
-//    
+//
 //    [alert addAction: cancelAction];
 //    [alert addAction: deleteAction];
 //    [self presentViewController:alert animated:YES completion:nil];
-//    
+//
 //}
 //
 //
@@ -519,29 +548,29 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 //
 ////todo: save share object
 //-(void)postPostToChannels:(NSMutableArray *) channels{
-//	
+//
 //    if(channels.count) {
-//		
+//
 //        [Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
 //			dispatch_async(dispatch_get_main_queue(), ^{
 //				[self successfullyReblogged];
 //			});
 //		}];
-//        
-//        
+//
+//
 //	}
-//    
+//
 //	[self removeSharePOVView];
 //}
 //
 //-(void)successfullyReblogged{
 //	[self.view addSubview:self.reblogSucessful];
 //	[self.view bringSubviewToFront:self.reblogSucessful];
-//    
+//
 //	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
 //		self.reblogSucessful.alpha = 0.f;
 //	}completion:^(BOOL finished) {
-//		
+//
 //        [self.reblogSucessful removeFromSuperview];
 //		self.reblogSucessful = nil;
 //	}];

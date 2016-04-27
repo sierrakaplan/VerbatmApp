@@ -209,6 +209,8 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	self.imageIndex = index;
 	self.textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
 															andImage:filteredImages[index]];
+	//todo: only do this when it's on screen
+	[self.textAndImageView displayLargeImage:YES];
 	self.filteredImages = filteredImages;
 	[self addSubview: self.textAndImageView];
 	[self addPanGestures];

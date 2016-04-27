@@ -85,6 +85,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 @property (nonatomic) BOOL pageUpIndicatorDisplayed;
 
 @property(nonatomic) BOOL postIsCurrentlyBeingShown;
+@property(nonatomic) BOOL postIsAlmostOnScreen;
 @property(nonatomic) BOOL postMuted;
 
 //Tells whether should display media in small format
@@ -327,7 +328,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 -(void) displayMediaOnCurrentPage {
 	NSInteger currentViewableIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
 	NSInteger indexBelow = currentViewableIndex +1;
-	
+
 	if (self.pageUpIndicatorDisplayed) {
 		PageViewingExperience* pageBelow = [self.pageViews objectForKey:[NSNumber numberWithInteger:indexBelow]];
 		if (pageBelow) {
@@ -489,12 +490,16 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	}
 
 	PMKWhen(downloadPromises).then(^(id data){
-		if (self.postIsCurrentlyBeingShown){
-			dispatch_async(dispatch_get_main_queue(), ^{
+
+		dispatch_async(dispatch_get_main_queue(), ^{
+			if (self.postIsCurrentlyBeingShown || self.postIsAlmostOnScreen) {
 				[self presentMediaContent];
+			}
+			if (self.postIsCurrentlyBeingShown) {
 				[self postOnScreen];
-			});
-		}
+			}
+		});
+
 	});
 }
 
@@ -550,9 +555,10 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 -(void) postOnScreen {
 	self.postIsCurrentlyBeingShown = YES;
+	self.postIsAlmostOnScreen = NO;
 
 	if(self.pageMedia.count > 0 &&
-	   self.pageViews.count ==0){
+	   self.pageViews.count == 0){
 		//we lazily create out pages
 		[self presentMediaContent];
 	}
@@ -565,11 +571,9 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	[self removePageUpIndicatorFromView];
 }
 
--(void) preparepostToBePresented {
-	NSInteger currentPage = self.mainScrollView.contentOffset.x / self.frame.size.width;
-	PageViewingExperience* page = [self.pageViews objectForKey:[NSNumber numberWithInteger:currentPage]];
-	[page almostOnScreen];
-	[self prepareNextPage];
+-(void) postAlmostOnScreen {
+	self.postIsAlmostOnScreen = YES;
+	[self presentMediaContent];
 }
 
 #pragma mark - Photo View Delegate -

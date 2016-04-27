@@ -209,6 +209,7 @@ ExploreChannelCellViewDelegate>
 }
 
 - (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+	// If the indexpath is not within visible objects then it is offscreen
 	if ([tableView.indexPathsForVisibleRows indexOfObject:indexPath] == NSNotFound) {
 		if (indexPath.section == 0) {
 			[(FeaturedContentCellView*)cell offScreen];

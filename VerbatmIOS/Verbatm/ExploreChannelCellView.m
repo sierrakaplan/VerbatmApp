@@ -32,11 +32,10 @@
 @property (strong, nonatomic) NSMutableArray *postViews;
 @property (nonatomic) NSInteger indexOnScreen;
 
+@property (nonatomic) BOOL isFollowed;
 @property (nonatomic, strong) NSNumber *numFollowers;
 @property (weak, readwrite) Channel *channelBeingPresented;
 
-
-@property (nonatomic) BOOL isFollowed;
 
 
 #define POST_VIEW_OFFSET 10.f
@@ -121,7 +120,7 @@
 				if (self.postViews.count >= self.indexOnScreen && self.postViews.count <= self.indexOnScreen+2) {
 					[postView postOnScreen];
 				} else if (self.postViews.count == (self.indexOnScreen+3)) {
-					[postView preparepostToBePresented];
+					[postView postAlmostOnScreen];
 				}
 				[postView showPageUpIndicator];
 				[postView muteAllVideos:YES];
@@ -145,7 +144,12 @@
 
 -(void) clearViews {
 	[self offScreen];
+
+	self.channelBeingPresented = nil;
 	self.indexOnScreen = 0;
+	self.isFollowed = NO;
+	self.numFollowers = 0;
+
 	[self.userNameLabel removeFromSuperview];
 	[self.followButton removeFromSuperview];
 	[self.channelNameLabel removeFromSuperview];
@@ -211,7 +215,7 @@
 	}
 	// Prepare next view
 	if (postIndex + 3 < self.postViews.count) {
-		[(PostView*)self.postViews[postIndex+3] preparepostToBePresented];
+		[(PostView*)self.postViews[postIndex+3] postAlmostOnScreen];
 	}
 }
 
@@ -231,7 +235,7 @@
 
 -(void) almostOnScreen {
 	for (PostView* postView in self.postViews) {
-		[postView preparepostToBePresented];
+		[postView postAlmostOnScreen];
 	}
 }
 

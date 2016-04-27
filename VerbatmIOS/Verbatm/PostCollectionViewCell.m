@@ -15,10 +15,13 @@
 
 @interface PostCollectionViewCell () <PostViewDelegate>
 
-@property (nonatomic, readwrite) PostView *ourCurrentPost;
+@property (nonatomic, readwrite) PFObject *currentPostActivityObject;
+@property (nonatomic, readwrite) PostView *currentPostView;
+
 @property (nonatomic) PFObject *postBeingPresented;
 @property (strong, nonatomic) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic) BOOL isOnScreen;
+@property (nonatomic) BOOL isAlmostOnScreen;
 
 @end
 
@@ -27,89 +30,93 @@
 -(instancetype)initWithFrame:(CGRect)frame{
 	self = [super initWithFrame:frame];
 	if (self) {
-		self.isOnScreen = NO;
+		[self clearViews];
 	}
 	return self;
 }
 
--(void) prepareForReuse {
+-(void) clearViews {
 	//todo: clear data from our current post more?
-	[self.ourCurrentPost removeFromSuperview];
-	self.ourCurrentPost = nil;
+	if (self.currentPostView) {
+		[self.currentPostView removeFromSuperview];
+		[self.currentPostView clearPost];
+	}
+	self.currentPostView = nil;
+	self.currentPostActivityObject = nil;
+	self.postBeingPresented = nil;
+	self.isOnScreen = NO;
+	self.isAlmostOnScreen = NO;
 }
 
 -(void) layoutSubviews {
-	self.ourCurrentPost.frame = self.bounds;
+	self.currentPostView.frame = self.bounds;
 }
 
 -(void) presentPostFromPCActivityObj: (PFObject *) pfActivityObj andChannel:(Channel*) channelForList
 					withDeleteButton: (BOOL) withDelete {
+	self.currentPostActivityObject = pfActivityObj;
 	PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
 	[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
-		self.ourCurrentPost = [[PostView alloc] initWithFrame:self.bounds
+		self.currentPostView = [[PostView alloc] initWithFrame:self.bounds
 								andPostChannelActivityObject:pfActivityObj small:NO];
 
 		NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
-		[self.ourCurrentPost renderPostFromPageObjects: pages];
+		[self.currentPostView renderPostFromPageObjects: pages];
 		if (self.isOnScreen) {
-			[self.ourCurrentPost postOnScreen];
+			[self.currentPostView postOnScreen];
+		} else if (self.isAlmostOnScreen) {
+			[self.currentPostView postAlmostOnScreen];
 		} else {
-			[self.ourCurrentPost postOffScreen];
+			[self.currentPostView postOffScreen];
 		}
-		self.ourCurrentPost.delegate = self;
-		self.ourCurrentPost.listChannel = channelForList;
-		[self addSubview:self.ourCurrentPost];
+		self.currentPostView.delegate = self;
+		self.currentPostView.listChannel = channelForList;
+		[self addSubview: self.currentPostView];
 
 		AnyPromise *likesPromise = [Like_BackendManager numberOfLikesForPost:post];
 		AnyPromise *sharesPromise = [Share_BackendManager numberOfSharesForPost:post];
 		PMKWhen(@[likesPromise, sharesPromise]).then(^(NSArray *likesAndShares) {
 			NSNumber *numLikes = likesAndShares[0];
 			NSNumber *numShares = likesAndShares[1];
-			[self.ourCurrentPost createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
+			[self.currentPostView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
 											   numberOfPages:numberOfPages
 									   andStartingPageNumber:@(1)
 													 startUp:YES
 											withDeleteButton:withDelete];
-			[self.ourCurrentPost addCreatorInfo];
+			[self.currentPostView addCreatorInfo];
 		});
 	}];
 }
 
 -(void) shiftLikeShareBarDown:(BOOL) down {
-	if (self.ourCurrentPost) {
-		[self.ourCurrentPost shiftLikeShareBarDown: down];
+	if (self.currentPostView) {
+		[self.currentPostView shiftLikeShareBarDown: down];
 	}
 }
 
 -(void) almostOnScreen {
-	if(self.ourCurrentPost){
-		[self.ourCurrentPost preparepostToBePresented];
+	self.isAlmostOnScreen = YES;
+	if(self.currentPostView){
+		[self.currentPostView postAlmostOnScreen];
 	}
 }
 
 -(void) onScreen {
 	self.isOnScreen = YES;
-	if(self.ourCurrentPost) {
-		[self.ourCurrentPost postOnScreen];
+	self.isAlmostOnScreen = NO;
+	if(self.currentPostView) {
+		[self.currentPostView postOnScreen];
 	}
 }
 
 -(void) offScreen {
 	self.isOnScreen = NO;
-	if(self.ourCurrentPost){
-		[self.ourCurrentPost postOffScreen];
+	if(self.currentPostView) {
+		[self.currentPostView postOffScreen];
 	}
 }
 
 #pragma mark - Lazy Instantiation -
-
--(PostView *) ourCurrentPost{
-	if(!_ourCurrentPost){
-		_ourCurrentPost = [[PostView alloc] initWithFrame:self.bounds andPostChannelActivityObject:nil small:NO];
-		[self addSubview:_ourCurrentPost];
-	}
-	return _ourCurrentPost;
-}
 
 -(UIActivityIndicatorView*) activityIndicator {
 	if (!_activityIndicator) {

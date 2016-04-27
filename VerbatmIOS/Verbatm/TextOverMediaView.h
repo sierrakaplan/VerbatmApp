@@ -31,6 +31,8 @@ andTextYPosition:(CGFloat) textYPosition
 andTextAlignment:(NSTextAlignment) textAlignment
 	andTextSize:(CGFloat) textSize;
 
+-(void) displayLargeImage:(BOOL)display;
+
 -(void) revertToDefaultTextSettings;
 
 -(void) changeImageTo:(UIImage *)image;

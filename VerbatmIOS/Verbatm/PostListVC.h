@@ -33,7 +33,7 @@ typedef enum PostListType {
 @property (nonatomic) Channel * channelForList;
 
 //marks all posts as off screen
--(void) stopAllVideoContent;
+-(void) offScreen;
 
 //continues post that's on screen
 -(void) continueVideoContent;

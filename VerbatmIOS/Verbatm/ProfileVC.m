@@ -85,7 +85,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 		[self selectChannel: self.startChannel];
 		if(self.isCurrentUserProfile) {
 			//We stop the video because we start in the feed
-			[self.postListVC stopAllVideoContent];
+			[self.postListVC offScreen];
 		}
 	}];
 	self.view.clipsToBounds = YES;
@@ -148,12 +148,12 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
-	if(self.postListVC) [self.postListVC stopAllVideoContent];
+	if(self.postListVC) [self.postListVC offScreen];
 }
 
 -(void) addPostListVC {
 	if(self.postListVC) {
-		[self.postListVC stopAllVideoContent];
+		[self.postListVC offScreen];
 		[self.postListVC.view removeFromSuperview];
 	}
 

@@ -92,7 +92,7 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 
 -(void)viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
-	if(self.postListVC)[self.postListVC stopAllVideoContent];
+	if(self.postListVC) [self.postListVC offScreen];
 	self.didJustLoadForTheFirstTime = NO;
 }
 

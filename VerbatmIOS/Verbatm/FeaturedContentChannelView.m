@@ -113,7 +113,7 @@
 }
 
 -(void) almostOnScreen {
-	[self.postView preparepostToBePresented];
+	[self.postView postAlmostOnScreen];
 }
 
 -(void) freeMemory {

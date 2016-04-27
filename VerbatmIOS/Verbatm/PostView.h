@@ -46,7 +46,7 @@
 //informs the POV when it's visible
 -(void) postOnScreen;
 
--(void) preparepostToBePresented;
+-(void) postAlmostOnScreen;
 
 -(void) postOffScreen;
 

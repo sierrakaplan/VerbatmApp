@@ -13,6 +13,7 @@
 @interface PostCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic, readonly) PostView *currentPostView;
+@property (nonatomic, readonly) PFObject *currentPostActivityObject;
 
 -(void) presentPostFromPCActivityObj: (PFObject *) pfActivityObj andChannel:(Channel*) channelForList
 					withDeleteButton: (BOOL) withDelete;
@@ -22,6 +23,8 @@
 -(void) almostOnScreen;
 -(void) onScreen;
 -(void) offScreen;
+
+-(void) clearViews;
 
 
 @end

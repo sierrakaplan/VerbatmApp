@@ -20,7 +20,9 @@
 
 @property (nonatomic, readwrite) BOOL textShowing;
 @property (nonatomic, strong) UIImageView* imageView;
-@property (nonatomic, weak) UIImage *image;
+@property (nonatomic, strong) NSData *smallImageData;
+@property (nonatomic, strong) NSData *largeImageData;
+@property (nonatomic) BOOL displayingLargeImage;
 @property (nonatomic, readwrite) UITextView * textView;
 @property (strong,nonatomic) UIImageView* textBackgroundView;
 
@@ -45,19 +47,21 @@
 			smallImage = [smallImage imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width, self.bounds.size.height)];
 		}
 
-		self.image = smallImage;
-		[self.imageView setImage: self.image];
+		self.smallImageData = UIImagePNGRepresentation(smallImage);
+		[self.imageView setImage: smallImage];
 
 		// After larger image loads, crop it and set it in the image
 		if (!small) {
 			AnyPromise *loadLargeImageData = [UtilityFunctions loadCachedPhotoDataFromURL:imageUrl];
 			loadLargeImageData.then(^(NSData* largeImageData) {
 				UIImage *image = [UIImage imageWithData:largeImageData];
+				// If image is greater than 500KB
+				NSLog(@"large image data size: %fKB", largeImageData.length / 1024.f);
 				if (largeImageData.length / 1024.f > 500) {
 					image = [image imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width*2, self.bounds.size.height*2)];
 				}
-				self.image = image;
-				[self.imageView setImage: image];
+				self.largeImageData = UIImagePNGRepresentation(image);
+				if (self.displayingLargeImage) [self.imageView setImage: image];
 			});
 		}
 
@@ -76,11 +80,21 @@
 -(instancetype) initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.displayingLargeImage = NO;
 		[self revertToDefaultTextSettings];
 		[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
 		[self addSubview:self.imageView];
 	}
 	return self;
+}
+
+-(void) displayLargeImage:(BOOL)display {
+	self.displayingLargeImage = display;
+	if (display && self.largeImageData) {
+		[self.imageView setImage: [UIImage imageWithData:self.largeImageData]];
+	} else {
+		[self.imageView setImage: [UIImage imageWithData:self.smallImageData]];
+	}
 }
 
 /* Returns image view with image centered */
