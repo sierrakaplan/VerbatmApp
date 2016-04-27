@@ -485,7 +485,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	return _animationLabel;
 }
 
--(void)keyboardDidHide:(NSNotification *)notification
+-(void)keyboardDidHide:(UITapGestureRecognizer *)gesture
 {
     [self.phoneLoginField resignFirstResponder];
     
