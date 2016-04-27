@@ -35,10 +35,13 @@
 #import "UserInfoCache.h"
 #import "UserSetupParameters.h"
 
+#import <PromiseKit/PromiseKit.h>
+
 @interface ProfileVC() <ProfileNavBarDelegate,Intro_Notification_Delegate,
 UIScrollViewDelegate, CreateNewChannelViewProtocol,
 PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
+@property (nonatomic) BOOL initializing;
 @property (nonatomic) BOOL currentlyCreatingNewChannel;
 
 @property (strong, nonatomic) PostListVC * postListVC;
@@ -71,30 +74,46 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
-	self.view.backgroundColor = [UIColor blackColor];
-	//this is where you'd fetch the threads
-    [self.customActivityIndicator startCustomActivityIndicator];
-    [self getChannelsWithCompletionBlock:^{
-        [self.customActivityIndicator stopCustomActivityIndicator];
-        [self createNavigationBar];
-		[self addClearScreenGesture];
-		[self checkIntroNotification];
-
-		if (self.channels.count == 0) return;
-
-		[self addPostListVC];
-
-		if(self.isCurrentUserProfile) {
-			//We stop the video because we start in the feed
-			[self.postListVC offScreen];
-		}
-	}];
-	self.view.clipsToBounds = YES;
+	self.initializing = YES;
+	if (!self.postListVC) {
+		[self initialize].then(^{
+			[self selectChannel: self.startChannel ? self.startChannel : [self.channels firstObject]];
+			self.initializing = NO;
+		});
+	}
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-	[self selectChannel: self.startChannel ? self.startChannel : [self.channels firstObject]];
+	if (!self.initializing) {
+		[self selectChannel: self.startChannel ? self.startChannel : [self.channels firstObject]];
+	}
+}
+
+-(AnyPromise*) initialize {
+
+	self.view.backgroundColor = [UIColor blackColor];
+	//this is where you'd fetch the threads
+	[self.customActivityIndicator startCustomActivityIndicator];
+	self.view.clipsToBounds = YES;
+	return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+		[self getChannelsWithCompletionBlock:^{
+			[self.customActivityIndicator stopCustomActivityIndicator];
+			[self createNavigationBar];
+			[self addClearScreenGesture];
+			[self checkIntroNotification];
+
+			if (self.channels.count == 0) return;
+
+			[self addPostListVC];
+
+			if(self.isCurrentUserProfile) {
+				//We stop the video because we start in the feed
+				[self.postListVC offScreen];
+			}
+			resolve(nil);
+		}];
+	}];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {

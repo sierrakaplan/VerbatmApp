@@ -77,6 +77,7 @@ ExploreChannelCellViewDelegate>
 
 -(void) refreshChannels {
 	self.refreshing = YES;
+	self.loadingMoreChannels = NO;
 	[[FeedQueryManager sharedInstance] loadFeaturedChannelsWithCompletionHandler:^(NSArray *featuredChannels) {
 		self.featuredChannels = nil;
 		[self.featuredChannels addObjectsFromArray:featuredChannels];
