@@ -86,6 +86,8 @@
     return ![[text stringByTrimmingCharactersInSet:alphaSet] isEqualToString:text];
 }
 
-
+- (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 @end

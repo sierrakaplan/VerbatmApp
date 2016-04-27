@@ -216,4 +216,8 @@
     [self.delegate channelSelected:self.currentChannel];
 }
 
+-(void) dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 @end

@@ -596,4 +596,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	return _feedQueryManager;
 }
 
+- (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 @end

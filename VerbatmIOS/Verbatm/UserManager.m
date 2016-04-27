@@ -130,5 +130,9 @@
 	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_FAILED object:error];
 }
 
+- (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 
 @end

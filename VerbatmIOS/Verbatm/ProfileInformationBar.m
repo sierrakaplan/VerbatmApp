@@ -163,4 +163,8 @@
 	[self.delegate settingsButtonSelected];
 }
 
+- (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 @end

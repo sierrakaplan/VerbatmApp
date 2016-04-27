@@ -1637,7 +1637,6 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 - (void)dealloc {
-	//tune out of nsnotification
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

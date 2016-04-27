@@ -236,4 +236,8 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 	[self presentViewController:newAlert animated:YES completion:nil];
 }
 
+-(void) dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 @end

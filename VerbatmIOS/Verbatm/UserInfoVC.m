@@ -139,4 +139,8 @@
 	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_USER_SETTINGS_TO_LOGIN sender:self];
 }
 
+- (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 @end

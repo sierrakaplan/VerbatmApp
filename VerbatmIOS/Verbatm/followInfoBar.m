@@ -150,5 +150,8 @@
     [self.delegate showWhoIAmFollowingButtonSelected];
 }
 
+-(void) dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 @end

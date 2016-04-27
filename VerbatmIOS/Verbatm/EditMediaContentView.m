@@ -511,4 +511,8 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 	return _textCreationButton;
 }
 
+-(void) dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 @end

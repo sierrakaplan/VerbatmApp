@@ -19,7 +19,6 @@
 #define INTRO_TIMER_DURATION 20.f
 
 @interface Intro_Instruction_Notification_View () <UIGestureRecognizerDelegate>
-@property (nonatomic) NSTimer * timer;
 @end
 
 @implementation Intro_Instruction_Notification_View
@@ -74,7 +73,7 @@
 }
 
 -(void)beginFadeTimer{
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:INTRO_TIMER_DURATION target:self selector:@selector(fadeOut) userInfo:nil repeats:NO];
+    [NSTimer scheduledTimerWithTimeInterval:INTRO_TIMER_DURATION target:self selector:@selector(fadeOut) userInfo:nil repeats:NO];
 }
 
 -(void)fadeOut{

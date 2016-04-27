@@ -38,7 +38,6 @@
 @property (nonatomic) BOOL loginFirstTimeDone;
 @property (strong, nonatomic) UIView* animationView;
 @property (strong, nonatomic) UILabel* animationLabel;
-@property (strong, nonatomic) NSTimer* animationTimer;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *verbatmLogoImageView;
 @property (weak, nonatomic) IBOutlet UILabel *welcomeLabel;
@@ -489,6 +488,10 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 {
     [self.phoneLoginField resignFirstResponder];
     
+}
+
+- (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

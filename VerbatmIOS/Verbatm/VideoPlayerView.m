@@ -302,4 +302,8 @@
 	return _customActivityIndicator;
 }
 
+- (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 @end

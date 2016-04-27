@@ -148,4 +148,8 @@
     return _runloop;
 }
 
+- (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 @end

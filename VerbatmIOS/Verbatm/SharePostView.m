@@ -359,6 +359,8 @@
 	return _channelSelectionOptions;
 }
 
-
+- (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 @end

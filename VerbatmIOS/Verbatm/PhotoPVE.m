@@ -45,7 +45,6 @@
 @property (nonatomic) NSInteger currentPhotoIndex;
 @property (nonatomic) NSInteger draggingFromPointIndex;
 @property (nonatomic) float lastDistanceFromStartingPoint;
-@property (strong, nonatomic) NSTimer * showCircleTimer;
 
 //When a view is animating it doesn't sense gestures very well. This makes it tough for users
 // to scroll up and down while their photo slideshow is playing.
