@@ -484,10 +484,10 @@ rowHeightForComponent:(NSInteger)component{
 #pragma mark Preview Button
 -(void) rightButtonPressed {
     
-    self.sharePostView = [[SharePostView alloc] initWithFrame:CGRectMake(self.view.center.x/3, self.view.center.y/3, self.view.bounds.size.width * 0.67, self.view.bounds.size.height * 0.67) shouldStartOnChannels:NO];
-    self.sharePostView.delegate = self;
-    [self.view addSubview:self.sharePostView];
-    [self.view bringSubviewToFront:self.sharePostView];
+//    self.sharePostView = [[SharePostView alloc] initWithFrame:CGRectMake(self.view.center.x/3, self.view.center.y/3, self.view.bounds.size.width * 0.67, self.view.bounds.size.height * 0.67) shouldStartOnChannels:NO];
+//    self.sharePostView.delegate = self;
+//    [self.view addSubview:self.sharePostView];
+//    [self.view bringSubviewToFront:self.sharePostView];
 	NSMutableArray * pinchViews = [[NSMutableArray alloc] init];
 
 	for(ContentPageElementScrollView * contentElementScrollView in self.pageElementScrollViews){
@@ -2040,7 +2040,7 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 //todo: save share object
--(void)postPostToChannels:(NSMutableArray *) channels{
+-(void)postPostToChannels:(NSMutableArray *) channels andFacebook:(BOOL)externalSharing{
     
     
     [self removeSharePOVView];

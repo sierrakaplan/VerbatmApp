@@ -54,6 +54,10 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 @property (nonatomic) BOOL shouldPlayVideos;
 @property (nonatomic) BOOL isReloading;
 @property (nonatomic) BOOL footerBarIsUp;//like share bar
+@property (nonatomic) BOOL fbShare;
+@property (nonatomic) NSString *postImageToShareLink;
+@property (nonatomic) NSString *postVideoToShareLink;
+@property (nonatomic) NSString *postImageText;
 @property (nonatomic) PFObject *postToShare;
 @property (strong, nonatomic) BranchUniversalObject *branchUniversalObject;
 
@@ -547,7 +551,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 //todo: save share object
--(void)postPostToChannels:(NSMutableArray *) channels{
+-(void)postPostToChannels:(NSMutableArray *) channels andFacebook:(BOOL)externalSharing{
 	
     if(channels.count) {
 		
@@ -560,7 +564,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         
 	}
     
-    if(YES){
+    if(externalSharing){
+        [self postPostExternal:externalSharing];
         BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
         linkProperties.feature = @"share";
         linkProperties.channel = @"facebook";
@@ -581,26 +586,46 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	[self removeSharePOVView];
 }
 
--(void)postPostExternal:(NSInteger)selection{
-    NSString *postId = self.postToShare.objectId;
+-(void)postPostExternal:(BOOL)selection{
+    self.fbShare = selection;
+    if(selection){
+        NSString *postId = self.postToShare.objectId;
+        
+        [Page_BackendObject getPagesFromPost:self.postToShare andCompletionBlock:^(NSArray *pages){
+            PFObject *po = pages[0];
+            [Photo_BackendObject getPhotosForPage:po andCompletionBlock:^(NSArray * photoObjects) {
+                PFObject *photo = photoObjects[0];
+                NSString *photoLink = [photo valueForKey:PHOTO_IMAGEURL_KEY];
+                NSString *videoLink = [photo valueForKey:BLOB_STORE_URL];
+                NSString *text =  [photo valueForKey:PHOTO_TEXT_KEY];
+                self.postImageToShareLink = photoLink;
+                self.postVideoToShareLink = videoLink;
+                self.postImageText = text;
+                }];
+            
+        }];
     
-    NSLog(@"%@",self.postToShare.allKeys);
-    
-    PFUser *user = [PFUser currentUser];
-    NSString *name = [user valueForKey:VERBATM_USER_NAME_KEY];
-    Channel_BackendObject *channelObj = [self.postToShare valueForKey:POST_CHANNEL_KEY];
-    
-    NSString *channelName = [channelObj valueForKey:CHANNEL_NAME_KEY];
-    
-    NSLog(@"%@", channelName);
+        PFUser *user = [PFUser currentUser];
+        NSString *name = [user valueForKey:VERBATM_USER_NAME_KEY];
+        Channel_BackendObject *channelObj = [self.postToShare valueForKey:POST_CHANNEL_KEY];
+        NSString *channelName = [channelObj valueForKey:CHANNEL_NAME_KEY];
+        
+        if([self.postImageText length] > 0)
 
-    self.branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:postId];
-    self.branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName];
-    self.branchUniversalObject.contentDescription = @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. A blogger profile can have multiple channels; bloggers can follow other bloggers' channels as well as 'like' and 're-blog' content. A given post can have mult...";
-    self.branchUniversalObject.imageUrl = @"http://imaging.nikon.com/lineup/lens/zoom/normalzoom/af-s_nikkor28-300mmf_35-56gd_ed_vr/img/sample/sample4_l.jpg";
-    [self.branchUniversalObject addMetadataKey:@"userId" value:@"12345"];
-    [self.branchUniversalObject addMetadataKey:@"userName" value:@"UserName"];
-    [self.branchUniversalObject addMetadataKey:@"monsterName" value:@"Mr. Squiggles"];
+        self.branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:postId];
+        self.branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName];
+        self.branchUniversalObject.contentDescription = @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Get the app now at verbatm.io";
+        if(self.postVideoToShareLink == nil || [self.postVideoToShareLink length] == 0){
+            self.branchUniversalObject.imageUrl = self.postImageToShareLink;
+        }else{
+            self.branchUniversalObject.imageUrl = self.postVideoToShareLink;
+        }
+//        [self.branchUniversalObject addMetadataKey:@"userId" value:@"12345"];
+//        [self.branchUniversalObject addMetadataKey:@"userName" value:@"UserName"];
+//        [self.branchUniversalObject addMetadataKey:@"monsterName" value:@"Mr. Squiggles"];
+    } else {
+        
+    }
     
 }
 

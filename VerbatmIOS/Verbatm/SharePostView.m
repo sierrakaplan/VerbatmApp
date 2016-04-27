@@ -35,7 +35,7 @@
 @property (nonatomic) UITextField * facebookCommentTextField;
 
 @property (nonatomic) NSMutableArray * selectedChannels;
-
+@property (nonatomic) BOOL externalShare;
 
 @property (nonatomic) BOOL showChannels;
 
@@ -51,6 +51,7 @@
 	if (self) {
 		[self formatView];
 		self.showChannels = showChannels;
+        self.externalShare = NO;
 		[self createListFrames];
 		if(showChannels){
 			[self presentUserChannelsToFollow];
@@ -231,7 +232,7 @@
 
 -(void)shareButtonSelected {
 	if([self.shareButton.titleLabel.text isEqualToString:@"REPOST"]){
-		[self.delegate postPostToChannels: self.selectedChannels];
+		[self.delegate postPostToChannels: self.selectedChannels andFacebook:self.externalShare];
 	}
 }
 
@@ -246,21 +247,25 @@
 //called when an option is selected
 -(void)shareOptionSelected:(ShareOptions) shareOption{
 	if(shareOption == Verbatm){
-		[self removeFacebookCommentView];
+//		[self removeFacebookCommentView];
 		[self showChannelSelection:YES];
 		[self.shareButton setTitle:@"POST" forState:UIControlStateNormal];
 		[self.cancelButton setAttributedTitle:[self getButtonAttributeStringWithText:@"BACK"] forState:UIControlStateNormal];
-	}else if (shareOption == Facebook){
+	}
+    if (shareOption == Facebook){
 //		[self createAndPrepareTextView];
-        
-        [self.delegate postPostExternal:1];
+        self.externalShare = YES;
 	}
 }
 
 -(void)shareOptionDeselected:(ShareOptions) shareOption{
 	if(shareOption == Facebook){
-		[self removeFacebookCommentView];
+        self.externalShare = NO;
+//		[self removeFacebookCommentView];
 	}
+    if(shareOption == Verbatm){
+        
+    }
 }
 
 -(void) removeFacebookCommentView{
@@ -360,7 +365,7 @@
 
 -(SelectChannel *) channelSelectionOptions{
 	if(!_channelSelectionOptions) {
-		_channelSelectionOptions = [[SelectChannel alloc] initWithFrame:self.channelSelectionFrameOFFSCREEN canSelectMultiple:YES];
+		_channelSelectionOptions = [[SelectChannel alloc] initWithFrame:self.channelSelectionFrameOFFSCREEN canSelectMultiple:NO];
 		_channelSelectionOptions.selectChannelDelegate = self;
 		[self addSubview:_channelSelectionOptions];
 	}
