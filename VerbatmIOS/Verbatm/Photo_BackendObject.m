@@ -37,6 +37,9 @@ andTextAlignment:(NSNumber *) textAlignment
     self.mediaPublisher = [[PostPublisher alloc] init];
     [self.mediaPublisher storeImage:imageData withCompletionBlock:^(GTLVerbatmAppImage * gtlImage) {
         NSString * blobStoreUrl = gtlImage.servingUrl;
+		if (![blobStoreUrl hasSuffix:@"=s0"]) {
+			blobStoreUrl = [blobStoreUrl stringByAppendingString:@"=s0"];
+		}
         //in completion block of blobstore save
         [self createAndSavePhotoObjectwithBlobstoreUrl:blobStoreUrl
 											  withText:text

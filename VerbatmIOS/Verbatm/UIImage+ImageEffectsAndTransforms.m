@@ -142,11 +142,8 @@
 		// center the image
 		if (widthFactor > heightFactor) {
 			thumbnailPoint.y = (targetHeight - scaledHeight) * 0.5;
-		}
-		else {
-			if (widthFactor < heightFactor) {
-				thumbnailPoint.x = (targetWidth - scaledWidth) * 0.5;
-			}
+		} else {
+			thumbnailPoint.x = (targetWidth - scaledWidth) * 0.5;
 		}
 	}
 

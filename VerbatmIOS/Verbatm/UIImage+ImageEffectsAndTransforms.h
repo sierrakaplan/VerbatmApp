@@ -26,6 +26,8 @@
 
 - (UIImage*)imageByScalingAndCroppingForSize:(CGSize)targetSize;
 
+- (UIImage*)imageByCroppingForSize:(CGSize)targetSize;
+
 + (UIImage*) makeImageWithColorAndSize:(UIColor*) color andSize:(CGSize) size;
 
 - (CGSize) getSizeForImageWithBounds:(CGRect)bounds;

@@ -94,7 +94,9 @@
 
 -(AnyPromise *) getImageData {
 	return [self getLargerImageWithSize:self.largeSize].then(^(UIImage *largerImage) {
-		return UIImagePNGRepresentation(largerImage);
+		NSData* imageData = UIImagePNGRepresentation(largerImage);
+		NSLog(@"image data for publishing size %fKB", imageData.length / 1024.f);
+		return imageData;
 	});
 }
 
@@ -110,6 +112,7 @@
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 		[[PHImageManager defaultManager] requestImageForAsset:imageAsset targetSize:size contentMode:PHImageContentModeAspectFill
 													  options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
+														  image = [image imageByScalingAndCroppingForSize: CGSizeMake(size.width, size.height)];
 														  resolve(image);
 													  }];
 	}];
