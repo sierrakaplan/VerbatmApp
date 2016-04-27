@@ -263,7 +263,9 @@
 		if (success) {
 			PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[assetPlaceholder.localIdentifier] options:nil];
 			PHAsset* savedAsset = fetchResult.firstObject;
-			[self.delegate didFinishSavingMediaToAsset:savedAsset];
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[self.delegate didFinishSavingMediaToAsset:savedAsset];
+			});
 		}
 	}];
 }

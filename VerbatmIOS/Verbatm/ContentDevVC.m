@@ -50,6 +50,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 @property (strong, nonatomic) UIImageView *channelSelectorImageLeft;
 @property (strong, nonatomic) UIImageView *channelSelectorImageRight;
 
+@property (nonatomic) NSInteger totalPiecesOfMedia;
+
 #pragma mark Image Manager
 
 @property (strong, nonatomic) PHImageManager *imageManager;
@@ -139,6 +141,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 #define CHANNEL_SELECTOR_IMAGE_SIZE 30.f
 #define CHANNEL_PICKER_COLOR clearColor
 
+#define MAX_MEDIA 8
+
 
 @end
 
@@ -148,6 +152,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
+	self.totalPiecesOfMedia = 0;
 	self.ourPosts = [[NSMutableArray alloc] init];
 	[self initializeVariables];
 	[self setFrameMainScrollView];
@@ -460,6 +465,11 @@ rowHeightForComponent:(NSInteger)component{
 		PinchView *pinchView = savedPinchViews[i];
 		[pinchView specifyRadius:self.defaultPinchViewRadius
 					   andCenter:self.defaultPinchViewCenter];
+		if ([pinchView isKindOfClass:[CollectionPinchView class]]) {
+			self.totalPiecesOfMedia += ([(CollectionPinchView*)pinchView imagePinchViews].count + [(CollectionPinchView*)pinchView videoPinchViews].count);
+		} else {
+			self.totalPiecesOfMedia += 1;
+		}
 		[self newPinchView:pinchView belowView: nil andSaveInUserDefaults:YES];
 	}
 }
@@ -581,6 +591,12 @@ rowHeightForComponent:(NSInteger)component{
 
 	//update user defaults if was pinch view
 	if ([pageElementScrollView.pageElement isKindOfClass:[PinchView class]]) {
+		PinchView *pinchView = (PinchView*)pageElementScrollView.pageElement;
+		if ([pinchView isKindOfClass:[CollectionPinchView class]]) {
+			self.totalPiecesOfMedia -= ([(CollectionPinchView*)pinchView imagePinchViews].count + [(CollectionPinchView*)pinchView videoPinchViews].count);
+		} else {
+			self.totalPiecesOfMedia -= 1;
+		}
 		NSInteger index = [self.pageElementScrollViews indexOfObject:pageElementScrollView];
 		[[PostInProgress sharedInstance] removePinchViewAtIndex:index];
 		self.numPinchViews--;
@@ -1730,14 +1746,22 @@ andSaveInUserDefaults:(BOOL)save {
 
 // add image to deck (create pinch view)
 -(void) imageAssetCaptured: (PHAsset *) asset {
-	[self placeNewMediaAtBottomOfDeck];
-	[self getImageFromAsset:asset];
+	if (self.totalPiecesOfMedia < MAX_MEDIA) {
+		[self placeNewMediaAtBottomOfDeck];
+		[self getImageFromAsset:asset];
+	} else {
+		[self tooMuchMediaAlert];
+	}
 }
 
 // add video asset to deck (create pinch view)
 -(void) videoAssetCaptured:(PHAsset *) asset {
-	[self placeNewMediaAtBottomOfDeck];
-	[self getVideoFromAsset: asset];
+	if (self.totalPiecesOfMedia < MAX_MEDIA) {
+		[self placeNewMediaAtBottomOfDeck];
+		[self getVideoFromAsset: asset];
+	} else {
+		[self tooMuchMediaAlert];
+	}
 }
 
 -(void) minimizeCameraViewButtonTapped {
@@ -1780,24 +1804,36 @@ andSaveInUserDefaults:(BOOL)save {
 -(void )presentAssetsAsPinchViews:(NSArray *)phassets {
 	//store local identifiers so we can query the nsassets
 	for(PHAsset * asset in phassets) {
-		if(asset.mediaType==PHAssetMediaTypeImage) {
-			@autoreleasepool {
-				[self getImageFromAsset:asset];
-			}
-		} else if(asset.mediaType==PHAssetMediaTypeVideo) {
-			@autoreleasepool {
-				[self getVideoFromAsset:asset];
-			}
-		} else if(asset.mediaType==PHAssetMediaTypeAudio) {
-			// NSLog(@"Asset is of audio type, unable to handle.");
-			return;
+		if (self.totalPiecesOfMedia >= MAX_MEDIA) {
+			[self tooMuchMediaAlert];
 		} else {
-			return;
+			if(asset.mediaType==PHAssetMediaTypeImage) {
+				@autoreleasepool {
+					[self getImageFromAsset:asset];
+				}
+			} else if(asset.mediaType==PHAssetMediaTypeVideo) {
+				@autoreleasepool {
+					[self getVideoFromAsset:asset];
+				}
+			} else if(asset.mediaType==PHAssetMediaTypeAudio) {
+				 NSLog(@"Asset is of audio type, unable to handle.");
+			} else {
+			}
 		}
 	}
 }
 
+-(void) tooMuchMediaAlert {
+	NSString *message = [NSString stringWithFormat:@"We're sorry, you may only have %u pieces of media in a post. Please create another post with the rest of your media.", MAX_MEDIA];
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Too much media" message:message preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+													handler:^(UIAlertAction * action) {}];
+	[newAlert addAction:defaultAction];
+	[self presentViewController:newAlert animated:YES completion:nil];
+}
+
 -(void) getImageFromAsset: (PHAsset *) asset {
+	self.totalPiecesOfMedia++;
 	PHImageRequestOptions *options = [PHImageRequestOptions new];
 	options.synchronous = YES;
 	CGSize pinchViewImageSize = CGSizeMake(self.defaultPinchViewRadius*2, self.defaultPinchViewRadius*2);
@@ -1811,6 +1847,7 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 -(void) getVideoFromAsset: (PHAsset *) asset {
+	self.totalPiecesOfMedia++;
 	[self.imageManager requestAVAssetForVideo:asset options:self.videoRequestOptions
 								resultHandler:^(AVAsset *videoAsset, AVAudioMix *audioMix, NSDictionary *info) {
 									// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
