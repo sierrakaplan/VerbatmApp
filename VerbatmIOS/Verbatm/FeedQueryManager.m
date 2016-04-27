@@ -46,9 +46,15 @@
 	if(self) {
 		self.followedChannelsRefreshing = NO;
 		self.channelsRefreshingCondition = [[NSCondition alloc] init];
-		self.postsInFeed = 0;
+		[self clearFeedData];
 	}
 	return self;
+}
+
+-(void) clearFeedData {
+	self.postsInFeed = 0;
+	self.currentFeedStart = nil;
+	self.currentFeedEnd = nil;
 }
 
 // Waits if another thread is already refreshing followed channels,

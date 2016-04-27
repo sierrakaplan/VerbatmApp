@@ -272,9 +272,7 @@
 }
 
 -(void) revealADK {
-	[self.profileVC freeMemory];
 	[self.discoverVC freeMemory];
-	[self.feedVC freeMemory];
 	[[Analytics getSharedInstance] newADKSession];
 	[self performSegueWithIdentifier:ADK_SEGUE sender:self];
 }
@@ -295,9 +293,6 @@
 //catches the unwind segue from login / create account or adk
 - (IBAction) unwindToMasterNavVC: (UIStoryboardSegue *)segue {
 	if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER]) {
-		//todo: figure out how to free memory
-//		[self.profileVC addPostListVC];
-//		[self.feedVC addPostListVC];
 		if ([[PublishingProgressManager sharedInstance] currentlyPublishing]) {
 			[self.tabBarController setSelectedViewController:self.profileVC];
 			[self.profileVC showPublishingProgress];

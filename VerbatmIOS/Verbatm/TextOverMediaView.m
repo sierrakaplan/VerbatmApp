@@ -43,31 +43,38 @@
 			   withSmallImage: (UIImage*)smallImage asSmall:(BOOL) small {
 	self = [self initWithFrame:frame];
 	if (self) {
-		if (small) {
-			smallImage = [smallImage imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width, self.bounds.size.height)];
-		}
 
+		//todo: clean this up
 		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-			self.smallImageData = UIImagePNGRepresentation(smallImage);
+			UIImage *croppedImage = smallImage;
+			if (small) {
+				croppedImage = [smallImage imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width, self.bounds.size.height)];
+			}
+			self.smallImageData = UIImagePNGRepresentation(croppedImage);
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[self.imageView setImage: smallImage];
+			});
 		});
-
-		[self.imageView setImage: smallImage];
 
 		// After larger image loads, crop it and set it in the image
 		if (!small) {
 			AnyPromise *loadLargeImageData = [UtilityFunctions loadCachedPhotoDataFromURL:imageUrl];
 			loadLargeImageData.then(^(NSData* largeImageData) {
-				UIImage *image = [UIImage imageWithData:largeImageData];
-				// If image is greater than 500KB
-				NSLog(@"large image data size: %fKB", largeImageData.length / 1024.f);
-				if (largeImageData.length / 1024.f > 500) {
-					image = [image imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width*2, self.bounds.size.height*2)];
-				}
-				dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-					self.largeImageData = UIImagePNGRepresentation(image);
-				});
+				// Only display larger data if less than 1000 KB
+				NSLog(@"large image data size: %fKB for url %@", largeImageData.length / 1024.f, imageUrl);
+				if (largeImageData.length / 1024.f < 1000) {
+					dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+						UIImage *image = [UIImage imageWithData:largeImageData];
+						if (largeImageData.length / 1024.f > 500) {
+							image = [image imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width*2, self.bounds.size.height*2)];
+						}
+						self.largeImageData = UIImagePNGRepresentation(image);
+						dispatch_async(dispatch_get_main_queue(), ^{
+							if (self.displayingLargeImage) [self.imageView setImage: image];
+						});
 
-				if (self.displayingLargeImage) [self.imageView setImage: image];
+					});
+				}
 			});
 		}
 

@@ -82,7 +82,8 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
 		if (self.channels.count == 0) return;
 
-		[self selectChannel: self.startChannel];
+		[self addPostListVC];
+
 		if(self.isCurrentUserProfile) {
 			//We stop the video because we start in the feed
 			[self.postListVC offScreen];
@@ -91,12 +92,14 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	self.view.clipsToBounds = YES;
 }
 
--(void) freeMemory {
-	//todo: figure out how to clear memory
-//	[self.postListVC stopAllVideoContent];
-//	[self.postListVC.view removeFromSuperview];
-//	[self.postListVC clearOldPosts];
-//	self.postListVC = nil;
+-(void) viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
+	[self selectChannel: self.startChannel ? self.startChannel : [self.channels firstObject]];
+}
+
+-(void) viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
+	[self.postListVC clearViews];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -136,21 +139,6 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	}
 }
 
--(void) viewWillAppear:(BOOL)animated{
-	if(self.postListVC){
-		[self.postListVC continueVideoContent];
-	}
-}
-
--(void) viewDidAppear:(BOOL)animated {
-	[super viewDidAppear:animated];
-}
-
--(void) viewWillDisappear:(BOOL)animated {
-	[super viewWillDisappear:animated];
-	if(self.postListVC) [self.postListVC offScreen];
-}
-
 -(void) addPostListVC {
 	if(self.postListVC) {
 		[self.postListVC offScreen];
@@ -163,16 +151,6 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	[flowLayout setMinimumLineSpacing:0.0f];
 	[flowLayout setItemSize:self.view.frame.size];
 	self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
-
-	self.postListVC.listOwner = self.userOfProfile;
-	if(self.startChannel){
-		self.postListVC.channelForList = self.startChannel;
-	}else{
-		self.postListVC.channelForList = [self.channels firstObject];
-		self.startChannel = self.postListVC.channelForList;
-	}
-	self.postListVC.listType = listChannel;
-	self.postListVC.isCurrentUserProfile = self.isCurrentUserProfile;
 	self.postListVC.postListDelegate = self;
 	if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
 	else [self.view addSubview:self.postListVC.view];
@@ -343,16 +321,15 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
 
 -(void)newChannelSelected:(Channel *) channel{
-	if(![self.startChannel.name isEqualToString:channel.name]){
-		self.startChannel = channel;
-		[self addPostListVC];
-	}
+	[self.postListVC display:channel asPostListType:listChannel withListOwner:self.userOfProfile
+		isCurrentUserProfile:self.isCurrentUserProfile];
 }
 
 // updates tab and content
 -(void) selectChannel: (Channel *) channel {
 	[self.profileNavBar selectChannel: channel];
-	[self addPostListVC];
+	[self.postListVC display:channel asPostListType:listChannel withListOwner:self.userOfProfile
+		isCurrentUserProfile:self.isCurrentUserProfile];
 }
 
 #pragma mark - POSTListVC Protocol -

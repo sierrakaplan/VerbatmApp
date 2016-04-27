@@ -36,13 +36,17 @@
 
 @interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource, SharePostViewDelegate, UIScrollViewDelegate>
 
+@property (nonatomic) PostListType listType;
+@property (nonatomic) BOOL isCurrentUserProfile;
+@property (nonatomic) PFUser * listOwner;
+@property (nonatomic) Channel * channelForList;
+
 @property (nonatomic) NSMutableArray *parsePostObjects;
 @property (strong, nonatomic) FeedQueryManager * feedQueryManager;
 @property (nonatomic) NSInteger nextIndexToPresent;
 @property (strong, nonatomic) PostCollectionViewCell *nextCellToPresent;
 @property (nonatomic, strong) UILabel * noContentLabel;
 
-@property (nonatomic) PostView *lastVisibleCell;
 @property (nonatomic) LoadingIndicator *customActivityIndicator;
 @property (nonatomic) SharePostView *sharePostView;
 @property (nonatomic) BOOL shouldPlayVideos;
@@ -70,15 +74,9 @@
 @implementation PostListVC
 
 -(void) viewDidLoad {
-	self.isRefreshing = NO;
-	self.isLoadingMore = NO;
-	self.nextIndexToPresent = 0;
-	[self defineRefreshPostsCompletion];
 	[self setDateSourceAndDelegate];
+	[self defineRefreshPostsCompletion];
 	[self registerClassForCustomCells];
-	[self refreshPosts];
-	self.shouldPlayVideos = YES;
-	self.footerBarIsUp = (self.listType == listFeed || self.isCurrentUserProfile);
 	[self registerForNotifications];
 }
 
@@ -87,9 +85,36 @@
 	[self offScreen];
 }
 
+-(void) clearViews {
+	[self offScreen];
+	self.parsePostObjects = nil;
+	[self.collectionView reloadData];
+	self.feedQueryManager = nil;
+	self.nextIndexToPresent = 0;
+	self.nextCellToPresent = nil;
+	self.postToShare = nil;
+	self.isRefreshing = NO;
+	self.isLoadingMore = NO;
+	self.shouldPlayVideos = YES;
+}
+
+-(void) display:(Channel*)channelForList asPostListType:(PostListType)listType
+			   withListOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile {
+	[self clearViews];
+
+	self.channelForList = channelForList;
+	self.listType = listType;
+	self.listOwner = listOwner;
+	self.isCurrentUserProfile = isCurrentUserProfile;
+	[self refreshPosts];
+	self.footerBarIsUp = (self.listType == listFeed || self.isCurrentUserProfile);
+}
+
 -(void) offScreen {
 	for (NSInteger i = 0; i < [self.collectionView numberOfItemsInSection:0]; ++i) {
-		[(PostCollectionViewCell*)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]] offScreen];
+		PostCollectionViewCell* cell = (PostCollectionViewCell*)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+		[cell offScreen];
+		[cell clearViews];
 	}
 }
 
@@ -185,7 +210,7 @@
 		} else if(!weakSelf.parsePostObjects.count){
 			[weakSelf nothingToPresentHere];
 		}
-		self.isRefreshing = NO;
+		weakSelf.isRefreshing = NO;
 	};
 }
 
@@ -221,13 +246,13 @@
 //}
 
 //todo:
--(void)clearOldPosts {
+//-(void)clearOldPosts {
 	//	for(PostView * view in self.presentedPostList){
 	//		[view removeFromSuperview];
 	//		[view clearPost];
 	//	}
 	//	[self.presentedPostList removeAllObjects];
-}
+//}
 
 //-(void)loadNewBackendPosts:(NSArray *) backendPostObjects{
 //	NSMutableArray * postLoadPromises = [[NSMutableArray alloc] init];
@@ -628,7 +653,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 #pragma mark -Lazy instantiation-
 
--(UIImageView *)reblogSucessful{
+-(UIImageView *)reblogSucessful {
 	if(!_reblogSucessful){
 		_reblogSucessful = [[UIImageView alloc] init];
 		[_reblogSucessful setImage:[UIImage imageNamed:REBLOG_IMAGE]];
@@ -638,7 +663,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 
--(UIImageView *)publishSuccessful{
+-(UIImageView *)publishSuccessful {
 	if(!_publishSuccessful){
 		_publishSuccessful = [[UIImageView alloc] init];
 		[_publishSuccessful setImage:[UIImage imageNamed:SUCCESS_PUBLISHING_IMAGE]];
@@ -648,7 +673,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	return _publishSuccessful;
 }
 
--(UIImageView *)publishFailed{
+-(UIImageView *)publishFailed {
 	if(!_publishFailed){
 		_publishFailed = [[UIImageView alloc] init];
 		[_publishFailed setImage:[UIImage imageNamed:FAILED_PUBLISHING_IMAGE]];
@@ -658,7 +683,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	return _publishFailed;
 }
 
--(UIImageView *)following{
+-(UIImageView *)following {
 	if(!_following){
 		_following = [[UIImageView alloc] init];
 		[_following setImage:[UIImage imageNamed:FOLLOWING_SUCCESS_IMAGE]];
@@ -668,7 +693,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	return _following;
 }
 
--(LoadingIndicator *)customActivityIndicator{
+-(LoadingIndicator *)customActivityIndicator {
 	if(!_customActivityIndicator){
 		CGPoint center = CGPointMake(self.view.frame.size.width/2., self.view.frame.size.height/2.f);
 		_customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:center andImage:[UIImage imageNamed:LOAD_ICON_IMAGE]];
@@ -686,6 +711,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(FeedQueryManager*) feedQueryManager {
 	if (!_feedQueryManager) {
 		_feedQueryManager = [FeedQueryManager sharedInstance];
+		[_feedQueryManager clearFeedData];
 	}
 	return _feedQueryManager;
 }

@@ -19,6 +19,8 @@
 
 +(instancetype) sharedInstance;
 
+-(void) clearFeedData;
+
 /* Reloads the channels that the user follows and then POST_DOWNLOAD_MAX_SIZE of 
    the posts associated with those channels, from newest to oldest. */
 -(void) refreshFeedWithCompletionHandler:(void(^)(NSArray *))block;
