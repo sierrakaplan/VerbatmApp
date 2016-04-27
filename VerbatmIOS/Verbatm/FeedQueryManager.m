@@ -215,7 +215,7 @@
 					}
 					completionBlock(finalChannels);
 					self.exploreChannelsLoaded = 0;
-					self.exploreChannelsLoaded += finalChannels.count;
+					self.exploreChannelsLoaded += results.count;
 				});
 			}];
 		}];
@@ -269,17 +269,28 @@
 			completionBlock (finalChannels);
 			return;
 		}
+
+		NSMutableArray *loadChannelCreatorPromises = [[NSMutableArray alloc] init];
 		for(PFObject *parseChannelObject in channels) {
 			PFUser *channelCreator = [parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
-			[channelCreator fetchIfNeededInBackground];
-			NSString *channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
-			Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
-														   andParseChannelObject:parseChannelObject
-															   andChannelCreator:channelCreator];
-			[finalChannels addObject:verbatmChannelObject];
+			[loadChannelCreatorPromises addObject:[self fetchChannelCreator:channelCreator
+												   andCheckIfPostsInChannel:parseChannelObject]];
 		}
-		self.exploreChannelsLoaded += finalChannels.count;
-		completionBlock(finalChannels);
+		//Make sure all creators have been loaded so their names can be displayed
+		PMKWhen(loadChannelCreatorPromises).then(^(NSArray* results) {
+			for (int i = 0; i < results.count; i++) {
+				PFUser *channelCreator = results[i];
+				if ([channelCreator isEqual:[NSNull null]]) continue;
+				PFObject *channelObj = channels[i];
+				NSString *channelName  = [channelObj valueForKey:CHANNEL_NAME_KEY];
+				Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
+															   andParseChannelObject:channelObj
+																   andChannelCreator:channelCreator];
+				[finalChannels addObject:verbatmChannelObject];
+			}
+			completionBlock(finalChannels);
+			self.exploreChannelsLoaded += results.count;
+		});
 	}];
 }
 

@@ -24,9 +24,14 @@ ExploreChannelCellViewDelegate>
 
 @property (nonatomic) UIRefreshControl *refreshControl;
 
+@property (nonatomic) BOOL loadingMoreChannels;
+@property (nonatomic) BOOL refreshing;
+
 #define HEADER_HEIGHT 50.f
 #define HEADER_FONT_SIZE 20.f
 #define CELL_HEIGHT 350.f
+
+#define LOAD_MORE_CUTOFF 3
 
 @end
 
@@ -36,6 +41,8 @@ ExploreChannelCellViewDelegate>
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
+	self.loadingMoreChannels = NO;
+	self.refreshing = NO;
 	self.view.backgroundColor = [UIColor blackColor];
 	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 	self.tableView.allowsMultipleSelection = NO;
@@ -69,16 +76,30 @@ ExploreChannelCellViewDelegate>
 }
 
 -(void) refreshChannels {
+	self.refreshing = YES;
 	[[FeedQueryManager sharedInstance] loadFeaturedChannelsWithCompletionHandler:^(NSArray *featuredChannels) {
 		self.featuredChannels = nil;
 		[self.featuredChannels addObjectsFromArray:featuredChannels];
 		[self.tableView reloadData];
+		self.refreshing = NO;
 	}];
 	[[FeedQueryManager sharedInstance] refreshExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
 		self.exploreChannels = nil;
 		[self.refreshControl endRefreshing];
 		[self.exploreChannels addObjectsFromArray: exploreChannels];
 		[self.tableView reloadData];
+		self.refreshing = NO;
+	}];
+}
+
+-(void) loadMoreChannels {
+	self.loadingMoreChannels = YES;
+	[[FeedQueryManager sharedInstance] loadMoreExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
+		if (exploreChannels.count) {
+			[self.exploreChannels addObjectsFromArray: exploreChannels];
+			[self.tableView reloadData];
+			self.loadingMoreChannels = NO;
+		}
 	}];
 }
 
@@ -185,6 +206,11 @@ ExploreChannelCellViewDelegate>
 			}
 		}
 		[cell onScreen];
+
+		if (self.exploreChannels.count - indexPath.row <= LOAD_MORE_CUTOFF &&
+			!self.loadingMoreChannels && !self.refreshing) {
+			[self loadMoreChannels];
+		}
 		return cell;
 	}
 }
@@ -197,15 +223,6 @@ ExploreChannelCellViewDelegate>
 // Play videos
 - (void) scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
 
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	// Don't let headers remain anchored
-//	if (scrollView.contentOffset.y <= HEADER_HEIGHT && scrollView.contentOffset.y>=0) {
-//		scrollView.contentInset = UIEdgeInsetsMake(-scrollView.contentOffset.y, 0, 0, 0);
-//	} else if (scrollView.contentOffset.y >= HEADER_HEIGHT) {
-//		scrollView.contentInset = UIEdgeInsetsMake(-HEADER_HEIGHT, 0, 0, 0);
-//	}
 }
 
 - (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
