@@ -71,6 +71,10 @@
 	[self addFacebookLoginButton];
 	self.loginFirstTimeDone = NO;
 	self.enteringPhoneNumber = YES;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                          action:@selector(keyboardDidHide:)];
+    
+    [self.view addGestureRecognizer:tap];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -169,6 +173,7 @@
 -(void) keyboardWillShow:(NSNotification*)notification {
 	[self.loginButton setHidden:YES];
 	[self.orLabel setHidden:YES];
+    
 
 	//Only set the keyboard offset once
 	if (self.keyboardOffset < 1) {
@@ -180,7 +185,7 @@
 	}
 
 	[UIView animateWithDuration:0.2 animations:^{
-		self.phoneLoginField.frame = CGRectOffset(self.phoneLoginField.frame, 0, -self.keyboardOffset);
+		self.phoneLoginField.frame = CGRectOffset(self.phoneLoginField.frame, 0, self.keyboardOffset);
 	}];
 }
 
@@ -189,7 +194,7 @@
 	[self.orLabel setHidden:NO];
 
 	[UIView animateWithDuration:0.2 animations:^{
-		self.phoneLoginField.frame = CGRectOffset(self.phoneLoginField.frame, 0, self.keyboardOffset);
+		self.phoneLoginField.frame = CGRectOffset(self.phoneLoginField.frame, 0, -self.keyboardOffset);
 	}];
 }
 
@@ -478,6 +483,12 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	_animationLabel.lineBreakMode = NSLineBreakByWordWrapping;
 	[_animationLabel setTextAlignment:NSTextAlignmentCenter];
 	return _animationLabel;
+}
+
+-(void)keyboardDidHide:(UITapGestureRecognizer *)gesture
+{
+    [self.phoneLoginField resignFirstResponder];
+    
 }
 
 @end
