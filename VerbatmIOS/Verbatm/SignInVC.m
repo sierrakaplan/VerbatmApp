@@ -50,7 +50,7 @@
 @property (strong, nonatomic) LoginKeyboardToolBar *toolBar;
 @property (nonatomic) BOOL nextButtonEnabled;
 @property (weak, nonatomic) IBOutlet UITextField *phoneLoginField;
-@property (nonatomic) CGFloat keyboardOffset;
+@property (nonatomic) CGRect originalPhoneTextFrame;
 @property (nonatomic) BOOL enteringPhoneNumber;
 @property (strong, nonatomic) NSString *phoneNumber;
 @property (nonatomic) BOOL firstTimeLoggingIn;
@@ -63,7 +63,6 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-	self.keyboardOffset = 0.f;
 	[self.backgroundImageView setFrame:self.view.bounds];
 	[self centerViews];
 	[self registerForNotifications];
@@ -71,10 +70,10 @@
 	[self addFacebookLoginButton];
 	self.loginFirstTimeDone = NO;
 	self.enteringPhoneNumber = YES;
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                          action:@selector(keyboardDidHide:)];
-    
-    [self.view addGestureRecognizer:tap];
+	UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+																		  action:@selector(keyboardDidHide:)];
+
+	[self.view addGestureRecognizer:tap];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -99,6 +98,7 @@
 	self.mobileBloggingLabel.center = CGPointMake(self.view.center.x, self.mobileBloggingLabel.center.y);
 	self.orLabel.center = CGPointMake(self.view.center.x, self.orLabel.center.y);
 	self.phoneLoginField.center = CGPointMake(self.view.center.x, self.phoneLoginField.center.y);
+	self.originalPhoneTextFrame = self.phoneLoginField.frame;
 
 	CGFloat loginToolBarHeight = TEXT_TOOLBAR_HEIGHT*1.3;
 	CGRect toolBarFrame = CGRectMake(0, self.view.frame.size.height - loginToolBarHeight,
@@ -173,19 +173,19 @@
 -(void) keyboardWillShow:(NSNotification*)notification {
 	[self.loginButton setHidden:YES];
 	[self.orLabel setHidden:YES];
-    
 
-	//Only set the keyboard offset once
-	if (self.keyboardOffset < 1) {
-		CGRect keyboardBounds;
-		[[notification.userInfo valueForKey:UIKeyboardFrameBeginUserInfoKey] getValue:&keyboardBounds];
+	CGFloat keyboardOffset = 0.f;
+	CGRect keyboardBounds;
+	[[notification.userInfo valueForKey:UIKeyboardFrameBeginUserInfoKey] getValue:&keyboardBounds];
 
-		CGFloat newYOrigin = self.view.frame.size.height - keyboardBounds.size.height - self.phoneLoginField.frame.size.height - 10.f;
-		self.keyboardOffset = newYOrigin - self.phoneLoginField.frame.origin.y;
-	}
+	CGFloat newYOrigin = (self.view.frame.size.height - keyboardBounds.size.height -
+						  self.phoneLoginField.frame.size.height - TEXT_TOOLBAR_HEIGHT - 50.f);
+	if (newYOrigin < self.phoneLoginField.frame.origin.y) {
+		keyboardOffset = self.phoneLoginField.frame.origin.y - newYOrigin;
+	} 
 
 	[UIView animateWithDuration:0.2 animations:^{
-		self.phoneLoginField.frame = CGRectOffset(self.phoneLoginField.frame, 0, self.keyboardOffset);
+		self.phoneLoginField.frame = CGRectOffset(self.phoneLoginField.frame, 0, -keyboardOffset);
 	}];
 }
 
@@ -194,7 +194,7 @@
 	[self.orLabel setHidden:NO];
 
 	[UIView animateWithDuration:0.2 animations:^{
-		self.phoneLoginField.frame = CGRectOffset(self.phoneLoginField.frame, 0, -self.keyboardOffset);
+		self.phoneLoginField.frame = self.originalPhoneTextFrame;
 	}];
 }
 
@@ -487,8 +487,8 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 -(void)keyboardDidHide:(UITapGestureRecognizer *)gesture
 {
-    [self.phoneLoginField resignFirstResponder];
-    
+	[self.phoneLoginField resignFirstResponder];
+
 }
 
 - (void)dealloc {
