@@ -56,35 +56,19 @@
 @implementation PostPublisher
 
 
--(void) storeVideoFromURL: (NSURL*) url withCompletionBlock:(void(^)(GTLVerbatmAppVideo *))block {
+-(AnyPromise*) storeVideoFromURL: (NSURL*) url {
 
 	AnyPromise* getVideoDataPromise = [UtilityFunctions loadCachedVideoDataFromURL:url];
 	AnyPromise* getVideoUploadURIPromise = [self getVideoUploadURI];
 
-	PMKWhen(@[getVideoDataPromise, getVideoUploadURIPromise]).then(^(NSArray * results){
+	return PMKWhen(@[getVideoDataPromise, getVideoUploadURIPromise]).then(^(NSArray * results) {
 		NSData* videoData = results[0];
-        if(![videoData isKindOfClass:[NSNull class]]){
-            NSString* uri = results[1];
-            self.videoUploader = [[MediaUploader alloc] initWithVideoData:videoData andUri: uri];
-            if ([self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
-                [self.publishingProgress addChild:self.videoUploader.mediaUploadProgress withPendingUnitCount: VIDEO_PROGRESS_UNITS - 1];
-            }
-        } else {
-            NSLog(@"Video upload failed");
-			[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_MEDIA_SAVING_FAILED object:nil];
-        }
-
+		NSString* uri = results[1];
+		self.videoUploader = [[MediaUploader alloc] initWithVideoData:videoData andUri: uri];
+		if ([self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
+			[self.publishingProgress addChild:self.videoUploader.mediaUploadProgress withPendingUnitCount: VIDEO_PROGRESS_UNITS - 1];
+		}
 		return [self.videoUploader startUpload];
-        
-	}).then(^(NSString* blobStoreKeyString) {
-        if(blobStoreKeyString && ![blobStoreKeyString isEqualToString:@""]){
-            GTLVerbatmAppVideo* gtlVideo = [[GTLVerbatmAppVideo alloc] init];
-            gtlVideo.blobKeyString = blobStoreKeyString;
-            block(gtlVideo);
-        }else{
-            NSLog(@"Video upload failed");
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_MEDIA_SAVING_FAILED object:nil];
-        }
 	});
 }
 
@@ -93,17 +77,19 @@
 // Resolves to what insertImage resolves to,
 // Which should be the ID of the GTL image just stored
 -(AnyPromise*) storeImage: (NSData*) imageData {
-    return [self getImageUploadURI].then(^(NSString* uri) {
+	return [self getImageUploadURI].then(^(id result) {
+		if ([result isKindOfClass:[NSError class]]) {
+			return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+				resolve(result);
+			}];
+		}
+		NSString* uri = (NSString*)result;
 		self.imageUploader = [[MediaUploader alloc] initWithImage: imageData andUri:uri];
 		if ([self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
 			[self.publishingProgress addChild:self.imageUploader.mediaUploadProgress withPendingUnitCount: IMAGE_PROGRESS_UNITS - 1];
 		}
 		return [self.imageUploader startUpload];
-	}).then(^(NSString* servingURL) {
-		GTLVerbatmAppImage* gtlImage = [[GTLVerbatmAppImage alloc] init];
-		gtlImage.servingUrl = servingURL;
-		return gtlImage.servingUrl;
-    });
+	});
 }
 
 #pragma mark - Insert entities into the Datastore NOT IN USE -

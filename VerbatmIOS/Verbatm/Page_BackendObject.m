@@ -54,7 +54,12 @@
 
 	return [self savePageObject:newPageObject].then(^(void) {
 		return [self storeImagesFromPinchView:pinchView withPageReference:newPageObject];
-	}).then(^(void) {
+	}).then(^(NSError *error) {
+		if (error) {
+			return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+				resolve(error);
+			}];
+		}
 		return [self storeVideosFromPinchView:pinchView withPageReference:newPageObject];
 	});
 }
@@ -94,7 +99,7 @@
 		getImageDataPromise = getImageDataPromise.then(^(NSData *imageData) {
 			NSArray* photoWithText = pinchViewPhotosWithText[i-1];
 			return [self storeImageFromImageData:imageData andPhotoWithTextArray:photoWithText
-								  atIndex:i withPageObject:page].then(^(void) {
+										 atIndex:i withPageObject:page].then(^(void) {
 				return [imagePinchViews[i] getImageDataWithHalfSize:half];
 			});
 		});
@@ -103,12 +108,12 @@
 		NSInteger index = imagePinchViews.count - 1;
 		NSArray* photoWithText = pinchViewPhotosWithText[index];
 		return [self storeImageFromImageData:imageData andPhotoWithTextArray:photoWithText
-							  atIndex:index withPageObject:page];
+									 atIndex:index withPageObject:page];
 	});
 }
 
 -(AnyPromise*) storeImageFromImageData: (NSData *) imageData andPhotoWithTextArray: (NSArray *)photoWithText
-						atIndex: (NSInteger) index withPageObject: (PFObject *) page {
+							   atIndex: (NSInteger) index withPageObject: (PFObject *) page {
 	NSString* text = photoWithText[1];
 	NSNumber* textYPosition = photoWithText[2];
 	UIColor *textColor = photoWithText[3];
@@ -118,34 +123,40 @@
 	Photo_BackendObject * photoObj = [[Photo_BackendObject alloc] init];
 	[self.photoAndVideoSavers addObject:photoObj];
 	return [photoObj saveImageData:imageData withText:text
-	   andTextYPosition:textYPosition
-		   andTextColor:textColor
-	   andTextAlignment:textAlignment
-			andTextSize:textSize
-		   atPhotoIndex:index
-		  andPageObject:page];
+				  andTextYPosition:textYPosition
+					  andTextColor:textColor
+				  andTextAlignment:textAlignment
+					   andTextSize:textSize
+					  atPhotoIndex:index
+					 andPageObject:page];
 }
 
--(void) storeVideosFromPinchView: (PinchView*) pinchView withPageReference:(PFObject *) page{
-	if (pinchView.containsVideo) {
-		Video_BackendObject  *videoObj = [[Video_BackendObject alloc] init];
-		[self.photoAndVideoSavers addObject:videoObj];
+-(AnyPromise*) storeVideosFromPinchView: (PinchView*) pinchView withPageReference:(PFObject *) page{
+	if (!pinchView.containsVideo) return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+		resolve(nil);
+	}];
 
-		AVAsset* videoAsset = [pinchView getVideo];
-		if (![videoAsset isKindOfClass:[AVURLAsset class]]) {
-			NSString *videoFileName = [UtilityFunctions randomStringWithLength:10];
-			NSURL* exportURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@%@", NSTemporaryDirectory(), videoFileName, @".mp4"]];
-			AVAssetExportSession* exporter = [[AVAssetExportSession alloc] initWithAsset:videoAsset
-																			  presetName:AVAssetExportPresetPassthrough];
+	Video_BackendObject *videoObj = [[Video_BackendObject alloc] init];
+	[self.photoAndVideoSavers addObject:videoObj];
 
-			[exporter setOutputURL:exportURL];
-			[exporter setOutputFileType:AVFileTypeMPEG4];
+	AVAsset* videoAsset = [pinchView getVideo];
+	if (![videoAsset isKindOfClass:[AVURLAsset class]]) {
+		NSString *videoFileName = [UtilityFunctions randomStringWithLength:10];
+		NSURL* exportURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@%@", NSTemporaryDirectory(), videoFileName, @".mp4"]];
+		AVAssetExportSession* exporter = [[AVAssetExportSession alloc] initWithAsset:videoAsset
+																		  presetName:AVAssetExportPresetPassthrough];
+
+		[exporter setOutputURL:exportURL];
+		[exporter setOutputFileType:AVFileTypeMPEG4];
+		return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 			[exporter exportAsynchronouslyWithCompletionHandler:^(void){
-				[videoObj saveVideo:exportURL andPageObject:page];
+				resolve(exportURL);
 			}];
-		} else {
-			[videoObj saveVideo:((AVURLAsset *)videoAsset).URL andPageObject:page];
-		}
+		}].then(^(NSURL* exportURL) {
+			return [videoObj saveVideo:exportURL andPageObject:page];
+		});
+	} else {
+		return [videoObj saveVideo:((AVURLAsset *)videoAsset).URL andPageObject:page];
 	}
 }
 
@@ -191,7 +202,7 @@
 		} else {
 			[[Crashlytics sharedInstance] recordError: error];
 		}
-
+		
 	}];
 }
 

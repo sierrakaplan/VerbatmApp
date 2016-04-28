@@ -133,7 +133,6 @@
 
 	PHImageRequestOptions *options = [PHImageRequestOptions new];
 	options.synchronous = YES;
-	CGSize size = self.bounds.size;
 	[pinchView getLargerImageWithHalfSize:self.photoVideoSubview].then(^(UIImage *image) {
 		[editMediaContentView changeImageTo:image];
 	});
@@ -326,13 +325,6 @@
 	if(index >= self.imageContainerViews.count){
 		index = 0;
 		((UIView *) self.imageContainerViews[index]).alpha = 1.f;
-	}
-	if ([self.imageContainerViews[self.currentPhotoIndex] isKindOfClass:[TextOverMediaView class]]) {
-		TextOverMediaView *oldMediaView = self.imageContainerViews[self.currentPhotoIndex];
-		TextOverMediaView *currentMediaView = self.imageContainerViews[index];
-		//todo: delete
-		//		[oldMediaView displayLargeImage:NO];
-		//		[currentMediaView displayLargeImage:YES];
 	}
 	self.currentPhotoIndex = index;
 	for (int i = 0; i < self.imageContainerViews.count; i++) {

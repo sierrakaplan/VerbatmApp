@@ -39,7 +39,6 @@
 	static dispatch_once_t onceToken;
 	dispatch_once(&onceToken, ^{
 		sharedInstance = [[PublishingProgressManager alloc] init];
-		[sharedInstance registerForNotifications];
 	});
 	return sharedInstance;
 }
@@ -73,13 +72,6 @@
 							  }];
 }
 
--(void)registerForNotifications{
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(mediaSavingFailed:)
-												 name:NOTIFICATION_MEDIA_SAVING_FAILED
-											   object:nil];
-}
-
 -(void)countMediaContentFromPinchViews:(NSArray *)pinchViews{
 	CGFloat totalProgressUnits = INITIAL_PROGRESS_UNITS;
 	for(PinchView * pinchView in pinchViews){
@@ -95,9 +87,12 @@
 	self.progressAccountant.completedUnitCount = INITIAL_PROGRESS_UNITS;
 }
 
--(void)savingMediaFailed{
+-(void)savingMediaFailedWithError:(NSError*)error {
+	self.progressAccountant.completedUnitCount = 0;
+	self.currentPublishingChannel = NULL;
 	self.currentlyPublishing = NO;
-	[self.delegate publishingFailed];
+	self.currentlyPublishing = NO;
+	[self.delegate publishingFailedWithError:error];
 }
 
 -(void)mediaSavingProgressed:(int64_t) newProgress {
@@ -125,15 +120,6 @@
 		self.currentParsePostObject = nil;
 		self.currentPublishingChannel = nil;
 	}];
-}
-
--(void)mediaSavingFailed:(NSNotification *) notification {
-	if(self.currentlyPublishing){
-		self.progressAccountant.completedUnitCount = 0;
-		[self.delegate publishingFailed];
-		self.currentPublishingChannel = NULL;
-		self.currentlyPublishing = NO;
-	}
 }
 
 - (void)dealloc {

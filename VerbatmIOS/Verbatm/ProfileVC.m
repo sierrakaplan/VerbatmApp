@@ -432,9 +432,14 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	//}
 }
 
--(void) publishingFailed {
+-(void) publishingFailedWithError:(NSError *)error {
 	NSLog(@"PUBLISHING FAILED");
-	//todo:
+	NSString *message = @"We were unable to publish your post. One of the videos may be too long or your internet connection may be too weak. Please try again later.";
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Publishing Failed" message:message preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+													handler:^(UIAlertAction * action) {}];
+	[newAlert addAction:defaultAction];
+	[self presentViewController:newAlert animated:YES completion:nil];
    if(self.publishingProgress) [self.publishingProgressView removeFromSuperview];
 }
 

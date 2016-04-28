@@ -182,7 +182,7 @@
 						  self.phoneLoginField.frame.size.height - TEXT_TOOLBAR_HEIGHT - 50.f);
 	if (newYOrigin < self.phoneLoginField.frame.origin.y) {
 		keyboardOffset = self.phoneLoginField.frame.origin.y - newYOrigin;
-	} 
+	}
 
 	[UIView animateWithDuration:0.2 animations:^{
 		self.phoneLoginField.frame = CGRectOffset(self.phoneLoginField.frame, 0, -keyboardOffset);

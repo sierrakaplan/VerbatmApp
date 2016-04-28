@@ -20,9 +20,9 @@
 
 @protocol PublishingProgressProtocol <NSObject>
 
-//scale is  0-1
 -(void)publishingComplete;
--(void)publishingFailed;
+
+-(void)publishingFailedWithError:(NSError*)error;
 
 @end
 
@@ -43,11 +43,9 @@
 -(void)publishPostToChannel:(Channel *)channel withPinchViews:(NSArray *)pinchViews
 		withCompletionBlock:(void(^)(BOOL))block;
 
--(void)registerForNotifications;
-
 -(void)mediaSavingProgressed:(int64_t) newProgress;
 
--(void)savingMediaFailed;
+-(void)savingMediaFailedWithError:(NSError*)error;
 
 @end
 

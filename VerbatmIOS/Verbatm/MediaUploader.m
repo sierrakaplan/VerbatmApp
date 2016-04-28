@@ -107,7 +107,7 @@
 -(void) requestFailed:(ASIHTTPRequest *)request {
 	NSError *error = [request error];
 	[[Crashlytics sharedInstance] recordError: error];
-	[[PublishingProgressManager sharedInstance] savingMediaFailed];
+	[[PublishingProgressManager sharedInstance] savingMediaFailedWithError:error];
 	[self.mediaUploadProgress cancel];
 	self.completionBlock(error, nil);
 }

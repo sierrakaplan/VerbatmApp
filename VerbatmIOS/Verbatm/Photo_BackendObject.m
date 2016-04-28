@@ -36,25 +36,32 @@ andTextAlignment:(NSNumber *) textAlignment
 	atPhotoIndex:(NSInteger) photoIndex
    andPageObject:(PFObject *) pageObject {
     self.mediaPublisher = [[PostPublisher alloc] init];
-    return [self.mediaPublisher storeImage:imageData].then(^(NSString* blobstoreUrl) {
+    return [self.mediaPublisher storeImage:imageData].then(^(id result) {
+		if ([result isKindOfClass:[NSError class]]) {
+			return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+				resolve(result);
+			}];
+		}
+		NSString *blobstoreUrl = (NSString*) result;
 		if (![blobstoreUrl hasSuffix:@"=s0"]) {
 			blobstoreUrl = [blobstoreUrl stringByAppendingString:@"=s0"];
 		}
         //in completion
-        [self createAndSavePhotoObjectwithBlobstoreUrl:blobstoreUrl
+        return [self createAndSavePhotoObjectwithBlobstoreUrl:blobstoreUrl
 											  withText:text
 									  andTextYPosition:textYPosition
 										  andTextColor:textColor
 									  andTextAlignment:textAlignment
 										   andTextSize:textSize
 										  atPhotoIndex:photoIndex
-										 andPageObject:pageObject];
+										 andPageObject:pageObject].then(^(NSError*error) {
+			return error; //Will be nil if succeeded
+		});
     });
-    
 }
 
 /* media, text, textYPosition, textColor, textAlignment, textSize */
--(void)createAndSavePhotoObjectwithBlobstoreUrl:(NSString *) imageURL
+-(AnyPromise*) createAndSavePhotoObjectwithBlobstoreUrl:(NSString *) imageURL
 									   withText:(NSString *) text
 							   andTextYPosition:(NSNumber *) textYPosition
 								   andTextColor:(UIColor *) textColor
@@ -74,13 +81,16 @@ andTextAlignment:(NSNumber *) textAlignment
 	[newPhotoObject setObject:textAlignment forKey:PHOTO_TEXT_ALIGNMENT_KEY];
 	[newPhotoObject setObject:textSize forKey:PHOTO_TEXT_SIZE_KEY];
 
-    [newPhotoObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        if(succeeded){
-			[[PublishingProgressManager sharedInstance] mediaSavingProgressed:1];
-        } else {
-			[[PublishingProgressManager sharedInstance] savingMediaFailed];
-		}
-    }];
+	return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+		[newPhotoObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+			if(succeeded && !error){
+				[[PublishingProgressManager sharedInstance] mediaSavingProgressed:1];
+				resolve(nil);
+			} else {
+				resolve(error);
+			}
+		}];
+	}];
 }
 
 +(void)getPhotosForPage:(PFObject *) page andCompletionBlock:(void(^)(NSArray *))block {

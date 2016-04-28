@@ -145,11 +145,6 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 
 -(void)registerForNotifications{
 	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(publishingFailedNotification:)
-												 name:NOTIFICATION_MEDIA_SAVING_FAILED
-											   object:nil];
-
-	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(successfullyPublishedNotification:)
 												 name:NOTIFICATION_POST_PUBLISHED
 											   object:nil];

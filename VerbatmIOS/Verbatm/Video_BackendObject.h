@@ -20,7 +20,7 @@
 
 //Page object is the page object that this video is related to
 //page object must already be saved in the database before this function is called
--(void)saveVideo:(NSURL *) videoUrl andPageObject:(PFObject *) pageObject;
+-(AnyPromise*)saveVideo:(NSURL *) videoUrl andPageObject:(PFObject *) pageObject;
 
 +(void)getVideoForPage:(PFObject *) page andCompletionBlock:(void(^)(PFObject *))block ;
 

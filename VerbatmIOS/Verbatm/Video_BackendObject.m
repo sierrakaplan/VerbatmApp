@@ -33,14 +33,19 @@
 
 @implementation Video_BackendObject
 
--(void)saveVideo:(NSURL *) videoUrl andPageObject:(PFObject *) pageObject {
+-(AnyPromise*) saveVideo:(NSURL *) videoUrl andPageObject:(PFObject *) pageObject {
     self.mediaPublisher = [[PostPublisher alloc] init];
     UIImage * thumbNail = [Video_BackendObject thumbnailImageForVideo:videoUrl atTime:0.f];
-    [self.mediaPublisher storeVideoFromURL:videoUrl withCompletionBlock:^(GTLVerbatmAppVideo * gtlVideo) {
-        NSString * blobStoreUrl = gtlVideo.blobKeyString;//set this with the url from the blobstore
-        //in completion block of blobstore save
-        [self createAndSaveParseVideoObjectWithBlobStoreUrl:blobStoreUrl thumbnail:thumbNail andPageObject:pageObject];
-    }];
+    return [self.mediaPublisher storeVideoFromURL:videoUrl].then(^(id result) {
+		if ([result isKindOfClass:[NSError class]]) {
+			return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+				resolve(result);
+			}];
+		} else {
+			NSString * blobStoreUrl = (NSString*)result;
+			return [self createAndSaveParseVideoObjectWithBlobStoreUrl:blobStoreUrl thumbnail:thumbNail andPageObject:pageObject];
+		}
+	});
 }
 
 + (UIImage *)thumbnailImageForVideo:(NSURL *)videoURL
@@ -72,24 +77,27 @@
     return thumbnailImage;
 }
 
--(void)createAndSaveParseVideoObjectWithBlobStoreUrl:(NSString *) blobStoreVideoUrl
+-(AnyPromise*) createAndSaveParseVideoObjectWithBlobStoreUrl:(NSString *) blobStoreVideoUrl
                                thumbnail:(UIImage *) thumbnail andPageObject:(PFObject *)pageObject{
     if(!self.mediaPublisher)self.mediaPublisher = [[PostPublisher alloc] init];
 
 	//todo:get data for thumbnail in background
-    [self.mediaPublisher storeImage:UIImagePNGRepresentation(thumbnail)].then(^(NSString* blobstoreUrl) {
+    return [self.mediaPublisher storeImage:UIImagePNGRepresentation(thumbnail)].then(^(NSString* blobstoreUrl) {
         PFObject * newVideoObj = [PFObject objectWithClassName:VIDEO_PFCLASS_KEY];
         [newVideoObj setObject:blobStoreVideoUrl forKey:BLOB_STORE_URL];
         [newVideoObj setObject:blobstoreUrl forKey:VIDEO_THUMBNAIL_KEY];
         [newVideoObj setObject:pageObject forKey:VIDEO_PAGE_OBJECT_KEY];
-        [newVideoObj saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-            if(succeeded){
-                //tell our publishing manager that a video is done saving
-				[[PublishingProgressManager sharedInstance] mediaSavingProgressed:2]; //2 for thumbnail and video
-            } else {
-				[[PublishingProgressManager sharedInstance] savingMediaFailed];
-			}
-        }];
+		return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+			[newVideoObj saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+				if(succeeded){
+					//tell our publishing manager that a video is done saving
+					[[PublishingProgressManager sharedInstance] mediaSavingProgressed:2]; //2 for thumbnail and video
+					resolve(nil);
+				} else {
+					resolve(error);
+				}
+			}];
+		}];
 	});
 }
 

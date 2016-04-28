@@ -15,9 +15,10 @@
 
 @property(nonatomic, strong) NSProgress* publishingProgress;
 
--(void) storeVideoFromURL: (NSURL*) url withCompletionBlock:(void(^)(GTLVerbatmAppVideo *))block;
+//Resolves to either NSString *blobstoreurl or an NSError
+-(AnyPromise*) storeVideoFromURL: (NSURL*) url;
 
-//stores an image for us and takes a completion block to handle the url
+//Resolves to either NSString *blobstoreurl or an NSError
 -(AnyPromise*) storeImage: (NSData*) imageData;
 
 @end

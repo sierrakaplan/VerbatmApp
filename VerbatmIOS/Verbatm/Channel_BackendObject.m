@@ -54,13 +54,18 @@
 
 //returns channel when we create a new one
 -(void) createPostFromPinchViews: (NSArray*) pinchViews toChannel: (Channel *) channel
-			 withCompletionBlock:(void(^)(PFObject *))block {
+			 withCompletionBlock:(void(^)(PFObject *)) block {
 	if(channel.parseChannelObject){
 		block ([self createPostFromPinchViews:pinchViews andChannel:channel]);
 	} else {
 		[Channel_BackendObject createChannelWithName:channel.name andCompletionBlock:^(PFObject* channelObject){
-			[channel addParseChannelObject:channelObject andChannelCreator:[PFUser currentUser]];
-			block ([self createPostFromPinchViews:pinchViews andChannel:channel]);
+			if (!channelObject) {
+				//todo: no network
+				block (nil);
+			} else {
+				[channel addParseChannelObject:channelObject andChannelCreator:[PFUser currentUser]];
+				block ([self createPostFromPinchViews:pinchViews andChannel:channel]);
+			}
 		}];
 	}
 }

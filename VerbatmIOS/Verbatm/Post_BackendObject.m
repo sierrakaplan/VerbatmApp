@@ -20,6 +20,7 @@
 #import <Parse/PFQuery.h>
 
 #import "Page_BackendObject.h"
+#import "PublishingProgressManager.h"
 
 #import "Share_BackendManager.h"
 
@@ -54,15 +55,31 @@
 			[self.pageArray addObject:newPage];
 
 			for (int i = 1; i< pinchViews.count; i++) {
-				storePagePromise = storePagePromise.then(^(PFObject*pageObject) {
-					Page_BackendObject * newPage = [[Page_BackendObject alloc] init];
-					[self.pageArray addObject:newPage];
-					return [newPage savePageWithIndex:i andPinchView:pinchViews[i] andPost:newPostObject];
+				storePagePromise = storePagePromise.then(^(id result) {
+					if (result && [result isKindOfClass:[NSError class]]) {
+						[[PublishingProgressManager sharedInstance] savingMediaFailedWithError:error];
+						//Delete all media stored so far
+						[Post_BackendObject deletePost:newPostObject];
+						return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+							resolve(nil);
+						}];
+					} else {
+						Page_BackendObject * newPage = [[Page_BackendObject alloc] init];
+						[self.pageArray addObject:newPage];
+						return [newPage savePageWithIndex:i andPinchView:pinchViews[i] andPost:newPostObject];
+					}
 				});
 			}
 
-			storePagePromise.then(^(PFObject *pageObject) {
+			storePagePromise.then(^(id result) {
+				if (result && [result isKindOfClass:[NSError class]]) {
+					[[PublishingProgressManager sharedInstance] savingMediaFailedWithError:error];
+					//Delete all media stored so far
+					[Post_BackendObject deletePost:newPostObject];
+				}
 			});
+		} else {
+			[[PublishingProgressManager sharedInstance] savingMediaFailedWithError:error];
 		}
 	}];
 
