@@ -2894,11 +2894,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483501599.566871"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "173"
-            endingLineNumber = "173"
+            startingLineNumber = "171"
+            endingLineNumber = "171"
             landmarkName = "-setDateSourceAndDelegate"
             landmarkType = "5">
          </BreakpointContent>
@@ -2910,11 +2910,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483501599.566871"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "190"
-            endingLineNumber = "190"
+            startingLineNumber = "188"
+            endingLineNumber = "188"
             landmarkName = "-nothingToPresentHere"
             landmarkType = "5">
          </BreakpointContent>
@@ -2926,11 +2926,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483501599.566871"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "174"
-            endingLineNumber = "174"
+            startingLineNumber = "172"
+            endingLineNumber = "172"
             landmarkName = "-setDateSourceAndDelegate"
             landmarkType = "5">
          </BreakpointContent>
@@ -2942,11 +2942,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483501599.566871"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "186"
-            endingLineNumber = "186"
+            startingLineNumber = "184"
+            endingLineNumber = "184"
             landmarkName = "-nothingToPresentHere"
             landmarkType = "5">
          </BreakpointContent>
@@ -2958,11 +2958,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483501599.566871"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "187"
-            endingLineNumber = "187"
+            startingLineNumber = "185"
+            endingLineNumber = "185"
             landmarkName = "-nothingToPresentHere"
             landmarkType = "5">
          </BreakpointContent>
@@ -3150,11 +3150,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483550150.611357"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "288"
-            endingLineNumber = "288"
+            startingLineNumber = "286"
+            endingLineNumber = "286"
             landmarkName = "-collectionView:cellForItemAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3902,11 +3902,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483501599.566871"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "136"
-            endingLineNumber = "136"
+            startingLineNumber = "134"
+            endingLineNumber = "134"
             landmarkName = "-scrollViewDidScroll:"
             landmarkType = "5">
          </BreakpointContent>
@@ -5155,11 +5155,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentVC.m"
-            timestampString = "483551635.767"
+            timestampString = "483552370.338649"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "227"
-            endingLineNumber = "227"
+            startingLineNumber = "220"
+            endingLineNumber = "220"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -5171,11 +5171,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentVC.m"
-            timestampString = "483551635.767"
+            timestampString = "483552370.338649"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "213"
-            endingLineNumber = "213"
+            startingLineNumber = "206"
+            endingLineNumber = "206"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6083,11 +6083,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentVC.m"
-            timestampString = "483551635.767"
+            timestampString = "483552370.338649"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "262"
-            endingLineNumber = "262"
+            startingLineNumber = "255"
+            endingLineNumber = "255"
             landmarkName = "-tableView:didEndDisplayingCell:forRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6099,11 +6099,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentVC.m"
-            timestampString = "483551635.767"
+            timestampString = "483552370.338649"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "263"
-            endingLineNumber = "263"
+            startingLineNumber = "256"
+            endingLineNumber = "256"
             landmarkName = "-tableView:didEndDisplayingCell:forRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6227,11 +6227,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentVC.m"
-            timestampString = "483551635.767"
+            timestampString = "483552370.338649"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "110"
-            endingLineNumber = "110"
+            startingLineNumber = "103"
+            endingLineNumber = "103"
             landmarkName = "-refreshChannels"
             landmarkType = "5">
          </BreakpointContent>
@@ -6243,11 +6243,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentVC.m"
-            timestampString = "483551635.767"
+            timestampString = "483552370.338649"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "116"
-            endingLineNumber = "116"
+            startingLineNumber = "109"
+            endingLineNumber = "109"
             landmarkName = "-refreshChannels"
             landmarkType = "5">
          </BreakpointContent>
@@ -6259,11 +6259,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentVC.m"
-            timestampString = "483551635.767"
+            timestampString = "483552370.338649"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "221"
-            endingLineNumber = "221"
+            startingLineNumber = "214"
+            endingLineNumber = "214"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6387,11 +6387,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentVC.m"
-            timestampString = "483551635.767"
+            timestampString = "483552370.338649"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "233"
-            endingLineNumber = "233"
+            startingLineNumber = "226"
+            endingLineNumber = "226"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6451,11 +6451,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentVC.m"
-            timestampString = "483551635.767"
+            timestampString = "483552370.338649"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "141"
-            endingLineNumber = "141"
+            startingLineNumber = "134"
+            endingLineNumber = "134"
             landmarkName = "-channelSelected:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6675,11 +6675,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentVC.m"
-            timestampString = "483551635.767"
+            timestampString = "483552370.338649"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "144"
-            endingLineNumber = "144"
+            startingLineNumber = "137"
+            endingLineNumber = "137"
             landmarkName = "-channelSelected:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6691,11 +6691,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentVC.m"
-            timestampString = "483551635.767"
+            timestampString = "483552370.338649"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "145"
-            endingLineNumber = "145"
+            startingLineNumber = "138"
+            endingLineNumber = "138"
             landmarkName = "-channelSelected:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6723,11 +6723,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483550150.611357"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "226"
-            endingLineNumber = "226"
+            startingLineNumber = "224"
+            endingLineNumber = "224"
             landmarkName = "-refreshPosts"
             landmarkType = "5">
          </BreakpointContent>
@@ -6819,11 +6819,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentVC.m"
-            timestampString = "483551635.767"
+            timestampString = "483552370.338649"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "105"
-            endingLineNumber = "105"
+            startingLineNumber = "98"
+            endingLineNumber = "98"
             landmarkName = "-refreshChannels"
             landmarkType = "5">
             <Locations>
@@ -8318,11 +8318,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483550150.611357"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "272"
-            endingLineNumber = "272"
+            startingLineNumber = "270"
+            endingLineNumber = "270"
             landmarkName = "-collectionView:cellForItemAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8334,11 +8334,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483501599.566871"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "203"
-            endingLineNumber = "203"
+            startingLineNumber = "201"
+            endingLineNumber = "201"
             landmarkName = "-defineRefreshPostsCompletion"
             landmarkType = "5">
          </BreakpointContent>
@@ -8366,11 +8366,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentVC.m"
-            timestampString = "483551635.767"
+            timestampString = "483552370.338649"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "259"
-            endingLineNumber = "259"
+            startingLineNumber = "252"
+            endingLineNumber = "252"
             landmarkName = "-tableView:didEndDisplayingCell:forRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8382,11 +8382,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483550150.611357"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "270"
-            endingLineNumber = "270"
+            startingLineNumber = "268"
+            endingLineNumber = "268"
             landmarkName = "-collectionView:cellForItemAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8398,11 +8398,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483550150.611357"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "305"
-            endingLineNumber = "305"
+            startingLineNumber = "303"
+            endingLineNumber = "303"
             landmarkName = "-collectionView:didEndDisplayingCell:forItemAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8477,11 +8477,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483550150.611357"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "266"
-            endingLineNumber = "266"
+            startingLineNumber = "264"
+            endingLineNumber = "264"
             landmarkName = "-collectionView:cellForItemAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8493,11 +8493,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483550150.611357"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "293"
-            endingLineNumber = "293"
+            startingLineNumber = "291"
+            endingLineNumber = "291"
             landmarkName = "-postCellAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8509,11 +8509,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483550150.611357"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "298"
-            endingLineNumber = "298"
+            startingLineNumber = "296"
+            endingLineNumber = "296"
             landmarkName = "-postCellAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8573,11 +8573,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483501599.566871"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "209"
-            endingLineNumber = "209"
+            startingLineNumber = "207"
+            endingLineNumber = "207"
             landmarkName = "-defineRefreshPostsCompletion"
             landmarkType = "5">
          </BreakpointContent>
@@ -8589,11 +8589,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483550150.611357"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "269"
-            endingLineNumber = "269"
+            startingLineNumber = "267"
+            endingLineNumber = "267"
             landmarkName = "-collectionView:cellForItemAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8637,11 +8637,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483550150.611357"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "229"
-            endingLineNumber = "229"
+            startingLineNumber = "227"
+            endingLineNumber = "227"
             landmarkName = "-refreshPosts"
             landmarkType = "5">
          </BreakpointContent>
@@ -8669,11 +8669,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483550150.611357"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "233"
-            endingLineNumber = "233"
+            startingLineNumber = "231"
+            endingLineNumber = "231"
             landmarkName = "-refreshPosts"
             landmarkType = "5">
          </BreakpointContent>
@@ -8685,11 +8685,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483550150.611357"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "232"
-            endingLineNumber = "232"
+            startingLineNumber = "230"
+            endingLineNumber = "230"
             landmarkName = "-refreshPosts"
             landmarkType = "5">
          </BreakpointContent>
@@ -8861,11 +8861,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483550150.611357"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "370"
-            endingLineNumber = "370"
+            startingLineNumber = "368"
+            endingLineNumber = "368"
             landmarkName = "-removePostAtIndex:"
             landmarkType = "5">
             <Locations>
@@ -8909,11 +8909,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483550150.611357"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "358"
-            endingLineNumber = "358"
+            startingLineNumber = "356"
+            endingLineNumber = "356"
             landmarkName = "-deleteReblog:onPostView:withPostChannelActivityObj:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8925,11 +8925,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483550150.611357"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "297"
-            endingLineNumber = "297"
+            startingLineNumber = "295"
+            endingLineNumber = "295"
             landmarkName = "-postCellAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8989,11 +8989,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentVC.m"
-            timestampString = "483551635.767"
+            timestampString = "483552370.338649"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "125"
-            endingLineNumber = "125"
+            startingLineNumber = "118"
+            endingLineNumber = "118"
             landmarkName = "-loadMoreChannels"
             landmarkType = "5">
          </BreakpointContent>
@@ -9037,11 +9037,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentVC.m"
-            timestampString = "483551635.767"
+            timestampString = "483552370.338649"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "238"
-            endingLineNumber = "238"
+            startingLineNumber = "231"
+            endingLineNumber = "231"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -9053,11 +9053,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentVC.m"
-            timestampString = "483551635.767"
+            timestampString = "483552370.338649"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "146"
-            endingLineNumber = "146"
+            startingLineNumber = "139"
+            endingLineNumber = "139"
             landmarkName = "-channelSelected:"
             landmarkType = "5">
          </BreakpointContent>
@@ -9117,11 +9117,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483550150.611357"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "240"
-            endingLineNumber = "240"
+            startingLineNumber = "238"
+            endingLineNumber = "238"
             landmarkName = "-loadMorePosts"
             landmarkType = "5">
          </BreakpointContent>
@@ -9309,11 +9309,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483550150.611357"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "582"
-            endingLineNumber = "582"
+            startingLineNumber = "580"
+            endingLineNumber = "580"
             landmarkName = "-dealloc"
             landmarkType = "5">
          </BreakpointContent>
@@ -9581,7 +9581,7 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/TextOverMediaView.m"
-                  timestampString = "483551712.203425"
+                  timestampString = "483552370.538482"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "51"
@@ -9596,7 +9596,7 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/TextOverMediaView.m"
-                  timestampString = "483551712.203527"
+                  timestampString = "483552370.538578"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "53"
@@ -9741,7 +9741,7 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/ImagePinchView.m"
-                  timestampString = "483551712.205759"
+                  timestampString = "483552370.540126"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "111"
@@ -9756,7 +9756,7 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/ImagePinchView.m"
-                  timestampString = "483551712.205873"
+                  timestampString = "483552370.540218"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "112"
@@ -9789,7 +9789,7 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/PhotoPVE.m"
-                  timestampString = "483551712.206497"
+                  timestampString = "483552370.54079"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "137"
@@ -9804,7 +9804,7 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/PhotoPVE.m"
-                  timestampString = "483551712.206596"
+                  timestampString = "483552370.54089"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "137"
@@ -9817,15 +9817,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483550150.611357"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "239"
-            endingLineNumber = "239"
+            startingLineNumber = "237"
+            endingLineNumber = "237"
             landmarkName = "-loadMorePosts"
             landmarkType = "5">
          </BreakpointContent>
@@ -9837,11 +9837,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentVC.m"
-            timestampString = "483551255.433782"
+            timestampString = "483552337.666244"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "81"
-            endingLineNumber = "81"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
             landmarkName = "-clearViews"
             landmarkType = "5">
          </BreakpointContent>
@@ -9853,11 +9853,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentVC.m"
-            timestampString = "483551635.767"
+            timestampString = "483552370.338649"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "107"
-            endingLineNumber = "107"
+            startingLineNumber = "100"
+            endingLineNumber = "100"
             landmarkName = "-refreshChannels"
             landmarkType = "5">
          </BreakpointContent>
@@ -9865,7 +9865,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentVC.m"
@@ -9881,15 +9881,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentVC.m"
-            timestampString = "483551599.175085"
+            timestampString = "483552370.338649"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "93"
-            endingLineNumber = "93"
+            startingLineNumber = "87"
+            endingLineNumber = "87"
             landmarkName = "-clearViews"
             landmarkType = "5">
          </BreakpointContent>

@@ -112,10 +112,8 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 }
 
 -(void) offScreen {
-	for (NSInteger i = 0; i < [self.collectionView numberOfItemsInSection:0]; ++i) {
-		PostCollectionViewCell* cell = (PostCollectionViewCell*)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-		[cell offScreen];
-		[cell clearViews];
+	for (PostCollectionViewCell *cellView in [self.collectionView visibleCells]) {
+		[cellView offScreen];
 	}
 }
 

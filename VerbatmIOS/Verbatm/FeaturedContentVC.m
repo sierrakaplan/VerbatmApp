@@ -76,29 +76,22 @@ ExploreChannelCellViewDelegate>
 }
 
 -(void) clearViews {
-	for (NSInteger i = 0; i < [self.tableView numberOfRowsInSection:0]; ++i) {
-		FeaturedContentCellView *cellView = (FeaturedContentCellView*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-		[cellView offScreen];
-		[cellView clearViews];
-
-	}
-	for (NSInteger i = 0; i < [self.tableView numberOfRowsInSection:1]; ++i) {
-		ExploreChannelCellView *cellView = (ExploreChannelCellView*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:1]];
-		[cellView offScreen];
-		[cellView clearViews];
+	for (UITableViewCell *cellView in [self.tableView visibleCells]) {
+		[(ExploreChannelCellView*)cellView offScreen];
+		[(ExploreChannelCellView*)cellView clearViews];
 	}
 	self.loadingMoreChannels = NO;
 	self.refreshing = NO;
 	self.exploreChannels = nil;
 	self.featuredChannels = nil;
+	[self.tableView reloadData];
+	self.exploreChannels = nil;
+	self.featuredChannels = nil;
 }
 
 -(void) offScreen {
-	for (NSInteger i = 0; i < [self.tableView numberOfRowsInSection:0]; ++i) {
-		[(FeaturedContentCellView*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]] offScreen];
-	}
-	for (NSInteger i = 0; i < [self.tableView numberOfRowsInSection:1]; ++i) {
-		[(ExploreChannelCellView*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:1]] offScreen];
+	for (UITableViewCell *cellView in [self.tableView visibleCells]) {
+		[(ExploreChannelCellView*)cellView offScreen];
 	}
 }
 
