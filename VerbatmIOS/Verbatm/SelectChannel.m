@@ -99,7 +99,7 @@
     
     CGRect fbLabelFrame = CGRectMake(WALL_OFFSET_X + imageHeight + 10.f, 0.f, xCord , labelFrame.size.height);
     UILabel * newLabel = [[UILabel alloc] initWithFrame:fbLabelFrame];
-    [newLabel setAttributedText:[self getButtonAttributeStringWithText:@"Facebook"]];
+    [newLabel setAttributedText:[self getButtonAttributeStringWithText:@""]];
     
     selectionBar.shareOptionButton = selectOption;
     
@@ -114,7 +114,6 @@
 }
 
 -(void) facebookSelected:(UIButton *) button{
-    NSLog(@"facebook button selected");
      SelectOptionButton * selectionButton = (SelectOptionButton *)button;
     if([selectionButton buttonSelected]){
         [selectionButton setButtonSelected:NO];
@@ -128,7 +127,6 @@
 }
 
 -(void)facebookBarSelected:(UITapGestureRecognizer *) gesture {
-    NSLog(@"facebook bar selected");
     SelectionView * selectedView = (SelectionView *) gesture.view;
     [self facebookSelected:selectedView.shareOptionButton];
     

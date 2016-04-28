@@ -552,8 +552,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 //todo: save share object
 -(void)postPostToChannels:(NSMutableArray *) channels andFacebook:(BOOL)externalSharing{
-    NSLog(@"Repost Blogs");
-	
     if(channels.count) {
 		
         [Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
@@ -564,8 +562,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         
         
 	}
-    
-    NSLog(@"%d", externalSharing);
     if(externalSharing){
         [self postPostExternal:externalSharing];
     }
@@ -607,7 +603,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc]initWithCanonicalIdentifier:postId];
     branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName];
-    branchUniversalObject.contentDescription = @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Get the app now at verbatm.io";
+    branchUniversalObject.contentDescription = @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!";
 
             if(self.postVideoToShareLink == nil || [self.postVideoToShareLink length] == 0){
                 branchUniversalObject.imageUrl = self.postImageToShareLink;
@@ -621,7 +617,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     linkProperties.feature = @"share";
     linkProperties.channel = @"facebook";
     
-    NSLog(@"Facebook share");
     [branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
         if (!error) {
             NSLog(@"got my Branch invite link to share: %@", url);
