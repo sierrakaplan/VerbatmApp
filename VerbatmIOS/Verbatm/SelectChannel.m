@@ -16,6 +16,7 @@
 #import "SelectionView.h"
 #import "Styles.h"
 #import "UserInfoCache.h"
+#import "Icons.h"
 
 #define CHANNEL_LABEL_HEIGHT 70
 #define WALL_OFFSET_X 30.f
@@ -32,6 +33,7 @@
 
 @property (nonatomic) SelectOptionButton * selectedButton;
 @property (nonatomic) BOOL canSelectMultipleChannels;
+@property (nonatomic) BOOL facebookSelected;
 
 
 @end
@@ -40,6 +42,7 @@
 -(instancetype) initWithFrame:(CGRect)frame canSelectMultiple:(BOOL) selectMultiple{
     
     self = [super initWithFrame:frame];
+    self.facebookSelected = NO;
     
     if(self){
         self.canSelectMultipleChannels = selectMultiple;
@@ -58,7 +61,8 @@
 
 
 - (void) createChannelLabels:(NSArray *) channels {
-    CGFloat startingYCord = 0.f;
+    [self createFacebookLabel];
+    CGFloat startingYCord =CHANNEL_LABEL_HEIGHT;
     for(Channel * channel in channels){
         
         CGRect labelFrame = CGRectMake(0.f, startingYCord, self.frame.size.width, CHANNEL_LABEL_HEIGHT);
@@ -69,6 +73,65 @@
     
     CGSize newContentSize = CGSizeMake(0, startingYCord + CHANNEL_LABEL_HEIGHT + SCROLL_BUFFER);
     self.contentSize = newContentSize;
+}
+
+-(void) createFacebookLabel {
+    CGRect labelFrame = CGRectMake(0.f, 0.f, self.frame.size.width, CHANNEL_LABEL_HEIGHT);
+    
+    SelectionView * selectionBar = [[SelectionView alloc] initWithFrame:labelFrame];
+    
+    CGFloat xCord = labelFrame.size.width - WALL_OFFSET_X - SELECTION_BUTTON_WIDTH;
+    CGFloat yCord =(labelFrame.size.height/2.f) - (SELECTION_BUTTON_WIDTH/2.f);
+    
+    CGRect buttonFrame = CGRectMake( xCord, yCord,
+                                    SELECTION_BUTTON_WIDTH, SELECTION_BUTTON_WIDTH);
+    
+    SelectOptionButton * selectOption = [[SelectOptionButton alloc] initWithFrame:buttonFrame];
+    
+
+    [selectOption addTarget:self action:@selector(facebookSelected:) forControlEvents:UIControlEventTouchUpInside];
+ 
+    CGFloat imageHeight = CHANNEL_LABEL_HEIGHT * 0.5;
+    CGRect viewFrame = CGRectMake(WALL_OFFSET_X, 15.f, imageHeight, imageHeight);
+    UIImageView * facebookView = [[UIImageView alloc] initWithFrame:viewFrame];
+    UIImage * logo = [UIImage imageNamed:FACEBOOK_LOGO];
+    [facebookView setImage:logo];
+    
+    CGRect fbLabelFrame = CGRectMake(WALL_OFFSET_X + imageHeight + 10.f, 0.f, xCord , labelFrame.size.height);
+    UILabel * newLabel = [[UILabel alloc] initWithFrame:fbLabelFrame];
+    [newLabel setAttributedText:[self getButtonAttributeStringWithText:@"Facebook"]];
+    
+    selectionBar.shareOptionButton = selectOption;
+    
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(facebookBarSelected:)];
+    [selectionBar addGestureRecognizer:tap];
+    
+    [selectionBar addSubview:selectOption];
+    [selectionBar addSubview:newLabel];
+    [selectionBar addSubview:facebookView];
+    [self addSubview:selectionBar];
+
+}
+
+-(void) facebookSelected:(UIButton *) button{
+    NSLog(@"facebook button selected");
+     SelectOptionButton * selectionButton = (SelectOptionButton *)button;
+    if([selectionButton buttonSelected]){
+        [selectionButton setButtonSelected:NO];
+        self.facebookSelected = NO;
+    }else{
+        [selectionButton setButtonSelected:YES];
+        self.facebookSelected = YES;
+    }
+    
+    [self.selectChannelDelegate facebookSelected:self.facebookSelected];
+}
+
+-(void)facebookBarSelected:(UITapGestureRecognizer *) gesture {
+    NSLog(@"facebook bar selected");
+    SelectionView * selectedView = (SelectionView *) gesture.view;
+    [self facebookSelected:selectedView.shareOptionButton];
+    
 }
 
 

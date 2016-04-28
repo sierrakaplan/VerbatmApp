@@ -511,7 +511,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(void) shareOptionSelectedForParsePostObject: (PFObject* )post {
 	[self.postListDelegate hideNavBarIfPresent];
 	self.postToShare = post;
-	[self presentShareSelectionViewStartOnChannels:NO];
+	[self presentShareSelectionViewStartOnChannels:YES];
 }
 
 -(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels{

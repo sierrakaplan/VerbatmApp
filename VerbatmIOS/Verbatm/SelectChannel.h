@@ -15,6 +15,7 @@
 @protocol SelectChannelProtocol <NSObject>
 
 -(void) channelsSelected:(NSMutableArray *) channels;
+-(void) facebookSelected:(BOOL) fbSelected;
 
 @end
 

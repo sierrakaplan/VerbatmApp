@@ -243,6 +243,10 @@
 	self.selectedChannels = channels;
 }
 
+-(void) facebookSelected:(BOOL)fbSelected {
+    self.externalShare = YES;
+}
+
 
 //shareoptions button protocol
 //called when an option is selected
@@ -366,7 +370,7 @@
 
 -(SelectChannel *) channelSelectionOptions{
 	if(!_channelSelectionOptions) {
-		_channelSelectionOptions = [[SelectChannel alloc] initWithFrame:self.channelSelectionFrameOFFSCREEN canSelectMultiple:NO];
+		_channelSelectionOptions = [[SelectChannel alloc] initWithFrame:self.channelSelectionFrameOFFSCREEN canSelectMultiple:YES];
 		_channelSelectionOptions.selectChannelDelegate = self;
 		[self addSubview:_channelSelectionOptions];
 	}
