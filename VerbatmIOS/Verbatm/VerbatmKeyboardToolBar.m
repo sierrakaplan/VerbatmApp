@@ -14,13 +14,13 @@
 @interface VerbatmKeyboardToolBar()
 
 @property (nonatomic) BOOL textColorBlack;
-@property (strong, nonatomic) UIButton *textColorButton;
-@property (strong, nonatomic) UIButton *textSizeIncreaseButton;
-@property (strong, nonatomic) UIButton *textSizeDecreaseButton;
-@property (strong, nonatomic) UIButton *leftAlignButton;
-@property (strong, nonatomic) UIButton *centerAlignButton;
-@property (strong, nonatomic) UIButton *rightAlignButton;
-@property (strong, nonatomic) UIButton *doneButton;
+@property (weak, nonatomic) UIButton *textColorButton;
+@property (weak, nonatomic) UIButton *textSizeIncreaseButton;
+@property (weak, nonatomic) UIButton *textSizeDecreaseButton;
+@property (weak, nonatomic) UIButton *leftAlignButton;
+@property (weak, nonatomic) UIButton *centerAlignButton;
+@property (weak, nonatomic) UIButton *rightAlignButton;
+@property (weak, nonatomic) UIButton *doneButton;
 
 #define BUTTON_Y_OFFSET ((TEXT_TOOLBAR_HEIGHT - TEXT_TOOLBAR_BUTTON_WIDTH)/2.f)
 #define COLOR_BUTTON_X_OFFSET 20.f
@@ -35,12 +35,12 @@
 
 @implementation VerbatmKeyboardToolBar
 
--(instancetype)initWithFrame:(CGRect)frame {
+-(instancetype)initWithFrame:(CGRect)frame andTextColorBlack:(BOOL)textColorBlack{
 	self = [super initWithFrame:frame];
 	if(self) {
 		self.frame = frame;
 		self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.8];
-		self.textColorBlack = NO;
+		self.textColorBlack = textColorBlack;
 		[self addButtons];
 	}
 	return self;
@@ -114,7 +114,7 @@
 	if (!_textColorButton) {
 		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, BUTTON_Y_OFFSET,
 										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
-		_textColorButton = [self getButtonWithFrame:buttonFrame andIcon:BLACK_FONT_ICON
+		_textColorButton = [self getButtonWithFrame:buttonFrame andIcon:self.textColorBlack ? BLACK_FONT_ICON : WHITE_FONT_ICON
 										andSelector:@selector(textColorButtonPressed)];
 	}
 	return _textColorButton;

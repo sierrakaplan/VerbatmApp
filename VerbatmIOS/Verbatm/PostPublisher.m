@@ -108,8 +108,6 @@
 
 #pragma mark - Insert entities into the Datastore NOT IN USE -
 
-//TODO: see if batch queries speed things up
-
 // Queries insert Image into the datastore.
 // PMKPromise resolves with either error or the id of the image just stored.
 -(AnyPromise*) insertImage: (GTLVerbatmAppImage*) image {

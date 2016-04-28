@@ -8,6 +8,7 @@
 //
 
 #import "Channel.h"
+#import <Crashlytics/Crashlytics.h>
 #import "FeedQueryManager.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFQuery.h>
@@ -125,7 +126,6 @@
 				self.currentFeedEnd = self.currentFeedEnd ? self.currentFeedEnd : [activities[activities.count-1] createdAt];
 			}
 			//todo: actually clear oldest posts
-//			self.postsInFeed = 0;
 			self.postsInFeed += finalPostObjects.count;
 			block(finalPostObjects);
 		}];
@@ -149,7 +149,7 @@
 	[postQuery whereKey:@"createdAt" lessThan: self.currentFeedEnd];
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities, NSError * _Nullable error) {
 		if (error) {
-			//todo: error handling
+			[[Crashlytics sharedInstance] recordError:error];
 			block (@[]);
 			return;
 		}
@@ -190,7 +190,7 @@
 			[exploreChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
 				NSMutableArray *finalChannels = [[NSMutableArray alloc] init];
 				if(error || !channels) {
-					//todo: error handling
+					[[Crashlytics sharedInstance] recordError:error];
 					completionBlock (finalChannels);
 					return;
 				}
@@ -265,7 +265,7 @@
 	[exploreChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
 		NSMutableArray *finalChannels = [[NSMutableArray alloc] init];
 		if(error || !channels) {
-			//todo: error handling
+			[[Crashlytics sharedInstance] recordError:error];
 			completionBlock (finalChannels);
 			return;
 		}
@@ -316,7 +316,7 @@
 		[featuredChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
 			NSMutableArray *finalChannels = [[NSMutableArray alloc] init];
 			if(error || !channels) {
-				//todo: error handling
+				[[Crashlytics sharedInstance] recordError:error];
 				completionBlock (finalChannels);
 				return;
 			}

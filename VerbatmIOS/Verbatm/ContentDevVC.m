@@ -1579,10 +1579,8 @@ andSaveInUserDefaults:(BOOL)save {
 		}
 	}
 
-
 	[unPinched revertToInitialFrame];
 	[unPinched removeFromSuperview];
-	//todo: test this
 	[self newPinchView:unPinched belowView:upperView andSaveInUserDefaults:YES];
 	self.selectedView_PAN = self.pageElementScrollViews[upperViewIndex+1];
 }
@@ -1859,8 +1857,7 @@ andSaveInUserDefaults:(BOOL)save {
 -(void) createPinchViewFromImage: (UIImage*) image andPhAssetId: (NSString*) assetId {
 	PinchView* newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius
 														  withCenter:self.defaultPinchViewCenter
-															andImage:image andPHAssetLocalIdentifier:assetId
-													   andLargerSize:self.view.bounds.size];
+															andImage:image andPHAssetLocalIdentifier:assetId];
 	[self newPinchView: newPinchView belowView: self.addMediaBelowView andSaveInUserDefaults:YES];
 }
 

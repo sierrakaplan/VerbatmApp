@@ -179,20 +179,12 @@
     }
 }
 
-//todo: only in profile
 -(void)createDeleteButton {
-	
-
-	
     [self createDeleteOrFlagButtonIsFlag:NO];
-    
 }
 
-
 -(void) createFlagButton {
-
     [self createDeleteOrFlagButtonIsFlag:YES];
-
 }
 
 -(void)createDeleteOrFlagButtonIsFlag:(BOOL) flag{
@@ -280,18 +272,6 @@
 //the actual number view is selected
 -(void) numSharesButtonSelected {
     
-}
-
-#pragma mark Page Numbers
-
-//allows us to change our page number to the next number
--(void)setPageNumber:(NSNumber *) pageNumber{
-	//todo: remove page number code?
-	//    if(pageNumber.integerValue < self.totalNumberOfPages.integerValue ||
-	//       pageNumber.integerValue >= 1){
-	//        if(self.pageNumberLabel)[self.pageNumberLabel removeFromSuperview];
-	//        [self createCounterLabelStartingAtPage:pageNumber outOf:self.totalNumberOfPages];
-	//    }
 }
 
 #pragma mark - Lazy instantiation -

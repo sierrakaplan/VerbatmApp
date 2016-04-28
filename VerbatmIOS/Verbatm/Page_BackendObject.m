@@ -80,21 +80,22 @@
 
 	NSArray* pinchViewPhotosWithText = [pinchView getPhotosWithText];
 	NSMutableArray *imagePinchViews = [[NSMutableArray alloc] init];
+	BOOL half = NO;
 	if ([pinchView isKindOfClass:[ImagePinchView class]]) {
 		[imagePinchViews addObject:(ImagePinchView*) pinchView];
 	} else if (pinchView.containsImage) {
 		imagePinchViews = ((CollectionPinchView*)pinchView).imagePinchViews;
+		half = YES;
 	}
 
 	//Publishing images sequentially
-	//todo: actually publish sequentially not just get their data
-	AnyPromise *getImageDataPromise = [imagePinchViews[0] getImageData];
+	AnyPromise *getImageDataPromise = [imagePinchViews[0] getImageDataWithHalfSize:half];
 	for (int i = 1; i < imagePinchViews.count; i++) {
 		getImageDataPromise = getImageDataPromise.then(^(NSData *imageData) {
 			NSArray* photoWithText = pinchViewPhotosWithText[i-1];
 			return [self storeImageFromImageData:imageData andPhotoWithTextArray:photoWithText
 								  atIndex:i withPageObject:page].then(^(void) {
-				return [imagePinchViews[i] getImageData];
+				return [imagePinchViews[i] getImageDataWithHalfSize:half];
 			});
 		});
 	}

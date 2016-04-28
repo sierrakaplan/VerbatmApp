@@ -122,8 +122,6 @@
 
 #pragma mark - Lazy Instantiation -
 
-//todo: make numbers constants
-
 -(UILabel *) userNameLabel {
 	if (!_userNameLabel) {
 		CGRect labelFrame = CGRectMake(OFFSET, OFFSET, DISCOVER_USERNAME_LABEL_WIDTH, DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
@@ -158,6 +156,10 @@
 		[_channelNameLabel setTextColor:[UIColor whiteColor]];
 	}
 	return _channelNameLabel;
+}
+
+-(void)dealloc {
+	
 }
 
 @end

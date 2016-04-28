@@ -100,10 +100,8 @@
 	if([[VideoDownloadManager sharedInstance] containsEntryForUrl:url]){
 		playerItem = [[VideoDownloadManager sharedInstance] getVideoForUrl: url.absoluteString];
 	}else {
-		//todo: test this
 		[self prepareVideoFromAsset:[AVAsset assetWithURL: url]];
 		return;
-//		playerItem = [AVPlayerItem playerItemWithURL: url];
 	}
 
 	[self prepareVideoFromPlayerItem: playerItem];

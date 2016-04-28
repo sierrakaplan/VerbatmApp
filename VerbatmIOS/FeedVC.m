@@ -58,7 +58,6 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 	[self.postListVC display:nil asPostListType:listFeed withListOwner:[PFUser currentUser] isCurrentUserProfile:NO];
 	if(self.postListVC && !self.didJustLoadForTheFirstTime){
         [self.postListVC refreshPosts];
-        [self.postListVC continueVideoContent];
 	}
 	[self checkIntroNotification];
 }

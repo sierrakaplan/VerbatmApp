@@ -41,7 +41,7 @@
 
 -(void) setText:(NSString *)text
 andTextYPosition:(CGFloat)yPosition
-   andTextColor:(UIColor *)textColor
+andTextColorBlack:(BOOL)textColorBlack
 andTextAlignment:(NSTextAlignment)textAlignment
 	andTextSize:(CGFloat)textSize;
 

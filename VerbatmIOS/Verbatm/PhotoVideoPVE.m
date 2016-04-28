@@ -44,8 +44,7 @@
 		self.inPreviewMode = NO;
 		[self initialFormatting];
 
-		self.photosView = [[PhotoPVE alloc] initWithFrame:self.photoAveFrame andPhotoArray:photos small:small];
-		self.photosView.isPhotoVideoSubview = YES;
+		self.photosView = [[PhotoPVE alloc] initWithFrame:self.photoAveFrame andPhotoArray:photos small:small isPhotoVideoSubview:YES];
 		self.photosView.textEntryDelegate = self;
 		self.videoView = [[VideoPVE alloc]initWithFrame:self.videoAveFrame andVideo:videoURL
 										   andThumbnail:thumbnail];
@@ -63,8 +62,8 @@
 		self.pinchView = pinchView;
 		[self initialFormatting];
 
-		self.photosView = [[PhotoPVE alloc] initWithFrame:self.photoAveFrame andPinchView:pinchView inPreviewMode: previewMode];
-		self.photosView.isPhotoVideoSubview = YES;
+		self.photosView = [[PhotoPVE alloc] initWithFrame:self.photoAveFrame andPinchView:pinchView
+											inPreviewMode: previewMode isPhotoVideoSubview:YES];
 		self.photosView.textEntryDelegate = self;
 		self.videoView = [[VideoPVE alloc]initWithFrame:self.videoAveFrame andPinchView:pinchView inPreviewMode: previewMode];
 		[self addSubview:self.videoView];
@@ -78,7 +77,7 @@
 	//make sure the video is on repeat
 	self.videoView.videoPlayer.repeatsVideo = YES;
 
-	float videoAveHeight = ((self.frame.size.width*3)/4);
+	float videoAveHeight = self.frame.size.height/2.f;
 	float photoAveHeight = (self.frame.size.height - videoAveHeight);
 
 	self.videoAveFrame = CGRectMake(0, 0, self.frame.size.width, videoAveHeight);

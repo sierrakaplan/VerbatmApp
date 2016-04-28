@@ -9,6 +9,14 @@
 #ifndef SizesAndPositions_h
 #define SizesAndPositions_h
 
+
+#define IPHONE_6_PLUS_WIDTH 414
+#define IPHONE_6_PLUS_HEIGHT 736
+
+//Goes off of largest device the media will be displayed on
+#define FULL_SCREEN_SIZE CGSizeMake(IPHONE_6_PLUS_WIDTH, IPHONE_6_PLUS_HEIGHT)
+#define HALF_SCREEN_SIZE CGSizeMake(IPHONE_6_PLUS_WIDTH, IPHONE_6_PLUS_HEIGHT/2.f)
+
 #define CHANNEL_NAME_CHARACTER_LIMIT 20
 
 #define INTRO_NOTIFICATION_SIZE 250.f

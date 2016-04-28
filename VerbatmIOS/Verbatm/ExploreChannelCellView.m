@@ -312,4 +312,8 @@
 	return _channelNameLabel;
 }
 
+-(void) dealloc {
+
+}
+
 @end

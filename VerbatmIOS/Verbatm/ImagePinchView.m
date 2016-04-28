@@ -8,6 +8,7 @@
 
 #import "ImagePinchView.h"
 #import "UIImage+ImageEffectsAndTransforms.h"
+#import "SizesAndPositions.h"
 
 @interface ImagePinchView()
 
@@ -20,19 +21,16 @@
 #define IMAGE_KEY @"image_key"
 #define FILTER_INDEX_KEY @"filter_index_key"
 #define PHASSET_IDENTIFIER_KEY @"image_phasset_local_id"
-#define LARGE_SIZE_WIDTH_KEY @"large_size_width_key"
-#define LARGE_SIZE_HEIGHT_KEY @"large_size_height_key"
 
 @end
 
 @implementation ImagePinchView
 
 -(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andImage:(UIImage*)image
-	andPHAssetLocalIdentifier: (NSString*) localIdentifier andLargerSize: (CGSize)largeSize {
+	andPHAssetLocalIdentifier: (NSString*) localIdentifier {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
 		if(!image) return self;
-		self.largeSize = largeSize;
 		self.phAssetLocalIdentifier = localIdentifier;
 		[self initWithImage:image andSetFilteredImages:YES];
 	}
@@ -47,8 +45,6 @@
 	self.filteredImages = [[NSMutableArray alloc] init];
 	//original photo
 	[self.filteredImages addObject:self.image];
-	//todo: should we have filters?
-	//	if (setFilters) [self createFilteredImagesFromImage:self.image];
 	[self renderMedia];
 }
 
@@ -64,8 +60,6 @@
 	self.filteredImages = [[NSMutableArray alloc] init];
 	//original photo
 	[self.filteredImages addObject:self.image];
-	//todo: should we have filters?
-	//	[self createFilteredImagesFromImage:self.image];
 	[self renderMedia];
 }
 
@@ -92,8 +86,8 @@
 	}
 }
 
--(AnyPromise *) getImageData {
-	return [self getLargerImageWithSize:self.largeSize].then(^(UIImage *largerImage) {
+-(AnyPromise *) getImageDataWithHalfSize:(BOOL)half {
+	return [self getLargerImageWithHalfSize:half].then(^(UIImage *largerImage) {
 		return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 				NSData* imageData = UIImagePNGRepresentation(largerImage);
@@ -108,11 +102,12 @@
 	return self.filteredImages[self.filterImageIndex];
 }
 
--(AnyPromise *) getLargerImageWithSize: (CGSize) size {
+-(AnyPromise *) getLargerImageWithHalfSize:(BOOL)half; {
 	PHImageRequestOptions *options = [PHImageRequestOptions new];
 	options.synchronous = YES;
 	PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[self.phAssetLocalIdentifier] options:nil];
 	PHAsset* imageAsset = fetchResult.firstObject;
+	CGSize size = half ? HALF_SCREEN_SIZE : FULL_SCREEN_SIZE;
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 		[[PHImageManager defaultManager] requestImageForAsset:imageAsset targetSize:size contentMode:PHImageContentModeAspectFill
 													  options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
@@ -154,7 +149,6 @@
 		NSData  * imageData = UIImagePNGRepresentation(image);
 		//Background Thread
 		for (NSString* filterName in filterNames) {
-			//todo: stop this
 			@autoreleasepool {
 				CIImage *beginImage =  [CIImage imageWithData: imageData];
 				CIContext *context = [CIContext contextWithOptions:nil];
@@ -174,14 +168,11 @@
 
 #pragma mark - Encoding -
 
-//todo: add other text data
 - (void)encodeWithCoder:(NSCoder *)coder {
 	[super encodeWithCoder:coder];
 	[coder encodeObject:UIImagePNGRepresentation(self.image) forKey:IMAGE_KEY];
 	[coder encodeObject:[NSNumber numberWithInteger:self.filterImageIndex] forKey:FILTER_INDEX_KEY];
 	[coder encodeObject: self.phAssetLocalIdentifier forKey:PHASSET_IDENTIFIER_KEY];
-	[coder encodeObject: [NSNumber numberWithFloat:self.largeSize.width] forKey:LARGE_SIZE_WIDTH_KEY];
-	[coder encodeObject: [NSNumber numberWithFloat:self.largeSize.height] forKey:LARGE_SIZE_HEIGHT_KEY];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
@@ -192,9 +183,6 @@
 		self.phAssetLocalIdentifier = [decoder decodeObjectForKey:PHASSET_IDENTIFIER_KEY];
 		[self initWithImage:image andSetFilteredImages:YES];
 		[self changeImageToFilterIndex:filterImageIndexNumber.integerValue];
-		NSNumber *largeSizeWidth = [decoder decodeObjectForKey:LARGE_SIZE_WIDTH_KEY];
-		NSNumber *largeSizeHeight = [decoder decodeObjectForKey:LARGE_SIZE_HEIGHT_KEY];
-		self.largeSize = CGSizeMake([largeSizeWidth floatValue], [largeSizeHeight floatValue]);
 	}
 	return self;
 }

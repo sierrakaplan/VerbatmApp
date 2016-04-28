@@ -36,7 +36,6 @@
 }
 
 -(void) clearViews {
-	//todo: clear data from our current post more?
 	if (self.currentPostView) {
 		[self.currentPostView removeFromSuperview];
 		[self.currentPostView clearPost];

@@ -34,9 +34,6 @@ typedef enum PostListType {
 //marks all posts as off screen
 -(void) offScreen;
 
-//continues post that's on screen
--(void) continueVideoContent;
-
 -(void) refreshPosts;
 
 //moves the tap/share bar up and down over the tab bar

@@ -103,7 +103,6 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 -(void) display:(Channel*)channelForList asPostListType:(PostListType)listType
 			   withListOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile {
 	[self clearViews];
-
 	self.channelForList = channelForList;
 	self.listType = listType;
 	self.listOwner = listOwner;
@@ -215,9 +214,11 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	};
 
 	self.loadMorePostsCompletion = ^void(NSArray *posts) {
-		[weakSelf.parsePostObjects addObjectsFromArray:posts];
-		[weakSelf.collectionView reloadData];
-		weakSelf.isLoadingMore = NO;
+		if (posts.count) {
+			[weakSelf.parsePostObjects addObjectsFromArray:posts];
+			[weakSelf.collectionView reloadData];
+			weakSelf.isLoadingMore = NO;
+		}
 	};
 }
 
@@ -304,20 +305,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	// If the indexpath is not within visible objects then it is offscreen
 	if ([collectionView.indexPathsForVisibleItems indexOfObject:indexPath] == NSNotFound) {
 		[(PostCollectionViewCell*)cell offScreen];
-	}
-}
-
-//todo: delete?
--(CGFloat) getVisibileCellIndex{
-	return self.collectionView.contentOffset.x / self.view.frame.size.width;
-}
-
-// Tells post it's on screen
--(void) continueVideoContent {
-	self.shouldPlayVideos = YES;
-	NSInteger visibleCellIndex = [self getVisibileCellIndex];
-	if(visibleCellIndex < self.parsePostObjects.count) {
-		[(PostCollectionViewCell*)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:visibleCellIndex inSection:0]] onScreen];
 	}
 }
 
@@ -459,18 +446,13 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 //todo: save share object
 -(void)postPostToChannels:(NSMutableArray *) channels{
-
     if(channels.count) {
-
         [Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[self successfullyReblogged];
 			});
 		}];
-
-
 	}
-
 	[self removeSharePOVView];
 }
 

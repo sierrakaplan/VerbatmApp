@@ -47,7 +47,6 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
 }
 
 -(BOOL) prefersStatusBarHidden {
-	//todo: add status bar?
 	return YES;
 }
 

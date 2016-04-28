@@ -237,7 +237,6 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 														  withCompletionBlock:^(Channel * channel) {
 															  self.postChannel = channel;
 															  //we only add the channel info to posts that don't belong to the current user
-															  //todo: or in profile
 															  if(channel.parseChannelObject != self.listChannel.parseChannelObject
 																 && ![channel channelBelongsToCurrentUser]) {
 																  dispatch_async(dispatch_get_main_queue(), ^{
@@ -303,14 +302,6 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
 	[self upDatePagingLine];
-}
-
--(void) setPageNumberOnShareBarFromScrollView:(UIScrollView *) scrollview {
-	CGFloat scrollViewHeigthOffset = scrollview.contentOffset.y;
-	CGFloat screenHeight = scrollview.frame.size.height;
-	CGFloat pageIndex = scrollViewHeigthOffset/screenHeight;
-	NSNumber * pageNumber = @((pageIndex + 1.f));
-	[self.likeShareBar setPageNumber:pageNumber];
 }
 
 #pragma mark - Handle Display Media on Page -

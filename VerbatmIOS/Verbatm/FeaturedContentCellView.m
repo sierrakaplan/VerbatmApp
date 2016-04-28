@@ -82,7 +82,7 @@
 -(void) clearViews {
 	self.alreadyPresented = NO;
 	[self offScreen];
-	for (FeaturedContentCellView *channelView in self.channelViews) {
+	for (FeaturedContentChannelView *channelView in self.channelViews) {
 		[channelView removeFromSuperview];
 	}
 	self.channelViews = nil;

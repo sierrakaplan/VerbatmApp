@@ -477,40 +477,6 @@
 	self.selectedItem = nil;
 }
 
-//todo:delete
-////returns the unpinched PinchView
-//-(PinchView*) unPinchObjectAtCurrentIndex: (NSInteger) currentIndex {
-//	CollectionPinchView* currentPinchView = (CollectionPinchView*)self.pageElement;
-//	SingleMediaAndTextPinchView* unPinched = self.selectedItem;
-//	self.selectedItem = nil;
-//	NSInteger index = [self.collectionPinchViews indexOfObject:unPinched]-1;
-//	if (index < 0) index = 0;
-//	
-//    [currentPinchView unPinchAndRemove:unPinched];
-//
-//	//check if there is now only one element in the collection - if so
-//	//this should not be collection anymore
-//	if ([currentPinchView getNumPinchViews] < 2) {
-//		if (currentPinchView.imagePinchViews.count) self.pageElement = currentPinchView.imagePinchViews[0];
-//		else self.pageElement = currentPinchView.videoPinchViews[0];
-//
-//		[(PinchView*)self.pageElement revertToInitialFrame];
-//		self.isCollection = NO;
-//		self.collectionIsOpen = NO;
-//		self.contentSize = self.initialContentSize;
-//		self.contentOffset = self.initialContentOffset;
-//		[self addSubview:self.deleteButton];
-//		self.collectionPinchViews = nil;
-//	} else {
-//		[self shiftPinchViewsAfterIndex:index];
-//	}
-//
-//	self.selectedItem = nil;
-//	[[PostInProgress sharedInstance] removePinchViewAtIndex:currentIndex andReplaceWithPinchView:(PinchView *)self.pageElement];
-//	return unPinched;
-//}
-
-
 -(void)markAsSelected:(BOOL) selected{
     if (selected) {
         self.deleteButton.frame = CGRectMake(self.deleteButton.frame.origin.x, self.deleteButton.frame.origin.y,

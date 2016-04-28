@@ -400,7 +400,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
 	if (self.enteringPhoneNumber) {
 		[self setEnteringPhone];
-		//todo: remove other buttons
 	}
 	return YES;
 }

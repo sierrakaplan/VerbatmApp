@@ -210,10 +210,6 @@
                                                       imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
                                         scaledToSize:CGSizeMake(30.f, 30.f)];
 
-	//todo: delete references to channel list view
-//    self.channelListView = [[UserAndChannelListsTVC alloc] init];
-//    [self.channelListView presentAllVerbatmChannels];
-//    self.channelListView.listDelegate = self;
 	self.discoverVC = [self.storyboard instantiateViewControllerWithIdentifier:DISCOVER_VC_ID];
 
     self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
@@ -288,7 +284,6 @@
 
 //brings up the create account page if there is no user logged in
 -(void) bringUpLogin {
-	//TODO: check user defaults and do login if they have logged in before
 	[self performSegueWithIdentifier:SIGN_IN_SEGUE sender:self];
 }
 
@@ -301,13 +296,6 @@
 		}
 		[[Analytics getSharedInstance] endOfADKSession];
 	}
-}
-
-#pragma mark - Media Dev VC Delegate methods -
-
-// TODO: make this a notification and change this to the profile vc
--(void) povPublishedWithUserName:(NSString *)userName andTitle:(NSString *)title andProgressObject:(NSProgress *)progress {
-//	[self.tabBarController setSelectedViewController:self.feedVC];
 }
 
 #pragma mark - Feed VC Delegate -

@@ -69,10 +69,6 @@
 								  }
 								  self.currentParsePostObject = parsePostObject;
 								  self.currentPublishingChannel = channel;
-								  //todo let the pv's know they are being published so they can releae excess media
-//								  for(PinchView * pinchView in pinchViews){
-//									  [pinchView publishingPinchView];
-//								  }
 								  block(YES);
 							  }];
 }

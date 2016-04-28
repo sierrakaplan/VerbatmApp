@@ -60,8 +60,7 @@
 		return photoVideoPageView;
 
 	} else if (pinchView.containsImage) {
-		PhotoPVE *photoPageView = [[PhotoPVE alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:inPreviewMode];
-		photoPageView.isPhotoVideoSubview = NO;
+		PhotoPVE *photoPageView = [[PhotoPVE alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:inPreviewMode isPhotoVideoSubview:NO];
 		return photoPageView;
 
 	} else {
@@ -73,8 +72,7 @@
 +(PageViewingExperience *)getPageViewFromPageMedia:(NSArray *)pageMedia withFrame:(CGRect)frame small:(BOOL)small {
 	PageTypes type = [pageMedia[0] intValue];//convert nsnumber back to our type
 	if(type == PageTypePhoto) {
-		PhotoPVE *photoPageView = [[PhotoPVE alloc] initWithFrame:frame andPhotoArray:pageMedia[1] small:small];
-		photoPageView.isPhotoVideoSubview = NO;
+		PhotoPVE *photoPageView = [[PhotoPVE alloc] initWithFrame:frame andPhotoArray:pageMedia[1] small:small isPhotoVideoSubview:NO];
 		return photoPageView;
 
 	}else if (type == PageTypeVideo){
@@ -174,7 +172,6 @@
 
 }
 
-//todo: figure out why this is getting called when there are no videos
 //Video array looks like @[URL, thumbnail]
 -(void) getVideoFromPage: (PFObject*) page withCompletionBlock:(void(^)(NSArray *)) block{
 	[Video_BackendObject getVideoForPage:page andCompletionBlock:^(PFObject *videoObject) {

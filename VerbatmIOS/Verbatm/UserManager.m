@@ -6,6 +6,7 @@
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
 
+#import <Crashlytics/Crashlytics.h>
 #import "GTLQueryVerbatmApp.h"
 #import "GTLServiceVerbatmApp.h"
 #import "GTLVerbatmAppVerbatmUser.h"
@@ -85,8 +86,8 @@
                         currentUser.email = email;
 						[currentUser setObject: name forKey:VERBATM_USER_NAME_KEY];
 						[currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-                            if(succeeded){
-                                //TODO --Check why this doesn't work
+                            if(error) {
+                                [[Crashlytics sharedInstance] recordError:error];
                             }
                         }];
 

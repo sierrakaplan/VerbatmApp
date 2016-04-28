@@ -68,7 +68,6 @@ ExploreChannelCellViewDelegate>
 	if (!_featuredChannels || !_exploreChannels) {
 		[self refreshChannels];
 	}
-	[self.tableView reloadData];
 }
 
 -(void) viewDidDisappear:(BOOL)animated {
@@ -77,12 +76,21 @@ ExploreChannelCellViewDelegate>
 }
 
 -(void) clearViews {
-	[self offScreen];
+	for (NSInteger i = 0; i < [self.tableView numberOfRowsInSection:0]; ++i) {
+		FeaturedContentCellView *cellView = (FeaturedContentCellView*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+		[cellView offScreen];
+		[cellView clearViews];
+
+	}
+	for (NSInteger i = 0; i < [self.tableView numberOfRowsInSection:1]; ++i) {
+		ExploreChannelCellView *cellView = (ExploreChannelCellView*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:1]];
+		[cellView offScreen];
+		[cellView clearViews];
+	}
 	self.loadingMoreChannels = NO;
 	self.refreshing = NO;
 	self.exploreChannels = nil;
 	self.featuredChannels = nil;
-	[self.tableView reloadData];
 }
 
 -(void) offScreen {
@@ -95,6 +103,7 @@ ExploreChannelCellViewDelegate>
 }
 
 -(void) refreshChannels {
+	if (self.refreshing) return;
 	self.refreshing = YES;
 	self.loadingMoreChannels = NO;
 	[[FeedQueryManager sharedInstance] loadFeaturedChannelsWithCompletionHandler:^(NSArray *featuredChannels) {
