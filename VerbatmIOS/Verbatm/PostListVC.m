@@ -40,6 +40,7 @@
 #import <Branch/BranchLinkProperties.h>
 #import <FBSDKShareKit/FBSDKShareLinkContent.h>
 #import <FBSDKShareKit/FBSDKShareDialog.h>
+#import "PageTypeAnalyzer.h"
 
 @interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource,
 SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
@@ -566,8 +567,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         [self postPostExternal:externalSharing];
     }
     
-    self.postImageToShareLink = nil;
-    self.postVideoToShareLink = nil;
 	[self removeSharePOVView];
 }
 
@@ -575,18 +574,24 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if(selection){
         [Page_BackendObject getPagesFromPost:self.postToShare andCompletionBlock:^(NSArray *pages){
             PFObject *po = pages[0];
-            [Photo_BackendObject getPhotosForPage:po andCompletionBlock:^(NSArray * photoObjects) {
-                PFObject *photo = photoObjects[0];
-                NSString *photoLink = [photo valueForKey:PHOTO_IMAGEURL_KEY];
-                NSString *videoLink = [photo valueForKey:BLOB_STORE_URL];
-                NSString *text =  [photo valueForKey:PHOTO_TEXT_KEY];
-                self.postImageToShareLink = photoLink;
-                self.postVideoToShareLink = videoLink;
-                self.postImageText = text;
-                
-                [self postToFacebook];
-            }];
+            PageTypes type = [((NSNumber *)[po valueForKey:PAGE_VIEW_TYPE]) intValue];
             
+            if(type == PageTypePhoto || type == PageTypePhotoVideo){
+                [Photo_BackendObject getPhotosForPage:po andCompletionBlock:^(NSArray * photoObjects) {
+                    PFObject *photo = photoObjects[0];
+                    NSString *photoLink = [photo valueForKey:PHOTO_IMAGEURL_KEY];
+//                    NSString *text =  [photo valueForKey:PHOTO_TEXT_KEY];
+                    self.postImageToShareLink = photoLink;
+ //                   self.postImageText = text;
+                    [self postToFacebook];
+                }];
+            } else if(type == PageTypeVideo){
+                [Video_BackendObject getVideoForPage:po andCompletionBlock:^(PFObject * videoObject) {
+                    NSString * thumbNailUrl = [videoObject valueForKey:VIDEO_THUMBNAIL_KEY];
+                    self.postVideoToShareLink = thumbNailUrl;
+                    [self postToFacebook];
+                }];
+            }
         }];
     } else {
         NSLog(@"Link for external sharing not created");
