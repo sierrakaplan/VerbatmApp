@@ -8,6 +8,7 @@
 //
 
 #import "Channel_BackendObject.h"
+#import <Crashlytics/Crashlytics.h>
 #import "Follow_BackendManager.h"
 #import "User_BackendObject.h"
 #import <Parse/PFUser.h>
@@ -76,7 +77,7 @@
 				[block deleteInBackground]; //should only be one
 			}
 		} else {
-			NSLog(@"Error unblocking: %@", error.description);
+			[[Crashlytics sharedInstance] recordError:error];
 		}
 	}];
 }

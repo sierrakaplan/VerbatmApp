@@ -7,6 +7,7 @@
 //
 
 
+#import <Crashlytics/Crashlytics.h>
 #import "Durations.h"
 
 #import "Notifications.h"
@@ -239,7 +240,7 @@
 		NSDictionary *params = @{@"phoneNumber" : simplePhoneNumber, @"language" : @"en"};
 		[PFCloud callFunctionInBackground:@"sendCode" withParameters:params block:^(id  _Nullable response, NSError * _Nullable error) {
 			if (error) {
-				NSLog(@"Error sending code %@", error.description);
+				[[Crashlytics sharedInstance] recordError: error];
 				[self showAlertWithTitle:@"Error sending code" andMessage:@"Something went wrong. Please verify your phone number is correct."];
 				[self setEnteringPhone];
 				self.phoneLoginField.text = [self formatPhoneNumber:self.phoneNumber deleteLastChar:NO];
@@ -294,6 +295,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 				error:(NSError *)error {
 
 	if (error || result.isCancelled) {
+		[[Crashlytics sharedInstance] recordError:error];
 		[self errorInSignInAnimation: @"Facebook login failed."];
 		return;
 	}

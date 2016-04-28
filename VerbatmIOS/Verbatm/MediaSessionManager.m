@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
+#import <Crashlytics/Crashlytics.h>
 #import "Durations.h"
 #import "MediaSessionManager.h"
 #import "StringsAndAppConstants.h"
@@ -81,7 +82,7 @@
 	AVCaptureDevice* audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
 	self.audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioDevice error:&error];
 	if (!self.videoInput || !self.audioInput) {
-//		NSLog(@"ERROR: trying to open camera: %@", error);
+		[[Crashlytics sharedInstance] recordError: error];
 		return;
 	}
 
@@ -142,11 +143,11 @@
 		PHAssetCollectionChangeRequest* changeRequest = [PHAssetCollectionChangeRequest creationRequestForAssetCollectionWithTitle:VERBATM_ALBUM_NAME];
 		albumPlaceholder = changeRequest.placeholderForCreatedAssetCollection;
 	} completionHandler:^(BOOL success, NSError * _Nullable error) {
-		NSLog(@"Finished creating Verbatm album. %@", (success ? @"Success" : error));
 		if (success) {
 			PHFetchResult *fetchResult = [PHAssetCollection fetchAssetCollectionsWithLocalIdentifiers:@[albumPlaceholder.localIdentifier] options:nil];
 			self.verbatmAlbum = fetchResult.firstObject;
 		} else {
+			[[Crashlytics sharedInstance] recordError: error];
 			[[NSUserDefaults standardUserDefaults] setBool:NO forKey:VERBATM_ALBUM_PREVIOUSLY_CREATED_KEY];
 		}
 	}];
@@ -206,7 +207,7 @@
 			[self.delegate capturedImage: capturedImage];
 			[self saveAssetFromImage:capturedImage orVideoFile:nil];
 		} else {
-			NSLog(@"Error capturing still image %@", error);
+			[[Crashlytics sharedInstance] recordError: error];
 		}
 	}];
 }
@@ -221,7 +222,7 @@
 	if ([fileManager fileExistsAtPath:movieOutput]) {
 		NSError *error;
 		if (![fileManager removeItemAtPath:movieOutput error:&error]) {
-			NSLog(@"Error removing previous video at path. %@", error);
+			[[Crashlytics sharedInstance] recordError: error];
 			return;
 		}
 	}
@@ -259,13 +260,14 @@
 		assetPlaceholder = [assetChangeRequest placeholderForCreatedAsset];
 		[collectionChangeRequest addAssets:@[assetPlaceholder]];
 	} completionHandler:^(BOOL success, NSError * _Nullable error) {
-		NSLog(@"Finished adding media to Verbatm album. %@", (success ? @"Success" : error));
 		if (success) {
 			PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[assetPlaceholder.localIdentifier] options:nil];
 			PHAsset* savedAsset = fetchResult.firstObject;
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[self.delegate didFinishSavingMediaToAsset:savedAsset];
 			});
+		} else {
+			[[Crashlytics sharedInstance] recordError: error];
 		}
 	}];
 }
@@ -337,7 +339,7 @@
 	if(((AVCaptureDeviceInput*)currentVideoInput).device.hasFlash && [((AVCaptureDeviceInput*)currentVideoInput).device lockForConfiguration:nil] ){
 		((AVCaptureDeviceInput*)currentVideoInput).device.flashMode = (((AVCaptureDeviceInput*)currentVideoInput).device.flashActive)? AVCaptureFlashModeOff : AVCaptureFlashModeOn;
 		[((AVCaptureDeviceInput*)currentVideoInput).device unlockForConfiguration];
-	}else{
+	} else {
 //		NSLog(@"Video device does not have flash settings");
 	}
 	[self.session commitConfiguration];

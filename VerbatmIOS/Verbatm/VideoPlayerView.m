@@ -6,6 +6,7 @@
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
 
+#import <Crashlytics/Crashlytics.h>
 #import "VideoPlayerView.h"
 #import "VideoDownloadManager.h"
 #import "LoadingIndicator.h"
@@ -179,7 +180,7 @@
 			}
 			if (self.shouldPlayOnLoad) [self playVideo];
 		} else if (self.playerItem.status == AVPlayerItemStatusFailed) {
-			NSLog(@"video couldn't play: %@", self.playerItem.error);
+			[[Crashlytics sharedInstance] recordError:self.playerItem.error];
 			if (self.videoLoading) {
 				[self.customActivityIndicator stopCustomActivityIndicator];
 				self.videoLoading = NO;

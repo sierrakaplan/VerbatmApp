@@ -97,7 +97,7 @@
 		return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 				NSData* imageData = UIImagePNGRepresentation(largerImage);
-				NSLog(@"image data for publishing size %fKB", imageData.length / 1024.f);
+//				NSLog(@"image data for publishing size %fKB", imageData.length / 1024.f);
 				resolve (imageData);
 			});
 		}];
@@ -155,7 +155,6 @@
 		//Background Thread
 		for (NSString* filterName in filterNames) {
 			//todo: stop this
-			//			NSLog(@"Adding filtered photo.");
 			@autoreleasepool {
 				CIImage *beginImage =  [CIImage imageWithData: imageData];
 				CIContext *context = [CIContext contextWithOptions:nil];

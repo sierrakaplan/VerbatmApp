@@ -63,8 +63,6 @@
 			if (!small && [imageUrl.absoluteString hasSuffix:@"=s0"]) {
 				AnyPromise *loadLargeImageData = [UtilityFunctions loadCachedPhotoDataFromURL:imageUrl];
 				loadLargeImageData.then(^(NSData* largeImageData) {
-					NSLog(@"small image data size: %fKB", self.smallImageData.length / 1024.f);
-					NSLog(@"large image data size: %fKB for url %@", largeImageData.length / 1024.f, imageUrl);
 					// Only display larger data if less than 1000 KB
 					if (largeImageData.length / 1024.f < 1000) {
 						UIImage *image = [UIImage imageWithData:largeImageData];

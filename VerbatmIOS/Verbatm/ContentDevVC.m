@@ -8,6 +8,7 @@
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
+#import <Crashlytics/Crashlytics.h>
 #import "ContentDevVC.h"
 #import "CustomNavigationBar.h"
 #import "CollectionPinchView.h"
@@ -749,7 +750,6 @@ andSaveInUserDefaults:(BOOL)save {
 //Storing new view to our array of elements
 -(void) storeView: (ContentPageElementScrollView*) view inArrayAsBelowView: (UIView*) topView {
 	if(!view) {
-		NSLog(@"Trying to store nil view");
 		return;
 	}
 

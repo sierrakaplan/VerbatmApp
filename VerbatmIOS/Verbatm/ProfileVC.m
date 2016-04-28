@@ -434,6 +434,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
 -(void) publishingFailed {
 	NSLog(@"PUBLISHING FAILED");
+	//todo:
    if(self.publishingProgress) [self.publishingProgressView removeFromSuperview];
 }
 

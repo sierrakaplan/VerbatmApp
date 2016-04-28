@@ -10,6 +10,8 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
 
+#import <Crashlytics/Crashlytics.h>
+
 #import "GTLVerbatmAppVideo.h"
 
 #import "Notifications.h"
@@ -60,7 +62,7 @@
                          error:&igError];
     
     if (!thumbnailImageRef)
-        NSLog(@"thumbnailImageGenerationError %@", igError );
+       [[Crashlytics sharedInstance] recordError:igError];
     
     UIImage *thumbnailImage = thumbnailImageRef
     ? [[UIImage alloc] initWithCGImage:thumbnailImageRef]
@@ -76,7 +78,6 @@
 
 	//todo:get data for thumbnail in background
     [self.mediaPublisher storeImage:UIImagePNGRepresentation(thumbnail)].then(^(NSString* blobstoreUrl) {
-		NSLog(@"Now saving parse video object...");
         PFObject * newVideoObj = [PFObject objectWithClassName:VIDEO_PFCLASS_KEY];
         [newVideoObj setObject:blobStoreVideoUrl forKey:BLOB_STORE_URL];
         [newVideoObj setObject:blobstoreUrl forKey:VIDEO_THUMBNAIL_KEY];

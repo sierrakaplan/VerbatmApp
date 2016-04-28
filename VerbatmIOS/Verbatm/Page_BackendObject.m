@@ -7,6 +7,7 @@
 //
 
 #import "CollectionPinchView.h"
+#import <Crashlytics/Crashlytics.h>
 
 #import "ImagePinchView.h"
 
@@ -187,7 +188,7 @@
 				}];
 			}
 		} else {
-			NSLog(@"error deleting pages");
+			[[Crashlytics sharedInstance] recordError: error];
 		}
 
 	}];

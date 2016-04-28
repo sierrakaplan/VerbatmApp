@@ -55,7 +55,6 @@
 
 			for (int i = 1; i< pinchViews.count; i++) {
 				storePagePromise = storePagePromise.then(^(PFObject*pageObject) {
-					NSLog(@"Done storing page at index %d", i-1);
 					Page_BackendObject * newPage = [[Page_BackendObject alloc] init];
 					[self.pageArray addObject:newPage];
 					return [newPage savePageWithIndex:i andPinchView:pinchViews[i] andPost:newPostObject];
@@ -63,7 +62,6 @@
 			}
 
 			storePagePromise.then(^(PFObject *pageObject) {
-				NSLog(@"Done storing page at index %lu", pinchViews.count-1);
 			});
 		}
 	}];

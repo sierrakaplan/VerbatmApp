@@ -6,6 +6,7 @@
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
 
+#import <Crashlytics/Crashlytics.h>
 #import "UtilityFunctions.h"
 #import "Notifications.h"
 #import "zlib.h"
@@ -53,7 +54,7 @@
 		nextClipStartTime = CMTimeAdd(nextClipStartTime, videoAsset.duration);
 	}
 	if (error) {
-		NSLog(@"Error fusing video assets: %@", error.description);
+		[[Crashlytics sharedInstance] recordError: error];
 	}
 	return fusedAsset;
 }
@@ -79,10 +80,9 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 									  dataTaskWithRequest:request
 									  completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
 										  if (error) {
-											  NSLog(@"Error retrieving data from url: \n %@", error.description);
+											  [[Crashlytics sharedInstance] recordError: error];
 											  resolve(nil);
 										  } else {
-											  //NSLog(@"Successfully retrieved data from url");
 											  resolve(data);
 											  [[NSURLCache sharedURLCache] removeAllCachedResponses];
 										  }
@@ -101,10 +101,9 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
             
           if(deleteUrl)[[NSFileManager defaultManager] removeItemAtURL:url error:nil];
             if (error) {
-                NSLog(@"%@", [error localizedDescription]);
+                 [[Crashlytics sharedInstance] recordError: error];
                 resolve(nil);
             } else {
-                NSLog(@"Successfully retrieved data from url");
                 resolve([UtilityFunctions gzipDeflate:data]);
             }
         }];
@@ -144,14 +143,10 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
     }];
 }
 
-+ (NSData *)gzipDeflate:(NSData*)data
-{
-    
++ (NSData *)gzipDeflate:(NSData*)data {
     
     if(!COMPRESSING) return data;
-    
-   	NSLog(@"Video File start size: %ld", (unsigned long)[data length]);
-    
+
     z_stream strm;
     
     strm.zalloc = Z_NULL;

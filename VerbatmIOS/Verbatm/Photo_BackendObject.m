@@ -62,7 +62,6 @@ andTextAlignment:(NSNumber *) textAlignment
 									andTextSize:(NSNumber *) textSize
 								   atPhotoIndex:(NSInteger) photoIndex
 								  andPageObject:(PFObject *) pageObject {
-	NSLog(@"Now saving parse photo object...");
 
     PFObject * newPhotoObject = [PFObject objectWithClassName:PHOTO_PFCLASS_KEY];
     
