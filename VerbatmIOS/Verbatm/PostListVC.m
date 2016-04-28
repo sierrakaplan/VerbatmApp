@@ -88,7 +88,10 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 }
 
 -(void) clearViews {
-	[self offScreen];
+	for (PostCollectionViewCell *cellView in [self.collectionView visibleCells]) {
+		[cellView offScreen];
+		[cellView clearViews];
+	}
 	self.parsePostObjects = nil;
 	[self.collectionView reloadData];
 	self.feedQueryManager = nil;

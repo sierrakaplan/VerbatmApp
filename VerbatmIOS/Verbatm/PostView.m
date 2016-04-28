@@ -720,4 +720,8 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	return _activityIndicator;
 }
 
+-(void) dealloc {
+	
+}
+
 @end
