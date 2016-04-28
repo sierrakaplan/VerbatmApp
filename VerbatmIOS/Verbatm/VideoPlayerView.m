@@ -303,6 +303,7 @@
 }
 
 - (void)dealloc {
+	[self stopVideo];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

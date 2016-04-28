@@ -30,9 +30,6 @@
 
 @property (nonatomic) BOOL isPhotoVideoSubview;
 
-//this is used with the tap gesture in the photovideoave -- we pass it in in order to prevent them from intercepting each other
-@property (nonatomic, strong) UITapGestureRecognizer * photoAveTapGesture;
-
 @property (weak, nonatomic) UIScrollView * postScrollView;
 
 //Photos is array of UIImage

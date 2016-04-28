@@ -19,12 +19,13 @@
 @interface TextOverMediaView ()
 
 @property (nonatomic, readwrite) BOOL textShowing;
-@property (nonatomic, strong) UIImageView* imageView;
+@property (nonatomic, weak) UIImageView* imageView;
+@property (nonatomic, readwrite, weak) UITextView * textView;
+
 @property (nonatomic, strong) NSData *smallImageData;
 @property (nonatomic, strong) NSData *largeImageData;
+
 @property (nonatomic) BOOL displayingLargeImage;
-@property (nonatomic, readwrite) UITextView * textView;
-@property (strong,nonatomic) UIImageView* textBackgroundView;
 
 #pragma mark Text properties
 @property (nonatomic, readwrite) NSString* text;
@@ -76,8 +77,6 @@
 								if (self.displayingLargeImage) [self.imageView setImage: image];
 							});
 						});
-
-
 					}
 				});
 			}
@@ -101,7 +100,6 @@
 		self.displayingLargeImage = NO;
 		[self revertToDefaultTextSettings];
 		[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
-		[self addSubview:self.imageView];
 	}
 	return self;
 }
@@ -165,6 +163,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 -(void)changeText:(NSString *) text{
 	[self.textView setText:text];
 	[self resizeTextView];
+	[self bringSubviewToFront:self.textView];
 }
 
 -(NSString *)getText {
@@ -229,12 +228,12 @@ andTextAlignment:(NSTextAlignment) textAlignment
 -(void)showText: (BOOL) show {
 	if (show) {
 		if (!self.textShowing){
-			[self addSubview:self.textView];
+			[self.textView setHidden: NO];
 			[self bringSubviewToFront:self.textView];
 		}
 	} else {
 		if (!self.textShowing) return;
-		[self.textView removeFromSuperview];
+		[self.textView setHidden:YES];
 	}
 	self.textShowing = !self.textShowing;
 }
@@ -271,14 +270,15 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	float height = (TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT < contentHeight) ? contentHeight : TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT;
 	self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y,
 									 self.textView.frame.size.width, height);
-	self.textBackgroundView.frame = CGRectMake(0.f, 0.f, self.textView.frame.size.width, self.textView.frame.size.height);
 }
 
 #pragma mark - Lazy Instantiation -
 
 -(UIImageView*) imageView {
 	if (!_imageView) {
-		_imageView = [[UIImageView alloc] initWithFrame: self.bounds];
+		UIImageView *imageView = [[UIImageView alloc] initWithFrame: self.bounds];
+		[self insertSubview:imageView belowSubview:self.textView];
+		_imageView = imageView;
 		_imageView.clipsToBounds = YES;
 		_imageView.contentMode = UIViewContentModeScaleAspectFill;
 	}
@@ -288,7 +288,9 @@ andTextAlignment:(NSTextAlignment) textAlignment
 -(UITextView*) textView {
 	if (!_textView) {
 		CGRect textViewFrame = DEFAULT_TEXT_VIEW_FRAME;
-		_textView = [[UITextView alloc] initWithFrame: textViewFrame];
+		UITextView *textView = [[UITextView alloc] initWithFrame: textViewFrame];
+		[self addSubview:textView];
+		_textView = textView;
 		_textView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.0];
 		_textView.keyboardAppearance = UIKeyboardAppearanceDark;
 		_textView.scrollEnabled = NO;
@@ -297,6 +299,10 @@ andTextAlignment:(NSTextAlignment) textAlignment
 		[_textView setTintAdjustmentMode:UIViewTintAdjustmentModeNormal];
 	}
 	return _textView;
+}
+
+-(void) dealloc {
+	
 }
 
 @end

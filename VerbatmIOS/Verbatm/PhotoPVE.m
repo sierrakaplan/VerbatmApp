@@ -34,34 +34,22 @@
 
 @interface PhotoPVE() <UIGestureRecognizerDelegate, OpenCollectionViewDelegate, EditContentViewDelegate>
 
-@property (nonatomic) CGPoint originPoint;
-//contains PointObjects showing dots on circle
-@property (strong, nonatomic) NSMutableArray* pointsOnCircle;
-@property (strong, nonatomic) NSMutableArray* dotViewsOnCircle;
-//contains the UIImageViews
 @property (strong, nonatomic) NSMutableArray* imageContainerViews;
-@property (strong, nonatomic) UIImageView* circleView;
-
 @property (nonatomic) NSInteger currentPhotoIndex;
-@property (nonatomic) NSInteger draggingFromPointIndex;
-@property (nonatomic) float lastDistanceFromStartingPoint;
 
 //When a view is animating it doesn't sense gestures very well. This makes it tough for users
 // to scroll up and down while their photo slideshow is playing.
 //To manage this we add to clear views above the animating views to catch the gestures.
 //We add two views instead of one because of the buttons on the bottom right -- don't want
 // to cover them.
-@property (nonatomic, strong) UIView * panGestureSensingViewVertical;
-@property (nonatomic, strong) UIView * panGestureSensingViewHorizontal;
-
-@property (strong, nonatomic) UIPanGestureRecognizer * circlePanGesture;
-@property (nonatomic, strong) UIButton * textViewButton;
+@property (nonatomic, weak) UIView * panGestureSensingViewVertical;
+@property (nonatomic, weak) UIView * panGestureSensingViewHorizontal;
 
 #pragma mark - In Preview Mode -
 
-@property (nonatomic) PinchView *pinchView;
-@property (nonatomic, strong) UIButton * pauseToRearrangeButton;
-@property (nonatomic) OpenCollectionView * rearrangeView;
+@property (nonatomic, weak) PinchView *pinchView;
+@property (nonatomic, weak) UIButton * pauseToRearrangeButton;
+@property (nonatomic, weak) OpenCollectionView * rearrangeView;
 
 // Tells whether should display smaller sized images
 @property (nonatomic) BOOL small;
@@ -210,25 +198,6 @@
 	return textAndImageView;
 }
 
-#pragma mark - Fade circle views -
-
--(void) createCircleViewAndPoints {
-	NSUInteger numCircles = [self.imageContainerViews count];
-	for (int i = 0; i < numCircles; i++) {
-		PointObject *point = [MathOperations getPointFromCircleRadius:CIRCLE_RADIUS andCurrentPointIndex:i withTotalPoints:numCircles];
-		//set relative to the center of the circle
-		point.x = point.x + self.frame.size.width/2.f;
-		point.y = point.y + PAN_CIRCLE_CENTER_Y;
-		[self.pointsOnCircle addObject:point];
-	}
-    
-    if(self.circleView){
-        [self.circleView removeFromSuperview];
-        self.circleView = nil;
-    }
-}
-
-
 #pragma mark - Tap Gesture -
 
 
@@ -238,7 +207,6 @@
     [self.pauseToRearrangeButton setImage:[UIImage imageNamed:PAUSE_SLIDESHOW_ICON] forState:UIControlStateNormal];
     self.pauseToRearrangeButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
     [self.pauseToRearrangeButton addTarget:self action:@selector(pauseToRearrangeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:self.pauseToRearrangeButton];
     [self bringSubviewToFront:self.pauseToRearrangeButton];
 }
 
@@ -248,10 +216,11 @@
         CGFloat y_pos = (self.isPhotoVideoSubview) ? 0.f : CUSTOM_NAV_BAR_HEIGHT;
 
         CGRect frame = CGRectMake(0.f,y_pos, self.frame.size.width, OPEN_COLLECTION_FRAME_HEIGHT);
-        self.rearrangeView = [[OpenCollectionView alloc] initWithFrame:frame
-													 andPinchViewArray:((CollectionPinchView*)self.pinchView).imagePinchViews];
+		OpenCollectionView *rearrangeView = [[OpenCollectionView alloc] initWithFrame:frame
+																	andPinchViewArray:((CollectionPinchView*)self.pinchView).imagePinchViews];
+		[self insertSubview: rearrangeView belowSubview:self.pauseToRearrangeButton];
+		self.rearrangeView = rearrangeView;
         self.rearrangeView.delegate = self;
-        [self insertSubview:self.rearrangeView belowSubview:self.pauseToRearrangeButton];
         [self.pauseToRearrangeButton setImage:[UIImage imageNamed:PLAY_SLIDESHOW_ICON] forState:UIControlStateNormal];
     } else {
 		for (UIView * view in self.imageContainerViews) {
@@ -280,21 +249,23 @@
 
 -(void)playWithSpeed:(CGFloat) speed {
     if(!self.animating){
-        CGRect h_frame = CGRectMake(0.f, 0.f, self.frame.size.width, self.pauseToRearrangeButton.frame.origin.y);
-        CGRect v_frame = CGRectMake(0.f, self.pauseToRearrangeButton.frame.origin.y,self.pauseToRearrangeButton.frame.origin.x - 10.f,
+        CGRect v_frame = CGRectMake(0.f, 0.f, self.frame.size.width, self.pauseToRearrangeButton.frame.origin.y);
+        CGRect h_frame = CGRectMake(0.f, self.pauseToRearrangeButton.frame.origin.y,self.pauseToRearrangeButton.frame.origin.x - 10.f,
 									self.frame.size.height - self.pauseToRearrangeButton.frame.origin.y);
         
         //create view to sense swiping
         if(self.panGestureSensingViewHorizontal == nil){
-            self.panGestureSensingViewVertical = [[UIView alloc] initWithFrame:h_frame];
+			UIView *panViewVertical = [[UIView alloc] initWithFrame:v_frame];
+			[self addSubview: panViewVertical];
+			self.panGestureSensingViewVertical = panViewVertical;
             self.panGestureSensingViewVertical.backgroundColor = [UIColor clearColor];
-            
-            self.panGestureSensingViewHorizontal = [[UIView alloc] initWithFrame:v_frame];
+
+			UIView *panViewHorizontal = [[UIView alloc] initWithFrame:h_frame];
+			[self addSubview: panViewHorizontal];
+            self.panGestureSensingViewHorizontal = panViewHorizontal;
             self.panGestureSensingViewHorizontal.backgroundColor = [UIColor clearColor];
             
-            [self addSubview:self.panGestureSensingViewVertical];
             [self bringSubviewToFront:self.panGestureSensingViewVertical];
-            [self addSubview:self.panGestureSensingViewHorizontal];
             [self bringSubviewToFront:self.panGestureSensingViewHorizontal];
         }
         [NSTimer scheduledTimerWithTimeInterval:SLIDESHOW_ANIMATION_DURATION target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
@@ -431,15 +402,19 @@
 
 -(UIButton *)pauseToRearrangeButton {
     if(!_pauseToRearrangeButton){
-        _pauseToRearrangeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width -  EXIT_CV_BUTTON_WALL_OFFSET -
-                                                                     EXIT_CV_BUTTON_WIDTH,
-                                                                     self.frame.size.height - (EXIT_CV_BUTTON_HEIGHT*2) -
-                                                                     (EXIT_CV_BUTTON_WALL_OFFSET*3),
-                                                                     EXIT_CV_BUTTON_WIDTH,
-                                                                     EXIT_CV_BUTTON_HEIGHT)];
+		UIButton *pauseToRearrangeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width -  EXIT_CV_BUTTON_WALL_OFFSET -
+																					  EXIT_CV_BUTTON_WIDTH,
+																					  self.frame.size.height - (EXIT_CV_BUTTON_HEIGHT*2) -
+																					  (EXIT_CV_BUTTON_WALL_OFFSET*3),
+																					  EXIT_CV_BUTTON_WIDTH,
+																					  EXIT_CV_BUTTON_HEIGHT)];
+		 [self addSubview: pauseToRearrangeButton];
+		_pauseToRearrangeButton = pauseToRearrangeButton;
     }
     return _pauseToRearrangeButton;
 }
 
+-(void) dealloc {
 
+}
 @end

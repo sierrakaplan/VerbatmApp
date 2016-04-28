@@ -12,6 +12,7 @@
 #import "FeaturedContentVC.h"
 #import "FeaturedContentCellView.h"
 #import "Follow_BackendManager.h"
+#import "Notifications.h"
 #import "ProfileVC.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
@@ -58,15 +59,33 @@ ExploreChannelCellViewDelegate>
 
 	[self addRefreshFeature];
 	[self refreshChannels];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearViews) name:NOTIFICATION_FREE_MEMORY_DISCOVER object:nil];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
+	if (!_featuredChannels || !_exploreChannels) {
+		[self refreshChannels];
+	}
 	[self.tableView reloadData];
 }
 
 -(void) viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
+	[self offScreen];
+}
+
+-(void) clearViews {
+	[self offScreen];
+	self.loadingMoreChannels = NO;
+	self.refreshing = NO;
+	self.exploreChannels = nil;
+	self.featuredChannels = nil;
+	[self.tableView reloadData];
+}
+
+-(void) offScreen {
 	for (NSInteger i = 0; i < [self.tableView numberOfRowsInSection:0]; ++i) {
 		[(FeaturedContentCellView*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]] offScreen];
 	}
@@ -257,5 +276,9 @@ ExploreChannelCellViewDelegate>
 	return _featuredChannels;
 }
 
+
+-(void) dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 @end

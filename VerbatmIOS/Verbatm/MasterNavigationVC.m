@@ -272,7 +272,9 @@
 }
 
 -(void) revealADK {
-	[self.discoverVC freeMemory];
+	//Clear memory from discover when bring up adk
+	NSNotification * not = [[NSNotification alloc]initWithName:NOTIFICATION_FREE_MEMORY_DISCOVER object:nil userInfo:nil];
+	[[NSNotificationCenter defaultCenter] postNotification:not];
 	[[Analytics getSharedInstance] newADKSession];
 	[self performSegueWithIdentifier:ADK_SEGUE sender:self];
 }
@@ -339,7 +341,10 @@
 
 - (void)didReceiveMemoryWarning{
 	[super didReceiveMemoryWarning];
-	// Dispose of any resources that can be recreated.
+	if (self.tabBarController.selectedViewController != self.discoverVC) {
+		NSNotification * not = [[NSNotification alloc]initWithName:NOTIFICATION_FREE_MEMORY_DISCOVER object:nil userInfo:nil];
+		[[NSNotificationCenter defaultCenter] postNotification:not];
+	}
 }
 
 - (void)dealloc {
