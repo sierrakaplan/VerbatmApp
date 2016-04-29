@@ -38,7 +38,6 @@
 	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
 	[postQuery orderByAscending:@"createdAt"];
 	[postQuery setLimit: POSTS_DOWNLOAD_SIZE];
-	[postQuery setSkip: 0];
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
 												  NSError * _Nullable error) {
 		if(activities && !error) {

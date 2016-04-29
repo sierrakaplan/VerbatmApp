@@ -43,7 +43,8 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 @property (nonatomic) Channel * channelForList;
 
 @property (nonatomic) NSMutableArray *parsePostObjects;
-@property (strong, nonatomic) FeedQueryManager * feedQueryManager;
+@property (strong, nonatomic) FeedQueryManager *feedQueryManager;
+@property (strong, nonatomic) PostsQueryManager *postsQueryManager;
 @property (nonatomic) NSInteger nextIndexToPresent;
 @property (strong, nonatomic) PostCollectionViewCell *nextCellToPresent;
 @property (nonatomic, strong) UILabel * noContentLabel;
@@ -226,8 +227,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	if(self.listType == listFeed){
 		[self.feedQueryManager refreshFeedWithCompletionHandler:self.refreshPostsCompletion];
 	} else if (self.listType == listChannel) {
-		//todo: load in chunks
-		[PostsQueryManager getPostsInChannel:self.channelForList withLimit:30 withCompletionBlock:self.refreshPostsCompletion];
+		[self.postsQueryManager refreshPostsInChannel:self.channelForList withCompletionBlock:self.refreshPostsCompletion];
 	}
 }
 
@@ -236,7 +236,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	if (self.listType == listFeed) {
 		[self.feedQueryManager loadMorePostsWithCompletionHandler:self.loadMorePostsCompletion];
 	} else if (self.listType == listChannel) {
-		//todo: load in chunks
+		[self.postsQueryManager loadMorePostsInChannel:self.channelForList withCompletionBlock:self.loadMorePostsCompletion];
 	}
 }
 
@@ -572,6 +572,13 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		[_feedQueryManager clearFeedData];
 	}
 	return _feedQueryManager;
+}
+
+-(PostsQueryManager*) postsQueryManager {
+	if (!_postsQueryManager) {
+		_postsQueryManager = [[PostsQueryManager alloc] init];
+	}
+	return _postsQueryManager;
 }
 
 - (void)dealloc {

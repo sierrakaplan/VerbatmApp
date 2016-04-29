@@ -18,7 +18,6 @@
 
 @property (nonatomic) NSInteger postsInFeed;
 @property (nonatomic, strong) NSDate *currentFeedStart;
-@property (nonatomic, strong) NSDate *currentFeedEnd;
 
 @property (nonatomic, strong) NSMutableArray *channelsFollowed;
 @property (nonatomic, strong) NSMutableArray *channelsFollowedIds;
@@ -55,7 +54,6 @@
 -(void) clearFeedData {
 	self.postsInFeed = 0;
 	self.currentFeedStart = nil;
-	self.currentFeedEnd = nil;
 }
 
 // Waits if another thread is already refreshing followed channels,
@@ -107,6 +105,7 @@
 		[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO containedIn:self.channelsFollowed];
 		[postQuery orderByDescending:@"createdAt"];
 		[postQuery setSkip: 0];
+		//Only load newer posts
 		if (self.currentFeedStart) {
 			[postQuery whereKey:@"createdAt" greaterThan:self.currentFeedStart];
 		} else {
@@ -123,9 +122,7 @@
 			// Reset cursor to start
 			if (activities.count > 0) {
 				self.currentFeedStart = [activities[0] createdAt];
-				self.currentFeedEnd = self.currentFeedEnd ? self.currentFeedEnd : [activities[activities.count-1] createdAt];
 			}
-			//todo: actually clear oldest posts
 			self.postsInFeed += finalPostObjects.count;
 			block(finalPostObjects);
 		}];
@@ -146,7 +143,6 @@
 	[postQuery orderByDescending:@"createdAt"];
 	[postQuery setLimit: POST_DOWNLOAD_MAX_SIZE];
 	[postQuery setSkip: self.postsInFeed];
-	[postQuery whereKey:@"createdAt" lessThan: self.currentFeedEnd];
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities, NSError * _Nullable error) {
 		if (error) {
 			[[Crashlytics sharedInstance] recordError:error];
