@@ -138,7 +138,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 		float y = offset.x + bounds.size.width - inset.right;
 		float h = size.width;
 		if(y > h + reload_distance && !self.isRefreshing && !self.isLoadingMore) {
-			//todo:show indicator
+			//todo: show indicator
 		}
 	}
 }

@@ -43,11 +43,12 @@
 	return sharedInstance;
 }
 
+// Blocks is publishing something else, no network
 -(void)publishPostToChannel:(Channel *)channel withPinchViews:(NSArray *)pinchViews
-		withCompletionBlock:(void(^)(BOOL))block {
+		withCompletionBlock:(void(^)(BOOL, BOOL))block {
 
 	if (self.currentlyPublishing) {
-		block (NO);
+		block (YES, NO);
 		return;
 	} else {
 		self.currentlyPublishing = YES;
@@ -63,12 +64,12 @@
 							  withCompletionBlock:^(PFObject *parsePostObject) {
 								  if (!parsePostObject) {
 									  self.newChannelCreated = NO;
-									  block (NO);
+									  block (NO, YES);
 									  return;
 								  }
 								  self.currentParsePostObject = parsePostObject;
 								  self.currentPublishingChannel = channel;
-								  block(YES);
+								  block(NO, NO);
 							  }];
 }
 

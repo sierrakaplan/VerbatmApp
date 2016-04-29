@@ -60,7 +60,6 @@
 	} else {
 		[Channel_BackendObject createChannelWithName:channel.name andCompletionBlock:^(PFObject* channelObject){
 			if (!channelObject) {
-				//todo: no network
 				block (nil);
 			} else {
 				[channel addParseChannelObject:channelObject andChannelCreator:[PFUser currentUser]];

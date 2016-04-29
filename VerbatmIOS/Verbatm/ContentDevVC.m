@@ -1813,7 +1813,7 @@ andSaveInUserDefaults:(BOOL)save {
 					[self getVideoFromAsset:asset];
 				}
 			} else if(asset.mediaType==PHAssetMediaTypeAudio) {
-				 NSLog(@"Asset is of audio type, unable to handle.");
+				NSLog(@"Asset is of audio type, unable to handle.");
 			} else {
 			}
 		}
@@ -1824,7 +1824,7 @@ andSaveInUserDefaults:(BOOL)save {
 	NSString *message = [NSString stringWithFormat:@"We're sorry, you may only have %u pieces of media in a post. Please create another post with the rest of your media.", MAX_MEDIA];
 	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Too much media" message:message preferredStyle:UIAlertControllerStyleAlert];
 	UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
-													handler:^(UIAlertAction * action) {}];
+														  handler:^(UIAlertAction * action) {}];
 	[newAlert addAction:defaultAction];
 	[self presentViewController:newAlert animated:YES completion:nil];
 }
@@ -1921,15 +1921,25 @@ andSaveInUserDefaults:(BOOL)save {
 		}
 	}
 	if (channelToPostIn) {
-		[[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn withPinchViews:pinchViews withCompletionBlock:^(BOOL posting) {
-			if(posting) {
-				[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
-				[self cleanUp];
-			} else {
-				NSLog(@"Couldn't publish because something else is publishing or no internet.");
-				//TODO -- notification to user either something else is publishing or there is not internet
-			}
-		}];
+		[[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn withPinchViews:pinchViews
+													 withCompletionBlock:^(BOOL isAlreadyPublishing, BOOL noNetwork) {
+														 NSString *errorMessage;
+														 if(isAlreadyPublishing) {
+															errorMessage = @"Please wait until the previous post has finished publishing.";
+														 } else if (noNetwork) {
+															errorMessage = @"Something went wrong - please check your network connection and try again.";
+														 } else {
+															 //Everything went ok
+															 [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
+															 [self cleanUp];
+															 return;
+														 }
+														 UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Couldn't Publish" message:errorMessage preferredStyle:UIAlertControllerStyleAlert];
+														 UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+																											   handler:^(UIAlertAction * action) {}];
+														 [newAlert addAction:defaultAction];
+														 [self presentViewController:newAlert animated:YES completion:nil];
+													 }];
 	}
 }
 
