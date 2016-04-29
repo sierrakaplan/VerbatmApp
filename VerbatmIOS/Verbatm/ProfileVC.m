@@ -339,13 +339,15 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 }
 
 
--(void)newChannelSelected:(Channel *) channel{
+-(void)newChannelSelected:(Channel *) channel {
+	self.startChannel = channel; //return to this channel
 	[self.postListVC display:channel asPostListType:listChannel withListOwner:self.userOfProfile
 		isCurrentUserProfile:self.isCurrentUserProfile];
 }
 
 // updates tab and content
 -(void) selectChannel: (Channel *) channel {
+	self.startChannel = channel; //return to this channel
 	[self.profileNavBar selectChannel: channel];
 	[self.postListVC display:channel asPostListType:listChannel withListOwner:self.userOfProfile
 		isCurrentUserProfile:self.isCurrentUserProfile];
@@ -426,10 +428,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	NSLog(@"Publishing Complete!");
 	[self.publishingProgressView removeFromSuperview];
 	self.publishingProgressView = nil;
-	//todo: bring this back
-	//if ([PublishingProgressManager sharedInstance].currentPublishingChannel == self.postListVC.channelForList) {
-		[self.postListVC refreshPosts];
-	//}
+	[self.postListVC loadMorePosts];
 }
 
 -(void) publishingFailedWithError:(NSError *)error {

@@ -14,13 +14,13 @@
 @interface VerbatmKeyboardToolBar()
 
 @property (nonatomic) BOOL textColorBlack;
-@property (weak, nonatomic) UIButton *textColorButton;
-@property (weak, nonatomic) UIButton *textSizeIncreaseButton;
-@property (weak, nonatomic) UIButton *textSizeDecreaseButton;
-@property (weak, nonatomic) UIButton *leftAlignButton;
-@property (weak, nonatomic) UIButton *centerAlignButton;
-@property (weak, nonatomic) UIButton *rightAlignButton;
-@property (weak, nonatomic) UIButton *doneButton;
+@property (strong, nonatomic) UIButton *textColorButton;
+@property (strong, nonatomic) UIButton *textSizeIncreaseButton;
+@property (strong, nonatomic) UIButton *textSizeDecreaseButton;
+@property (strong, nonatomic) UIButton *leftAlignButton;
+@property (strong, nonatomic) UIButton *centerAlignButton;
+@property (strong, nonatomic) UIButton *rightAlignButton;
+@property (strong, nonatomic) UIButton *doneButton;
 
 #define BUTTON_Y_OFFSET ((TEXT_TOOLBAR_HEIGHT - TEXT_TOOLBAR_BUTTON_WIDTH)/2.f)
 #define COLOR_BUTTON_X_OFFSET 20.f

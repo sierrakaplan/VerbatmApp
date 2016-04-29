@@ -36,6 +36,8 @@ typedef enum PostListType {
 
 -(void) refreshPosts;
 
+-(void) loadMorePosts;
+
 //moves the tap/share bar up and down over the tab bar
 -(void) footerShowing: (BOOL) showing;
 

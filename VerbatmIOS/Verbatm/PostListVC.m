@@ -62,7 +62,8 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 @property (nonatomic) UIImageView *publishSuccessful;
 @property (nonatomic) UIImageView *publishFailed;
 
-@property (nonatomic) void(^refreshPostsCompletion)(NSArray * posts);
+@property (nonatomic) void(^refreshPostsCompletionFeed)(NSArray * posts);
+@property (nonatomic) void(^refreshPostsCompletionChannel)(NSArray * posts);
 @property (nonatomic) void(^loadMorePostsCompletion)(NSArray * posts);
 
 #define LOAD_MORE_POSTS_COUNT 3 //number of posts left to see before we start loading more content
@@ -105,7 +106,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 }
 
 -(void) display:(Channel*)channelForList asPostListType:(PostListType)listType
-			   withListOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile {
+  withListOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile {
 	[self clearViews];
 	self.channelForList = channelForList;
 	self.listType = listType;
@@ -196,11 +197,25 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 
 -(void) defineRefreshPostsCompletion {
 	__weak typeof(self) weakSelf = self;
-	self.refreshPostsCompletion = ^void(NSArray *posts) {
+	self.refreshPostsCompletionFeed = ^void(NSArray *posts) {
 		[weakSelf.customActivityIndicator stopCustomActivityIndicator];
 		if(posts.count) {
 			NSIndexSet *indices = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0,[posts count])];
 			[weakSelf.parsePostObjects insertObjects:posts atIndexes:indices];
+
+			[weakSelf removePresentLabel];
+			[weakSelf.collectionView reloadData];
+		} else if(!weakSelf.parsePostObjects.count){
+			[weakSelf nothingToPresentHere];
+		}
+		weakSelf.isRefreshing = NO;
+	};
+
+	self.refreshPostsCompletionChannel = ^void(NSArray *posts) {
+		[weakSelf.customActivityIndicator stopCustomActivityIndicator];
+		if(posts.count) {
+			weakSelf.parsePostObjects = nil;
+			[weakSelf.parsePostObjects addObjectsFromArray:posts];
 
 			[weakSelf removePresentLabel];
 			[weakSelf.collectionView reloadData];
@@ -225,13 +240,14 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	self.isLoadingMore = NO;
 	[self.customActivityIndicator startCustomActivityIndicator];
 	if(self.listType == listFeed){
-		[self.feedQueryManager refreshFeedWithCompletionHandler:self.refreshPostsCompletion];
+		[self.feedQueryManager refreshFeedWithCompletionHandler:self.refreshPostsCompletionFeed];
 	} else if (self.listType == listChannel) {
-		[self.postsQueryManager refreshPostsInChannel:self.channelForList withCompletionBlock:self.refreshPostsCompletion];
+		[self.postsQueryManager refreshPostsInChannel:self.channelForList withCompletionBlock:self.refreshPostsCompletionChannel];
 	}
 }
 
 -(void) loadMorePosts {
+	if (self.isLoadingMore) return;
 	self.isLoadingMore = YES;
 	if (self.listType == listFeed) {
 		[self.feedQueryManager loadMorePostsWithCompletionHandler:self.loadMorePostsCompletion];
@@ -379,19 +395,19 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void)flagButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post{
 
-    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Flag Post"
-                                                                   message:@"Are you sure you want to flag the content of this post? We will review it ASAP."
-                                                            preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Flag Post"
+																   message:@"Are you sure you want to flag the content of this post? We will review it ASAP."
+															preferredStyle:UIAlertControllerStyleAlert];
 
-    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
-                                                         handler:^(UIAlertAction * action) {}];
-    UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        [Post_BackendObject markPostAsFlagged:post];
-    }];
+	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
+														 handler:^(UIAlertAction * action) {}];
+	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+		[Post_BackendObject markPostAsFlagged:post];
+	}];
 
-    [alert addAction: cancelAction];
-    [alert addAction: deleteAction];
-    [self presentViewController:alert animated:YES completion:nil];
+	[alert addAction: cancelAction];
+	[alert addAction: deleteAction];
+	[self presentViewController:alert animated:YES completion:nil];
 
 }
 
@@ -442,8 +458,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 //todo: save share object
 -(void)postPostToChannels:(NSMutableArray *) channels{
-    if(channels.count) {
-        [Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
+	if(channels.count) {
+		[Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[self successfullyReblogged];
 			});
@@ -460,7 +476,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		self.reblogSucessful.alpha = 0.f;
 	}completion:^(BOOL finished) {
 
-        [self.reblogSucessful removeFromSuperview];
+		[self.reblogSucessful removeFromSuperview];
 		self.reblogSucessful = nil;
 	}];
 }
