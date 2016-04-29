@@ -86,11 +86,13 @@
 	NSArray* pinchViewPhotosWithText = [pinchView getPhotosWithText];
 	NSMutableArray *imagePinchViews = [[NSMutableArray alloc] init];
 	BOOL half = NO;
+	if (pinchView.containsImage && pinchView.containsVideo) {
+		half = YES;
+	}
 	if ([pinchView isKindOfClass:[ImagePinchView class]]) {
 		[imagePinchViews addObject:(ImagePinchView*) pinchView];
 	} else if (pinchView.containsImage) {
 		imagePinchViews = ((CollectionPinchView*)pinchView).imagePinchViews;
-		half = YES;
 	}
 
 	//Publishing images sequentially

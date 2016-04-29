@@ -114,7 +114,7 @@
 	if (!_textColorButton) {
 		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, BUTTON_Y_OFFSET,
 										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
-		_textColorButton = [self getButtonWithFrame:buttonFrame andIcon:self.textColorBlack ? BLACK_FONT_ICON : WHITE_FONT_ICON
+		_textColorButton = [self getButtonWithFrame:buttonFrame andIcon:self.textColorBlack ? WHITE_FONT_ICON : BLACK_FONT_ICON
 										andSelector:@selector(textColorButtonPressed)];
 	}
 	return _textColorButton;
