@@ -31,12 +31,16 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
+	// Limit cache size
 	int cacheSizeMemory = 15*1024*1024; // 4MB
 	int cacheSizeDisk = 32*1024*1024; // 32MB
 	NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:cacheSizeMemory diskCapacity:cacheSizeDisk diskPath:@"nsurlcache"];
 	[NSURLCache setSharedURLCache:sharedCache];
 
+	// Load post in adk
 	[[PostInProgress sharedInstance] loadPostFromUserDefaults];
+
+	// Set up parse
 	[self setUpParseWithLaunchOptions: launchOptions];
 	PMKSetUnhandledExceptionHandler(^NSError * _Nullable(id exception) {
 		return [NSError errorWithDomain:PMKErrorDomain code:PMKUnexpectedError
@@ -49,8 +53,40 @@
 	[Fabric with:@[[Crashlytics class]]];
 	//    	[Optimizely startOptimizelyWithAPIToken: @"AANIfyUBGNNvR9jy_iEWX8c97ahEroKr~3788260592" launchOptions:launchOptions];
 
-	return [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
 
+	//Push notifications
+	UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert |
+													UIUserNotificationTypeBadge |
+													UIUserNotificationTypeSound);
+	UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes
+																			 categories:nil];
+	[application registerUserNotificationSettings:settings];
+	[application registerForRemoteNotifications];
+
+	// Call fb sdk method
+	return [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
+}
+
+// Call back method for registering for push notifications. Save device token in parse.
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+	// Store the deviceToken in the current installation and save it to Parse.
+	PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+	[currentInstallation setDeviceTokenFromData:deviceToken];
+	currentInstallation.channels = @[ @"global" ];
+	[currentInstallation saveInBackground];
+}
+
+- (void)application:(UIApplication *)app
+didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
+	NSLog(@"Error in registration. Error: %@", err);
+	[[Crashlytics sharedInstance] recordError:err];
+	//todo: handle the fact that app will not receive notifications
+}
+
+// Method that handles push notifications when app is active
+//todo: don't let parse handle it with modal alert
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+	[PFPush handlePush:userInfo];
 }
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {

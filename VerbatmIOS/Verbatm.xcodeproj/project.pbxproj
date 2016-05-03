@@ -217,7 +217,6 @@
 		C7BC43B5199EC680004B91A1 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43B4199EC680004B91A1 /* MobileCoreServices.framework */; };
 		C7BC43B7199EC68B004B91A1 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43B6199EC68B004B91A1 /* QuartzCore.framework */; };
 		C7BC43B9199EC696004B91A1 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43B8199EC696004B91A1 /* Security.framework */; };
-		C7BC43BB199EC6A2004B91A1 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43BA199EC6A2004B91A1 /* StoreKit.framework */; };
 		C7BC43BD199EC6AF004B91A1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43BC199EC6AF004B91A1 /* SystemConfiguration.framework */; };
 		C7BF1AA51C57EFC000CEDE4B /* Post_BackendObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BF1AA41C57EFC000CEDE4B /* Post_BackendObject.m */; };
 		C7BF1AA81C57F5F500CEDE4B /* Photo_BackendObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BF1AA71C57F5F500CEDE4B /* Photo_BackendObject.m */; };
@@ -610,7 +609,6 @@
 		C7BC43B4199EC680004B91A1 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		C7BC43B6199EC68B004B91A1 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		C7BC43B8199EC696004B91A1 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		C7BC43BA199EC6A2004B91A1 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		C7BC43BC199EC6AF004B91A1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		C7BF1AA31C57EFC000CEDE4B /* Post_BackendObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Post_BackendObject.h; sourceTree = "<group>"; };
 		C7BF1AA41C57EFC000CEDE4B /* Post_BackendObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Post_BackendObject.m; sourceTree = "<group>"; };
@@ -679,7 +677,6 @@
 				A55AA12C1BD5B79F00EB883A /* AdSupport.framework in Frameworks */,
 				A55A59DF1BB4E07D00C7CE7A /* libsqlite3.tbd in Frameworks */,
 				C7BC43BD199EC6AF004B91A1 /* SystemConfiguration.framework in Frameworks */,
-				C7BC43BB199EC6A2004B91A1 /* StoreKit.framework in Frameworks */,
 				C7BC43B9199EC696004B91A1 /* Security.framework in Frameworks */,
 				C7BC43B7199EC68B004B91A1 /* QuartzCore.framework in Frameworks */,
 				C7BC43B5199EC680004B91A1 /* MobileCoreServices.framework in Frameworks */,
@@ -1436,7 +1433,6 @@
 				C734FD9619B13D7700B2C370 /* CoreVideo.framework */,
 				C734FD9419B13D5F00B2C370 /* ImageIO.framework */,
 				C7BC43BC199EC6AF004B91A1 /* SystemConfiguration.framework */,
-				C7BC43BA199EC6A2004B91A1 /* StoreKit.framework */,
 				C7BC43B8199EC696004B91A1 /* Security.framework */,
 				C7BC43B6199EC68B004B91A1 /* QuartzCore.framework */,
 				C7BC43B4199EC680004B91A1 /* MobileCoreServices.framework */,
@@ -1646,6 +1642,14 @@
 				TargetAttributes = {
 					C7BC4371199D97F5004B91A1 = {
 						DevelopmentTeam = 4ZZL8FZ858;
+						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 0;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					C7BC4392199D97F6004B91A1 = {
 						DevelopmentTeam = 4ZZL8FZ858;
@@ -2076,7 +2080,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "98f1c3d3-c353-49e8-9093-2d24fb3bec28";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "$(inherited)";
 				VALID_ARCHS = "armv7 armv7s arm64";
@@ -2125,7 +2129,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = NO;
-				PROVISIONING_PROFILE = "98f1c3d3-c353-49e8-9093-2d24fb3bec28";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "$(inherited)";
 				VALIDATE_PRODUCT = YES;
