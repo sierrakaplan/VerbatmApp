@@ -195,7 +195,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 }
 
 -(void) checkIfUserHasLikedThePost {
-	[Like_BackendManager currentUserLikesPost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST] withCompletionBlock:^(bool userLikedPost) {
+	[Like_BackendManager doesCurrentUserLikesPost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST] withCompletionBlock:^(bool userLikedPost) {
 		dispatch_async(dispatch_get_main_queue(), ^{
 			[self.likeShareBar shouldStartPostAsLiked:userLikedPost];
 		});

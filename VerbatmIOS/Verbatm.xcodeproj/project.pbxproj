@@ -153,6 +153,7 @@
 		A5E85FB01B911DA900E148D0 /* GTMOAuth2ViewTouch.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5E85F971B911DA900E148D0 /* GTMOAuth2ViewTouch.xib */; };
 		A5E860011B96249900E148D0 /* PostPublisher.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E860001B96249900E148D0 /* PostPublisher.m */; };
 		A5E860071B97CC3C00E148D0 /* PreviewDisplayView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E860061B97CC3C00E148D0 /* PreviewDisplayView.m */; };
+		A5F51F521CD95DF400EB0A7B /* NotificationsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F51F511CD95DF400EB0A7B /* NotificationsVC.m */; };
 		A5FB5D2C1BCB0B9700634A96 /* GMAlbumsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5FB5D151BCB0B9700634A96 /* GMAlbumsViewCell.m */; };
 		A5FB5D2D1BCB0B9700634A96 /* GMAlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5FB5D171BCB0B9700634A96 /* GMAlbumsViewController.m */; };
 		A5FB5D301BCB0B9700634A96 /* GMGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5FB5D1B1BCB0B9700634A96 /* GMGridViewCell.m */; };
@@ -510,6 +511,8 @@
 		A5E860001B96249900E148D0 /* PostPublisher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostPublisher.m; sourceTree = "<group>"; };
 		A5E860051B97CC3C00E148D0 /* PreviewDisplayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreviewDisplayView.h; sourceTree = "<group>"; };
 		A5E860061B97CC3C00E148D0 /* PreviewDisplayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreviewDisplayView.m; sourceTree = "<group>"; };
+		A5F51F501CD95DF400EB0A7B /* NotificationsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsVC.h; sourceTree = "<group>"; };
+		A5F51F511CD95DF400EB0A7B /* NotificationsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsVC.m; sourceTree = "<group>"; };
 		A5F94ABC1CCC115500341D01 /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Verbatm-crpoxhdzscotzubuuulfnzwqpfct/Build/Products/Debug-iphoneos/PromiseKit.framework"; sourceTree = "<group>"; };
 		A5FB5D141BCB0B9700634A96 /* GMAlbumsViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMAlbumsViewCell.h; sourceTree = "<group>"; };
 		A5FB5D151BCB0B9700634A96 /* GMAlbumsViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMAlbumsViewCell.m; sourceTree = "<group>"; };
@@ -1231,6 +1234,15 @@
 			name = "Viewing Posts";
 			sourceTree = "<group>";
 		};
+		A5F51F4F1CD95DC100EB0A7B /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				A5F51F501CD95DF400EB0A7B /* NotificationsVC.h */,
+				A5F51F511CD95DF400EB0A7B /* NotificationsVC.m */,
+			);
+			name = Notifications;
+			sourceTree = "<group>";
+		};
 		A5FB5D4F1BCB11DF00634A96 /* Strings */ = {
 			isa = PBXGroup;
 			children = (
@@ -1363,6 +1375,7 @@
 				A5934C161C11EFBD007C7830 /* CustomTabBarController.m */,
 				A560EFB11BB09B36003FB041 /* Feed */,
 				A5C38ABB1CC1B35D0067D077 /* Discover */,
+				A5F51F4F1CD95DC100EB0A7B /* Notifications */,
 				A560EFB01BB09B21003FB041 /* Creation */,
 				A560EFAF1BB09AF8003FB041 /* Login */,
 				A5076D051BE999E900303746 /* Profile */,
@@ -1883,6 +1896,7 @@
 				C7E2C88F1BB7E97600D83668 /* UtilityFunctions.m in Sources */,
 				A5934C171C11EFBD007C7830 /* CustomTabBarController.m in Sources */,
 				C7F3D46B1A4F84C000B43238 /* SignInVC.m in Sources */,
+				A5F51F521CD95DF400EB0A7B /* NotificationsVC.m in Sources */,
 				A5E85FAA1B911DA900E148D0 /* GTMGatherInputStream.m in Sources */,
 				C7BF1AB21C59D6BF00CEDE4B /* Channel_BackendObject.m in Sources */,
 				A535E5091BC45CC600A087D1 /* AVAsset+Utilities.m in Sources */,

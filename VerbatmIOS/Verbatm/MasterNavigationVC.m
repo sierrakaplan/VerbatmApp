@@ -21,6 +21,7 @@
 #import "MasterNavigationVC.h"
 
 #import "Notifications.h"
+#import "NotificationsVC.h"
 
 #import "ParseBackendKeys.h"
 #import "ProfileVC.h"
@@ -54,6 +55,7 @@
 @property (strong,nonatomic) ProfileVC *profileVC;
 @property (strong,nonatomic) FeedVC *feedVC;
 @property (strong,nonatomic) DiscoverVC *discoverVC;
+@property (strong,nonatomic) NotificationsVC *notificationsVC;
 
 
 #define ANIMATION_NOTIFICATION_DURATION 0.5
@@ -153,7 +155,7 @@
     deadView.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:deadViewTabImage selectedImage:deadViewTabImage];
     deadView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 
-    self.tabBarController.viewControllers = @[self.profileVC, deadView, self.feedVC, self.discoverVC];
+    self.tabBarController.viewControllers = @[self.profileVC, deadView, self.feedVC, self.discoverVC, self.notificationsVC];
     //add adk button to tab bar
 	[self addTabBarCenterButtonOverDeadView];
 	if ([[UserSetupParameters sharedInstance] isFeed_InstructionShown]) {
@@ -202,14 +204,7 @@
 
 //the view controllers that will be tabbed
 -(void)createViewControllers {
-    UIImage * searchUnselected =  [self imageWithImage:[[UIImage imageNamed:DISCOVER_TAB_BAR_ICON]
-                                              imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
-                                scaledToSize:CGSizeMake(30.f, 30.f)];
-    
-    UIImage * searchSelected =  [self imageWithImage:[[UIImage imageNamed:DISCOVER_TAB_BAR_ICON]
-                                                      imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
-                                        scaledToSize:CGSizeMake(30.f, 30.f)];
-
+	self.notificationsVC = [self.storyboard instantiateViewControllerWithIdentifier:NOTIFICATIONS_VC_ID];
 	self.discoverVC = [self.storyboard instantiateViewControllerWithIdentifier:DISCOVER_VC_ID];
 
     self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
@@ -228,14 +223,16 @@
 															  image:[UIImage imageNamed:HOME_NAV_ICON]
 													  selectedImage:[UIImage imageNamed:HOME_NAV_ICON]];
 	self.discoverVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
-															  image:searchUnselected
-													  selectedImage:searchSelected];
-
+															  image:[UIImage imageNamed:DISCOVER_TAB_BAR_ICON]
+													  selectedImage:[UIImage imageNamed:DISCOVER_TAB_BAR_ICON]];
+	self.notificationsVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
+																	image:[UIImage imageNamed:PROFILE_NAV_ICON]
+															selectedImage:[UIImage imageNamed:PROFILE_NAV_ICON]];
     // images need to be centered this way for some reason
 	self.profileVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
-//    self.channelListView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 	self.discoverVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 	self.feedVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+	self.notificationsVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 }
 
 -(void)createTabBarViewController{

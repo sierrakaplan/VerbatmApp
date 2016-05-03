@@ -10,6 +10,8 @@
 #import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
 #import <Parse/PFQuery.h>
+#import <Parse/PFCloud.h>
+#import <Crashlytics/Crashlytics.h>
 
 @implementation Like_BackendManager
 
@@ -21,6 +23,17 @@
 	[newLikeObject setObject:[PFUser currentUser]forKey:LIKE_USER_KEY];
 	[newLikeObject setObject:postParseObject forKey:LIKE_POST_LIKED_KEY];
 	[newLikeObject saveInBackground];
+
+	[PFCloud callFunctionInBackground:@"sendPushToUser"
+					   withParameters:@{@"recipientId": ((PFUser*)[postParseObject objectForKey:POST_ORIGINAL_CREATOR_KEY]).objectId, @"message": @"liked your post"}
+								block:^(NSString *success, NSError *error) {
+									if (!error) {
+										NSLog(@"%@", success);
+									} else {
+										NSLog(@"Unable to send push notification: %@", error.localizedDescription);
+										[[Crashlytics sharedInstance] recordError:error];
+									}
+								}];
 }
 
 + (void)currentUserStopLikingPost:(PFObject *) postParseObject{
@@ -42,7 +55,7 @@
 }
 
 //tests to see if the logged in user likes this post
-+(void)currentUserLikesPost:(PFObject *) postParseObject withCompletionBlock:(void(^)(bool))block {
++(void)doesCurrentUserLikesPost:(PFObject *) postParseObject withCompletionBlock:(void(^)(bool))block {
     if(!postParseObject)return;
     //we just delete the Follow Object
     PFQuery * userChannelQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
