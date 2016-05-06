@@ -18,6 +18,8 @@
 @interface BlogPopupView ()
 @property (nonatomic) Channel *channel;
 @property (nonatomic) UIButton *cancelButton;
+@property (nonatomic) UIButton *topButton;
+@property (nonatomic) UIButton *backButton;
 @property (nonatomic) UIButton *deleteButton;
 @property (nonatomic) UIButton *followersButton;
 @property (nonatomic) UIView *channelInfoBar;
@@ -88,6 +90,21 @@
     [self.cancelButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [self.cancelButton addTarget:self action:@selector(cancelPopupButtonSelected) forControlEvents:UIControlEventTouchUpInside];
 
+    CGRect topBackButtonFrame = CGRectMake(0, 0, 40, SHARE_BUTTON_HEIGHT);
+    self.backButton = [[UIButton alloc] initWithFrame:topBackButtonFrame];
+    [self.backButton setImage:[UIImage imageNamed:@"back_arrow"] forState:UIControlStateNormal];
+    [self.backButton addTarget:self action:@selector(backButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+    self.backButton.backgroundColor = [UIColor grayColor];
+    self.backButton.hidden = YES;
+    
+    CGRect topButtonFrame = CGRectMake(0, 0, self.frame.size.width, SHARE_BUTTON_HEIGHT);
+    
+    self.topButton = [[UIButton alloc] initWithFrame:topButtonFrame];
+    [self.topButton setTitle:@"FOLLOWERS" forState:UIControlStateNormal];
+    [self.topButton setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
+    [self.topButton.titleLabel setFont:[UIFont boldSystemFontOfSize:[UIFont systemFontSize]]];
+    [self.topButton addTarget:self action:@selector(topButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+    self.topButton.hidden = YES;
     
 
     self .layer.cornerRadius = 10.f;
@@ -98,6 +115,25 @@
     [self addSubview:self.mainMenuView];
     [self bringSubviewToFront:self.mainMenuView];
     [self addSubview:self.cancelButton];
+    [self addSubview:self.topButton];
+    [self addSubview:self.backButton];
+}
+
+-(void) topButtonSelected {
+    if([self.topButton.titleLabel.text isEqualToString:@""]){
+        
+    } else {
+
+    }
+}
+
+-(void) backButtonSelected {
+    self.backButton.hidden = YES;
+    self.topButton.hidden = YES;
+    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+        self.mainMenuView.frame = self.mainFrameONSCREEN;
+        self.blogFollowers.frame = self.followersFrameOFFSCREEN;
+    }];
 }
 
 -(void) cancelPopupButtonSelected {
@@ -115,6 +151,8 @@
 }
 
 -(void) showFollowers{
+    self.backButton.hidden = NO;
+    self.topButton.hidden = NO;
         [UIView animateWithDuration:ANIMATION_DURATION animations:^{
             self.mainMenuView.frame = self.mainFrameOFFSCREEN;
             self.blogFollowers.frame = self.followersFrameONSCREEN;
@@ -126,11 +164,11 @@
     self.mainFrameONSCREEN = CGRectMake(0.f, SHARE_BUTTON_HEIGHT,
                                                              self.frame.size.width, self.frame.size.height- (SHARE_BUTTON_HEIGHT * 2.f));
     
-    self.mainFrameOFFSCREEN = CGRectMake(- self.frame.size.width,
+    self.mainFrameOFFSCREEN = CGRectMake(- self.frame.size.width * 1.25,
                                                               SHARE_BUTTON_HEIGHT,
                                                               self.frame.size.width, self.frame.size.height- (SHARE_BUTTON_HEIGHT * 2.f));
     
-    self.followersFrameOFFSCREEN = CGRectMake(self.frame.size.width, self.mainFrameOFFSCREEN.origin.y, self.mainFrameOFFSCREEN.size.width, self.mainFrameOFFSCREEN.size.height);
+    self.followersFrameOFFSCREEN = CGRectMake(self.frame.size.width * 1.25, self.mainFrameOFFSCREEN.origin.y, self.mainFrameOFFSCREEN.size.width, self.mainFrameOFFSCREEN.size.height);
     
     self.followersFrameONSCREEN = CGRectMake(0.f, self.mainFrameONSCREEN.origin.y, self.mainFrameONSCREEN.size.width, self.mainFrameONSCREEN.size.height);
 }
@@ -138,8 +176,6 @@
 -(Followers *) blogFollowers{
     if(!_blogFollowers){
         _blogFollowers = [[Followers alloc] initWithFrame:self.followersFrameOFFSCREEN forChannel:self.channel];
-        _blogFollowers .contentSize = self.frame.size;
-        _blogFollowers.contentInset = UIEdgeInsetsMake(0, 0, 70.f, 0);
         [self addSubview:_blogFollowers];
     }
     

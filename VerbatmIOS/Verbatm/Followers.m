@@ -14,8 +14,9 @@
 #import "User_BackendObject.h"
 #import "ProfileVC.h"
 #import <Parse/PFQuery.h>
+#import <PromiseKit/PromiseKit.h>
 
-#define FOLLOWER_LABEL_HEIGHT 30.f
+#define FOLLOWER_LABEL_HEIGHT 50.f
 #define SCROLL_BUFFER 10.f
 
 @interface Followers ()
@@ -31,7 +32,6 @@
         self.currentBlog = blog;
         self.y = 0.f;
         [self formatView];
- //                       [self setContentSize];
         [self currentBlogFollowers];
     }
     return self;
@@ -50,41 +50,41 @@
     [Follow_BackendManager usersFollowingChannel:self.currentBlog withCompletionBlock:^(NSArray *blogFollowers){
         for(PFObject *obj in blogFollowers){
             __block PFUser *user = [obj valueForKey:FOLLOW_USER_KEY];
-            __block NSString *name = nil;
             
             [user fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error){
                 user = (PFUser *) object;
                 [self.blogFollowers addObject:user];
-                name = [user valueForKey:VERBATM_USER_NAME_KEY];
-                [self createFollowersLabels:name];
+                [self createFollowersLabels:user];
             }];
 
         }
-        
-
     }];
 }
 
--(void) createFollowersLabels:(NSString *) name{
+-(void) createFollowersLabels:(PFUser *) user{
 
-
-        UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, self.y, self.frame.size.width, FOLLOWER_LABEL_HEIGHT)];
-        UILabel *l = [[UILabel alloc] initWithFrame:CGRectMake(v.frame.size.width * 0.125, v.frame.size.height * 0.125, v.frame.size.width * 0.75, v.frame.size.height)];
-        [l setText:name];
-        [l setTextColor:[UIColor blackColor]];
-        [l setTextAlignment:NSTextAlignmentCenter];
-        [l setCenter:v.center];
+        NSString *name = [user valueForKey:VERBATM_USER_NAME_KEY];
+        UILabel *userNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.y, self.frame.size.width, FOLLOWER_LABEL_HEIGHT)];
+        [userNameLabel setText:name];
+        [userNameLabel setTextColor:[UIColor blackColor]];
+        [userNameLabel setTextAlignment:NSTextAlignmentCenter];
         
-    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(userSelected:)];
-    [v addGestureRecognizer:tap];
-        [v addSubview:l];
-        [self addSubview:v];
         
+        UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(userSelected:)];
+        [userNameLabel addGestureRecognizer:tap];
+        userNameLabel.userInteractionEnabled = YES;
+        [self addSubview:userNameLabel];
         self.y += FOLLOWER_LABEL_HEIGHT;
+    
+    CGSize newContentSize = CGSizeMake(0, self.y + FOLLOWER_LABEL_HEIGHT + SCROLL_BUFFER);
+    self.contentSize = newContentSize;
+
 }
 
 -(void) userSelected:(UITapGestureRecognizer *) gesture {
-    PFUser *selectedUser = self.blogFollowers[0];
+    CGPoint touchPoint=[gesture locationInView:self];
+    int index = (int)(touchPoint.y/ FOLLOWER_LABEL_HEIGHT);
+    PFUser *selectedUser = self.blogFollowers[index];
     [selectedUser fetchIfNeededInBackgroundWithBlock:^
      (PFObject * _Nullable object, NSError * _Nullable error) {
          if(object){
@@ -98,7 +98,7 @@
 
 
 -(void) goToUserProfile:(PFUser *) user {
-    [self removeFromSuperview];
+    [self.superview removeFromSuperview];
     ProfileVC *  userProfile = [[ProfileVC alloc] init];
     userProfile.isCurrentUserProfile = NO;
     userProfile.isProfileTab = NO;
