@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		127EA6DC1CDF90FE000BEBAD /* FollowingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 127EA6DB1CDF90FE000BEBAD /* FollowingView.m */; };
 		12A06D971CD3762B001800C9 /* BlogPopupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 12A06D961CD3762B001800C9 /* BlogPopupView.m */; };
 		12A06D9A1CD37B1A001800C9 /* Followers.m in Sources */ = {isa = PBXBuildFile; fileRef = 12A06D991CD37B1A001800C9 /* Followers.m */; };
 		9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995719BA7EBD005EBC8A /* MediaSessionManager.m */; };
@@ -275,6 +276,8 @@
 
 /* Begin PBXFileReference section */
 		113A4CE1B7B9BC71C0E99388 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		127EA6DA1CDF90FE000BEBAD /* FollowingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowingView.h; sourceTree = "<group>"; };
+		127EA6DB1CDF90FE000BEBAD /* FollowingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FollowingView.m; sourceTree = "<group>"; };
 		12A06D951CD3762B001800C9 /* BlogPopupView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlogPopupView.h; sourceTree = "<group>"; };
 		12A06D961CD3762B001800C9 /* BlogPopupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlogPopupView.m; sourceTree = "<group>"; };
 		12A06D981CD37B1A001800C9 /* Followers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Followers.h; sourceTree = "<group>"; };
@@ -1342,6 +1345,8 @@
 				12A06D961CD3762B001800C9 /* BlogPopupView.m */,
 				12A06D981CD37B1A001800C9 /* Followers.h */,
 				12A06D991CD37B1A001800C9 /* Followers.m */,
+				127EA6DA1CDF90FE000BEBAD /* FollowingView.h */,
+				127EA6DB1CDF90FE000BEBAD /* FollowingView.m */,
 			);
 			name = Channels;
 			sourceTree = "<group>";
@@ -1866,6 +1871,7 @@
 				C7F22B3B1C38B2A600E56EA7 /* SelectOptionButton.m in Sources */,
 				C7BF1AA51C57EFC000CEDE4B /* Post_BackendObject.m in Sources */,
 				9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */,
+				127EA6DC1CDF90FE000BEBAD /* FollowingView.m in Sources */,
 				A5E85F991B911DA900E148D0 /* GTLQuery.m in Sources */,
 				A5E85FA01B911DA900E148D0 /* GTLRuntimeCommon.m in Sources */,
 				A5C09BE01BA1F1D700C0AD86 /* ASINetworkQueue.m in Sources */,
