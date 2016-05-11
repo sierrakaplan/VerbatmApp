@@ -18,7 +18,7 @@
 
 #pragma mark - Bottom Tab Bar -
 
-#define ADK_NAV_ICON @"plus"
+#define ADK_NAV_ICON @"edit_icon_white"
 #define PROFILE_NAV_ICON @"profile"
 #define HOME_NAV_ICON @"home"
 #define DISCOVER_TAB_BAR_ICON @"search"
@@ -131,6 +131,10 @@
 
 #define PAUSE_SLIDESHOW_ICON @"Pause_slideshow_icon"
 #define PLAY_SLIDESHOW_ICON @"Play_slideshow_icon"
+
+#pragma mark - Discover -
+
+#define DISCOVER_BACKGROUND @"background_discover"
 
 
 

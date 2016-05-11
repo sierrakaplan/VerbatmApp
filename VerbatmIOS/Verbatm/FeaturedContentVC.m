@@ -8,6 +8,7 @@
 
 #import "Channel_BackendObject.h"
 #import "ExploreChannelCellView.h"
+#import "Icons.h"
 #import "FeedQueryManager.h"
 #import "FeaturedContentVC.h"
 #import "FeaturedContentCellView.h"
@@ -50,6 +51,8 @@ ExploreChannelCellViewDelegate>
 	self.tableView.showsHorizontalScrollIndicator = NO;
 	self.tableView.showsVerticalScrollIndicator = NO;
 	self.tableView.delegate = self;
+	self.tableView.backgroundColor = [UIColor clearColor];
+	[self addBackgroundImage];
 
 	//avoid covering last item in uitableview
 	//todo: change this when bring back search bar
@@ -73,6 +76,11 @@ ExploreChannelCellViewDelegate>
 -(void) viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
 	[self offScreen];
+}
+
+-(void) addBackgroundImage {
+	UIColor *background = [[UIColor alloc] initWithPatternImage:[UIImage imageNamed:DISCOVER_BACKGROUND]];
+	self.tableView.backgroundColor = background;
 }
 
 -(void) clearViews {
@@ -169,7 +177,7 @@ ExploreChannelCellViewDelegate>
 
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
 	// Background color
-	view.tintColor = [UIColor blackColor];
+	view.tintColor = [UIColor clearColor];
 	// Text Color
 	UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
 	[header.textLabel setTextColor:[UIColor whiteColor]];

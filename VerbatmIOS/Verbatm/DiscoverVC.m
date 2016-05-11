@@ -6,6 +6,7 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+#import "Icons.h"
 #import "DiscoverVC.h"
 #import "SizesAndPositions.h"
 
@@ -37,5 +38,6 @@
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 }
+
 
 @end

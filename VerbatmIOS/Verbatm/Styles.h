@@ -27,7 +27,7 @@
 
 #pragma mark - Bottom Tab Bar -
 
-#define TAB_BAR_ALPHA 0.7
+#define TAB_BAR_ALPHA 1.f
 
 #pragma mark - Profile -
 

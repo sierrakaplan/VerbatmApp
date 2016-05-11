@@ -43,7 +43,9 @@
 				andPostObject: (PFObject *)post andPages: (NSArray *) pages {
 	self = [super initWithFrame:frame];
 	if (self) {
-		self.backgroundColor = [UIColor darkGrayColor];
+		self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.5f];
+		self.layer.borderColor = [UIColor whiteColor].CGColor;
+		self.layer.borderWidth = 2.f;
 		self.channel = channel;
 
 		if (self.channel.channelCreator != [PFUser currentUser]) {

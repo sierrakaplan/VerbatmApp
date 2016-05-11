@@ -199,7 +199,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	self.mainScrollView.backgroundColor = [UIColor clearColor];
 }
 
-
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 }

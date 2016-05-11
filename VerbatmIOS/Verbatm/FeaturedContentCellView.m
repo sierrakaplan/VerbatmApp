@@ -32,7 +32,7 @@
 	self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
 	if (self) {
 		self.alreadyPresented = NO;
-		self.backgroundColor = [UIColor lightGrayColor];
+		self.backgroundColor = [UIColor clearColor];
 		[self addSubview:self.horizontalScrollView];
 		self.indexOnScreen = 0;
 	}
