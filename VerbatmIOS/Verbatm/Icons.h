@@ -21,7 +21,7 @@
 #define ADK_NAV_ICON @"edit_icon_white"
 #define PROFILE_NAV_ICON @"profile"
 #define HOME_NAV_ICON @"home"
-#define DISCOVER_TAB_BAR_ICON @"search"
+#define DISCOVER_NAV_ICON @"search"
 
 #pragma mark - Profile -
 

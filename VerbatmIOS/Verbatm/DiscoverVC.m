@@ -23,8 +23,8 @@
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
-	self.view.backgroundColor = [UIColor blackColor];
-	self.headerView.backgroundColor = [UIColor blackColor];
+	[self addBackgroundImage];
+	self.headerView.backgroundColor = [UIColor clearColor];
 	//todo: bring back search bar
 	self.searchBar.frame = CGRectMake(0.f, STATUS_BAR_HEIGHT, self.searchBar.frame.size.width, 0.f);
 									  //self.searchBar.frame.size.height);
@@ -37,6 +37,11 @@
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
+}
+
+-(void) addBackgroundImage {
+	UIColor *background = [[UIColor alloc] initWithPatternImage:[UIImage imageNamed:DISCOVER_BACKGROUND]];
+	self.view.backgroundColor = background;
 }
 
 

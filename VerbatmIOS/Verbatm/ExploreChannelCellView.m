@@ -22,7 +22,7 @@
 @interface ExploreChannelCellView() <UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
 // view for content so that there can be a black footer in every cell
-@property (nonatomic, strong) UIView *footerView;
+@property (nonatomic, strong) UIView *mainView;
 @property (nonatomic, strong) UILabel *userNameLabel;
 @property (nonatomic, strong) UIButton *followButton;
 @property (nonatomic, strong) UILabel *numFollowersLabel;
@@ -37,12 +37,10 @@
 @property (weak, readwrite) Channel *channelBeingPresented;
 
 
-
+#define MAIN_VIEW_OFFSET 10.f
 #define POST_VIEW_OFFSET 10.f
 #define POST_VIEW_WIDTH 180.f
-
 #define OFFSET 5.f
-#define FOOTER_HEIGHT 20.f
 #define USER_NAME_WIDTH 120.f
 #define NUM_FOLLOWERS_WIDTH 40.f
 
@@ -55,9 +53,9 @@
 	if (self) {
 		self.isFollowed = NO;
 		self.indexOnScreen = 0;
-		self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.8f];
-		[self addSubview:self.horizontalScrollView];
-		[self addSubview:self.footerView];
+		self.backgroundColor = [UIColor clearColor];
+		[self addSubview: self.mainView];
+		[self.mainView addSubview:self.horizontalScrollView];
 
 		UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cellTapped:)];
 		tap.delegate = self;
@@ -71,17 +69,20 @@
 }
 
 -(void) layoutSubviews {
+	self.mainView.frame = CGRectMake(MAIN_VIEW_OFFSET, MAIN_VIEW_OFFSET,
+									 self.frame.size.width - MAIN_VIEW_OFFSET*2,
+									 self.frame.size.height - MAIN_VIEW_OFFSET*2);
 	self.userNameLabel.frame = CGRectMake(POST_VIEW_OFFSET, OFFSET, USER_NAME_WIDTH, DISCOVER_CHANNEL_NAME_HEIGHT);
-	self.followButton.frame = CGRectMake(self.frame.size.width - FOLLOW_BUTTON_WIDTH - POST_VIEW_OFFSET, OFFSET,
+	self.followButton.frame = CGRectMake(self.mainView.frame.size.width - FOLLOW_BUTTON_WIDTH - POST_VIEW_OFFSET, OFFSET,
 										 FOLLOW_BUTTON_WIDTH, DISCOVER_CHANNEL_NAME_HEIGHT);
 	self.numFollowersLabel.frame = CGRectMake(self.followButton.frame.origin.x - NUM_FOLLOWERS_WIDTH, OFFSET, NUM_FOLLOWERS_WIDTH, DISCOVER_CHANNEL_NAME_HEIGHT);
 	self.channelNameLabel.frame = CGRectMake(self.userNameLabel.frame.size.width + self.userNameLabel.frame.origin.x + OFFSET, OFFSET,
 											 self.frame.size.width - USER_NAME_WIDTH*2 - (OFFSET*2),
 											 DISCOVER_CHANNEL_NAME_HEIGHT);
-	self.footerView.frame = CGRectMake(0.f, self.frame.size.height - FOOTER_HEIGHT, self.frame.size.width, FOOTER_HEIGHT);
+
 	CGFloat postScrollViewOffset = self.channelNameLabel.frame.origin.y + self.channelNameLabel.frame.size.height;
-	self.horizontalScrollView.frame = CGRectMake(0.f, postScrollViewOffset, self.frame.size.width,
-												 self.frame.size.height - postScrollViewOffset - FOOTER_HEIGHT);
+	self.horizontalScrollView.frame = CGRectMake(0.f, postScrollViewOffset, self.mainView.frame.size.width,
+												 self.mainView.frame.size.height - postScrollViewOffset);
 
 
 	CGFloat xCoordinate = POST_VIEW_OFFSET;
@@ -136,10 +137,10 @@
 
 	//Since this is in explore we know the channel is not followed by user
 	[self updateFollowIcon];
-	[self addSubview:self.followButton];
-	[self addSubview:self.userNameLabel];
-	[self addSubview:self.channelNameLabel];
-	[self addSubview:self.numFollowersLabel];
+	[self.mainView addSubview:self.followButton];
+	[self.mainView addSubview:self.userNameLabel];
+	[self.mainView addSubview:self.channelNameLabel];
+	[self.mainView addSubview:self.numFollowersLabel];
 }
 
 -(void) clearViews {
@@ -245,18 +246,21 @@
 
 #pragma mark - Lazy Instantiation -
 
--(UIView *) footerView {
-	if (!_footerView) {
-		_footerView = [[UIView alloc] init];
-		_footerView.backgroundColor = [UIColor clearColor];
+-(UIView *) mainView {
+	if (!_mainView) {
+		_mainView = [[UIView alloc] init];
+		_mainView.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.2f];
+		_mainView.layer.borderColor = [UIColor whiteColor].CGColor;
+		_mainView.layer.borderWidth = 1.f;
+		_mainView.layer.cornerRadius = 5.f;
 	}
-	return _footerView;
+	return _mainView;
 }
 
 -(UIScrollView *) horizontalScrollView {
 	if (!_horizontalScrollView) {
 		_horizontalScrollView = [[UIScrollView alloc] init];
-		_horizontalScrollView.backgroundColor = self.backgroundColor;
+		_horizontalScrollView.backgroundColor = [UIColor clearColor];
 		_horizontalScrollView.delegate = self;
 		_horizontalScrollView.showsVerticalScrollIndicator = NO;
 		_horizontalScrollView.showsHorizontalScrollIndicator = YES;

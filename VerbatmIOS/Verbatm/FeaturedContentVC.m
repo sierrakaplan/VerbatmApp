@@ -29,7 +29,7 @@ ExploreChannelCellViewDelegate>
 @property (nonatomic) BOOL loadingMoreChannels;
 @property (nonatomic) BOOL refreshing;
 
-#define HEADER_HEIGHT 50.f
+#define HEADER_HEIGHT 60.f
 #define HEADER_FONT_SIZE 20.f
 #define CELL_HEIGHT 350.f
 
@@ -41,18 +41,21 @@ ExploreChannelCellViewDelegate>
 
 @dynamic refreshControl;
 
+- (void) awakeFromNib {
+	[self initWithStyle:UITableViewStyleGrouped];
+}
+
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	self.loadingMoreChannels = NO;
 	self.refreshing = NO;
-	self.view.backgroundColor = [UIColor blackColor];
 	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 	self.tableView.allowsMultipleSelection = NO;
 	self.tableView.showsHorizontalScrollIndicator = NO;
 	self.tableView.showsVerticalScrollIndicator = NO;
 	self.tableView.delegate = self;
-	self.tableView.backgroundColor = [UIColor clearColor];
-	[self addBackgroundImage];
+	[self.view setBackgroundColor:[UIColor clearColor]];
+	[self.tableView setBackgroundColor:[UIColor clearColor]];
 
 	//avoid covering last item in uitableview
 	//todo: change this when bring back search bar
@@ -76,11 +79,6 @@ ExploreChannelCellViewDelegate>
 -(void) viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
 	[self offScreen];
-}
-
--(void) addBackgroundImage {
-	UIColor *background = [[UIColor alloc] initWithPatternImage:[UIImage imageNamed:DISCOVER_BACKGROUND]];
-	self.tableView.backgroundColor = background;
 }
 
 -(void) clearViews {
@@ -155,24 +153,26 @@ ExploreChannelCellViewDelegate>
 	return 2;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-	NSString *sectionName;
-	switch (section) {
-		case 0:
-			sectionName = NSLocalizedString(@"Featured Content", @"Featured Content");
-			break;
-		case 1:
-			sectionName = NSLocalizedString(@"Explore", @"Explore");
-			break;
-		default:
-			sectionName = @"";
-			break;
+-(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+	UITableViewHeaderFooterView *header = [[UITableViewHeaderFooterView alloc] init];
+	UIImageView *imageView;
+	if (section == 0) {
+		imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"featured_header"]];
+	} else {
+		imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"explore_header"]];
 	}
-	return sectionName;
+	imageView.frame = header.bounds;
+	imageView.contentMode = UIViewContentModeScaleAspectFit;
+	[header addSubview: imageView];
+	return header;
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
 	return HEADER_HEIGHT;
+}
+
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+	return 0.f;
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
@@ -182,7 +182,15 @@ ExploreChannelCellViewDelegate>
 	UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
 	[header.textLabel setTextColor:[UIColor whiteColor]];
 	[header.textLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:HEADER_FONT_SIZE]];
-	[header.textLabel setTextAlignment:NSTextAlignmentCenter];
+	[header.textLabel setTextAlignment:NSTextAlignmentLeft];
+	[header.textLabel setLineBreakMode:NSLineBreakByClipping];
+
+	for (UIView *subview in header.subviews) {
+		if ([subview isKindOfClass:[UIImageView class]]) {
+			CGRect frame = CGRectMake(10.f, 0.f, header.bounds.size.width - 20.f, header.bounds.size.height);
+			subview.frame = frame;
+		}
+	}
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {

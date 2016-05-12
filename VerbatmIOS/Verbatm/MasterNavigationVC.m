@@ -43,6 +43,7 @@
 								ProfileVCDelegate>
 
 #pragma mark - Tab Bar Controller -
+
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
 @property (strong, nonatomic) CustomTabBarController* tabBarController;
 @property (nonatomic) BOOL tabBarHidden;
@@ -153,7 +154,7 @@
     deadView.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:deadViewTabImage selectedImage:deadViewTabImage];
     deadView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 
-    self.tabBarController.viewControllers = @[self.profileVC, deadView, self.feedVC, self.discoverVC];
+    self.tabBarController.viewControllers = @[self.feedVC, self.discoverVC, deadView, self.profileVC];
     //add adk button to tab bar
 	[self addTabBarCenterButtonOverDeadView];
 	if ([[UserSetupParameters sharedInstance] isFeed_InstructionShown]) {
@@ -179,6 +180,7 @@
 	//[self.tabBarController.tabBar setTintColor:SELECTED_TAB_ICON_COLOR];
 	// Sets background of unselected UITabBarItem
 	[self.tabBarController.tabBar setBackgroundImage: [self getUnselectedTabBarItemImageWithSize: tabBarItemSize]];
+	[self.tabBarController.tabBar setBackgroundColor:[UIColor blackColor]];
 	// Sets the background color of the selected UITabBarItem
 	[self.tabBarController.tabBar setSelectionIndicatorImage: [self getSelectedTabBarItemImageWithSize: tabBarItemSize]];
 
@@ -191,25 +193,17 @@
 }
 
 -(UIImage*) getUnselectedTabBarItemImageWithSize: (CGSize) size {
-	return [UIImage makeImageWithColorAndSize:[UIColor colorWithWhite:0.0 alpha:TAB_BAR_ALPHA]
+	return [UIImage makeImageWithColorAndSize:[UIColor clearColor]
 									  andSize: size];
 }
 
 -(UIImage*) getSelectedTabBarItemImageWithSize: (CGSize) size {
-	return [UIImage makeImageWithColorAndSize:[UIColor colorWithWhite:DARK_GRAY alpha:TAB_BAR_ALPHA]
+	return [UIImage makeImageWithColorAndSize:[UIColor clearColor]
 									  andSize: size];
 }
 
 //the view controllers that will be tabbed
 -(void)createViewControllers {
-    UIImage * searchUnselected =  [self imageWithImage:[[UIImage imageNamed:DISCOVER_TAB_BAR_ICON]
-                                              imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
-                                scaledToSize:CGSizeMake(30.f, 30.f)];
-    
-    UIImage * searchSelected =  [self imageWithImage:[[UIImage imageNamed:DISCOVER_TAB_BAR_ICON]
-                                                      imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
-                                        scaledToSize:CGSizeMake(30.f, 30.f)];
-
 	self.discoverVC = [self.storyboard instantiateViewControllerWithIdentifier:DISCOVER_VC_ID];
 
     self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
@@ -228,8 +222,8 @@
 															  image:[UIImage imageNamed:HOME_NAV_ICON]
 													  selectedImage:[UIImage imageNamed:HOME_NAV_ICON]];
 	self.discoverVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
-															  image:searchUnselected
-													  selectedImage:searchSelected];
+															  image:[UIImage imageNamed:DISCOVER_NAV_ICON]
+													  selectedImage:[UIImage imageNamed:DISCOVER_NAV_ICON]];
 
     // images need to be centered this way for some reason
 	self.profileVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
@@ -254,7 +248,7 @@
 	CGFloat tabWidth = self.tabBarController.tabBar.frame.size.width/numTabs;
 	// covers up tab so that it won't go to blank view controller
 	// Center tab out of 3
-	UIView* tabView = [[UIView alloc] initWithFrame:CGRectMake(tabWidth, 0.f, tabWidth,
+	UIView* tabView = [[UIView alloc] initWithFrame:CGRectMake(tabWidth*2, 0.f, tabWidth,
 															self.tabBarController.tabBarHeight)];
 	[tabView setBackgroundColor:[UIColor clearColor]];
 

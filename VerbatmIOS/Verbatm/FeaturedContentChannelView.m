@@ -43,9 +43,14 @@
 				andPostObject: (PFObject *)post andPages: (NSArray *) pages {
 	self = [super initWithFrame:frame];
 	if (self) {
-		self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.5f];
+		self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.2f];
 		self.layer.borderColor = [UIColor whiteColor].CGColor;
-		self.layer.borderWidth = 2.f;
+		self.layer.borderWidth = 1.f;
+		self.layer.cornerRadius = 5.f;
+		self.layer.shadowColor = [UIColor blackColor].CGColor;
+		self.layer.shadowRadius = 3.f;
+		self.layer.shadowOffset = CGSizeMake(3.f, 3.f);
+		self.layer.shadowOpacity = 1.f;
 		self.channel = channel;
 
 		if (self.channel.channelCreator != [PFUser currentUser]) {
