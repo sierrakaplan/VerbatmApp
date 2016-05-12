@@ -72,12 +72,13 @@
 	self.mainView.frame = CGRectMake(MAIN_VIEW_OFFSET, MAIN_VIEW_OFFSET,
 									 self.frame.size.width - MAIN_VIEW_OFFSET*2,
 									 self.frame.size.height - MAIN_VIEW_OFFSET*2);
-	self.userNameLabel.frame = CGRectMake(POST_VIEW_OFFSET, OFFSET, USER_NAME_WIDTH, DISCOVER_CHANNEL_NAME_HEIGHT);
-	self.followButton.frame = CGRectMake(self.mainView.frame.size.width - FOLLOW_BUTTON_WIDTH - POST_VIEW_OFFSET, OFFSET,
-										 FOLLOW_BUTTON_WIDTH, DISCOVER_CHANNEL_NAME_HEIGHT);
-	self.numFollowersLabel.frame = CGRectMake(self.followButton.frame.origin.x - NUM_FOLLOWERS_WIDTH, OFFSET, NUM_FOLLOWERS_WIDTH, DISCOVER_CHANNEL_NAME_HEIGHT);
-	self.channelNameLabel.frame = CGRectMake(self.userNameLabel.frame.size.width + self.userNameLabel.frame.origin.x + OFFSET, OFFSET,
-											 self.frame.size.width - USER_NAME_WIDTH*2 - (OFFSET*2),
+	self.userNameLabel.frame = CGRectMake(self.mainView.frame.size.width - USER_NAME_WIDTH - POST_VIEW_OFFSET, OFFSET,
+										  USER_NAME_WIDTH, DISCOVER_CHANNEL_NAME_HEIGHT);
+	self.followButton.frame = CGRectMake(POST_VIEW_OFFSET, OFFSET, FOLLOW_BUTTON_WIDTH, DISCOVER_CHANNEL_NAME_HEIGHT);
+	self.numFollowersLabel.frame = CGRectMake(self.followButton.frame.origin.x + FOLLOW_BUTTON_WIDTH + OFFSET, OFFSET, NUM_FOLLOWERS_WIDTH,
+											  DISCOVER_CHANNEL_NAME_HEIGHT);
+	self.channelNameLabel.frame = CGRectMake(USER_NAME_WIDTH + OFFSET, OFFSET,
+											 self.mainView.frame.size.width - USER_NAME_WIDTH*2 - (OFFSET*2),
 											 DISCOVER_CHANNEL_NAME_HEIGHT);
 
 	CGFloat postScrollViewOffset = self.channelNameLabel.frame.origin.y + self.channelNameLabel.frame.size.height;
@@ -281,6 +282,7 @@
 		[_userNameLabel setAdjustsFontSizeToFitWidth:YES];
 		[_userNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:DISCOVER_USER_NAME_FONT_SIZE]];
 		[_userNameLabel setTextColor:VERBATM_GOLD_COLOR];
+		[_userNameLabel setTextAlignment:NSTextAlignmentRight];
 	}
 	return _userNameLabel;
 }
@@ -298,7 +300,7 @@
 	if (!_numFollowersLabel) {
 		_numFollowersLabel = [[UILabel alloc] init];
 		[_numFollowersLabel setAdjustsFontSizeToFitWidth:YES];
-		[_numFollowersLabel setTextAlignment:NSTextAlignmentCenter];
+		[_numFollowersLabel setTextAlignment:NSTextAlignmentLeft];
 		[_numFollowersLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:DISCOVER_USER_NAME_FONT_SIZE]];
 		[_numFollowersLabel setTextColor:[UIColor whiteColor]];
 	}

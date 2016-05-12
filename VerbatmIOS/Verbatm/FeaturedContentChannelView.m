@@ -131,18 +131,20 @@
 
 -(UILabel *) userNameLabel {
 	if (!_userNameLabel) {
-		CGRect labelFrame = CGRectMake(OFFSET, OFFSET, DISCOVER_USERNAME_LABEL_WIDTH, DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
+		CGRect labelFrame = CGRectMake(self.frame.size.width - DISCOVER_USERNAME_LABEL_WIDTH - OFFSET, OFFSET,
+									   DISCOVER_USERNAME_LABEL_WIDTH, DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
 		_userNameLabel = [[UILabel alloc] initWithFrame:labelFrame];
 		[_userNameLabel setAdjustsFontSizeToFitWidth:YES];
 		[_userNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:DISCOVER_USER_NAME_FONT_SIZE]];
 		[_userNameLabel setTextColor:VERBATM_GOLD_COLOR];
+		[_userNameLabel setTextAlignment:NSTextAlignmentRight];
 	}
 	return _userNameLabel;
 }
 
 -(UIButton *) followButton {
 	if (!_followButton) {
-		CGRect followFrame = CGRectMake(self.frame.size.width - FOLLOW_BUTTON_WIDTH - OFFSET, OFFSET,
+		CGRect followFrame = CGRectMake(OFFSET, OFFSET,
 										FOLLOW_BUTTON_WIDTH, DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
 		_followButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		_followButton.frame = followFrame;
