@@ -14,7 +14,9 @@
 @property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
 @property (weak, nonatomic) IBOutlet UIView *tableContainerView;
 @property (weak, nonatomic) IBOutlet UIView *headerView;
+@property (nonatomic) UIImageView * backgroundView;
 
+#define BACKGROUND_IMAGE @"windowPane"
 
 @end
 
@@ -22,7 +24,11 @@
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
-	self.view.backgroundColor = [UIColor blackColor];
+    self.backgroundView = [[UIImageView alloc] init];
+    self.backgroundView.frame = self.view.bounds;
+    self.backgroundView.image = [UIImage imageNamed:BACKGROUND_IMAGE];
+    [self.view addSubview:self.backgroundView];
+    [self.view sendSubviewToBack:self.backgroundView];
 	self.headerView.backgroundColor = [UIColor blackColor];
 	//todo: bring back search bar
 	self.searchBar.frame = CGRectMake(0.f, STATUS_BAR_HEIGHT, self.searchBar.frame.size.width, 0.f);
@@ -32,6 +38,7 @@
 
 	self.tableContainerView.frame = CGRectMake(0.f, headerViewHeight,
 											   self.view.frame.size.width, self.view.frame.size.height);
+    self.tableContainerView.backgroundColor = [UIColor clearColor];
 }
 
 -(void) viewDidAppear:(BOOL)animated {

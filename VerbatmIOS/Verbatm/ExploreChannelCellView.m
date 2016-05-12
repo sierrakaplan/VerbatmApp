@@ -55,7 +55,7 @@
 	if (self) {
 		self.isFollowed = NO;
 		self.indexOnScreen = 0;
-		self.backgroundColor = [UIColor darkGrayColor];
+		self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.7];
 		[self addSubview:self.horizontalScrollView];
 		[self addSubview:self.footerView];
 
@@ -248,7 +248,7 @@
 -(UIView *) footerView {
 	if (!_footerView) {
 		_footerView = [[UIView alloc] init];
-		_footerView.backgroundColor = [UIColor blackColor];
+		_footerView.backgroundColor = [UIColor clearColor];
 	}
 	return _footerView;
 }

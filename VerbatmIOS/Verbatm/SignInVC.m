@@ -34,7 +34,7 @@
 #import "UserSetupParameters.h"
 #import "UserManager.h"
 
-@interface SignInVC () <UITextFieldDelegate, FBSDKLoginButtonDelegate, LoginKeyboardToolBarDelegate>
+@interface SignInVC () <UITextFieldDelegate, FBSDKLoginButtonDelegate, LoginKeyboardToolBarDelegate, UIScrollViewDelegate>
 
 @property (nonatomic) BOOL loginFirstTimeDone;
 @property (strong, nonatomic) UIView* animationView;
@@ -55,7 +55,10 @@
 @property (strong, nonatomic) NSString *phoneNumber;
 @property (nonatomic) BOOL firstTimeLoggingIn;
 
+@property (nonatomic) UIScrollView * onBoardingView;
+@property (nonatomic) UIScrollView * contentOnboardingPage;
 #define BRING_UP_CREATE_ACCOUNT_SEGUE @"create_account_segue"
+@property (weak, nonatomic) IBOutlet UIPageControl *pageControlView;
 
 @end
 
@@ -74,6 +77,65 @@
 																		  action:@selector(keyboardDidHide:)];
 
 	[self.view addGestureRecognizer:tap];
+    [self createOnBoarding];
+}
+
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+    
+    if(scrollView == self.onBoardingView){
+        self.pageControlView.currentPage = scrollView.contentOffset.x/self.view.bounds.size.width;
+        
+        if(scrollView.contentOffset.x == self.view.bounds.size.width *3){
+            [scrollView removeFromSuperview];
+            [self.pageControlView removeFromSuperview];
+        }
+        
+    }else if (scrollView == self.contentOnboardingPage){
+        if(scrollView.contentOffset.y == self.view.bounds.size.height){
+            self.pageControlView.numberOfPages = 4;
+            self.onBoardingView.contentSize = CGSizeMake(self.view.bounds.size.width *4, 0);
+        }
+    }
+}
+
+
+-(void)createOnBoarding{
+    NSArray * planeNames = @[@"Welcome D6", @"Post"];
+    NSArray * subSVNames= @[@"Content", @"Content Page 2"];
+    
+    
+    for(int i = 0; i < planeNames.count; i ++){
+        NSString * name =  planeNames[i];
+        CGRect frame = CGRectMake(self.view.bounds.size.width * i, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+        UIImageView * iv = [[UIImageView alloc] initWithFrame:frame];
+        iv.image = [UIImage imageNamed:name];
+        [self.onBoardingView addSubview:iv];
+    }
+    
+    for(int i = 0; i < planeNames.count; i ++){
+        NSString * name =  subSVNames[i];
+        CGRect frame = CGRectMake(0, self.view.bounds.size.height * i, self.view.bounds.size.width, self.view.bounds.size.height);
+        UIImageView * iv = [[UIImageView alloc] initWithFrame:frame];
+        iv.image = [UIImage imageNamed:name];
+        [self.contentOnboardingPage addSubview:iv];
+    }
+    [self.onBoardingView addSubview:self.contentOnboardingPage];
+    
+    [self.view addSubview:self.onBoardingView];
+    [self.view bringSubviewToFront:self.onBoardingView];
+    [self.view bringSubviewToFront:self.pageControlView];
+    self.pageControlView.currentPage = 0;
+    self.pageControlView.numberOfPages = 3;
+    self.pageControlView.defersCurrentPageDisplay = YES;
+    
+    self.onBoardingView.delegate = self;
+    self.contentOnboardingPage.delegate = self;
+    
+    CGRect pageControllViewFrame = CGRectMake((self.view.bounds.size.width/2.f)-(self.pageControlView.frame.size.width/2.f), self.view.bounds.size.height -  (self.pageControlView.frame.size.height + 10), self.pageControlView.frame.size.width, self.pageControlView.frame.size.height);
+    self.pageControlView.frame = pageControllViewFrame;
+    
+    
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -468,6 +530,31 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	[_animationView addSubview:self.animationLabel];
 	_animationView.alpha = 0;
 	return _animationView;
+}
+
+
+-(UIScrollView *)onBoardingView{
+    if(!_onBoardingView){
+        _onBoardingView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
+        _onBoardingView.contentSize = CGSizeMake(self.view.bounds.size.width * 3, 0);
+        _onBoardingView.pagingEnabled = YES;
+        _onBoardingView.bounces = NO;
+        _onBoardingView.showsHorizontalScrollIndicator = NO;
+        _onBoardingView.showsVerticalScrollIndicator = NO;
+    }
+    return _onBoardingView;
+}
+
+-(UIScrollView *)contentOnboardingPage{
+    if(!_contentOnboardingPage){
+        _contentOnboardingPage = [[UIScrollView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width * 2, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
+        _contentOnboardingPage.contentSize = CGSizeMake(0, self.view.bounds.size.height * 2);
+        _contentOnboardingPage.pagingEnabled = YES;
+        _contentOnboardingPage.bounces = NO;
+        _contentOnboardingPage.showsHorizontalScrollIndicator = NO;
+        _contentOnboardingPage.showsVerticalScrollIndicator = NO;
+    }
+    return _contentOnboardingPage;
 }
 
 //lazy instantiation
