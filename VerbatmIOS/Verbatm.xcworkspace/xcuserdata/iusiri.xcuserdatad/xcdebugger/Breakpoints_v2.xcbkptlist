@@ -9695,11 +9695,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/UserSetupParameters.m"
-            timestampString = "481568313.575317"
+            timestampString = "484726877.751129"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "70"
-            endingLineNumber = "70"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
             landmarkName = "-isProfile_InstructionShown"
             landmarkType = "5">
          </BreakpointContent>
@@ -9711,12 +9711,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/UserSetupParameters.m"
-            timestampString = "481568313.575317"
+            timestampString = "484726877.751129"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "69"
-            endingLineNumber = "69"
-            landmarkName = "-isProfile_InstructionShown"
+            startingLineNumber = "77"
+            endingLineNumber = "77"
+            landmarkName = "-isFeed_InstructionShown"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -9775,11 +9775,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/UserSetupParameters.m"
-            timestampString = "481568313.575317"
+            timestampString = "484726877.751129"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "73"
-            endingLineNumber = "73"
+            startingLineNumber = "81"
+            endingLineNumber = "81"
             landmarkName = "-isProfile_InstructionShown"
             landmarkType = "5">
          </BreakpointContent>
@@ -9839,11 +9839,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/UserSetupParameters.m"
-            timestampString = "481568313.575317"
+            timestampString = "484726877.751129"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "135"
-            endingLineNumber = "135"
+            startingLineNumber = "150"
+            endingLineNumber = "150"
             landmarkName = "-set_profileNotification_InstructionAsShown"
             landmarkType = "5">
          </BreakpointContent>
@@ -9855,11 +9855,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/UserSetupParameters.m"
-            timestampString = "481568313.575317"
+            timestampString = "484726877.751129"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "139"
-            endingLineNumber = "139"
+            startingLineNumber = "154"
+            endingLineNumber = "154"
             landmarkName = "-set_feedNotification_InstructionAsShown"
             landmarkType = "5">
          </BreakpointContent>
@@ -9871,11 +9871,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/UserSetupParameters.m"
-            timestampString = "481568313.575317"
+            timestampString = "484726877.751129"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "133"
-            endingLineNumber = "133"
+            startingLineNumber = "148"
+            endingLineNumber = "148"
             landmarkName = "-set_profileNotification_InstructionAsShown"
             landmarkType = "5">
          </BreakpointContent>
@@ -9887,11 +9887,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/UserSetupParameters.m"
-            timestampString = "481568313.575317"
+            timestampString = "484726877.751129"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "146"
-            endingLineNumber = "146"
+            startingLineNumber = "161"
+            endingLineNumber = "161"
             landmarkName = "-set_ADKNotification_InstructionAsShown"
             landmarkType = "5">
          </BreakpointContent>
@@ -9903,11 +9903,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/UserSetupParameters.m"
-            timestampString = "481568313.575317"
+            timestampString = "484726877.751129"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "145"
-            endingLineNumber = "145"
+            startingLineNumber = "160"
+            endingLineNumber = "160"
             landmarkName = "-set_ADKNotification_InstructionAsShown"
             landmarkType = "5">
          </BreakpointContent>
@@ -9919,11 +9919,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/UserSetupParameters.m"
-            timestampString = "481568313.575317"
+            timestampString = "484726877.751129"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "171"
-            endingLineNumber = "171"
+            startingLineNumber = "186"
+            endingLineNumber = "186"
             landmarkName = "@implementation UserSetupParameters"
             landmarkType = "3">
          </BreakpointContent>
@@ -9935,11 +9935,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/UserSetupParameters.m"
-            timestampString = "480842542.998642"
+            timestampString = "484726877.751129"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "45"
-            endingLineNumber = "45"
+            startingLineNumber = "46"
+            endingLineNumber = "46"
             landmarkName = "-setUpParameters"
             landmarkType = "5">
          </BreakpointContent>
@@ -10061,11 +10061,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/UserSetupParameters.m"
-            timestampString = "481568313.575317"
+            timestampString = "484726877.751129"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "109"
-            endingLineNumber = "109"
+            startingLineNumber = "117"
+            endingLineNumber = "117"
             landmarkName = "-isTermsAccept_InstructionShown"
             landmarkType = "5">
          </BreakpointContent>
@@ -10093,11 +10093,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/UserSetupParameters.m"
-            timestampString = "480842542.998642"
+            timestampString = "484726877.751129"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "58"
-            endingLineNumber = "58"
+            startingLineNumber = "60"
+            endingLineNumber = "60"
             landmarkName = "-setUpParameters"
             landmarkType = "5">
          </BreakpointContent>
@@ -10365,11 +10365,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/UserSetupParameters.m"
-            timestampString = "481568313.575317"
+            timestampString = "484726877.751129"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "110"
-            endingLineNumber = "110"
+            startingLineNumber = "118"
+            endingLineNumber = "118"
             landmarkName = "-isTermsAccept_InstructionShown"
             landmarkType = "5">
          </BreakpointContent>
@@ -10429,11 +10429,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/UserSetupParameters.m"
-            timestampString = "481568313.575317"
+            timestampString = "484726877.751129"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "161"
-            endingLineNumber = "161"
+            startingLineNumber = "176"
+            endingLineNumber = "176"
             landmarkName = "-set_TermsAccept_InstructionAsShown"
             landmarkType = "5">
          </BreakpointContent>

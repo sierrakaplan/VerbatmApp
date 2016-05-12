@@ -77,9 +77,31 @@
 																		  action:@selector(keyboardDidHide:)];
 
 	[self.view addGestureRecognizer:tap];
-    [self createOnBoarding];
+    
+    if(![[UserSetupParameters sharedInstance] isonBoarding_InstructionShown]){
+        [self createOnBoarding];
+    }else{
+      [self.pageControlView removeFromSuperview];
+    }
+    [self.view sendSubviewToBack:self.backgroundImageView];
 }
 
+-(void)addTapGesture{
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewTapped)];
+    [self.view addGestureRecognizer:tap];
+}
+
+-(void)viewTapped{
+    if(self.onBoardingView.contentOffset.x == 0){
+        [UIView animateWithDuration:0.7 animations:^{
+            self.onBoardingView.contentOffset = CGPointMake(self.view.frame.size.width, 0);
+        }completion:^(BOOL finished) {
+            if(finished){
+                self.pageControlView.currentPage = self.onBoardingView.contentOffset.x/self.view.bounds.size.width;
+            }
+        }];
+    }
+}
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     
@@ -89,6 +111,7 @@
         if(scrollView.contentOffset.x == self.view.bounds.size.width *3){
             [scrollView removeFromSuperview];
             [self.pageControlView removeFromSuperview];
+            [[UserSetupParameters sharedInstance] set_onboarding_InstructionAsShown];
         }
         
     }else if (scrollView == self.contentOnboardingPage){
@@ -135,7 +158,7 @@
     CGRect pageControllViewFrame = CGRectMake((self.view.bounds.size.width/2.f)-(self.pageControlView.frame.size.width/2.f), self.view.bounds.size.height -  (self.pageControlView.frame.size.height + 10), self.pageControlView.frame.size.width, self.pageControlView.frame.size.height);
     self.pageControlView.frame = pageControllViewFrame;
     
-    
+    [self addTapGesture];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -156,13 +179,13 @@
 
 -(void) centerViews {
 	self.verbatmLogoImageView.center = CGPointMake(self.view.center.x, self.verbatmLogoImageView.center.y);
-	self.welcomeLabel.center = CGPointMake(self.view.center.x, self.welcomeLabel.center.y);
+	self.welcomeLabel.center = CGPointMake(self.view.center.x, self.welcomeLabel.center.y + 4);
 	self.mobileBloggingLabel.center = CGPointMake(self.view.center.x, self.mobileBloggingLabel.center.y);
 	self.orLabel.center = CGPointMake(self.view.center.x, self.orLabel.center.y);
 	self.phoneLoginField.center = CGPointMake(self.view.center.x, self.phoneLoginField.center.y);
 	self.originalPhoneTextFrame = self.phoneLoginField.frame;
 
-	CGFloat loginToolBarHeight = TEXT_TOOLBAR_HEIGHT*1.3;
+	CGFloat loginToolBarHeight = TEXT_TOOLBAR_HEIGHT*1.5;
 	CGRect toolBarFrame = CGRectMake(0, self.view.frame.size.height - loginToolBarHeight,
 									 self.view.frame.size.width, loginToolBarHeight);
 	self.toolBar = [[LoginKeyboardToolBar alloc] initWithFrame:toolBarFrame];
@@ -220,8 +243,8 @@
 
 - (void) addFacebookLoginButton {
 	self.loginButton = [[FBSDKLoginButton alloc] init];
-	float buttonWidth = self.loginButton.frame.size.width*1.2;
-	float buttonHeight = self.loginButton.frame.size.height*1.2;
+	float buttonWidth = self.loginButton.frame.size.width*1.5;
+	float buttonHeight = self.loginButton.frame.size.height*1.5;
 	self.loginButton.frame = CGRectMake(self.view.center.x - buttonWidth/2.f, (self.view.frame.size.height/3.f) + 20.f,
 										buttonWidth, buttonHeight);
 	self.loginButton.delegate = self;
