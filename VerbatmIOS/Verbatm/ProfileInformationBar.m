@@ -136,15 +136,15 @@
 }
 
 -(void)blockButtonSelected {
-//	[self.delegate blockCurrentUserShouldBlock:!self.hasBlockedUser];
-    FollowingView *V = [[FollowingView alloc] initWithFrame:CGRectMake(0, 0, 375, 667)];
-    
-    UIViewController *top = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
-    while (top.presentedViewController){
-        top = top.presentedViewController;
-    }
-
-    [top.view addSubview:V];
+	[self.delegate blockCurrentUserShouldBlock:!self.hasBlockedUser];
+//    FollowingView *V = [[FollowingView alloc] initWithFrame:CGRectMake(0, 0, 375, 667)];
+//    
+//    UIViewController *top = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+//    while (top.presentedViewController){
+//        top = top.presentedViewController;
+//    }
+//
+//    [top.view addSubview:V];
 }
 
 -(void) createBackButton {
