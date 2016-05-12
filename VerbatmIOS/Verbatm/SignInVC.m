@@ -58,6 +58,7 @@
 @property (nonatomic) UIScrollView * onBoardingView;
 @property (nonatomic) UIScrollView * contentOnboardingPage;
 #define BRING_UP_CREATE_ACCOUNT_SEGUE @"create_account_segue"
+
 @property (weak, nonatomic) IBOutlet UIPageControl *pageControlView;
 
 @end
@@ -86,22 +87,7 @@
     [self.view sendSubviewToBack:self.backgroundImageView];
 }
 
--(void)addTapGesture{
-    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewTapped)];
-    [self.view addGestureRecognizer:tap];
-}
 
--(void)viewTapped{
-    if(self.onBoardingView.contentOffset.x == 0){
-        [UIView animateWithDuration:0.7 animations:^{
-            self.onBoardingView.contentOffset = CGPointMake(self.view.frame.size.width, 0);
-        }completion:^(BOOL finished) {
-            if(finished){
-                self.pageControlView.currentPage = self.onBoardingView.contentOffset.x/self.view.bounds.size.width;
-            }
-        }];
-    }
-}
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     
@@ -124,6 +110,8 @@
 
 
 -(void)createOnBoarding{
+    [self.view bringSubviewToFront:self.pageControlView];
+    
     NSArray * planeNames = @[@"Welcome D6", @"Post"];
     NSArray * subSVNames= @[@"Content", @"Content Page 2"];
     
@@ -158,7 +146,6 @@
     CGRect pageControllViewFrame = CGRectMake((self.view.bounds.size.width/2.f)-(self.pageControlView.frame.size.width/2.f), self.view.bounds.size.height -  (self.pageControlView.frame.size.height + 10), self.pageControlView.frame.size.width, self.pageControlView.frame.size.height);
     self.pageControlView.frame = pageControllViewFrame;
     
-    [self addTapGesture];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -597,7 +584,17 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 -(void)keyboardDidHide:(UITapGestureRecognizer *)gesture
 {
-	[self.phoneLoginField resignFirstResponder];
+    if(self.onBoardingView.contentOffset.x == 0){
+        [UIView animateWithDuration:0.7 animations:^{
+            self.onBoardingView.contentOffset = CGPointMake(self.view.frame.size.width, 0);
+        }completion:^(BOOL finished) {
+            if(finished){
+                self.pageControlView.currentPage = self.onBoardingView.contentOffset.x/self.view.bounds.size.width;
+            }
+        }];
+    }else if (self.onBoardingView.contentOffset.x == self.view.frame.size.width * 3){
+        [self.phoneLoginField resignFirstResponder];
+    }
 
 }
 
