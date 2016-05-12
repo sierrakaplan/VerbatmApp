@@ -111,10 +111,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background_sign_in" id="GKm-Mk-qgk">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="86e-CU-3ZO">
                                 <rect key="frame" x="40" y="94" width="240" height="34"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -146,6 +142,14 @@
                                 <rect key="frame" x="118" y="0.0" width="85" height="95"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
+                            <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" id="Mqy-hA-tGQ">
+                                <rect key="frame" x="141" y="511" width="39" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </pageControl>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Window Pane" id="GKm-Mk-qgk">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
@@ -153,6 +157,7 @@
                         <outlet property="backgroundImageView" destination="GKm-Mk-qgk" id="Nlf-Rk-NnE"/>
                         <outlet property="mobileBloggingLabel" destination="ZaS-l4-AcK" id="3e8-SA-sjk"/>
                         <outlet property="orLabel" destination="7dv-hM-JUO" id="UNB-Sk-sdk"/>
+                        <outlet property="pageControlView" destination="Mqy-hA-tGQ" id="gt5-oW-3jm"/>
                         <outlet property="phoneLoginField" destination="EfJ-sF-ht6" id="Qlf-hp-WDd"/>
                         <outlet property="verbatmLogoImageView" destination="Iqv-b5-e4e" id="Cgi-Cr-ost"/>
                         <outlet property="welcomeLabel" destination="86e-CU-3ZO" id="iD1-Hf-dBS"/>
@@ -174,7 +179,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background_sign_in" id="88C-9H-sIB">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Window Pane" id="88C-9H-sIB">
                                 <rect key="frame" x="-1" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
@@ -383,23 +388,24 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" id="eqy-rr-7Zi">
+                                <rect key="frame" x="0.0" y="44" width="320" height="524"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <segue destination="i9B-d6-FOW" kind="embed" id="vVU-fA-YAA"/>
+                                </connections>
+                            </containerView>
                             <view contentMode="scaleToFill" id="ymp-df-Ltq">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
                             <searchBar contentMode="redraw" id="7gN-KE-qzP">
                                 <rect key="frame" x="0.0" y="44" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <textInputTraits key="textInputTraits"/>
                             </searchBar>
-                            <containerView opaque="NO" contentMode="scaleToFill" id="eqy-rr-7Zi">
-                                <rect key="frame" x="0.0" y="44" width="320" height="524"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <connections>
-                                    <segue destination="i9B-d6-FOW" kind="embed" id="vVU-fA-YAA"/>
-                                </connections>
-                            </containerView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -428,7 +434,7 @@
                     </connections>
                 </searchDisplayController>
             </objects>
-            <point key="canvasLocation" x="-3369" y="-1230"/>
+            <point key="canvasLocation" x="-3664" y="-1444"/>
         </scene>
         <!--Profile-->
         <scene sceneID="Apv-cW-9iI">
@@ -454,7 +460,7 @@
                     <view key="view" contentMode="scaleToFill" id="Cf5-tW-Arb" customClass="UITableView">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="524"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QaT-Ao-b0g" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -464,7 +470,7 @@
     </scenes>
     <resources>
         <image name="Privacy_Policy" width="750" height="1334"/>
-        <image name="background_sign_in" width="750" height="1334"/>
+        <image name="Window Pane" width="750" height="1334"/>
         <image name="profile_icon_2" width="35" height="47"/>
         <image name="verbatm_logo" width="1395" height="1142"/>
     </resources>

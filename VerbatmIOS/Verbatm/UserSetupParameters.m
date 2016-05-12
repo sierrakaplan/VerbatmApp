@@ -23,6 +23,7 @@
 
 #define PINCH_INSTRUCTION_KEY @"PINCH_INSTRUCTION_KEY"
 
+#define ON_BOARDING_EXPRIENCE_KEY @"ON_BOARDING_EXPRIENCE_KEY"
 @end
 
 @implementation UserSetupParameters
@@ -48,6 +49,7 @@
 			[defaults setBool:NO forKey:ADK_INTRO_INSTRUCTION_KEY];
 			[defaults setBool:NO forKey:SWIPE_UP_DOWN_INSTRUCTION_KEY];
 			[defaults setBool:NO forKey:ACCEPTED_TERMS_KEY];
+            [defaults setBool:NO forKey:ON_BOARDING_EXPRIENCE_KEY];
 			[defaults synchronize];
 		}else{
 			//load and set the information we have saved already -- asynchronous
@@ -61,6 +63,12 @@
 
 #pragma mark - Check Parameters -
 
+
+-(BOOL) isonBoarding_InstructionShown{
+    if(!self.self.notificationSet) return NO;
+    NSNumber * boolAsNumber = self.notificationSet[ON_BOARDING_EXPRIENCE_KEY];
+    return boolAsNumber.boolValue;
+}
 
 -(BOOL) isFeed_InstructionShown{
 	if(!self.self.notificationSet) return NO;
@@ -111,6 +119,13 @@
 
 
 #pragma mark - Change Paramaters -
+
+-(void) set_onboarding_InstructionAsShown {
+    //the array is still being prepared -- unlikely to be a problem
+    if(!self.notificationSet) return ;
+    [self.notificationSet setValue:[NSNumber numberWithBool:YES] forKey:ON_BOARDING_EXPRIENCE_KEY];
+    [self saveAllChanges];
+}
 
 -(void) set_filter_InstructionAsShown {
 	//the array is still being prepared -- unlikely to be a problem

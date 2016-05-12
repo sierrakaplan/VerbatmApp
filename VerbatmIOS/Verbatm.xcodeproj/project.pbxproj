@@ -194,6 +194,7 @@
 		C76172771C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m in Sources */ = {isa = PBXBuildFile; fileRef = C76172761C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m */; };
 		C761727B1C4DFB7700AB0D84 /* PostListVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C761727A1C4DFB7700AB0D84 /* PostListVC.m */; };
 		C761727F1C4E0EB600AB0D84 /* PostCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C761727E1C4E0EB600AB0D84 /* PostCollectionViewCell.m */; };
+		C763C1BC1CE4430B00929248 /* onBoardingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C763C1BB1CE4430B00929248 /* onBoardingViewController.m */; };
 		C774040F19BE6538004C50EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C774040E19BE6538004C50EA /* Images.xcassets */; };
 		C77A20931C03E39E00356465 /* ProfileNavBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C77A20921C03E39E00356465 /* ProfileNavBar.m */; };
 		C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = C77C7D371A22E9FC00694B20 /* PinchView.m */; };
@@ -577,6 +578,8 @@
 		C761727A1C4DFB7700AB0D84 /* PostListVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostListVC.m; sourceTree = "<group>"; };
 		C761727D1C4E0EB600AB0D84 /* PostCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostCollectionViewCell.h; sourceTree = "<group>"; };
 		C761727E1C4E0EB600AB0D84 /* PostCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostCollectionViewCell.m; sourceTree = "<group>"; };
+		C763C1BA1CE4430B00929248 /* onBoardingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = onBoardingViewController.h; sourceTree = "<group>"; };
+		C763C1BB1CE4430B00929248 /* onBoardingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = onBoardingViewController.m; sourceTree = "<group>"; };
 		C774040E19BE6538004C50EA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		C77A20911C03E39E00356465 /* ProfileNavBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileNavBar.h; sourceTree = "<group>"; };
 		C77A20921C03E39E00356465 /* ProfileNavBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileNavBar.m; sourceTree = "<group>"; };
@@ -1474,6 +1477,8 @@
 				A5BFA5971CA89A90002C3884 /* Publishing */,
 				A5E85FFE1B96233D00E148D0 /* GTL Logic */,
 				C7BC437C199D97F5004B91A1 /* Supporting Files */,
+				C763C1BA1CE4430B00929248 /* onBoardingViewController.h */,
+				C763C1BB1CE4430B00929248 /* onBoardingViewController.m */,
 			);
 			path = Verbatm;
 			sourceTree = "<group>";
@@ -1944,6 +1949,7 @@
 				A5AA31CC1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m in Sources */,
 				A5C38ACD1CC1D4120067D077 /* FeaturedContentChannelView.m in Sources */,
 				A5AA31C41B9FCDDC00D8D20C /* GTLVerbatmAppPOV.m in Sources */,
+				C763C1BC1CE4430B00929248 /* onBoardingViewController.m in Sources */,
 				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,
 				C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */,
 				C761727F1C4E0EB600AB0D84 /* PostCollectionViewCell.m in Sources */,

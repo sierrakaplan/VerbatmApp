@@ -48,6 +48,7 @@
 		[self.nameTextField removeFromSuperview];
 		[self.passwordTextField setPlaceholder:@"Please enter your password."];
 	}
+    [self.view sendSubviewToBack:self.backgroundImageView];
 }
 
 -(BOOL) prefersStatusBarHidden {

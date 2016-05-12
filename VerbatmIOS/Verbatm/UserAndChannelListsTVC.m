@@ -49,7 +49,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor blackColor];
+    self.view.backgroundColor = [UIColor clearColor];
+    self.tableView.backgroundColor = [UIColor clearColor];
+
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self setTableViewHeader];
     self.tableView.allowsMultipleSelection = NO;
@@ -200,7 +202,7 @@
     paragraphStyle.alignment = NSTextAlignmentCenter;
     
     NSDictionary * informationAttribute = @{NSForegroundColorAttributeName:
-                                                [UIColor blackColor],
+                                                [UIColor clearColor],
                                             NSFontAttributeName:
                                                 [UIFont fontWithName:INFO_LIST_HEADER_FONT size:INFO_LIST_HEADER_FONT_SIZE],
                                             NSParagraphStyleAttributeName:paragraphStyle};

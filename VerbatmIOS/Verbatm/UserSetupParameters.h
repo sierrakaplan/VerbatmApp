@@ -32,6 +32,9 @@
 
 -(BOOL) isTermsAccept_InstructionShown;
 
+-(BOOL) isonBoarding_InstructionShown;
+
+
 /*Stores that the notifications have been shown*/
 -(void) set_filter_InstructionAsShown;
 -(void) set_pinchCircles_InstructionAsShown;
@@ -42,6 +45,11 @@
 -(void) set_SwipeUpDownNotification_InstructionAsShown;
 
 -(void) set_TermsAccept_InstructionAsShown;
+
+
+-(void) set_onboarding_InstructionAsShown;
+
+
 
 -(void)saveAllChanges;
 

@@ -49,6 +49,8 @@ ExploreChannelCellViewDelegate>
 	[super viewDidLoad];
 	self.loadingMoreChannels = NO;
 	self.refreshing = NO;
+	self.view.backgroundColor = [UIColor clearColor];
+    self.tableView.backgroundColor = [UIColor clearColor];
 	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 	self.tableView.allowsMultipleSelection = NO;
 	self.tableView.showsHorizontalScrollIndicator = NO;
