@@ -5,6 +5,7 @@ PODS:
   - Bolts/AppLinks (1.7.0):
     - Bolts/Tasks
   - Bolts/Tasks (1.7.0)
+  - Branch (0.12.0)
   - Crashlytics (3.7.0):
     - Fabric (~> 1.6.3)
   - Fabric (1.6.7)
@@ -44,6 +45,7 @@ PODS:
     - PromiseKit/CorePromise
 
 DEPENDENCIES:
+  - Branch
   - Crashlytics
   - Fabric
   - FBSDKCoreKit
@@ -56,6 +58,7 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   Bolts: a0058fa3b331c5a1e4402d534f2dae36dbff31e4
+  Branch: beeefb8cff5d802cb2983657a19dcf96d3197654
   Crashlytics: c3a2333dea9e2733d2777f730910321fc9e25c0d
   Fabric: caf7580c725e64db144f610ac65cd60956911dc7
   FBSDKCoreKit: 686ac982723a14ec9ddb85e2f81235d7706c891b

@@ -116,7 +116,7 @@
 #pragma mark Sharing options
 
 #define FACEBOOK_LOGO @"facebook_logo"
-#define TWITTER_LOGO @"twitter_logo"
+#define TWITTER_LOGO @"Twitter_logo"
 
 #pragma mark Edit Content View
 

@@ -41,9 +41,12 @@
 
 #import "VerbatmCameraView.h"
 #import "VideoPinchView.h"
+#import "SharePostView.h"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
 
 @interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,Intro_Notification_Delegate,
-GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNavigationBarDelegate, PreviewDisplayDelegate, VerbatmCameraViewDelegate,UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate>
+GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNavigationBarDelegate, PreviewDisplayDelegate, VerbatmCameraViewDelegate, SharePostViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate>
 @property (nonatomic) Intro_Instruction_Notification_View * introInstruction;
 
 @property (nonatomic) UITextField *createNewChannelField;
@@ -57,6 +60,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 @property (strong, nonatomic) PHImageManager *imageManager;
 @property (strong, nonatomic) PHVideoRequestOptions *videoRequestOptions;
+@property (nonatomic) BOOL posted;
 
 #pragma mark Pinch Views
 
@@ -132,6 +136,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 @property (nonatomic) NSMutableArray * userChannels;
 @property(nonatomic, strong) NSMutableArray * ourPosts;
 @property (strong, nonatomic) PreviewDisplayView * previewDisplayView;
+
+@property (strong, nonatomic) SharePostView *sharePostView;
 
 #define CHANNEL_CREATION_PROMPT @"enter channel name"
 
@@ -490,6 +496,11 @@ rowHeightForComponent:(NSInteger)component{
 
 #pragma mark Preview Button
 -(void) rightButtonPressed {
+//    
+//    self.sharePostView = [[SharePostView alloc] initWithFrame:CGRectMake(self.view.center.x/3, self.view.center.y/3, self.view.bounds.size.width * 0.67, self.view.bounds.size.height * 0.67) shouldStartOnChannels:NO];
+//    self.sharePostView.delegate = self;
+//    [self.view addSubview:self.sharePostView];
+//    [self.view bringSubviewToFront:self.sharePostView];
 	NSMutableArray * pinchViews = [[NSMutableArray alloc] init];
 
 	for(ContentPageElementScrollView * contentElementScrollView in self.pageElementScrollViews){
@@ -2052,6 +2063,52 @@ andSaveInUserDefaults:(BOOL)save {
 		_channelSelectorImageRight.contentMode = UIViewContentModeScaleAspectFit;
 	}
 	return _channelSelectorImageRight;
+}
+
+-(void)removeSharePOVView{
+    if(self.sharePostView){
+        CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+        [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+            self.sharePostView.frame = offScreenFrame;
+        }completion:^(BOOL finished) {
+            if(finished){
+                [self.sharePostView removeFromSuperview];
+                self.sharePostView = nil;
+            }
+        }];
+    }
+}
+
+#pragma mark -Share Seletion View Protocol -
+-(void)cancelButtonSelected{
+    [self removeSharePOVView];
+}
+
+//todo: save share object
+-(void)postPostToChannels:(NSMutableArray *) channels andFacebook:(BOOL)externalSharing{
+    
+//    if ([FBSDKAccessToken currentAccessToken]) {
+//        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+//                                       @"Damas", @"name",
+//                                       @"Yoooo! FB Graph API test", @"caption",
+//                                       @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content.", @"description",
+//                                       @"http://verbatm.io", @"link",
+//                                       //       @"http://i.imgur.com/g3Qc1HN.png", @"picture",
+//                                       nil];
+//        FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:params HTTPMethod:@"POST"];
+//        
+//       
+//
+//        [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+//             if (!error) {
+//                 NSLog(@"fetched user:%@", result);
+//             } else {
+//                 NSLog(@"An error has occured %@", error);
+//             }
+//         }];
+//    }
+    
+    [self removeSharePOVView];
 }
 
 @end
