@@ -71,6 +71,7 @@
 	[super viewDidLoad];
     [self registerForNotifications];
     if ([PFUser currentUser].isAuthenticated) {
+		[[UserSetupParameters sharedInstance] setUpParameters];
         [self setUpStartEnvironment];
     }
 }
@@ -125,6 +126,7 @@
 #pragma mark - User Manager Delegate -
 
 -(void) loginSucceeded:(NSNotification*) notification {
+	[[UserSetupParameters sharedInstance] setUpParameters];
 	PFUser * user = notification.object;
 	[[Crashlytics sharedInstance] setUserIdentifier: [user username]];
 	[[Crashlytics sharedInstance] setUserName: [user objectForKey:VERBATM_USER_NAME_KEY]];

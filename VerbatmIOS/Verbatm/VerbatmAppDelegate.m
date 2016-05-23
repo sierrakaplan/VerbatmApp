@@ -43,7 +43,6 @@
 		return [NSError errorWithDomain:PMKErrorDomain code:PMKUnexpectedError
 							   userInfo:nil];
 	});
-	[[UserSetupParameters sharedInstance] setUpParameters];
 	[[Analytics getSharedInstance] newUserSession];
     
     Branch *branch = [Branch getInstance];

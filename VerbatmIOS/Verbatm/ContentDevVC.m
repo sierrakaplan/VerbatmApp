@@ -23,6 +23,7 @@
 #import "ImagePinchView.h"
 #import "Icons.h"
 
+#import "ParseBackendKeys.h"
 #import "PinchView.h"
 #import "PreviewDisplayView.h"
 #import "PostInProgress.h"
@@ -220,6 +221,12 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		[self.view addSubview:self.introInstruction];
 		[self.view bringSubviewToFront:self.introInstruction];
 		[[UserSetupParameters sharedInstance] set_ADKNotification_InstructionAsShown];
+		[[PFUser currentUser] setObject:[NSNumber numberWithBool:YES] forKey:USER_FTUE];
+		[[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+			if(error) {
+				[[Crashlytics sharedInstance] recordError:error];
+			}
+		}];
 	}
 }
 
@@ -1827,7 +1834,7 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 -(void) tooMuchMediaAlert {
-	NSString *message = [NSString stringWithFormat:@"We're sorry, you may only have %u pieces of media in a post. Please create another post with the rest of your media.", MAX_MEDIA];
+	NSString *message = [NSString stringWithFormat:@"We're sorry, you may only have %u pieces of media per post.", MAX_MEDIA];
 	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Too much media" message:message preferredStyle:UIAlertControllerStyleAlert];
 	UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
 														  handler:^(UIAlertAction * action) {}];

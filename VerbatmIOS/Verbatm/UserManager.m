@@ -85,6 +85,7 @@
                         //we don't set the username because that's set by facebook.
                         currentUser.email = email;
 						[currentUser setObject: name forKey:VERBATM_USER_NAME_KEY];
+						[currentUser setObject:[NSNumber numberWithBool:NO] forKey:USER_FTUE];
 						[currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
                             if(error) {
                                 [[Crashlytics sharedInstance] recordError:error];

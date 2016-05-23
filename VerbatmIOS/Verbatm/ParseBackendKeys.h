@@ -12,6 +12,7 @@
 #define USER_KEY @"User"
 
 #define VERBATM_USER_NAME_KEY @"VerbatmName" //different from the username which is used by fb on parse
+#define USER_FTUE @"UserFtue"
 #define USER_RELATION_CHANNELS_FOLLOWING @"ChannelsFollowing"
 
 #define FOLLOW_PFCLASS_KEY @"FollowClass"//we maintain all the follow relationships in their own table

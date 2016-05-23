@@ -93,6 +93,7 @@
 	newUser.username = self.phoneNumber;
 	newUser.password = password;
 	[newUser setObject:name forKey:VERBATM_USER_NAME_KEY];
+	[newUser setObject:[NSNumber numberWithBool:NO] forKey:USER_FTUE];
 	[newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 		if (error || !succeeded) {
 			[self showAlertWithTitle:@"Error signing up" andMessage: error.localizedDescription];

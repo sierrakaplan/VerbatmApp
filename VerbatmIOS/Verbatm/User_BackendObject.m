@@ -19,31 +19,22 @@
 @implementation User_BackendObject
 
 
-+(void)updateUserNameOfCurrentUserTo:(NSString *) newName{
++ (void)updateUserNameOfCurrentUserTo:(NSString *) newName{
     if(newName && [User_BackendObject stringHasCharacters:newName] &&
        ![newName isEqualToString:[[PFUser currentUser] valueForKey:VERBATM_USER_NAME_KEY]]) {
 
-		//we check if the name is already taken
-        PFQuery * userQuery = [PFQuery queryWithClassName:USER_KEY];
-        [userQuery whereKey:VERBATM_USER_NAME_KEY equalTo:newName];
-        [userQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-                                                             NSError * _Nullable error) {
-            if(objects.count == 0){
-                //name not taken
-                [[PFUser currentUser] setValue:newName forKey:VERBATM_USER_NAME_KEY];
-                [[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-                    if(succeeded){
-                        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USERNAME_CHANGED_SUCCESFULLY object:nil];
-                    }else{
-                        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USERNAME_CHANGE_FAILED object:nil];
-                    }
-                }];
-            }
-        }];
+		[[PFUser currentUser] setValue:newName forKey:VERBATM_USER_NAME_KEY];
+		[[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+			if(succeeded) {
+				[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USERNAME_CHANGED_SUCCESFULLY object:nil];
+			} else {
+				[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USERNAME_CHANGE_FAILED object:nil];
+			}
+		}];
     }
 }
 
-+(void)userIsBlockedByCurrentUser:(PFUser *)user withCompletionBlock:(void(^)(BOOL))block {
++ (void)userIsBlockedByCurrentUser:(PFUser *)user withCompletionBlock:(void(^)(BOOL))block {
 	PFQuery *blockQuery = [PFQuery queryWithClassName:BLOCK_PFCLASS_KEY];
 	[blockQuery whereKey:BLOCK_USER_BLOCKING_KEY equalTo:[PFUser currentUser]];
 	[blockQuery whereKey:BLOCK_USER_BLOCKED_KEY equalTo:user];
@@ -53,7 +44,7 @@
 	}];
 }
 
-+(void)blockUser:(PFUser *)user {
++ (void)blockUser:(PFUser *)user {
 	PFObject *newBlockObject = [PFObject objectWithClassName:BLOCK_PFCLASS_KEY];
 	[newBlockObject setObject:[PFUser currentUser] forKey:BLOCK_USER_BLOCKING_KEY];
 	[newBlockObject setObject:user forKey:BLOCK_USER_BLOCKED_KEY];
@@ -74,7 +65,7 @@
 	}];
 }
 
-+(void)unblockUser:(PFUser *)user {
++ (void)unblockUser:(PFUser *)user {
 	PFQuery *blockQuery = [PFQuery queryWithClassName:BLOCK_PFCLASS_KEY];
 	[blockQuery whereKey:BLOCK_USER_BLOCKING_KEY equalTo:[PFUser currentUser]];
 	[blockQuery whereKey:BLOCK_USER_BLOCKED_KEY equalTo:user];
@@ -89,7 +80,7 @@
 	}];
 }
 
-+(BOOL)stringHasCharacters:(NSString *) text{
++ (BOOL)stringHasCharacters:(NSString *) text{
     NSCharacterSet *alphaSet = [NSCharacterSet alphanumericCharacterSet];
     return ![[text stringByTrimmingCharactersInSet:alphaSet] isEqualToString:text];
 }

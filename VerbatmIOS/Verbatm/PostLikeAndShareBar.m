@@ -196,9 +196,8 @@
     }
 
 	CGFloat buttonSize = flag ? FLAGGING_ETC_BUTTON_SIZE : LIKE_SHARE_BAR_BUTTON_SIZE;
-	CGFloat buttonOffset = flag ? 5.f : 0.f;
     CGRect deleteButtonFrame = CGRectMake(self.frame.size.width - buttonSize - BUTTON_WALLOFFSET,
-										  self.frame.size.height - BUTTON_WALLOFFSET - buttonSize + buttonOffset,
+										  self.frame.size.height - BUTTON_WALLOFFSET - buttonSize,
                                           buttonSize, buttonSize);
     self.delete_Or_FlagButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.delete_Or_FlagButton setFrame:deleteButtonFrame];
