@@ -29,7 +29,7 @@ ExploreChannelCellViewDelegate>
 @property (nonatomic) BOOL loadingMoreChannels;
 @property (nonatomic) BOOL refreshing;
 
-#define HEADER_HEIGHT 60.f
+#define HEADER_HEIGHT 50.f
 #define HEADER_FONT_SIZE 20.f
 #define CELL_HEIGHT 350.f
 
@@ -155,18 +155,26 @@ ExploreChannelCellViewDelegate>
 	return 2;
 }
 
--(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-	UITableViewHeaderFooterView *header = [[UITableViewHeaderFooterView alloc] init];
-	UIImageView *imageView;
+//-(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+//	UITableViewHeaderFooterView *header = [[UITableViewHeaderFooterView alloc] init];
+//	UIImageView *imageView;
+//	if (section == 0) {
+//		imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"featured_header"]];
+//	} else {
+//		imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"explore_header"]];
+//	}
+//	imageView.frame = header.bounds;
+//	imageView.contentMode = UIViewContentModeScaleAspectFit;
+//	[header addSubview: imageView];
+//	return header;
+//}
+
+-(NSString*) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
 	if (section == 0) {
-		imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"featured_header"]];
+		return @"Featured";
 	} else {
-		imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"explore_header"]];
+		return @"Discover";
 	}
-	imageView.frame = header.bounds;
-	imageView.contentMode = UIViewContentModeScaleAspectFit;
-	[header addSubview: imageView];
-	return header;
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
@@ -174,7 +182,7 @@ ExploreChannelCellViewDelegate>
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-	return 0.f;
+	return 1.f;
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
@@ -184,7 +192,12 @@ ExploreChannelCellViewDelegate>
 	UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
 	[header.textLabel setTextColor:[UIColor whiteColor]];
 	[header.textLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:HEADER_FONT_SIZE]];
-	[header.textLabel setTextAlignment:NSTextAlignmentLeft];
+	if (section == 0) {
+		[header.textLabel setText:@"Featured"];
+	} else {
+		[header.textLabel setText:@"Discover"];
+	}
+	[header.textLabel setTextAlignment:NSTextAlignmentCenter];
 	[header.textLabel setLineBreakMode:NSLineBreakByClipping];
 
 	for (UIView *subview in header.subviews) {

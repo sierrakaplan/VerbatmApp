@@ -41,7 +41,6 @@
 #define POST_VIEW_OFFSET 10.f
 #define POST_VIEW_WIDTH 180.f
 #define OFFSET 5.f
-#define USER_NAME_WIDTH 120.f
 #define NUM_FOLLOWERS_WIDTH 40.f
 
 @end
@@ -72,13 +71,14 @@
 	self.mainView.frame = CGRectMake(MAIN_VIEW_OFFSET, MAIN_VIEW_OFFSET,
 									 self.frame.size.width - MAIN_VIEW_OFFSET*2,
 									 self.frame.size.height - MAIN_VIEW_OFFSET*2);
-	self.userNameLabel.frame = CGRectMake(self.mainView.frame.size.width - USER_NAME_WIDTH - POST_VIEW_OFFSET, OFFSET,
-										  USER_NAME_WIDTH, DISCOVER_CHANNEL_NAME_HEIGHT);
-	self.followButton.frame = CGRectMake(POST_VIEW_OFFSET, OFFSET, FOLLOW_BUTTON_WIDTH, DISCOVER_CHANNEL_NAME_HEIGHT);
+	self.followButton.frame = CGRectMake(POST_VIEW_OFFSET, OFFSET, FOLLOW_BUTTON_WIDTH, DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
 	self.numFollowersLabel.frame = CGRectMake(self.followButton.frame.origin.x + FOLLOW_BUTTON_WIDTH + OFFSET, OFFSET, NUM_FOLLOWERS_WIDTH,
-											  DISCOVER_CHANNEL_NAME_HEIGHT);
-	self.channelNameLabel.frame = CGRectMake(USER_NAME_WIDTH + OFFSET, OFFSET,
-											 self.mainView.frame.size.width - USER_NAME_WIDTH*2 - (OFFSET*2),
+											  DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
+	CGFloat userNameX = self.numFollowersLabel.frame.origin.x + self.numFollowersLabel.frame.size.width + OFFSET;
+	self.userNameLabel.frame = CGRectMake(userNameX, OFFSET, self.mainView.frame.size.width - userNameX - OFFSET, DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
+
+	self.channelNameLabel.frame = CGRectMake(OFFSET, OFFSET + DISCOVER_USERNAME_AND_FOLLOW_HEIGHT,
+											 self.mainView.frame.size.width - (OFFSET*2),
 											 DISCOVER_CHANNEL_NAME_HEIGHT);
 
 	CGFloat postScrollViewOffset = self.channelNameLabel.frame.origin.y + self.channelNameLabel.frame.size.height;

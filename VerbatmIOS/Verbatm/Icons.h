@@ -45,7 +45,7 @@
 #pragma mark - ADK -
 
 #define MINIMIZE_ICON @"minimize_icon"
-#define ADK_BACKGROUND @"background_adk"
+#define ADK_BACKGROUND @"background_discover"
 
 #define CHANNEL_SELECTOR_ARROW_LEFT @"white_selector_arrow_left"
 #define CHANNEL_SELECTOR_ARROW_RIGHT @"white_selector_arrow_right"
