@@ -9,6 +9,7 @@
 
 #import "Channel.h"
 #import "ChannelButton.h"
+#import "BlogPopupView.h"
 
 #import "Icons.h"
 
@@ -42,6 +43,8 @@
 @property (nonatomic) BOOL isFollowingProfileUser;
 @property (nonatomic) BOOL isLoggedInUser;
 @property (nonatomic) BOOL buttonSelected;
+@property (nonatomic) UIViewController *topVC;
+@property (nonatomic) BlogPopupView *blogPopupView;
 @end
 
 @implementation ChannelButton
@@ -54,12 +57,43 @@
         self.channelName = channel.name;
         self.currentChannel = channel;
         self.isLoggedInUser = isLoggedInUser;
+        [self setTopViewController];
         [self createNonSelectedTextAttributes];
         [self createSelectedTextAttributes];
         [self setLabelsFromChannel:channel];
         [self formatButtonUnSelected];
+        UILongPressGestureRecognizer *btn_LongPress_gesture = [[UILongPressGestureRecognizer alloc]
+                                                               initWithTarget:self action:@selector(handleBtnLongPressGesture:)];
+        [self addGestureRecognizer:btn_LongPress_gesture];
     }
     return self;
+}
+
+-(void) setTopViewController {
+    UIViewController *top = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+    while (top.presentedViewController){
+        top = top.presentedViewController;
+    }
+    self.topVC = top;
+}
+
+- (void)handleBtnLongPressGesture:(UILongPressGestureRecognizer *)recognizer {
+    if (recognizer.state == UIGestureRecognizerStateBegan) {
+        CGRect screenRect = [[UIScreen mainScreen] bounds];
+        CGFloat screenWidth = screenRect.size.width;
+        CGFloat screenHeight = screenRect.size.height;
+        
+        self.blogPopupView = [[BlogPopupView alloc] initWithFrame:CGRectMake(screenWidth/8.f, screenHeight/8.f, (screenWidth * 0.75), (screenHeight * 0.75)) forBlog:self.currentChannel];
+       
+        [UIView animateWithDuration:0.5 animations:^{
+            [self.topVC.view addSubview:self.blogPopupView];
+            [self.topVC.view bringSubviewToFront:self.blogPopupView];
+        }];
+    }
+    
+    if (recognizer.state == UIGestureRecognizerStateEnded) {
+        
+    }
 }
 
 -(void) setLabelsFromChannel:(Channel *) channel{
