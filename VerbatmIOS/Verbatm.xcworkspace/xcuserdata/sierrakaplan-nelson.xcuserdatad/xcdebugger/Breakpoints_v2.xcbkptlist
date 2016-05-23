@@ -9245,12 +9245,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "483602370.998027"
+            timestampString = "485659604.656616"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "601"
-            endingLineNumber = "601"
-            landmarkName = "-postPostToChannels:"
+            startingLineNumber = "592"
+            endingLineNumber = "592"
+            landmarkName = "-publishingFailedNotification:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
