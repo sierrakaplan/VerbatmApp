@@ -16,7 +16,7 @@
 -(void) channelSelected:(Channel *) channel;
 -(void) deleteButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post andPostChannelActivityObj:(PFObject*)pfActivityObj
 							 reblogged:(BOOL)reblogged;
--(void) flagButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post;
+-(void) flagOrBlockButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post;
 
 @end
 

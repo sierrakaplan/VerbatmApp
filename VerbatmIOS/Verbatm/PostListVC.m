@@ -43,6 +43,8 @@
 #import <FBSDKShareKit/FBSDKShareDialog.h>
 #import "PageTypeAnalyzer.h"
 
+#import "User_BackendObject.h"
+
 @interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource, SharePostViewDelegate,
 UIScrollViewDelegate, PostCollectionViewCellDelegate>
 
@@ -401,28 +403,50 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 			[self nothingToPresentHere];
 		}
 	} completion:^(BOOL finished) {
-
 	}];
 }
 
-#pragma mark Flagging
+#pragma mark Flagging & Blocking
 
--(void)flagButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post{
+-(void) flagOrBlockButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post{
 
-	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Flag Post"
-																   message:@"Are you sure you want to flag the content of this post? We will review it ASAP."
-															preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
+																   message:@""
+															preferredStyle:UIAlertControllerStyleActionSheet];
 
 	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
 														 handler:^(UIAlertAction * action) {}];
-	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-		[Post_BackendObject markPostAsFlagged:post];
+	UIAlertAction* flagAction = [UIAlertAction actionWithTitle:@"Report Post" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+		[self confirmFlagOrBlock:YES onPostView:postView withPostObject:post];
+	}];
+	UIAlertAction* blockAction = [UIAlertAction actionWithTitle:@"Block User" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+		[self confirmFlagOrBlock:NO onPostView:postView withPostObject:post];
 	}];
 
 	[alert addAction: cancelAction];
-	[alert addAction: deleteAction];
+	[alert addAction: flagAction];
+	[alert addAction: blockAction];
 	[self presentViewController:alert animated:YES completion:nil];
+}
 
+-(void) confirmFlagOrBlock:(BOOL)flagging onPostView:(PostView *)postView withPostObject:(PFObject *)post{
+	UIAlertController *confirmAlert = [UIAlertController alertControllerWithTitle:@"Are you sure?" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
+														 handler:^(UIAlertAction * action) {}];
+	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+		if (flagging) {
+			[Post_BackendObject markPostAsFlagged:post];
+			//todo: send us an email
+		} else {
+			PFObject *postChannelObject = [postView parsePostChannelActivityObject];
+			PFObject *channel = [postChannelObject objectForKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO];
+			PFUser *user = [channel objectForKey:CHANNEL_CREATOR_KEY];
+			[User_BackendObject blockUser:user];
+		}
+	}];
+	[confirmAlert addAction: cancelAction];
+	[confirmAlert addAction: deleteAction];
+	[self presentViewController:confirmAlert animated:YES completion:nil];
 }
 
 #pragma mark Sharing
@@ -513,7 +537,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     } else {
         NSLog(@"Link for external sharing not created");
     }
-    
 }
 
 -(void) postToFacebook {
@@ -540,6 +563,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     linkProperties.channel = @"facebook";
     
     [branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
+		NSLog(@"HI");
         if (!error) {
             NSLog(@"got my Branch invite link to share: %@", url);
             NSURL *link = [NSURL URLWithString:url];
@@ -549,7 +573,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
                                          withContent:content
                                             delegate:nil];
         } else {
-            NSLog(@"An eerror occured %@", error);
+            NSLog(@"An error occured %@", error.description);
         }
     }];
 }

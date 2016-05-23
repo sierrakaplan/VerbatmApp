@@ -65,6 +65,13 @@
 			[Follow_BackendManager user:user stopFollowingChannel:channel];
 		}
 	}];
+
+	//Unfollow all of blocked user's channels
+	[Channel_BackendObject getChannelsForUser:user withCompletionBlock:^(NSMutableArray *channels) {
+		for (Channel *channel in channels) {
+			[Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel:channel];
+		}
+	}];
 }
 
 +(void)unblockUser:(PFUser *)user {

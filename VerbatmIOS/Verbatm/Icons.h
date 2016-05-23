@@ -25,7 +25,7 @@
 
 #pragma mark - Profile -
 
-#define BLOCK_USER_ICON @"report_icon"
+#define BLOCK_USER_ICON @"settings_icon"
 
 #define SETTINGS_BUTTON_ICON @"settings_icon"
 #define BACK_BUTTON_ICON @"back_arrow"
@@ -45,7 +45,7 @@
 #pragma mark - ADK -
 
 #define MINIMIZE_ICON @"minimize_icon"
-#define ADK_BACKGROUND @"background_discover"
+#define ADK_BACKGROUND @"background_adk"
 
 #define CHANNEL_SELECTOR_ARROW_LEFT @"white_selector_arrow_left"
 #define CHANNEL_SELECTOR_ARROW_RIGHT @"white_selector_arrow_right"
@@ -110,7 +110,7 @@
 #define MUTED_ICON @"sound_muted"
 #define DELETE_POST_ICON @"trash_icon_dark"
 
-#define FLAG_POST_ICON @"Flagging Icon"
+#define FLAG_POST_ICON @"etc_icon"
 
 
 #pragma mark Sharing options

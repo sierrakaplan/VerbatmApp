@@ -10,6 +10,7 @@
 #import "SelectSharingOption.h"
 #import "SelectChannel.h"
 #import "Styles.h"
+#import "UIImage+ImageEffectsAndTransforms.h"
 #define SHARE_BUTTON_HEIGHT 40.f
 #define BUTTON_WALL_OFFSET_X  10.f
 #define ANIMATION_DURATION 0.5
@@ -84,9 +85,7 @@
 	self.sharingOption.sharingDelegate = self;
 
 	[self createShareOrFollowButton_isShare:YES];
-
 }
-
 
 -(void)createShareOrFollowButton_isShare:(BOOL) isShareButton {
 
@@ -96,14 +95,13 @@
 	CGRect shareButtonFrame = CGRectMake(BUTTON_WALL_OFFSET_X, self.shareOptionSelectionStartFrameONSCREEN.origin.y + self.shareOptionSelectionStartFrameONSCREEN.size.height, self.frame.size.width - (BUTTON_WALL_OFFSET_X * 2), SHARE_BUTTON_HEIGHT - 10.f);
 
 	self.shareButton =  [[UIButton alloc] initWithFrame:shareButtonFrame];
-	[self.shareButton setTitle:titleText forState:UIControlStateNormal];
-
-
-	[self.shareButton setAttributedTitle:[self getButtonAttributeStringWithText:titleText] forState:UIControlStateNormal];
-	self.shareButton.highlighted = YES;
-	self.shareButton.backgroundColor = [UIColor clearColor];
+	[self.shareButton setAttributedTitle:[self getButtonAttributeStringWithText:titleText andColor:[UIColor whiteColor]] forState:UIControlStateNormal];
+	[self.shareButton setAttributedTitle:[self getButtonAttributeStringWithText:titleText andColor:[UIColor blackColor]] forState:UIControlStateHighlighted];
+	[self.shareButton setBackgroundImage:[UIImage makeImageWithColorAndSize:[UIColor whiteColor] andSize:shareButtonFrame.size]
+								forState:UIControlStateHighlighted];
 
 	self.shareButton.layer.cornerRadius = 4.f;
+	self.shareButton.clipsToBounds = YES;
 	self.shareButton.layer.borderWidth = 1.f;
 	self.shareButton.layer.borderColor = [UIColor whiteColor].CGColor;
 
@@ -117,8 +115,8 @@
 
 }
 
--(NSAttributedString *)getButtonAttributeStringWithText:(NSString *)text{
-	return [[NSAttributedString alloc] initWithString:text attributes:@{NSForegroundColorAttributeName:[UIColor whiteColor],NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:REPOST_BUTTON_TEXT_FONT_SIZE]}];
+-(NSAttributedString *)getButtonAttributeStringWithText:(NSString *)text andColor:(UIColor *)color{
+	return [[NSAttributedString alloc] initWithString:text attributes:@{NSForegroundColorAttributeName:color,NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:REPOST_BUTTON_TEXT_FONT_SIZE]}];
 }
 
 
@@ -127,47 +125,34 @@
 	CGRect cancelButtonFrame;
 	if(cancelButonFullscreen) {
 		cancelButtonFrame = CGRectMake(0.f, 0.f, self.frame.size.width, SHARE_BUTTON_HEIGHT);
-	}else{
-		//we add the -2.f so that the right/left border lines aren't visible
-//		CGRect reportButtonFrame = CGRectMake(-2.f, 0.f, (self.frame.size.width/2.f) + 2.f, SHARE_BUTTON_HEIGHT);
-//
+	} else {
 		cancelButtonFrame = CGRectMake(0.f, 0.f, self.frame.size.width, SHARE_BUTTON_HEIGHT);
-//
-//
-//		self.reportButton =  [[UIButton alloc] initWithFrame:reportButtonFrame];
-//		[self.reportButton  setTitle:@"REPORT" forState:UIControlStateNormal];
-//		self.reportButton .backgroundColor = [UIColor clearColor];
-//
-//		self.reportButton .layer.cornerRadius = 1.f;
-//		self.reportButton .layer.borderWidth = 1.f;
-//		self.reportButton .layer.borderColor = [UIColor whiteColor].CGColor;
-//
-//		[self.reportButton addTarget:self action:@selector(reportButtonSelected) forControlEvents:UIControlEventTouchUpInside];
-//
-//		[self addSubview:self.reportButton];
 	}
 
-
-
 	self.cancelButton = [[UIButton alloc] initWithFrame:cancelButtonFrame];
-	[self.cancelButton  setAttributedTitle:[self getButtonAttributeStringWithText:@"CANCEL"] forState:UIControlStateNormal];
-	self.cancelButton .backgroundColor = [UIColor clearColor];
+	[self.cancelButton  setAttributedTitle:[self getButtonAttributeStringWithText:@"CANCEL" andColor:[UIColor whiteColor]] forState:UIControlStateNormal];
+	[self.cancelButton  setAttributedTitle:[self getButtonAttributeStringWithText:@"CANCEL" andColor:[UIColor blackColor]] forState:UIControlStateHighlighted];
+	[self.cancelButton setBackgroundImage:[UIImage makeImageWithColorAndSize:[UIColor whiteColor] andSize:cancelButtonFrame.size]
+								forState:UIControlStateHighlighted];
+	self.cancelButton.backgroundColor = [UIColor clearColor];
 
-	self.cancelButton .layer.cornerRadius = 1.f;
-	self.cancelButton .layer.borderWidth = 1.f;
-	self.cancelButton .layer.borderColor = [UIColor whiteColor].CGColor;
+	self.cancelButton.layer.cornerRadius = 1.f;
+	self.cancelButton.clipsToBounds = YES;
+	self.cancelButton.layer.borderWidth = 1.f;
+	self.cancelButton.layer.borderColor = [UIColor whiteColor].CGColor;
 	[self.cancelButton addTarget:self action:@selector(cancelButtonSelected) forControlEvents:UIControlEventTouchUpInside];
 	[self addSubview:self.cancelButton];
 
 
 }
 
--(void)cancelButtonSelected {
+-(void) cancelButtonSelected {
     if([self.cancelButton.titleLabel.text isEqualToString:@"CANCEL"]){
        [self.delegate cancelButtonSelected];
-    }else{
+    } else {
         [self showChannelSelection:NO];
-        [self.cancelButton setAttributedTitle:[self getButtonAttributeStringWithText:@"CANCEL"] forState:UIControlStateNormal];
+		[self.cancelButton  setAttributedTitle:[self getButtonAttributeStringWithText:@"CANCEL" andColor:[UIColor whiteColor]] forState:UIControlStateNormal];
+		[self.cancelButton  setAttributedTitle:[self getButtonAttributeStringWithText:@"CANCEL" andColor:[UIColor blackColor]] forState:UIControlStateHighlighted];
     }
 }
 
@@ -255,7 +240,7 @@
 //		[self removeFacebookCommentView];
 		[self showChannelSelection:YES];
 		[self.shareButton setTitle:@"POST" forState:UIControlStateNormal];
-		[self.cancelButton setAttributedTitle:[self getButtonAttributeStringWithText:@"BACK"] forState:UIControlStateNormal];
+		[self.cancelButton setAttributedTitle:[self getButtonAttributeStringWithText:@"BACK" andColor:[UIColor whiteColor]] forState:UIControlStateNormal];
 	}
     if (shareOption == Facebook){
 //		[self createAndPrepareTextView];

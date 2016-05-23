@@ -187,18 +187,19 @@
     [self createDeleteOrFlagButtonIsFlag:YES];
 }
 
--(void)createDeleteOrFlagButtonIsFlag:(BOOL) flag{
-    
+-(void)createDeleteOrFlagButtonIsFlag:(BOOL) flag {
     UIImage * buttonImage;
-    if(flag){
+    if(flag) {
         buttonImage = [UIImage imageNamed:FLAG_POST_ICON ];
-    }else{
+    } else {
         buttonImage = [UIImage imageNamed:DELETE_POST_ICON];
     }
-    
-    
-    CGRect deleteButtonFrame = CGRectMake(self.frame.size.width - (LIKE_SHARE_BAR_BUTTON_SIZE)*2 - ICON_SPACING_GAP - 5.f, BUTTON_WALLOFFSET,
-                                          LIKE_SHARE_BAR_BUTTON_SIZE, LIKE_SHARE_BAR_BUTTON_SIZE);
+
+	CGFloat buttonSize = flag ? FLAGGING_ETC_BUTTON_SIZE : LIKE_SHARE_BAR_BUTTON_SIZE;
+	CGFloat buttonOffset = flag ? 5.f : 0.f;
+    CGRect deleteButtonFrame = CGRectMake(self.frame.size.width - buttonSize - BUTTON_WALLOFFSET,
+										  self.frame.size.height - BUTTON_WALLOFFSET - buttonSize + buttonOffset,
+                                          buttonSize, buttonSize);
     self.delete_Or_FlagButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.delete_Or_FlagButton setFrame:deleteButtonFrame];
     [self.delete_Or_FlagButton setImage:buttonImage forState:UIControlStateNormal];

@@ -131,7 +131,7 @@
 }
 
 -(void) flagButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post {
-	[self.cellDelegate flagButtonSelectedOnPostView:postView withPostObject:post];
+	[self.cellDelegate flagOrBlockButtonSelectedOnPostView:postView withPostObject:post];
 }
 
 #pragma mark - Lazy Instantiation -

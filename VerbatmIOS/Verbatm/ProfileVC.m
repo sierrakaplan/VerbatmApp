@@ -320,11 +320,6 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
     UIAlertAction* confirmAction = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         if(shouldBlock){
 			[User_BackendObject blockUser:self.userOfProfile];
-
-			//unfollow all their channels automatically
-			for (Channel *channel in self.channels) {
-				[Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel: channel];
-			}
 			[self.profileNavBar updateUserIsBlocked:YES];
 
         } else {
