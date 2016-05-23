@@ -11,5 +11,6 @@ pod 'FBSDKLoginKit'
 pod 'FBSDKShareKit'
 pod "FBSDKMessengerShareKit"
 pod 'ParseFacebookUtilsV4'
+pod 'Branch'
 
 link_with 'Verbatm'

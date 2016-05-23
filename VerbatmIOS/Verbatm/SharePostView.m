@@ -35,7 +35,7 @@
 @property (nonatomic) UITextField * facebookCommentTextField;
 
 @property (nonatomic) NSMutableArray * selectedChannels;
-
+@property (nonatomic) BOOL externalShare;
 
 @property (nonatomic) BOOL showChannels;
 
@@ -51,6 +51,7 @@
 	if (self) {
 		[self formatView];
 		self.showChannels = showChannels;
+        self.externalShare = NO;
 		[self createListFrames];
 		if(showChannels){
 			[self presentUserChannelsToFollow];
@@ -112,6 +113,7 @@
 		[self.shareButton addTarget:self action:@selector(followButtonSelected) forControlEvents:UIControlEventTouchUpInside];
 	}
 	[self addSubview:self.shareButton];
+    [self bringSubviewToFront:self.shareButton];
 
 }
 
@@ -127,22 +129,22 @@
 		cancelButtonFrame = CGRectMake(0.f, 0.f, self.frame.size.width, SHARE_BUTTON_HEIGHT);
 	}else{
 		//we add the -2.f so that the right/left border lines aren't visible
-		CGRect reportButtonFrame = CGRectMake(-2.f, 0.f, (self.frame.size.width/2.f) + 2.f, SHARE_BUTTON_HEIGHT);
-
-		cancelButtonFrame = CGRectMake((self.frame.size.width/2.f), 0.f, (self.frame.size.width/2.f)+ 2.f, SHARE_BUTTON_HEIGHT);
-
-
-		self.reportButton =  [[UIButton alloc] initWithFrame:reportButtonFrame];
-		[self.reportButton  setTitle:@"REPORT" forState:UIControlStateNormal];
-		self.reportButton .backgroundColor = [UIColor clearColor];
-
-		self.reportButton .layer.cornerRadius = 1.f;
-		self.reportButton .layer.borderWidth = 1.f;
-		self.reportButton .layer.borderColor = [UIColor whiteColor].CGColor;
-
-		[self.reportButton addTarget:self action:@selector(reportButtonSelected) forControlEvents:UIControlEventTouchUpInside];
-
-		[self addSubview:self.reportButton];
+//		CGRect reportButtonFrame = CGRectMake(-2.f, 0.f, (self.frame.size.width/2.f) + 2.f, SHARE_BUTTON_HEIGHT);
+//
+		cancelButtonFrame = CGRectMake(0.f, 0.f, self.frame.size.width, SHARE_BUTTON_HEIGHT);
+//
+//
+//		self.reportButton =  [[UIButton alloc] initWithFrame:reportButtonFrame];
+//		[self.reportButton  setTitle:@"REPORT" forState:UIControlStateNormal];
+//		self.reportButton .backgroundColor = [UIColor clearColor];
+//
+//		self.reportButton .layer.cornerRadius = 1.f;
+//		self.reportButton .layer.borderWidth = 1.f;
+//		self.reportButton .layer.borderColor = [UIColor whiteColor].CGColor;
+//
+//		[self.reportButton addTarget:self action:@selector(reportButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+//
+//		[self addSubview:self.reportButton];
 	}
 
 
@@ -154,14 +156,19 @@
 	self.cancelButton .layer.cornerRadius = 1.f;
 	self.cancelButton .layer.borderWidth = 1.f;
 	self.cancelButton .layer.borderColor = [UIColor whiteColor].CGColor;
-	[self.cancelButton addTarget:self action:@selector(cancelButtonSelcted) forControlEvents:UIControlEventTouchUpInside];
+	[self.cancelButton addTarget:self action:@selector(cancelButtonSelected) forControlEvents:UIControlEventTouchUpInside];
 	[self addSubview:self.cancelButton];
 
 
 }
 
--(void)cancelButtonSelcted {
-	[self.delegate cancelButtonSelected];
+-(void)cancelButtonSelected {
+    if([self.cancelButton.titleLabel.text isEqualToString:@"CANCEL"]){
+       [self.delegate cancelButtonSelected];
+    }else{
+        [self showChannelSelection:NO];
+        [self.cancelButton setAttributedTitle:[self getButtonAttributeStringWithText:@"CANCEL"] forState:UIControlStateNormal];
+    }
 }
 
 -(void)reportButtonSelected {
@@ -226,7 +233,7 @@
 
 -(void)shareButtonSelected {
 	if([self.shareButton.titleLabel.text isEqualToString:@"REPOST"]){
-		[self.delegate postPostToChannels: self.selectedChannels];
+		[self.delegate postPostToChannels: self.selectedChannels andFacebook:self.externalShare];
 	}
 }
 
@@ -236,24 +243,34 @@
 	self.selectedChannels = channels;
 }
 
+-(void) facebookSelected:(BOOL)fbSelected {
+    self.externalShare = YES;
+}
+
 
 //shareoptions button protocol
 //called when an option is selected
 -(void)shareOptionSelected:(ShareOptions) shareOption{
 	if(shareOption == Verbatm){
-		[self removeFacebookCommentView];
+//		[self removeFacebookCommentView];
 		[self showChannelSelection:YES];
 		[self.shareButton setTitle:@"POST" forState:UIControlStateNormal];
-		[self.reportButton setTitle:@"BACK" forState:UIControlStateNormal];
-	}else if (shareOption == Facebook){
-		[self createAndPrepareTextView];
+		[self.cancelButton setAttributedTitle:[self getButtonAttributeStringWithText:@"BACK"] forState:UIControlStateNormal];
+	}
+    if (shareOption == Facebook){
+//		[self createAndPrepareTextView];
+        self.externalShare = YES;
 	}
 }
 
 -(void)shareOptionDeselected:(ShareOptions) shareOption{
 	if(shareOption == Facebook){
-		[self removeFacebookCommentView];
+        self.externalShare = NO;
+//		[self removeFacebookCommentView];
 	}
+    if(shareOption == Verbatm){
+        
+    }
 }
 
 -(void) removeFacebookCommentView{
@@ -270,7 +287,7 @@
 	self.facebookCommentTextField.backgroundColor = [UIColor blackColor];
 	self.facebookCommentTextField.textColor = [UIColor whiteColor];
 	UIColor * color = [UIColor whiteColor];
-	self.facebookCommentTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString: @"Add a comment..." attributes:@{NSForegroundColorAttributeName: color}];
+	self.facebookCommentTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString: @"Add a caption..." attributes:@{NSForegroundColorAttributeName: color}];
 	self.facebookCommentTextField.returnKeyType = UIReturnKeyDone;
 	[self addSubview:self.facebookCommentTextField];
 	[self.facebookCommentTextField becomeFirstResponder];
@@ -328,12 +345,13 @@
 		[UIView animateWithDuration:ANIMATION_DURATION animations:^{
 			self.channelSelectionOptions.frame = self.channelSelectionFrameOFFSCREEN;
 			self.sharingOption.frame = self.shareOptionSelectionStartFrameONSCREEN;
-			[self.sharingOption unselectAllOptions];
+//			[self.sharingOption unselectAllOptions];
 		}];
 
 	}
 
 }
+
 
 //frames of the channel list and the share options list
 -(void)createListFrames{

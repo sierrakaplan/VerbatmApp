@@ -25,6 +25,7 @@
 #import <PromiseKit/PromiseKit.h>
 
 #import <Crashlytics/Crashlytics.h>
+#import <Branch/Branch.h>
 #import <Fabric/Fabric.h>
 
 @implementation VerbatmAppDelegate
@@ -44,6 +45,12 @@
 	});
 	[[UserSetupParameters sharedInstance] setUpParameters];
 	[[Analytics getSharedInstance] newUserSession];
+    
+    Branch *branch = [Branch getInstance];
+    [branch initSessionWithLaunchOptions:launchOptions andRegisterDeepLinkHandler:^(NSDictionary *params, NSError *error) {
+        // params are the deep linked params associated with the link that the user clicked before showing up.
+        NSLog(@"deep link data: %@", [params description]);
+    }];
 
 	// Fabric (and Optimizely, if needed can bring back)
 	[Fabric with:@[[Crashlytics class]]];
@@ -114,6 +121,8 @@
 			openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication
 		 annotation:(id)annotation {
+    
+    [[Branch getInstance] handleDeepLink:url];
 	return [[FBSDKApplicationDelegate sharedInstance] application:application
 														  openURL:url
 												sourceApplication:sourceApplication

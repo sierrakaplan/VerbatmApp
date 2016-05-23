@@ -198,7 +198,7 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 	[self removeSharePostView];
 }
 
--(void) postPostToChannels:(NSMutableArray *)channels {
+-(void) postPostToChannels:(NSMutableArray *)channels andFacebook:(BOOL)externalSharing{
 	[self removeSharePostView];
 }
 
