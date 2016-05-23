@@ -834,8 +834,8 @@ andSaveInUserDefaults:(BOOL)save {
 		}
 		case UIGestureRecognizerStateChanged: {
 
-			if ((self.pinchingMode == PinchingModeVertical ||
-				 self.pinchingMode == PinchingModeVerticalUndo)
+			if ((self.pinchingMode == PinchingModeVerticalTogether ||
+				 self.pinchingMode == PinchingModeVerticalApart)
 				&& self.lowerPinchScrollView && self.upperPinchScrollView) {
 				[self handleVerticlePinchGestureChanged:sender];
 			}
@@ -859,10 +859,6 @@ andSaveInUserDefaults:(BOOL)save {
 	self.rightTouchPointInHorizontalPinch = CGPointMake(0, 0);
 
 	if (self.scrollViewOfHorizontalPinching) {
-		//collection was not closed
-		if (self.scrollViewOfHorizontalPinching.collectionIsOpen) {
-			[self.scrollViewOfHorizontalPinching moveOpenCollectionViewsBack];
-		}
 		self.scrollViewOfHorizontalPinching.scrollEnabled = YES;
 		self.scrollViewOfHorizontalPinching = nil;
 	} else if (self.newlyCreatedMediaTile) {
@@ -898,16 +894,14 @@ andSaveInUserDefaults:(BOOL)save {
 
 -(void) handlePinchGestureBegan: (UIPinchGestureRecognizer *)sender {
 	if(self.pageElementScrollViews.count < 2) return;//if there is only one object on the screen then don't pinch
-	self.pinchingMode = PinchingModeVertical;
+	self.pinchingMode = PinchingModeVerticalTogether;
 	[self handleVerticlePinchGestureBegan:sender];
 }
 
 #pragma mark - ContentPageElementScrollView delegate -
 
 // Do nothing because we won't have open collection views in content dev vc
--(void)pinchviewSelected:(PinchView *)pinchView {
-
-}
+-(void)pinchviewSelected:(PinchView *)pinchView {}
 
 #pragma mark - Horizontal Pinching
 
@@ -999,7 +993,8 @@ andSaveInUserDefaults:(BOOL)save {
 	[self findElementsFromPinchPoint];
 
 	//if it's a pinch apart then create the media tile
-	if(self.upperPinchScrollView && self.lowerPinchScrollView && self.pinchingMode == PinchingModeVertical &&sender.scale > 1) {
+	if(self.upperPinchScrollView && self.lowerPinchScrollView && self.pinchingMode == PinchingModeVerticalTogether
+	   && sender.scale > 1) {
 		[self removeExcessMediaTiles];
 		[self createNewMediaTileBetweenPinchViews];
 	}
@@ -1025,7 +1020,7 @@ andSaveInUserDefaults:(BOOL)save {
 
 	//objects are being pinched apart
 	if(gesture.scale > 1) {
-		if(self.pinchingMode == PinchingModeVertical){
+		if(self.pinchingMode == PinchingModeVerticalTogether){
 			[self handleRevealOfNewMediaViewWithGesture:gesture andChangeInTopViewPosition:changeInTopViewPosition
 						  andChangeInBottomViewPosition:changeInBottomViewPosition];
 		}
@@ -1231,10 +1226,10 @@ andSaveInUserDefaults:(BOOL)save {
 
 	NSInteger index = [self.pageElementScrollViews indexOfObject:self.upperPinchScrollView];
 
-	if(self.pageElementScrollViews.count > (index+1) && index != NSNotFound && self.pinchingMode != PinchingModeVerticalUndo) {
+	if(self.pageElementScrollViews.count > (index+1) && index != NSNotFound && self.pinchingMode != PinchingModeVerticalApart) {
 		self.lowerPinchScrollView = self.pageElementScrollViews[index+1];
-	}else if (self.pinchingMode == PinchingModeVerticalUndo){
-		//make sure that we're pinching apart a colleciton
+	}else if (self.pinchingMode == PinchingModeVerticalApart){
+		//make sure that we're pinching apart a collection
 		if(![self.upperPinchScrollView.pageElement isKindOfClass:[CollectionPinchView class]]){
 			return;
 		}
@@ -1247,6 +1242,7 @@ andSaveInUserDefaults:(BOOL)save {
 	}
 }
 
+// Unpinch a pinch view and create a new page element scroll view
 -(ContentPageElementScrollView *) createPinchApartViews {
 	NSInteger upperIndex = [self.pageElementScrollViews indexOfObject:self.upperPinchScrollView];
 	CollectionPinchView *collectionPinchView = (CollectionPinchView *)self.upperPinchScrollView.pageElement;
@@ -1290,7 +1286,7 @@ andSaveInUserDefaults:(BOOL)save {
 		if(distanceTraveled > upperPinchPoint.y && [scrollView.pageElement isKindOfClass:[PinchView class]] && (upperPinchPoint.y > scrollView.frame.origin.y)) {
 			wantedView = scrollView;
 			if([self bothPointsInView:wantedView andLowerPoint:lowerPinchPoint]){
-				self.pinchingMode = PinchingModeVerticalUndo;
+				self.pinchingMode = PinchingModeVerticalApart;
 			}
 			break;
 		}

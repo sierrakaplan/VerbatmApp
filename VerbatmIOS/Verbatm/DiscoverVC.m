@@ -15,7 +15,6 @@
 @property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
 @property (weak, nonatomic) IBOutlet UIView *tableContainerView;
 @property (weak, nonatomic) IBOutlet UIView *headerView;
-@property (nonatomic) UIImageView * backgroundView;
 
 @end
 
@@ -42,8 +41,10 @@
 }
 
 -(void) addBackgroundImage {
-	UIColor *background = [[UIColor alloc] initWithPatternImage:[UIImage imageNamed:DISCOVER_BACKGROUND]];
-	self.view.backgroundColor = background;
+	UIImageView * backgroundView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+	backgroundView.image =[UIImage imageNamed:DISCOVER_BACKGROUND];
+	backgroundView.contentMode = UIViewContentModeScaleAspectFill;
+	[self.view insertSubview:backgroundView belowSubview:self.tableContainerView];
 }
 
 
