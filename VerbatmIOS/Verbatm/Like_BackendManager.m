@@ -13,8 +13,7 @@
 
 @implementation Like_BackendManager
 
-+(void)currentUserLikePost:(PFObject *) postParseObject{
-
++ (void)currentUserLikePost:(PFObject *) postParseObject {
 	[postParseObject incrementKey:POST_NUM_LIKES];
 	[postParseObject saveInBackground];
 	PFObject *newLikeObject = [PFObject objectWithClassName:LIKE_PFCLASS_KEY];
@@ -23,8 +22,7 @@
 	[newLikeObject saveInBackground];
 }
 
-+ (void)currentUserStopLikingPost:(PFObject *) postParseObject{
-
++ (void)currentUserStopLikingPost:(PFObject *) postParseObject {
 	[postParseObject incrementKey:POST_NUM_LIKES byAmount:[NSNumber numberWithInteger:-1]];
 	[postParseObject saveInBackground];
 	PFQuery * userChannelQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
@@ -42,7 +40,7 @@
 }
 
 //tests to see if the logged in user likes this post
-+(void)currentUserLikesPost:(PFObject *) postParseObject withCompletionBlock:(void(^)(bool))block {
++ (void)currentUserLikesPost:(PFObject *) postParseObject withCompletionBlock:(void(^)(bool))block {
     if(!postParseObject)return;
     //we just delete the Follow Object
     PFQuery * userChannelQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];

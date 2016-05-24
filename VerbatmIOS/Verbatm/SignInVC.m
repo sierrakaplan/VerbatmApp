@@ -57,6 +57,7 @@
 
 @property (nonatomic) UIScrollView * onBoardingView;
 @property (nonatomic) UIScrollView * contentOnboardingPage;
+
 #define BRING_UP_CREATE_ACCOUNT_SEGUE @"create_account_segue"
 
 @property (weak, nonatomic) IBOutlet UIPageControl *pageControlView;
@@ -107,7 +108,6 @@
         }
     }
 }
-
 
 -(void)createOnBoarding{
     [self.view bringSubviewToFront:self.pageControlView];

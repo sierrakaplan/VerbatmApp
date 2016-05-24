@@ -25,7 +25,6 @@
 
 #define ACCEPTED_TERMS_KEY @"ACCEPTED_TERMS_KEY"
 
-
 #define PINCH_INSTRUCTION_KEY @"PINCH_INSTRUCTION_KEY"
 
 #define ON_BOARDING_EXPERIENCE_KEY @"ON_BOARDING_EXPRIENCE_KEY"
@@ -130,7 +129,6 @@
 	if(!self.notificationSet) return NO;
 	NSNumber * boolAsNumber = self.notificationSet[ACCEPTED_TERMS_KEY];
 	return boolAsNumber.boolValue;
-
 }
 
 
@@ -149,7 +147,6 @@
 		[self saveAllChanges];
 	}
 }
-
 
 -(void) set_pinchCircles_InstructionAsShown {
 	@synchronized(self) {
@@ -200,8 +197,6 @@
 	});
 
 }
-
-
 
 
 

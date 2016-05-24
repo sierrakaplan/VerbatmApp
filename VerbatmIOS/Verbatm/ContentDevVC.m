@@ -221,12 +221,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		[self.view addSubview:self.introInstruction];
 		[self.view bringSubviewToFront:self.introInstruction];
 		[[UserSetupParameters sharedInstance] set_ADKNotification_InstructionAsShown];
-		[[PFUser currentUser] setObject:[NSNumber numberWithBool:YES] forKey:USER_FTUE];
-		[[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-			if(error) {
-				[[Crashlytics sharedInstance] recordError:error];
-			}
-		}];
 	}
 }
 

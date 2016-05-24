@@ -122,10 +122,10 @@
 
 #define MEDIA_REARRANGE_ICON @"rearrange_icon"
 
-#define SWIPE_UP_DOWN_INSTRUCTION @"Swipe _up_down_to_page"
-#define PINCH_OBJECTS_TOGETHER_INSTRUCTION @"Pinch D1"
-#define FILTER_SWIPE_INSTRUCTION @"filterAndSwipe_Instructions_black"
-
+#define SWIPE_UP_DOWN_INSTRUCTION @"instruction_swipe_up_down"
+#define PINCH_OBJECTS_TOGETHER_INSTRUCTION @"instruction_pinch"
+#define EDIT_PINCHVIEW_INSTRUCTION @"instruction_edit_pinchview"
+#define ADD_TEXT_INSTRUCTION @"instruction_add_text"
 
 #pragma mark -Photo Slideshow icons-
 

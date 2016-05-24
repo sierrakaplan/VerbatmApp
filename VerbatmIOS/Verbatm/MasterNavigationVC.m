@@ -71,13 +71,13 @@
 	[super viewDidLoad];
     [self registerForNotifications];
     if ([PFUser currentUser].isAuthenticated) {
-		[[UserSetupParameters sharedInstance] setUpParameters];
         [self setUpStartEnvironment];
     }
 }
 
 -(void)setUpStartEnvironment{
     [self setUpTabBarController];
+	[[UserSetupParameters sharedInstance] setUpParameters];
      self.view.backgroundColor = [UIColor blackColor];
 	[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{}];
 }
@@ -126,7 +126,6 @@
 #pragma mark - User Manager Delegate -
 
 -(void) loginSucceeded:(NSNotification*) notification {
-	[[UserSetupParameters sharedInstance] setUpParameters];
 	PFUser * user = notification.object;
 	[[Crashlytics sharedInstance] setUserIdentifier: [user username]];
 	[[Crashlytics sharedInstance] setUserName: [user objectForKey:VERBATM_USER_NAME_KEY]];
@@ -291,6 +290,20 @@
 			[self.profileVC showPublishingProgress];
 		}
 		[[Analytics getSharedInstance] endOfADKSession];
+	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_USER_SETTINGS_TO_LOGIN] ||
+			   [segue.identifier isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]){
+		BOOL ftue = [[[PFUser currentUser] objectForKey:USER_FTUE] boolValue];
+		if (!ftue) {
+
+		}
+
+		//todo: move to after ftue screen
+		[[PFUser currentUser] setObject:[NSNumber numberWithBool:YES] forKey:USER_FTUE];
+		[[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+			if(error) {
+				[[Crashlytics sharedInstance] recordError:error];
+			}
+		}];
 	}
 }
 
