@@ -195,19 +195,18 @@
         buttonImage = [UIImage imageNamed:DELETE_POST_ICON];
     }
 
-	CGFloat buttonSize = flag ? FLAGGING_ETC_BUTTON_SIZE : LIKE_SHARE_BAR_BUTTON_SIZE;
-    CGRect deleteButtonFrame = CGRectMake(self.frame.size.width - buttonSize - BUTTON_WALLOFFSET,
-										  self.frame.size.height - BUTTON_WALLOFFSET - buttonSize,
-                                          buttonSize, buttonSize);
+    CGRect deleteButtonFrame = CGRectMake(self.frame.size.width - LIKE_SHARE_BAR_BUTTON_SIZE - BUTTON_WALLOFFSET,
+										  self.frame.size.height - BUTTON_WALLOFFSET - LIKE_SHARE_BAR_BUTTON_SIZE,
+                                          LIKE_SHARE_BAR_BUTTON_SIZE, LIKE_SHARE_BAR_BUTTON_SIZE);
     self.delete_Or_FlagButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.delete_Or_FlagButton setFrame:deleteButtonFrame];
     [self.delete_Or_FlagButton setImage:buttonImage forState:UIControlStateNormal];
     [self.delete_Or_FlagButton.imageView setContentMode:UIViewContentModeScaleAspectFit];
+	if (flag) [self.delete_Or_FlagButton setImageEdgeInsets:UIEdgeInsetsMake(1.f, 1.f, 1.f, 1.f)];
     [self.delete_Or_FlagButton addTarget:self action:
      (flag) ? @selector(flagButtonPressed):@selector(deleteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.delete_Or_FlagButton];
 }
-
 
 #pragma mark - Button actions -
 

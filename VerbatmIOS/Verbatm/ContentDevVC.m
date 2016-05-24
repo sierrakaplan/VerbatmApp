@@ -282,7 +282,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 // set keyboard appearance color on all textfields and textviews
 -(void) setKeyboardAppearance {
-	[[UITextField appearance] setKeyboardAppearance:UIKeyboardAppearanceDark];
+	[[UITextField appearance] setKeyboardAppearance:UIKeyboardAppearanceLight];
 }
 
 // set cursor color on all textfields and textviews

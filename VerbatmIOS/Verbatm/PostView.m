@@ -390,37 +390,38 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	}];
 }
 
--(void)presentFilterSwipeForInstructionWithPageView:(PageViewingExperience *) currentPage {
-
-	BOOL isPhotoAve = [currentPage isKindOfClass:[PhotoPVE class]];
-	BOOL isVideoAve = [currentPage isKindOfClass:[PhotoVideoPVE class]];
-
-	BOOL filterInstructionHasNotBeenPresented = ![[UserSetupParameters sharedInstance] isFilter_InstructionShown];
-
-	if( (isPhotoAve || isVideoAve)  && filterInstructionHasNotBeenPresented) {
-		UIImage * instructionImage = [UIImage imageNamed:FILTER_SWIPE_INSTRUCTION];
-		CGFloat frameWidth = 200.f;
-		CGFloat frameHeight = (frameWidth * 320.f) /488.f;
-
-		UIImageView * filterInstruction = [[UIImageView alloc] initWithImage:instructionImage];
-		filterInstruction.backgroundColor = [UIColor clearColor];
-
-		CGFloat imageOriginX = (self.frame.size.width/2.f) - (frameWidth/2.f);
-
-		if (isPhotoAve) {
-			filterInstruction.frame = CGRectMake(imageOriginX,
-												 (self.frame.size.height/2.f) + frameHeight,
-												 frameWidth, frameHeight);
-		} else {
-			filterInstruction.frame = CGRectMake(imageOriginX,
-												 self.frame.size.height - (frameHeight + 50.f), frameWidth, frameHeight);
-		}
-
-		[self addSubview:filterInstruction];
-		[self bringSubviewToFront:filterInstruction];
-		[[UserSetupParameters sharedInstance] set_filter_InstructionAsShown];
-	}
-}
+// Decide if we want to bring back filter swipe
+//-(void)presentFilterSwipeForInstructionWithPageView:(PageViewingExperience *) currentPage {
+//
+//	BOOL isPhotoAve = [currentPage isKindOfClass:[PhotoPVE class]];
+//	BOOL isVideoAve = [currentPage isKindOfClass:[PhotoVideoPVE class]];
+//
+//	BOOL filterInstructionHasNotBeenPresented = ![[UserSetupParameters sharedInstance] isFilter_InstructionShown];
+//
+//	if( (isPhotoAve || isVideoAve)  && filterInstructionHasNotBeenPresented) {
+//		UIImage * instructionImage = [UIImage imageNamed:FILTER_SWIPE_INSTRUCTION];
+//		CGFloat frameWidth = 200.f;
+//		CGFloat frameHeight = (frameWidth * 320.f) /488.f;
+//
+//		UIImageView * filterInstruction = [[UIImageView alloc] initWithImage:instructionImage];
+//		filterInstruction.backgroundColor = [UIColor clearColor];
+//
+//		CGFloat imageOriginX = (self.frame.size.width/2.f) - (frameWidth/2.f);
+//
+//		if (isPhotoAve) {
+//			filterInstruction.frame = CGRectMake(imageOriginX,
+//												 (self.frame.size.height/2.f) + frameHeight,
+//												 frameWidth, frameHeight);
+//		} else {
+//			filterInstruction.frame = CGRectMake(imageOriginX,
+//												 self.frame.size.height - (frameHeight + 50.f), frameWidth, frameHeight);
+//		}
+//
+//		[self addSubview:filterInstruction];
+//		[self bringSubviewToFront:filterInstruction];
+//		[[UserSetupParameters sharedInstance] set_filter_InstructionAsShown];
+//	}
+//}
 
 -(void)logAVEDoneViewing:(PageViewingExperience*) pve {
 	NSString * pageType = @"";

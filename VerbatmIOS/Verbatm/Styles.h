@@ -141,7 +141,7 @@
 
 #pragma mark Verbatm Keyboard Toolbar
 
-#define KEYBOARD_TOOLBAR_FONT_SIZE 22.f
+#define KEYBOARD_TOOLBAR_FONT_SIZE 18.f
 
 #pragma mark Preview
 
