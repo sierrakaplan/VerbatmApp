@@ -214,12 +214,16 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self addSubview: self.textAndImageView];
 	[self addPanGestures];
 	[self createTextCreationButton];
-    
-    
-    if(![[UserSetupParameters sharedInstance ] isFilter_InstructionShown]){
-        [self presentUserInstructionForFilterSwipe];
-        [[UserSetupParameters sharedInstance] set_filter_InstructionAsShown];
-    }
+
+	//todo: bring back filters
+//    if(![[UserSetupParameters sharedInstance ] checkAndSetFilterInstructionShown]){
+//        [self presentUserInstructionForFilterSwipe];
+//    }
+
+	if (![[UserSetupParameters sharedInstance] checkAndSetAddTextInstructionShown]) {
+		//todo:
+//		[self presentAddTextInstruction];
+	}
 }
 
 //todo: bring back filters?

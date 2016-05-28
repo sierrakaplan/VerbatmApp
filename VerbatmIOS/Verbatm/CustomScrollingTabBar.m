@@ -83,7 +83,7 @@
 		xCoordinate += channelTitleButton.frame.size.width;
 	}
     
-    if(isLoggedInUser) {
+	if(isLoggedInUser && channels.count < 1) { //todo: remove if more than 1 channel later
         CGFloat createChannelButtonWidth = (channels.count == 0) ? self.frame.size.width : INITIAL_BUTTON_WIDTH;
         
         CGRect createChannelButtonFrame = CGRectMake(xCoordinate, 0.f,

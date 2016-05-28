@@ -141,13 +141,12 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 }
 
 -(void)checkIntroNotification{
-	if(![[UserSetupParameters sharedInstance] isProfile_InstructionShown] &&
+	if(![[UserSetupParameters sharedInstance] checkAndSetProfileInstructionShown] &&
 	   self.isCurrentUserProfile) {
 		self.introInstruction = [[Intro_Instruction_Notification_View alloc] initWithCenter:self.view.center andType:Profile];
 		self.introInstruction.custom_delegate = self;
 		[self.view addSubview:self.introInstruction];
 		[self.view bringSubviewToFront:self.introInstruction];
-		[[UserSetupParameters sharedInstance] set_profileNotification_InstructionAsShown];
 	}
 }
 

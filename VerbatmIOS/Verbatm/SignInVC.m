@@ -80,7 +80,7 @@
 
 	[self.view addGestureRecognizer:tap];
     
-    if(![[UserSetupParameters sharedInstance] isonBoarding_InstructionShown]){
+    if(![[UserSetupParameters sharedInstance] checkOnboardingShown]){
         [self createOnBoarding];
     }else{
       [self.pageControlView removeFromSuperview];
@@ -98,7 +98,7 @@
         if(scrollView.contentOffset.x == self.view.bounds.size.width *3){
             [scrollView removeFromSuperview];
             [self.pageControlView removeFromSuperview];
-            [[UserSetupParameters sharedInstance] set_onboarding_InstructionAsShown];
+            [[UserSetupParameters sharedInstance] setOnboardingShown];
         }
         
     }else if (scrollView == self.contentOnboardingPage){
@@ -150,7 +150,7 @@
 
 -(void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-	if(![[UserSetupParameters sharedInstance] isTermsAccept_InstructionShown] && !self.loginFirstTimeDone){
+	if(![[UserSetupParameters sharedInstance] checkTermsShown] && !self.loginFirstTimeDone){
 		self.loginFirstTimeDone = YES;
 		[self performSegueWithIdentifier:TERMS_CONDITIONS_VC_SEGUE_ID sender:self];
 	}

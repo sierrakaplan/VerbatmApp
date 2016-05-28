@@ -22,4 +22,6 @@
 //an nsarray of the channels
 +(void) getChannelsForUser:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock;
 
++(void) getChannelsForUserWITHOUTLIMIT:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock;
+
 @end

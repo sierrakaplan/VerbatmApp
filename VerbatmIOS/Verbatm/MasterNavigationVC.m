@@ -158,11 +158,12 @@
     self.tabBarController.viewControllers = @[self.feedVC, self.discoverVC, deadView, self.profileVC];
     //add adk button to tab bar
 	[self addTabBarCenterButtonOverDeadView];
-	if ([[UserSetupParameters sharedInstance] isFeed_InstructionShown]) {
-		self.tabBarController.selectedViewController = self.feedVC;
-	} else {
-		self.tabBarController.selectedViewController = self.discoverVC;
-	}
+	//todo: onboarding 
+//	if ([[UserSetupParameters sharedInstance] checkAndSetFeedInstructionShown]) {
+//		self.tabBarController.selectedViewController = self.feedVC;
+//	} else {
+//		self.tabBarController.selectedViewController = self.discoverVC;
+//	}
 	[self formatTabBar];
 }
 

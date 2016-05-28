@@ -6,6 +6,7 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+#import "Channel_BackendObject.h"
 #import "Channel.h"
 #import "PostsQueryManager.h"
 #import <Parse/PFQuery.h>
@@ -34,29 +35,40 @@
 		block (@[]);
 		return;
 	}
-	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
-	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
-	[postQuery orderByAscending:@"createdAt"];
-	[postQuery setLimit: POSTS_DOWNLOAD_SIZE];
-	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
-												  NSError * _Nullable error) {
-		if(activities && !error) {
-			NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
-			for(PFObject * pc_activity in activities){
-				PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
-				[post fetchIfNeededInBackground];
-				[finalPostObjects addObject:pc_activity];
+
+	[Channel_BackendObject getChannelsForUserWITHOUTLIMIT:channel.channelCreator withCompletionBlock:^(NSMutableArray *channels) { //todo: delete if bringing back more than one channel
+
+		PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
+		[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO containedIn:channels];
+		[postQuery orderByAscending:@"createdAt"];
+		[postQuery setLimit: POSTS_DOWNLOAD_SIZE];
+		[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
+													  NSError * _Nullable error) {
+			if(activities && !error) {
+				NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
+				for(PFObject * pc_activity in activities){
+					PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
+					[post fetchIfNeededInBackground];
+					[finalPostObjects addObject:pc_activity];
+				}
+				self.postsDownloaded = 0;
+				self.postsDownloaded += finalPostObjects.count;
+				block(finalPostObjects);
 			}
-			self.postsDownloaded = 0;
-			self.postsDownloaded += finalPostObjects.count;
-			block(finalPostObjects);
-		}
+		}];
+
 	}];
+
+
 }
 
 -(void) loadMorePostsInChannel:(Channel*)channel withCompletionBlock:(void(^)(NSArray *))block {
+
+	[Channel_BackendObject getChannelsForUserWITHOUTLIMIT:channel.channelCreator withCompletionBlock:^(NSMutableArray *channels) { //todo: delete if bringing back more than one channel
+
+
 	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
-	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
+	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO containedIn:channels];
 	[postQuery orderByAscending:@"createdAt"];
 	[postQuery setLimit: POSTS_DOWNLOAD_SIZE];
 	[postQuery setSkip: self.postsDownloaded];
@@ -76,6 +88,8 @@
 			block(finalPostObjects);
 		}
 	}];
+
+	}];
 }
 
 +(void) getPostsInChannel:(Channel*)channel withLimit:(NSInteger)limit withCompletionBlock:(void(^)(NSArray *))block {
@@ -83,8 +97,11 @@
 		block (@[]);
 		return;
 	}
+
+	[Channel_BackendObject getChannelsForUserWITHOUTLIMIT:channel.channelCreator withCompletionBlock:^(NSMutableArray *channels) { //todo: delete if bringing back more than one channel
+
 	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
-	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
+	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO containedIn:channels];
 	[postQuery orderByAscending:@"createdAt"];
 	[postQuery setLimit: limit];
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
@@ -98,6 +115,8 @@
 			}
 			block(finalPostObjects);
 		}
+	}];
+
 	}];
 }
 

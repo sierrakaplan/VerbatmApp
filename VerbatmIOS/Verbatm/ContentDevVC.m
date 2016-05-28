@@ -129,7 +129,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 @property (nonatomic) BOOL pinchObject_HasBeenAdded_ForTheFirstTime;
 @property (nonatomic) BOOL pinchViewTappedAndClosedForTheFirstTime;
 
-@property (nonatomic) UIImageView * pinchElementsTogetherInstructionView;//presents instrutions to user to pinch together their media
+@property (strong, nonatomic) UIView *instructionView;
 
 #pragma mark Previewing
 
@@ -140,6 +140,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 @property (strong, nonatomic) SharePostView *sharePostView;
 
+
+#define INSTRUCTION_VIEW_ALPHA 0.7f
 #define CHANNEL_CREATION_PROMPT @"enter channel name"
 
 #define CHANNEL_PICKER_FIELD_Y_OFFSET 10.f
@@ -215,12 +217,11 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 }
 
 -(void) checkIntroNotification {
-	if(![[UserSetupParameters sharedInstance] isAdk_InstructionShown]) {
+	if(![[UserSetupParameters sharedInstance] checkAndSetADKInstructionShown]) {
 		self.introInstruction = [[Intro_Instruction_Notification_View alloc] initWithCenter:self.view.center andType:ADK];
 		self.introInstruction.custom_delegate = self;
 		[self.view addSubview:self.introInstruction];
 		[self.view bringSubviewToFront:self.introInstruction];
-		[[UserSetupParameters sharedInstance] set_ADKNotification_InstructionAsShown];
 	}
 }
 
@@ -306,7 +307,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 	self.currentPresentedPickerRow = 0;
 
-	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(userTappedChannelSelctor:)];
+	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(userTappedChannelSelector:)];
 	tap.delegate = self;
 	[picker addGestureRecognizer:tap];
 
@@ -383,10 +384,10 @@ rowHeightForComponent:(NSInteger)component{
 }
 
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
-	return true;
+	return YES;
 }
 
--(void)userTappedChannelSelctor:(UITapGestureRecognizer *) tap{
+-(void)userTappedChannelSelector:(UITapGestureRecognizer *) tap{
 	if(self.currentPresentedPickerRow == self.userChannels.count){
 		UITextField * textField = (UITextField *) [self.channelPicker viewForRow:self.userChannels.count forComponent:0];
 		if(textField)[textField becomeFirstResponder];
@@ -497,11 +498,11 @@ rowHeightForComponent:(NSInteger)component{
 
 #pragma mark Preview Button
 -(void) rightButtonPressed {
-//    
-//    self.sharePostView = [[SharePostView alloc] initWithFrame:CGRectMake(self.view.center.x/3, self.view.center.y/3, self.view.bounds.size.width * 0.67, self.view.bounds.size.height * 0.67) shouldStartOnChannels:NO];
-//    self.sharePostView.delegate = self;
-//    [self.view addSubview:self.sharePostView];
-//    [self.view bringSubviewToFront:self.sharePostView];
+	//
+	//    self.sharePostView = [[SharePostView alloc] initWithFrame:CGRectMake(self.view.center.x/3, self.view.center.y/3, self.view.bounds.size.width * 0.67, self.view.bounds.size.height * 0.67) shouldStartOnChannels:NO];
+	//    self.sharePostView.delegate = self;
+	//    [self.view addSubview:self.sharePostView];
+	//    [self.view bringSubviewToFront:self.sharePostView];
 	NSMutableArray * pinchViews = [[NSMutableArray alloc] init];
 
 	for(ContentPageElementScrollView * contentElementScrollView in self.pageElementScrollViews){
@@ -685,14 +686,13 @@ andSaveInUserDefaults:(BOOL)save {
 		self.addMediaBelowView = newElementScrollView;
 		[self shiftElementsBelowView: self.channelPicker];
 
-	}completion:^(BOOL finished) {
-		if(finished){
-			if(![[UserSetupParameters sharedInstance] isPinchCircles_InstructionShown] &&
-			   self.pageElementScrollViews.count > 2){
-				[self presentUserInstructionForPinchGesture];
-				[[UserSetupParameters sharedInstance] set_pinchCircles_InstructionAsShown];
-
-			}
+	} completion:^(BOOL finished) {
+		// includes default media tile
+		if(finished && self.numPinchViews < 2 && ![[UserSetupParameters sharedInstance]
+												   checkAndSetEditPinchViewInstructionShown]) {
+			[self presentEditPinchViewInstruction];
+		} else if(finished && ![[UserSetupParameters sharedInstance] checkAndSetPinchInstructionShown]) {
+			[self presentPinchInstruction];
 		}
 	}];
 }
@@ -1517,35 +1517,49 @@ andSaveInUserDefaults:(BOOL)save {
 	}];
 }
 
--(void)presentUserInstructionForPinchGesture {
-
+-(void) presentPinchInstruction {
 	ContentPageElementScrollView * firstInList = self.pageElementScrollViews[0];
-
 	CGFloat offsetFromPinchViewCenters = 60.f;
-
 	CGFloat frameHeight = firstInList.frame.size.height - (offsetFromPinchViewCenters);
-
 	CGFloat frameWidth = frameHeight;
-
-
-
 	CGRect instructionFrame = CGRectMake(firstInList.center.x - 8.f, firstInList.center.y + offsetFromPinchViewCenters,frameWidth,frameHeight);
 
+	UIImage *instructionImage = [UIImage imageNamed:PINCH_OBJECTS_TOGETHER_INSTRUCTION];
+	UIImageView *instructionImageView = [[UIImageView alloc] initWithImage:instructionImage];
+	instructionImageView.frame = instructionFrame;
+	instructionImageView.contentMode = UIViewContentModeScaleAspectFit;
+	instructionImageView.frame =  instructionFrame;
 
-	UIImage * instructionImage = [UIImage imageNamed:PINCH_OBJECTS_TOGETHER_INSTRUCTION];
-	self.pinchElementsTogetherInstructionView = [[UIImageView alloc] initWithImage:instructionImage];
-	self.pinchElementsTogetherInstructionView.contentMode = UIViewContentModeScaleAspectFit;
-	self.pinchElementsTogetherInstructionView.frame =  instructionFrame;
+	[self.instructionView addSubview:instructionImageView];
+	[self displayInstructionView];
+}
 
-	[self.mainScrollView addSubview:self.pinchElementsTogetherInstructionView];
-	[self.mainScrollView bringSubviewToFront:self.pinchElementsTogetherInstructionView];
+-(void) presentEditPinchViewInstruction {
+	ContentPageElementScrollView * firstInList = self.pageElementScrollViews[0];
+	CGFloat offsetFromPinchViewCenters = 60.f;
+	CGFloat frameHeight = firstInList.frame.size.height - (offsetFromPinchViewCenters);
+	CGFloat frameWidth = frameHeight;
+	CGRect instructionFrame = CGRectMake(firstInList.center.x - 8.f, firstInList.center.y + offsetFromPinchViewCenters,frameWidth,frameHeight);
 
-	[UIView animateWithDuration:4.f animations:^{
-		self.pinchElementsTogetherInstructionView.alpha = 0.f;
-	}completion:^(BOOL finished) {
-		[self.pinchElementsTogetherInstructionView removeFromSuperview];
-	}];
+	UIImage *instructionImage = [UIImage imageNamed:EDIT_PINCHVIEW_INSTRUCTION];
+	UIImageView *instructionImageView = [[UIImageView alloc] initWithImage:instructionImage];
+	instructionImageView.frame = instructionFrame;
+	instructionImageView.contentMode = UIViewContentModeScaleAspectFit;
+	instructionImageView.frame =  instructionFrame;
 
+	[self.instructionView addSubview:instructionImageView];
+	[self displayInstructionView];
+}
+
+-(void) displayInstructionView {
+	self.instructionView.alpha = 1.f;
+	[self.view addSubview: self.instructionView];
+	[self.view bringSubviewToFront:self.instructionView];
+//	[UIView animateWithDuration:INSTRUCTION_ANIMATION_TIME delay:0.f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+//		self.instructionView.alpha = 0.1f;
+//	} completion:^(BOOL finished) {
+//		if (finished && [self.instructionView superview]) [self.instructionView removeFromSuperview];
+//	}];
 }
 
 //adjusts offset of main scroll view so selected item is in focus
@@ -1671,6 +1685,7 @@ andSaveInUserDefaults:(BOOL)save {
 
 -(void)addTapGestureToPinchView: (PinchView *) pinchView {
 	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pinchObjectTapped:)];
+	tap.delegate = self;
 	[pinchView addGestureRecognizer:tap];
 	if ([pinchView isKindOfClass:[CollectionPinchView class]]) {
 		for (PinchView* childPinchView in [(CollectionPinchView*)pinchView pinchedObjects]) {
@@ -1904,6 +1919,53 @@ andSaveInUserDefaults:(BOOL)save {
 	}
 }
 
+#pragma mark -Share Seletion View Protocol -
+
+-(void)cancelButtonSelected{
+	[self removeSharePOVView];
+}
+
+//todo: save share object
+-(void)postPostToChannels:(NSMutableArray *) channels andFacebook:(BOOL)externalSharing{
+
+	//    if ([FBSDKAccessToken currentAccessToken]) {
+	//        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+	//                                       @"Damas", @"name",
+	//                                       @"Yoooo! FB Graph API test", @"caption",
+	//                                       @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content.", @"description",
+	//                                       @"http://verbatm.io", @"link",
+	//                                       //       @"http://i.imgur.com/g3Qc1HN.png", @"picture",
+	//                                       nil];
+	//        FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:params HTTPMethod:@"POST"];
+	//
+	//
+	//
+	//        [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+	//             if (!error) {
+	//                 NSLog(@"fetched user:%@", result);
+	//             } else {
+	//                 NSLog(@"An error has occured %@", error);
+	//             }
+	//         }];
+	//    }
+
+	[self removeSharePOVView];
+}
+
+-(void)removeSharePOVView{
+	if(self.sharePostView){
+		CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+			self.sharePostView.frame = offScreenFrame;
+		}completion:^(BOOL finished) {
+			if(finished){
+				[self.sharePostView removeFromSuperview];
+				self.sharePostView = nil;
+			}
+		}];
+	}
+}
+
 #pragma mark - Publishing (PreviewDisplay delegate Methods)
 
 -(void) publishWithTitle:(NSString *)title andPinchViews:(NSMutableArray *)pinchViews {
@@ -1932,9 +1994,9 @@ andSaveInUserDefaults:(BOOL)save {
 													 withCompletionBlock:^(BOOL isAlreadyPublishing, BOOL noNetwork) {
 														 NSString *errorMessage;
 														 if(isAlreadyPublishing) {
-															errorMessage = @"Please wait until the previous post has finished publishing.";
+															 errorMessage = @"Please wait until the previous post has finished publishing.";
 														 } else if (noNetwork) {
-															errorMessage = @"Something went wrong - please check your network connection and try again.";
+															 errorMessage = @"Something went wrong - please check your network connection and try again.";
 														 } else {
 															 //Everything went ok
 															 [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
@@ -1949,13 +2011,6 @@ andSaveInUserDefaults:(BOOL)save {
 													 }];
 	}
 }
-
-#pragma mark - Tap to clear view -
-
-- (IBAction)tapToClearKeyboard:(UITapGestureRecognizer *)sender {
-	[self removeKeyboardFromScreen];
-}
-
 
 #pragma mark - Lazy Instantiation
 
@@ -2022,6 +2077,23 @@ andSaveInUserDefaults:(BOOL)save {
 	return _activeTextView;
 }
 
+-(UIView*) instructionView {
+	if (!_instructionView) {
+		_instructionView = [[UIView alloc] initWithFrame:self.view.frame];
+		[_instructionView setBackgroundColor:[UIColor colorWithWhite:0.f alpha:INSTRUCTION_VIEW_ALPHA]];
+		UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(instructionViewTapped)];
+		tap.delegate = self;
+		_instructionView.userInteractionEnabled = YES;
+		[_instructionView addGestureRecognizer:tap];
+	}
+	return _instructionView;
+}
+
+-(void) instructionViewTapped {
+	[self.instructionView.layer removeAllAnimations];
+	[self.instructionView removeFromSuperview];
+}
+
 @synthesize pageElementScrollViews = _pageElementScrollViews;
 
 -(NSMutableArray *) pageElementScrollViews {
@@ -2060,52 +2132,6 @@ andSaveInUserDefaults:(BOOL)save {
 		_channelSelectorImageRight.contentMode = UIViewContentModeScaleAspectFit;
 	}
 	return _channelSelectorImageRight;
-}
-
--(void)removeSharePOVView{
-    if(self.sharePostView){
-        CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-        [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-            self.sharePostView.frame = offScreenFrame;
-        }completion:^(BOOL finished) {
-            if(finished){
-                [self.sharePostView removeFromSuperview];
-                self.sharePostView = nil;
-            }
-        }];
-    }
-}
-
-#pragma mark -Share Seletion View Protocol -
--(void)cancelButtonSelected{
-    [self removeSharePOVView];
-}
-
-//todo: save share object
--(void)postPostToChannels:(NSMutableArray *) channels andFacebook:(BOOL)externalSharing{
-    
-//    if ([FBSDKAccessToken currentAccessToken]) {
-//        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-//                                       @"Damas", @"name",
-//                                       @"Yoooo! FB Graph API test", @"caption",
-//                                       @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content.", @"description",
-//                                       @"http://verbatm.io", @"link",
-//                                       //       @"http://i.imgur.com/g3Qc1HN.png", @"picture",
-//                                       nil];
-//        FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:params HTTPMethod:@"POST"];
-//        
-//       
-//
-//        [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
-//             if (!error) {
-//                 NSLog(@"fetched user:%@", result);
-//             } else {
-//                 NSLog(@"An error has occured %@", error);
-//             }
-//         }];
-//    }
-    
-    [self removeSharePOVView];
 }
 
 @end

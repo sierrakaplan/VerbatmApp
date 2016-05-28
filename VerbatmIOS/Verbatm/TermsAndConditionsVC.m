@@ -105,9 +105,8 @@
 
 
 - (IBAction)termsAccepted:(id)sender {
-    
     //store that the terms have been accepted
-    [[UserSetupParameters sharedInstance] set_TermsAccept_InstructionAsShown];
+    [[UserSetupParameters sharedInstance] setTermsShown];
     
     //great the user has accepted the terms
     [self exitSettingsPage];

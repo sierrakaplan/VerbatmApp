@@ -170,12 +170,9 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 		[self displayMediaOnCurrentPage];
 	}
 
-	if(![[UserSetupParameters sharedInstance] isSwipeUpDown_InstructionShown] &&
-	   ([[UserSetupParameters sharedInstance] isFilter_InstructionShown] || [[self getCUrrentView] isKindOfClass:[VideoPVE class]])
-	   &&  self.pageViews.count > 1) {
-
+	//todo: check timing
+	if(![[UserSetupParameters sharedInstance] checkAndSetSwipeInstructionShown] && self.pageViews.count > 1) {
 		[self presentSwipeUpAndDownInstruction];
-		[[UserSetupParameters sharedInstance] set_SwipeUpDownNotification_InstructionAsShown];
 	}
 }
 
