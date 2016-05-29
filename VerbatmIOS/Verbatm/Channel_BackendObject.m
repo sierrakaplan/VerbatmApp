@@ -84,11 +84,10 @@
     [user fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
         PFQuery * userChannelQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
         [userChannelQuery whereKey:CHANNEL_CREATOR_KEY equalTo:user];
-		[userChannelQuery setLimit: 1]; // todo: remove if more than 1 channel later
         [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                              NSError * _Nullable error) {
             NSMutableArray * finalChannelObjects = [[NSMutableArray alloc] init];
-            if(objects && !error){
+            if(objects && !error) {
                 for(PFObject * parseChannelObject in objects){
                     NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
                     // get number of follows from follow objects
@@ -101,33 +100,6 @@
             completionBlock(finalChannelObjects);
         }];
     }];
-}
-
-+ (void) getChannelsForUserWITHOUTLIMIT:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock {
-	if (!user) {
-		completionBlock (nil);
-		return;
-	}
-
-	[user fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-		PFQuery * userChannelQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
-		[userChannelQuery whereKey:CHANNEL_CREATOR_KEY equalTo:user];
-		[userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-															 NSError * _Nullable error) {
-			NSMutableArray * finalChannelObjects = [[NSMutableArray alloc] init];
-			if(objects && !error){
-				for(PFObject * parseChannelObject in objects){
-//					NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
-					// get number of follows from follow objects
-//					Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
-//																	andParseChannelObject:parseChannelObject
-//																		andChannelCreator:user];
-					[finalChannelObjects addObject:parseChannelObject];
-				}
-			}
-			completionBlock(finalChannelObjects);
-		}];
-	}];
 }
 
 @end

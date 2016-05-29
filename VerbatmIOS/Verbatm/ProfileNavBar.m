@@ -81,6 +81,10 @@
 -(void) loginSucceeded: (NSNotification*) notification {
     [self.threadNavScrollView removeFromSuperview];
     self.threadNavScrollView = nil;
+
+	//todo:
+
+	/* Migrating to one channel */
     [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray * channels) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.threadNavScrollView displayTabs:channels withStartChannel:nil isLoggedInUser:YES];

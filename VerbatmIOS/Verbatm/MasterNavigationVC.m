@@ -1,4 +1,4 @@
- //
+//
 //  verbatmMasterNavigationViewController.m
 //  Verbatm
 //
@@ -33,6 +33,7 @@
 
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "UserAndChannelListsTVC.h"
+#import "User_BackendObject.h"
 #import "UserInfoCache.h"
 #import "UserSetupParameters.h"
 
@@ -40,9 +41,11 @@
 
 
 @interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate,
-								ProfileVCDelegate>
+ProfileVCDelegate>
 
 #pragma mark - Tab Bar Controller -
+
+@property (nonatomic) BOOL migrated;
 
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
 @property (strong, nonatomic) CustomTabBarController* tabBarController;
@@ -69,16 +72,34 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-    [self registerForNotifications];
-    if ([PFUser currentUser].isAuthenticated) {
-        [self setUpStartEnvironment];
-    }
+	[self registerForNotifications];
+	if ([PFUser currentUser].isAuthenticated) {
+		[self checkMigrated];
+	}
 }
 
--(void)setUpStartEnvironment{
-    [self setUpTabBarController];
+-(void) checkMigrated {
+	/* Migrating to one channel */
+	self.migrated = NO;
+	NSNumber* migratedObject = [[PFUser currentUser] objectForKey:USER_MIGRATED_ONE_CHANNEL];
+	if (migratedObject && [migratedObject boolValue]) self.migrated = YES;
+	if (!self.migrated) {
+		[User_BackendObject migrateUserToOneChannelWithCompletionBlock:^(BOOL success) {
+			if (success) {
+				self.migrated = YES;
+				[[PFUser currentUser] setObject:[NSNumber numberWithBool:YES] forKey:USER_MIGRATED_ONE_CHANNEL];
+			}
+			[self setUpStartUpEnvironment];
+		}];
+	} else {
+		[self setUpStartUpEnvironment];
+	}
+}
+
+-(void) setUpStartUpEnvironment {
+	[self setUpTabBarController];
 	[[UserSetupParameters sharedInstance] setUpParameters];
-     self.view.backgroundColor = [UIColor blackColor];
+	self.view.backgroundColor = [UIColor blackColor];
 	[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{}];
 }
 
@@ -86,6 +107,8 @@
 	[super viewDidAppear:animated];
 	if (![PFUser currentUser].isAuthenticated) {
 		[self bringUpLogin];
+	} else {
+		//todo:		UIAlertController
 	}
 }
 
@@ -114,13 +137,13 @@
 											 selector:@selector(loginSucceeded:)
 												 name:NOTIFICATION_USER_LOGIN_SUCCEEDED
 											   object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(userHasSignedOutNotification:)
-                                                 name:NOTIFICATION_USER_SIGNED_OUT
-                                               object:nil];
-    
-    
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(userHasSignedOutNotification:)
+												 name:NOTIFICATION_USER_SIGNED_OUT
+											   object:nil];
+
+
 }
 
 #pragma mark - User Manager Delegate -
@@ -129,9 +152,9 @@
 	PFUser * user = notification.object;
 	[[Crashlytics sharedInstance] setUserIdentifier: [user username]];
 	[[Crashlytics sharedInstance] setUserName: [user objectForKey:VERBATM_USER_NAME_KEY]];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self setUpStartEnvironment];
-    });
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[self checkMigrated];
+	});
 }
 
 -(void) loginFailed:(NSNotification *) notification {
@@ -143,36 +166,36 @@
 #pragma mark - Tab bar controller -
 
 -(void) setUpTabBarController {
-    [self createTabBarViewController];
-    [self createViewControllers];
-    
-    UIViewController * deadView = [[UIViewController alloc] init];
-    
-    UIImage * deadViewTabImage = [self imageWithImage:[[UIImage imageNamed:ADK_NAV_ICON]
-                                                       imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
-                                                        scaledToSize:CGSizeMake(30.f, 30.f)];
-    
-    deadView.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:deadViewTabImage selectedImage:deadViewTabImage];
-    deadView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+	[self createTabBarViewController];
+	[self createViewControllers];
 
-    self.tabBarController.viewControllers = @[self.feedVC, self.discoverVC, deadView, self.profileVC];
-    //add adk button to tab bar
+	UIViewController * deadView = [[UIViewController alloc] init];
+
+	UIImage * deadViewTabImage = [self imageWithImage:[[UIImage imageNamed:ADK_NAV_ICON]
+													   imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
+										 scaledToSize:CGSizeMake(30.f, 30.f)];
+
+	deadView.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:deadViewTabImage selectedImage:deadViewTabImage];
+	deadView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+
+	self.tabBarController.viewControllers = @[self.feedVC, self.discoverVC, deadView, self.profileVC];
+	//add adk button to tab bar
 	[self addTabBarCenterButtonOverDeadView];
-	//todo: onboarding 
-//	if ([[UserSetupParameters sharedInstance] checkAndSetFeedInstructionShown]) {
-//		self.tabBarController.selectedViewController = self.feedVC;
-//	} else {
-//		self.tabBarController.selectedViewController = self.discoverVC;
-//	}
+	//todo: onboarding
+	//	if ([[UserSetupParameters sharedInstance] checkAndSetFeedInstructionShown]) {
+	//		self.tabBarController.selectedViewController = self.feedVC;
+	//	} else {
+	//		self.tabBarController.selectedViewController = self.discoverVC;
+	//	}
 	[self formatTabBar];
 }
 
 - (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
-    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
-    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return newImage;
+	UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+	[image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+	UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+	UIGraphicsEndImageContext();
+	return newImage;
 }
 
 -(void) formatTabBar {
@@ -208,14 +231,14 @@
 -(void)createViewControllers {
 	self.discoverVC = [self.storyboard instantiateViewControllerWithIdentifier:DISCOVER_VC_ID];
 
-    self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
+	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
 	self.profileVC.delegate = self;
-    self.profileVC.userOfProfile = [PFUser currentUser];
-    self.profileVC.isCurrentUserProfile = YES;
+	self.profileVC.userOfProfile = [PFUser currentUser];
+	self.profileVC.isCurrentUserProfile = YES;
 	self.profileVC.isProfileTab = YES;
 
-    self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
-    self.feedVC.delegate = self;
+	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
+	self.feedVC.delegate = self;
 
 	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															  image:[UIImage imageNamed:PROFILE_NAV_ICON]
@@ -224,23 +247,23 @@
 															  image:[UIImage imageNamed:HOME_NAV_ICON]
 													  selectedImage:[UIImage imageNamed:HOME_NAV_ICON]];
 	self.discoverVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
-															  image:[UIImage imageNamed:DISCOVER_NAV_ICON]
-													  selectedImage:[UIImage imageNamed:DISCOVER_NAV_ICON]];
+															   image:[UIImage imageNamed:DISCOVER_NAV_ICON]
+													   selectedImage:[UIImage imageNamed:DISCOVER_NAV_ICON]];
 
-    // images need to be centered this way for some reason
+	// images need to be centered this way for some reason
 	self.profileVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
-//    self.channelListView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+	//    self.channelListView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 	self.discoverVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 	self.feedVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 }
 
 -(void)createTabBarViewController{
-    self.tabBarControllerContainerView.frame = self.view.bounds;
-    self.tabBarController = [self.storyboard instantiateViewControllerWithIdentifier: TAB_BAR_CONTROLLER_ID];
+	self.tabBarControllerContainerView.frame = self.view.bounds;
+	self.tabBarController = [self.storyboard instantiateViewControllerWithIdentifier: TAB_BAR_CONTROLLER_ID];
 	self.tabBarController.tabBarHeight = TAB_BAR_HEIGHT;
-    [self.tabBarControllerContainerView addSubview:self.tabBarController.view];
-    [self addChildViewController:self.tabBarController];
-    self.tabBarController.delegate = self;
+	[self.tabBarControllerContainerView addSubview:self.tabBarController.view];
+	[self addChildViewController:self.tabBarController];
+	self.tabBarController.delegate = self;
 }
 
 // Create a custom UIButton and add it over our adk icon
@@ -251,7 +274,7 @@
 	// covers up tab so that it won't go to blank view controller
 	// Center tab out of 3
 	UIView* tabView = [[UIView alloc] initWithFrame:CGRectMake(tabWidth*2, 0.f, tabWidth,
-															self.tabBarController.tabBarHeight)];
+															   self.tabBarController.tabBarHeight)];
 	[tabView setBackgroundColor:[UIColor clearColor]];
 
 	UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -273,7 +296,7 @@
 
 
 -(void)userHasSignedOutNotification:(NSNotification *) notification{
-    [self bringUpLogin];
+	[self bringUpLogin];
 }
 
 #pragma mark - Handle Login -
@@ -295,7 +318,7 @@
 			   [segue.identifier isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]){
 		BOOL ftue = [[[PFUser currentUser] objectForKey:USER_FTUE] boolValue];
 		if (!ftue) {
-
+			//todo
 		}
 
 		//todo: move to after ftue screen
@@ -328,11 +351,11 @@
 
 //show the channels the current user can select to follow
 -(void)presentChannelsToFollow{
-    //[self presentShareSelectionViewStartOnChannels:YES];
+	//[self presentShareSelectionViewStartOnChannels:YES];
 }
 
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController{
-    
+
 }
 
 #pragma mark - Memory Warning -

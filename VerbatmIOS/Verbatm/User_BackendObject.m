@@ -16,6 +16,8 @@
 #import "ParseBackendKeys.h"
 #import "Notifications.h"
 
+#import <PromiseKit/PromiseKit.h>
+
 @implementation User_BackendObject
 
 
@@ -77,6 +79,211 @@
 		} else {
 			[[Crashlytics sharedInstance] recordError:error];
 		}
+	}];
+}
+
+//Move all posts to one channel, move all follow relationships to one channel, and delete all other channels
++ (void) migrateUserToOneChannelWithCompletionBlock:(void(^)(BOOL))block {
+	PFUser *user = [PFUser currentUser];
+
+	PFQuery *userChannelQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
+	[userChannelQuery whereKey:CHANNEL_CREATOR_KEY equalTo:user];
+	[userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels,
+														 NSError * _Nullable error) {
+		if (error) {
+			[[Crashlytics sharedInstance] recordError:error];
+			block(NO);
+			return;
+		}
+
+		if (channels.count < 2) {
+			block(YES);
+			return;
+		}
+
+		PFObject *oneChannel = channels[0];
+		NSMutableArray *otherChannels = [[NSMutableArray alloc] initWithArray:channels];
+		[otherChannels removeObjectAtIndex:0];
+
+		[self moveAllPostsToOneChannel:oneChannel fromChannels:otherChannels].then(^(BOOL success) {
+			if (!success) {
+				block(NO);
+				return;
+			}
+
+			NSLog(@"All posts moved to one channel");
+
+			[self moveAllFollowRelationshipsToOneChannel:oneChannel fromChannels:otherChannels].then(^(BOOL success) {
+				if (!success) {
+					block(NO);
+					return;
+				}
+
+				NSLog(@"All follows moved to one channel");
+
+				[self deleteAllOtherChannels:otherChannels].then(^(NSArray *errors) {
+					for (NSError *error in errors) {
+						if (error) {
+							[[Crashlytics sharedInstance] recordError:error];
+							block(NO);
+							return;
+						}
+					}
+
+					NSLog(@"All other channels deleted");
+					
+					block(YES);
+				});
+			});
+		});
+	}];
+}
+
+// Resolves to a BOOL (YES if no errors, NO otherwise)
++(AnyPromise*) moveAllPostsToOneChannel:(PFObject*)oneChannel fromChannels:(NSArray*)otherChannels {
+
+	return [self getAllPostRelationshipsFromChannels:otherChannels].then(^(NSArray* postChannelRelationships) {
+		if (!postChannelRelationships) {
+			return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+				resolve(NO);
+			}];
+		}
+
+		NSMutableArray *newPostRelationshipsPromises = [[NSMutableArray alloc] initWithCapacity:postChannelRelationships.count];
+		for (PFObject *postChannelRelationship in postChannelRelationships) {
+			[newPostRelationshipsPromises addObject:[self saveNewPostRelationshipFromRelationship:postChannelRelationship andChannel:oneChannel]];
+			[postChannelRelationship deleteInBackground];
+		}
+		return PMKWhen(newPostRelationshipsPromises).then(^(NSArray *errors) {
+			for (NSError *error in errors) {
+				if (error) {
+					[[Crashlytics sharedInstance] recordError:error];
+					return NO;
+				}
+			}
+			return YES;
+		});
+	});
+}
+
++(AnyPromise*) moveAllFollowRelationshipsToOneChannel:(PFObject*)oneChannel fromChannels:(NSArray*)otherChannels {
+	return [self getAllFollowRelationshipsFromChannels:otherChannels].then(^(NSArray* followRelationships) {
+		if (!followRelationships) {
+			return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+				resolve(NO);
+			}];
+		}
+
+		NSMutableArray *newFollowRelationshipsPromises = [[NSMutableArray alloc] initWithCapacity:followRelationships.count];
+		for (PFObject *followRelationship in followRelationships) {
+			[newFollowRelationshipsPromises addObject:[self saveNewFollowRelationshipFromRelationship:followRelationship andChannel:oneChannel]];
+			[followRelationship deleteInBackground];
+		}
+		return PMKWhen(newFollowRelationshipsPromises).then(^(NSArray *errors) {
+			for (NSError *error in errors) {
+				if (error && ![error isEqual:[NSNull null]]) {
+					[[Crashlytics sharedInstance] recordError:error];
+					return NO;
+				}
+			}
+			return YES;
+		});
+	});
+}
+
++(AnyPromise*) deleteAllOtherChannels:(NSArray*)otherChannels {
+	NSMutableArray *deleteChannelsPromises = [[NSMutableArray alloc] initWithCapacity:otherChannels.count];
+	for (PFObject *channel in otherChannels) {
+		[deleteChannelsPromises addObject: [self deleteChannel:channel]];
+	}
+
+	return PMKWhen(deleteChannelsPromises);
+}
+
++(AnyPromise*) getAllPostRelationshipsFromChannels:(NSArray*)otherChannels {
+	return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+		PFQuery *postChannelRelationshipQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
+		[postChannelRelationshipQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO containedIn:otherChannels];
+		[postChannelRelationshipQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable postChannelRelationships, NSError * _Nullable error) {
+			if (error) [[Crashlytics sharedInstance] recordError:error];
+			resolve(postChannelRelationships);
+		}];
+	}];
+}
+
++(AnyPromise*) getAllFollowRelationshipsFromChannels:(NSArray*)otherChannels {
+	return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+		PFQuery *followRelationshipQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
+		[followRelationshipQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY containedIn:otherChannels];
+		[followRelationshipQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable followRelationships, NSError * _Nullable error) {
+			if (error) [[Crashlytics sharedInstance] recordError:error];
+			resolve(followRelationships);
+		}];
+	}];
+}
+
++ (AnyPromise*) saveNewPostRelationshipFromRelationship:(PFObject*)relationship andChannel:(PFObject*)channel {
+	return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+
+		PFObject *postObject = [relationship objectForKey:POST_CHANNEL_ACTIVITY_POST];
+		PFQuery *relationshipExistsQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
+		[relationshipExistsQuery whereKey:POST_CHANNEL_ACTIVITY_POST equalTo:postObject];
+		[relationshipExistsQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel];
+
+		[relationshipExistsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+			if (error) {
+				resolve(error);
+				return;
+			}
+
+			//Only save a post channel relationship if one doesn't already exist (because of reposting)
+			if (objects.count == 0) {
+				PFObject *newPostChannelRelationship = [PFObject objectWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
+				[newPostChannelRelationship setObject:postObject forKey:POST_CHANNEL_ACTIVITY_POST];
+				[newPostChannelRelationship setObject:channel forKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO];
+				//we store the person creating the relationship -- either reposter or original owner
+				[newPostChannelRelationship setObject:[PFUser currentUser] forKey:RELATIONSHIP_OWNER];
+				[newPostChannelRelationship saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+					resolve (error);
+				}];
+			}
+		}];
+
+	}];
+}
+
++ (AnyPromise*) saveNewFollowRelationshipFromRelationship:(PFObject*)relationship andChannel:(PFObject*)channel {
+	return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+		PFUser *userFollowing = [relationship objectForKey:FOLLOW_USER_KEY];
+
+		PFQuery *relationshipExistsQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
+		[relationshipExistsQuery whereKey:FOLLOW_USER_KEY equalTo:userFollowing];
+		[relationshipExistsQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channel];
+
+		[relationshipExistsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+			if (error) {
+				resolve(error);
+				return;
+			}
+
+			//Only save a follow relationship if one doesn't already exist
+			if (objects.count == 0) {
+				PFObject *newFollowRelationship = [PFObject objectWithClassName:FOLLOW_PFCLASS_KEY];
+				[newFollowRelationship setObject:userFollowing forKey:FOLLOW_USER_KEY];
+				[newFollowRelationship setObject:channel forKey:FOLLOW_CHANNEL_FOLLOWED_KEY];
+				[newFollowRelationship saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+					resolve (error);
+				}];
+			}
+		}];
+	}];
+}
+
++ (AnyPromise*) deleteChannel:(PFObject*)channel {
+	return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+		[channel deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+			resolve(error);
+		}];
 	}];
 }
 
