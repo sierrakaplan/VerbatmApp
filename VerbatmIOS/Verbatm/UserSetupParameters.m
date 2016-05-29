@@ -49,7 +49,7 @@
 
 		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 		//because they are all saved together we can just check if one exists
-//		if(![defaults objectForKey:FEED_INTRO_INSTRUCTION_KEY]){
+		if(![defaults objectForKey:FEED_INTRO_INSTRUCTION_KEY]){
 			[defaults setBool:NO forKey:FEED_INTRO_INSTRUCTION_KEY];
 			[defaults setBool:NO forKey:FILTER_SWIPE_INSTRUCTION_KEY];
 			[defaults setBool:NO forKey:PINCH_INSTRUCTION_KEY];
@@ -59,7 +59,7 @@
 			[defaults setBool:NO forKey:ACCEPTED_TERMS_KEY];
 			[defaults setBool:NO forKey:ON_BOARDING_EXPERIENCE_KEY];
 			[defaults synchronize];
-//		}
+		}
 	}
 }
 

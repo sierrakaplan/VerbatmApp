@@ -63,19 +63,20 @@
 +(void)getChannelObjectFromParsePCRelationship:(PFObject *) pcr withCompletionBlock:(void(^)(Channel * ))block{
 	PFObject * parsePostObject = [pcr valueForKey:POST_CHANNEL_ACTIVITY_POST];
 	[parsePostObject fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+		//todo: error handling
 		PFObject* postOriginalChannel = [parsePostObject valueForKey:POST_CHANNEL_KEY];
-		[postOriginalChannel fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable channelError) {
-			[[postOriginalChannel valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable user, NSError * _Nullable userError) {
-				if (!object || !user) {
+		[postOriginalChannel fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable postChannel, NSError * _Nullable channelError) {
+			[[postChannel valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable user, NSError * _Nullable userError) {
+				if (!user) {
 					NSError *error = channelError ? channelError : userError;
 					[[Crashlytics sharedInstance] recordError: error];
 					block (nil);
 					return;
 				}
 				PFUser *channelCreator = (PFUser *)user;
-				NSString *channelName  = [postOriginalChannel valueForKey:CHANNEL_NAME_KEY];
+				NSString *channelName  = [postChannel valueForKey:CHANNEL_NAME_KEY];
 				Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
-															   andParseChannelObject:postOriginalChannel
+															   andParseChannelObject:postChannel
 																   andChannelCreator:channelCreator];
 				block(verbatmChannelObject);
 			}];

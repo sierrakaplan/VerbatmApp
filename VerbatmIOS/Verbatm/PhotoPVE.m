@@ -354,11 +354,6 @@
 		if(!self.slideShowPlaying){
 			[self playWithSpeed:2.f];
 		}
-	} else {
-		//todo: delete
-		//		if (self.imageContainerViews.count > 0 && [self.imageContainerViews[0] isKindOfClass:[TextOverMediaView class]]) {
-		//			[(TextOverMediaView*)self.imageContainerViews[0] displayLargeImage:YES];
-		//		}
 	}
 }
 
@@ -367,9 +362,6 @@
 	for (UIView * view in self.imageContainerViews) {
 		if([view isKindOfClass:[EditMediaContentView class]]){
 			[((EditMediaContentView *)view) exiting];
-		} else {
-			//todo: delete
-			//			[(TextOverMediaView*)view displayLargeImage:NO];
 		}
 	}
 	if(self.rearrangeView)[self.rearrangeView exitView];

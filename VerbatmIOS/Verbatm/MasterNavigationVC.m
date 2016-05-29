@@ -88,6 +88,7 @@ ProfileVCDelegate>
 			if (success) {
 				self.migrated = YES;
 				[[PFUser currentUser] setObject:[NSNumber numberWithBool:YES] forKey:USER_MIGRATED_ONE_CHANNEL];
+				[[PFUser currentUser] saveInBackground];
 			}
 			[self setUpStartUpEnvironment];
 		}];
