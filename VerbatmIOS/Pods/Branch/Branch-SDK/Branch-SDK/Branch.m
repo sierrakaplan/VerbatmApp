@@ -1240,7 +1240,7 @@ NSString * const BRANCH_PUSH_NOTIFICATION_PAYLOAD_KEY = @"branch";
     dispatch_semaphore_wait(self.processing_sema, DISPATCH_TIME_FOREVER);
     
     if (self.networkCount == 0 && self.requestQueue.size > 0) {
-        self.networkCount = 1;
+		//        self.networkCount = 1; //todo: THIS IS SUPER HACKY
         dispatch_semaphore_signal(self.processing_sema);
         
         BNCServerRequest *req = [self.requestQueue peek];
