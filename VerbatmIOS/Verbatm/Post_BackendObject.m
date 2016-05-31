@@ -20,6 +20,7 @@
 #import <Parse/PFQuery.h>
 
 #import "Page_BackendObject.h"
+#import "PublishingProgressManager.h"
 
 #import "Share_BackendManager.h"
 
@@ -54,17 +55,31 @@
 			[self.pageArray addObject:newPage];
 
 			for (int i = 1; i< pinchViews.count; i++) {
-				storePagePromise = storePagePromise.then(^(PFObject*pageObject) {
-					NSLog(@"Done storing page at index %d", i-1);
-					Page_BackendObject * newPage = [[Page_BackendObject alloc] init];
-					[self.pageArray addObject:newPage];
-					return [newPage savePageWithIndex:i andPinchView:pinchViews[i] andPost:newPostObject];
+				storePagePromise = storePagePromise.then(^(id result) {
+					if (result && [result isKindOfClass:[NSError class]]) {
+						[[PublishingProgressManager sharedInstance] savingMediaFailedWithError:error];
+						//Delete all media stored so far
+						[Post_BackendObject deletePost:newPostObject];
+						return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+							resolve(nil);
+						}];
+					} else {
+						Page_BackendObject * newPage = [[Page_BackendObject alloc] init];
+						[self.pageArray addObject:newPage];
+						return [newPage savePageWithIndex:i andPinchView:pinchViews[i] andPost:newPostObject];
+					}
 				});
 			}
 
-			storePagePromise.then(^(PFObject *pageObject) {
-				NSLog(@"Done storing page at index %lu", pinchViews.count-1);
+			storePagePromise.then(^(id result) {
+				if (result && [result isKindOfClass:[NSError class]]) {
+					[[PublishingProgressManager sharedInstance] savingMediaFailedWithError:error];
+					//Delete all media stored so far
+					[Post_BackendObject deletePost:newPostObject];
+				}
 			});
+		} else {
+			[[PublishingProgressManager sharedInstance] savingMediaFailedWithError:error];
 		}
 	}];
 
@@ -91,31 +106,6 @@
 			NSLog(@"Error deleting shares");
 		}
 	}];
-}
-
-+(void) getPostsInChannel:(Channel *)channel withLimit:(NSInteger)limit
-	  withCompletionBlock:(void(^)(NSArray *))block {
-	if(channel){
-		PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
-		[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
-		[postQuery orderByAscending:@"createdAt"];
-		[postQuery setLimit: limit];
-		[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
-													  NSError * _Nullable error) {
-			if(activities && !error) {
-				NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
-
-				for(PFObject * pc_activity in activities){
-
-					PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
-					[post fetchIfNeededInBackground];
-					[finalPostObjects addObject:pc_activity];
-				}
-
-				block(finalPostObjects);
-			}
-		}];
-	}
 }
 
 +(void)markPostAsFlagged:(PFObject *)flaggedPost {

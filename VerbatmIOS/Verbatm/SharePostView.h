@@ -25,6 +25,6 @@
 -(instancetype) initWithFrame:(CGRect)frame shouldStartOnChannels:(BOOL) showChannels;
 -(instancetype) initWithFrame:(CGRect)frame shouldStartOnChannels:(BOOL) showChannels fromContentDev:(BOOL) source;
 
-@property (nonatomic) id <SharePostViewDelegate> delegate;
+@property (nonatomic, weak) id <SharePostViewDelegate> delegate;
 
 @end

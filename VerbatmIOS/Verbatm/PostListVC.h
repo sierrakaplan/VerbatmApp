@@ -24,24 +24,21 @@ typedef enum PostListType {
 
 @interface PostListVC : UICollectionViewController
 
-@property (nonatomic) id <PostListVCProtocol> postListDelegate;
+@property (nonatomic, weak) id <PostListVCProtocol> postListDelegate;
 
-@property (nonatomic) PostListType listType;
-@property (nonatomic) BOOL isCurrentUserProfile;
+-(void) display:(Channel*)channelForList asPostListType:(PostListType)listType
+  withListOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile;
 
-@property (nonatomic) PFUser * listOwner;
-@property (nonatomic) Channel * channelForList;
+-(void) clearViews;
 
 //marks all posts as off screen
--(void) stopAllVideoContent;
+-(void) offScreen;
 
-//continues post that's on screen
--(void) continueVideoContent;
+-(void) refreshPosts;
 
--(void)reloadCurrentChannel;
+-(void) loadMorePosts;
 
 //moves the tap/share bar up and down over the tab bar
 -(void) footerShowing: (BOOL) showing;
 
--(void)clearOldPosts;
 @end

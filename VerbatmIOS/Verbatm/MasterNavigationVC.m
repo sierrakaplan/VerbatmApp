@@ -22,6 +22,7 @@
 
 #import "Notifications.h"
 
+#import "ParseBackendKeys.h"
 #import "ProfileVC.h"
 #import "PublishingProgressManager.h"
 
@@ -33,14 +34,16 @@
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "UserAndChannelListsTVC.h"
 #import "UserInfoCache.h"
+#import "UserSetupParameters.h"
 
 #import <Crashlytics/Crashlytics.h>
 
 
 @interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate,
-								ProfileVCDelegate, UserAndChannelListsTVCDelegate>
+								ProfileVCDelegate>
 
 #pragma mark - Tab Bar Controller -
+
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
 @property (strong, nonatomic) CustomTabBarController* tabBarController;
 @property (nonatomic) BOOL tabBarHidden;
@@ -123,8 +126,8 @@
 
 -(void) loginSucceeded:(NSNotification*) notification {
 	PFUser * user = notification.object;
-	[[Crashlytics sharedInstance] setUserEmail: user.email];
-	[[Crashlytics sharedInstance] setUserName: [user username]];
+	[[Crashlytics sharedInstance] setUserIdentifier: [user username]];
+	[[Crashlytics sharedInstance] setUserName: [user objectForKey:VERBATM_USER_NAME_KEY]];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self setUpStartEnvironment];
     });
@@ -132,7 +135,7 @@
 
 -(void) loginFailed:(NSNotification *) notification {
 	NSError* error = (NSError*) notification.object;
-	NSLog(@"Error finding current user: %@", error.description);
+	[[Crashlytics sharedInstance] recordError: error];
 	//TODO: only do this if have a connection, or only a certain number of times
 }
 
@@ -151,10 +154,14 @@
     deadView.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:deadViewTabImage selectedImage:deadViewTabImage];
     deadView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 
-    self.tabBarController.viewControllers = @[self.profileVC, deadView, self.feedVC, self.discoverVC];
+    self.tabBarController.viewControllers = @[self.feedVC, self.discoverVC, deadView, self.profileVC];
     //add adk button to tab bar
 	[self addTabBarCenterButtonOverDeadView];
-    self.tabBarController.selectedViewController = self.feedVC;
+	if ([[UserSetupParameters sharedInstance] isFeed_InstructionShown]) {
+		self.tabBarController.selectedViewController = self.feedVC;
+	} else {
+		self.tabBarController.selectedViewController = self.discoverVC;
+	}
 	[self formatTabBar];
 }
 
@@ -173,6 +180,7 @@
 	//[self.tabBarController.tabBar setTintColor:SELECTED_TAB_ICON_COLOR];
 	// Sets background of unselected UITabBarItem
 	[self.tabBarController.tabBar setBackgroundImage: [self getUnselectedTabBarItemImageWithSize: tabBarItemSize]];
+	[self.tabBarController.tabBar setBackgroundColor:[UIColor blackColor]];
 	// Sets the background color of the selected UITabBarItem
 	[self.tabBarController.tabBar setSelectionIndicatorImage: [self getSelectedTabBarItemImageWithSize: tabBarItemSize]];
 
@@ -185,29 +193,17 @@
 }
 
 -(UIImage*) getUnselectedTabBarItemImageWithSize: (CGSize) size {
-	return [UIImage makeImageWithColorAndSize:[UIColor colorWithWhite:0.0 alpha:TAB_BAR_ALPHA]
+	return [UIImage makeImageWithColorAndSize:[UIColor clearColor]
 									  andSize: size];
 }
 
 -(UIImage*) getSelectedTabBarItemImageWithSize: (CGSize) size {
-	return [UIImage makeImageWithColorAndSize:[UIColor colorWithWhite:DARK_GRAY alpha:TAB_BAR_ALPHA]
+	return [UIImage makeImageWithColorAndSize:[UIColor clearColor]
 									  andSize: size];
 }
 
 //the view controllers that will be tabbed
 -(void)createViewControllers {
-    UIImage * searchUnselected =  [self imageWithImage:[[UIImage imageNamed:DISCOVER_TAB_BAR_ICON]
-                                              imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
-                                scaledToSize:CGSizeMake(30.f, 30.f)];
-    
-    UIImage * searchSelected =  [self imageWithImage:[[UIImage imageNamed:DISCOVER_TAB_BAR_ICON]
-                                                      imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
-                                        scaledToSize:CGSizeMake(30.f, 30.f)];
-
-	//todo: delete references to channel list view
-//    self.channelListView = [[UserAndChannelListsTVC alloc] init];
-//    [self.channelListView presentAllVerbatmChannels];
-//    self.channelListView.listDelegate = self;
 	self.discoverVC = [self.storyboard instantiateViewControllerWithIdentifier:DISCOVER_VC_ID];
 
     self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
@@ -226,8 +222,8 @@
 															  image:[UIImage imageNamed:HOME_NAV_ICON]
 													  selectedImage:[UIImage imageNamed:HOME_NAV_ICON]];
 	self.discoverVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
-															  image:searchUnselected
-													  selectedImage:searchSelected];
+															  image:[UIImage imageNamed:DISCOVER_NAV_ICON]
+													  selectedImage:[UIImage imageNamed:DISCOVER_NAV_ICON]];
 
     // images need to be centered this way for some reason
 	self.profileVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
@@ -252,7 +248,7 @@
 	CGFloat tabWidth = self.tabBarController.tabBar.frame.size.width/numTabs;
 	// covers up tab so that it won't go to blank view controller
 	// Center tab out of 3
-	UIView* tabView = [[UIView alloc] initWithFrame:CGRectMake(tabWidth, 0.f, tabWidth,
+	UIView* tabView = [[UIView alloc] initWithFrame:CGRectMake(tabWidth*2, 0.f, tabWidth,
 															self.tabBarController.tabBarHeight)];
 	[tabView setBackgroundColor:[UIColor clearColor]];
 
@@ -266,9 +262,9 @@
 }
 
 -(void) revealADK {
-	[self.profileVC freeMemory];
-	[self.discoverVC freeMemory];
-	[self.feedVC freeMemory];
+	//Clear memory from discover when bring up adk
+	NSNotification * not = [[NSNotification alloc]initWithName:NOTIFICATION_FREE_MEMORY_DISCOVER object:nil userInfo:nil];
+	[[NSNotificationCenter defaultCenter] postNotification:not];
 	[[Analytics getSharedInstance] newADKSession];
 	[self performSegueWithIdentifier:ADK_SEGUE sender:self];
 }
@@ -282,30 +278,18 @@
 
 //brings up the create account page if there is no user logged in
 -(void) bringUpLogin {
-	//TODO: check user defaults and do login if they have logged in before
 	[self performSegueWithIdentifier:SIGN_IN_SEGUE sender:self];
 }
 
 //catches the unwind segue from login / create account or adk
 - (IBAction) unwindToMasterNavVC: (UIStoryboardSegue *)segue {
-	if ([segue.identifier  isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]) {
-	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER]) {
-		//todo: figure out how to free memory
-//		[self.profileVC addPostListVC];
-//		[self.feedVC addPostListVC];
+	if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER]) {
 		if ([[PublishingProgressManager sharedInstance] currentlyPublishing]) {
 			[self.tabBarController setSelectedViewController:self.profileVC];
 			[self.profileVC showPublishingProgress];
 		}
 		[[Analytics getSharedInstance] endOfADKSession];
 	}
-}
-
-#pragma mark - Media Dev VC Delegate methods -
-
-// TODO: make this a notification and change this to the profile vc
--(void) povPublishedWithUserName:(NSString *)userName andTitle:(NSString *)title andProgressObject:(NSProgress *)progress {
-//	[self.tabBarController setSelectedViewController:self.feedVC];
 }
 
 #pragma mark - Feed VC Delegate -
@@ -326,28 +310,6 @@
 	}
 }
 
-//show the list of followers of the current user
--(void)presentFollowersListMyID:(id) userID {
-    UserAndChannelListsTVC * newList = [[UserAndChannelListsTVC alloc] init];
-    [newList presentChannelsForUser:userID shouldDisplayFollowers:YES];
-    newList.listDelegate = self;
-    
-    [self presentViewController:newList animated:YES completion:^{
-    }];
-}
-
-//show list of people the user follows
--(void)presentWhoIFollowMyID:(id) userID {
-    
-    UserAndChannelListsTVC * newList = [[UserAndChannelListsTVC alloc] init];
-    [newList presentWhoIsFollowedBy:userID];
-    newList.listDelegate = self;
-    
-    [self presentViewController:newList animated:YES completion:^{
-        
-    }];
-}
-
 //show the channels the current user can select to follow
 -(void)presentChannelsToFollow{
     //[self presentShareSelectionViewStartOnChannels:YES];
@@ -357,35 +319,18 @@
     
 }
 
-
-#pragma mark - Delegate for channel list view -
-
--(void)openChannel:(Channel *) channel {
-	//todo:
-}
-
--(void)selectedUser:(id)userId {
-	//todo:
-}
-
-//either you specify a start channel or you send in nil which goes to default
--(void)presentUserProfileWithChannel:(Channel *) specificChannel {
-    if (specificChannel) {
-		//todo:
-    } else {
-        
-    }
-}
-
--(void)channelSelectedToPresent:(Channel *) channel{
-	//todo
-}
-
 #pragma mark - Memory Warning -
 
 - (void)didReceiveMemoryWarning{
 	[super didReceiveMemoryWarning];
-	// Dispose of any resources that can be recreated.
+	if (self.tabBarController.selectedViewController != self.discoverVC) {
+		NSNotification * not = [[NSNotification alloc]initWithName:NOTIFICATION_FREE_MEMORY_DISCOVER object:nil userInfo:nil];
+		[[NSNotificationCenter defaultCenter] postNotification:not];
+	}
+}
+
+- (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

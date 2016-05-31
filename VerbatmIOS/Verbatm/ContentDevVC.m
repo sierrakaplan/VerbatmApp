@@ -8,6 +8,7 @@
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
+#import <Crashlytics/Crashlytics.h>
 #import "ContentDevVC.h"
 #import "CustomNavigationBar.h"
 #import "CollectionPinchView.h"
@@ -58,6 +59,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 @property (nonatomic) NSString *channelNameForNewChannel;
 @property (strong, nonatomic) UIImageView *channelSelectorImageLeft;
 @property (strong, nonatomic) UIImageView *channelSelectorImageRight;
+
+@property (nonatomic) NSInteger totalPiecesOfMedia;
 
 #pragma mark Image Manager
 
@@ -155,6 +158,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 #define CHANNEL_SELECTOR_IMAGE_SIZE 30.f
 #define CHANNEL_PICKER_COLOR clearColor
 
+#define MAX_MEDIA 8
+
 
 @end
 
@@ -164,6 +169,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
+	self.totalPiecesOfMedia = 0;
 	self.ourPosts = [[NSMutableArray alloc] init];
 	[self initializeVariables];
 	[self setFrameMainScrollView];
@@ -209,20 +215,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	[self.view insertSubview:backgroundView belowSubview:self.mainScrollView];
 	self.mainScrollView.backgroundColor = [UIColor clearColor];
 }
-
--(void) addExternalShareButton {
-//    CGRect fbShareFrame = CGRectMake(CHANNEL_PICKER_FIELD_X_OFFSET, CHANNEL_PICKER_FIELD_Y_OFFSET,
-//                                           self.view.bounds.size.width - 2*CHANNEL_PICKER_FIELD_X_OFFSET,
-//                                           CHANNEL_PICKER_FIELD_HEIGHT);
-//    UIView *v = [[UIView alloc] initWithFrame:fbShareFrame];
-    UISwitch *s = [[UISwitch alloc] initWithFrame:CGRectMake(20, 20, 100, 60)];
-    [self.view addSubview:s];
-}
-
--(void) changeSwitch:(UISwitch *) sender {
-    
-}
-
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
@@ -490,6 +482,11 @@ rowHeightForComponent:(NSInteger)component{
 		PinchView *pinchView = savedPinchViews[i];
 		[pinchView specifyRadius:self.defaultPinchViewRadius
 					   andCenter:self.defaultPinchViewCenter];
+		if ([pinchView isKindOfClass:[CollectionPinchView class]]) {
+			self.totalPiecesOfMedia += ([(CollectionPinchView*)pinchView imagePinchViews].count + [(CollectionPinchView*)pinchView videoPinchViews].count);
+		} else {
+			self.totalPiecesOfMedia += 1;
+		}
 		[self newPinchView:pinchView belowView: nil andSaveInUserDefaults:YES];
 	}
 }
@@ -511,19 +508,19 @@ rowHeightForComponent:(NSInteger)component{
 #pragma mark Preview Button
 -(void) rightButtonPressed {
     
-    self.sharePostView = [[SharePostView alloc] initWithFrame:CGRectMake(self.view.center.x/3, self.view.center.y/3, self.view.bounds.size.width * 0.67, self.view.bounds.size.height * 0.67) shouldStartOnChannels:NO fromContentDev:YES];
-    self.sharePostView.delegate = self;
-    [self.view addSubview:self.sharePostView];
-    [self.view bringSubviewToFront:self.sharePostView];
-//	NSMutableArray * pinchViews = [[NSMutableArray alloc] init];
+//    self.sharePostView = [[SharePostView alloc] initWithFrame:CGRectMake(self.view.center.x/3, self.view.center.y/3, self.view.bounds.size.width * 0.67, self.view.bounds.size.height * 0.67) shouldStartOnChannels:NO fromContentDev:YES];
+//    self.sharePostView.delegate = self;
+//    [self.view addSubview:self.sharePostView];
+//    [self.view bringSubviewToFront:self.sharePostView];
+	NSMutableArray * pinchViews = [[NSMutableArray alloc] init];
 
-//	for(ContentPageElementScrollView * contentElementScrollView in self.pageElementScrollViews){
-//		if([contentElementScrollView.pageElement isKindOfClass:[PinchView class]]){
-//			[pinchViews addObject:contentElementScrollView.pageElement];
-//		}
-//	}
-//
-//	if(pinchViews.count) [self publishOurStoryWithPinchViews:pinchViews];
+	for(ContentPageElementScrollView * contentElementScrollView in self.pageElementScrollViews){
+		if([contentElementScrollView.pageElement isKindOfClass:[PinchView class]]){
+			[pinchViews addObject:contentElementScrollView.pageElement];
+		}
+	}
+
+	if(pinchViews.count) [self publishOurStoryWithPinchViews:pinchViews];
 }
 
 
@@ -616,6 +613,12 @@ rowHeightForComponent:(NSInteger)component{
 
 	//update user defaults if was pinch view
 	if ([pageElementScrollView.pageElement isKindOfClass:[PinchView class]]) {
+		PinchView *pinchView = (PinchView*)pageElementScrollView.pageElement;
+		if ([pinchView isKindOfClass:[CollectionPinchView class]]) {
+			self.totalPiecesOfMedia -= ([(CollectionPinchView*)pinchView imagePinchViews].count + [(CollectionPinchView*)pinchView videoPinchViews].count);
+		} else {
+			self.totalPiecesOfMedia -= 1;
+		}
 		NSInteger index = [self.pageElementScrollViews indexOfObject:pageElementScrollView];
 		[[PostInProgress sharedInstance] removePinchViewAtIndex:index];
 		self.numPinchViews--;
@@ -768,7 +771,6 @@ andSaveInUserDefaults:(BOOL)save {
 //Storing new view to our array of elements
 -(void) storeView: (ContentPageElementScrollView*) view inArrayAsBelowView: (UIView*) topView {
 	if(!view) {
-		NSLog(@"Trying to store nil view");
 		return;
 	}
 
@@ -843,8 +845,8 @@ andSaveInUserDefaults:(BOOL)save {
 		}
 		case UIGestureRecognizerStateChanged: {
 
-			if ((self.pinchingMode == PinchingModeVertical ||
-				 self.pinchingMode == PinchingModeVerticalUndo)
+			if ((self.pinchingMode == PinchingModeVerticalTogether ||
+				 self.pinchingMode == PinchingModeVerticalApart)
 				&& self.lowerPinchScrollView && self.upperPinchScrollView) {
 				[self handleVerticlePinchGestureChanged:sender];
 			}
@@ -868,10 +870,6 @@ andSaveInUserDefaults:(BOOL)save {
 	self.rightTouchPointInHorizontalPinch = CGPointMake(0, 0);
 
 	if (self.scrollViewOfHorizontalPinching) {
-		//collection was not closed
-		if (self.scrollViewOfHorizontalPinching.collectionIsOpen) {
-			[self.scrollViewOfHorizontalPinching moveOpenCollectionViewsBack];
-		}
 		self.scrollViewOfHorizontalPinching.scrollEnabled = YES;
 		self.scrollViewOfHorizontalPinching = nil;
 	} else if (self.newlyCreatedMediaTile) {
@@ -907,16 +905,14 @@ andSaveInUserDefaults:(BOOL)save {
 
 -(void) handlePinchGestureBegan: (UIPinchGestureRecognizer *)sender {
 	if(self.pageElementScrollViews.count < 2) return;//if there is only one object on the screen then don't pinch
-	self.pinchingMode = PinchingModeVertical;
+	self.pinchingMode = PinchingModeVerticalTogether;
 	[self handleVerticlePinchGestureBegan:sender];
 }
 
 #pragma mark - ContentPageElementScrollView delegate -
 
 // Do nothing because we won't have open collection views in content dev vc
--(void)pinchviewSelected:(PinchView *)pinchView {
-
-}
+-(void)pinchviewSelected:(PinchView *)pinchView {}
 
 #pragma mark - Horizontal Pinching
 
@@ -1008,7 +1004,8 @@ andSaveInUserDefaults:(BOOL)save {
 	[self findElementsFromPinchPoint];
 
 	//if it's a pinch apart then create the media tile
-	if(self.upperPinchScrollView && self.lowerPinchScrollView && self.pinchingMode == PinchingModeVertical &&sender.scale > 1) {
+	if(self.upperPinchScrollView && self.lowerPinchScrollView && self.pinchingMode == PinchingModeVerticalTogether
+	   && sender.scale > 1) {
 		[self removeExcessMediaTiles];
 		[self createNewMediaTileBetweenPinchViews];
 	}
@@ -1034,7 +1031,7 @@ andSaveInUserDefaults:(BOOL)save {
 
 	//objects are being pinched apart
 	if(gesture.scale > 1) {
-		if(self.pinchingMode == PinchingModeVertical){
+		if(self.pinchingMode == PinchingModeVerticalTogether){
 			[self handleRevealOfNewMediaViewWithGesture:gesture andChangeInTopViewPosition:changeInTopViewPosition
 						  andChangeInBottomViewPosition:changeInBottomViewPosition];
 		}
@@ -1240,10 +1237,10 @@ andSaveInUserDefaults:(BOOL)save {
 
 	NSInteger index = [self.pageElementScrollViews indexOfObject:self.upperPinchScrollView];
 
-	if(self.pageElementScrollViews.count > (index+1) && index != NSNotFound && self.pinchingMode != PinchingModeVerticalUndo) {
+	if(self.pageElementScrollViews.count > (index+1) && index != NSNotFound && self.pinchingMode != PinchingModeVerticalApart) {
 		self.lowerPinchScrollView = self.pageElementScrollViews[index+1];
-	}else if (self.pinchingMode == PinchingModeVerticalUndo){
-		//make sure that we're pinching apart a colleciton
+	}else if (self.pinchingMode == PinchingModeVerticalApart){
+		//make sure that we're pinching apart a collection
 		if(![self.upperPinchScrollView.pageElement isKindOfClass:[CollectionPinchView class]]){
 			return;
 		}
@@ -1256,6 +1253,7 @@ andSaveInUserDefaults:(BOOL)save {
 	}
 }
 
+// Unpinch a pinch view and create a new page element scroll view
 -(ContentPageElementScrollView *) createPinchApartViews {
 	NSInteger upperIndex = [self.pageElementScrollViews indexOfObject:self.upperPinchScrollView];
 	CollectionPinchView *collectionPinchView = (CollectionPinchView *)self.upperPinchScrollView.pageElement;
@@ -1299,7 +1297,7 @@ andSaveInUserDefaults:(BOOL)save {
 		if(distanceTraveled > upperPinchPoint.y && [scrollView.pageElement isKindOfClass:[PinchView class]] && (upperPinchPoint.y > scrollView.frame.origin.y)) {
 			wantedView = scrollView;
 			if([self bothPointsInView:wantedView andLowerPoint:lowerPinchPoint]){
-				self.pinchingMode = PinchingModeVerticalUndo;
+				self.pinchingMode = PinchingModeVerticalApart;
 			}
 			break;
 		}
@@ -1598,10 +1596,8 @@ andSaveInUserDefaults:(BOOL)save {
 		}
 	}
 
-
 	[unPinched revertToInitialFrame];
 	[unPinched removeFromSuperview];
-	//todo: test this
 	[self newPinchView:unPinched belowView:upperView andSaveInUserDefaults:YES];
 	self.selectedView_PAN = self.pageElementScrollViews[upperViewIndex+1];
 }
@@ -1656,7 +1652,6 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 - (void)dealloc {
-	//tune out of nsnotification
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -1765,14 +1760,22 @@ andSaveInUserDefaults:(BOOL)save {
 
 // add image to deck (create pinch view)
 -(void) imageAssetCaptured: (PHAsset *) asset {
-	[self placeNewMediaAtBottomOfDeck];
-	[self getImageFromAsset:asset];
+	if (self.totalPiecesOfMedia < MAX_MEDIA) {
+		[self placeNewMediaAtBottomOfDeck];
+		[self getImageFromAsset:asset];
+	} else {
+		[self tooMuchMediaAlert];
+	}
 }
 
 // add video asset to deck (create pinch view)
 -(void) videoAssetCaptured:(PHAsset *) asset {
-	[self placeNewMediaAtBottomOfDeck];
-	[self getVideoFromAsset: asset];
+	if (self.totalPiecesOfMedia < MAX_MEDIA) {
+		[self placeNewMediaAtBottomOfDeck];
+		[self getVideoFromAsset: asset];
+	} else {
+		[self tooMuchMediaAlert];
+	}
 }
 
 -(void) minimizeCameraViewButtonTapped {
@@ -1815,24 +1818,36 @@ andSaveInUserDefaults:(BOOL)save {
 -(void )presentAssetsAsPinchViews:(NSArray *)phassets {
 	//store local identifiers so we can query the nsassets
 	for(PHAsset * asset in phassets) {
-		if(asset.mediaType==PHAssetMediaTypeImage) {
-			@autoreleasepool {
-				[self getImageFromAsset:asset];
-			}
-		} else if(asset.mediaType==PHAssetMediaTypeVideo) {
-			@autoreleasepool {
-				[self getVideoFromAsset:asset];
-			}
-		} else if(asset.mediaType==PHAssetMediaTypeAudio) {
-			// NSLog(@"Asset is of audio type, unable to handle.");
-			return;
+		if (self.totalPiecesOfMedia >= MAX_MEDIA) {
+			[self tooMuchMediaAlert];
 		} else {
-			return;
+			if(asset.mediaType==PHAssetMediaTypeImage) {
+				@autoreleasepool {
+					[self getImageFromAsset:asset];
+				}
+			} else if(asset.mediaType==PHAssetMediaTypeVideo) {
+				@autoreleasepool {
+					[self getVideoFromAsset:asset];
+				}
+			} else if(asset.mediaType==PHAssetMediaTypeAudio) {
+				NSLog(@"Asset is of audio type, unable to handle.");
+			} else {
+			}
 		}
 	}
 }
 
+-(void) tooMuchMediaAlert {
+	NSString *message = [NSString stringWithFormat:@"We're sorry, you may only have %u pieces of media in a post. Please create another post with the rest of your media.", MAX_MEDIA];
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Too much media" message:message preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+														  handler:^(UIAlertAction * action) {}];
+	[newAlert addAction:defaultAction];
+	[self presentViewController:newAlert animated:YES completion:nil];
+}
+
 -(void) getImageFromAsset: (PHAsset *) asset {
+	self.totalPiecesOfMedia++;
 	PHImageRequestOptions *options = [PHImageRequestOptions new];
 	options.synchronous = YES;
 	CGSize pinchViewImageSize = CGSizeMake(self.defaultPinchViewRadius*2, self.defaultPinchViewRadius*2);
@@ -1846,6 +1861,7 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 -(void) getVideoFromAsset: (PHAsset *) asset {
+	self.totalPiecesOfMedia++;
 	[self.imageManager requestAVAssetForVideo:asset options:self.videoRequestOptions
 								resultHandler:^(AVAsset *videoAsset, AVAudioMix *audioMix, NSDictionary *info) {
 									// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
@@ -1858,8 +1874,7 @@ andSaveInUserDefaults:(BOOL)save {
 -(void) createPinchViewFromImage: (UIImage*) image andPhAssetId: (NSString*) assetId {
 	PinchView* newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius
 														  withCenter:self.defaultPinchViewCenter
-															andImage:image andPHAssetLocalIdentifier:assetId
-													   andLargerSize:self.view.bounds.size];
+															andImage:image andPHAssetLocalIdentifier:assetId];
 	[self newPinchView: newPinchView belowView: self.addMediaBelowView andSaveInUserDefaults:YES];
 }
 
@@ -1925,16 +1940,26 @@ andSaveInUserDefaults:(BOOL)save {
 		}
 	}
 	if (channelToPostIn) {
-		[[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn andFacebook:self.postToFB withCaption:self.fbCaption withPinchViews:pinchViews withCompletionBlock:^(BOOL posting) {
-			if(posting) {
-				[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
-				[self cleanUp];
-			} else {
-				NSLog(@"Couldn't publish because something else is publishing or no internet.");
-				//TODO -- notification to user either something else is publishing or there is not internet
-			}
-		}];
-    }
+		[[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn andFacebook:self.postToFB withCaption:self.fbCaption withPinchViews:pinchViews
+													 withCompletionBlock:^(BOOL isAlreadyPublishing, BOOL noNetwork) {
+														 NSString *errorMessage;
+														 if(isAlreadyPublishing) {
+															errorMessage = @"Please wait until the previous post has finished publishing.";
+														 } else if (noNetwork) {
+															errorMessage = @"Something went wrong - please check your network connection and try again.";
+														 } else {
+															 //Everything went ok
+															 [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
+															 [self cleanUp];
+															 return;
+														 }
+														 UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Couldn't Publish" message:errorMessage preferredStyle:UIAlertControllerStyleAlert];
+														 UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+																											   handler:^(UIAlertAction * action) {}];
+														 [newAlert addAction:defaultAction];
+														 [self presentViewController:newAlert animated:YES completion:nil];
+													 }];
+	}
 }
 
 #pragma mark - Tap to clear view -
@@ -2068,22 +2093,22 @@ andSaveInUserDefaults:(BOOL)save {
     [self removeSharePOVView];
 }
 
--(void) postPostToChannels:(NSMutableArray *)channels andFacebook:(BOOL)externalSharing withCaption:(NSString *)caption{
-    
-    self.fbCaption = caption;
-    self.postToFB = externalSharing;
-    
-    	NSMutableArray * pinchViews = [[NSMutableArray alloc] init];
-    
-    	for(ContentPageElementScrollView * contentElementScrollView in self.pageElementScrollViews){
-    		if([contentElementScrollView.pageElement isKindOfClass:[PinchView class]]){
-    			[pinchViews addObject:contentElementScrollView.pageElement];
-    		}
-    	}
-    
-    	if(pinchViews.count) [self publishOurStoryWithPinchViews:pinchViews];
-    
-    [self.sharePostView removeFromSuperview];
-    
-}
+//-(void) postPostToChannels:(NSMutableArray *)channels andFacebook:(BOOL)externalSharing withCaption:(NSString *)caption{
+//    
+//    self.fbCaption = caption;
+//    self.postToFB = externalSharing;
+//    
+//    	NSMutableArray * pinchViews = [[NSMutableArray alloc] init];
+//    
+//    	for(ContentPageElementScrollView * contentElementScrollView in self.pageElementScrollViews){
+//    		if([contentElementScrollView.pageElement isKindOfClass:[PinchView class]]){
+//    			[pinchViews addObject:contentElementScrollView.pageElement];
+//    		}
+//    	}
+//    
+//    	if(pinchViews.count) [self publishOurStoryWithPinchViews:pinchViews];
+//    
+//    [self.sharePostView removeFromSuperview];
+//    
+//}
 @end

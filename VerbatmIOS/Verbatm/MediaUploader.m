@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
+#import <Crashlytics/Crashlytics.h>
 #import "MediaUploader.h"
 #import "PostPublisher.h"
 #import "Notifications.h"
@@ -23,7 +24,6 @@
 @synthesize formData;
 
 -(instancetype) initWithImage:(NSData*)imageData andUri: (NSString*)uri {
-	NSLog(@"Image size is : %.2f KB",(float)imageData.length/1024.0f);
 	self.formData = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:uri]];
 	[self.formData setData:imageData
 			  withFileName:@"defaultImage.png"
@@ -106,8 +106,8 @@
 
 -(void) requestFailed:(ASIHTTPRequest *)request {
 	NSError *error = [request error];
-	NSLog(@"error uploading media%@", error.description);
-	[[PublishingProgressManager sharedInstance] savingMediaFailed];
+	[[Crashlytics sharedInstance] recordError: error];
+	[[PublishingProgressManager sharedInstance] savingMediaFailedWithError:error];
 	[self.mediaUploadProgress cancel];
 	self.completionBlock(error, nil);
 }

@@ -17,6 +17,7 @@
 #import "ParseBackendKeys.h"
 #import "PostPublisher.h"
 #import "PublishingProgressManager.h"
+#import <PromiseKit/AnyPromise.h>
 
 @interface Photo_BackendObject ()
 
@@ -26,7 +27,7 @@
 
 @implementation Photo_BackendObject
 
--(void)saveImageData:(NSData *) imageData
+-(AnyPromise*) saveImageData:(NSData *) imageData
 		withText:(NSString *) text
 andTextYPosition:(NSNumber *) textYPosition
 	andTextColor:(UIColor *) textColor
@@ -35,23 +36,32 @@ andTextAlignment:(NSNumber *) textAlignment
 	atPhotoIndex:(NSInteger) photoIndex
    andPageObject:(PFObject *) pageObject {
     self.mediaPublisher = [[PostPublisher alloc] init];
-    [self.mediaPublisher storeImage:imageData withCompletionBlock:^(GTLVerbatmAppImage * gtlImage) {
-        NSString * blobStoreUrl = gtlImage.servingUrl;
-        //in completion block of blobstore save
-        [self createAndSavePhotoObjectwithBlobstoreUrl:blobStoreUrl
+    return [self.mediaPublisher storeImage:imageData].then(^(id result) {
+		if ([result isKindOfClass:[NSError class]]) {
+			return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+				resolve(result);
+			}];
+		}
+		NSString *blobstoreUrl = (NSString*) result;
+		if (![blobstoreUrl hasSuffix:@"=s0"]) {
+			blobstoreUrl = [blobstoreUrl stringByAppendingString:@"=s0"];
+		}
+        //in completion
+        return [self createAndSavePhotoObjectwithBlobstoreUrl:blobstoreUrl
 											  withText:text
 									  andTextYPosition:textYPosition
 										  andTextColor:textColor
 									  andTextAlignment:textAlignment
 										   andTextSize:textSize
 										  atPhotoIndex:photoIndex
-										 andPageObject:pageObject];
-    }];
-    
+										 andPageObject:pageObject].then(^(NSError*error) {
+			return error; //Will be nil if succeeded
+		});
+    });
 }
 
 /* media, text, textYPosition, textColor, textAlignment, textSize */
--(void)createAndSavePhotoObjectwithBlobstoreUrl:(NSString *) imageURL
+-(AnyPromise*) createAndSavePhotoObjectwithBlobstoreUrl:(NSString *) imageURL
 									   withText:(NSString *) text
 							   andTextYPosition:(NSNumber *) textYPosition
 								   andTextColor:(UIColor *) textColor
@@ -59,7 +69,6 @@ andTextAlignment:(NSNumber *) textAlignment
 									andTextSize:(NSNumber *) textSize
 								   atPhotoIndex:(NSInteger) photoIndex
 								  andPageObject:(PFObject *) pageObject {
-	NSLog(@"Now saving parse photo object...");
 
     PFObject * newPhotoObject = [PFObject objectWithClassName:PHOTO_PFCLASS_KEY];
     
@@ -72,13 +81,16 @@ andTextAlignment:(NSNumber *) textAlignment
 	[newPhotoObject setObject:textAlignment forKey:PHOTO_TEXT_ALIGNMENT_KEY];
 	[newPhotoObject setObject:textSize forKey:PHOTO_TEXT_SIZE_KEY];
 
-    [newPhotoObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        if(succeeded){
-			[[PublishingProgressManager sharedInstance] mediaSavingProgressed:1];
-        } else {
-			[[PublishingProgressManager sharedInstance] savingMediaFailed];
-		}
-    }];
+	return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+		[newPhotoObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+			if(succeeded && !error){
+				[[PublishingProgressManager sharedInstance] mediaSavingProgressed:1];
+				resolve(nil);
+			} else {
+				resolve(error);
+			}
+		}];
+	}];
 }
 
 +(void)getPhotosForPage:(PFObject *) page andCompletionBlock:(void(^)(NSArray *))block {

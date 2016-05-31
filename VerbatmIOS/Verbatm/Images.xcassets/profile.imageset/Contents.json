@@ -2,12 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "33x33 Profile.png",
+      "filename" : "Profile-33.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "Profile 50x50-1.png",
+      "filename" : "Profile-50.png",
       "scale" : "2x"
     },
     {

@@ -20,9 +20,9 @@
 
 @protocol PublishingProgressProtocol <NSObject>
 
-//scale is  0-1
 -(void)publishingComplete;
--(void)publishingFailed;
+
+-(void)publishingFailedWithError:(NSError*)error;
 
 @end
 
@@ -32,7 +32,7 @@
 #define IMAGE_PROGRESS_UNITS 4
 #define VIDEO_PROGRESS_UNITS 11
 
-@property (nonatomic) id<PublishingProgressProtocol> delegate;
+@property (nonatomic, weak) id<PublishingProgressProtocol> delegate;
 @property (nonatomic, readonly) NSProgress * progressAccountant;
 @property (nonatomic, readonly) BOOL currentlyPublishing;
 @property (nonatomic, readonly) Channel* currentPublishingChannel;
@@ -40,17 +40,12 @@
 
 +(instancetype)sharedInstance;
 
--(void)publishPostToChannel:(Channel *)channel withPinchViews:(NSArray *)pinchViews
-		withCompletionBlock:(void(^)(BOOL))block;
-
--(void)publishPostToChannel:(Channel *)channel andFacebook:(BOOL)externalShare withCaption:(NSString *)caption withPinchViews:(NSArray *)pinchViews
-         withCompletionBlock:(void(^)(BOOL))block;
-
--(void)registerForNotifications;
+// Blocks is publishing something else, no network
+-(void)publishPostToChannel:(Channel *)channel andFacebook:(BOOL)externalShare withCaption:(NSString *)caption withPinchViews:(NSArray *)pinchViews withCompletionBlock:(void(^)(BOOL, BOOL))block;
 
 -(void)mediaSavingProgressed:(int64_t) newProgress;
 
--(void)savingMediaFailed;
+-(void)savingMediaFailedWithError:(NSError*)error;
 
 @end
 

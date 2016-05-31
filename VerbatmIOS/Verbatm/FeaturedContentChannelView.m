@@ -43,7 +43,14 @@
 				andPostObject: (PFObject *)post andPages: (NSArray *) pages {
 	self = [super initWithFrame:frame];
 	if (self) {
-		self.backgroundColor = [UIColor darkGrayColor];
+		self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.2f];
+		self.layer.borderColor = [UIColor whiteColor].CGColor;
+		self.layer.borderWidth = 1.f;
+		self.layer.cornerRadius = 5.f;
+		self.layer.shadowColor = [UIColor blackColor].CGColor;
+		self.layer.shadowRadius = 3.f;
+		self.layer.shadowOffset = CGSizeMake(3.f, 3.f);
+		self.layer.shadowOpacity = 1.f;
 		self.channel = channel;
 
 		if (self.channel.channelCreator != [PFUser currentUser]) {
@@ -113,27 +120,31 @@
 }
 
 -(void) almostOnScreen {
-	[self.postView preparepostToBePresented];
+	[self.postView postAlmostOnScreen];
+}
+
+-(void) freeMemory {
+	
 }
 
 #pragma mark - Lazy Instantiation -
 
-//todo: make numbers constants
-
 -(UILabel *) userNameLabel {
 	if (!_userNameLabel) {
-		CGRect labelFrame = CGRectMake(OFFSET, OFFSET, DISCOVER_USERNAME_LABEL_WIDTH, DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
+		CGRect labelFrame = CGRectMake(self.frame.size.width - DISCOVER_USERNAME_LABEL_WIDTH - OFFSET, OFFSET,
+									   DISCOVER_USERNAME_LABEL_WIDTH, DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
 		_userNameLabel = [[UILabel alloc] initWithFrame:labelFrame];
 		[_userNameLabel setAdjustsFontSizeToFitWidth:YES];
 		[_userNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:DISCOVER_USER_NAME_FONT_SIZE]];
 		[_userNameLabel setTextColor:VERBATM_GOLD_COLOR];
+		[_userNameLabel setTextAlignment:NSTextAlignmentRight];
 	}
 	return _userNameLabel;
 }
 
 -(UIButton *) followButton {
 	if (!_followButton) {
-		CGRect followFrame = CGRectMake(self.frame.size.width - FOLLOW_BUTTON_WIDTH - OFFSET, OFFSET,
+		CGRect followFrame = CGRectMake(OFFSET, OFFSET,
 										FOLLOW_BUTTON_WIDTH, DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
 		_followButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		_followButton.frame = followFrame;
@@ -154,6 +165,10 @@
 		[_channelNameLabel setTextColor:[UIColor whiteColor]];
 	}
 	return _channelNameLabel;
+}
+
+-(void)dealloc {
+	
 }
 
 @end

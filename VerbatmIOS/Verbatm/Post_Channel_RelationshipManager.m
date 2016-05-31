@@ -7,6 +7,7 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+#import <Crashlytics/Crashlytics.h>
 #import "Follow_BackendManager.h"
 #import "Post_Channel_RelationshipManager.h"
 #import "ParseBackendKeys.h"
@@ -64,7 +65,7 @@
 			[[postOriginalChannel valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable user, NSError * _Nullable userError) {
 				if (!object || !user) {
 					NSError *error = channelError ? channelError : userError;
-					NSLog(@"Error: %@", error.description);
+					[[Crashlytics sharedInstance] recordError: error];
 					block (nil);
 					return;
 				}

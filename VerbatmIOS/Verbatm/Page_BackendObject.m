@@ -7,6 +7,7 @@
 //
 
 #import "CollectionPinchView.h"
+#import <Crashlytics/Crashlytics.h>
 
 #import "ImagePinchView.h"
 
@@ -53,7 +54,12 @@
 
 	return [self savePageObject:newPageObject].then(^(void) {
 		return [self storeImagesFromPinchView:pinchView withPageReference:newPageObject];
-	}).then(^(void) {
+	}).then(^(NSError *error) {
+		if (error) {
+			return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+				resolve(error);
+			}];
+		}
 		return [self storeVideosFromPinchView:pinchView withPageReference:newPageObject];
 	});
 }
@@ -79,6 +85,10 @@
 
 	NSArray* pinchViewPhotosWithText = [pinchView getPhotosWithText];
 	NSMutableArray *imagePinchViews = [[NSMutableArray alloc] init];
+	BOOL half = NO;
+	if (pinchView.containsImage && pinchView.containsVideo) {
+		half = YES;
+	}
 	if ([pinchView isKindOfClass:[ImagePinchView class]]) {
 		[imagePinchViews addObject:(ImagePinchView*) pinchView];
 	} else if (pinchView.containsImage) {
@@ -86,26 +96,26 @@
 	}
 
 	//Publishing images sequentially
-	//todo: actually publish sequentially not just get their data
-	AnyPromise *getImageDataPromise = [imagePinchViews[0] getImageData];
+	AnyPromise *getImageDataPromise = [imagePinchViews[0] getImageDataWithHalfSize:half];
 	for (int i = 1; i < imagePinchViews.count; i++) {
 		getImageDataPromise = getImageDataPromise.then(^(NSData *imageData) {
 			NSArray* photoWithText = pinchViewPhotosWithText[i-1];
-			[self storeImageFromImageData:imageData andPhotoWithTextArray:photoWithText
-								  atIndex:i withPageObject:page];
-			return [imagePinchViews[i] getImageData];
+			return [self storeImageFromImageData:imageData andPhotoWithTextArray:photoWithText
+										 atIndex:i withPageObject:page].then(^(void) {
+				return [imagePinchViews[i] getImageDataWithHalfSize:half];
+			});
 		});
 	}
 	return getImageDataPromise.then(^(NSData *imageData) {
 		NSInteger index = imagePinchViews.count - 1;
 		NSArray* photoWithText = pinchViewPhotosWithText[index];
-		[self storeImageFromImageData:imageData andPhotoWithTextArray:photoWithText
-							  atIndex:index withPageObject:page];
+		return [self storeImageFromImageData:imageData andPhotoWithTextArray:photoWithText
+									 atIndex:index withPageObject:page];
 	});
 }
 
--(void) storeImageFromImageData: (NSData *) imageData andPhotoWithTextArray: (NSArray *)photoWithText
-						atIndex: (NSInteger) index withPageObject: (PFObject *) page {
+-(AnyPromise*) storeImageFromImageData: (NSData *) imageData andPhotoWithTextArray: (NSArray *)photoWithText
+							   atIndex: (NSInteger) index withPageObject: (PFObject *) page {
 	NSString* text = photoWithText[1];
 	NSNumber* textYPosition = photoWithText[2];
 	UIColor *textColor = photoWithText[3];
@@ -114,35 +124,41 @@
 
 	Photo_BackendObject * photoObj = [[Photo_BackendObject alloc] init];
 	[self.photoAndVideoSavers addObject:photoObj];
-	[photoObj saveImageData:imageData withText:text
-	   andTextYPosition:textYPosition
-		   andTextColor:textColor
-	   andTextAlignment:textAlignment
-			andTextSize:textSize
-		   atPhotoIndex:index
-		  andPageObject:page];
+	return [photoObj saveImageData:imageData withText:text
+				  andTextYPosition:textYPosition
+					  andTextColor:textColor
+				  andTextAlignment:textAlignment
+					   andTextSize:textSize
+					  atPhotoIndex:index
+					 andPageObject:page];
 }
 
--(void) storeVideosFromPinchView: (PinchView*) pinchView withPageReference:(PFObject *) page{
-	if (pinchView.containsVideo) {
-		Video_BackendObject  *videoObj = [[Video_BackendObject alloc] init];
-		[self.photoAndVideoSavers addObject:videoObj];
+-(AnyPromise*) storeVideosFromPinchView: (PinchView*) pinchView withPageReference:(PFObject *) page{
+	if (!pinchView.containsVideo) return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+		resolve(nil);
+	}];
 
-		AVAsset* videoAsset = [pinchView getVideo];
-		if (![videoAsset isKindOfClass:[AVURLAsset class]]) {
-			NSString *videoFileName = [UtilityFunctions randomStringWithLength:10];
-			NSURL* exportURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@%@", NSTemporaryDirectory(), videoFileName, @".mp4"]];
-			AVAssetExportSession* exporter = [[AVAssetExportSession alloc] initWithAsset:videoAsset
-																			  presetName:AVAssetExportPresetPassthrough];
+	Video_BackendObject *videoObj = [[Video_BackendObject alloc] init];
+	[self.photoAndVideoSavers addObject:videoObj];
 
-			[exporter setOutputURL:exportURL];
-			[exporter setOutputFileType:AVFileTypeMPEG4];
+	AVAsset* videoAsset = [pinchView getVideo];
+	if (![videoAsset isKindOfClass:[AVURLAsset class]]) {
+		NSString *videoFileName = [UtilityFunctions randomStringWithLength:10];
+		NSURL* exportURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@%@", NSTemporaryDirectory(), videoFileName, @".mp4"]];
+		AVAssetExportSession* exporter = [[AVAssetExportSession alloc] initWithAsset:videoAsset
+																		  presetName:AVAssetExportPresetPassthrough];
+
+		[exporter setOutputURL:exportURL];
+		[exporter setOutputFileType:AVFileTypeMPEG4];
+		return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 			[exporter exportAsynchronouslyWithCompletionHandler:^(void){
-				[videoObj saveVideo:exportURL andPageObject:page];
+				resolve(exportURL);
 			}];
-		} else {
-			[videoObj saveVideo:((AVURLAsset *)videoAsset).URL andPageObject:page];
-		}
+		}].then(^(NSURL* exportURL) {
+			return [videoObj saveVideo:exportURL andPageObject:page];
+		});
+	} else {
+		return [videoObj saveVideo:((AVURLAsset *)videoAsset).URL andPageObject:page];
 	}
 }
 
@@ -186,9 +202,9 @@
 				}];
 			}
 		} else {
-			NSLog(@"error deleting pages");
+			[[Crashlytics sharedInstance] recordError: error];
 		}
-
+		
 	}];
 }
 

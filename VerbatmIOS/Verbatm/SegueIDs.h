@@ -13,8 +13,10 @@
 
 // from master vc
 #define SIGN_IN_SEGUE @"segue_id_sign_in"
+#define USER_SETTINGS_SEGUE @"segue_id_user_info"
 // unwind segues back to master
 #define UNWIND_SEGUE_FROM_LOGIN_TO_MASTER @"unwind_to_master_vc_from_login"
+#define UNWIND_SEGUE_FROM_USER_SETTINGS_TO_LOGIN @"unwind_to_master_from_settings"
 
 #pragma mark - ADK -
 

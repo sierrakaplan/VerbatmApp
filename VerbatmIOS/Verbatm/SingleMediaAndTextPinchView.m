@@ -63,7 +63,6 @@
 
 #pragma mark - Encoding -
 
-//todo: add other text data
 - (void)encodeWithCoder:(NSCoder *)coder {
 	[super encodeWithCoder:coder];
 	[coder encodeObject:self.textYPosition forKey:TEXT_Y_POSITION_KEY];

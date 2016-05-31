@@ -26,6 +26,6 @@
 #define NOTIFICATION_NOW_FOLLOWING_USER @"following_user"
 #define NOTIFICATION_STOPPED_FOLLOWING_USER @"stoped_following_user"
 
-#define NOTIFICATION_MEDIA_SAVING_FAILED @"media_save_failed"//saving a piece of media failed
+#define NOTIFICATION_FREE_MEMORY_DISCOVER @"free_memory_discover"
 
 #endif /* Header_h */

@@ -37,6 +37,6 @@
 -(void) rerunSession;
 
 @property(strong, nonatomic) NSURL* outputurl;
-@property (nonatomic, strong) id <MediaSessionManagerDelegate> delegate;
+@property (nonatomic, weak) id <MediaSessionManagerDelegate> delegate;
 @property (strong, nonatomic) AVCaptureVideoPreviewLayer* videoPreview;
 @end

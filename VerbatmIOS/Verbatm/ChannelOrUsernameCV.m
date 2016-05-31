@@ -46,7 +46,7 @@
 
 	if (self) {
 
-		self.backgroundColor = CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED;
+        self.backgroundColor = [UIColor clearColor];//CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED;
 		self.isAChannel = isChannel;
 		self.isAChannelIFollow = channelThatIFollow;
 		if(!self.channelNameLabelAttributes)[self createSelectedTextAttributes];
@@ -104,10 +104,11 @@
 
 	[self addSubview: self.channelNameLabel];
 	[self addSubview: self.usernameLabel];
+    
 
 	if(!self.seperatorView){
 		self.seperatorView = [[UIView alloc] initWithFrame:CGRectMake(0.f, self.frame.size.height, self.frame.size.width,CHANNEL_LIST_CELL_SEPERATOR_HEIGHT)];
-		self.seperatorView.backgroundColor = CHANNEL_LIST_CELL_SEPERATOR_COLOR;
+        self.seperatorView.backgroundColor = [UIColor clearColor];//CHANNEL_LIST_CELL_SEPERATOR_COLOR;
 		[self addSubview:self.seperatorView];
 	}
 }
@@ -123,7 +124,7 @@
 	CGRect labelFrame = CGRectMake(origin.x, origin.y, textSize.width, height);
 
 	UILabel * nameLabel = [[UILabel alloc] initWithFrame:labelFrame];
-
+    nameLabel.backgroundColor = [UIColor clearColor];
 	[nameLabel setAttributedText:tabAttributedTitle];
 	return nameLabel;
 }
@@ -154,7 +155,7 @@
 	paragraphStyle.alignment = NSTextAlignmentCenter;
 
 	NSDictionary * informationAttribute = @{NSForegroundColorAttributeName:
-												[UIColor blackColor],
+												[UIColor clearColor],
 											NSFontAttributeName:
 												[UIFont fontWithName:INFO_LIST_HEADER_FONT size:INFO_LIST_HEADER_FONT_SIZE],
 											NSParagraphStyleAttributeName:paragraphStyle};

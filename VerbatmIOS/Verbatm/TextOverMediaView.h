@@ -13,12 +13,11 @@
 @interface TextOverMediaView : UIView
 
 @property (nonatomic, readonly) BOOL textShowing;
-
-@property (nonatomic, readonly) UITextView * textView;
+@property (nonatomic, readonly, weak) UITextView * textView;
 @property (nonatomic, readonly) CGFloat textYPosition;
 @property (nonatomic, readonly) CGFloat textSize;
 @property (nonatomic, readonly) NSTextAlignment textAlignment;
-@property (nonatomic, strong, readonly) UIColor *textColor;
+@property (nonatomic, readonly) BOOL blackTextColor;
 
 -(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image;
 
@@ -27,7 +26,7 @@
 
 -(void) setText:(NSString *)text
 andTextYPosition:(CGFloat) textYPosition
-   andTextColor:(UIColor *) textColor
+   andTextColorBlack:(BOOL) textColorBlack
 andTextAlignment:(NSTextAlignment) textAlignment
 	andTextSize:(CGFloat) textSize;
 

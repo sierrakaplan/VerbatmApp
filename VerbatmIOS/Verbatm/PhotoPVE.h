@@ -13,11 +13,6 @@
 
 @protocol PhotoPVEDelegate <NSObject>
 
--(void) startedDraggingAroundCircle;
--(void) stoppedDraggingAroundCircle;
-
--(void) viewTapped;
-
 @end
 
 @protocol PhotoPVETextEntryDelegate <NSObject>
@@ -29,26 +24,19 @@
 
 @interface PhotoPVE : PageViewingExperience
 
-@property (strong, nonatomic) id<PhotoPVEDelegate> delegate;
+@property (weak, nonatomic) id<PhotoPVEDelegate> delegate;
 
-@property (strong, nonatomic) id<PhotoPVETextEntryDelegate> textEntryDelegate;
-
-@property (nonatomic) BOOL isPhotoVideoSubview;
-
-//this is used with the tap gesture in the photovideoave -- we pass it in in order to prevent them from intercepting each other
-@property (nonatomic, strong) UITapGestureRecognizer * photoAveTapGesture;
+@property (weak, nonatomic) id<PhotoPVETextEntryDelegate> textEntryDelegate;
 
 @property (weak, nonatomic) UIScrollView * postScrollView;
 
 //Photos is array of UIImage
 -(instancetype) initWithFrame:(CGRect)frame andPhotoArray:(NSArray *)photos
-						small:(BOOL) small;
+						small:(BOOL) small isPhotoVideoSubview:(BOOL)halfScreen;
 
 // initializer for preview mode
 // PinchView can be either ImagePinchView or CollectionPinchView
--(instancetype) initWithFrame:(CGRect)frame andPinchView:(PinchView *)pinchView inPreviewMode: (BOOL) inPreviewMode;
-
-//be sure to set povScrollView
--(void) showAndRemoveCircle;
+-(instancetype) initWithFrame:(CGRect)frame andPinchView:(PinchView *)pinchView
+				inPreviewMode: (BOOL)inPreviewMode isPhotoVideoSubview:(BOOL)halfScreen;
 
 @end

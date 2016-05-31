@@ -10,6 +10,7 @@
 #define Styles_h
 
 #define VERBATM_GOLD_COLOR [UIColor colorWithRed:1.0 green:0.85 blue:0.20 alpha:1.0]
+#define ORANGE_COLOR [UIColor colorWithRed:0.8 green:0.4 blue:0.01 alpha:1.0]
 
 #define DEFAULT_FONT @"Raleway-Regular"//@"Quicksand-Regular"
 #define BUTTON_FONT @"Raleway-Bold" //@"Quicksand-Bold"
@@ -26,7 +27,7 @@
 
 #pragma mark - Bottom Tab Bar -
 
-#define TAB_BAR_ALPHA 0.7
+#define TAB_BAR_ALPHA 1.f
 
 #pragma mark - Profile -
 
@@ -110,7 +111,8 @@
 
 #pragma mark - ADK -
 
-#define ADK_NAV_BAR_COLOR CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED 
+#define ADK_NAV_BAR_COLOR [UIColor clearColor]
+//CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED
 #define SETTINGS_NAV_BAR_COLOR [UIColor blackColor]
 
 #define CHANNEL_PICKER_TEXT_COLOR whiteColor
@@ -152,7 +154,7 @@
 
 #define CHANNEL_LIST_CELL_SEPERATOR_COLOR [UIColor grayColor]
 #define DISCOVER_CHANNEL_NAME_FONT_SIZE 20.f
-#define DISCOVER_USER_NAME_FONT_SIZE 18.f
+#define DISCOVER_USER_NAME_FONT_SIZE 14.f
 
 
 #endif /* Styles_h */

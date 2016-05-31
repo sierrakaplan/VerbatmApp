@@ -17,9 +17,6 @@
 
 -(PFObject * ) createPostFromPinchViews: (NSArray*) pinchViews toChannel: (Channel *) channel;
 
-+(void) getPostsInChannel:(Channel *)channel withLimit:(NSInteger)limit
-	  withCompletionBlock:(void(^)(NSArray *))block;
-
 +(void) deletePost: (PFObject *)post;
 
 +(void)markPostAsFlagged:(PFObject *) flaggedPost;

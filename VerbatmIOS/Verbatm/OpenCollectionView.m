@@ -65,7 +65,6 @@
 	[self addGestureRecognizer:longPress];
 }
 
-
 -(void)pinchObjectSelected:(UILongPressGestureRecognizer *) longPress{
 	if([longPress numberOfTouches] == 1) {
 		CGPoint touch = [longPress locationOfTouch:0 inView:self];
@@ -73,12 +72,7 @@
 			[self.scrollView selectItemInOpenCollectionFromTouch:touch];
 		}else if (longPress.state == UIGestureRecognizerStateChanged){
 			//the scrollview manages the movement of the selected object
-			PinchView * unPinched = [self.scrollView moveSelectedItemFromTouch:touch];
-
-			//this only passes if the user moves the pinch object out of the bounds of the scrollview
-			if (unPinched) {
-				//TODO: object unpinched
-			}
+			[self.scrollView moveSelectedItemFromTouch:touch];
 		}else if (longPress.state == UIGestureRecognizerStateEnded ||
 				  longPress.state == UIGestureRecognizerStateCancelled){
 			[self.scrollView finishMovingSelectedItem];

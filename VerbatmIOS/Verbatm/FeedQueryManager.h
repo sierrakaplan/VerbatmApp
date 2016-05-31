@@ -14,10 +14,12 @@
 
 @interface FeedQueryManager : NSObject
 
-#define POST_DOWNLOAD_MAX_SIZE 10.f
-#define CHANNEL_DOWNLOAD_MAX_SIZE 20.f
+#define POST_DOWNLOAD_MAX_SIZE 10
+#define CHANNEL_DOWNLOAD_MAX_SIZE 10
 
 +(instancetype) sharedInstance;
+
+-(void) clearFeedData;
 
 /* Reloads the channels that the user follows and then POST_DOWNLOAD_MAX_SIZE of 
    the posts associated with those channels, from newest to oldest. */

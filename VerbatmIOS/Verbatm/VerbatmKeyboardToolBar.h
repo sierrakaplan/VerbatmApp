@@ -23,6 +23,8 @@
 
 @interface VerbatmKeyboardToolBar : UIView
 
-@property (nonatomic, strong) id<KeyboardToolBarDelegate> delegate;
+@property (nonatomic, weak) id<KeyboardToolBarDelegate> delegate;
+
+-(instancetype)initWithFrame:(CGRect)frame andTextColorBlack:(BOOL)textColorBlack;
 
 @end

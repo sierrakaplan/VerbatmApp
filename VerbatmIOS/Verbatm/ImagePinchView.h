@@ -15,22 +15,23 @@
 @property (strong, nonatomic) NSMutableArray* filteredImages;
 @property (nonatomic) NSInteger filterImageIndex;
 @property (strong, nonatomic) NSString* phAssetLocalIdentifier;
-@property (nonatomic) CGSize largeSize;
 
 -(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andImage:(UIImage*)image
-	andPHAssetLocalIdentifier: (NSString*) localIdentifier andLargerSize: (CGSize)largeSize;
+	andPHAssetLocalIdentifier: (NSString*) localIdentifier;
 
 -(void) initWithImage:(UIImage*)image andSetFilteredImages: (BOOL) setFilters;
 
 //change which filter is applied
 -(void)changeImageToFilterIndex:(NSInteger)filterIndex;
 
--(AnyPromise*) getImageData;
+//Resolves to data for a full screen sized image if half is false, half otherwise
+-(AnyPromise*) getImageDataWithHalfSize:(BOOL)half;
 
 //returns the image with its current filter 
 -(UIImage*) getImage;
 
--(AnyPromise *) getLargerImageWithSize: (CGSize) size;
+//Returns a full screen sized image if half is false, half otherwise
+-(AnyPromise *) getLargerImageWithHalfSize:(BOOL)half;
 
 //returns the image without any filter - guaranteed to be unfiltered
 -(UIImage *) getOriginalImage;

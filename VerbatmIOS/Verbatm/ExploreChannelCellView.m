@@ -12,6 +12,7 @@
 #import "ParseBackendKeys.h"
 #import "Page_BackendObject.h"
 #import "Post_BackendObject.h"
+#import "PostsQueryManager.h"
 #import "PostView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
@@ -21,7 +22,7 @@
 @interface ExploreChannelCellView() <UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
 // view for content so that there can be a black footer in every cell
-@property (nonatomic, strong) UIView *footerView;
+@property (nonatomic, strong) UIView *mainView;
 @property (nonatomic, strong) UILabel *userNameLabel;
 @property (nonatomic, strong) UIButton *followButton;
 @property (nonatomic, strong) UILabel *numFollowersLabel;
@@ -31,19 +32,15 @@
 @property (strong, nonatomic) NSMutableArray *postViews;
 @property (nonatomic) NSInteger indexOnScreen;
 
+@property (nonatomic) BOOL isFollowed;
 @property (nonatomic, strong) NSNumber *numFollowers;
 @property (weak, readwrite) Channel *channelBeingPresented;
 
 
-@property (nonatomic) BOOL isFollowed;
-
-
+#define MAIN_VIEW_OFFSET 10.f
 #define POST_VIEW_OFFSET 10.f
 #define POST_VIEW_WIDTH 180.f
-
 #define OFFSET 5.f
-#define FOOTER_HEIGHT 20.f
-#define USER_NAME_WIDTH 120.f
 #define NUM_FOLLOWERS_WIDTH 40.f
 
 @end
@@ -55,9 +52,9 @@
 	if (self) {
 		self.isFollowed = NO;
 		self.indexOnScreen = 0;
-		self.backgroundColor = [UIColor darkGrayColor];
-		[self addSubview:self.horizontalScrollView];
-		[self addSubview:self.footerView];
+		self.backgroundColor = [UIColor clearColor];
+		[self addSubview: self.mainView];
+		[self.mainView addSubview:self.horizontalScrollView];
 
 		UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cellTapped:)];
 		tap.delegate = self;
@@ -71,17 +68,22 @@
 }
 
 -(void) layoutSubviews {
-	self.userNameLabel.frame = CGRectMake(POST_VIEW_OFFSET, OFFSET, USER_NAME_WIDTH, DISCOVER_CHANNEL_NAME_HEIGHT);
-	self.followButton.frame = CGRectMake(self.frame.size.width - FOLLOW_BUTTON_WIDTH - POST_VIEW_OFFSET, OFFSET,
-										 FOLLOW_BUTTON_WIDTH, DISCOVER_CHANNEL_NAME_HEIGHT);
-	self.numFollowersLabel.frame = CGRectMake(self.followButton.frame.origin.x - NUM_FOLLOWERS_WIDTH, OFFSET, NUM_FOLLOWERS_WIDTH, DISCOVER_CHANNEL_NAME_HEIGHT);
-	self.channelNameLabel.frame = CGRectMake(self.userNameLabel.frame.size.width + self.userNameLabel.frame.origin.x + OFFSET, OFFSET,
-											 self.frame.size.width - USER_NAME_WIDTH*2 - (OFFSET*2),
+	self.mainView.frame = CGRectMake(MAIN_VIEW_OFFSET, MAIN_VIEW_OFFSET,
+									 self.frame.size.width - MAIN_VIEW_OFFSET*2,
+									 self.frame.size.height - MAIN_VIEW_OFFSET*2);
+	self.followButton.frame = CGRectMake(POST_VIEW_OFFSET, OFFSET, FOLLOW_BUTTON_WIDTH, DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
+	self.numFollowersLabel.frame = CGRectMake(self.followButton.frame.origin.x + FOLLOW_BUTTON_WIDTH + OFFSET, OFFSET, NUM_FOLLOWERS_WIDTH,
+											  DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
+	CGFloat userNameX = self.numFollowersLabel.frame.origin.x + self.numFollowersLabel.frame.size.width + OFFSET;
+	self.userNameLabel.frame = CGRectMake(userNameX, OFFSET, self.mainView.frame.size.width - userNameX - OFFSET, DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
+
+	self.channelNameLabel.frame = CGRectMake(OFFSET, OFFSET + DISCOVER_USERNAME_AND_FOLLOW_HEIGHT,
+											 self.mainView.frame.size.width - (OFFSET*2),
 											 DISCOVER_CHANNEL_NAME_HEIGHT);
-	self.footerView.frame = CGRectMake(0.f, self.frame.size.height - FOOTER_HEIGHT, self.frame.size.width, FOOTER_HEIGHT);
+
 	CGFloat postScrollViewOffset = self.channelNameLabel.frame.origin.y + self.channelNameLabel.frame.size.height;
-	self.horizontalScrollView.frame = CGRectMake(0.f, postScrollViewOffset, self.frame.size.width,
-												 self.frame.size.height - postScrollViewOffset - FOOTER_HEIGHT);
+	self.horizontalScrollView.frame = CGRectMake(0.f, postScrollViewOffset, self.mainView.frame.size.width,
+												 self.mainView.frame.size.height - postScrollViewOffset);
 
 
 	CGFloat xCoordinate = POST_VIEW_OFFSET;
@@ -105,7 +107,7 @@
 	}];
 
 	__block CGFloat xCoordinate = POST_VIEW_OFFSET;
-	[Post_BackendObject getPostsInChannel:channel withLimit:3 withCompletionBlock:^(NSArray *postChannelActivityObjects) {
+	[PostsQueryManager getPostsInChannel:channel withLimit:3 withCompletionBlock:^(NSArray *postChannelActivityObjects) {
 		for (PFObject *postChannelActivityObj in postChannelActivityObjects) {
 			PFObject *post = [postChannelActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
 			[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
@@ -120,7 +122,7 @@
 				if (self.postViews.count >= self.indexOnScreen && self.postViews.count <= self.indexOnScreen+2) {
 					[postView postOnScreen];
 				} else if (self.postViews.count == (self.indexOnScreen+3)) {
-					[postView preparepostToBePresented];
+					[postView postAlmostOnScreen];
 				}
 				[postView showPageUpIndicator];
 				[postView muteAllVideos:YES];
@@ -136,15 +138,20 @@
 
 	//Since this is in explore we know the channel is not followed by user
 	[self updateFollowIcon];
-	[self addSubview:self.followButton];
-	[self addSubview:self.userNameLabel];
-	[self addSubview:self.channelNameLabel];
-	[self addSubview:self.numFollowersLabel];
+	[self.mainView addSubview:self.followButton];
+	[self.mainView addSubview:self.userNameLabel];
+	[self.mainView addSubview:self.channelNameLabel];
+	[self.mainView addSubview:self.numFollowersLabel];
 }
 
 -(void) clearViews {
 	[self offScreen];
+
+	self.channelBeingPresented = nil;
 	self.indexOnScreen = 0;
+	self.isFollowed = NO;
+	self.numFollowers = 0;
+
 	[self.userNameLabel removeFromSuperview];
 	[self.followButton removeFromSuperview];
 	[self.channelNameLabel removeFromSuperview];
@@ -210,7 +217,7 @@
 	}
 	// Prepare next view
 	if (postIndex + 3 < self.postViews.count) {
-		[(PostView*)self.postViews[postIndex+3] preparepostToBePresented];
+		[(PostView*)self.postViews[postIndex+3] postAlmostOnScreen];
 	}
 }
 
@@ -230,7 +237,7 @@
 
 -(void) almostOnScreen {
 	for (PostView* postView in self.postViews) {
-		[postView preparepostToBePresented];
+		[postView postAlmostOnScreen];
 	}
 }
 
@@ -240,18 +247,21 @@
 
 #pragma mark - Lazy Instantiation -
 
--(UIView *) footerView {
-	if (!_footerView) {
-		_footerView = [[UIView alloc] init];
-		_footerView.backgroundColor = [UIColor blackColor];
+-(UIView *) mainView {
+	if (!_mainView) {
+		_mainView = [[UIView alloc] init];
+		_mainView.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.2f];
+		_mainView.layer.borderColor = [UIColor whiteColor].CGColor;
+		_mainView.layer.borderWidth = 1.f;
+		_mainView.layer.cornerRadius = 5.f;
 	}
-	return _footerView;
+	return _mainView;
 }
 
 -(UIScrollView *) horizontalScrollView {
 	if (!_horizontalScrollView) {
 		_horizontalScrollView = [[UIScrollView alloc] init];
-		_horizontalScrollView.backgroundColor = self.backgroundColor;
+		_horizontalScrollView.backgroundColor = [UIColor clearColor];
 		_horizontalScrollView.delegate = self;
 		_horizontalScrollView.showsVerticalScrollIndicator = NO;
 		_horizontalScrollView.showsHorizontalScrollIndicator = YES;
@@ -272,6 +282,7 @@
 		[_userNameLabel setAdjustsFontSizeToFitWidth:YES];
 		[_userNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:DISCOVER_USER_NAME_FONT_SIZE]];
 		[_userNameLabel setTextColor:VERBATM_GOLD_COLOR];
+		[_userNameLabel setTextAlignment:NSTextAlignmentRight];
 	}
 	return _userNameLabel;
 }
@@ -289,7 +300,7 @@
 	if (!_numFollowersLabel) {
 		_numFollowersLabel = [[UILabel alloc] init];
 		[_numFollowersLabel setAdjustsFontSizeToFitWidth:YES];
-		[_numFollowersLabel setTextAlignment:NSTextAlignmentCenter];
+		[_numFollowersLabel setTextAlignment:NSTextAlignmentLeft];
 		[_numFollowersLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:DISCOVER_USER_NAME_FONT_SIZE]];
 		[_numFollowersLabel setTextColor:[UIColor whiteColor]];
 	}
@@ -305,6 +316,10 @@
 		[_channelNameLabel setTextColor:[UIColor whiteColor]];
 	}
 	return _channelNameLabel;
+}
+
+-(void) dealloc {
+
 }
 
 @end

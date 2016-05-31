@@ -39,7 +39,6 @@ typedef enum BarActivityOptions{
 
 -(instancetype) initWithFrame:(CGRect)frame numberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage;
 
--(void)setPageNumber:(NSNumber *) pageNumber;
 -(void)presentMuteButton:(BOOL) shouldPresent;
 -(void)shouldStartPostAsLiked:(BOOL) postLiked;
 
@@ -47,6 +46,7 @@ typedef enum BarActivityOptions{
 //if it's another user's post we create a flag
 -(void)createDeleteButton;
 -(void)createFlagButton;
-@property (nonatomic) id <PostLikeAndShareBarProtocol> delegate;
+
+@property (nonatomic, weak) id <PostLikeAndShareBarProtocol> delegate;
 
 @end

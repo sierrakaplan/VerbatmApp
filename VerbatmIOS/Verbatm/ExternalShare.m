@@ -32,7 +32,53 @@
     return self;
 }
 
--(BranchUniversalObject *) generateShareObjectForPost:(PFObject *)postObject {
+-(instancetype) init {
+    
+    return self;
+}
+
+//-(BranchUniversalObject *) generateShareObjectForPost:(PFObject *)postObject {
+//    
+//    NSString *postId = postObject.objectId;
+//    self.name = [[PFUser currentUser] valueForKey:VERBATM_USER_NAME_KEY];
+//    Channel_BackendObject *channelObj = [postObject valueForKey:POST_CHANNEL_KEY];
+//    NSString *channelName = [channelObj valueForKey:CHANNEL_NAME_KEY];
+//    
+//    BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc]initWithCanonicalIdentifier:postId];
+//    
+//    [Page_BackendObject getPagesFromPost:postObject andCompletionBlock:^(NSArray *pages){
+//        PFObject *po = pages[0];
+//        PageTypes type = [((NSNumber *)[po valueForKey:PAGE_VIEW_TYPE]) intValue];
+//        
+//        if(type == PageTypePhoto || type == PageTypePhotoVideo){
+//            [Photo_BackendObject getPhotosForPage:po andCompletionBlock:^(NSArray * photoObjects) {
+//                PFObject *photo = photoObjects[0];
+//                NSString *photoLink = [photo valueForKey:PHOTO_IMAGEURL_KEY];
+//                self.link = photoLink;
+//                
+//            }];
+//        } else if(type == PageTypeVideo){
+//            [Video_BackendObject getVideoForPage:po andCompletionBlock:^(PFObject * videoObject) {
+//                NSString * thumbNailUrl = [videoObject valueForKey:VIDEO_THUMBNAIL_KEY];
+//                self.link = thumbNailUrl;
+//                
+//            }];
+//        }
+//        
+//        branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", self.name, channelName];
+//        branchUniversalObject.contentDescription = @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!";
+//        
+//        
+//        branchUniversalObject.imageUrl = self.link;
+//        
+//        
+//    }];
+//    
+//    
+//    return branchUniversalObject;
+//}
+
+-(void) sharePostToFacebook:(PFObject *)postObject  {
     
     NSString *postId = postObject.objectId;
     self.name = [[PFUser currentUser] valueForKey:VERBATM_USER_NAME_KEY];
@@ -60,36 +106,19 @@
             }];
         }
         
+        branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", self.name, channelName];
+        branchUniversalObject.contentDescription = @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!";
         
         
+        branchUniversalObject.imageUrl = self.link;
         
-    }];
-    
-    
-
-    branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", self.name, channelName];
-    branchUniversalObject.contentDescription = @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!";
-    
-
-    branchUniversalObject.imageUrl = self.link;
-    
-    //        [self.branchUniversalObject addMetadataKey:@"userId" value:@"12345"];
-    //        [self.branchUniversalObject addMetadataKey:@"userName" value:@"UserName"];
-    
-    
-    return branchUniversalObject;
-}
-
--(void) sharePostToFacebook:(PFObject *)postObject  {
-    
-    BranchUniversalObject *shareObject = [self generateShareObjectForPost:postObject];
-    
-    BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
-    linkProperties.feature = @"share";
-    linkProperties.channel = @"facebook";
-    
-    
-    [shareObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
+        
+        BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
+        linkProperties.feature = @"share";
+        linkProperties.channel = @"facebook";
+        
+        
+        [branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
             if (!error) {
                 NSLog(@"got my Branch invite link to share: %@", url);
                 NSURL *link = [NSURL URLWithString:url];
@@ -120,6 +149,8 @@
                 NSLog(@"An eerror occured %@", error);
             }
         }];
+        
+    }];
 
 }
 @end

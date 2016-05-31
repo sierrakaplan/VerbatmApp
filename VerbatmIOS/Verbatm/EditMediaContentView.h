@@ -18,7 +18,7 @@
 
 @interface EditMediaContentView : UIView
 
-@property (nonatomic, strong) id<EditContentViewDelegate> delegate;
+@property (nonatomic, weak) id<EditContentViewDelegate> delegate;
 @property (nonatomic, strong) VideoPlayerView * videoView;
 @property (nonatomic) AVAsset *videoAsset;
 @property (nonatomic, strong) PinchView * pinchView;
@@ -41,7 +41,7 @@
 
 -(void) setText:(NSString *)text
 andTextYPosition:(CGFloat)yPosition
-   andTextColor:(UIColor *)textColor
+andTextColorBlack:(BOOL)textColorBlack
 andTextAlignment:(NSTextAlignment)textAlignment
 	andTextSize:(CGFloat)textSize;
 

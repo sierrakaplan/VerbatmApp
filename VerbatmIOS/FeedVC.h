@@ -17,9 +17,7 @@
 
 @interface FeedVC : UIViewController
 
-@property (strong, nonatomic) id<FeedVCDelegate> delegate;
-
--(void) freeMemory;
+@property (weak, nonatomic) id<FeedVCDelegate> delegate;
 
 -(void) addPostListVC;
 

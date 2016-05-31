@@ -21,7 +21,7 @@
 
 @interface MediaSelectTile : UIView<ContentDevElementDelegate>
 
-@property (strong, nonatomic) id<MediaSelectTileDelegate> delegate;
+@property (weak, nonatomic) id<MediaSelectTileDelegate> delegate;
 @property (strong, nonatomic) UIScrollView * mainScrollView;
 // Tells if it is the base media selector tile (last in scroll view)
 @property (nonatomic) BOOL isBaseSelector;

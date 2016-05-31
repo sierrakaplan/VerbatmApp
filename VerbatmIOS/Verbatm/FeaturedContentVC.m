@@ -8,10 +8,12 @@
 
 #import "Channel_BackendObject.h"
 #import "ExploreChannelCellView.h"
+#import "Icons.h"
 #import "FeedQueryManager.h"
 #import "FeaturedContentVC.h"
 #import "FeaturedContentCellView.h"
 #import "Follow_BackendManager.h"
+#import "Notifications.h"
 #import "ProfileVC.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
@@ -24,9 +26,14 @@ ExploreChannelCellViewDelegate>
 
 @property (nonatomic) UIRefreshControl *refreshControl;
 
+@property (nonatomic) BOOL loadingMoreChannels;
+@property (nonatomic) BOOL refreshing;
+
 #define HEADER_HEIGHT 50.f
 #define HEADER_FONT_SIZE 20.f
 #define CELL_HEIGHT 350.f
+
+#define LOAD_MORE_CUTOFF 3
 
 @end
 
@@ -34,14 +41,23 @@ ExploreChannelCellViewDelegate>
 
 @dynamic refreshControl;
 
+- (void) awakeFromNib {
+	[self initWithStyle:UITableViewStyleGrouped];
+}
+
 - (void)viewDidLoad {
 	[super viewDidLoad];
-	self.view.backgroundColor = [UIColor blackColor];
+	self.loadingMoreChannels = NO;
+	self.refreshing = NO;
+	self.view.backgroundColor = [UIColor clearColor];
+    self.tableView.backgroundColor = [UIColor clearColor];
 	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 	self.tableView.allowsMultipleSelection = NO;
 	self.tableView.showsHorizontalScrollIndicator = NO;
 	self.tableView.showsVerticalScrollIndicator = NO;
 	self.tableView.delegate = self;
+	[self.view setBackgroundColor:[UIColor clearColor]];
+	[self.tableView setBackgroundColor:[UIColor clearColor]];
 
 	//avoid covering last item in uitableview
 	//todo: change this when bring back search bar
@@ -51,35 +67,69 @@ ExploreChannelCellViewDelegate>
 
 	[self addRefreshFeature];
 	[self refreshChannels];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearViews) name:NOTIFICATION_FREE_MEMORY_DISCOVER object:nil];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-	[self.tableView reloadData];
+	if (!_featuredChannels || !_exploreChannels) {
+		[self refreshChannels];
+	}
 }
 
 -(void) viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
-	for (NSInteger i = 0; i < [self.tableView numberOfRowsInSection:0]; ++i) {
-		[(FeaturedContentCellView*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]] offScreen];
+	[self offScreen];
+}
+
+-(void) clearViews {
+	for (UITableViewCell *cellView in [self.tableView visibleCells]) {
+		[(ExploreChannelCellView*)cellView offScreen];
+		[(ExploreChannelCellView*)cellView clearViews];
 	}
-	for (NSInteger i = 0; i < [self.tableView numberOfRowsInSection:1]; ++i) {
-		[(ExploreChannelCellView*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:1]] offScreen];
+	self.loadingMoreChannels = NO;
+	self.refreshing = NO;
+	self.exploreChannels = nil;
+	self.featuredChannels = nil;
+	[self.tableView reloadData];
+	self.exploreChannels = nil;
+	self.featuredChannels = nil;
+}
+
+-(void) offScreen {
+	for (UITableViewCell *cellView in [self.tableView visibleCells]) {
+		[(ExploreChannelCellView*)cellView offScreen];
 	}
 }
 
 -(void) refreshChannels {
-
+	if (self.refreshing) return;
+	self.refreshing = YES;
+	self.loadingMoreChannels = NO;
 	[[FeedQueryManager sharedInstance] loadFeaturedChannelsWithCompletionHandler:^(NSArray *featuredChannels) {
 		self.featuredChannels = nil;
 		[self.featuredChannels addObjectsFromArray:featuredChannels];
 		[self.tableView reloadData];
+		self.refreshing = NO;
 	}];
 	[[FeedQueryManager sharedInstance] refreshExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
 		self.exploreChannels = nil;
 		[self.refreshControl endRefreshing];
 		[self.exploreChannels addObjectsFromArray: exploreChannels];
 		[self.tableView reloadData];
+		self.refreshing = NO;
+	}];
+}
+
+-(void) loadMoreChannels {
+	self.loadingMoreChannels = YES;
+	[[FeedQueryManager sharedInstance] loadMoreExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
+		if (exploreChannels.count) {
+			[self.exploreChannels addObjectsFromArray: exploreChannels];
+			[self.tableView reloadData];
+			self.loadingMoreChannels = NO;
+		}
 	}];
 }
 
@@ -105,34 +155,57 @@ ExploreChannelCellViewDelegate>
 	return 2;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-	NSString *sectionName;
-	switch (section) {
-		case 0:
-			sectionName = NSLocalizedString(@"Featured Content", @"Featured Content");
-			break;
-		case 1:
-			sectionName = NSLocalizedString(@"Explore", @"Explore");
-			break;
-		default:
-			sectionName = @"";
-			break;
+//-(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+//	UITableViewHeaderFooterView *header = [[UITableViewHeaderFooterView alloc] init];
+//	UIImageView *imageView;
+//	if (section == 0) {
+//		imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"featured_header"]];
+//	} else {
+//		imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"explore_header"]];
+//	}
+//	imageView.frame = header.bounds;
+//	imageView.contentMode = UIViewContentModeScaleAspectFit;
+//	[header addSubview: imageView];
+//	return header;
+//}
+
+-(NSString*) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+	if (section == 0) {
+		return @"Featured";
+	} else {
+		return @"Discover";
 	}
-	return sectionName;
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
 	return HEADER_HEIGHT;
 }
 
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+	return 1.f;
+}
+
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
 	// Background color
-	view.tintColor = [UIColor blackColor];
+	view.tintColor = [UIColor clearColor];
 	// Text Color
 	UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
 	[header.textLabel setTextColor:[UIColor whiteColor]];
 	[header.textLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:HEADER_FONT_SIZE]];
+	if (section == 0) {
+		[header.textLabel setText:@"Featured"];
+	} else {
+		[header.textLabel setText:@"Discover"];
+	}
 	[header.textLabel setTextAlignment:NSTextAlignmentCenter];
+	[header.textLabel setLineBreakMode:NSLineBreakByClipping];
+
+	for (UIView *subview in header.subviews) {
+		if ([subview isKindOfClass:[UIImageView class]]) {
+			CGRect frame = CGRectMake(10.f, 0.f, header.bounds.size.width - 20.f, header.bounds.size.height);
+			subview.frame = frame;
+		}
+	}
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -150,13 +223,9 @@ ExploreChannelCellViewDelegate>
 	return CELL_HEIGHT;
 }
 
-//todo: is this necessary?
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-//	if (indexPath.section == 0) {
-//		FeaturedContentCellView *cellVew = [self.tableView cellForRowAtIndexPath:indexPath];
-//	} else {
-//		ExploreChannelCellView *cellView = [self.tableView cellForRowAtIndexPath:indexPath];
-//	}
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	// All cells should be non selectable
+	return nil;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -190,6 +259,11 @@ ExploreChannelCellViewDelegate>
 			}
 		}
 		[cell onScreen];
+
+		if (self.exploreChannels.count - indexPath.row <= LOAD_MORE_CUTOFF &&
+			!self.loadingMoreChannels && !self.refreshing) {
+			[self loadMoreChannels];
+		}
 		return cell;
 	}
 }
@@ -204,16 +278,8 @@ ExploreChannelCellViewDelegate>
 
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	// Don't let headers remain anchored
-//	if (scrollView.contentOffset.y <= HEADER_HEIGHT && scrollView.contentOffset.y>=0) {
-//		scrollView.contentInset = UIEdgeInsetsMake(-scrollView.contentOffset.y, 0, 0, 0);
-//	} else if (scrollView.contentOffset.y >= HEADER_HEIGHT) {
-//		scrollView.contentInset = UIEdgeInsetsMake(-HEADER_HEIGHT, 0, 0, 0);
-//	}
-}
-
 - (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+	// If the indexpath is not within visible objects then it is offscreen
 	if ([tableView.indexPathsForVisibleRows indexOfObject:indexPath] == NSNotFound) {
 		if (indexPath.section == 0) {
 			[(FeaturedContentCellView*)cell offScreen];
@@ -243,5 +309,9 @@ ExploreChannelCellViewDelegate>
 	return _featuredChannels;
 }
 
+
+-(void) dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 @end

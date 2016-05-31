@@ -8,6 +8,7 @@
 //
 
 #import "Channel.h"
+#import <Crashlytics/Crashlytics.h>
 #import "FeedQueryManager.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFQuery.h>
@@ -45,9 +46,14 @@
 	if(self) {
 		self.followedChannelsRefreshing = NO;
 		self.channelsRefreshingCondition = [[NSCondition alloc] init];
-		self.postsInFeed = 0;
+		[self clearFeedData];
 	}
 	return self;
+}
+
+-(void) clearFeedData {
+	self.postsInFeed = 0;
+	self.currentFeedStart = nil;
 }
 
 // Waits if another thread is already refreshing followed channels,
@@ -98,8 +104,13 @@
 		PFQuery *postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 		[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO containedIn:self.channelsFollowed];
 		[postQuery orderByDescending:@"createdAt"];
-		[postQuery setLimit: POST_DOWNLOAD_MAX_SIZE];
 		[postQuery setSkip: 0];
+		//Only load newer posts
+		if (self.currentFeedStart) {
+			[postQuery whereKey:@"createdAt" greaterThan:self.currentFeedStart];
+		} else {
+			[postQuery setLimit: POST_DOWNLOAD_MAX_SIZE];
+		}
 		[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities, NSError * _Nullable error) {
 			NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
 			for(PFObject *postChannelActivity in activities) {
@@ -109,8 +120,9 @@
 			}
 
 			// Reset cursor to start
-			if (activities.count > 0) self.currentFeedStart = [activities[0] objectForKey:@"createdAt"];
-			self.postsInFeed = 0;
+			if (activities.count > 0) {
+				self.currentFeedStart = [activities[0] createdAt];
+			}
 			self.postsInFeed += finalPostObjects.count;
 			block(finalPostObjects);
 		}];
@@ -131,10 +143,9 @@
 	[postQuery orderByDescending:@"createdAt"];
 	[postQuery setLimit: POST_DOWNLOAD_MAX_SIZE];
 	[postQuery setSkip: self.postsInFeed];
-	[postQuery whereKey:@"createdAt" lessThan:self.currentFeedStart];
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities, NSError * _Nullable error) {
 		if (error) {
-			//todo: error handling
+			[[Crashlytics sharedInstance] recordError:error];
 			block (@[]);
 			return;
 		}
@@ -175,7 +186,7 @@
 			[exploreChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
 				NSMutableArray *finalChannels = [[NSMutableArray alloc] init];
 				if(error || !channels) {
-					//todo: error handling
+					[[Crashlytics sharedInstance] recordError:error];
 					completionBlock (finalChannels);
 					return;
 				}
@@ -200,7 +211,7 @@
 					}
 					completionBlock(finalChannels);
 					self.exploreChannelsLoaded = 0;
-					self.exploreChannelsLoaded += finalChannels.count;
+					self.exploreChannelsLoaded += results.count;
 				});
 			}];
 		}];
@@ -250,21 +261,32 @@
 	[exploreChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
 		NSMutableArray *finalChannels = [[NSMutableArray alloc] init];
 		if(error || !channels) {
-			//todo: error handling
+			[[Crashlytics sharedInstance] recordError:error];
 			completionBlock (finalChannels);
 			return;
 		}
+
+		NSMutableArray *loadChannelCreatorPromises = [[NSMutableArray alloc] init];
 		for(PFObject *parseChannelObject in channels) {
 			PFUser *channelCreator = [parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
-			[channelCreator fetchIfNeededInBackground];
-			NSString *channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
-			Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
-														   andParseChannelObject:parseChannelObject
-															   andChannelCreator:channelCreator];
-			[finalChannels addObject:verbatmChannelObject];
+			[loadChannelCreatorPromises addObject:[self fetchChannelCreator:channelCreator
+												   andCheckIfPostsInChannel:parseChannelObject]];
 		}
-		self.exploreChannelsLoaded += finalChannels.count;
-		completionBlock(finalChannels);
+		//Make sure all creators have been loaded so their names can be displayed
+		PMKWhen(loadChannelCreatorPromises).then(^(NSArray* results) {
+			for (int i = 0; i < results.count; i++) {
+				PFUser *channelCreator = results[i];
+				if ([channelCreator isEqual:[NSNull null]]) continue;
+				PFObject *channelObj = channels[i];
+				NSString *channelName  = [channelObj valueForKey:CHANNEL_NAME_KEY];
+				Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
+															   andParseChannelObject:channelObj
+																   andChannelCreator:channelCreator];
+				[finalChannels addObject:verbatmChannelObject];
+			}
+			completionBlock(finalChannels);
+			self.exploreChannelsLoaded += results.count;
+		});
 	}];
 }
 
@@ -290,7 +312,7 @@
 		[featuredChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
 			NSMutableArray *finalChannels = [[NSMutableArray alloc] init];
 			if(error || !channels) {
-				//todo: error handling
+				[[Crashlytics sharedInstance] recordError:error];
 				completionBlock (finalChannels);
 				return;
 			}

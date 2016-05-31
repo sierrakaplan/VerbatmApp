@@ -18,6 +18,8 @@
 @end
 
 @interface CreatorAndChannelBar : UIView
+
 -(instancetype) initWithFrame:(CGRect)frame andChannel:(Channel *) channel;
-@property (nonatomic) id<CreatorAndChannelBarProtocol> delegate;
+@property (nonatomic, weak) id<CreatorAndChannelBarProtocol> delegate;
+
 @end

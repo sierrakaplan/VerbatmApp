@@ -72,7 +72,6 @@
     [self.view addSubview:self.navigationBar];
 }
 
-
 -(void) positionButtonViews{
     
     CGRect tcTitleFrame = CGRectMake(0, CUSTOM_NAV_BAR_HEIGHT + VIEW_OFFSET_Y,

@@ -12,8 +12,11 @@
 #import "PromiseKit/PromiseKit.h"
 
 @interface Page_BackendObject : NSObject
-//make sure the post is arleady saved in the database before this function is called
+
+// Make sure the post is arleady saved in the database before this function is called
+// Resolves to either the new page object or NSError
 -(AnyPromise*) savePageWithIndex:(NSInteger) pageIndex andPinchView:(PinchView *) pinchView andPost:(PFObject *) post;
+
 +(void)getPagesFromPost:(PFObject *) post andCompletionBlock:(void(^)(NSArray *))block;
 
 +(void)deletePagesInPost:(PFObject *)post;

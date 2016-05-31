@@ -6,6 +6,7 @@
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
 
+#import <Crashlytics/Crashlytics.h>
 #import "VideoPlayerView.h"
 #import "VideoDownloadManager.h"
 #import "LoadingIndicator.h"
@@ -99,10 +100,8 @@
 	if([[VideoDownloadManager sharedInstance] containsEntryForUrl:url]){
 		playerItem = [[VideoDownloadManager sharedInstance] getVideoForUrl: url.absoluteString];
 	}else {
-		//todo: test this
 		[self prepareVideoFromAsset:[AVAsset assetWithURL: url]];
 		return;
-//		playerItem = [AVPlayerItem playerItemWithURL: url];
 	}
 
 	[self prepareVideoFromPlayerItem: playerItem];
@@ -179,7 +178,7 @@
 			}
 			if (self.shouldPlayOnLoad) [self playVideo];
 		} else if (self.playerItem.status == AVPlayerItemStatusFailed) {
-			NSLog(@"video couldn't play: %@", self.playerItem.error);
+			[[Crashlytics sharedInstance] recordError:self.playerItem.error];
 			if (self.videoLoading) {
 				[self.customActivityIndicator stopCustomActivityIndicator];
 				self.videoLoading = NO;
@@ -300,6 +299,11 @@
 	}
 	[self bringSubviewToFront:_customActivityIndicator];
 	return _customActivityIndicator;
+}
+
+- (void)dealloc {
+	[self stopVideo];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

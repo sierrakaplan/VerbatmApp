@@ -19,17 +19,15 @@
 @interface TextOverMediaView ()
 
 @property (nonatomic, readwrite) BOOL textShowing;
-@property (nonatomic, strong) UIImageView* imageView;
-@property (nonatomic, weak) UIImage *image;
-@property (nonatomic, readwrite) UITextView * textView;
-@property (strong,nonatomic) UIImageView* textBackgroundView;
+@property (nonatomic, weak) UIImageView* imageView;
+@property (nonatomic, readwrite, weak) UITextView * textView;
 
 #pragma mark Text properties
-@property (nonatomic, readwrite) NSString* text;
+
 @property (nonatomic, readwrite) CGFloat textYPosition;
 @property (nonatomic, readwrite) CGFloat textSize;
 @property (nonatomic, readwrite) NSTextAlignment textAlignment;
-@property (nonatomic, strong, readwrite) UIColor *textColor;
+@property (nonatomic, readwrite) BOOL blackTextColor;
 
 #define DEFAULT_TEXT_VIEW_FRAME CGRectMake(TEXT_VIEW_X_OFFSET, self.textYPosition, self.frame.size.width - TEXT_VIEW_X_OFFSET*2, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT)
 
@@ -41,23 +39,23 @@
 			   withSmallImage: (UIImage*)smallImage asSmall:(BOOL) small {
 	self = [self initWithFrame:frame];
 	if (self) {
-
-		self.image = smallImage;
-		[self.imageView setImage: self.image];
+		UIImage *croppedImage = smallImage;
+		if (small) {
+			croppedImage = [smallImage imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width, self.bounds.size.height)];
+		}
+		[self.imageView setImage: croppedImage];
 
 		// After larger image loads, crop it and set it in the image
-		if (!small) {
-			AnyPromise *loadLargeImageData = [UtilityFunctions loadCachedPhotoDataFromURL:imageUrl];
-			loadLargeImageData.then(^(NSData* largeImageData) {
-				UIImage *image = [UIImage imageWithData:largeImageData];
-				if (largeImageData.length / 1024.f > 500) {
-					image = [image imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width*2, self.bounds.size.height*2)];
+		// Only load large image if it's been published already cropped (with s0 tag)
+		if (!small && [imageUrl.absoluteString hasSuffix:@"=s0"]) {
+			[UtilityFunctions loadCachedPhotoDataFromURL:imageUrl].then(^(NSData* largeImageData) {
+				// Only display larger data if less than 1000 KB
+				if (largeImageData.length / 1024.f < 1000) {
+					UIImage *image = [UIImage imageWithData:largeImageData];
+					[self.imageView setImage: image];
 				}
-				self.image = image;
-				[self.imageView setImage: image];
 			});
 		}
-
 	}
 	return self;
 }
@@ -73,9 +71,9 @@
 -(instancetype) initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
+		//		self.displayingLargeImage = NO;
 		[self revertToDefaultTextSettings];
 		[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
-		[self addSubview:self.imageView];
 	}
 	return self;
 }
@@ -97,7 +95,7 @@
 
 -(void) setText:(NSString*)text
 andTextYPosition:(CGFloat) textYPosition
-   andTextColor:(UIColor*) textColor
+andTextColorBlack:(BOOL) textColorBlack
 andTextAlignment:(NSTextAlignment) textAlignment
 	andTextSize:(CGFloat) textSize {
 	if(!text.length) return;
@@ -105,6 +103,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	self.textYPosition = textYPosition;
 	self.textView.frame = DEFAULT_TEXT_VIEW_FRAME;
 
+	UIColor *textColor = textColorBlack ? [UIColor blackColor] : [UIColor whiteColor];
 	[self changeTextColor:textColor];
 	[self changeTextAlignment: textAlignment];
 
@@ -130,6 +129,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 -(void)changeText:(NSString *) text{
 	[self.textView setText:text];
 	[self resizeTextView];
+	[self bringSubviewToFront:self.textView];
 }
 
 -(NSString *)getText {
@@ -158,9 +158,8 @@ andTextAlignment:(NSTextAlignment) textAlignment
 }
 
 -(void) changeTextColor:(UIColor *)textColor {
-	self.textColor = textColor;
-	self.textView.textColor = self.textColor;
-	self.textView.tintColor = self.textColor;
+	self.textView.textColor = textColor;
+	self.textView.tintColor = textColor;
 	if([self.textView isFirstResponder]){
 		[self.textView resignFirstResponder];
 		[self.textView becomeFirstResponder];
@@ -194,12 +193,12 @@ andTextAlignment:(NSTextAlignment) textAlignment
 -(void)showText: (BOOL) show {
 	if (show) {
 		if (!self.textShowing){
-			[self addSubview:self.textView];
+			[self.textView setHidden: NO];
 			[self bringSubviewToFront:self.textView];
 		}
 	} else {
 		if (!self.textShowing) return;
-		[self.textView removeFromSuperview];
+		[self.textView setHidden:YES];
 	}
 	self.textShowing = !self.textShowing;
 }
@@ -236,14 +235,15 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	float height = (TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT < contentHeight) ? contentHeight : TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT;
 	self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y,
 									 self.textView.frame.size.width, height);
-	self.textBackgroundView.frame = CGRectMake(0.f, 0.f, self.textView.frame.size.width, self.textView.frame.size.height);
 }
 
 #pragma mark - Lazy Instantiation -
 
 -(UIImageView*) imageView {
 	if (!_imageView) {
-		_imageView = [[UIImageView alloc] initWithFrame: self.bounds];
+		UIImageView *imageView = [[UIImageView alloc] initWithFrame: self.bounds];
+		[self insertSubview:imageView belowSubview:self.textView];
+		_imageView = imageView;
 		_imageView.clipsToBounds = YES;
 		_imageView.contentMode = UIViewContentModeScaleAspectFill;
 	}
@@ -253,7 +253,9 @@ andTextAlignment:(NSTextAlignment) textAlignment
 -(UITextView*) textView {
 	if (!_textView) {
 		CGRect textViewFrame = DEFAULT_TEXT_VIEW_FRAME;
-		_textView = [[UITextView alloc] initWithFrame: textViewFrame];
+		UITextView *textView = [[UITextView alloc] initWithFrame: textViewFrame];
+		[self addSubview:textView];
+		_textView = textView;
 		_textView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.0];
 		_textView.keyboardAppearance = UIKeyboardAppearanceDark;
 		_textView.scrollEnabled = NO;
@@ -262,6 +264,10 @@ andTextAlignment:(NSTextAlignment) textAlignment
 		[_textView setTintAdjustmentMode:UIViewTintAdjustmentModeNormal];
 	}
 	return _textView;
+}
+
+-(void) dealloc {
+
 }
 
 @end

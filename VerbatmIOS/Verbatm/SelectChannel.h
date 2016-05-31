@@ -21,7 +21,7 @@
 
 @interface SelectChannel : UIScrollView
 
-@property (nonatomic) id <SelectChannelProtocol> selectChannelDelegate;
+@property (nonatomic, weak) id <SelectChannelProtocol> selectChannelDelegate;
 
 -(instancetype) initWithFrame:(CGRect)frame canSelectMultiple:(BOOL) selectMultiple;
 

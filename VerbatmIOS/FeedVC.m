@@ -54,9 +54,10 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
+	self.didJustLoadForTheFirstTime = NO;
+	[self.postListVC display:nil asPostListType:listFeed withListOwner:[PFUser currentUser] isCurrentUserProfile:NO];
 	if(self.postListVC && !self.didJustLoadForTheFirstTime){
-        [self.postListVC reloadCurrentChannel];
-        [self.postListVC continueVideoContent];
+        [self.postListVC refreshPosts];
 	}
 	[self checkIntroNotification];
 }
@@ -65,12 +66,9 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 	[super viewDidAppear:animated];
 }
 
--(void) freeMemory {
-	//todo: figure out how to free memory
-//	[self.postListVC stopAllVideoContent];
-//	[self.postListVC.view removeFromSuperview];
-//	[self.postListVC clearOldPosts];
-//	self.postListVC = nil;
+-(void) viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
+	[self.postListVC clearViews];
 }
 
 -(void)checkIntroNotification{
@@ -90,12 +88,6 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 	}
 }
 
--(void)viewWillDisappear:(BOOL)animated {
-	[super viewWillDisappear:animated];
-	if(self.postListVC)[self.postListVC stopAllVideoContent];
-	self.didJustLoadForTheFirstTime = NO;
-}
-
 -(void) addPostListVC {
 	UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
 	flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
@@ -103,9 +95,6 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 	[flowLayout setMinimumLineSpacing:0.0f];
 	[flowLayout setItemSize:self.view.frame.size];
 	self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
-	self.postListVC.listType = listFeed;
-	self.postListVC.isCurrentUserProfile = NO;
-	self.postListVC.listOwner = [PFUser currentUser];
 	self.postListVC.postListDelegate = self;
 	[self.postListContainerView setFrame:self.view.bounds];
 	[self.postListContainerView addSubview:self.postListVC.view];
@@ -244,6 +233,10 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 													handler:^(UIAlertAction * action) {}];
 	[newAlert addAction:defaultAction];
 	[self presentViewController:newAlert animated:YES completion:nil];
+}
+
+-(void) dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

@@ -35,10 +35,13 @@
 #import "UserInfoCache.h"
 #import "UserSetupParameters.h"
 
+#import <PromiseKit/PromiseKit.h>
+
 @interface ProfileVC() <ProfileNavBarDelegate,Intro_Notification_Delegate,
 UIScrollViewDelegate, CreateNewChannelViewProtocol,
 PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
+@property (nonatomic) BOOL initializing;
 @property (nonatomic) BOOL currentlyCreatingNewChannel;
 
 @property (strong, nonatomic) PostListVC * postListVC;
@@ -71,29 +74,51 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
-	self.view.backgroundColor = [UIColor blackColor];
-	//this is where you'd fetch the threads
-    [self.customActivityIndicator startCustomActivityIndicator];
-    [self getChannelsWithCompletionBlock:^{
-        [self.customActivityIndicator stopCustomActivityIndicator];
-        [self createNavigationBar];
-		[self selectChannel:self.startChannel];
-		if(self.isCurrentUserProfile) {
-			//We stop the video because we start in the feed
-			[self.postListVC stopAllVideoContent];
-		}
-		[self addClearScreenGesture];
-		[self checkIntroNotification];
-	}];
-	self.view.clipsToBounds = YES;
+	self.initializing = YES;
+	if (!self.postListVC) {
+		[self initialize].then(^{
+			[self selectChannel: self.startChannel ? self.startChannel : [self.channels firstObject]];
+			self.initializing = NO;
+		});
+	}
 }
 
--(void) freeMemory {
-	//todo: figure out how to clear memory
-//	[self.postListVC stopAllVideoContent];
-//	[self.postListVC.view removeFromSuperview];
-//	[self.postListVC clearOldPosts];
-//	self.postListVC = nil;
+-(void) viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
+	if (!self.initializing) {
+		[self selectChannel: self.startChannel ? self.startChannel : [self.channels firstObject]];
+	}
+}
+
+-(AnyPromise*) initialize {
+
+	self.view.backgroundColor = [UIColor blackColor];
+	//this is where you'd fetch the threads
+	[self.customActivityIndicator startCustomActivityIndicator];
+	self.view.clipsToBounds = YES;
+	return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+		[self getChannelsWithCompletionBlock:^{
+			[self.customActivityIndicator stopCustomActivityIndicator];
+			[self createNavigationBar];
+			[self addClearScreenGesture];
+			[self checkIntroNotification];
+
+			if (self.channels.count == 0) return;
+
+			[self addPostListVC];
+
+			if(self.isCurrentUserProfile) {
+				//We stop the video because we start in the feed
+				[self.postListVC offScreen];
+			}
+			resolve(nil);
+		}];
+	}];
+}
+
+-(void) viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
+	[self.postListVC clearViews];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -133,24 +158,9 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	}
 }
 
--(void) viewWillAppear:(BOOL)animated{
-	if(self.postListVC){
-		[self.postListVC continueVideoContent];
-	}
-}
-
--(void) viewDidAppear:(BOOL)animated {
-	[super viewDidAppear:animated];
-}
-
--(void) viewWillDisappear:(BOOL)animated {
-	[super viewWillDisappear:animated];
-	if(self.postListVC) [self.postListVC stopAllVideoContent];
-}
-
 -(void) addPostListVC {
 	if(self.postListVC) {
-		[self.postListVC stopAllVideoContent];
+		[self.postListVC offScreen];
 		[self.postListVC.view removeFromSuperview];
 	}
 
@@ -160,16 +170,6 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	[flowLayout setMinimumLineSpacing:0.0f];
 	[flowLayout setItemSize:self.view.frame.size];
 	self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
-
-	self.postListVC.listOwner = self.userOfProfile;
-	if(self.startChannel){
-		self.postListVC.channelForList = self.startChannel;
-	}else{
-		self.postListVC.channelForList = [self.channels firstObject];
-		self.startChannel = self.postListVC.channelForList;
-	}
-	self.postListVC.listType = listChannel;
-	self.postListVC.isCurrentUserProfile = self.isCurrentUserProfile;
 	self.postListVC.postListDelegate = self;
 	if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
 	else [self.view addSubview:self.postListVC.view];
@@ -223,21 +223,6 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 }
 
 #pragma mark - Profile Nav Bar Delegate Methods -
-
-//current user selected to follow a channel
--(void) followOptionSelected{
-
-}
-
-//current user wants to see their own followers
--(void) followersOptionSelected{
-	[self.delegate presentFollowersListMyID:nil];//to-do
-}
-
-//current user wants to see who they follow
--(void) followingOptionSelected {
-	[self.delegate presentWhoIFollowMyID:nil];//to-do
-}
 
 -(void) settingsButtonClicked {
 	[self performSegueWithIdentifier:SETTINGS_PAGE_MODAL_SEGUE sender:self];
@@ -335,11 +320,6 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
     UIAlertAction* confirmAction = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         if(shouldBlock){
 			[User_BackendObject blockUser:self.userOfProfile];
-
-			//unfollow all their channels automatically
-			for (Channel *channel in self.channels) {
-				[Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel: channel];
-			}
 			[self.profileNavBar updateUserIsBlocked:YES];
 
         } else {
@@ -354,17 +334,18 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 }
 
 
--(void)newChannelSelected:(Channel *) channel{
-	if(![self.startChannel.name isEqualToString:channel.name]){
-		self.startChannel = channel;
-		[self addPostListVC];
-	}
+-(void)newChannelSelected:(Channel *) channel {
+	self.startChannel = channel; //return to this channel
+	[self.postListVC display:channel asPostListType:listChannel withListOwner:self.userOfProfile
+		isCurrentUserProfile:self.isCurrentUserProfile];
 }
 
 // updates tab and content
 -(void) selectChannel: (Channel *) channel {
+	self.startChannel = channel; //return to this channel
 	[self.profileNavBar selectChannel: channel];
-	[self addPostListVC];
+	[self.postListVC display:channel asPostListType:listChannel withListOwner:self.userOfProfile
+		isCurrentUserProfile:self.isCurrentUserProfile];
 }
 
 #pragma mark - POSTListVC Protocol -
@@ -380,7 +361,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 			[self.profileNavBar setFrame: self.profileNavBarFrameOnScreen];
 		}];
 		[self.delegate showTabBar:YES];
-		if(self.isCurrentUserProfile) [self.postListVC footerShowing:YES];
+		if(self.isProfileTab) [self.postListVC footerShowing:YES];
 
 	} else {
 		self.profileNavBarOnScreen = NO;
@@ -442,14 +423,17 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	NSLog(@"Publishing Complete!");
 	[self.publishingProgressView removeFromSuperview];
 	self.publishingProgressView = nil;
-	//todo: bring this back
-	//if ([PublishingProgressManager sharedInstance].currentPublishingChannel == self.postListVC.channelForList) {
-		[self.postListVC reloadCurrentChannel];
-	//}
+	[self.postListVC loadMorePosts];
 }
 
--(void) publishingFailed {
+-(void) publishingFailedWithError:(NSError *)error {
 	NSLog(@"PUBLISHING FAILED");
+	NSString *message = @"We were unable to publish your post. One of the videos may be too long or your internet connection may be too weak. Please try again later.";
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Publishing Failed" message:message preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+													handler:^(UIAlertAction * action) {}];
+	[newAlert addAction:defaultAction];
+	[self presentViewController:newAlert animated:YES completion:nil];
    if(self.publishingProgress) [self.publishingProgressView removeFromSuperview];
 }
 

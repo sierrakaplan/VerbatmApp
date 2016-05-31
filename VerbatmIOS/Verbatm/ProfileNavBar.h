@@ -13,23 +13,18 @@
 
 @protocol ProfileNavBarDelegate <NSObject>
 
--(void) followOptionSelected;
-
--(void) followersOptionSelected;
--(void) followingOptionSelected;
-
 -(void) settingsButtonClicked;
 -(void) newChannelSelected:(Channel *) channel;
 -(void) createNewChannel;
 
 -(void) exitCurrentProfile;
--(void)blockCurrentUserShouldBlock:(BOOL) shouldBlock;
+-(void) blockCurrentUserShouldBlock:(BOOL) shouldBlock;
 
 @end
 
 @interface ProfileNavBar : UIView
 
-@property (nonatomic, strong) id<ProfileNavBarDelegate> delegate;
+@property (nonatomic, weak) id<ProfileNavBarDelegate> delegate;
 
 -(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels
 					  andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser
@@ -38,6 +33,6 @@
 -(void) selectChannel: (Channel*) channel;
 -(void) newChannelCreated: (Channel *) channel;
 
--(void)updateUserIsBlocked:(BOOL)blocked;
+-(void )updateUserIsBlocked:(BOOL)blocked;
 
 @end

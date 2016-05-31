@@ -21,7 +21,7 @@
 
 @interface CustomNavigationBar : UIView
 
-@property (nonatomic, strong) id<CustomNavigationBarDelegate> delegate;
+@property (nonatomic, weak) id<CustomNavigationBarDelegate> delegate;
 
 -(instancetype)initWithFrame:(CGRect)frame andBackgroundColor: (UIColor*) backgroundColor;
 

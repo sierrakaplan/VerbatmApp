@@ -96,7 +96,6 @@
 	[self.textAndImageView setTextViewEditable:YES];
 	[self.textAndImageView showText:YES];
 	[self.textAndImageView setTextViewDelegate:self];
-	[self addToolBarToView];
 	[self.textCreationButton setImage:[UIImage imageNamed:CREATE_TEXT_ICON] forState:UIControlStateNormal];
 	self.textCreationButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
 	[self.textCreationButton addTarget:self action:@selector(editText) forControlEvents:UIControlEventTouchUpInside];
@@ -120,13 +119,14 @@
 
 -(void) setText:(NSString *)text
 andTextYPosition:(CGFloat)yPosition
-   andTextColor:(UIColor *)textColor
+   andTextColorBlack:(BOOL)textColorBlack
 andTextAlignment:(NSTextAlignment)textAlignment
 	andTextSize:(CGFloat)textSize {
+	[self addToolBarToViewWithTextColorBlack:textColorBlack];
 
 	[self.textAndImageView setText: text
 				  andTextYPosition: yPosition
-					  andTextColor: textColor
+					  andTextColorBlack: textColorBlack
 				  andTextAlignment: textAlignment
 					   andTextSize: textSize];
 }
@@ -134,10 +134,11 @@ andTextAlignment:(NSTextAlignment)textAlignment
 #pragma mark - Keyboard ToolBar -
 
 //creates a toolbar to add onto the keyboard
--(void)addToolBarToView {
+-(void)addToolBarToViewWithTextColorBlack:(BOOL)textColorBlack {
 	CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - TEXT_TOOLBAR_HEIGHT,
 									 self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
-	VerbatmKeyboardToolBar* toolBar = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame];
+	VerbatmKeyboardToolBar* toolBar = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
+																  andTextColorBlack: textColorBlack];
 	[toolBar setDelegate:self];
 	[self.textAndImageView setTextViewKeyboardToolbar:toolBar];
 }
@@ -259,7 +260,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 }
 
--(void)changeFilteredImageRight{
+-(void)changeFilteredImageRight {
 	if (self.imageIndex <= 0) {
 		self.imageIndex = [self.filteredImages count];
 	}
@@ -452,7 +453,7 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 		SingleMediaAndTextPinchView *mediaAndTextPinchView = (SingleMediaAndTextPinchView *)self.pinchView;
 		mediaAndTextPinchView.text = [self.textAndImageView getText];
 		mediaAndTextPinchView.textYPosition = [NSNumber numberWithFloat:self.textAndImageView.textYPosition];
-		mediaAndTextPinchView.textColor = self.textAndImageView.textColor;
+		mediaAndTextPinchView.textColor = self.textAndImageView.textView.textColor;
 		mediaAndTextPinchView.textSize = [NSNumber numberWithFloat:self.textAndImageView.textSize];
 		mediaAndTextPinchView.textAlignment = [NSNumber numberWithInteger:self.textAndImageView.textAlignment];
 	}
@@ -507,6 +508,10 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 		_textCreationButton = [[UIButton alloc] initWithFrame:buttonFrame];
 	}
 	return _textCreationButton;
+}
+
+-(void) dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

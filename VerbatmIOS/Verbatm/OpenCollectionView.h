@@ -22,7 +22,7 @@
 
 @interface OpenCollectionView : UIView
 
-@property (strong, nonatomic) id<OpenCollectionViewDelegate> delegate;
+@property (weak, nonatomic) id<OpenCollectionViewDelegate> delegate;
 
 // array of PinchView
 -(instancetype) initWithFrame:(CGRect)frame andPinchViewArray:(NSMutableArray *) pinchViewArray;

@@ -44,7 +44,7 @@
 @interface PostView ()<UIScrollViewDelegate, PhotoPVEDelegate,
 PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
-@property (nonatomic) CreatorAndChannelBar * creatorAndChannelBar;
+@property (nonatomic) CreatorAndChannelBar *creatorAndChannelBar;
 
 // mapping between NSNumber of type Integer and Page Views
 @property (strong, nonatomic) NSMutableDictionary * pageViews;
@@ -79,16 +79,13 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 @property (strong, nonatomic) PageViewingExperience *currentPage;
 
-//@property (nonatomic) UIImageView * swipeInstructionView
-
 @property (nonatomic) UIView * PagingLine;//line that moves up and down as the user swipes up and down
 
 @property (nonatomic) UIImageView * pageUpIndicator;
 @property (nonatomic) BOOL pageUpIndicatorDisplayed;
 
-@property (nonatomic) NSMutableArray * mediaPageContent;//TODO
-
 @property(nonatomic) BOOL postIsCurrentlyBeingShown;
+@property(nonatomic) BOOL postIsAlmostOnScreen;
 @property(nonatomic) BOOL postMuted;
 
 //Tells whether should display media in small format
@@ -240,7 +237,6 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 														  withCompletionBlock:^(Channel * channel) {
 															  self.postChannel = channel;
 															  //we only add the channel info to posts that don't belong to the current user
-															  //todo: or in profile
 															  if(channel.parseChannelObject != self.listChannel.parseChannelObject
 																 && ![channel channelBelongsToCurrentUser]) {
 																  dispatch_async(dispatch_get_main_queue(), ^{
@@ -308,14 +304,6 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	[self upDatePagingLine];
 }
 
--(void) setPageNumberOnShareBarFromScrollView:(UIScrollView *) scrollview {
-	CGFloat scrollViewHeigthOffset = scrollview.contentOffset.y;
-	CGFloat screenHeight = scrollview.frame.size.height;
-	CGFloat pageIndex = scrollViewHeigthOffset/screenHeight;
-	NSNumber * pageNumber = @((pageIndex + 1.f));
-	[self.likeShareBar setPageNumber:pageNumber];
-}
-
 #pragma mark - Handle Display Media on Page -
 
 -(void) setDelegateOnPhotoPage: (PageViewingExperience*) pageView {
@@ -331,7 +319,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 -(void) displayMediaOnCurrentPage {
 	NSInteger currentViewableIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
 	NSInteger indexBelow = currentViewableIndex +1;
-	
+
 	if (self.pageUpIndicatorDisplayed) {
 		PageViewingExperience* pageBelow = [self.pageViews objectForKey:[NSNumber numberWithInteger:indexBelow]];
 		if (pageBelow) {
@@ -493,12 +481,16 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	}
 
 	PMKWhen(downloadPromises).then(^(id data){
-		if (self.postIsCurrentlyBeingShown){
-			dispatch_async(dispatch_get_main_queue(), ^{
+
+		dispatch_async(dispatch_get_main_queue(), ^{
+			if (self.postIsCurrentlyBeingShown || self.postIsAlmostOnScreen) {
 				[self presentMediaContent];
+			}
+			if (self.postIsCurrentlyBeingShown) {
 				[self postOnScreen];
-			});
-		}
+			}
+		});
+
 	});
 }
 
@@ -554,9 +546,10 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 -(void) postOnScreen {
 	self.postIsCurrentlyBeingShown = YES;
+	self.postIsAlmostOnScreen = NO;
 
 	if(self.pageMedia.count > 0 &&
-	   self.pageViews.count ==0){
+	   self.pageViews.count == 0){
 		//we lazily create out pages
 		[self presentMediaContent];
 	}
@@ -569,11 +562,9 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	[self removePageUpIndicatorFromView];
 }
 
--(void) preparepostToBePresented {
-	NSInteger currentPage = self.mainScrollView.contentOffset.x / self.frame.size.width;
-	PageViewingExperience* page = [self.pageViews objectForKey:[NSNumber numberWithInteger:currentPage]];
-	[page almostOnScreen];
-	[self prepareNextPage];
+-(void) postAlmostOnScreen {
+	self.postIsAlmostOnScreen = YES;
+	[self presentMediaContent];
 }
 
 #pragma mark - Photo View Delegate -
@@ -586,9 +577,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	self.mainScrollView.scrollEnabled = YES;
 }
 
--(void) viewTapped {
-
-}
+-(void) viewTapped {}
 
 -(void)setApproprioateScrollViewContentSize{
 	self.mainScrollView.contentSize = CGSizeMake(0, self.pageViews.count * self.frame.size.height);
@@ -729,6 +718,10 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 		[self bringSubviewToFront:_activityIndicator];
 	}
 	return _activityIndicator;
+}
+
+-(void) dealloc {
+	
 }
 
 @end

@@ -8,6 +8,7 @@
 //
 
 #import "Channel_BackendObject.h"
+#import <Crashlytics/Crashlytics.h>
 #import "Follow_BackendManager.h"
 #import "User_BackendObject.h"
 #import <Parse/PFUser.h>
@@ -64,6 +65,13 @@
 			[Follow_BackendManager user:user stopFollowingChannel:channel];
 		}
 	}];
+
+	//Unfollow all of blocked user's channels
+	[Channel_BackendObject getChannelsForUser:user withCompletionBlock:^(NSMutableArray *channels) {
+		for (Channel *channel in channels) {
+			[Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel:channel];
+		}
+	}];
 }
 
 +(void)unblockUser:(PFUser *)user {
@@ -76,7 +84,7 @@
 				[block deleteInBackground]; //should only be one
 			}
 		} else {
-			NSLog(@"Error unblocking: %@", error.description);
+			[[Crashlytics sharedInstance] recordError:error];
 		}
 	}];
 }
@@ -86,6 +94,8 @@
     return ![[text stringByTrimmingCharactersInSet:alphaSet] isEqualToString:text];
 }
 
-
+- (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 @end

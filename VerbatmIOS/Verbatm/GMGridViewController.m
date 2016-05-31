@@ -99,7 +99,6 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     {
         //Compute the thumbnail pixel size:
         CGFloat scale = [UIScreen mainScreen].scale;
-        //NSLog(@"This is @%fx scale device", scale);
         AssetGridThumbnailSize = CGSizeMake(layout.itemSize.width * scale, layout.itemSize.height * scale);
         
         self.collectionView.allowsMultipleSelection = YES;
@@ -289,7 +288,6 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     
     PHAsset *asset = self.assetsFetchResults[indexPath.item];
     {
-        //NSLog(@"Image manager: Requesting FILL image for iPhone");
         [self.imageManager requestImageForAsset:asset
                                      targetSize:AssetGridThumbnailSize
                                     contentMode:PHImageContentModeAspectFill
