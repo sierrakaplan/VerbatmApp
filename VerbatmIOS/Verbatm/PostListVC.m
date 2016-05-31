@@ -559,6 +559,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
     linkProperties.feature = @"share";
     linkProperties.channel = @"facebook";
+
+	NSLog(@"Getting link for fb for user %@ reblogging from channel %@ for post %@...", name, channelName, postId);
     
     [branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
 		NSLog(@"callback from external share called");
