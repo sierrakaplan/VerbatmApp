@@ -34,6 +34,7 @@
 @property (nonatomic) SelectOptionButton * selectedButton;
 @property (nonatomic) BOOL canSelectMultipleChannels;
 @property (nonatomic) BOOL facebookSelected;
+@property (nonatomic) BOOL source;
 
 
 @end
@@ -43,11 +44,26 @@
     
     self = [super initWithFrame:frame];
     self.facebookSelected = NO;
+    self.source = NO;
     
     if(self){
         self.canSelectMultipleChannels = selectMultiple;
         [self createChannelLabels:[[UserInfoCache sharedInstance] getUserChannels]];
        
+    }
+    
+    return self;
+}
+
+-(instancetype) initWithFrame:(CGRect)frame canSelectMultiple:(BOOL) selectMultiple source:(BOOL) source {
+    
+    self = [super initWithFrame:frame];
+    self.facebookSelected = NO;
+    self.source = source;
+    if(self){
+        self.canSelectMultipleChannels = selectMultiple;
+        [self createChannelLabels:[[UserInfoCache sharedInstance] getUserChannels]];
+        
     }
     
     return self;
@@ -62,6 +78,7 @@
 
 - (void) createChannelLabels:(NSArray *) channels {
     [self createFacebookLabel];
+    
     CGFloat startingYCord =CHANNEL_LABEL_HEIGHT;
     for(Channel * channel in channels){
         

@@ -13,6 +13,12 @@
 #import "CollectionPinchView.h"
 #import "ContentPageElementScrollView.h"
 #import "Channel_BackendObject.h"
+#import "Post_BackendObject.h"
+#import "Page_BackendObject.h"
+#import "Photo_BackendObject.h"
+#import "Video_BackendObject.h"
+#import "ParseBackendKeys.h"
+#import "PageTypeAnalyzer.h"
 
 #import "Durations.h"
 
@@ -58,6 +64,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 @property (strong, nonatomic) PHImageManager *imageManager;
 @property (strong, nonatomic) PHVideoRequestOptions *videoRequestOptions;
 @property (nonatomic) BOOL posted;
+@property (nonatomic) Channel *channelToPost;
+@property (nonatomic) BOOL externalPost;
 
 #pragma mark Pinch Views
 
@@ -135,6 +143,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 @property (strong, nonatomic) PreviewDisplayView * previewDisplayView;
 
 @property (strong, nonatomic) SharePostView *sharePostView;
+@property (nonatomic) NSString* fbCaption;
+@property (nonatomic) BOOL postToFB;
 
 #define CHANNEL_CREATION_PROMPT @"enter channel name"
 
@@ -187,6 +197,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		[self formatChannelPicker];
 		[self createBaseSelector];
 		[self loadPostFromUserDefaults];
+//        [self addExternalShareButton];
 	}];
 }
 
@@ -197,6 +208,19 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 	[self.view insertSubview:backgroundView belowSubview:self.mainScrollView];
 	self.mainScrollView.backgroundColor = [UIColor clearColor];
+}
+
+-(void) addExternalShareButton {
+//    CGRect fbShareFrame = CGRectMake(CHANNEL_PICKER_FIELD_X_OFFSET, CHANNEL_PICKER_FIELD_Y_OFFSET,
+//                                           self.view.bounds.size.width - 2*CHANNEL_PICKER_FIELD_X_OFFSET,
+//                                           CHANNEL_PICKER_FIELD_HEIGHT);
+//    UIView *v = [[UIView alloc] initWithFrame:fbShareFrame];
+    UISwitch *s = [[UISwitch alloc] initWithFrame:CGRectMake(20, 20, 100, 60)];
+    [self.view addSubview:s];
+}
+
+-(void) changeSwitch:(UISwitch *) sender {
+    
 }
 
 
@@ -486,20 +510,20 @@ rowHeightForComponent:(NSInteger)component{
 
 #pragma mark Preview Button
 -(void) rightButtonPressed {
-//    
-//    self.sharePostView = [[SharePostView alloc] initWithFrame:CGRectMake(self.view.center.x/3, self.view.center.y/3, self.view.bounds.size.width * 0.67, self.view.bounds.size.height * 0.67) shouldStartOnChannels:NO];
-//    self.sharePostView.delegate = self;
-//    [self.view addSubview:self.sharePostView];
-//    [self.view bringSubviewToFront:self.sharePostView];
-	NSMutableArray * pinchViews = [[NSMutableArray alloc] init];
+    
+    self.sharePostView = [[SharePostView alloc] initWithFrame:CGRectMake(self.view.center.x/3, self.view.center.y/3, self.view.bounds.size.width * 0.67, self.view.bounds.size.height * 0.67) shouldStartOnChannels:NO fromContentDev:YES];
+    self.sharePostView.delegate = self;
+    [self.view addSubview:self.sharePostView];
+    [self.view bringSubviewToFront:self.sharePostView];
+//	NSMutableArray * pinchViews = [[NSMutableArray alloc] init];
 
-	for(ContentPageElementScrollView * contentElementScrollView in self.pageElementScrollViews){
-		if([contentElementScrollView.pageElement isKindOfClass:[PinchView class]]){
-			[pinchViews addObject:contentElementScrollView.pageElement];
-		}
-	}
-
-	if(pinchViews.count) [self publishOurStoryWithPinchViews:pinchViews];
+//	for(ContentPageElementScrollView * contentElementScrollView in self.pageElementScrollViews){
+//		if([contentElementScrollView.pageElement isKindOfClass:[PinchView class]]){
+//			[pinchViews addObject:contentElementScrollView.pageElement];
+//		}
+//	}
+//
+//	if(pinchViews.count) [self publishOurStoryWithPinchViews:pinchViews];
 }
 
 
@@ -1886,6 +1910,7 @@ andSaveInUserDefaults:(BOOL)save {
 	Channel * channelToPostIn = nil;
 	if (self.currentPresentedPickerRow < self.userChannels.count) {
 		channelToPostIn = self.userChannels[self.currentPresentedPickerRow];
+        self.channelToPost = channelToPostIn;
 	} else {
 		UITextField * textField = (UITextField *) [self.channelPicker viewForRow:self.currentPresentedPickerRow forComponent:0];
 		if ([textField.text isEqualToString:@""]) {
@@ -1896,10 +1921,11 @@ andSaveInUserDefaults:(BOOL)save {
 			[self presentViewController:newAlert animated:YES completion:nil];
 		} else {
 			channelToPostIn = [[Channel alloc] initWithChannelName:textField.text andParseChannelObject:nil andChannelCreator:nil];
+            self.channelToPost = channelToPostIn;
 		}
 	}
 	if (channelToPostIn) {
-		[[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn withPinchViews:pinchViews withCompletionBlock:^(BOOL posting) {
+		[[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn andFacebook:self.postToFB withCaption:self.fbCaption withPinchViews:pinchViews withCompletionBlock:^(BOOL posting) {
 			if(posting) {
 				[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
 				[self cleanUp];
@@ -1908,7 +1934,7 @@ andSaveInUserDefaults:(BOOL)save {
 				//TODO -- notification to user either something else is publishing or there is not internet
 			}
 		}];
-	}
+    }
 }
 
 #pragma mark - Tap to clear view -
@@ -2042,31 +2068,22 @@ andSaveInUserDefaults:(BOOL)save {
     [self removeSharePOVView];
 }
 
-//todo: save share object
--(void)postPostToChannels:(NSMutableArray *) channels andFacebook:(BOOL)externalSharing{
+-(void) postPostToChannels:(NSMutableArray *)channels andFacebook:(BOOL)externalSharing withCaption:(NSString *)caption{
     
-//    if ([FBSDKAccessToken currentAccessToken]) {
-//        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-//                                       @"Damas", @"name",
-//                                       @"Yoooo! FB Graph API test", @"caption",
-//                                       @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content.", @"description",
-//                                       @"http://verbatm.io", @"link",
-//                                       //       @"http://i.imgur.com/g3Qc1HN.png", @"picture",
-//                                       nil];
-//        FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:params HTTPMethod:@"POST"];
-//        
-//       
-//
-//        [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
-//             if (!error) {
-//                 NSLog(@"fetched user:%@", result);
-//             } else {
-//                 NSLog(@"An error has occured %@", error);
-//             }
-//         }];
-//    }
+    self.fbCaption = caption;
+    self.postToFB = externalSharing;
     
-    [self removeSharePOVView];
+    	NSMutableArray * pinchViews = [[NSMutableArray alloc] init];
+    
+    	for(ContentPageElementScrollView * contentElementScrollView in self.pageElementScrollViews){
+    		if([contentElementScrollView.pageElement isKindOfClass:[PinchView class]]){
+    			[pinchViews addObject:contentElementScrollView.pageElement];
+    		}
+    	}
+    
+    	if(pinchViews.count) [self publishOurStoryWithPinchViews:pinchViews];
+    
+    [self.sharePostView removeFromSuperview];
+    
 }
-
 @end

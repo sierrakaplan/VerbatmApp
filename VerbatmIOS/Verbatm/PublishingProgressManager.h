@@ -43,6 +43,9 @@
 -(void)publishPostToChannel:(Channel *)channel withPinchViews:(NSArray *)pinchViews
 		withCompletionBlock:(void(^)(BOOL))block;
 
+-(void)publishPostToChannel:(Channel *)channel andFacebook:(BOOL)externalShare withCaption:(NSString *)caption withPinchViews:(NSArray *)pinchViews
+         withCompletionBlock:(void(^)(BOOL))block;
+
 -(void)registerForNotifications;
 
 -(void)mediaSavingProgressed:(int64_t) newProgress;

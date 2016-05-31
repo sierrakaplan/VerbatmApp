@@ -14,6 +14,11 @@
 #import "ParseBackendKeys.h"
 #import "Post_Channel_RelationshipManager.h"
 #import "PostInProgress.h"
+#import "Page_BackendObject.h"
+#import "Photo_BackendObject.h"
+#import "Video_BackendObject.h"
+#import "PageTypeAnalyzer.h"
+#import "ExternalShare.h"
 
 @interface PublishingProgressManager()
 //how many media pieces we are trying to publish in total
@@ -28,6 +33,8 @@
 @property (nonatomic, readwrite) Channel* currentPublishingChannel;
 @property (nonatomic, readwrite) NSProgress * progressAccountant;
 @property (nonatomic) PFObject * currentParsePostObject;
+@property (nonatomic) ExternalShare* es;
+@property (nonatomic) BOOL shareToFB;
 
 @end
 
@@ -77,6 +84,41 @@
 							  }];
 }
 
+-(void)publishPostToChannel:(Channel *)channel  andFacebook:(BOOL)externalShare withCaption:(NSString *)caption withPinchViews:(NSArray *)pinchViews
+        withCompletionBlock:(void(^)(BOOL))block {
+    
+    self.es = [[ExternalShare alloc]initWithCaption:caption];
+    self.shareToFB = externalShare;
+   
+    
+    if (self.currentlyPublishing) {
+        block (nil);
+        return;
+    } else {
+        self.currentlyPublishing = YES;
+    }
+    
+    self.channelManager = [[Channel_BackendObject alloc] init];
+    [self countMediaContentFromPinchViews:pinchViews];
+    if(!channel.parseChannelObject) {
+        self.newChannelCreated = YES;
+    }
+    [self.channelManager createPostFromPinchViews:pinchViews
+                                        toChannel:channel
+                              withCompletionBlock:^(PFObject *parsePostObject) {
+                                  if (!parsePostObject) {
+                                      self.newChannelCreated = NO;
+                                      block (nil);
+                                      return;
+                                  }
+                                  self.currentParsePostObject = parsePostObject;
+                                  self.currentPublishingChannel = channel;
+                                  block(YES);
+                                  
+              }];
+                    
+}
+
 -(void)registerForNotifications{
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(mediaSavingFailed:)
@@ -119,6 +161,11 @@
 	[self.currentParsePostObject saveInBackground];
 	//register the relationship
 	[Post_Channel_RelationshipManager savePost:self.currentParsePostObject toChannels:[NSMutableArray arrayWithObject:self.currentPublishingChannel] withCompletionBlock:^{
+        
+        if(self.shareToFB){
+            [self.es sharePostToFacebook:self.currentParsePostObject];
+        }
+        
 		self.progressAccountant.completedUnitCount = 0;
 		self.progressAccountant.totalUnitCount = 0;
 		self.currentlyPublishing = NO;
@@ -130,6 +177,83 @@
 		self.currentPublishingChannel = nil;
 	}];
 }
+
+//-(void) postToFacebookWithCaption:(NSString *) caption {
+//    __block NSString *imageLink = nil;
+//    __block NSString *videoLink = nil;
+//    
+//    [Page_BackendObject getPagesFromPost:self.currentParsePostObject andCompletionBlock:^(NSArray *pages){
+//        PFObject *po = pages[0];
+//        PageTypes type = [((NSNumber *)[po valueForKey:PAGE_VIEW_TYPE]) intValue];
+//        
+//        if(type == PageTypePhoto || type == PageTypePhotoVideo){
+//            [Photo_BackendObject getPhotosForPage:po andCompletionBlock:^(NSArray * photoObjects) {
+//                PFObject *photo = photoObjects[0];
+//                NSString *photoLink = [photo valueForKey:PHOTO_IMAGEURL_KEY];
+//                imageLink = photoLink;
+//                
+//            }];
+//        } else if(type == PageTypeVideo){
+//            [Video_BackendObject getVideoForPage:po andCompletionBlock:^(PFObject * videoObject) {
+//                NSString * thumbNailUrl = [videoObject valueForKey:VIDEO_THUMBNAIL_KEY];
+//                videoLink = thumbNailUrl;
+//                
+//            }];
+//        }
+//    }];
+//    
+//    NSString *name = [[PFUser currentUser] valueForKey:VERBATM_USER_NAME_KEY];
+////    NSString *channelName = [self.currentPublishingChannel valueForKey:CHANNEL_NAME_KEY];
+//    NSString *channelName = @"testChannel";
+//    NSString *postId = self.currentParsePostObject.objectId;
+//    
+//    BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc]initWithCanonicalIdentifier:postId];
+//    branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName];
+//    branchUniversalObject.contentDescription = @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!";
+//    
+//    if(videoLink == nil || [videoLink length] == 0){
+//        branchUniversalObject.imageUrl = imageLink;
+//    }else{
+//        branchUniversalObject.imageUrl = videoLink;
+//    }
+//    //        [self.branchUniversalObject addMetadataKey:@"userId" value:@"12345"];
+//    //        [self.branchUniversalObject addMetadataKey:@"userName" value:@"UserName"];
+//    
+//    BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
+//    linkProperties.feature = @"share";
+//    linkProperties.channel = @"facebook";
+//    
+//    [branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
+//        if (!error) {
+//            NSLog(@"got my Branch invite link to share: %@", url);
+//            NSURL *link = [NSURL URLWithString:url];
+//            if ([[FBSDKAccessToken currentAccessToken] hasGranted:@"publish_actions"]) {
+//                NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+//                                               @"Damas", @"name",
+//                                               caption, @"caption",
+//                                               @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content.", @"description",
+//                                               link, @"link",
+//                                               
+//                                               nil];
+//                FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:params HTTPMethod:@"POST"];
+//                
+//                
+//                
+//                [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+//                    if (!error) {
+//                        NSLog(@"fetched user:%@", result);
+//                    } else {
+//                        NSLog(@"An error has occured %@", error);
+//                    }
+//                }];
+//            }
+//            
+//        } else {
+//            NSLog(@"An eerror occured %@", error);
+//        }
+//    }];
+//
+//}
 
 -(void)mediaSavingFailed:(NSNotification *) notification {
 	if(self.currentlyPublishing){

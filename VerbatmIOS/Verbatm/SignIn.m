@@ -94,6 +94,7 @@
 	loginButton.frame = CGRectMake(self.view.center.x - buttonWidth/2.f, (self.view.frame.size.height/3.f) + 20.f,
 								   buttonWidth, buttonHeight);
 	loginButton.delegate = self;
+    loginButton.publishPermissions = @[@"publish_actions"];
 	loginButton.readPermissions = @[@"public_profile", @"email", @"user_friends"];
 	[self.view addSubview:loginButton];
     [self.view bringSubviewToFront:loginButton];

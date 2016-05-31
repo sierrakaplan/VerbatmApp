@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1281BBE21CFB878C00161ECC /* ExternalShare.m in Sources */ = {isa = PBXBuildFile; fileRef = 1281BBE11CFB878C00161ECC /* ExternalShare.m */; };
 		9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995719BA7EBD005EBC8A /* MediaSessionManager.m */; };
 		A5076D0E1BED6EF000303746 /* SingleMediaAndTextPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5076D0D1BED6EF000303746 /* SingleMediaAndTextPinchView.m */; };
 		A5076D141BF2B25100303746 /* TextOverMediaView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5076D131BF2B25100303746 /* TextOverMediaView.m */; };
@@ -271,6 +272,8 @@
 
 /* Begin PBXFileReference section */
 		113A4CE1B7B9BC71C0E99388 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		1281BBE01CFB878C00161ECC /* ExternalShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExternalShare.h; sourceTree = "<group>"; };
+		1281BBE11CFB878C00161ECC /* ExternalShare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExternalShare.m; sourceTree = "<group>"; };
 		9D29995619BA7EBD005EBC8A /* MediaSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaSessionManager.h; sourceTree = "<group>"; };
 		9D29995719BA7EBD005EBC8A /* MediaSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaSessionManager.m; sourceTree = "<group>"; };
 		A5076D0C1BED6EF000303746 /* SingleMediaAndTextPinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SingleMediaAndTextPinchView.h; sourceTree = "<group>"; };
@@ -978,6 +981,8 @@
 				A5C09BE51BA1F43600C0AD86 /* MediaUploader.m */,
 				C755DB0A1C74619200136F6E /* PublishingProgressManager.h */,
 				C755DB0B1C74619200136F6E /* PublishingProgressManager.m */,
+				1281BBE01CFB878C00161ECC /* ExternalShare.h */,
+				1281BBE11CFB878C00161ECC /* ExternalShare.m */,
 			);
 			name = Publishing;
 			sourceTree = "<group>";
@@ -1814,6 +1819,7 @@
 				C75985F51B8553DF00FE77F7 /* InternetConnectionMonitor.m in Sources */,
 				A5E85F9E1B911DA900E148D0 /* GTLDateTime.m in Sources */,
 				C76172741C4C8B1300AB0D84 /* UserAndChannelListsTVC.m in Sources */,
+				1281BBE21CFB878C00161ECC /* ExternalShare.m in Sources */,
 				A5AA31BA1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.m in Sources */,
 				C7E6C13F1A4E394600863893 /* PhotoVideoPVE.m in Sources */,
 				C7E65F691B9245200042AD99 /* ProfileVC.m in Sources */,
