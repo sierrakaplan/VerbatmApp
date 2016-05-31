@@ -551,20 +551,17 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     Channel_BackendObject *channelObj = [self.postToShare valueForKey:POST_CHANNEL_KEY];
     NSString *channelName = [channelObj valueForKey:CHANNEL_NAME_KEY];
     
-    BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc]initWithCanonicalIdentifier:postId];
+    BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:postId];
     branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName];
     branchUniversalObject.contentDescription = @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!";
+	branchUniversalObject.imageUrl = self.shareLink;
 
-                branchUniversalObject.imageUrl = self.shareLink;
-
-    //        [self.branchUniversalObject addMetadataKey:@"userId" value:@"12345"];
-    //        [self.branchUniversalObject addMetadataKey:@"userName" value:@"UserName"];
-    
     BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
     linkProperties.feature = @"share";
     linkProperties.channel = @"facebook";
     
     [branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
+		NSLog(@"callback from external share called");
         if (!error) {
             NSLog(@"got my Branch invite link to share: %@", url);
             NSURL *link = [NSURL URLWithString:url];
@@ -576,7 +573,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         } else {
             NSLog(@"An error occured %@", error.description);
         }
-        
     }];
     self.view.userInteractionEnabled = YES;
 }
