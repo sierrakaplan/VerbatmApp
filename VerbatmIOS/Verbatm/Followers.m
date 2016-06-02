@@ -114,10 +114,6 @@
     }];
 }
 
--(void) setContentSize {
-    self.contentSize = CGSizeMake(0, self.frame.size.height+100);
-}
-
 -(NSMutableArray *) blogFollowers{
     if(!_blogFollowers){
         _blogFollowers = [[NSMutableArray alloc] init];

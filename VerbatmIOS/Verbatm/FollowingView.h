@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FollowingView : UIScrollView
+@interface FollowingView : UIView
 
 -(instancetype) initWithFrame:(CGRect)frame;
 

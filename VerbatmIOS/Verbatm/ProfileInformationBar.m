@@ -43,7 +43,7 @@
 		if(!isCurrentUser) {
 			self.hasBlockedUser = isBlocked;
 			[self createBlockingButton];
-		}
+        }
 		if (!profileTab) {
 			[self createBackButton];
 		} else {
@@ -118,7 +118,7 @@
 }
 
 -(void)createBlockingButton {
-	UIImage * settingsImage = [UIImage imageNamed:BLOCK_USER_ICON];
+	UIImage * settingsImage = [UIImage imageNamed:@"profile"];
 
 	CGFloat height = SETTINGS_BUTTON_SIZE;
 	CGFloat width = height+ 20.f;
@@ -136,15 +136,14 @@
 }
 
 -(void)blockButtonSelected {
-	[self.delegate blockCurrentUserShouldBlock:!self.hasBlockedUser];
-//    FollowingView *V = [[FollowingView alloc] initWithFrame:CGRectMake(0, 0, 375, 667)];
-//    
-//    UIViewController *top = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
-//    while (top.presentedViewController){
-//        top = top.presentedViewController;
-//    }
-//
-//    [top.view addSubview:V];
+    FollowingView *V = [[FollowingView alloc] initWithFrame:CGRectMake(0, 20, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height)];
+    
+    UIViewController *top = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+    while (top.presentedViewController){
+        top = top.presentedViewController;
+    }
+
+    [top.view addSubview:V];
 }
 
 -(void) createBackButton {

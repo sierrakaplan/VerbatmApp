@@ -1940,7 +1940,7 @@ andSaveInUserDefaults:(BOOL)save {
 		}
 	}
 	if (channelToPostIn) {
-		[[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn andFacebook:self.postToFB withCaption:self.fbCaption withPinchViews:pinchViews
+		[[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn withPinchViews:pinchViews
 													 withCompletionBlock:^(BOOL isAlreadyPublishing, BOOL noNetwork) {
 														 NSString *errorMessage;
 														 if(isAlreadyPublishing) {
