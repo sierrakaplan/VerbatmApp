@@ -466,11 +466,11 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
 	self.sharePostView = [[SharePostView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
 	self.sharePostView.delegate = self;
-    self.view.userInteractionEnabled = NO;
-    [[UIApplication sharedApplication].keyWindow addSubview:self.sharePostView];
+	self.view.userInteractionEnabled = NO;
+	[[UIApplication sharedApplication].keyWindow addSubview:self.sharePostView];
 
 	//[self.view addSubview:self.sharePostView];
-    [[UIApplication sharedApplication].keyWindow bringSubviewToFront:self.sharePostView];
+	[[UIApplication sharedApplication].keyWindow bringSubviewToFront:self.sharePostView];
 	//[self.view bringSubviewToFront:self.sharePostView];
 	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^ {
 		self.sharePostView.frame = onScreenFrame;
@@ -495,86 +495,114 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void)cancelButtonSelected{
 	[self removeSharePOVView];
-    self.view.userInteractionEnabled = YES;
+	self.view.userInteractionEnabled = YES;
 }
 
 //todo: save share object
 -(void)postPostToChannels:(NSMutableArray *) channels andFacebook:(BOOL)externalSharing{
-    if(channels.count) {
-		
-        [Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
+	if(channels.count) {
+
+		[Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[self successfullyReblogged];
 			});
 		}];
 	}
-    if(externalSharing){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self postPostExternal:externalSharing];
-        });
-    }
-    
-    
+	if(externalSharing){
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[self postPostExternal:externalSharing];
+		});
+	}
+
+
 	[self removeSharePOVView];
 }
 
 -(void)postPostExternal:(BOOL)selection{
-    if(selection){
-        [Page_BackendObject getPagesFromPost:self.postToShare andCompletionBlock:^(NSArray *pages){
-            PFObject *po = pages[0];
-            PageTypes type = [((NSNumber *)[po valueForKey:PAGE_VIEW_TYPE]) intValue];
-            
-            if(type == PageTypePhoto || type == PageTypePhotoVideo){
-                [Photo_BackendObject getPhotosForPage:po andCompletionBlock:^(NSArray * photoObjects) {
-                    PFObject *photo = photoObjects[0];
-                    NSString *photoLink = [photo valueForKey:PHOTO_IMAGEURL_KEY];
-                    self.shareLink = photoLink;
-                    [self postToFacebook];
-                }];
-            } else if(type == PageTypeVideo){
-                [Video_BackendObject getVideoForPage:po andCompletionBlock:^(PFObject * videoObject) {
-                    NSString * thumbNailUrl = [videoObject valueForKey:VIDEO_THUMBNAIL_KEY];
-                    self.shareLink = thumbNailUrl;
-                    [self postToFacebook];
-                }];
-            }
-        }];
-    } else {
-        NSLog(@"Link for external sharing not created");
-    }
+	if(selection){
+		[Page_BackendObject getPagesFromPost:self.postToShare andCompletionBlock:^(NSArray *pages){
+			PFObject *po = pages[0];
+			PageTypes type = [((NSNumber *)[po valueForKey:PAGE_VIEW_TYPE]) intValue];
+
+			if(type == PageTypePhoto || type == PageTypePhotoVideo){
+				[Photo_BackendObject getPhotosForPage:po andCompletionBlock:^(NSArray * photoObjects) {
+					PFObject *photo = photoObjects[0];
+					NSString *photoLink = [photo valueForKey:PHOTO_IMAGEURL_KEY];
+					self.shareLink = photoLink;
+					[self postToFacebook];
+				}];
+			} else if(type == PageTypeVideo){
+				[Video_BackendObject getVideoForPage:po andCompletionBlock:^(PFObject * videoObject) {
+					NSString * thumbNailUrl = [videoObject valueForKey:VIDEO_THUMBNAIL_KEY];
+					self.shareLink = thumbNailUrl;
+					[self postToFacebook];
+				}];
+			}
+		}];
+	} else {
+		NSLog(@"Link for external sharing not created");
+	}
 }
 
 -(void) postToFacebook {
-    NSString *postId = self.postToShare.objectId;
-    PFUser *user = [PFUser currentUser];
-    NSString *name = [user valueForKey:VERBATM_USER_NAME_KEY];
-    Channel_BackendObject *channelObj = [self.postToShare valueForKey:POST_CHANNEL_KEY];
-    NSString *channelName = [channelObj valueForKey:CHANNEL_NAME_KEY];
-    
-    BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:postId];
-    branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName];
-    branchUniversalObject.contentDescription = @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!";
-	branchUniversalObject.imageUrl = self.shareLink;
+	NSString *postId = self.postToShare.objectId;
+	PFUser *user = [PFUser currentUser];
+	NSString *name = [user valueForKey:VERBATM_USER_NAME_KEY];
+	Channel_BackendObject *channelObj = [self.postToShare valueForKey:POST_CHANNEL_KEY];
+	NSString *channelName = [channelObj valueForKey:CHANNEL_NAME_KEY];
 
-    BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
-    linkProperties.feature = @"share";
-    linkProperties.channel = @"facebook";
-    
-    [branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
-		NSLog(@"callback from external share called");
-        if (!error) {
-            NSLog(@"got my Branch invite link to share: %@", url);
-            NSURL *link = [NSURL URLWithString:url];
-            FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
-            content.contentURL = link;
-            [FBSDKShareDialog showFromViewController:self
-                                         withContent:content
-                                            delegate:nil];
-        } else {
-            NSLog(@"An error occured %@", error.description);
-        }
-    }];
-    self.view.userInteractionEnabled = YES;
+	NSDictionary*params = [[NSDictionary alloc] initWithObjects:@[[NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName],
+																  @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!",
+																  self.shareLink,
+																  @"http://verbatm.io"]
+														forKeys:@[@"$og_title",
+																  @"$og_description",
+																  @"$og_image_url",
+																  @"$fallback_url"]];
+	NSLog(@"Getting link for fb for user %@ reblogging from channel %@ for post %@...", name, channelName, postId);
+	[[Branch getInstance] getShortURLWithParams:params
+									 andChannel:@"facebook"
+									 andFeature:@"sharing"
+									andCallback:^(NSString *url, NSError *err) {
+										NSLog(@"got callback from branch");
+										if (!err) {
+											NSLog(@"got my Branch invite link to share: %@", url);
+											NSURL *link = [NSURL URLWithString:url];
+											FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
+											content.contentURL = link;
+											[FBSDKShareDialog showFromViewController:self
+																		 withContent:content
+																			delegate:nil];
+										} else {
+											NSLog(@"An error occured %@", err.description);
+										}
+									}];
+
+	//    BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:postId];
+	//    branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName];
+	//    branchUniversalObject.contentDescription = @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!";
+	//	branchUniversalObject.imageUrl = self.shareLink;
+	//
+	//    BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
+	//    linkProperties.feature = @"share";
+	//    linkProperties.channel = @"facebook";
+	//
+	//
+	//    [branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
+	//		NSLog(@"callback from external share called");
+	//        if (!error) {
+	//            NSLog(@"got my Branch invite link to share: %@", url);
+	//            NSURL *link = [NSURL URLWithString:url];
+	//            FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
+	//            content.contentURL = link;
+	//            [FBSDKShareDialog showFromViewController:self
+	//                                         withContent:content
+	//                                            delegate:nil];
+	//        } else {
+	//            NSLog(@"An error occured %@", error.description);
+	//        }
+	//    }];
+	self.view.userInteractionEnabled = YES;
 }
 
 -(void)successfullyReblogged{
