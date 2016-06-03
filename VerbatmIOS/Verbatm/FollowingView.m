@@ -9,6 +9,7 @@
 #import "FollowingView.h"
 #import "Follow_BackendManager.h"
 #import "Channel_BackendObject.h"
+#import "ProfileVC.h"
 #import "ParseBackendKeys.h"
 #import "Styles.h"
 #import <Parse/PFUser.h>
@@ -73,18 +74,19 @@
     [Follow_BackendManager channelsUserFollowing:[PFUser currentUser] withCompletionBlock:^(NSArray *followingChannels){
         for(PFObject *obj in followingChannels){
                 PFObject *channel = [obj valueForKey:FOLLOW_CHANNEL_FOLLOWED_KEY];
-                [channel fetchInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [channel fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error){
                     NSString *blogName = [object valueForKey:CHANNEL_NAME_KEY];
-//                    PFUser *creator = [object valueForKey:CHANNEL_CREATOR_KEY];
-//                    __block NSString *name = nil;
-//                    [creator fetchInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error){
-//                        PFUser *user = (PFUser *) object;
-//                        name = [user valueForKey:VERBATM_USER_NAME_KEY];
-//
-//                    }];
-                    
-                    [self createFollowingViewsWithUser:@"User Name" andBlog:blogName];
+                    PFUser *creator = [object valueForKey:CHANNEL_CREATOR_KEY];
+                    __block NSString *name = nil;
+                    [creator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error){
+                        PFUser *user = (PFUser *) object;
+                        [self.blogsFollowing addObject:user];
+                        name = [user valueForKey:VERBATM_USER_NAME_KEY];
+                        [self createFollowingViewsWithUser:name andBlog:blogName];
+                    }];
                 }];
+            });
         }
     }];
 }
@@ -102,10 +104,15 @@
     UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, self.y, self.sv.frame.size.width, FOLLOWING_VIEW_HEIGHT)];
     UILabel *l = [[UILabel alloc] initWithFrame:CGRectMake(10, self.y, self.sv.frame.size.width/2, FOLLOWING_VIEW_HEIGHT)];
     UIButton *b = [[UIButton alloc] initWithFrame:CGRectMake(self.sv.frame.size.width * 0.6, self.y, self.sv.frame.size.width * 0.35, FOLLOWING_VIEW_HEIGHT)];
+    
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(channelButtonPressed:)];
+    
     b .layer .borderWidth = 2.0;
     b .layer .borderColor = [UIColor whiteColor].CGColor;
     b .layer .cornerRadius = 4.0;
-    
+    [b addGestureRecognizer:tap];
+    b.userInteractionEnabled = YES;
     
     [l setText:blogCreatorName];
     [b setTitle:blogName forState:UIControlStateNormal];
@@ -123,8 +130,46 @@
 }
 
 
--(void) channelButtonPressed {
-    
+-(void) channelButtonPressed:(UITapGestureRecognizer *) gesture {
+    NSLog(@"button tapped");
+    CGPoint touchPoint=[gesture locationInView:self.sv];
+    int index = (int)(touchPoint.y/ FOLLOWING_VIEW_HEIGHT);
+    PFUser *selectedUser = self.blogsFollowing[index];
+    [selectedUser fetchIfNeededInBackgroundWithBlock:^
+     (PFObject * _Nullable object, NSError * _Nullable error) {
+         if(object){
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 [self goToUserProfile:(PFUser *)object];
+             });
+         }
+     }];
 }
+
+
+-(void) goToUserProfile:(PFUser *) user {
+    [self removeFromSuperview];
+    ProfileVC *  userProfile = [[ProfileVC alloc] init];
+    userProfile.isCurrentUserProfile = NO;
+    userProfile.isProfileTab = NO;
+    userProfile.userOfProfile = user;
+    
+    UIViewController *top = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+    while (top.presentedViewController){
+        top = top.presentedViewController;
+    }
+    top = top;
+    
+    [top presentViewController:userProfile animated:YES completion:^{
+    }];
+}
+
+-(NSMutableArray *) blogsFollowing{
+    if(!_blogsFollowing){
+        _blogsFollowing = [[NSMutableArray alloc] init];
+    }
+    
+    return _blogsFollowing;
+}
+
 
 @end
