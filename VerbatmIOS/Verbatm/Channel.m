@@ -17,8 +17,8 @@
 @property (nonatomic, readwrite) NSString *blogDescription;
 @property (nonatomic, readwrite) PFObject * parseChannelObject;
 @property (nonatomic, readwrite) PFUser *channelCreator;
-@property (nonatomic, readwrite) NSArray *usersFollowingChannel;
-@property (nonatomic, readwrite) NSArray *channelsUserFollowing;
+@property (nonatomic, readwrite) NSMutableArray *usersFollowingChannel;
+@property (nonatomic, readwrite) NSMutableArray *channelsUserFollowing;
 
 
 @end
@@ -51,6 +51,15 @@
 	[self.parseChannelObject saveInBackground];
 }
 
+-(void) currentUserFollowsChannel:(BOOL) follows {
+	PFUser *currentUser = [PFUser currentUser];
+	if (follows) {
+		if (![self.usersFollowingChannel containsObject:currentUser]) [self.usersFollowingChannel addObject:currentUser];
+	} else {
+		if ([self.usersFollowingChannel containsObject:currentUser]) [self.usersFollowingChannel removeObject:currentUser];
+	}
+}
+
 -(void)getChannelOwnerNameWithCompletionBlock:(void(^)(NSString *))block {
 	if (!self.parseChannelObject) {
 		block(@"");
@@ -76,12 +85,12 @@
 	self.usersFollowingChannel = nil;
 	self.channelsUserFollowing = nil;
 	[Follow_BackendManager usersFollowingChannel:self withCompletionBlock:^(NSArray *users) {
-		self.usersFollowingChannel = users;
+		self.usersFollowingChannel = [[NSMutableArray alloc] initWithArray:users];
 		if (self.channelsUserFollowing) block();
 	}];
 
 	[Follow_BackendManager channelsUserFollowing:self.channelCreator withCompletionBlock:^(NSArray *channels) {
-		self.channelsUserFollowing = channels;
+		self.channelsUserFollowing = [[NSMutableArray alloc] initWithArray: channels];
 		if (self.usersFollowingChannel) block();
 	}];
 }

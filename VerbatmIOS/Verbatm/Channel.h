@@ -18,8 +18,8 @@
 @property (nonatomic, readonly) NSString *blogDescription;
 @property (nonatomic, readonly) PFObject *parseChannelObject;
 @property (nonatomic, readonly) PFUser *channelCreator;
-@property (nonatomic, readonly) NSArray *usersFollowingChannel;
-@property (nonatomic, readonly) NSArray *channelsUserFollowing;
+@property (nonatomic, readonly) NSMutableArray *usersFollowingChannel;
+@property (nonatomic, readonly) NSMutableArray *channelsUserFollowing;
 
 
 -(instancetype) initWithChannelName:(NSString *) channelName
@@ -28,7 +28,9 @@
 
 -(void) changeTitle:(NSString*)title andDescription:(NSString*)description;
 
--(void)getChannelOwnerNameWithCompletionBlock:(void(^)(NSString *))block;
+-(void) currentUserFollowsChannel:(BOOL) follows;
+
+-(void) getChannelOwnerNameWithCompletionBlock:(void(^)(NSString *))block;
 
 // Returns when both usersFollowingChannel and channelsUserFollowing are filled in
 -(void) getFollowersAndFollowingWithCompletionBlock:(void(^)(void))block;

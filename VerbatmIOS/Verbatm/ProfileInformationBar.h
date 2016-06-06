@@ -21,8 +21,6 @@
 -(void) backButtonSelected;
 
 // Only available in someone else's profile
--(void) followButtonSelectedShouldFollowUser:(BOOL) followUser;
-
 -(void) blockCurrentUserShouldBlock:(BOOL) shouldBlock;
 
 

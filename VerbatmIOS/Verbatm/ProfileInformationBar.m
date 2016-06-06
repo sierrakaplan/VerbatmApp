@@ -42,7 +42,7 @@
 
 // Whether current user has blocked the user who owns this profile
 @property (nonatomic) BOOL hasBlockedUser;
-@property (nonatomic) BOOL currentUserFollowersUser;
+@property (nonatomic) BOOL currentUserFollowsUser;
 
 #define FONT_SIZE 12.f
 #define SETTINGS_BUTTON_SIZE self.frame.size.height
@@ -72,7 +72,7 @@
 			if (!self.isCurrentUser) {
 				// This allows a user to block another user
 				[self createSettingsButton];
-				self.currentUserFollowersUser = [channel.usersFollowingChannel containsObject:user];
+				self.currentUserFollowsUser = [channel.usersFollowingChannel containsObject:[PFUser currentUser]];
 				[self createFollowButton];
 			}
 		}
@@ -151,17 +151,24 @@
 //todo: formatting and check for if following
 -(void) createFollowButton {
 	[self createFollowOrEditButton];
+	[self updateUserFollowingChannel];
+}
+
+-(void) updateUserFollowingChannel {
 	//todo: images
-	if (self.currentUserFollowersUser) {
-		[self changeFollowButtonTitle:@"following"];
+	if (self.currentUserFollowsUser) {
+		[self changeFollowButtonTitle:@"following" toColor:[UIColor whiteColor]];
+		self.followOrEditButton.backgroundColor = [UIColor blackColor];
 	} else {
-		[self changeFollowButtonTitle:@"follow"];
+		[self changeFollowButtonTitle:@"follow" toColor:[UIColor blackColor]];
+		self.followOrEditButton.backgroundColor = [UIColor whiteColor];
 	}
+	[self updateNumFollowersAndFollowing];
 }
 
 -(void) createEditButton {
 	[self createFollowOrEditButton];
-	[self changeFollowButtonTitle:@"edit"];
+	[self changeFollowButtonTitle:@"edit" toColor:[UIColor blackColor]];
 }
 
 -(void) createFollowOrEditButton {
@@ -177,8 +184,8 @@
 	[self addSubview: self.followOrEditButton];
 }
 
--(void) changeFollowButtonTitle:(NSString*)title {
-	NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: [UIColor blackColor],
+-(void) changeFollowButtonTitle:(NSString*)title toColor:(UIColor*) color{
+	NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: color,
 									  NSFontAttributeName: [UIFont fontWithName:BOLD_FONT size:FONT_SIZE]};
 	NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:titleAttributes];
 	[self.followOrEditButton setAttributedTitle:attributedTitle forState:UIControlStateNormal];
@@ -212,13 +219,21 @@
 		self.editMode = !self.editMode;
 		if (self.editMode) {
 			self.followOrEditButton.backgroundColor = [UIColor blackColor];
-			self.followOrEditButton.titleLabel.textColor = [UIColor whiteColor];
+			[self changeFollowButtonTitle:@"edit" toColor:[UIColor whiteColor]];
 		} else {
 			self.followOrEditButton.backgroundColor = [UIColor whiteColor];
-			self.followOrEditButton.titleLabel.textColor = [UIColor blackColor];
+			[self changeFollowButtonTitle:@"edit" toColor:[UIColor blackColor]];
 		}
+	} else {
+		self.currentUserFollowsUser = !self.currentUserFollowsUser;
+		if (self.currentUserFollowsUser) {
+			[Follow_BackendManager currentUserFollowChannel: self.channel];
+		} else {
+			[Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel: self.channel];
+		}
+		[self.channel currentUserFollowsChannel: self.currentUserFollowsUser];
+		[self updateUserFollowingChannel];
 	}
-	else [self.delegate followButtonSelectedShouldFollowUser: YES]; //todo: check if should follow
 }
 
 - (void)dealloc {
