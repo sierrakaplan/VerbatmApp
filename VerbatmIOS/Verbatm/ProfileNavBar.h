@@ -5,6 +5,7 @@
 //  Created by Iain Usiri on 11/23/15.
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
+// 	NOT IN USE - DEPRECATED
 
 #import "Channel.h"
 #import <Parse/PFUser.h>

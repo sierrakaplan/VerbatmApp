@@ -55,7 +55,8 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	self.didJustLoadForTheFirstTime = NO;
-	[self.postListVC display:nil asPostListType:listFeed withListOwner:[PFUser currentUser] isCurrentUserProfile:NO];
+	[self.postListVC display:nil asPostListType:listFeed withListOwner:[PFUser currentUser]
+		isCurrentUserProfile:NO andStartingDate:nil];
 	if(self.postListVC && !self.didJustLoadForTheFirstTime){
         [self.postListVC refreshPosts];
 	}
@@ -116,8 +117,8 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 	ProfileVC * userProfile = [[ProfileVC alloc] init];
 	userProfile.isCurrentUserProfile = NO;
 	userProfile.isProfileTab = NO;
-	userProfile.userOfProfile = channel.channelCreator;
-	userProfile.startChannel = channel;
+	userProfile.ownerOfProfile = channel.channelCreator;
+	userProfile.channel = channel;
 	[self presentViewController:userProfile animated:YES completion:^{
 	}];
 }
@@ -146,14 +147,6 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 }
 
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
-	// Tap interferes with photo fade circle
-	CGFloat circleRadiusWithPadding = (CIRCLE_RADIUS + 20.f);
-	CGPoint tapPoint = [tapGesture locationInView:self.view];
-	if ((tapPoint.y > (self.view.frame.size.height - CIRCLE_OFFSET - circleRadiusWithPadding*2)
-		 && tapPoint.y < (self.view.frame.size.height - CIRCLE_OFFSET))
-		&& (tapPoint.x > (self.view.frame.size.width/2.f - circleRadiusWithPadding)
-			&& tapPoint.x < (self.view.frame.size.width/2.f + circleRadiusWithPadding)))
-		return;
 	if(self.contentCoveringScreen) {
 		[self removeContentFromScreen];
 	} else {

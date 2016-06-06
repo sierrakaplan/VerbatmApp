@@ -23,7 +23,9 @@
 
 @property (weak, nonatomic) id<ProfileVCDelegate> delegate;
 
-@property (weak, nonatomic) PFUser* userOfProfile;
+@property (weak, nonatomic) PFUser* ownerOfProfile;
+@property (nonatomic) Channel* channel; //todo: check if should be weak
+@property (nonatomic) NSDate *startingDate;
 
 //let us know if this is the profile of the logged in user
 @property (nonatomic) BOOL isCurrentUserProfile;
@@ -32,9 +34,6 @@
 @property (nonatomic) BOOL isProfileTab;
 
 @property (nonatomic) id userIdToPresent;
-
-//channel that should be presented first
-@property (nonatomic) Channel * startChannel;
 
 -(void) showPublishingProgress;
 

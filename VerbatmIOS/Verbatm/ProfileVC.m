@@ -21,12 +21,13 @@
 #import "ParseBackendKeys.h"
 
 #import "ProfileVC.h"
-#import "ProfileNavBar.h"
+#import "ProfileHeaderView.h"
 #import "PostListVC.h"
 
 #import "PublishingProgressManager.h"
 
 #import "SharePostView.h"
+#import "SizesAndPositions.h"
 #import "SegueIDs.h"
 #import "SettingsVC.h"
 
@@ -37,30 +38,21 @@
 
 #import <PromiseKit/PromiseKit.h>
 
-@interface ProfileVC() <ProfileNavBarDelegate,Intro_Notification_Delegate,
+@interface ProfileVC() <ProfileHeaderViewDelegate, Intro_Notification_Delegate,
 UIScrollViewDelegate, CreateNewChannelViewProtocol,
 PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
-@property (nonatomic) BOOL initializing;
 @property (nonatomic) BOOL currentlyCreatingNewChannel;
 
 @property (strong, nonatomic) PostListVC * postListVC;
 @property (nonatomic) Intro_Instruction_Notification_View * introInstruction;
 
-@property (nonatomic, strong) ProfileNavBar * profileNavBar;
-@property (nonatomic) BOOL profileNavBarOnScreen;
-@property (nonatomic) CGRect profileNavBarFrameOnScreen;
-@property (nonatomic) CGRect profileNavBarFrameOffScreen;
-
-@property (nonatomic, strong) NSString * currentThreadInView;
-
-@property (strong, nonatomic) NSArray* channels;
+@property (nonatomic, strong) ProfileHeaderView *profileHeaderView;
+@property (nonatomic) BOOL headerViewOnScreen;
 
 @property (strong, nonatomic) CreateNewChannelView * createNewChannelView;
 @property (nonatomic) UIView * darkScreenCover;
 @property (nonatomic) SharePostView * sharePOVView;
-
-@property (strong, nonatomic) LoadingIndicator * customActivityIndicator;
 
 #pragma mark Publishing
 
@@ -74,70 +66,41 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
-	self.initializing = YES;
-	if (!self.postListVC) {
-		[self initialize].then(^{
-			[self selectChannel: self.startChannel ? self.startChannel : [self.channels firstObject]];
-			self.initializing = NO;
-		});
-	}
+	self.automaticallyAdjustsScrollViewInsets = NO;
+	[self setNeedsStatusBarAppearanceUpdate];
+	self.view.backgroundColor = [UIColor blackColor];
+	[self createHeader];
+	[self checkIntroNotification];
+	[self addPostListVC];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-	if (!self.initializing) {
-		[self selectChannel: self.startChannel ? self.startChannel : [self.channels firstObject]];
-	}
-}
-
--(AnyPromise*) initialize {
-
-	self.view.backgroundColor = [UIColor blackColor];
-	//this is where you'd fetch the threads
-	[self.customActivityIndicator startCustomActivityIndicator];
-	self.view.clipsToBounds = YES;
-	return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
-		[self getChannelsWithCompletionBlock:^{
-			[self.customActivityIndicator stopCustomActivityIndicator];
-			[self createNavigationBar];
-			[self addClearScreenGesture];
-			[self checkIntroNotification];
-
-			if (self.channels.count == 0) return;
-
-			[self addPostListVC];
-
-			if(self.isCurrentUserProfile) {
-				//We stop the video because we start in the feed
-				[self.postListVC offScreen];
-			}
-			resolve(nil);
-		}];
-	}];
+	[self.postListVC display:self.channel asPostListType:listChannel withListOwner: self.ownerOfProfile
+		isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
+	[self.postListVC offScreen];
 	[self.postListVC clearViews];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
-	return UIStatusBarStyleLightContent;
+	return UIStatusBarStyleDefault;
 }
 
-//this is where downloading of channels should happen
--(void) getChannelsWithCompletionBlock:(void(^)())block{
-	if(self.isCurrentUserProfile){
-		[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
-			block();
-		}];
-	} else {
-		[Channel_BackendObject getChannelsForUser:self.userOfProfile withCompletionBlock:
-		 ^(NSMutableArray * channels) {
-			 self.channels = channels;
-			 block();
-		 }];
-	}
+-(void) createHeader {
+	[self.channel getFollowersAndFollowingWithCompletionBlock:^{
+		CGRect frame = CGRectMake(0.f, 0.f, self.view.frame.size.width, PROFILE_HEADER_HEIGHT);
+		PFUser* user = self.isCurrentUserProfile ? nil : self.ownerOfProfile;
+		self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andUser:user
+															   andChannel:self.channel inProfileTab:self.isProfileTab];
+		self.profileHeaderView.delegate = self;
+		[self.view addSubview: self.profileHeaderView];
+		[self.view bringSubviewToFront: self.profileHeaderView];
+		self.headerViewOnScreen = YES;
+	}];
 }
 
 -(void)checkIntroNotification{
@@ -170,35 +133,16 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	[flowLayout setItemSize:self.view.frame.size];
 	self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
 	self.postListVC.postListDelegate = self;
-	if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
+	if(self.profileHeaderView) [self.view insertSubview:self.postListVC.view belowSubview:self.profileHeaderView];
 	else [self.view addSubview:self.postListVC.view];
-}
-
--(void) createNavigationBar {
-	//frame when on screen
-	self.profileNavBarFrameOnScreen = CGRectMake(0.f, 0.f, self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT);
-	//frame when off screen
-	self.profileNavBarFrameOffScreen = CGRectMake(0.f, 0.f - STATUS_BAR_HEIGHT - PROFILE_NAV_BAR_HEIGHT,
-												  self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT);
-
-	self.profileNavBar = [[ProfileNavBar alloc]
-						  initWithFrame:self.profileNavBarFrameOnScreen
-						  andChannels: self.channels
-						  andUser:self.userOfProfile
-						  isCurrentLoggedInUser:self.isCurrentUserProfile
-						  isProfileTab:self.isProfileTab];
-
-	self.profileNavBar.delegate = self;
-	[self.view addSubview:self.profileNavBar];
-	[self.view bringSubviewToFront:self.profileNavBar];
-	self.profileNavBarOnScreen = YES;
+	[self addClearScreenGesture];
 }
 
 -(void)addClearScreenGesture{
 	UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clearScreen:)];
 	singleTap.numberOfTapsRequired = 1;
 	singleTap.delegate = self;
-	[self.view addGestureRecognizer:singleTap];
+	[self.postListVC.view addGestureRecognizer:singleTap];
 }
 
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
@@ -209,14 +153,16 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	return  (![touch.view isKindOfClass:[Intro_Instruction_Notification_View class]]);
 }
 
-#pragma mark - POSTListView delegate -
+#pragma mark - Post list vc delegate -
 
+// Something in profile was reblogged so contains a header allowing user to navigate
+// to a different profile
 -(void)channelSelected:(Channel *) channel{
 	ProfileVC *  userProfile = [[ProfileVC alloc] init];
 	userProfile.isCurrentUserProfile = NO;
 	userProfile.isProfileTab = NO;
-	userProfile.userOfProfile = channel.channelCreator;
-	userProfile.startChannel = channel;
+	userProfile.ownerOfProfile = channel.channelCreator;
+	userProfile.channel = channel;
 	[self presentViewController:userProfile animated:YES completion:^{
 	}];
 }
@@ -251,7 +197,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 }
 
 -(void) removeScreenDarkener{
-	if(self.darkScreenCover){
+	if(self.darkScreenCover) {
 		[self.darkScreenCover removeFromSuperview];
 		self.darkScreenCover = nil;
 	}
@@ -272,7 +218,8 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
                 Channel *newChannel = [[Channel alloc] initWithChannelName:channelName
 													 andParseChannelObject:channelObject
 														 andChannelCreator:[PFUser currentUser]];
-                [self.profileNavBar newChannelCreated:newChannel];
+				//todo: new channel created
+//                [self.profileNavBar newChannelCreated:newChannel];
                 [self clearChannelCreationView];
 				[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{}];
                 self.currentlyCreatingNewChannel = NO;
@@ -296,18 +243,16 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	}];
 }
 
-
 -(void)blockCurrentUserShouldBlock:(BOOL) shouldBlock{
-
     NSString * titleText;
     NSString * messageText;
     
     if(shouldBlock) {
         titleText = @"Block User";
-        messageText = @"Are you sure you want to block this user? This will prevent them from finding you on Verbatm or viewing any of your content. You will also automatically unfollow all of their channels. You can undo your decision at any time.";
+        messageText = @"Are you sure?";
     } else {
         titleText = @"Unblock User";
-        messageText = @"Are you sure you want to unblock this user? This will allow them to view your content on Verbatm.";
+        messageText = @"Are you sure?";
     }
     
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:titleText
@@ -316,14 +261,18 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
     
     UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
                                                          handler:^(UIAlertAction * action) {}];
-    UIAlertAction* confirmAction = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction* confirmAction = [UIAlertAction actionWithTitle:@"Yes, I'm sure." style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         if(shouldBlock){
-			[User_BackendObject blockUser:self.userOfProfile];
-			[self.profileNavBar updateUserIsBlocked:YES];
+			[User_BackendObject blockUser:self.ownerOfProfile];
+			//todo: update blocked
+//			[self.profileHeaderView updateUserIsBlocked:YES];
+			[self alertUserBlocked:YES];
 
         } else {
-			[User_BackendObject unblockUser:self.userOfProfile];
-			[self.profileNavBar updateUserIsBlocked:NO];
+			[User_BackendObject unblockUser:self.ownerOfProfile];
+			//todo: update unblocked
+//			[self.profileHeaderView updateUserIsBlocked:NO];
+			[self alertUserBlocked:NO];
         }
     }];
     
@@ -332,19 +281,17 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
     [self presentViewController:alert animated:YES completion:nil];
 }
 
+-(void) alertUserBlocked:(BOOL) blocked {
+	NSString *title = blocked ? @"User blocked" : @"User unblocked";
+	UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+																   message:nil
+															preferredStyle:UIAlertControllerStyleAlert];
 
--(void)newChannelSelected:(Channel *) channel {
-	self.startChannel = channel; //return to this channel
-	[self.postListVC display:channel asPostListType:listChannel withListOwner:self.userOfProfile
-		isCurrentUserProfile:self.isCurrentUserProfile];
-}
+	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleCancel
+														 handler:^(UIAlertAction * action) {}];
 
-// updates tab and content
--(void) selectChannel: (Channel *) channel {
-	self.startChannel = channel; //return to this channel
-	[self.profileNavBar selectChannel: channel];
-	[self.postListVC display:channel asPostListType:listChannel withListOwner:self.userOfProfile
-		isCurrentUserProfile:self.isCurrentUserProfile];
+	[alert addAction: cancelAction];
+	[self presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark - POSTListVC Protocol -
@@ -354,18 +301,20 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 }
 
 -(void) presentHeadAndFooter:(BOOL) shouldShow {
-	if(shouldShow) {
-		self.profileNavBarOnScreen = YES;
+	if(shouldShow && !self.headerViewOnScreen) {
+		self.headerViewOnScreen = YES;
+		CGRect onScreenFrame = CGRectOffset(self.profileHeaderView.frame, 0.f, self.profileHeaderView.frame.size.height);
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			[self.profileNavBar setFrame: self.profileNavBarFrameOnScreen];
+			[self.profileHeaderView setFrame: onScreenFrame];
 		}];
 		[self.delegate showTabBar:YES];
 		if(self.isProfileTab) [self.postListVC footerShowing:YES];
 
-	} else {
-		self.profileNavBarOnScreen = NO;
+	} else if (!shouldShow && self.headerViewOnScreen) {
+		self.headerViewOnScreen = NO;
+		CGRect offScreenFrame = CGRectOffset(self.profileHeaderView.frame, 0.f, -self.profileHeaderView.frame.size.height);
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			[self.profileNavBar setFrame: self.profileNavBarFrameOffScreen];
+			[self.profileHeaderView setFrame: offScreenFrame];
 		}];
 
 		[self.delegate showTabBar:NO];
@@ -374,15 +323,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 }
 
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
-	// Tap interferes with photo fade circle
-	CGFloat circleRadiusWithPadding = (CIRCLE_RADIUS + 20.f);
-	CGPoint tapPoint = [tapGesture locationInView:self.view];
-	if ((tapPoint.y > (self.view.frame.size.height - CIRCLE_OFFSET - circleRadiusWithPadding*2)
-		 && tapPoint.y < (self.view.frame.size.height - CIRCLE_OFFSET))
-		&& (tapPoint.x > (self.view.frame.size.width/2.f - circleRadiusWithPadding)
-			&& tapPoint.x < (self.view.frame.size.width/2.f + circleRadiusWithPadding)))
-		return;
-	if (self.profileNavBarOnScreen) {
+	if (self.headerViewOnScreen) {
 		[self presentHeadAndFooter:NO];
 	} else {
 		[self presentHeadAndFooter:YES];
@@ -407,13 +348,13 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	PublishingProgressManager *progressManager = [PublishingProgressManager sharedInstance];
 	self.publishingProgress = [progressManager progressAccountant];
 	[progressManager setDelegate:self];
-	Channel * currentPublishingChannel = [progressManager currentPublishingChannel];
+	Channel *currentPublishingChannel = [progressManager currentPublishingChannel];
 	if ([progressManager newChannelCreated]) {
-		[self.profileNavBar newChannelCreated: currentPublishingChannel];
+		//todo: channel created
+//		[self.profileHeaderView newChannelCreated: currentPublishingChannel];
 		[progressManager setNewChannelCreated:NO];
 	}
-	[self selectChannel: currentPublishingChannel];
-	[self.profileNavBar addSubview: self.publishingProgressView];
+	[self.profileHeaderView addSubview: self.publishingProgressView];
 }
 
 #pragma mark Publishing Progress Manager Delegate methods
@@ -440,7 +381,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
 -(UIView*) publishingProgressView {
 	if (!_publishingProgressView) {
-		_publishingProgressView = [[UIView alloc] initWithFrame:CGRectMake(0.f, self.profileNavBar.frame.size.height,
+		_publishingProgressView = [[UIView alloc] initWithFrame:CGRectMake(0.f, self.profileHeaderView.frame.size.height,
 																		   self.view.frame.size.width, 20.f)];
 		[_publishingProgressView setBackgroundColor:[UIColor blackColor]];
 		self.progressBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
@@ -463,19 +404,5 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 		[self.progressBar setProgress:self.publishingProgress.fractionCompleted animated:YES];
 	}
 }
-
--(NSArray *)channels{
-	return (!self.isCurrentUserProfile) ? _channels : [[UserInfoCache sharedInstance] getUserChannels];
-}
-
--(LoadingIndicator *)customActivityIndicator{
-    if(!_customActivityIndicator){
-        CGPoint newCenter = CGPointMake(self.view.center.x, self.view.frame.size.height * 1.f/2.f);
-        _customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:newCenter andImage:[UIImage imageNamed:LOAD_ICON_IMAGE]];
-        [self.view addSubview:_customActivityIndicator];
-    }
-    return _customActivityIndicator;
-}
-
 
 @end

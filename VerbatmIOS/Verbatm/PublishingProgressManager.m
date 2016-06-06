@@ -14,6 +14,11 @@
 #import "ParseBackendKeys.h"
 #import "Post_Channel_RelationshipManager.h"
 #import "PostInProgress.h"
+#import "Page_BackendObject.h"
+#import "Photo_BackendObject.h"
+#import "Video_BackendObject.h"
+#import "PageTypeAnalyzer.h"
+#import "ExternalShare.h"
 
 @interface PublishingProgressManager()
 //how many media pieces we are trying to publish in total
@@ -28,6 +33,8 @@
 @property (nonatomic, readwrite) Channel* currentPublishingChannel;
 @property (nonatomic, readwrite) NSProgress * progressAccountant;
 @property (nonatomic) PFObject * currentParsePostObject;
+@property (nonatomic) ExternalShare* es;
+@property (nonatomic) BOOL shareToFB;
 
 @end
 
@@ -44,8 +51,11 @@
 }
 
 // Blocks is publishing something else, no network
--(void)publishPostToChannel:(Channel *)channel withPinchViews:(NSArray *)pinchViews
+-(void)publishPostToChannel:(Channel *)channel andFacebook:(BOOL)externalShare withCaption:(NSString *)caption withPinchViews:(NSArray *)pinchViews
 		withCompletionBlock:(void(^)(BOOL, BOOL))block {
+    
+    self.es = [[ExternalShare alloc]initWithCaption:caption];
+    self.shareToFB = externalShare;
 
 	if (self.currentlyPublishing) {
 		block (YES, NO);
@@ -111,6 +121,11 @@
 	[self.currentParsePostObject saveInBackground];
 	//register the relationship
 	[Post_Channel_RelationshipManager savePost:self.currentParsePostObject toChannels:[NSMutableArray arrayWithObject:self.currentPublishingChannel] withCompletionBlock:^{
+        
+        if(self.shareToFB){
+            [self.es sharePostToFacebook:self.currentParsePostObject];
+        }
+        
 		self.progressAccountant.completedUnitCount = 0;
 		self.progressAccountant.totalUnitCount = 0;
 		self.currentlyPublishing = NO;

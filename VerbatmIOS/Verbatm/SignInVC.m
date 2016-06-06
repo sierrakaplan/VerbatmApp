@@ -574,7 +574,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	_animationLabel.frame = CGRectMake(0, self.view.bounds.size.height/2.f - SIGN_IN_ERROR_VIEW_HEIGHT/2.f,
 									   self.view.bounds.size.width, SIGN_IN_ERROR_VIEW_HEIGHT);
 	_animationLabel.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
-	_animationLabel.font = [UIFont fontWithName:DEFAULT_FONT size:ERROR_ANIMATION_FONT_SIZE];
+	_animationLabel.font = [UIFont fontWithName:REGULAR_FONT size:ERROR_ANIMATION_FONT_SIZE];
 	_animationLabel.textColor = [UIColor ERROR_ANIMATION_TEXT_COLOR];
 	_animationLabel.numberOfLines = 0;
 	_animationLabel.lineBreakMode = NSLineBreakByWordWrapping;

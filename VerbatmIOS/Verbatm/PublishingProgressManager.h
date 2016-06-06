@@ -41,8 +41,7 @@
 +(instancetype)sharedInstance;
 
 // Blocks is publishing something else, no network
--(void)publishPostToChannel:(Channel *)channel withPinchViews:(NSArray *)pinchViews
-		withCompletionBlock:(void(^)(BOOL, BOOL))block;
+-(void)publishPostToChannel:(Channel *)channel andFacebook:(BOOL)externalShare withCaption:(NSString *)caption withPinchViews:(NSArray *)pinchViews withCompletionBlock:(void(^)(BOOL, BOOL))block;
 
 -(void)mediaSavingProgressed:(int64_t) newProgress;
 

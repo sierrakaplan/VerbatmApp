@@ -5,30 +5,37 @@
 //  Created by Iain Usiri on 12/23/15.
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
+// 	Shows the username, followers/following, and edit button for a profile
 
 #import <UIKit/UIKit.h>
 
-/*
- This is the view that presents the username as well as the settings button on the
- Profile screen
- */
 
-@protocol ProfileInformationBarProtocol <NSObject>
+@protocol ProfileInformationBarDelegate <NSObject>
 
--(void)settingsButtonSelected;
--(void)followButtonSelectedShouldFollowUser:(BOOL) followUser;
--(void)backButtonSelected;
--(void)blockCurrentUserShouldBlock:(BOOL) shouldBlock;
+// Only available in profile tab
+-(void) settingsButtonSelected;
+
+-(void) editButtonSelected;
+
+// Only available if not profile tab
+-(void) backButtonSelected;
+
+// Only available in someone else's profile
+-(void) followButtonSelectedShouldFollowUser:(BOOL) followUser;
+
+-(void) blockCurrentUserShouldBlock:(BOOL) shouldBlock;
+
 
 @end
 
 @interface ProfileInformationBar : UIView
 
-@property (nonatomic, weak) id <ProfileInformationBarProtocol> delegate;
-@property (nonatomic) BOOL hasBlockedUser;
+@property (nonatomic, weak) id <ProfileInformationBarDelegate> delegate;
 
--(instancetype)initWithFrame:(CGRect)frame andUserName: (NSString *) userName
-			   isCurrentUser:(BOOL) isCurrentUser isBlockedByCurrentUser:(BOOL) isBlocked
-				isProfileTab: (BOOL)profileTab;
+// Init with user=nil to indicate current user
+// profileTab tells us where in navigation we are - editing and settings are only available
+// from the profile tab.
+-(instancetype)initWithFrame:(CGRect)frame andUser:(PFUser*)user
+				  andChannel:(Channel*)channel inProfileTab:(BOOL) profileTab;
 
 @end

@@ -14,6 +14,7 @@
 @interface PostsQueryManager()
 
 @property (nonatomic) NSInteger postsDownloaded;
+@property (strong, nonatomic) NSDate *latestDate;
 
 #define POSTS_DOWNLOAD_SIZE 5
 
@@ -29,7 +30,8 @@
 	return self;
 }
 
--(void) refreshPostsInChannel:(Channel *)channel withCompletionBlock:(void(^)(NSArray *))block {
+// Loads oldest posts in channel starting at date
+-(void) refreshPostsInChannel:(Channel *)channel startingAt:(NSDate*)date withCompletionBlock:(void(^)(NSArray *))block {
 	if(!channel) {
 		block (@[]);
 		return;
@@ -37,6 +39,8 @@
 	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
 	[postQuery orderByAscending:@"createdAt"];
+	if (date) [postQuery whereKey:@"createdAt" greaterThan:date];
+	self.latestDate = date;
 	[postQuery setLimit: POSTS_DOWNLOAD_SIZE];
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
 												  NSError * _Nullable error) {
@@ -47,37 +51,42 @@
 				[post fetchIfNeededInBackground];
 				[finalPostObjects addObject:pc_activity];
 			}
-			self.postsDownloaded = 0;
-			self.postsDownloaded += finalPostObjects.count;
+			if (activities.count > 0) self.latestDate = activities[activities.count-1][@"createdAt"];
+			self.postsDownloaded = finalPostObjects.count;
 			block(finalPostObjects);
 		}
 	}];
 }
 
+// Loads newer posts in channel from date that left off
 -(void) loadMorePostsInChannel:(Channel*)channel withCompletionBlock:(void(^)(NSArray *))block {
 	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
 	[postQuery orderByAscending:@"createdAt"];
+	if (self.latestDate) [postQuery whereKey:@"createdAt" greaterThan:self.latestDate];
 	[postQuery setLimit: POSTS_DOWNLOAD_SIZE];
-	[postQuery setSkip: self.postsDownloaded];
+	//	[postQuery setSkip: self.postsDownloaded]; //todo: delete?
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
 												  NSError * _Nullable error) {
 		if(activities && !error) {
 			NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
 
 			for(PFObject * pc_activity in activities){
-
 				PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
 				[post fetchIfNeededInBackground];
 				[finalPostObjects addObject:pc_activity];
 			}
 
+			if (activities.count > 0) self.latestDate = activities[activities.count-1][@"createdAt"];
 			self.postsDownloaded += finalPostObjects.count;
 			block(finalPostObjects);
 		}
 	}];
 }
 
+//-(void) loadOlderPostsInChannel
+
+// Loads newest posts in channel
 +(void) getPostsInChannel:(Channel*)channel withLimit:(NSInteger)limit withCompletionBlock:(void(^)(NSArray *))block {
 	if(!channel) {
 		block (@[]);
@@ -85,7 +94,7 @@
 	}
 	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
-	[postQuery orderByAscending:@"createdAt"];
+	[postQuery orderByDescending:@"createdAt"];
 	[postQuery setLimit: limit];
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
 												  NSError * _Nullable error) {

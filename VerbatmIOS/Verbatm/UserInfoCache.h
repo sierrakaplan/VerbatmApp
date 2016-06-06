@@ -6,18 +6,15 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+#import "Channel.h"
 #import <Foundation/Foundation.h>
 
 @interface UserInfoCache : NSObject
 
 +(instancetype)sharedInstance;
--(void)loadUserChannelsWithCompletionBlock:(void(^)())block;
--(void)storeUserChannels:(NSMutableArray *) channels;
--(NSMutableArray *) getUserChannels;
 
-//the index of the current channel selected by the user
-//set on tab selection in the profile
--(NSUInteger) currentChannelViewedIndex;
--(void) setCurrentChannelIndex:(NSUInteger)index;
+-(void)loadUserChannelsWithCompletionBlock:(void(^)())block;
+-(Channel *) getUserChannel;
+
 @end
 

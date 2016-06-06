@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		127EA6DC1CDF90FE000BEBAD /* FollowingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 127EA6DB1CDF90FE000BEBAD /* FollowingView.m */; };
+		1281BBE21CFB878C00161ECC /* ExternalShare.m in Sources */ = {isa = PBXBuildFile; fileRef = 1281BBE11CFB878C00161ECC /* ExternalShare.m */; };
 		12A06D971CD3762B001800C9 /* BlogPopupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 12A06D961CD3762B001800C9 /* BlogPopupView.m */; };
 		12A06D9A1CD37B1A001800C9 /* Followers.m in Sources */ = {isa = PBXBuildFile; fileRef = 12A06D991CD37B1A001800C9 /* Followers.m */; };
 		9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995719BA7EBD005EBC8A /* MediaSessionManager.m */; };
@@ -16,6 +17,7 @@
 		A51A52F61BD6B8AB0048E62A /* MediaDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = A51A52F51BD6B8AB0048E62A /* MediaDownloader.m */; };
 		A51E74641C898C4E00CF8DEA /* PostInProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = A51E74631C898C4E00CF8DEA /* PostInProgress.m */; };
 		A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */ = {isa = PBXBuildFile; fileRef = A52919751B5DD24F00233712 /* UIView+Glow.m */; };
+		A52B960A1CFE193800EFA7EB /* ProfileHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = A52B96091CFE193800EFA7EB /* ProfileHeaderView.m */; };
 		A5337BBA1CCD60CF00551394 /* LoginKeyboardToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A5337BB91CCD60CF00551394 /* LoginKeyboardToolBar.m */; };
 		A5337BBD1CCD99D600551394 /* UserInfoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5337BBC1CCD99D600551394 /* UserInfoVC.m */; };
 		A5337BC11CCDD96E00551394 /* PostsQueryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A5337BC01CCDD96E00551394 /* PostsQueryManager.m */; };
@@ -279,6 +281,8 @@
 		113A4CE1B7B9BC71C0E99388 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		127EA6DA1CDF90FE000BEBAD /* FollowingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowingView.h; sourceTree = "<group>"; };
 		127EA6DB1CDF90FE000BEBAD /* FollowingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FollowingView.m; sourceTree = "<group>"; };
+		1281BBE01CFB878C00161ECC /* ExternalShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExternalShare.h; sourceTree = "<group>"; };
+		1281BBE11CFB878C00161ECC /* ExternalShare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExternalShare.m; sourceTree = "<group>"; };
 		12A06D951CD3762B001800C9 /* BlogPopupView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlogPopupView.h; sourceTree = "<group>"; };
 		12A06D961CD3762B001800C9 /* BlogPopupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlogPopupView.m; sourceTree = "<group>"; };
 		12A06D981CD37B1A001800C9 /* Followers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Followers.h; sourceTree = "<group>"; };
@@ -301,6 +305,8 @@
 		A52919731B5DA4C800233712 /* StringsAndAppConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StringsAndAppConstants.h; sourceTree = "<group>"; };
 		A52919741B5DD24F00233712 /* UIView+Glow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Glow.h"; sourceTree = "<group>"; };
 		A52919751B5DD24F00233712 /* UIView+Glow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Glow.m"; sourceTree = "<group>"; };
+		A52B96081CFE193800EFA7EB /* ProfileHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileHeaderView.h; sourceTree = "<group>"; };
+		A52B96091CFE193800EFA7EB /* ProfileHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileHeaderView.m; sourceTree = "<group>"; };
 		A5337BB81CCD60CF00551394 /* LoginKeyboardToolBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginKeyboardToolBar.h; sourceTree = "<group>"; };
 		A5337BB91CCD60CF00551394 /* LoginKeyboardToolBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginKeyboardToolBar.m; sourceTree = "<group>"; };
 		A5337BBB1CCD99D600551394 /* UserInfoVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfoVC.h; sourceTree = "<group>"; };
@@ -777,6 +783,30 @@
 			name = "GTL Files";
 			sourceTree = "<group>";
 		};
+		A52B96061CFE18E100EFA7EB /* Deprecated Profile */ = {
+			isa = PBXGroup;
+			children = (
+				C77A20911C03E39E00356465 /* ProfileNavBar.h */,
+				C77A20921C03E39E00356465 /* ProfileNavBar.m */,
+				A5934B991C10E2A3007C7830 /* CustomScrollingTabBar.h */,
+				A5934B9A1C10E2A3007C7830 /* CustomScrollingTabBar.m */,
+				C741AC561C49D23B0076FFC5 /* FollowInfoBar.h */,
+				C741AC571C49D23B0076FFC5 /* FollowInfoBar.m */,
+			);
+			name = "Deprecated Profile";
+			sourceTree = "<group>";
+		};
+		A52B96071CFE18EA00EFA7EB /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				A52B96081CFE193800EFA7EB /* ProfileHeaderView.h */,
+				A52B96091CFE193800EFA7EB /* ProfileHeaderView.m */,
+				C747498F1C2B1CB90047C66E /* ProfileInformationBar.h */,
+				C74749901C2B1CB90047C66E /* ProfileInformationBar.m */,
+			);
+			name = Profile;
+			sourceTree = "<group>";
+		};
 		A5337BB71CCD60AA00551394 /* Keyboard tool bars */ = {
 			isa = PBXGroup;
 			children = (
@@ -932,18 +962,10 @@
 			children = (
 				A5446C941BBA3C33002177F4 /* CustomNavigationBar.h */,
 				A5446C951BBA3C33002177F4 /* CustomNavigationBar.m */,
-				C77A20911C03E39E00356465 /* ProfileNavBar.h */,
-				C77A20921C03E39E00356465 /* ProfileNavBar.m */,
-				A5934B991C10E2A3007C7830 /* CustomScrollingTabBar.h */,
-				A5934B9A1C10E2A3007C7830 /* CustomScrollingTabBar.m */,
 				A5934B9C1C10E4C8007C7830 /* CustomTab.h */,
 				A5934B9D1C10E4C8007C7830 /* CustomTab.m */,
-				C747498F1C2B1CB90047C66E /* ProfileInformationBar.h */,
-				C74749901C2B1CB90047C66E /* ProfileInformationBar.m */,
 				C788745A1C334AE80048B66E /* PostLikeAndShareBar.h */,
 				C788745B1C334AE80048B66E /* PostLikeAndShareBar.m */,
-				C741AC561C49D23B0076FFC5 /* FollowInfoBar.h */,
-				C741AC571C49D23B0076FFC5 /* FollowInfoBar.m */,
 			);
 			name = "Custom Bars";
 			sourceTree = "<group>";
@@ -1046,6 +1068,8 @@
 				A5C09BE51BA1F43600C0AD86 /* MediaUploader.m */,
 				C755DB0A1C74619200136F6E /* PublishingProgressManager.h */,
 				C755DB0B1C74619200136F6E /* PublishingProgressManager.m */,
+				1281BBE01CFB878C00161ECC /* ExternalShare.h */,
+				1281BBE11CFB878C00161ECC /* ExternalShare.m */,
 			);
 			name = Publishing;
 			sourceTree = "<group>";
@@ -1395,6 +1419,8 @@
 		C78B682719CA6C0A003D0AC5 /* Custom Views */ = {
 			isa = PBXGroup;
 			children = (
+				A52B96071CFE18EA00EFA7EB /* Profile */,
+				A52B96061CFE18E100EFA7EB /* Deprecated Profile */,
 				A5337BB71CCD60AA00551394 /* Keyboard tool bars */,
 				A560EFB21BB0AF42003FB041 /* Login */,
 				A56F68761B643D4B00CE5744 /* Video Player */,
@@ -1894,6 +1920,7 @@
 				C75985F51B8553DF00FE77F7 /* InternetConnectionMonitor.m in Sources */,
 				A5E85F9E1B911DA900E148D0 /* GTLDateTime.m in Sources */,
 				C76172741C4C8B1300AB0D84 /* UserAndChannelListsTVC.m in Sources */,
+				1281BBE21CFB878C00161ECC /* ExternalShare.m in Sources */,
 				A5AA31BA1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.m in Sources */,
 				C7E6C13F1A4E394600863893 /* PhotoVideoPVE.m in Sources */,
 				C7E65F691B9245200042AD99 /* ProfileVC.m in Sources */,
@@ -1902,6 +1929,7 @@
 				C7F3D46B1A4F84C000B43238 /* SignInVC.m in Sources */,
 				12A06D9A1CD37B1A001800C9 /* Followers.m in Sources */,
 				A5E85FAA1B911DA900E148D0 /* GTMGatherInputStream.m in Sources */,
+				A52B960A1CFE193800EFA7EB /* ProfileHeaderView.m in Sources */,
 				C7BF1AB21C59D6BF00CEDE4B /* Channel_BackendObject.m in Sources */,
 				A535E5091BC45CC600A087D1 /* AVAsset+Utilities.m in Sources */,
 				A5076D141BF2B25100303746 /* TextOverMediaView.m in Sources */,

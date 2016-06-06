@@ -98,10 +98,11 @@ ProfileVCDelegate>
 }
 
 -(void) setUpStartUpEnvironment {
-	[self setUpTabBarController];
 	[[UserSetupParameters sharedInstance] setUpParameters];
 	self.view.backgroundColor = [UIColor blackColor];
-	[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{}];
+	[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
+		[self setUpTabBarController];
+	}];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -119,10 +120,6 @@ ProfileVCDelegate>
 
 -(BOOL) prefersStatusBarHidden {
 	return self.tabBarHidden;
-}
-
-- (UIStatusBarStyle)preferredStatusBarStyle {
-	return UIStatusBarStyleLightContent;
 }
 
 - (UIStatusBarAnimation) preferredStatusBarUpdateAnimation {
@@ -234,8 +231,9 @@ ProfileVCDelegate>
 
 	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
 	self.profileVC.delegate = self;
-	self.profileVC.userOfProfile = [PFUser currentUser];
+	self.profileVC.ownerOfProfile = [PFUser currentUser];
 	self.profileVC.isCurrentUserProfile = YES;
+	self.profileVC.channel = [[UserInfoCache sharedInstance] getUserChannel];
 	self.profileVC.isProfileTab = YES;
 
 	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];

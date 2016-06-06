@@ -102,7 +102,7 @@
     ProfileVC *  userProfile = [[ProfileVC alloc] init];
     userProfile.isCurrentUserProfile = NO;
     userProfile.isProfileTab = NO;
-    userProfile.userOfProfile = user;
+    userProfile.ownerOfProfile = user;
     
     UIViewController *top = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
     while (top.presentedViewController){

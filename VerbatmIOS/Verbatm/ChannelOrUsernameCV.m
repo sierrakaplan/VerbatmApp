@@ -33,6 +33,9 @@
 
 @property (nonatomic) UILabel * headerTitle;//makes the cell a header for the table view
 @property (nonatomic) BOOL isHeaderTile;
+
+#define CHANNEL_LIST_CELL_SEPERATOR_HEIGHT 5.f
+
 @end
 
 @implementation ChannelOrUsernameCV

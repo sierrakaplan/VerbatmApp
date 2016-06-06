@@ -37,8 +37,9 @@
 
 @property (nonatomic) NSMutableArray * selectedChannels;
 @property (nonatomic) BOOL externalShare;
-
+@property (nonatomic) BOOL source;
 @property (nonatomic) BOOL showChannels;
+@property (nonatomic) NSString* caption;
 
 #define TEXT_VIEW_HEIGHT 50
 
@@ -61,6 +62,23 @@
 		}
 	}
 	return self;
+}
+
+-(instancetype) initWithFrame:(CGRect)frame shouldStartOnChannels:(BOOL) showChannels fromContentDev:(BOOL) source {
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self formatView];
+        self.showChannels = showChannels;
+        self.externalShare = NO;
+        self.source = source;
+        [self createListFrames];
+        if(showChannels){
+            [self presentUserChannelsToFollow];
+        }else{
+            [self createSelections];
+        }
+    }
+    return self;
 }
 
 
@@ -90,6 +108,10 @@
 -(void)createShareOrFollowButton_isShare:(BOOL) isShareButton {
 
 	NSString * titleText = (isShareButton) ? @"REPOST" : @"FOLLOW" ;
+    
+    if(self.source){
+        titleText = @"POST";
+    }
 
 	//create share button
 	CGRect shareButtonFrame = CGRectMake(BUTTON_WALL_OFFSET_X, self.shareOptionSelectionStartFrameONSCREEN.origin.y + self.shareOptionSelectionStartFrameONSCREEN.size.height, self.frame.size.width - (BUTTON_WALL_OFFSET_X * 2), SHARE_BUTTON_HEIGHT - 10.f);
@@ -219,7 +241,11 @@
 -(void)shareButtonSelected {
 	if([self.shareButton.titleLabel.text isEqualToString:@"REPOST"]){
 		[self.delegate postPostToChannels: self.selectedChannels andFacebook:self.externalShare];
-	}
+    }
+    
+    if([self.shareButton.titleLabel.text isEqualToString:@"POST"]) {
+        [self.delegate postPostToChannels: self.selectedChannels andFacebook:self.externalShare withCaption:self.caption];
+    }
 }
 
 //channel selection protocol
@@ -238,12 +264,14 @@
 -(void)shareOptionSelected:(ShareOptions) shareOption{
 	if(shareOption == Verbatm){
 //		[self removeFacebookCommentView];
-		[self showChannelSelection:YES];
-		[self.shareButton setTitle:@"POST" forState:UIControlStateNormal];
-		[self.cancelButton setAttributedTitle:[self getButtonAttributeStringWithText:@"BACK" andColor:[UIColor whiteColor]] forState:UIControlStateNormal];
+//		[self showChannelSelection:YES];
+//		[self.shareButton setTitle:@"POST" forState:UIControlStateNormal];
+//		[self.cancelButton setAttributedTitle:[self getButtonAttributeStringWithText:@"BACK"] forState:UIControlStateNormal];
 	}
     if (shareOption == Facebook){
-//		[self createAndPrepareTextView];
+        if(self.source){
+            [self createAndPrepareTextView];
+        }
         self.externalShare = YES;
 	}
 }
@@ -251,7 +279,8 @@
 -(void)shareOptionDeselected:(ShareOptions) shareOption{
 	if(shareOption == Facebook){
         self.externalShare = NO;
-//		[self removeFacebookCommentView];
+        self.caption = nil;
+		[self removeFacebookCommentView];
 	}
     if(shareOption == Verbatm){
         
@@ -267,7 +296,7 @@
 
 -(void)createAndPrepareTextView {
 
-	CGRect frame = CGRectMake(0.f, -TEXT_VIEW_HEIGHT , self.frame.size.width, TEXT_VIEW_HEIGHT);
+	CGRect frame = CGRectMake(0.f, self.frame.size.height - 4 * TEXT_VIEW_HEIGHT , self.frame.size.width, TEXT_VIEW_HEIGHT);
 	self.facebookCommentTextField = [[UITextField alloc] initWithFrame:frame];
 	self.facebookCommentTextField.backgroundColor = [UIColor blackColor];
 	self.facebookCommentTextField.textColor = [UIColor whiteColor];
@@ -283,6 +312,7 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField{
 	[self.facebookCommentTextField resignFirstResponder];
+    self.caption = self.facebookCommentTextField.text;
 	return  NO;
 }
 

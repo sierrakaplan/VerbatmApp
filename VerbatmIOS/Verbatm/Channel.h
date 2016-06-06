@@ -14,16 +14,24 @@
 
 @interface Channel : NSObject
 
-@property (nonatomic, readonly) NSString * name;
-@property (nonatomic, readonly) PFObject * parseChannelObject;
+@property (nonatomic, readonly) NSString *name;
+@property (nonatomic, readonly) NSString *blogDescription;
+@property (nonatomic, readonly) PFObject *parseChannelObject;
 @property (nonatomic, readonly) PFUser *channelCreator;
+@property (nonatomic, readonly) NSArray *usersFollowingChannel;
+@property (nonatomic, readonly) NSArray *channelsUserFollowing;
 
 
 -(instancetype) initWithChannelName:(NSString *) channelName
 			  andParseChannelObject:(PFObject *) parseChannelObject
 				  andChannelCreator:(PFUser *) channelCreator;
 
+-(void) changeTitle:(NSString*)title andDescription:(NSString*)description;
+
 -(void)getChannelOwnerNameWithCompletionBlock:(void(^)(NSString *))block;
+
+// Returns when both usersFollowingChannel and channelsUserFollowing are filled in
+-(void) getFollowersAndFollowingWithCompletionBlock:(void(^)(void))block;
 
 -(BOOL)channelBelongsToCurrentUser;
 

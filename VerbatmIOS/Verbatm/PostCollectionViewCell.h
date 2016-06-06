@@ -27,7 +27,7 @@
 @property (nonatomic, readonly) PFObject *currentPostActivityObject;
 
 -(void) presentPostFromPCActivityObj: (PFObject *) pfActivityObj andChannel:(Channel*) channelForList
-					withDeleteButton: (BOOL) withDelete;
+					withDeleteButton: (BOOL) withDelete andLikeShareBarUp:(BOOL) up;
 
 -(void) shiftLikeShareBarDown:(BOOL) down;
 
