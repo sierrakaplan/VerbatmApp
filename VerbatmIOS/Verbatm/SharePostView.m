@@ -81,14 +81,11 @@
     return self;
 }
 
-
-
 -(void)presentUserChannelsToFollow {
 	[self createReportAndCancelButtonsCancelFullScreen:YES];
 	[self createShareOrFollowButton_isShare:YES];
 	[self showChannelSelection:YES];
 }
-
 
 -(void)formatView{
 	self.backgroundColor = REPOST_VIEW_BACKGROUND_COLOR;
