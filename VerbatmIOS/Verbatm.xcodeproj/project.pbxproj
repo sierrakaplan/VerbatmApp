@@ -786,6 +786,8 @@
 		A52B96061CFE18E100EFA7EB /* Deprecated Profile */ = {
 			isa = PBXGroup;
 			children = (
+				C7F79E781C39C44A00319330 /* SelectChannel.h */,
+				C7F79E791C39C44A00319330 /* SelectChannel.m */,
 				C77A20911C03E39E00356465 /* ProfileNavBar.h */,
 				C77A20921C03E39E00356465 /* ProfileNavBar.m */,
 				A5934B991C10E2A3007C7830 /* CustomScrollingTabBar.h */,
@@ -1603,8 +1605,6 @@
 				C7F22B371C3841AD00E56EA7 /* SelectSharingOption.m */,
 				C7F22B391C38B2A600E56EA7 /* SelectOptionButton.h */,
 				C7F22B3A1C38B2A600E56EA7 /* SelectOptionButton.m */,
-				C7F79E781C39C44A00319330 /* SelectChannel.h */,
-				C7F79E791C39C44A00319330 /* SelectChannel.m */,
 				C7F79E7B1C39E13900319330 /* SelectionView.h */,
 				C7F79E7C1C39E13900319330 /* SelectionView.m */,
 			);

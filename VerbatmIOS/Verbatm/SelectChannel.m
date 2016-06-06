@@ -69,7 +69,6 @@
     return self;
 }
 
-
 -(void)formatView{
     self.scrollEnabled = YES;
     self.backgroundColor = [UIColor clearColor];
@@ -78,7 +77,7 @@
 //todo: get rid of this sharing option
 - (void) createChannelLabel:(Channel *) channel {
     [self createFacebookLabel];
-    
+
     CGFloat startingYCord =CHANNEL_LABEL_HEIGHT;
 	CGRect labelFrame = CGRectMake(0.f, startingYCord, self.frame.size.width, CHANNEL_LABEL_HEIGHT);
 	UIView  * channelLabel = [self getChannelLabelWithFrame:labelFrame andChannel:channel];

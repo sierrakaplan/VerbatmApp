@@ -114,7 +114,6 @@
 																		NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:REPOST_BUTTON_TEXT_FONT_SIZE]}];
 }
 
-
 -(void)unselectAllOptions{
     [self.selectedButton setButtonSelected:NO];
 }
@@ -147,20 +146,5 @@
         self.selectedButton = selectionButton;
     }
 }
-
-//creates and returns a button you can toggle on and off
-//-(UIButton *) getToggleButton{
-//    
-//}
-
-
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 
 @end

@@ -104,7 +104,7 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 #pragma mark - POVListSVController -
 
 -(void) shareOptionSelectedForParsePostObject: (PFObject* ) post{
-	[self presentShareSelectionViewStartOnChannels:YES];
+	[self presentSharePostView];
 }
 
 #pragma mark -POVListSVController-
@@ -166,7 +166,7 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 	[self.postListVC footerShowing:NO];
 }
 
--(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels{
+-(void)presentSharePostView {
 	if(self.sharePostView){
 		[self.sharePostView removeFromSuperview];
 		self.sharePostView = nil;
@@ -174,7 +174,7 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 
 	CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
 	CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-	self.sharePostView = [[SharePostView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
+	self.sharePostView = [[SharePostView alloc] initWithFrame:offScreenFrame];
 	self.sharePostView.delegate = self;
 	[self.view addSubview:self.sharePostView];
 	[self.view bringSubviewToFront:self.sharePostView];
@@ -190,7 +190,7 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 	[self removeSharePostView];
 }
 
--(void) postPostToChannels:(NSMutableArray *)channels andFacebook:(BOOL)externalSharing{
+-(void) reblogToVerbatm:(BOOL)verbatm andFacebook:(BOOL)facebook {
 	[self removeSharePostView];
 }
 

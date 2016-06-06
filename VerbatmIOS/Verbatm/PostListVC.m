@@ -44,6 +44,7 @@
 #import "PageTypeAnalyzer.h"
 
 #import "User_BackendObject.h"
+#import "UserInfoCache.h"
 
 @interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource, SharePostViewDelegate,
 UIScrollViewDelegate, PostCollectionViewCellDelegate>
@@ -68,7 +69,6 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 @property (nonatomic) BOOL isLoadingMore;
 @property (nonatomic) BOOL footerBarIsUp;//like share bar
 @property (nonatomic) BOOL fbShare;
-@property (nonatomic) NSString *shareLink;
 @property (nonatomic) NSString *postImageText;
 @property (nonatomic) PFObject *postToShare;
 //@property (strong, nonatomic) BranchUniversalObject *branchUniversalObject;
@@ -414,8 +414,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void) flagOrBlockButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post{
 
-	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
-																   message:@""
+	UIAlertController* alert = [UIAlertController alertControllerWithTitle:nil
+																   message:nil
 															preferredStyle:UIAlertControllerStyleActionSheet];
 
 	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
@@ -469,7 +469,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 	CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
 	CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-	self.sharePostView = [[SharePostView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
+	self.sharePostView = [[SharePostView alloc] initWithFrame:offScreenFrame];
 	self.sharePostView.delegate = self;
 	self.view.userInteractionEnabled = NO;
 	[[UIApplication sharedApplication].keyWindow addSubview:self.sharePostView];
@@ -504,18 +504,20 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 //todo: save share object
--(void)postPostToChannels:(NSMutableArray *) channels andFacebook:(BOOL)externalSharing{
-	if(channels.count) {
-
+-(void) reblogToVerbatm:(BOOL)verbatm andFacebook:(BOOL)facebook {
+	if(verbatm) {
+		//todo: change this eventually to one channel
+		NSMutableArray *channels = [[NSMutableArray alloc] init];
+		[channels addObject:[[UserInfoCache sharedInstance] getUserChannel]];
 		[Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[self successfullyReblogged];
 			});
 		}];
 	}
-	if(externalSharing){
+	if(facebook){
 		dispatch_async(dispatch_get_main_queue(), ^{
-			[self postPostExternal:externalSharing];
+			[self postPostExternal];
 		});
 	}
 
@@ -523,33 +525,27 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	[self removeSharePOVView];
 }
 
--(void)postPostExternal:(BOOL)selection{
-	if(selection){
-		[Page_BackendObject getPagesFromPost:self.postToShare andCompletionBlock:^(NSArray *pages){
-			PFObject *po = pages[0];
-			PageTypes type = [((NSNumber *)[po valueForKey:PAGE_VIEW_TYPE]) intValue];
+-(void)postPostExternal {
+	[Page_BackendObject getPagesFromPost:self.postToShare andCompletionBlock:^(NSArray *pages){
+		PFObject *po = pages[0];
+		PageTypes type = [((NSNumber *)[po valueForKey:PAGE_VIEW_TYPE]) intValue];
 
-			if(type == PageTypePhoto || type == PageTypePhotoVideo){
-				[Photo_BackendObject getPhotosForPage:po andCompletionBlock:^(NSArray * photoObjects) {
-					PFObject *photo = photoObjects[0];
-					NSString *photoLink = [photo valueForKey:PHOTO_IMAGEURL_KEY];
-					self.shareLink = photoLink;
-					[self postToFacebook];
-				}];
-			} else if(type == PageTypeVideo){
-				[Video_BackendObject getVideoForPage:po andCompletionBlock:^(PFObject * videoObject) {
-					NSString * thumbNailUrl = [videoObject valueForKey:VIDEO_THUMBNAIL_KEY];
-					self.shareLink = thumbNailUrl;
-					[self postToFacebook];
-				}];
-			}
-		}];
-	} else {
-		NSLog(@"Link for external sharing not created");
-	}
+		if(type == PageTypePhoto || type == PageTypePhotoVideo){
+			[Photo_BackendObject getPhotosForPage:po andCompletionBlock:^(NSArray * photoObjects) {
+				PFObject *photo = photoObjects[0];
+				NSString *photoLink = [photo valueForKey:PHOTO_IMAGEURL_KEY];
+				[self postToFacebookWithShareLink:photoLink];
+			}];
+		} else if(type == PageTypeVideo){
+			[Video_BackendObject getVideoForPage:po andCompletionBlock:^(PFObject * videoObject) {
+				NSString * thumbNailUrl = [videoObject valueForKey:VIDEO_THUMBNAIL_KEY];
+				[self postToFacebookWithShareLink:thumbNailUrl];
+			}];
+		}
+	}];
 }
 
--(void) postToFacebook {
+-(void) postToFacebookWithShareLink:(NSString*)shareLink {
 	NSString *postId = self.postToShare.objectId;
 	PFUser *user = [PFUser currentUser];
 	NSString *name = [user valueForKey:VERBATM_USER_NAME_KEY];
@@ -558,7 +554,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 	NSDictionary*params = [[NSDictionary alloc] initWithObjects:@[[NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName],
 																  @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!",
-																  self.shareLink,
+																  shareLink,
 																  @"http://verbatm.io"]
 														forKeys:@[@"$og_title",
 																  @"$og_description",
