@@ -141,6 +141,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 @property (strong, nonatomic) SharePostView *sharePostView;
 
 
+@property (strong, nonatomic) UIScrollView * adkOnboarding;
+
+@property (weak, nonatomic) IBOutlet UIPageControl *onBoardingPageIndicator;
+
 #define INSTRUCTION_VIEW_ALPHA 0.7f
 #define CHANNEL_CREATION_PROMPT @"enter channel name"
 
@@ -153,6 +157,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 #define MAX_MEDIA 8
 
+#define NUM_ADK_SLIDESHOW_SLIDES 5
 
 @end
 
@@ -180,6 +185,44 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 -(BOOL) prefersStatusBarHidden {
 	return YES;
 }
+
+
+-(void)checkAdkSlideShowOnboarding {
+    
+    
+    if(![[UserSetupParameters sharedInstance] checkAdkOnboardingShown]) {
+    
+        NSArray * images = @[@"ADK onboarding slide 1A",@"ADK onboarding slide 2A",@"ADK onboarding slide 3A",@"ADK onboarding slide 4A",@"ADK onboarding slide 5A"];
+        
+        self.adkOnboarding = [[UIScrollView alloc] initWithFrame:self.view.bounds];
+        self.adkOnboarding.contentSize = CGSizeMake(self.view.frame.size.width * (NUM_ADK_SLIDESHOW_SLIDES + 1), 0);
+        self.adkOnboarding.showsVerticalScrollIndicator = NO;
+        self.adkOnboarding.showsHorizontalScrollIndicator = NO;
+        self.adkOnboarding.delegate = self;
+        self.adkOnboarding.pagingEnabled = YES;
+        self.adkOnboarding.bounces = NO;
+        
+        for(int i = 0; i < images.count; i++){
+            NSString * imageName   = images[i];
+            UIImageView * view = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName]];
+            CGRect viewFrame = CGRectMake(self.view.frame.size.width * i, 0, self.view.frame.size.width, self.view.frame.size.height);
+            [view setFrame:viewFrame];
+            [self.adkOnboarding addSubview:view];
+        }
+        
+        self.onBoardingPageIndicator.frame = CGRectMake(self.view.frame.size.width/2 - self.onBoardingPageIndicator.frame.size.width/2, self.view.frame.size.height - (self.onBoardingPageIndicator.frame.size.height + 5), self.onBoardingPageIndicator.frame.size.width, self.onBoardingPageIndicator.frame.size.height);
+        self.onBoardingPageIndicator.currentPage = 0;
+        self.onBoardingPageIndicator.numberOfPages = NUM_ADK_SLIDESHOW_SLIDES + 1;
+        self.onBoardingPageIndicator.defersCurrentPageDisplay = YES;
+        
+        [self.view addSubview:self.onBoardingPageIndicator];
+        [self.view addSubview:self.adkOnboarding];
+        [self.view bringSubviewToFront:self.adkOnboarding];
+        [self.view bringSubviewToFront:self.onBoardingPageIndicator];
+    }
+    
+}
+
 
 -(void)loadChannelsAndCreateTicker{
 	[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
@@ -214,6 +257,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(void) viewWillAppear:(BOOL)animated {
 	[self checkIntroNotification];
+    [self checkAdkSlideShowOnboarding];
 }
 
 -(void) checkIntroNotification {
@@ -537,7 +581,17 @@ rowHeightForComponent:(NSInteger)component{
 #pragma mark Scroll View actions
 
 - (void) scrollViewDidScroll:(UIScrollView *)scrollView {
-	if([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
+	
+    if(scrollView == self.adkOnboarding){
+        self.onBoardingPageIndicator.currentPage = scrollView.contentOffset.x/self.view.bounds.size.width;
+        
+        if((self.adkOnboarding.contentOffset.x/self.view.frame.size.width) == NUM_ADK_SLIDESHOW_SLIDES){
+            [self.adkOnboarding removeFromSuperview];
+            self.adkOnboarding = nil;
+            [self.onBoardingPageIndicator removeFromSuperview];
+        }
+        
+    }else if([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
 		ContentPageElementScrollView* pageElementScrollView = (ContentPageElementScrollView*)scrollView;
 		if(pageElementScrollView.collectionIsOpen) {
 			return;
@@ -553,7 +607,7 @@ rowHeightForComponent:(NSInteger)component{
 //make sure the object is in the right position
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
 				  willDecelerate:(BOOL)decelerate {
-	if ([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
+     if ([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
 		[self animateScrollViewBackOrToDeleteMode:(ContentPageElementScrollView*)scrollView];
 	}
 }

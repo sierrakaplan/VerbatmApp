@@ -26,6 +26,8 @@
 #define PINCH_INSTRUCTION_KEY @"PINCH_INSTRUCTION_KEY"
 #define EDIT_INSTRUCTION_KEY @"EDIT_INSTRUCTION_KEY"
 #define ON_BOARDING_EXPERIENCE_KEY @"ON_BOARDING_EXPRIENCE_KEY"
+#define ADK_ONBOARDING_EXPERIENCE_KEY @"ADK_ONBOARDING_EXPERIENCE_KEY"
+#define FIRST_TIME_BLOG_FOLLOW_KEY @"FIRST_TIME_BLOG_FOLLOW_KEY" //Has the user followed any blogs for the first time?
 
 @end
 
@@ -44,8 +46,8 @@
 	@synchronized(self) {
 		PFUser *currentUser = [PFUser currentUser];
 		self.ftue = [[currentUser objectForKey:USER_FTUE] boolValue];
-//		self.ftue = NO; //TODO: REMOVE
-		if (self.ftue) return;
+		self.ftue = NO; //TODO: REMOVE
+		//if (self.ftue) return;
 
 		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 		//because they are all saved together we can just check if one exists
@@ -58,6 +60,9 @@
 			[defaults setBool:NO forKey:SWIPE_UP_DOWN_INSTRUCTION_KEY];
 			[defaults setBool:NO forKey:ACCEPTED_TERMS_KEY];
 			[defaults setBool:NO forKey:ON_BOARDING_EXPERIENCE_KEY];
+            [defaults setBool:NO forKey:ADK_ONBOARDING_EXPERIENCE_KEY];
+            [defaults setBool:NO forKey:FIRST_TIME_BLOG_FOLLOW_KEY];
+
 			[defaults synchronize];
 		}
 	}
@@ -87,6 +92,30 @@
 
 -(void) setOnboardingShown {
 	[[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:YES] forKey:ON_BOARDING_EXPERIENCE_KEY];
+}
+
+
+
+-(BOOL) checkAdkOnboardingShown {
+    if (self.ftue) return YES;
+    @synchronized(self) {
+        BOOL shown = [(NSNumber*)[[NSUserDefaults standardUserDefaults] valueForKey:ADK_ONBOARDING_EXPERIENCE_KEY] boolValue];
+        if (!shown) {
+            [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:YES] forKey:ADK_ONBOARDING_EXPERIENCE_KEY];
+        }
+        return shown;
+    }
+}
+
+-(BOOL) checkFirstTimeFollowBlogShown {
+    if (self.ftue) return YES;
+    @synchronized(self) {
+        BOOL shown = [(NSNumber*)[[NSUserDefaults standardUserDefaults] valueForKey:FIRST_TIME_BLOG_FOLLOW_KEY] boolValue];
+        if (!shown) {
+            [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:YES] forKey:FIRST_TIME_BLOG_FOLLOW_KEY];
+        }
+        return shown;
+    }
 }
 
 -(BOOL) checkAndSetFeedInstructionShown {

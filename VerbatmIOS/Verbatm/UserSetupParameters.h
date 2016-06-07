@@ -37,6 +37,8 @@
 -(BOOL) checkAndSetSwipeInstructionShown;
 -(BOOL) checkAndSetAddTextInstructionShown;
 
+-(BOOL) checkAdkOnboardingShown;
+-(BOOL) checkFirstTimeFollowBlogShown;
 
 
 @end
