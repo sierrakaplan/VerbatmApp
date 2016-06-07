@@ -202,7 +202,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
     
     if(![[UserSetupParameters sharedInstance] checkAdkOnboardingShown]) {
     
-        NSArray * images = @[@"ADK onboarding slide 1A",@"ADK onboarding slide 2A",@"ADK onboarding slide 3A",@"ADK onboarding slide 4A",@"ADK onboarding slide 5A"];
+        NSArray * images = @[@"ADK onboarding slide 1B",@"ADK onboarding slide 2B",@"ADK onboarding slide 3B",@"ADK onboarding slide 4B",@"ADK onboarding slide 5B"];
         
         self.adkOnboarding = [[UIScrollView alloc] initWithFrame:self.view.bounds];
         self.adkOnboarding.contentSize = CGSizeMake(self.view.frame.size.width * (NUM_ADK_SLIDESHOW_SLIDES + 1), 0);
