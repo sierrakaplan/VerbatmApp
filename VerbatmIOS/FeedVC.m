@@ -55,7 +55,8 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	self.didJustLoadForTheFirstTime = NO;
-	[self.postListVC display:nil asPostListType:listFeed withListOwner:[PFUser currentUser] isCurrentUserProfile:NO];
+	[self.postListVC display:nil asPostListType:listFeed withListOwner:[PFUser currentUser]
+		isCurrentUserProfile:NO andStartingDate:nil];
 	if(self.postListVC && !self.didJustLoadForTheFirstTime){
         [self.postListVC refreshPosts];
 	}
@@ -103,7 +104,7 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 #pragma mark - POVListSVController -
 
 -(void) shareOptionSelectedForParsePostObject: (PFObject* ) post{
-	[self presentShareSelectionViewStartOnChannels:YES];
+	[self presentSharePostView];
 }
 
 #pragma mark -POVListSVController-
@@ -116,8 +117,8 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 	ProfileVC * userProfile = [[ProfileVC alloc] init];
 	userProfile.isCurrentUserProfile = NO;
 	userProfile.isProfileTab = NO;
-	userProfile.userOfProfile = channel.channelCreator;
-	userProfile.startChannel = channel;
+	userProfile.ownerOfProfile = channel.channelCreator;
+	userProfile.channel = channel;
 	[self presentViewController:userProfile animated:YES completion:^{
 	}];
 }
@@ -146,14 +147,6 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 }
 
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
-	// Tap interferes with photo fade circle
-	CGFloat circleRadiusWithPadding = (CIRCLE_RADIUS + 20.f);
-	CGPoint tapPoint = [tapGesture locationInView:self.view];
-	if ((tapPoint.y > (self.view.frame.size.height - CIRCLE_OFFSET - circleRadiusWithPadding*2)
-		 && tapPoint.y < (self.view.frame.size.height - CIRCLE_OFFSET))
-		&& (tapPoint.x > (self.view.frame.size.width/2.f - circleRadiusWithPadding)
-			&& tapPoint.x < (self.view.frame.size.width/2.f + circleRadiusWithPadding)))
-		return;
 	if(self.contentCoveringScreen) {
 		[self removeContentFromScreen];
 	} else {
@@ -173,7 +166,7 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 	[self.postListVC footerShowing:NO];
 }
 
--(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels{
+-(void)presentSharePostView {
 	if(self.sharePostView){
 		[self.sharePostView removeFromSuperview];
 		self.sharePostView = nil;
@@ -181,7 +174,7 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 
 	CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
 	CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-	self.sharePostView = [[SharePostView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
+	self.sharePostView = [[SharePostView alloc] initWithFrame:offScreenFrame];
 	self.sharePostView.delegate = self;
 	[self.view addSubview:self.sharePostView];
 	[self.view bringSubviewToFront:self.sharePostView];
@@ -197,7 +190,7 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 	[self removeSharePostView];
 }
 
--(void) postPostToChannels:(NSMutableArray *)channels andFacebook:(BOOL)externalSharing{
+-(void) reblogToVerbatm:(BOOL)verbatm andFacebook:(BOOL)facebook {
 	[self removeSharePostView];
 }
 

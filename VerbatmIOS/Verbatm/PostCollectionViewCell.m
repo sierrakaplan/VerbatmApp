@@ -23,6 +23,8 @@
 @property (nonatomic) BOOL isOnScreen;
 @property (nonatomic) BOOL isAlmostOnScreen;
 
+@property (nonatomic) BOOL footerUp;
+
 @end
 
 @implementation PostCollectionViewCell
@@ -52,7 +54,8 @@
 }
 
 -(void) presentPostFromPCActivityObj: (PFObject *) pfActivityObj andChannel:(Channel*) channelForList
-					withDeleteButton: (BOOL) withDelete {
+					withDeleteButton: (BOOL) withDelete andLikeShareBarUp:(BOOL) up {
+	self.footerUp = up;
 	self.currentPostActivityObject = pfActivityObj;
 	PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
 	[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
@@ -80,7 +83,7 @@
 			[self.currentPostView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
 											   numberOfPages:numberOfPages
 									   andStartingPageNumber:@(1)
-													 startUp:YES
+													 startUp:up
 											withDeleteButton:withDelete];
 			[self.currentPostView addCreatorInfo];
 		});
@@ -90,6 +93,8 @@
 -(void) shiftLikeShareBarDown:(BOOL) down {
 	if (self.currentPostView) {
 		[self.currentPostView shiftLikeShareBarDown: down];
+	} else {
+		self.footerUp = !down;
 	}
 }
 

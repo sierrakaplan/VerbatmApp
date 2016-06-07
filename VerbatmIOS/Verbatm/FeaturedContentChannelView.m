@@ -135,7 +135,7 @@
 									   DISCOVER_USERNAME_LABEL_WIDTH, DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
 		_userNameLabel = [[UILabel alloc] initWithFrame:labelFrame];
 		[_userNameLabel setAdjustsFontSizeToFitWidth:YES];
-		[_userNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:DISCOVER_USER_NAME_FONT_SIZE]];
+		[_userNameLabel setFont:[UIFont fontWithName:REGULAR_FONT size:DISCOVER_USER_NAME_FONT_SIZE]];
 		[_userNameLabel setTextColor:VERBATM_GOLD_COLOR];
 		[_userNameLabel setTextAlignment:NSTextAlignmentRight];
 	}

@@ -17,7 +17,6 @@
 
 typedef enum ShareOptions{
     Verbatm = 0,
-    Twitter = 1,
     Facebook = 2,
 }ShareOptions;
 

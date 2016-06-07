@@ -13,14 +13,14 @@
 
 @protocol SharePostViewDelegate <NSObject>
 
--(void) cancelButtonSelected;//tells the superview to remove the current presented view
--(void) postPostToChannels:(NSMutableArray *) channels andFacebook:(BOOL) externalSharing;
+-(void) cancelButtonSelected;
+-(void) reblogToVerbatm:(BOOL)verbatm andFacebook:(BOOL)facebook;
 
 @end
 
 @interface SharePostView : UIView
 
--(instancetype) initWithFrame:(CGRect)frame shouldStartOnChannels:(BOOL) showChannels;//this tells us if we should show
+-(instancetype) initWithFrame:(CGRect)frame;
 
 @property (nonatomic, weak) id <SharePostViewDelegate> delegate;
 

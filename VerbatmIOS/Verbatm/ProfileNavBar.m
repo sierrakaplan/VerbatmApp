@@ -30,7 +30,7 @@
 
 #import "User_BackendObject.h"
 
-@interface ProfileNavBar () <CustomScrollingTabBarDelegate, ProfileInformationBarProtocol>
+@interface ProfileNavBar () <CustomScrollingTabBarDelegate, ProfileInformationBarDelegate>
 
 @property (nonatomic, strong) ProfileInformationBar * profileHeader;
 @property (nonatomic, strong) CustomScrollingTabBar* threadNavScrollView;
@@ -101,9 +101,9 @@
 -(void) createProfileHeaderWithUserName: (NSString*) userName isCurrentUser:(BOOL) isCurrentUser
 							  isBlocked: (BOOL) blocked isProfileTab: (BOOL) profileTab {
     CGRect barFrame = CGRectMake(0.f, 0.f, self.bounds.size.width, PROFILE_HEADER_HEIGHT);
-    self.profileHeader = [[ProfileInformationBar alloc] initWithFrame:barFrame andUserName:userName
-														isCurrentUser:isCurrentUser isBlockedByCurrentUser:blocked
-														 isProfileTab:profileTab];
+//    self.profileHeader = [[ProfileInformationBar alloc] initWithFrame:barFrame andUserName:userName
+//														isCurrentUser:isCurrentUser isBlockedByCurrentUser:blocked
+//														 isProfileTab:profileTab];
     self.profileHeader.delegate = self;
     [self addSubview:self.profileHeader];
 }
@@ -113,7 +113,7 @@
 }
 
 -(void)updateUserIsBlocked:(BOOL)blocked {
-	self.profileHeader.hasBlockedUser = blocked;
+//	self.profileHeader.hasBlockedUser = blocked;
 }
 
 -(void)backButtonSelected {

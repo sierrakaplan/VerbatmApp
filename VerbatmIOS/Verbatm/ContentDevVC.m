@@ -14,6 +14,12 @@
 #import "CollectionPinchView.h"
 #import "ContentPageElementScrollView.h"
 #import "Channel_BackendObject.h"
+#import "Post_BackendObject.h"
+#import "Page_BackendObject.h"
+#import "Photo_BackendObject.h"
+#import "Video_BackendObject.h"
+#import "ParseBackendKeys.h"
+#import "PageTypeAnalyzer.h"
 
 #import "Durations.h"
 
@@ -62,6 +68,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 @property (strong, nonatomic) PHImageManager *imageManager;
 @property (strong, nonatomic) PHVideoRequestOptions *videoRequestOptions;
 @property (nonatomic) BOOL posted;
+@property (nonatomic) Channel *channelToPost;
+@property (nonatomic) BOOL externalPost;
 
 #pragma mark Pinch Views
 
@@ -134,11 +142,13 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 #pragma mark Previewing
 
 @property (nonatomic) BOOL currentlyPreviewingContent;
-@property (nonatomic) NSMutableArray * userChannels;
+@property (nonatomic) Channel *userChannel;
 @property(nonatomic, strong) NSMutableArray * ourPosts;
 @property (strong, nonatomic) PreviewDisplayView * previewDisplayView;
 
 @property (strong, nonatomic) SharePostView *sharePostView;
+@property (nonatomic) NSString* fbCaption;
+@property (nonatomic) BOOL postToFB;
 
 
 @property (strong, nonatomic) UIScrollView * adkOnboarding;
@@ -226,19 +236,11 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(void)loadChannelsAndCreateTicker{
 	[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
-		self.userChannels = [NSMutableArray arrayWithArray:[[UserInfoCache sharedInstance] getUserChannels]];
-
-		if(self.userChannels.count){
-			NSUInteger startViewIndex =[[UserInfoCache sharedInstance] currentChannelViewedIndex];
-			id channel = [self.userChannels objectAtIndex:startViewIndex];
-			//we simple set the current index being viewed as the first channel. This is
-			// a heuristic for the user.
-			[self.userChannels removeObject:channel];
-			[self.userChannels insertObject:channel atIndex:0];
-		}
+		self.userChannel = [[UserInfoCache sharedInstance] getUserChannel];
 		[self formatChannelPicker];
 		[self createBaseSelector];
 		[self loadPostFromUserDefaults];
+//        [self addExternalShareButton];
 	}];
 }
 
@@ -375,7 +377,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 // returns the # of rows in each component..
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
-	return self.userChannels.count > 0 ? self.userChannels.count : 1;
+	return 1;
 }
 
 - (CGFloat)pickerView:(UIPickerView *)pickerView
@@ -393,11 +395,11 @@ rowHeightForComponent:(NSInteger)component{
 		return view;
 	}else {
 		// Create new channel row should only exist if they haven't created any channels yet
-		if(row == self.userChannels.count && self.userChannels.count == 0) {
+		if(!self.userChannel) {
 			return [self getCreateNewChannelTextFieldWithFrame:labelFrame];
 
-		}else{
-			return [self formatChannelPickerFieldFromFrame:labelFrame andChannel:self.userChannels[row]];
+		} else{
+			return [self formatChannelPickerFieldFromFrame:labelFrame andChannel:self.userChannel];
 		}
 	}
 }
@@ -405,7 +407,7 @@ rowHeightForComponent:(NSInteger)component{
 -(UILabel *) formatChannelPickerFieldFromFrame: (CGRect) frame andChannel:(Channel *) channel {
 	UILabel * channelTitle = [[UILabel alloc] initWithFrame: frame];
 	channelTitle.textAlignment = NSTextAlignmentCenter;
-	channelTitle.font = [UIFont fontWithName:TITLE_TEXT_FONT size: CHANNEL_PICKER_TEXT_SIZE];
+	channelTitle.font = [UIFont fontWithName:BOLD_FONT size: CHANNEL_PICKER_TEXT_SIZE];
 	[channelTitle setTextColor:[UIColor CHANNEL_PICKER_TEXT_COLOR]];
 	channelTitle.tintColor = [UIColor CHANNEL_PICKER_TEXT_COLOR];
 	channelTitle.backgroundColor = [UIColor CHANNEL_PICKER_COLOR];
@@ -418,7 +420,7 @@ rowHeightForComponent:(NSInteger)component{
 	   inComponent:(NSInteger)component{
 
 	UIView *selectedView = [pickerView viewForRow:row forComponent:component];
-	if(row == self.userChannels.count){
+	if(!self.userChannel) {
 		UITextField * textField = (UITextField *) selectedView;
 		[textField becomeFirstResponder];
 	} else {
@@ -432,8 +434,8 @@ rowHeightForComponent:(NSInteger)component{
 }
 
 -(void)userTappedChannelSelector:(UITapGestureRecognizer *) tap{
-	if(self.currentPresentedPickerRow == self.userChannels.count){
-		UITextField * textField = (UITextField *) [self.channelPicker viewForRow:self.userChannels.count forComponent:0];
+	if(!self.userChannel) {
+		UITextField * textField = (UITextField *) [self.channelPicker viewForRow:1 forComponent:0];
 		if(textField)[textField becomeFirstResponder];
 	}else{
 		[self removeKeyboardFromScreen];
@@ -442,9 +444,9 @@ rowHeightForComponent:(NSInteger)component{
 
 -(UITextField *)getCreateNewChannelTextFieldWithFrame:(CGRect) frame{
 	UITextField * field = [[UITextField alloc] initWithFrame:frame];
-	UIFont* titleFont = [UIFont fontWithName:PLACEHOLDER_FONT size: CHANNEL_PICKER_TEXT_SIZE];
+	UIFont* titleFont = [UIFont fontWithName:ITALIC_FONT size: CHANNEL_PICKER_TEXT_SIZE];
 	field.textAlignment = NSTextAlignmentCenter;
-	field.font = [UIFont fontWithName:TITLE_TEXT_FONT size: CHANNEL_PICKER_TEXT_SIZE];
+	field.font = [UIFont fontWithName:BOLD_FONT size: CHANNEL_PICKER_TEXT_SIZE];
 	[field setTextColor:[UIColor whiteColor]];
 	field.tintColor = [UIColor whiteColor];
 	field.attributedPlaceholder = [[NSAttributedString alloc]
@@ -542,11 +544,11 @@ rowHeightForComponent:(NSInteger)component{
 
 #pragma mark Preview Button
 -(void) rightButtonPressed {
-	//
-	//    self.sharePostView = [[SharePostView alloc] initWithFrame:CGRectMake(self.view.center.x/3, self.view.center.y/3, self.view.bounds.size.width * 0.67, self.view.bounds.size.height * 0.67) shouldStartOnChannels:NO];
-	//    self.sharePostView.delegate = self;
-	//    [self.view addSubview:self.sharePostView];
-	//    [self.view bringSubviewToFront:self.sharePostView];
+	//todo: allow direct sharing to fb
+//    self.sharePostView = [[SharePostView alloc] initWithFrame:CGRectMake(self.view.center.x/3, self.view.center.y/3, self.view.bounds.size.width * 0.67, self.view.bounds.size.height * 0.67) shouldStartOnChannels:NO fromContentDev:YES];
+//    self.sharePostView.delegate = self;
+//    [self.view addSubview:self.sharePostView];
+//    [self.view bringSubviewToFront:self.sharePostView];
 	NSMutableArray * pinchViews = [[NSMutableArray alloc] init];
 
 	for(ContentPageElementScrollView * contentElementScrollView in self.pageElementScrollViews){
@@ -2029,8 +2031,8 @@ andSaveInUserDefaults:(BOOL)save {
 -(void) publishOurStoryWithPinchViews:(NSMutableArray *)pinchViews{
 
 	Channel * channelToPostIn = nil;
-	if (self.currentPresentedPickerRow < self.userChannels.count) {
-		channelToPostIn = self.userChannels[self.currentPresentedPickerRow];
+	if (self.userChannel) {
+		channelToPostIn = self.userChannel;
 	} else {
 		UITextField * textField = (UITextField *) [self.channelPicker viewForRow:self.currentPresentedPickerRow forComponent:0];
 		if ([textField.text isEqualToString:@""]) {
@@ -2041,10 +2043,11 @@ andSaveInUserDefaults:(BOOL)save {
 			[self presentViewController:newAlert animated:YES completion:nil];
 		} else {
 			channelToPostIn = [[Channel alloc] initWithChannelName:textField.text andParseChannelObject:nil andChannelCreator:nil];
+            self.channelToPost = channelToPostIn;
 		}
 	}
 	if (channelToPostIn) {
-		[[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn withPinchViews:pinchViews
+		[[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn andFacebook:self.postToFB withCaption:self.fbCaption withPinchViews:pinchViews
 													 withCompletionBlock:^(BOOL isAlreadyPublishing, BOOL noNetwork) {
 														 NSString *errorMessage;
 														 if(isAlreadyPublishing) {

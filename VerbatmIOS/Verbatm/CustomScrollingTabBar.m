@@ -68,7 +68,6 @@
         if(startChannel){
             if([startChannel.name isEqualToString:channel.name]){
                 startChannelIndex = [channels indexOfObject:channel];
-                [[UserInfoCache sharedInstance] setCurrentChannelIndex:startChannelIndex];
             }
         }
         
@@ -157,7 +156,6 @@
 	NSInteger channelIndex = [self.tabButtons indexOfObject:tab];
 	[tab markButtonAsSelected];
 	//store this as the current tab index to view
-	[[UserInfoCache sharedInstance] setCurrentChannelIndex: channelIndex];
 	self.currentChannel = tab.currentChannel;
 	self.selectedTab = tab;
 

@@ -34,6 +34,7 @@
 @property (nonatomic) SelectOptionButton * selectedButton;
 @property (nonatomic) BOOL canSelectMultipleChannels;
 @property (nonatomic) BOOL facebookSelected;
+@property (nonatomic) BOOL source;
 
 
 @end
@@ -43,34 +44,46 @@
     
     self = [super initWithFrame:frame];
     self.facebookSelected = NO;
+    self.source = NO;
     
     if(self){
         self.canSelectMultipleChannels = selectMultiple;
-        [self createChannelLabels:[[UserInfoCache sharedInstance] getUserChannels]];
-       
+//        [self createChannelLabels:[[UserInfoCache sharedInstance] getUserChannels]];
+
     }
     
     return self;
 }
 
+-(instancetype) initWithFrame:(CGRect)frame canSelectMultiple:(BOOL) selectMultiple source:(BOOL) source {
+    
+    self = [super initWithFrame:frame];
+    self.facebookSelected = NO;
+    self.source = source;
+    if(self){
+        self.canSelectMultipleChannels = selectMultiple;
+        [self createChannelLabel:[[UserInfoCache sharedInstance] getUserChannel]];
+        
+    }
+    
+    return self;
+}
 
 -(void)formatView{
     self.scrollEnabled = YES;
     self.backgroundColor = [UIColor clearColor];
 }
 
-
-- (void) createChannelLabels:(NSArray *) channels {
+//todo: get rid of this sharing option
+- (void) createChannelLabel:(Channel *) channel {
     [self createFacebookLabel];
+
     CGFloat startingYCord =CHANNEL_LABEL_HEIGHT;
-    for(Channel * channel in channels){
-        
-        CGRect labelFrame = CGRectMake(0.f, startingYCord, self.frame.size.width, CHANNEL_LABEL_HEIGHT);
-        UIView  * channelLabel = [self getChannelLabelWithFrame:labelFrame andChannel:channel];
-        [self addSubview:channelLabel];
-        startingYCord += CHANNEL_LABEL_HEIGHT;
-    }
-    
+	CGRect labelFrame = CGRectMake(0.f, startingYCord, self.frame.size.width, CHANNEL_LABEL_HEIGHT);
+	UIView  * channelLabel = [self getChannelLabelWithFrame:labelFrame andChannel:channel];
+	[self addSubview:channelLabel];
+	startingYCord += CHANNEL_LABEL_HEIGHT;
+
     CGSize newContentSize = CGSizeMake(0, startingYCord + CHANNEL_LABEL_HEIGHT + SCROLL_BUFFER);
     self.contentSize = newContentSize;
 }

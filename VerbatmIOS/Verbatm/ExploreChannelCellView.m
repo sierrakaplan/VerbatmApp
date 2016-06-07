@@ -280,7 +280,7 @@
 	if (!_userNameLabel) {
 		_userNameLabel = [[UILabel alloc] init];
 		[_userNameLabel setAdjustsFontSizeToFitWidth:YES];
-		[_userNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:DISCOVER_USER_NAME_FONT_SIZE]];
+		[_userNameLabel setFont:[UIFont fontWithName:REGULAR_FONT size:DISCOVER_USER_NAME_FONT_SIZE]];
 		[_userNameLabel setTextColor:VERBATM_GOLD_COLOR];
 		[_userNameLabel setTextAlignment:NSTextAlignmentRight];
 	}
@@ -301,7 +301,7 @@
 		_numFollowersLabel = [[UILabel alloc] init];
 		[_numFollowersLabel setAdjustsFontSizeToFitWidth:YES];
 		[_numFollowersLabel setTextAlignment:NSTextAlignmentLeft];
-		[_numFollowersLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:DISCOVER_USER_NAME_FONT_SIZE]];
+		[_numFollowersLabel setFont:[UIFont fontWithName:REGULAR_FONT size:DISCOVER_USER_NAME_FONT_SIZE]];
 		[_numFollowersLabel setTextColor:[UIColor whiteColor]];
 	}
 	return _numFollowersLabel;

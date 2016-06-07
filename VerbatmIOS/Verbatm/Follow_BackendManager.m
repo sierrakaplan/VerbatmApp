@@ -68,43 +68,43 @@
 
 // Returns the number of users following a given channel
 + (void) numberUsersFollowingChannel: (Channel*) channel withCompletionBlock:(void(^)(NSNumber*)) block {
-	if (!channel) return;
-	PFQuery *numFollowersQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
-	[numFollowersQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channel.parseChannelObject];
-	[numFollowersQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-														  NSError * _Nullable error) {
-		if(objects && !error) {
-			block ([NSNumber numberWithInteger:objects.count]);
+	[Follow_BackendManager usersFollowingChannel:channel withCompletionBlock:^(NSArray *users) {
+		if (users) {
+			block([NSNumber numberWithInt:users.count]);
 			return;
 		}
-		block ([NSNumber numberWithInt: 0]);
+		block([NSNumber numberWithInt:0]);
 	}];
 }
 
 // Returns the number of channels a user is following
 + (void) numberChannelsUserFollowing: (PFUser*) user withCompletionBlock:(void(^)(NSNumber*)) block {
-	if (!user) return;
-	PFQuery *numFollowingQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
-	[numFollowingQuery whereKey:FOLLOW_USER_KEY equalTo:user];
-	[numFollowingQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-														  NSError * _Nullable error) {
-		if(objects && !error) {
-			block ([NSNumber numberWithInteger:objects.count]);
+	[Follow_BackendManager channelsUserFollowing:user withCompletionBlock:^(NSArray *channels) {
+		if (channels) {
+			block([NSNumber numberWithInt:channels.count]);
 			return;
 		}
-		block ([NSNumber numberWithInt: 0]);
+		block([NSNumber numberWithInt:0]);
 	}];
 }
 
+//todo: error handling
+
 // Returns all of the channels a user is following as array of PFObjects
-+ (void) channelsUserFollowing: (PFUser*) user withCompletionBlock:(void(^)(NSArray*)) block {
++ (void) channelsUserFollowing: (PFUser*) user withCompletionBlock:(void(^)(NSMutableArray*)) block {
 	if (!user) return;
-	PFQuery *numFollowingQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
-	[numFollowingQuery whereKey:FOLLOW_USER_KEY equalTo:user];
-	[numFollowingQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+	PFQuery *followingQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
+	[followingQuery whereKey:FOLLOW_USER_KEY equalTo:user];
+	[followingQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 														  NSError * _Nullable error) {
 		if(objects && !error) {
-			block (objects);
+			NSMutableArray *channels = [[NSMutableArray alloc] initWithCapacity: objects.count];
+			for (PFObject *followObject in objects) {
+				PFObject *channelObj = followObject[FOLLOW_CHANNEL_FOLLOWED_KEY];
+				[channelObj fetchIfNeededInBackground];
+				[channels addObject: channelObj];
+			}
+			block (channels);
 			return;
 		}
 		block (nil);
@@ -112,14 +112,25 @@
 }
 
 // Returns all of the users following a given channel as an array of PFUsers
-+ (void) usersFollowingChannel: (Channel*) channel withCompletionBlock:(void(^)(NSArray*)) block {
++ (void) usersFollowingChannel: (Channel*) channel withCompletionBlock:(void(^)(NSMutableArray*)) block {
 	if (!channel) return;
-	PFQuery *numFollowersQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
-	[numFollowersQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channel.parseChannelObject];
-	[numFollowersQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+	PFQuery *followersQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
+	[followersQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channel.parseChannelObject];
+	[followersQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 														  NSError * _Nullable error) {
 		if(objects && !error) {
-			block (objects);
+			NSMutableArray *users = [[NSMutableArray alloc] initWithCapacity:objects.count];
+			for (PFObject *followObject in objects) {
+				PFUser *userFollowing = followObject[FOLLOW_USER_KEY];
+				if ([users containsObject: userFollowing]) {
+					//somehow a duplicate
+					[followObject deleteInBackground];
+					continue;
+				}
+				[userFollowing fetchIfNeededInBackground];
+				[users addObject:userFollowing];
+			}
+			block (users);
 			return;
 		}
 		block (nil);

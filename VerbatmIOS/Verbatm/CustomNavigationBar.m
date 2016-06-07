@@ -100,7 +100,7 @@
     CGRect labelFrame = CGRectMake(BUTTON_WIDTH, 0.f, BUTTON_WIDTH, BUTTON_HEIGHT);
     UILabel* label = [[UILabel alloc] initWithFrame:labelFrame];
     label.text = text;
-    label.font = [UIFont fontWithName:TITLE_TEXT_FONT size:TITLE_FONT_SIZE];
+    label.font = [UIFont fontWithName:BOLD_FONT size:TITLE_FONT_SIZE];
     label.textAlignment = NSTextAlignmentCenter;
     label.textColor = [UIColor NAVIGATION_BAR_TEXT_COLOR];
     return label;

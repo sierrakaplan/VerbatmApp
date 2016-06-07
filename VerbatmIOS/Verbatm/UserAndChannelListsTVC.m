@@ -115,8 +115,8 @@
     ProfileVC *  userProfile = [[ProfileVC alloc] init];
     userProfile.isCurrentUserProfile = NO;
 	userProfile.isProfileTab = NO;
-    userProfile.userOfProfile = user;
-    userProfile.startChannel = startChannel;
+    userProfile.ownerOfProfile = user;
+    userProfile.channel = startChannel;
     
     [self presentViewController:userProfile animated:YES completion:^{
     }];

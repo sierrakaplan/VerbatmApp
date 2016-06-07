@@ -99,11 +99,11 @@
 
         
         //TextLabel
-        self.textLabel.font = [UIFont fontWithName:DEFAULT_FONT size:17.0];
+        self.textLabel.font = [UIFont fontWithName:REGULAR_FONT size:17.0];
         self.textLabel.numberOfLines = 1;
         self.textLabel.translatesAutoresizingMaskIntoConstraints = NO;
         
-        self.detailTextLabel.font = [UIFont fontWithName:DEFAULT_FONT size:14.0];
+        self.detailTextLabel.font = [UIFont fontWithName:REGULAR_FONT size:14.0];
         self.detailTextLabel.numberOfLines = 1;
         self.detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
         

@@ -42,6 +42,7 @@ ExploreChannelCellViewDelegate>
 @dynamic refreshControl;
 
 - (void) awakeFromNib {
+	#pragma clang diagnostic ignored "-Wunused-value"
 	[self initWithStyle:UITableViewStyleGrouped];
 }
 
@@ -143,8 +144,8 @@ ExploreChannelCellViewDelegate>
 	ProfileVC * userProfile = [[ProfileVC alloc] init];
 	userProfile.isCurrentUserProfile = channel.channelCreator == [PFUser currentUser];
 	userProfile.isProfileTab = NO;
-	userProfile.userOfProfile = channel.channelCreator;
-	userProfile.startChannel = channel;
+	userProfile.ownerOfProfile = channel.channelCreator;
+	userProfile.channel = channel;
 	[self presentViewController:userProfile animated:YES completion:^{
 	}];
 }
@@ -191,7 +192,7 @@ ExploreChannelCellViewDelegate>
 	// Text Color
 	UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
 	[header.textLabel setTextColor:[UIColor whiteColor]];
-	[header.textLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:HEADER_FONT_SIZE]];
+	[header.textLabel setFont:[UIFont fontWithName:REGULAR_FONT size:HEADER_FONT_SIZE]];
 	if (section == 0) {
 		[header.textLabel setText:@"Featured"];
 	} else {
