@@ -54,7 +54,7 @@
                         <outlet property="tabBarControllerContainerView" destination="JF8-rw-Rfn" id="dFp-bX-Lgt"/>
                         <segue destination="waF-h7-lpu" kind="modal" identifier="segue_id_sign_in" id="O0U-1G-Oy1"/>
                         <segue destination="0lh-hP-Opv" kind="modal" identifier="segue_id_adk" id="2tt-Z0-lcH"/>
-                        <segue destination="Hhc-hu-zb3" kind="modal" identifier="presentBlogSelect" id="1Ff-Iq-HdQ"/>
+                        <segue destination="E1b-bX-QIV" kind="modal" identifier="presentBlogSelect" id="9QN-78-OSZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AxA-gZ-qvU" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -461,7 +461,30 @@
                     </connections>
                 </searchDisplayController>
             </objects>
-            <point key="canvasLocation" x="-4000" y="-1236"/>
+            <point key="canvasLocation" x="-4096" y="-1104"/>
+        </scene>
+        <!--Onboarding Blog Selection View Controller-->
+        <scene sceneID="8qh-Xk-TQn">
+            <objects>
+                <viewController id="E1b-bX-QIV" customClass="onboardingBlogSelectionViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="y2J-6s-kaD">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" id="xiB-J4-YuY">
+                                <rect key="frame" x="40" y="113" width="240" height="128"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                            </containerView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <outlet property="tableContainerView" destination="xiB-J4-YuY" id="MII-D3-E9U"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="PWC-al-Zj7" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3681" y="-1350"/>
         </scene>
         <!--Profile-->
         <scene sceneID="Apv-cW-9iI">
@@ -492,7 +515,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QaT-Ao-b0g" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2938" y="-991"/>
+            <point key="canvasLocation" x="-3230" y="-1177"/>
         </scene>
     </scenes>
     <resources>

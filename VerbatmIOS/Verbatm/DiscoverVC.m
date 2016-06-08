@@ -17,8 +17,7 @@
 @property (weak, nonatomic) IBOutlet UIView *tableContainerView;
 @property (weak, nonatomic) IBOutlet UIView *headerView;
 
-#define DONE_BUTTON_WIDTH 100
-#define DONE_BUTTON_HEIGHT 50
+
 
 @end
 
@@ -34,9 +33,6 @@
 									  //self.searchBar.frame.size.height);
 	CGFloat headerViewHeight = self.searchBar.frame.size.height + STATUS_BAR_HEIGHT;
     
-    if(!self.regularDiscoverPresentation){
-        headerViewHeight = headerViewHeight + 15;
-    }
     
 	self.headerView.frame = CGRectMake(0.f, 0.f, self.view.frame.size.width, headerViewHeight);
     
@@ -51,31 +47,13 @@
 
 -(void)addListVC{
     FeaturedContentVC * fvc = [self.storyboard instantiateViewControllerWithIdentifier:FEATURED_CONTENT_VC_ID];
-    fvc.onboardingBlogSelection = !self.regularDiscoverPresentation;
+    fvc.onboardingBlogSelection = NO;
     [self.tableContainerView addSubview:fvc.view];
     [self addChildViewController:fvc];
     [fvc didMoveToParentViewController:self];
-    if(!self.regularDiscoverPresentation){
-        [self addDoneButton];
-    }
-    
+   
 }
 
--(void)addDoneButton{
-    CGRect buttomFrame = CGRectMake(self.view.frame.size.width - (DONE_BUTTON_WIDTH + 2), 15, DONE_BUTTON_WIDTH, DONE_BUTTON_HEIGHT);
-    
-    UIButton * done = [[UIButton alloc] initWithFrame:buttomFrame];
-    [done addTarget:self action:@selector(exitDiscover) forControlEvents:UIControlEventTouchUpInside];
-    [done setTitle:@"done" forState:UIControlStateNormal];
-    [self.view addSubview:done];
-    [self.view bringSubviewToFront:done];
-}
-
-
--(void)exitDiscover{
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
-    }];
-}
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];

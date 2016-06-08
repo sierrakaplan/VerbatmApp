@@ -109,11 +109,11 @@ ProfileVCDelegate>
 	[super viewDidAppear:animated];
 	if (![PFUser currentUser].isAuthenticated) {
 		[self bringUpLogin];
-	} else {
+    }else{
         if(![[UserSetupParameters sharedInstance] checkFirstTimeFollowBlogShown]){
-            [self performSegueWithIdentifier:@"presentBlogSelect" sender:self];
+            [self performSegueWithIdentifier:SEGUE_ONBOARDING_BLOG_SELECT sender:self];
         }
-	}
+    }
 }
 
 -(void)viewDidDisappear:(BOOL)animated {
@@ -230,7 +230,6 @@ ProfileVCDelegate>
 //the view controllers that will be tabbed
 -(void)createViewControllers {
 	self.discoverVC = [self.storyboard instantiateViewControllerWithIdentifier:DISCOVER_VC_ID];
-    self.discoverVC.regularDiscoverPresentation = YES;
 
 	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
 	self.profileVC.delegate = self;
@@ -320,9 +319,7 @@ ProfileVCDelegate>
 	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_USER_SETTINGS_TO_LOGIN] ||
                [segue.identifier isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]  ){
 		BOOL ftue = [[[PFUser currentUser] objectForKey:USER_FTUE] boolValue];
-		if (!ftue) {
-			//todo
-		}
+		
         
 		//todo: move to after ftue screen
 		[[PFUser currentUser] setObject:[NSNumber numberWithBool:YES] forKey:USER_FTUE];

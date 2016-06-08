@@ -11,5 +11,4 @@
 @interface DiscoverVC : UIViewController
 
 //Used to know if we should present the first time blog selection view
-@property (nonatomic) BOOL regularDiscoverPresentation;
 @end

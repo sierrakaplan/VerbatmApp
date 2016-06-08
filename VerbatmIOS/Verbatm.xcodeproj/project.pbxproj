@@ -193,6 +193,7 @@
 		C74749911C2B1CB90047C66E /* ProfileInformationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C74749901C2B1CB90047C66E /* ProfileInformationBar.m */; };
 		C7540F741C09A47F00DE1AA6 /* ChannelButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C7540F731C09A47F00DE1AA6 /* ChannelButton.m */; };
 		C755DB0C1C74619200136F6E /* PublishingProgressManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C755DB0B1C74619200136F6E /* PublishingProgressManager.m */; };
+		C75690A81D0891FF002C9402 /* onboardingBlogSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C75690A71D0891FF002C9402 /* onboardingBlogSelectionViewController.m */; };
 		C75985F51B8553DF00FE77F7 /* InternetConnectionMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = C75985F41B8553DF00FE77F7 /* InternetConnectionMonitor.m */; };
 		C75F155F1C2B4A1B0092912D /* Channel.m in Sources */ = {isa = PBXBuildFile; fileRef = C75F155E1C2B4A1B0092912D /* Channel.m */; };
 		C76172741C4C8B1300AB0D84 /* UserAndChannelListsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C76172731C4C8B1300AB0D84 /* UserAndChannelListsTVC.m */; };
@@ -578,6 +579,8 @@
 		C7540F731C09A47F00DE1AA6 /* ChannelButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelButton.m; sourceTree = "<group>"; };
 		C755DB0A1C74619200136F6E /* PublishingProgressManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PublishingProgressManager.h; sourceTree = "<group>"; };
 		C755DB0B1C74619200136F6E /* PublishingProgressManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PublishingProgressManager.m; sourceTree = "<group>"; };
+		C75690A61D0891FF002C9402 /* onboardingBlogSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = onboardingBlogSelectionViewController.h; sourceTree = "<group>"; };
+		C75690A71D0891FF002C9402 /* onboardingBlogSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = onboardingBlogSelectionViewController.m; sourceTree = "<group>"; };
 		C75985F31B8553DF00FE77F7 /* InternetConnectionMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InternetConnectionMonitor.h; sourceTree = "<group>"; };
 		C75985F41B8553DF00FE77F7 /* InternetConnectionMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InternetConnectionMonitor.m; sourceTree = "<group>"; };
 		C75985F61B85575900FE77F7 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
@@ -1114,6 +1117,8 @@
 				A5C38AC01CC1B67B0067D077 /* FeaturedContentVC.m */,
 				A5C38ABC1CC1B38F0067D077 /* DiscoverVC.h */,
 				A5C38ABD1CC1B38F0067D077 /* DiscoverVC.m */,
+				C75690A61D0891FF002C9402 /* onboardingBlogSelectionViewController.h */,
+				C75690A71D0891FF002C9402 /* onboardingBlogSelectionViewController.m */,
 			);
 			name = Discover;
 			sourceTree = "<group>";
@@ -1899,6 +1904,7 @@
 				A5934B9B1C10E2A3007C7830 /* CustomScrollingTabBar.m in Sources */,
 				A5446C991BBAB0AB002177F4 /* GTLVerbatmAppIdentifierListWrapper.m in Sources */,
 				A5446C961BBA3C33002177F4 /* CustomNavigationBar.m in Sources */,
+				C75690A81D0891FF002C9402 /* onboardingBlogSelectionViewController.m in Sources */,
 				C7F22B3B1C38B2A600E56EA7 /* SelectOptionButton.m in Sources */,
 				C7BF1AA51C57EFC000CEDE4B /* Post_BackendObject.m in Sources */,
 				9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */,
