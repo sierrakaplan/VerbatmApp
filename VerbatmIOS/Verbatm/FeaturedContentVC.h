@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface FeaturedContentVC : UITableViewController
+@property (nonatomic) BOOL onboardingBlogSelection;
 
 @end

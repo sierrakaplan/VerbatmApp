@@ -85,7 +85,7 @@
 	self.horizontalScrollView.frame = CGRectMake(0.f, postScrollViewOffset, self.mainView.frame.size.width,
 												 self.mainView.frame.size.height - postScrollViewOffset);
 
-
+    self.horizontalScrollView.showsHorizontalScrollIndicator = NO;
 	CGFloat xCoordinate = POST_VIEW_OFFSET;
 	for (PostView *postView in self.postViews) {
 		CGRect frame = CGRectMake(xCoordinate, POST_VIEW_OFFSET, POST_VIEW_WIDTH,

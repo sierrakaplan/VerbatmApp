@@ -54,6 +54,7 @@
                         <outlet property="tabBarControllerContainerView" destination="JF8-rw-Rfn" id="dFp-bX-Lgt"/>
                         <segue destination="waF-h7-lpu" kind="modal" identifier="segue_id_sign_in" id="O0U-1G-Oy1"/>
                         <segue destination="0lh-hP-Opv" kind="modal" identifier="segue_id_adk" id="2tt-Z0-lcH"/>
+                        <segue destination="Hhc-hu-zb3" kind="modal" identifier="presentBlogSelect" id="1Ff-Iq-HdQ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AxA-gZ-qvU" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -332,6 +333,34 @@
             </objects>
             <point key="canvasLocation" x="-4041" y="-2175"/>
         </scene>
+        <!--Featured ContentVC-->
+        <scene sceneID="Fww-pk-cdT">
+            <objects>
+                <tableViewController id="1ae-Vq-0ax" customClass="FeaturedContentVC" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="V0O-dA-Ak3">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="UgJ-E4-5Pe">
+                                <rect key="frame" x="0.0" y="28" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="UgJ-E4-5Pe" id="oHC-Np-dTU">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="1ae-Vq-0ax" id="8kA-hI-lNA"/>
+                            <outlet property="delegate" destination="1ae-Vq-0ax" id="nBH-h0-5Xt"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TtM-Yb-1Za" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-5005" y="-842"/>
+        </scene>
         <!--Content Dev-->
         <scene sceneID="8XD-Tr-4db">
             <objects>
@@ -379,7 +408,7 @@
                 </pongPressGestureRecognizer>
                 <tapGestureRecognizer id="vkp-cu-SCl"/>
             </objects>
-            <point key="canvasLocation" x="-3989" y="-1321"/>
+            <point key="canvasLocation" x="-4205" y="-153"/>
         </scene>
         <!--DiscoverVC-->
         <scene sceneID="hNI-n8-7Cf">
@@ -393,9 +422,6 @@
                                 <rect key="frame" x="0.0" y="44" width="320" height="524"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <segue destination="i9B-d6-FOW" kind="embed" id="vVU-fA-YAA"/>
-                                </connections>
                             </containerView>
                             <view contentMode="scaleToFill" id="ymp-df-Ltq">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
@@ -435,7 +461,7 @@
                     </connections>
                 </searchDisplayController>
             </objects>
-            <point key="canvasLocation" x="-3664" y="-1444"/>
+            <point key="canvasLocation" x="-4000" y="-1236"/>
         </scene>
         <!--Profile-->
         <scene sceneID="Apv-cW-9iI">
@@ -459,7 +485,7 @@
             <objects>
                 <viewController storyboardIdentifier="featured_content_vc" id="i9B-d6-FOW" customClass="FeaturedContentVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Cf5-tW-Arb" customClass="UITableView">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="524"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </view>

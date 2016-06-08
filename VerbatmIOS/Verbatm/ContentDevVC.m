@@ -229,6 +229,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
         [self.view addSubview:self.adkOnboarding];
         [self.view bringSubviewToFront:self.adkOnboarding];
         [self.view bringSubviewToFront:self.onBoardingPageIndicator];
+    }else{
+        [self.onBoardingPageIndicator removeFromSuperview];
     }
     
 }
