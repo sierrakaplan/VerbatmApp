@@ -349,7 +349,6 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	PublishingProgressManager *progressManager = [PublishingProgressManager sharedInstance];
 	self.publishingProgress = [progressManager progressAccountant];
 	[progressManager setDelegate:self];
-	Channel *currentPublishingChannel = [progressManager currentPublishingChannel];
 	if ([progressManager newChannelCreated]) {
 		//todo: channel created
 //		[self.profileHeaderView newChannelCreated: currentPublishingChannel];

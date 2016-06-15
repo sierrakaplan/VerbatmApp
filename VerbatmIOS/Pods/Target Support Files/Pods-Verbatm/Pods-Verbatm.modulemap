@@ -1,0 +1,6 @@
+framework module Pods_Verbatm {
+  umbrella header "Pods-Verbatm-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -78,41 +78,10 @@ ProfileVCDelegate>
 	}
 }
 
--(void) checkMigrated {
-	/* Migrating to one channel */
-	self.migrated = NO;
-	NSNumber* migratedObject = [[PFUser currentUser] objectForKey:USER_MIGRATED_ONE_CHANNEL];
-	if (migratedObject && [migratedObject boolValue]) self.migrated = YES;
-	if (!self.migrated) {
-		[User_BackendObject migrateUserToOneChannelWithCompletionBlock:^(BOOL success) {
-			if (success) {
-				self.migrated = YES;
-				[[PFUser currentUser] setObject:[NSNumber numberWithBool:YES] forKey:USER_MIGRATED_ONE_CHANNEL];
-				[[PFUser currentUser] saveInBackground];
-			}
-			[self setUpStartUpEnvironment];
-		}];
-	} else {
-		[self setUpStartUpEnvironment];
-	}
-}
-
--(void) setUpStartUpEnvironment {
-	[[UserSetupParameters sharedInstance] setUpParameters];
-	self.view.backgroundColor = [UIColor blackColor];
-	[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
-		[self setUpTabBarController];
-	}];
-}
-
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	if (![PFUser currentUser].isAuthenticated) {
 		[self bringUpLogin];
-    }else{
-        if(![[UserSetupParameters sharedInstance] checkFirstTimeFollowBlogShown]){
-            [self performSegueWithIdentifier:SEGUE_ONBOARDING_BLOG_SELECT sender:self];
-        }
     }
 }
 
@@ -144,6 +113,36 @@ ProfileVCDelegate>
 											   object:nil];
 
 
+}
+
+/* Migrating to one channel */
+-(void) checkMigrated {
+	self.migrated = NO;
+	NSNumber* migratedObject = [[PFUser currentUser] objectForKey:USER_MIGRATED_ONE_CHANNEL];
+	if (migratedObject && [migratedObject boolValue]) self.migrated = YES;
+	if (!self.migrated) {
+		[User_BackendObject migrateUserToOneChannelWithCompletionBlock:^(BOOL success) {
+			if (success) {
+				self.migrated = YES;
+				[[PFUser currentUser] setObject:[NSNumber numberWithBool:YES] forKey:USER_MIGRATED_ONE_CHANNEL];
+				[[PFUser currentUser] saveInBackground];
+			}
+			[self setUpStartUpEnvironment];
+		}];
+	} else {
+		[self setUpStartUpEnvironment];
+	}
+}
+
+-(void) setUpStartUpEnvironment {
+	[[UserSetupParameters sharedInstance] setUpParameters];
+	self.view.backgroundColor = [UIColor blackColor];
+	[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
+		[self setUpTabBarController];
+	}];
+	if(![[UserSetupParameters sharedInstance] checkFirstTimeFollowBlogShown]){
+		[self performSegueWithIdentifier:SEGUE_ONBOARDING_BLOG_SELECT sender:self];
+	}
 }
 
 #pragma mark - User Manager Delegate -
@@ -181,12 +180,6 @@ ProfileVCDelegate>
 	self.tabBarController.viewControllers = @[self.feedVC, self.discoverVC, deadView, self.profileVC];
 	//add adk button to tab bar
 	[self addTabBarCenterButtonOverDeadView];
-	//todo: onboarding
-	//	if ([[UserSetupParameters sharedInstance] checkAndSetFeedInstructionShown]) {
-	//		self.tabBarController.selectedViewController = self.feedVC;
-	//	} else {
-	//		self.tabBarController.selectedViewController = self.discoverVC;
-	//	}
 	[self formatTabBar];
 }
 
@@ -318,16 +311,7 @@ ProfileVCDelegate>
 		[[Analytics getSharedInstance] endOfADKSession];
 	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_USER_SETTINGS_TO_LOGIN] ||
                [segue.identifier isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]  ){
-		BOOL ftue = [[[PFUser currentUser] objectForKey:USER_FTUE] boolValue];
-		
-        
-		//todo: move to after ftue screen
-		[[PFUser currentUser] setObject:[NSNumber numberWithBool:YES] forKey:USER_FTUE];
-		[[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-			if(error) {
-				[[Crashlytics sharedInstance] recordError:error];
-			}
-		}];
+
 	}
 }
 

@@ -47,7 +47,7 @@
 		PFUser *currentUser = [PFUser currentUser];
 		self.ftue = [[currentUser objectForKey:USER_FTUE] boolValue];
 		self.ftue = NO; //TODO: REMOVE
-		//if (self.ftue) return;
+		if (self.ftue) return;
 
 		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 		//because they are all saved together we can just check if one exists

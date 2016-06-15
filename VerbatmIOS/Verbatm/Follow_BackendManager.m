@@ -70,7 +70,7 @@
 + (void) numberUsersFollowingChannel: (Channel*) channel withCompletionBlock:(void(^)(NSNumber*)) block {
 	[Follow_BackendManager usersFollowingChannel:channel withCompletionBlock:^(NSArray *users) {
 		if (users) {
-			block([NSNumber numberWithInt:users.count]);
+			block([NSNumber numberWithLong:users.count]);
 			return;
 		}
 		block([NSNumber numberWithInt:0]);
@@ -81,7 +81,7 @@
 + (void) numberChannelsUserFollowing: (PFUser*) user withCompletionBlock:(void(^)(NSNumber*)) block {
 	[Follow_BackendManager channelsUserFollowing:user withCompletionBlock:^(NSArray *channels) {
 		if (channels) {
-			block([NSNumber numberWithInt:channels.count]);
+			block([NSNumber numberWithLong:channels.count]);
 			return;
 		}
 		block([NSNumber numberWithInt:0]);

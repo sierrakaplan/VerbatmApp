@@ -11,6 +11,7 @@
 #import "PostPublisher.h"
 #import "Notifications.h"
 #import "PublishingProgressManager.h"
+#import <PromiseKit/PromiseKit.h>
 
 @interface MediaUploader()
 

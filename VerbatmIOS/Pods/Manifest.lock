@@ -1,4 +1,19 @@
 PODS:
+  - AFNetworking (3.1.0):
+    - AFNetworking/NSURLSession (= 3.1.0)
+    - AFNetworking/Reachability (= 3.1.0)
+    - AFNetworking/Security (= 3.1.0)
+    - AFNetworking/Serialization (= 3.1.0)
+    - AFNetworking/UIKit (= 3.1.0)
+  - AFNetworking/NSURLSession (3.1.0):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (3.1.0)
+  - AFNetworking/Security (3.1.0)
+  - AFNetworking/Serialization (3.1.0)
+  - AFNetworking/UIKit (3.1.0):
+    - AFNetworking/NSURLSession
   - Bolts (1.7.0):
     - Bolts/AppLinks (= 1.7.0)
     - Bolts/Tasks (= 1.7.0)
@@ -10,7 +25,7 @@ PODS:
     - Branch/without-IDFA (= 0.12.2)
   - Branch/Core (0.12.2)
   - Branch/without-IDFA (0.12.2)
-  - Crashlytics (3.7.0):
+  - Crashlytics (3.7.1):
     - Fabric (~> 1.6.3)
   - Fabric (1.6.7)
   - FBSDKCoreKit (4.12.0):
@@ -49,6 +64,7 @@ PODS:
     - PromiseKit/CorePromise
 
 DEPENDENCIES:
+  - AFNetworking (~> 3.0)
   - Branch
   - Crashlytics
   - Fabric
@@ -61,9 +77,10 @@ DEPENDENCIES:
   - PromiseKit
 
 SPEC CHECKSUMS:
+  AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   Bolts: a0058fa3b331c5a1e4402d534f2dae36dbff31e4
   Branch: 8dc4c9b6c3bcdc6ad590938a0b333ddbfe60efe4
-  Crashlytics: c3a2333dea9e2733d2777f730910321fc9e25c0d
+  Crashlytics: 3cdd4c9655be68032a0cf0379e0fb5ef6af22cad
   Fabric: caf7580c725e64db144f610ac65cd60956911dc7
   FBSDKCoreKit: 6e56d5a2a64a755ad4efb5dbeee8f82fb1b99775
   FBSDKLoginKit: 03f68a8d48c2c8bb81d7eb8097973d483543e1f6
@@ -74,4 +91,6 @@ SPEC CHECKSUMS:
   ParseFacebookUtilsV4: 2f30c2b7021c8005d3042781da7ef87d06589421
   PromiseKit: 1db024241265f428137a9f3c00ff9590740c4be6
 
-COCOAPODS: 0.39.0
+PODFILE CHECKSUM: 841dfc6e05f233989f4c16ba88e2705682e9c51a
+
+COCOAPODS: 1.0.1
