@@ -7,12 +7,12 @@ import PromiseKit
 //TODO cancellation
 
 /**
- To import the `NSURLSession` category:
+ To import the `NSURLConnection` category:
 
     use_frameworks!
     pod "PromiseKit/Foundation"
 
- Or `NSURLSession` is one of the categories imported by the umbrella pod:
+ Or `NSURLConnection` is one of the categories imported by the umbrella pod:
 
     use_frameworks!
     pod "PromiseKit"

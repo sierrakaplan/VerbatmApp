@@ -50,17 +50,17 @@ PODS:
     - FBSDKLoginKit (~> 4.10)
     - FBSDKTVOSKit (~> 4.10)
     - Parse (~> 1.12)
-  - PromiseKit (3.2.0):
-    - PromiseKit/Foundation (= 3.2.0)
-    - PromiseKit/QuartzCore (= 3.2.0)
-    - PromiseKit/UIKit (= 3.2.0)
-  - PromiseKit/CorePromise (3.2.0)
-  - PromiseKit/Foundation (3.2.0):
+  - PromiseKit (3.1.1):
+    - PromiseKit/Foundation (= 3.1.1)
+    - PromiseKit/QuartzCore (= 3.1.1)
+    - PromiseKit/UIKit (= 3.1.1)
+  - PromiseKit/CorePromise (3.1.1)
+  - PromiseKit/Foundation (3.1.1):
     - OMGHTTPURLRQ (~> 3.1.0)
     - PromiseKit/CorePromise
-  - PromiseKit/QuartzCore (3.2.0):
+  - PromiseKit/QuartzCore (3.1.1):
     - PromiseKit/CorePromise
-  - PromiseKit/UIKit (3.2.0):
+  - PromiseKit/UIKit (3.1.1):
     - PromiseKit/CorePromise
 
 DEPENDENCIES:
@@ -74,7 +74,17 @@ DEPENDENCIES:
   - FBSDKShareKit
   - Parse
   - ParseFacebookUtilsV4
-  - PromiseKit
+  - PromiseKit (from `https://github.com/philippeauriach/PromiseKit.git`, commit `266cfeb5073277b757efc4a37aa049efc96c596f`)
+
+EXTERNAL SOURCES:
+  PromiseKit:
+    :commit: 266cfeb5073277b757efc4a37aa049efc96c596f
+    :git: https://github.com/philippeauriach/PromiseKit.git
+
+CHECKOUT OPTIONS:
+  PromiseKit:
+    :commit: 266cfeb5073277b757efc4a37aa049efc96c596f
+    :git: https://github.com/philippeauriach/PromiseKit.git
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
@@ -89,8 +99,8 @@ SPEC CHECKSUMS:
   OMGHTTPURLRQ: 38316b56d88125c600bcdb16df8329147da2b0ee
   Parse: f51c24d2feb412e4b2d6cc73d37cb24e8d0089bc
   ParseFacebookUtilsV4: 2f30c2b7021c8005d3042781da7ef87d06589421
-  PromiseKit: 1db024241265f428137a9f3c00ff9590740c4be6
+  PromiseKit: 4e8127c22a9b29d1b44958ab2ec762ea6115cbfb
 
-PODFILE CHECKSUM: 841dfc6e05f233989f4c16ba88e2705682e9c51a
+PODFILE CHECKSUM: 62424f1315023b91c6131c6c6a6cdbd4ba21b5b9
 
 COCOAPODS: 1.0.1

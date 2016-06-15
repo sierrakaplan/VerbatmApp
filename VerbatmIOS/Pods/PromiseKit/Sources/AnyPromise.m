@@ -5,7 +5,6 @@
 
 NSString *const PMKErrorDomain = @"PMKErrorDomain";
 
-dispatch_queue_t (^PMKDefaultDispatchQueue)()  = ^{ return dispatch_get_main_queue(); };
 
 @implementation AnyPromise (objc)
 
@@ -45,7 +44,7 @@ static inline AnyPromise *__then(AnyPromise *self, dispatch_queue_t queue, id bl
 
 - (AnyPromise *(^)(id))then {
     return ^(id block) {
-        return __then(self, PMKDefaultDispatchQueue(), block);
+        return __then(self, dispatch_get_main_queue(), block);
     };
 }
 
@@ -63,7 +62,7 @@ static inline AnyPromise *__then(AnyPromise *self, dispatch_queue_t queue, id bl
 
 static inline AnyPromise *__catch(AnyPromise *self, BOOL includeCancellation, id block) {
     return AnyPromiseWhen(self, ^(id obj, PMKResolver resolve) {
-        dispatch_async(PMKDefaultDispatchQueue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
             if (IsError(obj) && (includeCancellation || ![obj cancelled])) {
                 [obj pmk_consume];
                 resolve(PMKCallVariadicBlock(block, obj));
@@ -97,7 +96,7 @@ static inline AnyPromise *__finally(AnyPromise *self, dispatch_queue_t queue, di
 
 - (AnyPromise *(^)(dispatch_block_t))finally {
     return ^(dispatch_block_t block) {
-        return __finally(self, PMKDefaultDispatchQueue(), block);
+        return __finally(self, dispatch_get_main_queue(), block);
     };
 }
 

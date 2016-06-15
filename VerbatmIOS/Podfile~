@@ -10,6 +10,7 @@ post_install do |installer|
 end
 
 target "Verbatm" do
+       pod 'AFNetworking', '~> 3.0'
        pod 'PromiseKit'
        pod 'Fabric'
        pod 'Crashlytics'
