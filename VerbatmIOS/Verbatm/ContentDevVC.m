@@ -21,6 +21,8 @@
 #import "ParseBackendKeys.h"
 #import "PageTypeAnalyzer.h"
 
+#import "PublishingProgressView.h"
+#import "PostView.h"
 #import "Durations.h"
 
 #import "GMImagePickerController.h"
@@ -2029,7 +2031,6 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 -(void) publishOurStoryWithPinchViews:(NSMutableArray *)pinchViews{
-
 	Channel * channelToPostIn = nil;
 	if (self.userChannel) {
 		channelToPostIn = self.userChannel;
@@ -2055,9 +2056,13 @@ andSaveInUserDefaults:(BOOL)save {
 														 } else if (noNetwork) {
 															 errorMessage = @"Something went wrong - please check your network connection and try again.";
 														 } else {
-															 //Everything went ok
-															 [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
-															 [self cleanUp];
+                                                             [self capturePublishingProgressImageWithPinchViews:pinchViews];
+                                                             
+                                                             
+                                                             //testing -- to remove TODO
+//															 //Everything went ok
+//															 [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
+//															 [self cleanUp];
 															 return;
 														 }
 														 UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Couldn't Publish" message:errorMessage preferredStyle:UIAlertControllerStyleAlert];
@@ -2068,6 +2073,46 @@ andSaveInUserDefaults:(BOOL)save {
 													 }];
 	}
 }
+
+
+
+-(void)capturePublishingProgressImageWithPinchViews:(NSMutableArray *) pinchViews{
+    
+    
+    
+    PageTypeAnalyzer * analyzer = [[PageTypeAnalyzer alloc]init];
+    NSMutableArray* pages = [analyzer getPageViewsFromPinchViews: @[[pinchViews firstObject]] withFrame: self.view.bounds inPreviewMode:YES];
+    PostView * postView = [[PostView alloc] initWithFrame: self.view.bounds andPostChannelActivityObject:nil small:NO];
+    [postView renderPageViews: pages];
+   // [postView muteAllVideos:YES];
+    [postView scrollToPageAtIndex:0];
+    [postView prepareForScreenShot];
+    
+    //temporarily create POV to screenshot
+   
+    
+    UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, NO, [UIScreen mainScreen].scale);
+    
+    [postView drawViewHierarchyInRect:self.view.bounds afterScreenUpdates:YES];
+    
+    UIImage *screenShotImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    
+    
+    
+//    UIGraphicsBeginImageContextWithOptions(self.view.bounds.size,YES, 0.0);
+//    [postView.layer renderInContext:UIGraphicsGetCurrentContext()];
+//    UIImage*screenShotImage = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
+    [[PublishingProgressManager sharedInstance] storeProgressBackgroundImage:screenShotImage];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        PublishingProgressView * ppV = [[PublishingProgressView alloc] initWithFrame:self.view.bounds];
+        [self.view addSubview:ppV];
+        [self.view bringSubviewToFront:ppV];
+    });
+}
+
 
 #pragma mark - Lazy Instantiation
 

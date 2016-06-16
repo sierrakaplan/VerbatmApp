@@ -5,20 +5,23 @@
 //  Created by Iain Usiri on 2/17/16.
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
-
-#import "PinchView.h"
-#import "CollectionPinchView.h"
-#import "PublishingProgressManager.h"
-#import "Notifications.h"
 #import "Channel_BackendObject.h"
+#import "CollectionPinchView.h"
+#import "ExternalShare.h"
+#import "Notifications.h"
+#import "PublishingProgressManager.h"
 #import "ParseBackendKeys.h"
 #import "Post_Channel_RelationshipManager.h"
 #import "PostInProgress.h"
 #import "Page_BackendObject.h"
 #import "Photo_BackendObject.h"
-#import "Video_BackendObject.h"
 #import "PageTypeAnalyzer.h"
-#import "ExternalShare.h"
+#import "PinchView.h"
+#import "PreviewDisplayView.h"
+#import "UIView+Effects.h"
+#import "Video_BackendObject.h"
+
+
 
 @interface PublishingProgressManager()
 //how many media pieces we are trying to publish in total
@@ -35,7 +38,7 @@
 @property (nonatomic) PFObject * currentParsePostObject;
 @property (nonatomic) ExternalShare* es;
 @property (nonatomic) BOOL shareToFB;
-
+@property (nonatomic,strong) UIImage * publishingProgressBackgroundImage;
 @end
 
 @implementation PublishingProgressManager
@@ -49,6 +52,16 @@
 	});
 	return sharedInstance;
 }
+
+
+-(void)storeProgressBackgroundImage:(UIImage *) image{
+    self.publishingProgressBackgroundImage = image;
+}
+
+-(UIImage *) getProgressBackgroundImage{
+    return self.publishingProgressBackgroundImage;
+}
+
 
 // Blocks is publishing something else, no network
 -(void)publishPostToChannel:(Channel *)channel andFacebook:(BOOL)externalShare withCaption:(NSString *)caption withPinchViews:(NSArray *)pinchViews
@@ -69,6 +82,7 @@
 	if(!channel.parseChannelObject) {
 		self.newChannelCreated = YES;
 	}
+    
 	[self.channelManager createPostFromPinchViews:pinchViews
 										toChannel:channel
 							  withCompletionBlock:^(PFObject *parsePostObject) {
@@ -135,6 +149,7 @@
 		[[NSNotificationCenter defaultCenter] postNotification: notification];
 		self.currentParsePostObject = nil;
 		self.currentPublishingChannel = nil;
+        self.publishingProgressBackgroundImage = nil;
 	}];
 }
 

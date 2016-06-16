@@ -33,4 +33,7 @@
 
 -(void)almostOnScreen {}
 
+
+-(void)prepareForScreenShot{}
+
 @end

@@ -208,6 +208,7 @@
 		C788745C1C334AE80048B66E /* PostLikeAndShareBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C788745B1C334AE80048B66E /* PostLikeAndShareBar.m */; };
 		C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */; };
 		C7996CC31C8FCF74002E5DA6 /* LoadingIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = C7996CC21C8FCF74002E5DA6 /* LoadingIndicator.m */; };
+		C7AA49F41D134A8800A031C6 /* PublishingProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7AA49F31D134A8800A031C6 /* PublishingProgressView.m */; };
 		C7BC4376199D97F5004B91A1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4375199D97F5004B91A1 /* Foundation.framework */; };
 		C7BC4378199D97F5004B91A1 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4377199D97F5004B91A1 /* CoreGraphics.framework */; };
 		C7BC437A199D97F5004B91A1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4379199D97F5004B91A1 /* UIKit.framework */; };
@@ -611,6 +612,8 @@
 		C79747D91B50B815009077E3 /* Verbatm-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Verbatm-Info.plist"; sourceTree = "<group>"; };
 		C7996CC11C8FCF74002E5DA6 /* LoadingIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingIndicator.h; sourceTree = "<group>"; };
 		C7996CC21C8FCF74002E5DA6 /* LoadingIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingIndicator.m; sourceTree = "<group>"; };
+		C7AA49F21D134A8800A031C6 /* PublishingProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PublishingProgressView.h; sourceTree = "<group>"; };
+		C7AA49F31D134A8800A031C6 /* PublishingProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PublishingProgressView.m; sourceTree = "<group>"; };
 		C7BC4372199D97F5004B91A1 /* Verbatm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Verbatm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7BC4375199D97F5004B91A1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C7BC4377199D97F5004B91A1 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -1444,8 +1447,18 @@
 				C7996CC21C8FCF74002E5DA6 /* LoadingIndicator.m */,
 				C73B7C2D1CA8719200128926 /* Intro_Instruction_Notification_View.h */,
 				C73B7C2E1CA8719200128926 /* Intro_Instruction_Notification_View.m */,
+				C7AA49F51D134B0700A031C6 /* Publishing Progress View  */,
 			);
 			name = "Custom Views";
+			sourceTree = "<group>";
+		};
+		C7AA49F51D134B0700A031C6 /* Publishing Progress View  */ = {
+			isa = PBXGroup;
+			children = (
+				C7AA49F21D134A8800A031C6 /* PublishingProgressView.h */,
+				C7AA49F31D134A8800A031C6 /* PublishingProgressView.m */,
+			);
+			name = "Publishing Progress View ";
 			sourceTree = "<group>";
 		};
 		C7BC4369199D97F5004B91A1 = {
@@ -1889,6 +1902,7 @@
 				A5C09BDE1BA1F1D700C0AD86 /* ASIHTTPRequest.m in Sources */,
 				A5AB22CF1BD86A960084089B /* Model.xcdatamodeld in Sources */,
 				A5AA31C91B9FCDDC00D8D20C /* GTLVerbatmAppVideo.m in Sources */,
+				C7AA49F41D134A8800A031C6 /* PublishingProgressView.m in Sources */,
 				A5AA31C81B9FCDDC00D8D20C /* GTLVerbatmAppVerbatmUser.m in Sources */,
 				A5E85FA51B911DA900E148D0 /* GTMHTTPFetcherService.m in Sources */,
 				A5337BC11CCDD96E00551394 /* PostsQueryManager.m in Sources */,

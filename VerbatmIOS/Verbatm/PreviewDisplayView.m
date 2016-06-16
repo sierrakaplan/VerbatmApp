@@ -136,6 +136,10 @@
 	}
 }
 
+-(void)prepareToRemovePreviewView{
+    [self revealPreview:NO];
+}
+
 #pragma mark - Navigation Bar Delegate methods -
 
 #pragma mark Publish Button
@@ -147,7 +151,7 @@
 #pragma mark Back Button
 
 -(void) leftButtonPressed {
-	[self revealPreview:NO];
+    [self prepareToRemovePreviewView];
 }
 
 @end

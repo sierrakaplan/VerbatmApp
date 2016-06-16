@@ -360,6 +360,13 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	}
 }
 
+
+-(void)prepareForScreenShot{
+    for(PageViewingExperience *pageView in [self.pageViews allValues]){
+        [pageView prepareForScreenShot];
+    }
+}
+
 -(void)presentSwipeUpAndDownInstruction {
 
 	UIImage * instructionImage = [UIImage imageNamed:SWIPE_UP_DOWN_INSTRUCTION];

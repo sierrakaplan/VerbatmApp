@@ -52,6 +52,9 @@
 
 -(void) muteAllVideos:(BOOL) shouldMute;
 
+-(void)prepareForScreenShot;
+
+
 // presents media only for the page on screen
 -(void) presentMediaContent;
 
