@@ -198,8 +198,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 
 -(void)checkAdkSlideShowOnboarding {
-    
-    
     if(![[UserSetupParameters sharedInstance] checkAdkOnboardingShown]) {
     
         NSArray * images = @[@"ADK onboarding slide 1B",@"ADK onboarding slide 2B",@"ADK onboarding slide 3B",@"ADK onboarding slide 4B",@"ADK onboarding slide 5B"];
