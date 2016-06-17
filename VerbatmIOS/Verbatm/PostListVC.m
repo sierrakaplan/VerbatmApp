@@ -163,21 +163,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 }
 
 -(void)registerForNotifications{
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(successfullyPublishedNotification:)
-												 name:NOTIFICATION_POST_PUBLISHED
-											   object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(publishingFailedNotification:)
-                                                 name:NOTIFICATION_POST_FAILED_TO_PUBLISH
-                                               object:nil];
-
-    
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(followingSuccessfulNotification:)
-												 name:NOTIFICATION_NOW_FOLLOWING_USER
-											   object:nil];
+	
 }
 
 //register our custom cell class
@@ -638,54 +624,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 #pragma mark - Notifications (publishing, following) -
 
--(void)successfullyPublishedNotification:(NSNotification *) notification {
-    
-        UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Sucessfully Published!                                        " message:@"Remember to share your post! :D" preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction* action = [UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault
-                                                        handler:^(UIAlertAction * action) {}];
-        [newAlert addAction:action];
-        [self presentViewController:newAlert animated:YES completion:nil];
-    
-    
-//	[self.view addSubview:self.publishSuccessful];
-//	[self.view bringSubviewToFront:self.publishSuccessful];
-//	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-//		self.publishSuccessful.alpha = 0.f;
-//	}completion:^(BOOL finished) {
-//		[self.publishSuccessful removeFromSuperview];
-//		self.publishSuccessful = nil;
-//	}];
-}
-
-
--(void)publishingFailedNotification:(NSNotification *) notification{
-    
-    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Ooops...we couldn't publish." message:@"Don't worry - we saved all your stuff! Try to publish again later!" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
-                                                   handler:^(UIAlertAction * action) {}];
-    [newAlert addAction:action];
-    [self presentViewController:newAlert animated:YES completion:nil];
-    
-//	[self.view addSubview:self.publishFailed];
-//	[self.view bringSubviewToFront:self.publishFailed];
-//	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-//		self.publishFailed.alpha = 0.f;
-//	}completion:^(BOOL finished) {
-//		[self.publishFailed removeFromSuperview];
-//		self.publishFailed = nil;
-//	}];
-}
-
--(void)followingSuccessfulNotification:(NSNotification *) notification{
-	[self.view addSubview:self.following];
-	[self.view bringSubviewToFront:self.following];
-	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-		self.following.alpha = 0.f;
-	}completion:^(BOOL finished) {
-		[self.following removeFromSuperview];
-		self.following = nil;
-	}];
-}
 
 
 #pragma mark -POV delegate-
