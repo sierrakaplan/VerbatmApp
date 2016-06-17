@@ -607,30 +607,48 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void)successfullyReblogged{
-	[self.view addSubview:self.reblogSucessful];
-	[self.view bringSubviewToFront:self.reblogSucessful];
-
-	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-		self.reblogSucessful.alpha = 0.f;
-	}completion:^(BOOL finished) {
-
-		[self.reblogSucessful removeFromSuperview];
-		self.reblogSucessful = nil;
-	}];
+    
+    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Sucessfully Reblogged!" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {}];
+    [newAlert addAction:action];
+    [self presentViewController:newAlert animated:YES completion:nil];
+    
+    
+    
+//	[self.view addSubview:self.reblogSucessful];
+//	[self.view bringSubviewToFront:self.reblogSucessful];
+//
+//	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
+//		self.reblogSucessful.alpha = 0.f;
+//	}completion:^(BOOL finished) {
+//
+//		[self.reblogSucessful removeFromSuperview];
+//		self.reblogSucessful = nil;
+//	}];
 }
 
 
 #pragma mark - Notifications (publishing, following) -
 
 -(void)successfullyPublishedNotification:(NSNotification *) notification {
-	[self.view addSubview:self.publishSuccessful];
-	[self.view bringSubviewToFront:self.publishSuccessful];
-	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-		self.publishSuccessful.alpha = 0.f;
-	}completion:^(BOOL finished) {
-		[self.publishSuccessful removeFromSuperview];
-		self.publishSuccessful = nil;
-	}];
+    
+        UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Sucessfully Published!                                        " message:@"" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * action) {}];
+        [newAlert addAction:action];
+        [self presentViewController:newAlert animated:YES completion:nil];
+    
+    
+    
+//	[self.view addSubview:self.publishSuccessful];
+//	[self.view bringSubviewToFront:self.publishSuccessful];
+//	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
+//		self.publishSuccessful.alpha = 0.f;
+//	}completion:^(BOOL finished) {
+//		[self.publishSuccessful removeFromSuperview];
+//		self.publishSuccessful = nil;
+//	}];
 }
 
 

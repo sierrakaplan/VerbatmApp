@@ -137,12 +137,12 @@
         self.selectedButton = nil;
     }else{
         if(self.selectedButton){//only one button can be selected at once
-         //   [self.selectedButton setButtonSelected:NO];
+            [self.sharingDelegate shareOptionDeselected:self.selectedButton.buttonSharingOption];
         }
         
         [selectionButton setButtonSelected:YES];
         [self.sharingDelegate shareOptionSelected:selectionButton.buttonSharingOption];
-        [self.sharingDelegate shareOptionDeselected:self.selectedButton.buttonSharingOption];
+        
         self.selectedButton = selectionButton;
     }
 }
