@@ -633,12 +633,11 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void)successfullyPublishedNotification:(NSNotification *) notification {
     
-        UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Sucessfully Published!                                        " message:@"" preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+        UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Sucessfully Published!                                        " message:@"Remember to share your post! :D" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* action = [UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault
                                                         handler:^(UIAlertAction * action) {}];
         [newAlert addAction:action];
         [self presentViewController:newAlert animated:YES completion:nil];
-    
     
     
 //	[self.view addSubview:self.publishSuccessful];
@@ -653,14 +652,21 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 
 -(void)publishingFailedNotification:(NSNotification *) notification{
-	[self.view addSubview:self.publishFailed];
-	[self.view bringSubviewToFront:self.publishFailed];
-	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-		self.publishFailed.alpha = 0.f;
-	}completion:^(BOOL finished) {
-		[self.publishFailed removeFromSuperview];
-		self.publishFailed = nil;
-	}];
+    
+    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Ooops...we couldn't publish." message:@"Don't worry - we saved all your stuff! Try to publish again later!" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {}];
+    [newAlert addAction:action];
+    [self presentViewController:newAlert animated:YES completion:nil];
+    
+//	[self.view addSubview:self.publishFailed];
+//	[self.view bringSubviewToFront:self.publishFailed];
+//	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
+//		self.publishFailed.alpha = 0.f;
+//	}completion:^(BOOL finished) {
+//		[self.publishFailed removeFromSuperview];
+//		self.publishFailed = nil;
+//	}];
 }
 
 -(void)followingSuccessfulNotification:(NSNotification *) notification{
