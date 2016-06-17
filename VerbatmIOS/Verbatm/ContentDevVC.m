@@ -2084,12 +2084,8 @@ andSaveInUserDefaults:(BOOL)save {
     NSMutableArray* pages = [analyzer getPageViewsFromPinchViews: @[[pinchViews firstObject]] withFrame: self.view.bounds inPreviewMode:YES];
     PostView * postView = [[PostView alloc] initWithFrame: self.view.bounds andPostChannelActivityObject:nil small:NO];
     [postView renderPageViews: pages];
-   // [postView muteAllVideos:YES];
     [postView scrollToPageAtIndex:0];
     [postView prepareForScreenShot];
-    
-    //temporarily create POV to screenshot
-   
     
     UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, NO, [UIScreen mainScreen].scale);
     
@@ -2097,14 +2093,6 @@ andSaveInUserDefaults:(BOOL)save {
     
     UIImage *screenShotImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    
-    
-    
-    
-//    UIGraphicsBeginImageContextWithOptions(self.view.bounds.size,YES, 0.0);
-//    [postView.layer renderInContext:UIGraphicsGetCurrentContext()];
-//    UIImage*screenShotImage = UIGraphicsGetImageFromCurrentImageContext();
-//    UIGraphicsEndImageContext();
     [[PublishingProgressManager sharedInstance] storeProgressBackgroundImage:screenShotImage];
     dispatch_async(dispatch_get_main_queue(), ^{
         PublishingProgressView * ppV = [[PublishingProgressView alloc] initWithFrame:self.view.bounds];

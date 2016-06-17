@@ -939,8 +939,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "478"
             endingLineNumber = "478"
-            landmarkName = "-offScreen"
-            landmarkType = "5">
+            landmarkName = "@implementation EditMediaContentView"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -987,7 +987,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "421"
             endingLineNumber = "421"
-            landmarkName = "-gestureRecognizer:shouldRequireFailureOfGestureRecognizer:"
+            landmarkName = "-gestureRecognizer:shouldReceiveTouch:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1051,7 +1051,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "492"
             endingLineNumber = "492"
-            landmarkName = "-almostOnScreen"
+            landmarkName = "-onScreen"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1067,8 +1067,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "370"
             endingLineNumber = "370"
-            landmarkName = "@implementation EditMediaContentView"
-            landmarkType = "3">
+            landmarkName = "-didPan:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1099,7 +1099,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "371"
             endingLineNumber = "371"
-            landmarkName = "-didPanTextView:"
+            landmarkName = "-didPan:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1115,7 +1115,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "484"
             endingLineNumber = "484"
-            landmarkName = "-onScreen"
+            landmarkName = "-offScreen"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1355,8 +1355,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "517"
             endingLineNumber = "517"
-            landmarkName = "@implementation EditMediaContentView"
-            landmarkType = "3">
+            landmarkName = "-dealloc"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1371,8 +1371,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "512"
             endingLineNumber = "512"
-            landmarkName = "@implementation EditMediaContentView"
-            landmarkType = "3">
+            landmarkName = "-textCreationButton"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1387,8 +1387,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "518"
             endingLineNumber = "518"
-            landmarkName = "@implementation EditMediaContentView"
-            landmarkType = "3">
+            landmarkName = "-dealloc"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1627,7 +1627,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "130"
             endingLineNumber = "130"
-            landmarkName = "-setText:andTextYPosition:andTextColor:andTextAlignment:andTextSize:"
+            landmarkName = "-setText:andTextYPosition:andTextColorBlack:andTextAlignment:andTextSize:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1707,8 +1707,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "438"
             endingLineNumber = "438"
-            landmarkName = "-addTapGestureToMainView"
-            landmarkType = "5">
+            landmarkName = "@implementation EditMediaContentView"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -11034,11 +11034,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PublishingProgressView.m"
-            timestampString = "487810505.806093"
+            timestampString = "487815007.807548"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "25"
-            endingLineNumber = "25"
+            startingLineNumber = "31"
+            endingLineNumber = "31"
             landmarkName = "-initWithFrame:"
             landmarkType = "5">
          </BreakpointContent>
@@ -11050,11 +11050,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PublishingProgressView.m"
-            timestampString = "487810505.806093"
+            timestampString = "487816866.355134"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "32"
-            endingLineNumber = "32"
+            startingLineNumber = "75"
+            endingLineNumber = "75"
             landmarkName = "-setProgressBackgroundImage:"
             landmarkType = "5">
          </BreakpointContent>
@@ -11105,6 +11105,22 @@
             endingLineNumber = "236"
             landmarkName = "-prepareForScreenShot"
             landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/ContentDevVC.m"
+            timestampString = "487815007.807548"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2104"
+            endingLineNumber = "2104"
+            landmarkName = "@implementation ContentDevVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
