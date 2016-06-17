@@ -251,7 +251,7 @@ ProfileVCDelegate>
 	self.feedVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 }
 
--(void)createTabBarViewController{
+-(void)createTabBarViewController {
 	self.tabBarControllerContainerView.frame = self.view.bounds;
 	self.tabBarController = [self.storyboard instantiateViewControllerWithIdentifier: TAB_BAR_CONTROLLER_ID];
 	self.tabBarController.tabBarHeight = TAB_BAR_HEIGHT;
@@ -261,7 +261,7 @@ ProfileVCDelegate>
 }
 
 // Create a custom UIButton and add it over our adk icon
--(void) addTabBarCenterButtonOverDeadView{
+-(void) addTabBarCenterButtonOverDeadView {
 
 	NSInteger numTabs = self.tabBarController.viewControllers.count;
 	CGFloat tabWidth = self.tabBarController.tabBar.frame.size.width/numTabs;
