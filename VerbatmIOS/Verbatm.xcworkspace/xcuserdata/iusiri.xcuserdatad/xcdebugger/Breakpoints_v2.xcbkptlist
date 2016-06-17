@@ -1941,7 +1941,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "106"
             endingLineNumber = "106"
-            landmarkName = "-setUpStartUpEnvironment"
+            landmarkName = "-registerForNotifications"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1957,7 +1957,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "105"
             endingLineNumber = "105"
-            landmarkName = "-setUpStartUpEnvironment"
+            landmarkName = "-registerForNotifications"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4197,7 +4197,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "340"
             endingLineNumber = "340"
-            landmarkName = "-showTabBar:"
+            landmarkName = "-tabBarController:didSelectViewController:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4213,8 +4213,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "345"
             endingLineNumber = "345"
-            landmarkName = "-showTabBar:"
-            landmarkType = "5">
+            landmarkName = "@implementation MasterNavigationVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -5488,7 +5488,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "64"
             endingLineNumber = "64"
-            landmarkName = "+deletePost:withCompletionBlock:"
+            landmarkName = "-createPostFromPinchViews:toChannel:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -5504,7 +5504,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "65"
             endingLineNumber = "65"
-            landmarkName = "+deletePost:withCompletionBlock:"
+            landmarkName = "-createPostFromPinchViews:toChannel:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -5520,7 +5520,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "67"
             endingLineNumber = "67"
-            landmarkName = "+deletePost:withCompletionBlock:"
+            landmarkName = "-createPostFromPinchViews:toChannel:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -5536,7 +5536,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "68"
             endingLineNumber = "68"
-            landmarkName = "+deletePost:withCompletionBlock:"
+            landmarkName = "-createPostFromPinchViews:toChannel:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -5552,7 +5552,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "70"
             endingLineNumber = "70"
-            landmarkName = "+deletePost:withCompletionBlock:"
+            landmarkName = "-createPostFromPinchViews:toChannel:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -5696,7 +5696,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "128"
             endingLineNumber = "128"
-            landmarkName = "-mediaSavingProgressed:"
+            landmarkName = "-postPublishedSuccessfully"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -5712,7 +5712,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "127"
             endingLineNumber = "127"
-            landmarkName = "-mediaSavingProgressed:"
+            landmarkName = "-postPublishedSuccessfully"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8137,7 +8137,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "82"
             endingLineNumber = "82"
-            landmarkName = "+deletePost:withCompletionBlock:"
+            landmarkName = "-createPostFromPinchViews:toChannel:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -8457,7 +8457,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "325"
             endingLineNumber = "325"
-            landmarkName = "-unwindToMasterNavVC:"
+            landmarkName = "-showTabBar:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -8777,8 +8777,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "304"
             endingLineNumber = "304"
-            landmarkName = "@implementation MasterNavigationVC"
-            landmarkType = "3">
+            landmarkName = "-unwindToMasterNavVC:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -10399,7 +10399,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "102"
             endingLineNumber = "102"
-            landmarkName = "+getPostsInChannel:withCompletionBlock:"
+            landmarkName = "+deletePost:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -10447,7 +10447,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "89"
             endingLineNumber = "89"
-            landmarkName = "-publishPostToChannel:andFacebook:withCaption:withPinchViews:withCompletionBlock:"
+            landmarkName = "-countMediaContentFromPinchViews:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -10783,7 +10783,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "218"
             endingLineNumber = "218"
-            landmarkName = "-formatTabBar"
+            landmarkName = "-getSelectedTabBarItemImageWithSize:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -11007,7 +11007,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "321"
             endingLineNumber = "321"
-            landmarkName = "-unwindToMasterNavVC:"
+            landmarkName = "-showTabBar:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

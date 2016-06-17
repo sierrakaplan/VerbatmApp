@@ -167,6 +167,13 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 											 selector:@selector(successfullyPublishedNotification:)
 												 name:NOTIFICATION_POST_PUBLISHED
 											   object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(publishingFailedNotification:)
+                                                 name:NOTIFICATION_POST_FAILED_TO_PUBLISH
+                                               object:nil];
+
+    
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(followingSuccessfulNotification:)
 												 name:NOTIFICATION_NOW_FOLLOWING_USER
