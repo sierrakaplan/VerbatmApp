@@ -521,8 +521,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		});
 	}
 
-
 	[self removeSharePOVView];
+    self.view.userInteractionEnabled = YES;
 }
 
 -(void)postPostExternal {

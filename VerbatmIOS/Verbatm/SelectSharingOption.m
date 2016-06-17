@@ -136,9 +136,9 @@
         [self.sharingDelegate shareOptionDeselected:selectionButton.buttonSharingOption];
         self.selectedButton = nil;
     }else{
-        if(self.selectedButton){//only one button can be selected at once
-            [self.sharingDelegate shareOptionDeselected:self.selectedButton.buttonSharingOption];
-        }
+//        if(self.selectedButton){//only one button can be selected at once
+//            [self.sharingDelegate shareOptionDeselected:self.selectedButton.buttonSharingOption];
+//        }
         
         [selectionButton setButtonSelected:YES];
         [self.sharingDelegate shareOptionSelected:selectionButton.buttonSharingOption];
