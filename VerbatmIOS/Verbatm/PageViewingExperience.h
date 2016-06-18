@@ -19,6 +19,7 @@
 @property (nonatomic) NSInteger indexInPost;
 @property (nonatomic) BOOL inPreviewMode;
 @property (nonatomic) BOOL currentlyOnScreen;
+@property (nonatomic) BOOL currentlyLoadingMedia;
 @property (nonatomic) BOOL hasLoadedMedia;
 @property (nonatomic) LoadingIndicator *customActivityIndicator;
 
