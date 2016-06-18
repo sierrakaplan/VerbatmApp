@@ -13,7 +13,7 @@
 #import "PublishingProgressManager.h"
 #import <PromiseKit/PromiseKit.h>
 
-@interface MediaUploader()
+@interface MediaUploader() <NSURLSessionDataDelegate, NSURLSessionDelegate, NSURLSessionTaskDelegate>
 
 @property (nonatomic, strong) ASIFormDataRequest *formData;
 @property (nonatomic, strong) MediaUploadCompletionBlock completionBlock;
@@ -111,6 +111,60 @@
 	[[PublishingProgressManager sharedInstance] savingMediaFailedWithError:error];
 	[self.mediaUploadProgress cancel];
 	self.completionBlock(error, nil);
+}
+
+#pragma mark - NSURLSESSION -
+
+-(instancetype) initWithVideoPathName: (NSString*)path andUri: (NSString*)uri {
+	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:uri]];
+
+	[request setHTTPMethod:@"POST"];
+	[request setValue:@"video/mp4" forHTTPHeaderField:@"Content-Type"];
+	[request setValue:[NSString stringWithFormat:@"attachment; filename=\"%@\"", path] forHTTPHeaderField:@"Content-Disposition"];
+	[request setHTTPBodyStream:[NSInputStream inputStreamWithFileAtPath: path]];
+
+	return self;
+}
+
+/* Sent periodically to notify the delegate of upload progress.  This
+ * information is also available as properties of the task.
+ */
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+   didSendBodyData:(int64_t)bytesSent
+	totalBytesSent:(int64_t)totalBytesSent
+totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
+
+	float progressAmount = ((float)totalBytesSent/(float)totalBytesExpectedToSend);
+	NSInteger newProgressUnits = (NSInteger)(progressAmount*(float)self.mediaUploadProgress.totalUnitCount);
+	if (newProgressUnits != self.mediaUploadProgress.completedUnitCount) {
+		[[PublishingProgressManager sharedInstance] mediaSavingProgressed:(newProgressUnits - self.mediaUploadProgress.completedUnitCount)];
+		self.mediaUploadProgress.completedUnitCount = newProgressUnits;
+		NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
+	}
+}
+
+/* Sent as the last message related to a specific task.  Error may be
+ * nil, which implies that no error occurred and this task is complete.
+ */
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+didCompleteWithError:(nullable NSError *)error {
+	NSURLResponse *response = task.response;
+	if (error || !response) {
+		[[Crashlytics sharedInstance] recordError: error];
+		[[PublishingProgressManager sharedInstance] savingMediaFailedWithError:error];
+		[self.mediaUploadProgress cancel];
+		self.completionBlock(error, nil);
+		return;
+	}
+//
+//	//The response string is a blobkeystring and an imagesservice servingurl for image
+//	NSString* responseString = [response ];
+//	if (!responseString.length) {
+//		[self requestFailed:request];
+//	} else {
+//		[self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
+//		self.completionBlock(nil, responseString);
+//	}
 }
 
 @end

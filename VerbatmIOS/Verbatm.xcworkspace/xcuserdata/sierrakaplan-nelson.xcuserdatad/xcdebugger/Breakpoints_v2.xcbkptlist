@@ -2867,7 +2867,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "177"
             endingLineNumber = "177"
-            landmarkName = "-setDateSourceAndDelegate"
+            landmarkName = "-registerForNotifications"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2899,7 +2899,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "178"
             endingLineNumber = "178"
-            landmarkName = "-setDateSourceAndDelegate"
+            landmarkName = "-registerForNotifications"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2915,7 +2915,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "190"
             endingLineNumber = "190"
-            landmarkName = "-nothingToPresentHere"
+            landmarkName = "-setDateSourceAndDelegate"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2931,7 +2931,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "191"
             endingLineNumber = "191"
-            landmarkName = "-nothingToPresentHere"
+            landmarkName = "-setDateSourceAndDelegate"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -7815,8 +7815,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "85"
             endingLineNumber = "85"
-            landmarkName = "@interface PostListVC()"
-            landmarkType = "2">
+            landmarkName = "@property (nonatomic) void(^loadMorePostsCompletion)(NSArray * posts);"
+            landmarkType = "19">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -7831,7 +7831,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "301"
             endingLineNumber = "301"
-            landmarkName = "-collectionView:cellForItemAtIndexPath:"
+            landmarkName = "-numberOfSectionsInCollectionView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -7847,7 +7847,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "207"
             endingLineNumber = "207"
-            landmarkName = "-defineRefreshPostsCompletion"
+            landmarkName = "-nothingToPresentHere"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -7895,7 +7895,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "299"
             endingLineNumber = "299"
-            landmarkName = "-collectionView:cellForItemAtIndexPath:"
+            landmarkName = "-numberOfSectionsInCollectionView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -7911,7 +7911,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "344"
             endingLineNumber = "344"
-            landmarkName = "-footerShowing:"
+            landmarkName = "-collectionView:cellForItemAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -7927,7 +7927,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "295"
             endingLineNumber = "295"
-            landmarkName = "-collectionView:cellForItemAtIndexPath:"
+            landmarkName = "-loadOlderPosts"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -7943,7 +7943,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "324"
             endingLineNumber = "324"
-            landmarkName = "-postCellAtIndexPath:"
+            landmarkName = "-collectionView:cellForItemAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -7959,7 +7959,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "329"
             endingLineNumber = "329"
-            landmarkName = "-postCellAtIndexPath:"
+            landmarkName = "-collectionView:cellForItemAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8023,7 +8023,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "213"
             endingLineNumber = "213"
-            landmarkName = "-defineRefreshPostsCompletion"
+            landmarkName = "-removePresentLabel"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8039,7 +8039,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "298"
             endingLineNumber = "298"
-            landmarkName = "-collectionView:cellForItemAtIndexPath:"
+            landmarkName = "-numberOfSectionsInCollectionView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8087,7 +8087,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "247"
             endingLineNumber = "247"
-            landmarkName = "-refreshPosts"
+            landmarkName = "-defineRefreshPostsCompletion"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8119,7 +8119,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "250"
             endingLineNumber = "250"
-            landmarkName = "-refreshPosts"
+            landmarkName = "-defineRefreshPostsCompletion"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8295,7 +8295,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "412"
             endingLineNumber = "412"
-            landmarkName = "-flagOrBlockButtonSelectedOnPostView:withPostObject:"
+            landmarkName = "-deleteButtonSelectedOnPostView:withPostObject:andPostChannelActivityObj:reblogged:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -8343,7 +8343,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "400"
             endingLineNumber = "400"
-            landmarkName = "-removePostAtIndex:"
+            landmarkName = "-deleteButtonSelectedOnPostView:withPostObject:andPostChannelActivityObj:reblogged:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8359,7 +8359,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "328"
             endingLineNumber = "328"
-            landmarkName = "-postCellAtIndexPath:"
+            landmarkName = "-collectionView:cellForItemAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8519,8 +8519,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "269"
             endingLineNumber = "269"
-            landmarkName = "@implementation PostListVC"
-            landmarkType = "3">
+            landmarkName = "-refreshPosts"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -8693,7 +8693,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "665"
             endingLineNumber = "665"
-            landmarkName = "-publishFailed"
+            landmarkName = "-successfullyPublishedNotification:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -9167,7 +9167,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "268"
             endingLineNumber = "268"
-            landmarkName = "-loadMorePosts"
+            landmarkName = "-refreshPosts"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -9673,7 +9673,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "546"
             endingLineNumber = "546"
-            landmarkName = "-postToFacebookWithShareLink:"
+            landmarkName = "-reblogToVerbatm:andFacebook:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -9689,7 +9689,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "552"
             endingLineNumber = "552"
-            landmarkName = "-postToFacebookWithShareLink:"
+            landmarkName = "-reblogToVerbatm:andFacebook:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -10057,7 +10057,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "639"
             endingLineNumber = "639"
-            landmarkName = "-channelSelected:"
+            landmarkName = "-postToFacebookWithShareLink:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -10073,8 +10073,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "538"
             endingLineNumber = "538"
-            landmarkName = "-postPostExternal"
-            landmarkType = "5">
+            landmarkName = "@implementation PostListVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -10105,7 +10105,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "536"
             endingLineNumber = "536"
-            landmarkName = "-postPostExternal"
+            landmarkName = "-cancelButtonSelected"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -10153,7 +10153,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "514"
             endingLineNumber = "514"
-            landmarkName = "-reblogToVerbatm:andFacebook:"
+            landmarkName = "-presentShareSelectionViewStartOnChannels:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -10169,7 +10169,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "521"
             endingLineNumber = "521"
-            landmarkName = "-reblogToVerbatm:andFacebook:"
+            landmarkName = "-removeSharePOVView"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -10681,7 +10681,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "288"
             endingLineNumber = "288"
-            landmarkName = "-collectionView:shouldSelectItemAtIndexPath:"
+            landmarkName = "-loadMorePosts"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -10729,7 +10729,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "614"
             endingLineNumber = "614"
-            landmarkName = "-dealloc"
+            landmarkName = "-downArrow"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -10745,7 +10745,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "480"
             endingLineNumber = "480"
-            landmarkName = "-postOffScreen"
+            landmarkName = "-postOnScreen"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -10857,7 +10857,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "494"
             endingLineNumber = "494"
-            landmarkName = "-clearPost"
+            landmarkName = "-postAlmostOnScreen"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -10873,7 +10873,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "495"
             endingLineNumber = "495"
-            landmarkName = "-clearPost"
+            landmarkName = "-postAlmostOnScreen"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -10889,7 +10889,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "509"
             endingLineNumber = "509"
-            landmarkName = "-stopAllVideos"
+            landmarkName = "-clearPost"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -10985,7 +10985,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "469"
             endingLineNumber = "469"
-            landmarkName = "-postOnScreen"
+            landmarkName = "-loadMediaForPageAtIndex:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -11001,7 +11001,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "519"
             endingLineNumber = "519"
-            landmarkName = "-removePageUpIndicatorFromView"
+            landmarkName = "-stopAllVideos"
             landmarkType = "5">
             <Locations>
                <Location
@@ -11049,7 +11049,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "518"
             endingLineNumber = "518"
-            landmarkName = "-removePageUpIndicatorFromView"
+            landmarkName = "-stopAllVideos"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -11065,7 +11065,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "378"
             endingLineNumber = "378"
-            landmarkName = "-deleteButtonSelectedOnPostView:withPostObject:andPostChannelActivityObj:reblogged:"
+            landmarkName = "-footerShowing:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -11081,7 +11081,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "380"
             endingLineNumber = "380"
-            landmarkName = "-deleteReblog:onPostView:withPostChannelActivityObj:"
+            landmarkName = "-footerShowing:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -11097,7 +11097,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "333"
             endingLineNumber = "333"
-            landmarkName = "-collectionView:didEndDisplayingCell:forItemAtIndexPath:"
+            landmarkName = "-collectionView:cellForItemAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

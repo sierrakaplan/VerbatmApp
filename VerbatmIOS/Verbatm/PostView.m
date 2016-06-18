@@ -335,7 +335,11 @@
 	if (!self.postMuted && _likeShareBar) {
 		[self checkForMuteButton:self.currentPage];
 	}
+	//Load media for next two pages
+	//(if more than 3 pages at some point the next will already be loading from previous call
+	//- this case is taken care of in loadMediaForPage. Also takes care of case where pages don't exist.)
 	[self loadMediaForPageAtIndex: indexBelow];
+	[self loadMediaForPageAtIndex: indexBelow+1];
 }
 
 -(void)checkForMuteButton:(PageViewingExperience * )currentPageOnScreen {
@@ -445,9 +449,13 @@
 		return;
 	}
 	PFObject *parsePageObject = self.pageObjects[index];
+	PageViewingExperience *pageView = self.pageViews[index];
+	// Don't load again if already loading
+	if (pageView.currentlyLoadingMedia) return;
+	pageView.currentlyLoadingMedia = YES;
+	//todo: go through process of loading content and reduce number of steps
 	[PageTypeAnalyzer getPageMediaFromPage:parsePageObject withCompletionBlock:^(NSArray * pageMedia) {
 		if (!_pageViews) return; //If post has been cleared before we get here
-		PageViewingExperience *pageView = self.pageViews[index];
 		if ([pageView isKindOfClass:[PhotoPVE class]]) {
 			[(PhotoPVE*)pageView displayPhotos: pageMedia[1]];
 		} else if ([pageView isKindOfClass:[VideoPVE class]] ) {

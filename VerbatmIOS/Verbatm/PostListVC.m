@@ -59,7 +59,9 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 @property (strong, nonatomic) FeedQueryManager *feedQueryManager;
 @property (strong, nonatomic) PostsQueryManager *postsQueryManager;
 @property (nonatomic) NSInteger nextIndexToPresent;
+@property (nonatomic) NSInteger nextNextIndex;
 @property (strong, nonatomic) PostCollectionViewCell *nextCellToPresent;
+@property (strong, nonatomic) PostCollectionViewCell *nextNextCell;
 @property (nonatomic, strong) UILabel * noContentLabel;
 
 @property (nonatomic) LoadingIndicator *customActivityIndicator;
@@ -114,7 +116,9 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	[self.collectionView reloadData];
 	self.feedQueryManager = nil;
 	self.nextIndexToPresent = 0;
+	self.nextNextIndex = 1;
 	self.nextCellToPresent = nil;
+	self.nextNextCell = nil;
 	self.postToShare = nil;
 	self.isRefreshing = NO;
 	self.isLoadingMore = NO;
@@ -237,9 +241,20 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 
 	self.loadMorePostsCompletion = ^void(NSArray *posts) {
 		if (posts.count) {
-			[weakSelf.parsePostObjects addObjectsFromArray:posts];
-			[weakSelf.collectionView reloadData];
 			weakSelf.isLoadingMore = NO;
+			NSMutableArray *indexes = [NSMutableArray array];
+			NSInteger index = weakSelf.parsePostObjects.count;
+			for (NSInteger i = index; i < index + posts.count; i++) {
+				[indexes addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+			}
+			// Perform the updates
+			[weakSelf.collectionView performBatchUpdates:^{
+				//Insert the new data
+				[weakSelf.parsePostObjects addObjectsFromArray:posts];
+				//Insert the new cells
+				[weakSelf.collectionView insertItemsAtIndexPaths:indexes];
+
+			} completion:nil];
 		}
 	};
 }
@@ -296,16 +311,26 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	PostCollectionViewCell *currentCell;
 	if (indexPath.row == self.nextIndexToPresent) {
 		currentCell = self.nextCellToPresent;
+	} else if (indexPath.row == self.nextNextIndex) {
+		currentCell = self.nextNextCell;
 	}
 	if (currentCell == nil) {
 		currentCell = [self postCellAtIndexPath:indexPath];
 	}
 	[currentCell onScreen];
 
-	//Prepare next cell
+	//Prepare next cell (after first time will just be nextNextCell)
 	self.nextIndexToPresent = indexPath.row+1;
-	self.nextCellToPresent = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextIndexToPresent inSection:indexPath.section]];
+	self.nextCellToPresent = self.nextNextCell;
+	if (!self.nextCellToPresent) {
+		self.nextCellToPresent = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextIndexToPresent inSection:indexPath.section]];
+	}
 	if (self.nextCellToPresent) [self.nextCellToPresent almostOnScreen];
+
+	//Prepare next next cell
+	self.nextNextIndex = indexPath.row+2;
+	self.nextNextCell = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextNextIndex inSection:indexPath.section]];
+	if (self.nextNextCell) [self.nextNextCell almostOnScreen];
 
 	// Load more posts
 	if(indexPath.row >= (self.parsePostObjects.count - LOAD_MORE_POSTS_COUNT)
@@ -342,11 +367,15 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		[self setNeedsStatusBarAppearanceUpdate];
 	} completion:^(BOOL finished) {
 	}];
+	//todo: this is only for visible cell for some reason - see if can find all cells that exist
 	for (NSInteger i = 0; i < [self.collectionView numberOfItemsInSection:0]; ++i) {
 		PostCollectionViewCell* cell = (PostCollectionViewCell*)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-		[cell shiftLikeShareBarDown:!showing];
+		if (cell) {
+			[cell shiftLikeShareBarDown:!showing];
+		}
 	}
 	[self.nextCellToPresent shiftLikeShareBarDown:!showing];
+	[self.nextNextCell shiftLikeShareBarDown:!showing];
 }
 
 #pragma mark - PostCollectionViewCell delegate -

@@ -21,6 +21,7 @@
     if(self) {
 		self.hasLoadedMedia = NO;
 		self.currentlyOnScreen = NO;
+		self.currentlyLoadingMedia = NO;
         self.clipsToBounds = YES;
         [self createBorder];
     }
