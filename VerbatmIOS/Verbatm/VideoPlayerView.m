@@ -72,21 +72,12 @@
 		self.videoLoading = YES;
 	}
 
-	//	NSArray *keys = @[@"playable",@"tracks",@"duration"];
-	//
-	//	[asset loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
-	//		[self prepareVideoFromPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
-	//	}];
 
-	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
+	NSArray *keys = @[@"playable",@"tracks",@"duration"];
 
-	dispatch_async(queue, ^{
-		AVPlayerItem *item = [AVPlayerItem playerItemWithAsset:asset];
-
-		dispatch_sync(dispatch_get_main_queue(), ^{
-			[self prepareVideoFromPlayerItem:item];
-		});
-	});
+	[asset loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
+		[self prepareVideoFromPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
+	}];
 }
 
 -(void)prepareVideoFromURL: (NSURL*) url{
@@ -123,11 +114,6 @@
 											 selector:@selector(playerItemDidReachEnd:)
 												 name:AVPlayerItemDidPlayToEndTimeNotification
 											   object:self.playerItem];
-
-	//	[[NSNotificationCenter defaultCenter] addObserver:self
-	//											 selector:@selector(playerItemDidStall:)
-	//												 name:AVPlayerItemPlaybackStalledNotification
-	//											   object:self.playerItem];
 }
 
 //this function should be called on the main thread
@@ -138,7 +124,6 @@
 	if (self.playerItem == NULL) {
 
 	}
-	//todo background thread
 	self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
 	self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
 	// Create an AVPlayerLayer using the player

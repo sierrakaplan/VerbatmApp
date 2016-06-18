@@ -66,14 +66,10 @@
 
 	self.channelManager = [[Channel_BackendObject alloc] init];
 	[self countMediaContentFromPinchViews:pinchViews];
-	if(!channel.parseChannelObject) {
-		self.newChannelCreated = YES;
-	}
 	[self.channelManager createPostFromPinchViews:pinchViews
 										toChannel:channel
 							  withCompletionBlock:^(PFObject *parsePostObject) {
 								  if (!parsePostObject) {
-									  self.newChannelCreated = NO;
 									  block (NO, YES);
 									  return;
 								  }

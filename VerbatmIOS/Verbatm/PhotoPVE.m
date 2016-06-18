@@ -71,9 +71,6 @@
 	if (self) {
 		self.small = small;
 		self.photoVideoSubview = halfScreen;
-		if (!self.photoVideoSubview) {
-			//todo: start animating
-		}
 		self.inPreviewMode = NO;
 		[self initialFormatting];
 	}
