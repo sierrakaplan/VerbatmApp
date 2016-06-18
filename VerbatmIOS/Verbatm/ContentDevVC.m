@@ -14,6 +14,9 @@
 #import "CollectionPinchView.h"
 #import "ContentPageElementScrollView.h"
 #import "Channel_BackendObject.h"
+
+
+
 #import "Post_BackendObject.h"
 #import "Page_BackendObject.h"
 #import "Photo_BackendObject.h"
@@ -41,6 +44,8 @@
 #import "SizesAndPositions.h"
 #import "StringsAndAppConstants.h"
 #import "Styles.h"
+#import "SharingLinkView.h"
+
 
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "UserInfoCache.h"
@@ -2030,43 +2035,49 @@ andSaveInUserDefaults:(BOOL)save {
 
 -(void) publishOurStoryWithPinchViews:(NSMutableArray *)pinchViews{
 
-	Channel * channelToPostIn = nil;
-	if (self.userChannel) {
-		channelToPostIn = self.userChannel;
-	} else {
-		UITextField * textField = (UITextField *) [self.channelPicker viewForRow:self.currentPresentedPickerRow forComponent:0];
-		if ([textField.text isEqualToString:@""]) {
-			UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"You must publish to a blog" message:@"Please enter a name for your new blog." preferredStyle:UIAlertControllerStyleAlert];
-			UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
-																  handler:^(UIAlertAction * action) {}];
-			[newAlert addAction:defaultAction];
-			[self presentViewController:newAlert animated:YES completion:nil];
-		} else {
-			channelToPostIn = [[Channel alloc] initWithChannelName:textField.text andParseChannelObject:nil andChannelCreator:nil];
-            self.channelToPost = channelToPostIn;
-		}
-	}
-	if (channelToPostIn) {
-		[[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn andFacebook:self.postToFB withCaption:self.fbCaption withPinchViews:pinchViews
-													 withCompletionBlock:^(BOOL isAlreadyPublishing, BOOL noNetwork) {
-														 NSString *errorMessage;
-														 if(isAlreadyPublishing) {
-															 errorMessage = @"Please wait until the previous post has finished publishing.";
-														 } else if (noNetwork) {
-															 errorMessage = @"Something went wrong - please check your network connection and try again.";
-														 } else {
-															 //Everything went ok
-															 [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
-															 [self cleanUp];
-															 return;
-														 }
-														 UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Couldn't Publish" message:errorMessage preferredStyle:UIAlertControllerStyleAlert];
-														 UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
-																											   handler:^(UIAlertAction * action) {}];
-														 [newAlert addAction:defaultAction];
-														 [self presentViewController:newAlert animated:YES completion:nil];
-													 }];
-	}
+    
+    
+    SharingLinkView * slV = [[SharingLinkView alloc] initWithFrame:self.view.bounds];
+    [self.view addSubview:slV];
+    
+//
+//	Channel * channelToPostIn = nil;
+//	if (self.userChannel) {
+//		channelToPostIn = self.userChannel;
+//	} else {
+//		UITextField * textField = (UITextField *) [self.channelPicker viewForRow:self.currentPresentedPickerRow forComponent:0];
+//		if ([textField.text isEqualToString:@""]) {
+//			UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"You must publish to a blog" message:@"Please enter a name for your new blog." preferredStyle:UIAlertControllerStyleAlert];
+//			UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+//																  handler:^(UIAlertAction * action) {}];
+//			[newAlert addAction:defaultAction];
+//			[self presentViewController:newAlert animated:YES completion:nil];
+//		} else {
+//			channelToPostIn = [[Channel alloc] initWithChannelName:textField.text andParseChannelObject:nil andChannelCreator:nil];
+//            self.channelToPost = channelToPostIn;
+//		}
+//	}
+//	if (channelToPostIn) {
+//		[[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn andFacebook:self.postToFB withCaption:self.fbCaption withPinchViews:pinchViews
+//													 withCompletionBlock:^(BOOL isAlreadyPublishing, BOOL noNetwork) {
+//														 NSString *errorMessage;
+//														 if(isAlreadyPublishing) {
+//															 errorMessage = @"Please wait until the previous post has finished publishing.";
+//														 } else if (noNetwork) {
+//															 errorMessage = @"Something went wrong - please check your network connection and try again.";
+//														 } else {
+//															 //Everything went ok
+//															 [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
+//															 [self cleanUp];
+//															 return;
+//														 }
+//														 UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Couldn't Publish" message:errorMessage preferredStyle:UIAlertControllerStyleAlert];
+//														 UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+//																											   handler:^(UIAlertAction * action) {}];
+//														 [newAlert addAction:defaultAction];
+//														 [self presentViewController:newAlert animated:YES completion:nil];
+//													 }];
+//	}
 }
 
 #pragma mark - Lazy Instantiation

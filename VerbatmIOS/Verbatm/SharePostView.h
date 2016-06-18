@@ -11,6 +11,14 @@
 #import <UIKit/UIKit.h>
 #import "Channel.h"
 
+
+/*
+ 
+ Reblog screen. Selected on a post and slides up to prompt a user to share.
+ 
+ */
+
+
 @protocol SharePostViewDelegate <NSObject>
 
 -(void) cancelButtonSelected;

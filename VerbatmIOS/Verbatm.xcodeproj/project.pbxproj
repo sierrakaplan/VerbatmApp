@@ -208,6 +208,9 @@
 		C788745C1C334AE80048B66E /* PostLikeAndShareBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C788745B1C334AE80048B66E /* PostLikeAndShareBar.m */; };
 		C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */; };
 		C7996CC31C8FCF74002E5DA6 /* LoadingIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = C7996CC21C8FCF74002E5DA6 /* LoadingIndicator.m */; };
+		C7AA49F81D14739A00A031C6 /* SharingLinkView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7AA49F71D14739A00A031C6 /* SharingLinkView.m */; };
+		C7AA49FB1D148A8C00A031C6 /* verbatmButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C7AA49FA1D148A8C00A031C6 /* verbatmButton.m */; };
+		C7AA49FF1D149B8C00A031C6 /* SharingLinkActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7AA49FE1D149B8C00A031C6 /* SharingLinkActionView.m */; };
 		C7BC4376199D97F5004B91A1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4375199D97F5004B91A1 /* Foundation.framework */; };
 		C7BC4378199D97F5004B91A1 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4377199D97F5004B91A1 /* CoreGraphics.framework */; };
 		C7BC437A199D97F5004B91A1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4379199D97F5004B91A1 /* UIKit.framework */; };
@@ -611,6 +614,12 @@
 		C79747D91B50B815009077E3 /* Verbatm-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Verbatm-Info.plist"; sourceTree = "<group>"; };
 		C7996CC11C8FCF74002E5DA6 /* LoadingIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingIndicator.h; sourceTree = "<group>"; };
 		C7996CC21C8FCF74002E5DA6 /* LoadingIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingIndicator.m; sourceTree = "<group>"; };
+		C7AA49F61D14739A00A031C6 /* SharingLinkView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharingLinkView.h; sourceTree = "<group>"; };
+		C7AA49F71D14739A00A031C6 /* SharingLinkView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharingLinkView.m; sourceTree = "<group>"; };
+		C7AA49F91D148A8C00A031C6 /* verbatmButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmButton.h; sourceTree = "<group>"; };
+		C7AA49FA1D148A8C00A031C6 /* verbatmButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmButton.m; sourceTree = "<group>"; };
+		C7AA49FD1D149B8C00A031C6 /* SharingLinkActionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharingLinkActionView.h; sourceTree = "<group>"; };
+		C7AA49FE1D149B8C00A031C6 /* SharingLinkActionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharingLinkActionView.m; sourceTree = "<group>"; };
 		C7BC4372199D97F5004B91A1 /* Verbatm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Verbatm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7BC4375199D97F5004B91A1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C7BC4377199D97F5004B91A1 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -751,7 +760,6 @@
 		A51E74521C897EFC00CF8DEA /* UI Things */ = {
 			isa = PBXGroup;
 			children = (
-				C774040E19BE6538004C50EA /* Images.xcassets */,
 				A5934B9F1C10F044007C7830 /* Fonts */,
 			);
 			name = "UI Things";
@@ -1444,8 +1452,29 @@
 				C7996CC21C8FCF74002E5DA6 /* LoadingIndicator.m */,
 				C73B7C2D1CA8719200128926 /* Intro_Instruction_Notification_View.h */,
 				C73B7C2E1CA8719200128926 /* Intro_Instruction_Notification_View.m */,
+				C7AA49FC1D148A9100A031C6 /* Custom Button */,
 			);
 			name = "Custom Views";
+			sourceTree = "<group>";
+		};
+		C7AA49FC1D148A9100A031C6 /* Custom Button */ = {
+			isa = PBXGroup;
+			children = (
+				C7AA49F91D148A8C00A031C6 /* verbatmButton.h */,
+				C7AA49FA1D148A8C00A031C6 /* verbatmButton.m */,
+			);
+			name = "Custom Button";
+			sourceTree = "<group>";
+		};
+		C7AA4A001D149B9800A031C6 /* Sharing Link Views */ = {
+			isa = PBXGroup;
+			children = (
+				C7AA49FD1D149B8C00A031C6 /* SharingLinkActionView.h */,
+				C7AA49FE1D149B8C00A031C6 /* SharingLinkActionView.m */,
+				C7AA49F61D14739A00A031C6 /* SharingLinkView.h */,
+				C7AA49F71D14739A00A031C6 /* SharingLinkView.m */,
+			);
+			name = "Sharing Link Views";
 			sourceTree = "<group>";
 		};
 		C7BC4369199D97F5004B91A1 = {
@@ -1502,6 +1531,7 @@
 		C7BC437B199D97F5004B91A1 /* Verbatm */ = {
 			isa = PBXGroup;
 			children = (
+				C774040E19BE6538004C50EA /* Images.xcassets */,
 				C7469BF21B4874A600EA7B10 /* Main.storyboard */,
 				A51E74521C897EFC00CF8DEA /* UI Things */,
 				A51E74511C897E2F00CF8DEA /* Downloaded Libraries */,
@@ -1601,6 +1631,7 @@
 		C7F22B321C38415000E56EA7 /* Sharing  */ = {
 			isa = PBXGroup;
 			children = (
+				C7AA4A001D149B9800A031C6 /* Sharing Link Views */,
 				C7F22B2F1C38408E00E56EA7 /* SharePostView.h */,
 				C7F22B301C38408E00E56EA7 /* SharePostView.m */,
 				C7F22B361C3841AD00E56EA7 /* SelectSharingOption.h */,
@@ -1916,6 +1947,7 @@
 				A5C09BD91BA1F1D700C0AD86 /* ASIAuthenticationDialog.m in Sources */,
 				A56F68721B643B1400CE5744 /* VerbatmKeyboardToolBar.m in Sources */,
 				A5E860071B97CC3C00E148D0 /* PreviewDisplayView.m in Sources */,
+				C7AA49F81D14739A00A031C6 /* SharingLinkView.m in Sources */,
 				A535E5001BC4459800A087D1 /* UIView+Effects.m in Sources */,
 				A58656711B621CA4008E358C /* MathOperations.m in Sources */,
 				A535E5061BC44BF100A087D1 /* UIScrollView+Effects.m in Sources */,
@@ -1966,6 +1998,7 @@
 				C70E1C541C3BF74C00346A25 /* TermsAndConditionsVC.m in Sources */,
 				C76172771C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m in Sources */,
 				A5934B8F1C0FDFD6007C7830 /* VerbatmScrollView.m in Sources */,
+				C7AA49FB1D148A8C00A031C6 /* verbatmButton.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
 				A55A59E21BB5EB7300C7CE7A /* UserManager.m in Sources */,
 				C716E9D21BD6C338001B769D /* Analytics.m in Sources */,
@@ -2029,6 +2062,7 @@
 				C75F155F1C2B4A1B0092912D /* Channel.m in Sources */,
 				A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */,
 				C74749911C2B1CB90047C66E /* ProfileInformationBar.m in Sources */,
+				C7AA49FF1D149B8C00A031C6 /* SharingLinkActionView.m in Sources */,
 				A5AA31BB1B9FCDDC00D8D20C /* GTLServiceVerbatmApp.m in Sources */,
 				A5FB5D311BCB0B9700634A96 /* GMGridViewController.m in Sources */,
 				A5FB5D301BCB0B9700634A96 /* GMGridViewCell.m in Sources */,
