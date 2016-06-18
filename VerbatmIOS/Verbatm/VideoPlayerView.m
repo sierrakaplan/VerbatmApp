@@ -244,12 +244,12 @@
 		[self.player pause];
 		self.shouldPlayOnLoad = NO;
 		self.videoLoading = NO;
+		[self removePlayerItemObservers];
 		[self.customActivityIndicator stopCustomActivityIndicator];
 
 		for (UIView* view in self.subviews) {
 			[view removeFromSuperview];
 		}
-		[self removePlayerItemObservers];
 		for (CALayer *sublayer in self.layer.sublayers) {
 			[sublayer removeFromSuperlayer];
 		}

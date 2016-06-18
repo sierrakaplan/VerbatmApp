@@ -71,6 +71,7 @@
 				inPreviewMode: (BOOL) inPreviewMode isPhotoVideoSubview:(BOOL)halfScreen {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.hasLoadedMedia = YES;
 		self.photoVideoSubview = halfScreen;
 		self.inPreviewMode = inPreviewMode;
 		self.videoPlayer.repeatsVideo = YES;

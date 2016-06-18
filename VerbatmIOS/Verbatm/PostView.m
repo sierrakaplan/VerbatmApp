@@ -437,6 +437,13 @@
 
 -(void) loadMediaForPageAtIndex:(NSInteger)index {
 	if (index >= self.pageViews.count) return;
+	//preview mode
+	if (!self.pageObjects) {
+		PageViewingExperience *pageView = self.pageViews[index];
+		if (pageView.currentlyOnScreen) [pageView onScreen];
+		else [pageView almostOnScreen];
+		return;
+	}
 	PFObject *parsePageObject = self.pageObjects[index];
 	[PageTypeAnalyzer getPageMediaFromPage:parsePageObject withCompletionBlock:^(NSArray * pageMedia) {
 		if (!_pageViews) return; //If post has been cleared before we get here

@@ -68,6 +68,7 @@
 -(instancetype) initWithFrame:(CGRect)frame andPinchView:(CollectionPinchView*) pinchView inPreviewMode: (BOOL) previewMode {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.hasLoadedMedia = YES;
 		self.small = NO;
 		self.inPreviewMode = previewMode;
 		self.pinchView = pinchView;
