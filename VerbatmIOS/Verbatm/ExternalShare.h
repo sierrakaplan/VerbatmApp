@@ -16,7 +16,6 @@
 -(instancetype) initWithCaption:(NSString *) caption;
 -(instancetype) init;
 
--(BranchUniversalObject *) generateShareObjectForPost:(PFObject *)postObject;
 -(void) sharePostToFacebook:(PFObject *)postObject;
 
 @end

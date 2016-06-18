@@ -72,11 +72,11 @@
 		self.videoLoading = YES;
 	}
 
-//	NSArray *keys = @[@"playable",@"tracks",@"duration"];
-//
-//	[asset loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
-//		[self prepareVideoFromPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
-//	}];
+	//	NSArray *keys = @[@"playable",@"tracks",@"duration"];
+	//
+	//	[asset loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
+	//		[self prepareVideoFromPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
+	//	}];
 
 	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
 
@@ -124,10 +124,10 @@
 												 name:AVPlayerItemDidPlayToEndTimeNotification
 											   object:self.playerItem];
 
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(playerItemDidStall:)
-//												 name:AVPlayerItemPlaybackStalledNotification
-//											   object:self.playerItem];
+	//	[[NSNotificationCenter defaultCenter] addObserver:self
+	//											 selector:@selector(playerItemDidStall:)
+	//												 name:AVPlayerItemPlaybackStalledNotification
+	//											   object:self.playerItem];
 }
 
 //this function should be called on the main thread
@@ -256,28 +256,25 @@
 //this is called right before the view is removed from the screen
 -(void) stopVideo {
 	@autoreleasepool {
-		if (self.videoLoading) {
-			self.videoLoading = NO;
-		}
+		[self.player pause];
+		self.shouldPlayOnLoad = NO;
+		self.videoLoading = NO;
 		[self.customActivityIndicator stopCustomActivityIndicator];
 
 		for (UIView* view in self.subviews) {
 			[view removeFromSuperview];
 		}
-		@autoreleasepool {
-			[self removePlayerItemObservers];
-			for (CALayer *sublayer in self.layer.sublayers) {
-				[sublayer removeFromSuperlayer];
-			}
-			[self.playerLayer removeFromSuperlayer];
-			self.playerItem = nil;
-			self.player = nil;
-			self.playerLayer = nil;
-			self.isVideoPlaying = NO;
-			[self.ourTimer invalidate];
-			self.ourTimer = nil;
-			self.shouldPlayOnLoad = NO;
+		[self removePlayerItemObservers];
+		for (CALayer *sublayer in self.layer.sublayers) {
+			[sublayer removeFromSuperlayer];
 		}
+		[self.playerLayer removeFromSuperlayer];
+		self.playerItem = nil;
+		self.player = nil;
+		self.playerLayer = nil;
+		self.isVideoPlaying = NO;
+		[self.ourTimer invalidate];
+		self.ourTimer = nil;
 	}
 }
 

@@ -274,6 +274,11 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	}
 }
 
+//todo:
+-(void) loadOlderPosts {
+
+}
+
 #pragma mark - DataSource -
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{

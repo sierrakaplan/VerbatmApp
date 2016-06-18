@@ -113,9 +113,8 @@
 			[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
 				CGRect frame = CGRectMake(xCoordinate, POST_VIEW_OFFSET, POST_VIEW_WIDTH,
 										  self.horizontalScrollView.frame.size.height - (POST_VIEW_OFFSET*2));
-				PostView *postView = [[PostView alloc] initWithFrame:frame andPostChannelActivityObject:post small:YES];
+				PostView *postView = [[PostView alloc] initWithFrame:frame andPostChannelActivityObject:post small:YES andPageObjects: pages];
 				[postView postOffScreen];
-				[postView renderPostFromPageObjects: pages];
 				xCoordinate += POST_VIEW_WIDTH + POST_VIEW_OFFSET;
 				self.horizontalScrollView.contentSize = CGSizeMake(xCoordinate, self.horizontalScrollView.contentSize.height);
 				[self.horizontalScrollView addSubview: postView];

@@ -40,25 +40,38 @@
 @property (nonatomic) UIImageView * thumbnailView;
 @property (nonatomic) AVAsset *videoAsset;
 
+@property (nonatomic) BOOL photoVideoSubview;
+
 @end
 
 
 @implementation VideoPVE
 
--(instancetype) initWithFrame:(CGRect)frame andVideo: (NSURL *)videoURL andThumbnail:(UIImage *)thumbnail {
+-(instancetype) initWithFrame:(CGRect)frame isPhotoVideoSubview:(BOOL)halfScreen {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.photoVideoSubview = halfScreen;
 		self.inPreviewMode = NO;
 		self.videoPlayer.repeatsVideo = YES;
-		[self fuseVideoArray:@[videoURL]];
-		[self setThumbnailImage: thumbnail];
 	}
 	return self;
 }
 
--(instancetype) initWithFrame:(CGRect)frame andPinchView: (PinchView*) pinchView inPreviewMode: (BOOL) inPreviewMode {
+-(void)setThumbnailImage:(UIImage *) image andVideo: (NSURL *)videoURL {
+	self.hasLoadedMedia = YES;
+	[self.customActivityIndicator stopCustomActivityIndicator];
+	[self fuseVideoArray:@[videoURL]];
+	[self setThumbnailImage: image];
+	if (self.currentlyOnScreen) {
+		[self onScreen];
+	}
+}
+
+-(instancetype) initWithFrame:(CGRect)frame andPinchView: (PinchView*) pinchView
+				inPreviewMode: (BOOL) inPreviewMode isPhotoVideoSubview:(BOOL)halfScreen {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.photoVideoSubview = halfScreen;
 		self.inPreviewMode = inPreviewMode;
 		self.videoPlayer.repeatsVideo = YES;
 
@@ -110,7 +123,7 @@
 	});
 }
 
--(void)setThumbnailImage:(UIImage *) image{
+-(void)setThumbnailImage:(UIImage *) image {
     self.thumbnailView = [[UIImageView alloc] initWithImage:image];
     self.thumbnailView.contentMode = UIViewContentModeScaleAspectFill;
     self.thumbnailView.frame = self.bounds;
@@ -184,7 +197,9 @@
 
 #pragma mark - On and Off Screen (play and pause) -
 
--(void)offScreen{
+-(void)offScreen {
+	[self.customActivityIndicator stopCustomActivityIndicator];
+	self.currentlyOnScreen = NO;
 	if(self.editContentView) {
 		[self.editContentView offScreen];
 		if([self.editContentView.pinchView isKindOfClass:[CollectionPinchView class]]){
@@ -198,6 +213,8 @@
 }
 
 -(void)onScreen {
+	if (!self.hasLoadedMedia && !self.photoVideoSubview) [self.customActivityIndicator startCustomActivityIndicator];
+	self.currentlyOnScreen = YES;
 	if (self.editContentView){
 		[self.editContentView onScreen];
 	} else {
