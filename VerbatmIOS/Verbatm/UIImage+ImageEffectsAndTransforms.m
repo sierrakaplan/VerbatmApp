@@ -108,7 +108,7 @@
 	UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
 	UIGraphicsEndImageContext();
 
-	//todo:
+	//todo drawing text in image:
 //	UIGraphicsBeginImageContext([parentView bounds].size);
 //	[[parentView layer] drawInContext:UIGraphicsGetCurrentContext()];
 //	UIImage *outputImage = UIGraphicsGetImageFromCurrentImageContext();

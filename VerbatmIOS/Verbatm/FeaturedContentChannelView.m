@@ -88,8 +88,7 @@
 -(void) loadPostView {
 	CGRect postViewFrame = CGRectMake(OFFSET, POST_VIEW_Y_OFFSET, self.bounds.size.width - (OFFSET * 2),
 									  self.bounds.size.height - (OFFSET + POST_VIEW_Y_OFFSET));
-	self.postView = [[PostView alloc] initWithFrame:postViewFrame andPostChannelActivityObject: self.post small:YES];
-	[self.postView renderPostFromPageObjects: self.pages];
+	self.postView = [[PostView alloc] initWithFrame:postViewFrame andPostChannelActivityObject: self.post small:YES andPageObjects: self.pages];
 	[self.postView postOffScreen];
 	[self.postView showPageUpIndicator];
 	[self.postView muteAllVideos:YES];

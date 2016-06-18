@@ -51,7 +51,9 @@
 				[post fetchIfNeededInBackground];
 				[finalPostObjects addObject:pc_activity];
 			}
-			if (activities.count > 0) self.latestDate = activities[activities.count-1][@"createdAt"];
+			if (activities.count > 0) {
+				self.latestDate = [(PFObject*)(activities[activities.count-1]) createdAt];
+			}
 			self.postsDownloaded = finalPostObjects.count;
 			block(finalPostObjects);
 		}
@@ -77,7 +79,9 @@
 				[finalPostObjects addObject:pc_activity];
 			}
 
-			if (activities.count > 0) self.latestDate = activities[activities.count-1][@"createdAt"];
+			if (activities.count > 0) {
+				self.latestDate = [(PFObject*)(activities[activities.count-1]) createdAt];
+			}
 			self.postsDownloaded += finalPostObjects.count;
 			block(finalPostObjects);
 		}

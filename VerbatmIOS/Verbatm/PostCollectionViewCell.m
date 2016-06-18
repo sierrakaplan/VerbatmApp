@@ -19,7 +19,6 @@
 @property (nonatomic, readwrite) PostView *currentPostView;
 
 @property (nonatomic) PFObject *postBeingPresented;
-@property (strong, nonatomic) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic) BOOL isOnScreen;
 @property (nonatomic) BOOL isAlmostOnScreen;
 
@@ -60,10 +59,9 @@
 	PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
 	[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
 		self.currentPostView = [[PostView alloc] initWithFrame:self.bounds
-								andPostChannelActivityObject:pfActivityObj small:NO];
+								andPostChannelActivityObject:pfActivityObj small:NO andPageObjects:pages];
 
 		NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
-		[self.currentPostView renderPostFromPageObjects: pages];
 		if (self.isOnScreen) {
 			[self.currentPostView postOnScreen];
 		} else if (self.isAlmostOnScreen) {
@@ -139,17 +137,4 @@
 	[self.cellDelegate flagOrBlockButtonSelectedOnPostView:postView withPostObject:post];
 }
 
-#pragma mark - Lazy Instantiation -
-
--(UIActivityIndicatorView*) activityIndicator {
-	if (!_activityIndicator) {
-		_activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhiteLarge];
-		_activityIndicator.color = [UIColor grayColor];
-		_activityIndicator.hidesWhenStopped = YES;
-		_activityIndicator.center = CGPointMake(self.center.x, self.frame.size.height * 1.f/3.f);
-		[self.contentView addSubview:_activityIndicator];
-		[self.contentView bringSubviewToFront:_activityIndicator];
-	}
-	return _activityIndicator;
-}
 @end

@@ -63,7 +63,11 @@
 +(void)getChannelObjectFromParsePCRelationship:(PFObject *) pcr withCompletionBlock:(void(^)(Channel * ))block{
 	PFObject * parsePostObject = [pcr valueForKey:POST_CHANNEL_ACTIVITY_POST];
 	[parsePostObject fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-		//todo: error handling
+		if (error) {
+			[[Crashlytics sharedInstance] recordError:error];
+			block(nil);
+			return;
+		}
 		PFObject* postOriginalChannel = [parsePostObject valueForKey:POST_CHANNEL_KEY];
 		[postOriginalChannel fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable postChannel, NSError * _Nullable channelError) {
 			[[postChannel valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable user, NSError * _Nullable userError) {

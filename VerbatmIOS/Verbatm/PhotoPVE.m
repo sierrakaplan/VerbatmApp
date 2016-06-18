@@ -60,34 +60,39 @@
 #define SLIDESHOW_ANIMATION_DURATION 1.5f
 #define OPEN_COLLECTION_FRAME_HEIGHT 70.f
 
-//this view manages the tapping gesture of the set circles
-@property (nonatomic, strong) UIView * circleTapView;
 @property (nonatomic) BOOL animating;
-
 @property (nonatomic) BOOL slideShowPlaying;
 @end
 
 @implementation PhotoPVE
 
--(instancetype) initWithFrame:(CGRect)frame andPhotoArray:(NSArray *)photos
-						small:(BOOL) small isPhotoVideoSubview:(BOOL)halfScreen {
+-(instancetype) initWithFrame:(CGRect)frame small:(BOOL) small isPhotoVideoSubview:(BOOL)halfScreen {
 	self = [super initWithFrame:frame];
 	if (self) {
 		self.small = small;
 		self.photoVideoSubview = halfScreen;
 		self.inPreviewMode = NO;
-		if ([photos count]) {
-			[self addPhotos:photos];
-		}
 		[self initialFormatting];
 	}
 	return self;
+}
+
+-(void) displayPhotos:(NSArray *)photos {
+	self.hasLoadedMedia = YES;
+	[self.customActivityIndicator stopCustomActivityIndicator];
+	if ([photos count]) {
+		[self addPhotos:photos];
+	}
+	if (self.currentlyOnScreen) {
+		[self onScreen];
+	}
 }
 
 -(instancetype) initWithFrame:(CGRect)frame andPinchView:(PinchView *)pinchView
 				inPreviewMode: (BOOL) inPreviewMode isPhotoVideoSubview:(BOOL)halfScreen {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.hasLoadedMedia = YES;
 		self.small = NO;
 		self.inPreviewMode = inPreviewMode;
 		self.photoVideoSubview = halfScreen;
@@ -350,6 +355,8 @@
 #pragma mark - Overriding ArticleViewingExperience methods -
 
 -(void) onScreen {
+	if (!self.hasLoadedMedia && !self.photoVideoSubview) [self.customActivityIndicator startCustomActivityIndicator];
+	self.currentlyOnScreen = YES;
 	if(self.imageContainerViews.count > 1){
 		if(!self.slideShowPlaying){
 			[self playWithSpeed:2.f];
@@ -358,6 +365,8 @@
 }
 
 - (void)offScreen {
+	[self.customActivityIndicator stopCustomActivityIndicator];
+	self.currentlyOnScreen = NO;
 	[self stopSlideshow];
 	for (UIView * view in self.imageContainerViews) {
 		if([view isKindOfClass:[EditMediaContentView class]]){

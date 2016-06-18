@@ -82,12 +82,14 @@
 		[followObjectsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable followObjects, NSError * _Nullable error) {
 			self.channelsFollowed = [[NSMutableArray alloc] init];
 			self.channelsFollowedIds = [[NSMutableArray alloc] init];
-			if (!error && followObjects) { //todo: error handling
+			if (!error && followObjects) {
 				for(PFObject *followObj in followObjects) {
 					PFObject *channelObject = [followObj objectForKey:FOLLOW_CHANNEL_FOLLOWED_KEY];
 					[self.channelsFollowed addObject: channelObject];
 					[self.channelsFollowedIds addObject:[channelObject objectId]];
 				}
+			} else {
+				[[Crashlytics sharedInstance] recordError:error];
 			}
 			[self.channelsRefreshingCondition lock];
 			self.followedChannelsRefreshing = NO;
