@@ -63,9 +63,6 @@
 }
 
 
-
-
-
 // Blocks is publishing something else, no network
 -(void)publishPostToChannel:(Channel *)channel andFacebook:(BOOL)externalShare withCaption:(NSString *)caption withPinchViews:(NSArray *)pinchViews
 		withCompletionBlock:(void(^)(BOOL, BOOL))block {
@@ -81,10 +78,13 @@
 	}
 
 	self.channelManager = [[Channel_BackendObject alloc] init];
-	[self countMediaContentFromPinchViews:pinchViews];
-	if(!channel.parseChannelObject) {
+	
+    [self countMediaContentFromPinchViews:pinchViews];
+	
+    if(!channel.parseChannelObject) {
 		self.newChannelCreated = YES;
 	}
+    
 	[self.channelManager createPostFromPinchViews:pinchViews
 										toChannel:channel
 							  withCompletionBlock:^(PFObject *parsePostObject) {

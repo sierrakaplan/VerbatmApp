@@ -258,6 +258,7 @@
     }
     
     [self.delegate continueToPublish];
+    
 }
 
 -(UITextView *) captionTextView{
