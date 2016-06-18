@@ -13,10 +13,14 @@
 #import "PublishingProgressManager.h"
 #import <PromiseKit/PromiseKit.h>
 
+#import <AFNetworking/AFNetworking.h>
+
 @interface MediaUploader() <NSURLSessionDataDelegate, NSURLSessionDelegate, NSURLSessionTaskDelegate>
 
 @property (nonatomic, strong) ASIFormDataRequest *formData;
 @property (nonatomic, strong) MediaUploadCompletionBlock completionBlock;
+
+@property (nonatomic, strong) AFHTTPSessionManager *operationManager;
 
 @end
 
@@ -118,24 +122,26 @@
 -(AnyPromise*) uploadVideoWithUrl:(NSURL*)videoURL andUri:(NSString*)uri {
 	self.mediaUploadProgress = [NSProgress progressWithTotalUnitCount: VIDEO_PROGRESS_UNITS-1];
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
-		//Prepare upload request
-		NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:uri]];
-		[request setHTTPMethod:@"PUT"];
-		[request setValue:@"video/mp4" forHTTPHeaderField:@"Content-Type"];
-		[request setValue:[NSString stringWithFormat:@"attachment; filename=defaultVideo.mp4"] forHTTPHeaderField:@"Content-Disposition"];
-		[request setValue:@"defaultVideo.mp4" forHTTPHeaderField:@"fileName"];
-
-		//todo: make all publishing happen on same session
-		NSURLSession* session = [NSURLSession sessionWithConfiguration: [NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:nil];
-		NSURLSessionUploadTask *task = [session uploadTaskWithRequest:request fromFile:videoURL completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-			if (error) {
-				resolve(error);
-			} else {
-				[self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
-				resolve([[NSString alloc] initWithBytes:[data bytes] length:[data length] encoding: NSISOLatin1StringEncoding]);
+		self.operationManager = [AFHTTPSessionManager manager];
+		[self.operationManager POST:uri parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull multipartFormData) {
+			NSError *error;
+			if (![multipartFormData appendPartWithFileURL:videoURL name:@"defaultVideo" fileName:@"defaultVideo.mp4" mimeType:@"video/mp4" error:&error]) {
+				NSLog(@"error appending part: %@", error);
 			}
+		} progress:^(NSProgress * _Nonnull uploadProgress) {
+			self.mediaUploadProgress.completedUnitCount = uploadProgress.completedUnitCount;
+			NSLog(@"media upload progress: %ld out of %ld", (long)uploadProgress.completedUnitCount, (long)self.mediaUploadProgress.totalUnitCount);
+		} success:^(NSURLSessionDataTask * _Nonnull task, NSData* responseData) {
+			[self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
+			NSString *response = [[NSString alloc] initWithData:responseData encoding: NSUTF8StringEncoding];
+			resolve(response);
+		} failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+			[[Crashlytics sharedInstance] recordError: error];
+			[[PublishingProgressManager sharedInstance] savingMediaFailedWithError:error];
+			[self.mediaUploadProgress cancel];
+			self.completionBlock(error, nil);
 		}];
-		[task resume];
+
 	}];
 
 	return promise;
