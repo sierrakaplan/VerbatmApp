@@ -9,6 +9,11 @@
 #ifndef Styles_h
 #define Styles_h
 
+
+#pragma mark -General Style -
+
+#define STANDARD_VIEW_CORNER_RADIUS 10.f
+
 #define VERBATM_GOLD_COLOR [UIColor colorWithRed:1.0 green:0.85 blue:0.20 alpha:1.0]
 #define ORANGE_COLOR [UIColor colorWithRed:0.8 green:0.4 blue:0.01 alpha:1.0]
 
@@ -155,6 +160,18 @@
 #define CHANNEL_LIST_CELL_SEPERATOR_COLOR [UIColor grayColor]
 #define DISCOVER_CHANNEL_NAME_FONT_SIZE 20.f
 #define DISCOVER_USER_NAME_FONT_SIZE 14.f
+
+
+
+#pragma mark -Share Post Link View -
+
+
+#define SPLV_LABEL_TEXT_COLOR [UIColor grayColor]
+
+#define SPLV_BACKGROUND_COLOR [UIColor colorWithWhite:1.f alpha:0.9f]
+
+
+
 
 
 #endif /* Styles_h */

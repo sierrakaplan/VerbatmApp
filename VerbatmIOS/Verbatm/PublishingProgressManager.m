@@ -36,6 +36,11 @@
 @property (nonatomic) ExternalShare* es;
 @property (nonatomic) BOOL shareToFB;
 
+
+
+@property (nonatomic) NSString * captionToShare;
+@property (nonatomic) SelectedPlatformsToShareLink locationToShare;
+
 @end
 
 @implementation PublishingProgressManager
@@ -49,6 +54,14 @@
 	});
 	return sharedInstance;
 }
+
+
+
+-(void)storeLocationToShare:(SelectedPlatformsToShareLink)locationToShare withCaption:(NSString *) caption{
+    self.locationToShare = locationToShare;
+    self.captionToShare = caption;
+}
+
 
 // Blocks is publishing something else, no network
 -(void)publishPostToChannel:(Channel *)channel andFacebook:(BOOL)externalShare withCaption:(NSString *)caption withPinchViews:(NSArray *)pinchViews
@@ -65,10 +78,13 @@
 	}
 
 	self.channelManager = [[Channel_BackendObject alloc] init];
-	[self countMediaContentFromPinchViews:pinchViews];
-	if(!channel.parseChannelObject) {
+	
+    [self countMediaContentFromPinchViews:pinchViews];
+	
+    if(!channel.parseChannelObject) {
 		self.newChannelCreated = YES;
 	}
+    
 	[self.channelManager createPostFromPinchViews:pinchViews
 										toChannel:channel
 							  withCompletionBlock:^(PFObject *parsePostObject) {

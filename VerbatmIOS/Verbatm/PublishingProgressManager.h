@@ -16,7 +16,12 @@
  You track the NSProgress Accountant to see how far we're progressing with media saving.
  */
 
+
+
+
+
 @class Channel_BackendObject;
+
 
 @protocol PublishingProgressProtocol <NSObject>
 
@@ -25,6 +30,16 @@
 -(void)publishingFailedWithError:(NSError*)error;
 
 @end
+
+
+
+
+typedef enum
+{
+    shareToFacebook = 1,
+    shareToTwitter = 2,
+    bothFacebookAndTwitter = 3
+} SelectedPlatformsToShareLink;
 
 @interface PublishingProgressManager : NSObject
 
@@ -46,6 +61,8 @@
 -(void)mediaSavingProgressed:(int64_t) newProgress;
 
 -(void)savingMediaFailedWithError:(NSError*)error;
+
+-(void)storeLocationToShare:(SelectedPlatformsToShareLink)locationToShare withCaption:(NSString *) caption;
 
 @end
 

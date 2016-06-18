@@ -592,13 +592,16 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	    [branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
 			NSLog(@"callback from external share called");
 	        if (!error) {
-	            NSLog(@"got my Branch invite link to share: %@", url);
-	            NSURL *link = [NSURL URLWithString:url];
-	            FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
-	            content.contentURL = link;
-	            [FBSDKShareDialog showFromViewController:self
-	                                         withContent:content
-	                                            delegate:nil];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSLog(@"got my Branch invite link to share: %@", url);
+                    NSURL *link = [NSURL URLWithString:url];
+                    FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
+                    content.contentURL = link;
+                    [FBSDKShareDialog showFromViewController:self
+                                                 withContent:content
+                                                    delegate:nil];
+                });
+	           
 	        } else {
 	            NSLog(@"An error occured %@", error.description);
 	        }

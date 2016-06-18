@@ -11,7 +11,9 @@
 #import "SelectChannel.h"
 #import "Styles.h"
 #import "UIImage+ImageEffectsAndTransforms.h"
-#define SHARE_BUTTON_HEIGHT 40.f
+#define SHARE_BUTTON_HEIGHT CANCEL_BUTTON_HEIGHT - 10.f
+#define CANCEL_BUTTON_HEIGHT 40.f
+
 #define BUTTON_WALL_OFFSET_X  10.f
 #define ANIMATION_DURATION 0.5
 
@@ -59,7 +61,7 @@
 
 	//create share button
 	CGRect shareButtonFrame = CGRectMake(BUTTON_WALL_OFFSET_X, SHARE_BUTTON_HEIGHT + self.frame.size.height - (SHARE_BUTTON_HEIGHT * 2.f),
-										 self.frame.size.width - (BUTTON_WALL_OFFSET_X * 2), SHARE_BUTTON_HEIGHT - 10.f);
+										 self.frame.size.width - (BUTTON_WALL_OFFSET_X * 2),SHARE_BUTTON_HEIGHT );
 
 	self.shareButton =  [[UIButton alloc] initWithFrame:shareButtonFrame];
 	[self.shareButton setAttributedTitle:[self getButtonAttributeStringWithText:@"REBLOG" andColor:[UIColor whiteColor]] forState:UIControlStateNormal];
