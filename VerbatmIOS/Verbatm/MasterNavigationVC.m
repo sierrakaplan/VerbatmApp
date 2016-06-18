@@ -140,7 +140,7 @@ ProfileVCDelegate>
     [newAlert addAction:action];
     [self presentViewController:newAlert animated:YES completion:nil];
     
-    
+	//todo: bring back image later
     //	[self.view addSubview:self.publishSuccessful];
     //	[self.view bringSubviewToFront:self.publishSuccessful];
     //	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
@@ -153,13 +153,18 @@ ProfileVCDelegate>
 
 
 -(void)publishingFailedNotification:(NSNotification *) notification{
-    
-    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Ooops...we couldn't publish." message:@"Don't worry - we saved all your stuff! Try to publish again later!" preferredStyle:UIAlertControllerStyleAlert];
+	NSError *error = notification.object;
+	NSString* message = @"Don't worry - we saved all your stuff! Try to publish again later!";
+	if (error.code == -1000 && [error.domain isEqualToString:@"com.alamofire.error.serialization.request"]) {
+		message = @"We couldn't publish one of your pieces of media - the file was unreadable.";
+	}
+    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Ooops...we couldn't publish." message:message preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
                                                    handler:^(UIAlertAction * action) {}];
     [newAlert addAction:action];
     [self presentViewController:newAlert animated:YES completion:nil];
-    
+
+	//todo: bring back image later
     //	[self.view addSubview:self.publishFailed];
     //	[self.view bringSubviewToFront:self.publishFailed];
     //	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{

@@ -113,7 +113,7 @@
 	self.currentPublishingChannel = NULL;
 	self.currentlyPublishing = NO;
 	self.currentlyPublishing = NO;
-    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POST_FAILED_TO_PUBLISH object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POST_FAILED_TO_PUBLISH object:error];
 }
 
 -(void)mediaSavingProgressed:(int64_t) newProgress {

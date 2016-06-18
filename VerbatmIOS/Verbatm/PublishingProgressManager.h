@@ -45,7 +45,7 @@ typedef enum
 
 #define INITIAL_PROGRESS_UNITS 3
 #define IMAGE_PROGRESS_UNITS 4
-#define VIDEO_PROGRESS_UNITS 11
+#define VIDEO_PROGRESS_UNITS 21
 
 @property (nonatomic, weak) id<PublishingProgressProtocol> delegate;
 @property (nonatomic, readonly) NSProgress * progressAccountant;

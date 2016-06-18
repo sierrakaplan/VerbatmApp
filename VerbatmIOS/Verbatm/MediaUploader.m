@@ -123,28 +123,42 @@
 	self.mediaUploadProgress = [NSProgress progressWithTotalUnitCount: VIDEO_PROGRESS_UNITS-1];
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		self.operationManager = [AFHTTPSessionManager manager];
+		self.operationManager.responseSerializer = [AFHTTPResponseSerializer serializer];
 		[self.operationManager POST:uri parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull multipartFormData) {
 			NSError *error;
 			if (![multipartFormData appendPartWithFileURL:videoURL name:@"defaultVideo" fileName:@"defaultVideo.mp4" mimeType:@"video/mp4" error:&error]) {
 				NSLog(@"error appending part: %@", error);
+				[self savingMediaFailed:error];
+				resolve(error);
 			}
 		} progress:^(NSProgress * _Nonnull uploadProgress) {
-			self.mediaUploadProgress.completedUnitCount = uploadProgress.completedUnitCount;
-			NSLog(@"media upload progress: %ld out of %ld", (long)uploadProgress.completedUnitCount, (long)self.mediaUploadProgress.totalUnitCount);
+			float progressAmount = ((float)uploadProgress.completedUnitCount/(float)uploadProgress.totalUnitCount);
+			NSInteger newProgressUnits = (NSInteger)(progressAmount*(float)self.mediaUploadProgress.totalUnitCount);
+			if (newProgressUnits != self.mediaUploadProgress.completedUnitCount) {
+				[[PublishingProgressManager sharedInstance] mediaSavingProgressed:(newProgressUnits - self.mediaUploadProgress.completedUnitCount)];
+				self.mediaUploadProgress.completedUnitCount = newProgressUnits;
+				NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
+			}
 		} success:^(NSURLSessionDataTask * _Nonnull task, NSData* responseData) {
+			[[PublishingProgressManager sharedInstance] mediaSavingProgressed:(self.mediaUploadProgress.totalUnitCount - self.mediaUploadProgress.completedUnitCount)];
 			[self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
+			NSLog(@"Video published!");
 			NSString *response = [[NSString alloc] initWithData:responseData encoding: NSUTF8StringEncoding];
 			resolve(response);
 		} failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-			[[Crashlytics sharedInstance] recordError: error];
-			[[PublishingProgressManager sharedInstance] savingMediaFailedWithError:error];
-			[self.mediaUploadProgress cancel];
-			self.completionBlock(error, nil);
+			[self savingMediaFailed: error];
+			resolve(error);
 		}];
 
 	}];
 
 	return promise;
+}
+
+-(void) savingMediaFailed:(NSError*)error {
+	[[Crashlytics sharedInstance] recordError: error];
+	[[PublishingProgressManager sharedInstance] savingMediaFailedWithError:error];
+	[self.mediaUploadProgress cancel];
 }
 
 /* Sent periodically to notify the delegate of upload progress.  This
