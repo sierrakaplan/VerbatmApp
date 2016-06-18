@@ -22,9 +22,11 @@
 //set before showAndRemoveCircle is called. This allows us to make the pan gestures not interact
 @property (weak, nonatomic) UIScrollView * postScrollView;
 
-//Photos are array of UIImage* and videos are array of AVassets or NSURl
--(instancetype)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideo:(NSURL*)videoURL
-		   andVideoThumbnail:(UIImage *)thumbnail small: (BOOL)small;
+// Will start animating until displayPhotos is called
+-(instancetype)initWithFrame:(CGRect)frame small: (BOOL)small;
+
+// Stops animating
+-(void) displayPhotos:(NSArray*)photos andVideo:(NSURL*)videoURL andVideoThumbnail:(UIImage*)thumbnail;
 
 // Initializer for when page view is in preview mode
 -(instancetype) initWithFrame:(CGRect)frame andPinchView:(CollectionPinchView*) pinchView inPreviewMode: (BOOL) previewMode;

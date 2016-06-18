@@ -22,13 +22,11 @@
 
 // stores pov info associated with this view
 -(instancetype)initWithFrame:(CGRect)frame andPostChannelActivityObject:(PFObject*) postObject
-					   small:(BOOL) small;
+					   small:(BOOL) small andPageObjects:(NSArray*) pageObjects;
 
 // Displays post from an array of PageViewingExperiences
--(void) renderPageViews: (NSArray *) pages;
+-(void) displayPageViews: (NSArray *) pages;
 
-// Displays post from an array of page PFObjects
--(void) renderPostFromPageObjects: (NSArray *) pages;
 
 -(void) clearPost;
 
@@ -51,9 +49,6 @@
 -(void) postOffScreen;
 
 -(void) muteAllVideos:(BOOL) shouldMute;
-
-// presents media only for the page on screen
--(void) presentMediaContent;
 
 //moves the like share bar up and down to be above tab bar when tab bar is showing
 -(void) shiftLikeShareBarDown:(BOOL) down;

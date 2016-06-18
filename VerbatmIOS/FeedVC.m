@@ -171,7 +171,6 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 		[self.sharePostView removeFromSuperview];
 		self.sharePostView = nil;
 	}
-
 	CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
 	CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
 	self.sharePostView = [[SharePostView alloc] initWithFrame:offScreenFrame];

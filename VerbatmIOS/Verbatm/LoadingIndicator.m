@@ -82,7 +82,7 @@
 	self.hidden = YES;
 }
 
--(UIImageView *)customActivityIndicator{
+-(UIImageView *) customActivityIndicator{
 	if(!_customActivityIndicator){
 		_customActivityIndicator = [[UIImageView alloc] initWithFrame:self.bounds];
 		_customActivityIndicator.backgroundColor = [UIColor clearColor];

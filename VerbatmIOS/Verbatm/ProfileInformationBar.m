@@ -77,25 +77,9 @@
 			}
 		}
 		[self createFollowersAndFollowingLabels];
-//		[self registerForNotifications];
 	}
 	return self;
 }
-
-//todo: see if necessary?
-//-(void)registerForNotifications{
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(loginSucceeded:)
-//												 name:NOTIFICATION_USER_LOGIN_SUCCEEDED
-//											   object:nil];
-//}
-//
-//
-//
-//-(void) loginSucceeded: (NSNotification*) notification {
-//	[self updateNumFollowersAndFollowing];
-//}
-
 
 -(void) updateNumFollowersAndFollowing {
 	NSString *numFollowers = [NSNumber numberWithInteger:self.channel.usersFollowingChannel.count].stringValue;
@@ -148,7 +132,6 @@
 	[self addSubview: self.settingsButton];
 }
 
-//todo: formatting and check for if following
 -(void) createFollowButton {
 	[self createFollowOrEditButton];
 	[self updateUserFollowingChannel];

@@ -51,7 +51,6 @@ typedef enum
 @property (nonatomic, readonly) NSProgress * progressAccountant;
 @property (nonatomic, readonly) BOOL currentlyPublishing;
 @property (nonatomic, readonly) Channel* currentPublishingChannel;
-@property (nonatomic) BOOL newChannelCreated;
 
 +(instancetype)sharedInstance;
 

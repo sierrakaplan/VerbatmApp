@@ -6,6 +6,7 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+#import <Crashlytics/Crashlytics.h>
 #import "Follow_BackendManager.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFQuery.h>
@@ -88,8 +89,6 @@
 	}];
 }
 
-//todo: error handling
-
 // Returns all of the channels a user is following as array of PFObjects
 + (void) channelsUserFollowing: (PFUser*) user withCompletionBlock:(void(^)(NSMutableArray*)) block {
 	if (!user) return;
@@ -106,6 +105,8 @@
 			}
 			block (channels);
 			return;
+		} else {
+			[[Crashlytics sharedInstance] recordError:error];
 		}
 		block (nil);
 	}];

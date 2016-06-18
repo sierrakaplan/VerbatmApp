@@ -24,7 +24,7 @@
 @property (weak, nonatomic) id<ProfileVCDelegate> delegate;
 
 @property (weak, nonatomic) PFUser* ownerOfProfile;
-@property (nonatomic) Channel* channel; //todo: check if should be weak
+@property (nonatomic) Channel* channel; 
 @property (nonatomic) NSDate *startingDate;
 
 //let us know if this is the profile of the logged in user

@@ -9,8 +9,10 @@
 
 #import "CollectionPinchView.h"
 #import "Durations.h"
+#import "Icons.h"
 #import "ImagePinchView.h"
-#import "VideoPinchView.h"
+
+#import "LoadingIndicator.h"
 
 #import "Notifications.h"
 
@@ -19,6 +21,7 @@
 
 #import "Styles.h"
 #import "VideoPVE.h"
+#import "VideoPinchView.h"
 
 @interface PhotoVideoPVE() <UIScrollViewDelegate, PhotoPVETextEntryDelegate>
 
@@ -36,27 +39,36 @@
 
 @implementation PhotoVideoPVE
 
--(instancetype)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideo:(NSURL*)videoURL
-		   andVideoThumbnail:(UIImage *)thumbnail small: (BOOL)small {
+-(instancetype)initWithFrame:(CGRect)frame small: (BOOL)small {
     self = [super initWithFrame:frame];
     if(self) {
 		self.small = small;
 		self.inPreviewMode = NO;
 		[self initialFormatting];
 
-		self.photosView = [[PhotoPVE alloc] initWithFrame:self.photoAveFrame andPhotoArray:photos small:small isPhotoVideoSubview:YES];
+		self.photosView = [[PhotoPVE alloc] initWithFrame:self.photoAveFrame small:small isPhotoVideoSubview:YES];
 		self.photosView.textEntryDelegate = self;
-		self.videoView = [[VideoPVE alloc]initWithFrame:self.videoAveFrame andVideo:videoURL
-										   andThumbnail:thumbnail];
+		self.videoView = [[VideoPVE alloc] initWithFrame:self.videoAveFrame isPhotoVideoSubview: YES];
 		[self addSubview:self.videoView];
 		[self addSubview:self.photosView];
     }
     return self;
 }
 
+-(void) displayPhotos:(NSArray*)photos andVideo:(NSURL*)videoURL andVideoThumbnail:(UIImage*)thumbnail {
+	self.hasLoadedMedia = YES;
+	[self.customActivityIndicator stopCustomActivityIndicator];
+	[self.photosView displayPhotos:photos];
+	[self.videoView setThumbnailImage: thumbnail andVideo:videoURL];
+	if (self.currentlyOnScreen) {
+		[self onScreen];
+	}
+}
+
 -(instancetype) initWithFrame:(CGRect)frame andPinchView:(CollectionPinchView*) pinchView inPreviewMode: (BOOL) previewMode {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.hasLoadedMedia = YES;
 		self.small = NO;
 		self.inPreviewMode = previewMode;
 		self.pinchView = pinchView;
@@ -65,7 +77,8 @@
 		self.photosView = [[PhotoPVE alloc] initWithFrame:self.photoAveFrame andPinchView:pinchView
 											inPreviewMode: previewMode isPhotoVideoSubview:YES];
 		self.photosView.textEntryDelegate = self;
-		self.videoView = [[VideoPVE alloc]initWithFrame:self.videoAveFrame andPinchView:pinchView inPreviewMode: previewMode];
+		self.videoView = [[VideoPVE alloc]initWithFrame:self.videoAveFrame
+										   andPinchView:pinchView inPreviewMode: previewMode isPhotoVideoSubview:YES];
 		[self addSubview:self.videoView];
 		[self addSubview:self.photosView];
 	}
@@ -84,24 +97,17 @@
 	self.photoAveFrame = CGRectMake(0, videoAveHeight, self.frame.size.width, photoAveHeight);
 }
 
-//-(void) showAndRemoveCircle {
-//    if(self.postScrollView){
-//        self.photosView.postScrollView = self.postScrollView;
-//    }
-//    [self.photosView showAndRemoveCircle];
-//}
-
 #pragma mark - PhotoAveTextEntry Delegate methods -
 
--(void) editContentViewTextIsEditing{
+-(void) editContentViewTextIsEditing {
     [self movePhotoPageUp:YES];
 }
 
--(void) editContentViewTextDoneEditing{
+-(void) editContentViewTextDoneEditing {
     [self movePhotoPageUp:NO];
 }
 
--(void)movePhotoPageUp:(BOOL) moveUp{
+-(void)movePhotoPageUp:(BOOL) moveUp {
     if(moveUp){
         [UIView animateWithDuration:PAGE_VIEW_FILLS_SCREEN_DURATION animations:^{
             [self bringSubviewToFront:self.photosView];
@@ -117,11 +123,15 @@
 #pragma mark - Overriding offscreen/onscreen methods -
 
 -(void)offScreen {
+	[self.customActivityIndicator stopCustomActivityIndicator];
+	self.currentlyOnScreen = NO;
     [self.videoView offScreen];
     [self.photosView offScreen];
 }
 
 -(void)onScreen {
+	if (!self.hasLoadedMedia) [self.customActivityIndicator startCustomActivityIndicator];
+	self.currentlyOnScreen = YES;
     [self.videoView onScreen];
 	[self.photosView onScreen];
 }

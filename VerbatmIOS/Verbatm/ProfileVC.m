@@ -214,17 +214,6 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
     if(!self.currentlyCreatingNewChannel){
         self.currentlyCreatingNewChannel = YES;
         [Channel_BackendObject createChannelWithName:channelName andCompletionBlock:^(PFObject *channelObject) {
-			//todo: delete this now that can't create channel in adk
-//            if (channelObject) {
-//                Channel *newChannel = [[Channel alloc] initWithChannelName:channelName
-//													 andParseChannelObject:channelObject
-//														 andChannelCreator:[PFUser currentUser]];
-//				//todo: new channel created
-////                [self.profileNavBar newChannelCreated:newChannel];
-//                [self clearChannelCreationView];
-//				[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{}];
-//                self.currentlyCreatingNewChannel = NO;
-//            }
         }];
     }
 }
@@ -349,11 +338,6 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	PublishingProgressManager *progressManager = [PublishingProgressManager sharedInstance];
 	self.publishingProgress = [progressManager progressAccountant];
 	[progressManager setDelegate:self];
-	if ([progressManager newChannelCreated]) {
-		//todo: channel created
-//		[self.profileHeaderView newChannelCreated: currentPublishingChannel];
-		[progressManager setNewChannelCreated:NO];
-	}
 	[self.profileHeaderView addSubview: self.publishingProgressView];
 }
 
