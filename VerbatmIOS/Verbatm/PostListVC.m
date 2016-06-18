@@ -267,7 +267,8 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	if(self.listType == listFeed){
 		[self.feedQueryManager refreshFeedWithCompletionHandler:self.refreshPostsCompletionFeed];
 	} else if (self.listType == listChannel) {
-		[self.postsQueryManager refreshPostsInChannel:self.channelForList startingAt:self.latestDate
+		if (self.isCurrentUserProfile) [self.postsQueryManager refreshPostsInUserChannel:self.channelForList withCompletionBlock:self.refreshPostsCompletionChannel];
+		else [self.postsQueryManager refreshPostsInChannel:self.channelForList startingAt:self.latestDate
 								  withCompletionBlock:self.refreshPostsCompletionChannel];
 	}
 }

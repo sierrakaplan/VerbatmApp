@@ -115,15 +115,29 @@
 
 #pragma mark - NSURLSESSION -
 
--(instancetype) initWithVideoPathName: (NSString*)path andUri: (NSString*)uri {
-	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:uri]];
+-(AnyPromise*) uploadVideoWithUrl:(NSURL*)videoURL andUri:(NSString*)uri {
+	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+		//Prepare upload request
+		NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:uri]];
+		[request setHTTPMethod:@"PUT"];
+		[request setValue:@"video/mp4" forHTTPHeaderField:@"Content-Type"];
+		[request setValue:[NSString stringWithFormat:@"attachment; filename=defaultVideo.mp4"] forHTTPHeaderField:@"Content-Disposition"];
+		[request setValue:@"defaultVideo.mp4" forHTTPHeaderField:@"fileName"];
 
-	[request setHTTPMethod:@"POST"];
-	[request setValue:@"video/mp4" forHTTPHeaderField:@"Content-Type"];
-	[request setValue:[NSString stringWithFormat:@"attachment; filename=\"%@\"", path] forHTTPHeaderField:@"Content-Disposition"];
-	[request setHTTPBodyStream:[NSInputStream inputStreamWithFileAtPath: path]];
+		//todo: make all publishing happen on same session
+		NSURLSession* session = [NSURLSession sessionWithConfiguration: [NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:nil];
+		NSURLSessionUploadTask *task = [session uploadTaskWithRequest:request fromFile:videoURL completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+			if (error) {
+				resolve(error);
+			} else {
+				[self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
+				resolve([[NSString alloc] initWithBytes:[data bytes] length:[data length] encoding: NSISOLatin1StringEncoding]);
+			}
+		}];
+		[task resume];
+	}];
 
-	return self;
+	return promise;
 }
 
 /* Sent periodically to notify the delegate of upload progress.  This
@@ -156,15 +170,7 @@ didCompleteWithError:(nullable NSError *)error {
 		self.completionBlock(error, nil);
 		return;
 	}
-//
-//	//The response string is a blobkeystring and an imagesservice servingurl for image
-//	NSString* responseString = [response ];
-//	if (!responseString.length) {
-//		[self requestFailed:request];
-//	} else {
-//		[self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
-//		self.completionBlock(nil, responseString);
-//	}
+	//todo: let something know it finished?
 }
 
 @end

@@ -196,7 +196,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	}
 }
 
--(void) removeScreenDarkener{
+-(void) removeScreenDarkener {
 	if(self.darkScreenCover) {
 		[self.darkScreenCover removeFromSuperview];
 		self.darkScreenCover = nil;

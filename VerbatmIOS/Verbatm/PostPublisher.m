@@ -58,17 +58,18 @@
 
 -(AnyPromise*) storeVideoFromURL: (NSURL*) url {
 
-	AnyPromise* getVideoDataPromise = [UtilityFunctions loadCachedVideoDataFromURL:url];
-	AnyPromise* getVideoUploadURIPromise = [self getVideoUploadURI];
 
-	return PMKWhen(@[getVideoDataPromise, getVideoUploadURIPromise]).then(^(NSArray * results) {
-		NSData* videoData = results[0];
-		NSString* uri = results[1];
-		self.videoUploader = [[MediaUploader alloc] initWithVideoData:videoData andUri: uri];
+//	return PMKWhen(@[getVideoDataPromise, getVideoUploadURIPromise])
+
+//	AnyPromise* getVideoDataPromise = [UtilityFunctions loadCachedVideoDataFromURL:url];
+	return [self getVideoUploadURI].then(^(NSString* uri) {
+//		NSData* videoData = results[0];
+//		NSString* uri = results[1];
+		self.videoUploader = [[MediaUploader alloc] init];
 		if ([self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
 			[self.publishingProgress addChild:self.videoUploader.mediaUploadProgress withPendingUnitCount: VIDEO_PROGRESS_UNITS - 1];
 		}
-		return [self.videoUploader startUpload];
+		return [self.videoUploader uploadVideoWithUrl:url andUri:uri];
 	});
 }
 
