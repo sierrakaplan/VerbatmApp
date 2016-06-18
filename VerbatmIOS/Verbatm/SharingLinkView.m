@@ -9,7 +9,7 @@
 #import "SharingLinkView.h"
 #import "SharingLinkActionView.h"
 
-@interface SharingLinkView ()
+@interface SharingLinkView ()<ShareLinkActionViewProtocol>
 
 @property (nonatomic) SharingLinkActionView * actionView;
 
@@ -37,15 +37,15 @@
 
 -(void) presentActionView {
     self.actionView = [[SharingLinkActionView alloc] initWithFrame:CGRectMake(20.f, 100.f, self.frame.size.width - 40.f, 200.f)];
+    self.actionView.delegate = self;
     [self addSubview:self.actionView];
 }
-
-
-
-
-
-
-
+-(void) continueToPublish{
+    [self.delegate continueToPublish];
+}
+-(void) cancelPublishing{
+    [self.delegate cancelPublishing];
+}
 
 /*
 // Only override drawRect: if you perform custom drawing.

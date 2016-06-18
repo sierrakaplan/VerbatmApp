@@ -11,10 +11,13 @@
 
 @protocol ShareLinkActionViewProtocol <NSObject>
 
+-(void) continueToPublish;
+-(void) cancelPublishing;
+
 
 @end
 
 
 @interface SharingLinkActionView : UIView
-
+@property (nonatomic) id <ShareLinkActionViewProtocol> delegate;
 @end

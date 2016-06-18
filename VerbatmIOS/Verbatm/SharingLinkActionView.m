@@ -7,7 +7,7 @@
 //
 
 #import "Durations.h"
-
+#import "PublishingProgressManager.h"
 #import "SharingLinkActionView.h"
 #import "Styles.h"
 #import "verbatmButton.h"
@@ -98,14 +98,12 @@
         if(finished){
             if([self.captionTextView.text isEqualToString:@""] && down) {
                 [self addCaptionInstruction];
-                
             }else{
                 [self removeCaptionInstruction];
             }
         }
     }];
 }
-
 
 -(void)addCaptionInstruction{
     self.captionPrompt = [[UILabel alloc] init];
@@ -131,14 +129,10 @@
     }
 }
 
-
-
 -(void)formatView{
     self.layer.cornerRadius = STANDARD_VIEW_CORNER_RADIUS;
     [self setBackgroundColor:SPLV_BACKGROUND_COLOR];
 }
-
-
 
 -(void)setButtons{
     
@@ -161,8 +155,6 @@
 
 }
 
-
-
 -(UIButton *)getButtonWithFrame:(CGRect) newFrame andTitleText:(NSString *) title{
     //create share button
     
@@ -180,10 +172,6 @@
     
     return button;
 }
-
-
-
-
 
 -(void)presentCommandText{
     
@@ -250,11 +238,26 @@
 }
 
 -(void)cancelButtonSelected{
-    
+    [self.delegate cancelPublishing];
 }
 
 -(void)continueButtonSelected{
+    //save caption for later use -- probably in publish manager
+    if(self.numberOfSelectedButtons > 0){
+        SelectedPlatformsToShareLink whereToShare;
+        if(self.numberOfSelectedButtons == 1.f){
+            if(self.facebookButton.buttonInSelectedState == ButtonSelected){
+                whereToShare = shareToFacebook;
+            }else{
+                 whereToShare = shareToTwitter;
+            }
+        }else if (self.numberOfSelectedButtons == 2.f){
+            whereToShare = bothFacebookAndTwitter;
+        }
+        [[PublishingProgressManager sharedInstance] storeLocationToShare:whereToShare withCaption:self.captionTextView.text];
+    }
     
+    [self.delegate continueToPublish];
 }
 
 -(UITextView *) captionTextView{

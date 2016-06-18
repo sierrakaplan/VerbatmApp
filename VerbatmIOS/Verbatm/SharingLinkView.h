@@ -14,6 +14,15 @@
  This is not a reblog view  -- it only appears in the publish screen for now
  */
 
-@interface SharingLinkView : UIView
+@protocol ShareLinkViewProtocol <NSObject>
 
+-(void) continueToPublish;
+-(void) cancelPublishing;
+
+
+@end
+
+
+@interface SharingLinkView : UIView
+@property (nonatomic) id <ShareLinkViewProtocol> delegate;
 @end

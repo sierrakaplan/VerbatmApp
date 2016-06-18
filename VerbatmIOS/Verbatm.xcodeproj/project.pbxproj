@@ -908,6 +908,7 @@
 		A560EF9A1BA89552003FB041 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				A5BFA5971CA89A90002C3884 /* Publishing */,
 				A5337BC41CCDD9B800551394 /* User Info + channels */,
 				A5337BC31CCDD99000551394 /* Social Network objects */,
 				A5337BC21CCDD97A00551394 /* Elements of post */,
@@ -1549,7 +1550,6 @@
 				C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */,
 				C78B681119CA6914003D0AC5 /* View Controllers */,
 				A560EF9A1BA89552003FB041 /* Model */,
-				A5BFA5971CA89A90002C3884 /* Publishing */,
 				A5E85FFE1B96233D00E148D0 /* GTL Logic */,
 				C7BC437C199D97F5004B91A1 /* Supporting Files */,
 				C763C1BA1CE4430B00929248 /* onBoardingViewController.h */,
