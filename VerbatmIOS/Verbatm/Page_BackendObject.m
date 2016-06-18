@@ -152,6 +152,7 @@
 		[exporter setOutputFileType:AVFileTypeMPEG4];
 		return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 			[exporter exportAsynchronouslyWithCompletionHandler:^(void){
+				//todo: add progress units for this part
 				resolve(exportURL);
 			}];
 		}].then(^(NSURL* exportURL) {
