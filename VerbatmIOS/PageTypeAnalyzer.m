@@ -11,9 +11,6 @@
 
 #import "CollectionPinchView.h"
 
-#import "GTLVerbatmAppImage.h"
-#import "GTLVerbatmAppVideo.h"
-
 #import "ImagePinchView.h"
 
 #import <Parse/PFObject.h>

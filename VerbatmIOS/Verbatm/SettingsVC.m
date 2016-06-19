@@ -7,6 +7,7 @@
 //
 
 #import "CustomNavigationBar.h"
+#import <Parse/PFUser.h>
 #import "User_BackendObject.h"
 #import <MessageUI/MessageUI.h>
 #import "TermsAndConditionsVC.h"
@@ -15,7 +16,6 @@
 #import "SettingsVC.h"
 #import "Styles.h"
 
-#import "UserManager.h"
 
 @interface SettingsVC () <CustomNavigationBarDelegate,
 MFMailComposeViewControllerDelegate,UITextFieldDelegate>
@@ -132,14 +132,11 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
 
 
 - (IBAction)signOutButtonSelected:(id)sender {
-    //sign out functionality -- not sure what this should be
+    //todo - exit app
     [self exitSettingsPageWithCompletionBlock:^{
-        [[UserManager sharedInstance] logOutUser];
+		[PFUser logOutInBackground];
     }];
 }
-
-
-
 
 
 #pragma mark -seding email functionality-

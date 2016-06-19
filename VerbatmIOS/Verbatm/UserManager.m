@@ -7,19 +7,12 @@
 //
 
 #import <Crashlytics/Crashlytics.h>
-#import "GTLQueryVerbatmApp.h"
-#import "GTLServiceVerbatmApp.h"
-#import "GTLVerbatmAppVerbatmUser.h"
-#import "GTMHTTPFetcherLogging.h"
 #import "Notifications.h"
 #import "ParseBackendKeys.h"
 #import "ProfileVC.h"
 #import "UserManager.h"
 
 @interface UserManager()
-
-@property(nonatomic, strong) GTLVerbatmAppVerbatmUser* currentUser;
-@property(nonatomic, strong) GTLServiceVerbatmApp *service;
 
 @end
 

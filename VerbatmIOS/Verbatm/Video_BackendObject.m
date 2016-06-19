@@ -12,8 +12,6 @@
 
 #import <Crashlytics/Crashlytics.h>
 
-#import "GTLVerbatmAppVideo.h"
-
 #import "Notifications.h"
 
 #import <Parse/PFUser.h>

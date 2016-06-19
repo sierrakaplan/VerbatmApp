@@ -7,8 +7,6 @@
 //
 
 
-#import "GTLVerbatmAppImage.h"
-
 #import "Notifications.h"
 
 #import "Photo_BackendObject.h"
