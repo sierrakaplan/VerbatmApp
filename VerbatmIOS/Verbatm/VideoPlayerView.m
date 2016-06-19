@@ -179,6 +179,7 @@
 			if (self.shouldPlayOnLoad) [self playVideo];
 			self.shouldPlayOnLoad = NO;
 		} else {
+			[self pauseVideo];
 			[self.customActivityIndicator startCustomActivityIndicator];
 			self.videoLoading = YES;
 			self.shouldPlayOnLoad = YES;

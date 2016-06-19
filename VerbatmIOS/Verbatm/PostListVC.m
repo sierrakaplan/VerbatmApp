@@ -242,17 +242,17 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	self.loadMorePostsCompletion = ^void(NSArray *posts) {
 		if (posts.count) {
 			weakSelf.isLoadingMore = NO;
-			NSMutableArray *indexes = [NSMutableArray array];
+			NSMutableArray *indices = [NSMutableArray array];
 			NSInteger index = weakSelf.parsePostObjects.count;
 			for (NSInteger i = index; i < index + posts.count; i++) {
-				[indexes addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+				[indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
 			}
 			// Perform the updates
 			[weakSelf.collectionView performBatchUpdates:^{
 				//Insert the new data
 				[weakSelf.parsePostObjects addObjectsFromArray:posts];
 				//Insert the new cells
-				[weakSelf.collectionView insertItemsAtIndexPaths:indexes];
+				[weakSelf.collectionView insertItemsAtIndexPaths:indices];
 
 			} completion:nil];
 		}
