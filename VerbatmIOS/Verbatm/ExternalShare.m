@@ -44,7 +44,7 @@
     return self;
 }
 
--(void)storeShareLinkToPost:(PFObject *)postObject withCaption:(NSString *) caption withCompletionBlock:(void(^)(bool))block {
+-(void)storeShareLinkToPost:(PFObject *)postObject withCaption:(NSString *) caption withCompletionBlock:(void(^)(bool, PFObject *))block {
 
     NSString *postId = postObject.objectId;
     self.name = [[PFUser currentUser] valueForKey:VERBATM_USER_NAME_KEY];
@@ -75,7 +75,7 @@
 }
 
 
--(void)storeLinkWithCaption:(NSString *) caption channelName:(NSString *) channelName postObject:(PFObject *) postObject andBranchUniversalObject: (BranchUniversalObject*) branchUniversalObject withCompletionBlock:(void(^)(bool))block {
+-(void)storeLinkWithCaption:(NSString *) caption channelName:(NSString *) channelName postObject:(PFObject *) postObject andBranchUniversalObject: (BranchUniversalObject*) branchUniversalObject withCompletionBlock:(void(^)(bool, PFObject *))block {
     
     
     NSString * title = (caption && ![caption isEqualToString:@""]) ?
@@ -115,7 +115,7 @@
                             ///to do -- call completion block
                             
                         }
-                        if(block)block(succeeded);
+                        if(block)block(succeeded, postObject);
                     }];
                 } else {
                     self.aquiredURLSuccesfully = NO;
@@ -141,7 +141,7 @@
             }
         }
         //call the block and tell them that saving failed
-        if(block)block(NO);
+        if(block)block(NO, postObject);
     });
     
 }
@@ -213,6 +213,7 @@
                                        
                                        nil];
         FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:params HTTPMethod:@"POST"];
+        
         [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
             if (!error) {
                 NSLog(@"fetched user:%@", result);
@@ -220,6 +221,7 @@
                 NSLog(@"An error has occured %@", error);
             }
         }];
+        
     } else {
         NSLog(@"User has not granted publish_action permission");
     }

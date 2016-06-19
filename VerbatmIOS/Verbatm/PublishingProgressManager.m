@@ -130,21 +130,25 @@
 	[self.currentParsePostObject saveInBackground];
 	//register the relationship
 	[Post_Channel_RelationshipManager savePost:self.currentParsePostObject toChannels:[NSMutableArray arrayWithObject:self.currentPublishingChannel] withCompletionBlock:^{
-        [self.es storeShareLinkToPost:self.currentParsePostObject withCaption:self.captionToShare withCompletionBlock:^(bool savedSuccessfully) {
+        
+        [self.es storeShareLinkToPost:self.currentParsePostObject withCaption:self.captionToShare withCompletionBlock:^(bool savedSuccessfully, PFObject * postObject) {
             if(savedSuccessfully){
-                [self.es sharePostLink:[self.currentParsePostObject objectForKey:POST_SHARE_LINK] toPlatform:self.locationToShare];
+                [self.es sharePostLink:[postObject objectForKey:POST_SHARE_LINK] toPlatform:self.locationToShare];
+            }else{
+                NSLog(@"Failed to get and save link to post :/");
             }
-            
-            self.progressAccountant.completedUnitCount = 0;
-            self.progressAccountant.totalUnitCount = 0;
-            self.currentlyPublishing = NO;
-            [[PostInProgress sharedInstance] clearPostInProgress];
-            [self.delegate publishingComplete];
-            NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_POST_PUBLISHED object:nil userInfo:nil];
-            [[NSNotificationCenter defaultCenter] postNotification: notification];
-            self.currentParsePostObject = nil;
-            self.currentPublishingChannel = nil;
         }];
+        
+        
+        self.progressAccountant.completedUnitCount = 0;
+        self.progressAccountant.totalUnitCount = 0;
+        self.currentlyPublishing = NO;
+        [[PostInProgress sharedInstance] clearPostInProgress];
+        [self.delegate publishingComplete];
+        NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_POST_PUBLISHED object:nil userInfo:nil];
+        [[NSNotificationCenter defaultCenter] postNotification: notification];
+        self.currentParsePostObject = nil;
+        self.currentPublishingChannel = nil;
 	}];
 }
 
