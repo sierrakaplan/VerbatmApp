@@ -79,10 +79,7 @@
 -(void)prepareVideoFromURL: (NSURL*) url{
 	if (!url) return;
 
-	if (!self.videoLoading) {
-		self.videoLoading = YES;
-	}
-
+	self.videoLoading = YES;
 	AVPlayerItem *playerItem;
 	if([[VideoDownloadManager sharedInstance] containsEntryForUrl:url]){
 		playerItem = [[VideoDownloadManager sharedInstance] getVideoForUrl: url.absoluteString];
@@ -95,9 +92,7 @@
 }
 
 -(void) prepareVideoFromPlayerItem:(AVPlayerItem*)playerItem {
-	if (!self.videoLoading) {
-		self.videoLoading = YES;
-	}
+	self.videoLoading = YES;
 	if (self.playerItem) {
 		[self removePlayerItemObservers];
 	}
@@ -180,7 +175,7 @@
 
 -(void)playVideo {
 	self.shouldPlayOnLoad = YES;
-	[self.loadingIndicator startAnimating];
+	if (self.videoLoading) [self.loadingIndicator startAnimating];
 	if (self.player && self.playerLayer) {
 		[self.player play];
 		self.isVideoPlaying = YES;
@@ -272,7 +267,6 @@
 		_loadingIndicator.hidesWhenStopped = YES;
 		[self addSubview:_loadingIndicator];
 	}
-	self.hidden = NO;
 	[self bringSubviewToFront:_loadingIndicator];
 	return _loadingIndicator;
 }
