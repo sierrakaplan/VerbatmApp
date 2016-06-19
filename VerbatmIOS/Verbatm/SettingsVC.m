@@ -16,6 +16,7 @@
 #import "SettingsVC.h"
 #import "Styles.h"
 
+#import "UserManager.h"
 
 @interface SettingsVC () <CustomNavigationBarDelegate,
 MFMailComposeViewControllerDelegate,UITextFieldDelegate>
@@ -130,11 +131,10 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
     }];
 }
 
-
 - (IBAction)signOutButtonSelected:(id)sender {
     //todo - exit app
     [self exitSettingsPageWithCompletionBlock:^{
-		[PFUser logOutInBackground];
+		[[UserManager sharedInstance] logOutUser];
     }];
 }
 
@@ -161,15 +161,9 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
 
 }
 
-- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
-{
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
-
-
-
-
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

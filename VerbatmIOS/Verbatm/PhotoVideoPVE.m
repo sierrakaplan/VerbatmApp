@@ -58,6 +58,7 @@
 -(void) displayPhotos:(NSArray*)photos andVideo:(NSURL*)videoURL andVideoThumbnail:(UIImage*)thumbnail {
 	self.hasLoadedMedia = YES;
 	[self.customActivityIndicator stopCustomActivityIndicator];
+	[self.customActivityIndicator removeFromSuperview];
 	[self.photosView displayPhotos:photos];
 	[self.videoView setThumbnailImage: thumbnail andVideo:videoURL];
 	if (self.currentlyOnScreen) {
@@ -130,8 +131,11 @@
 }
 
 -(void)onScreen {
-	if (!self.hasLoadedMedia) [self.customActivityIndicator startCustomActivityIndicator];
 	self.currentlyOnScreen = YES;
+	if (!self.hasLoadedMedia) {
+		[self.customActivityIndicator startCustomActivityIndicator];
+		return;
+	}
     [self.videoView onScreen];
 	[self.photosView onScreen];
 }
