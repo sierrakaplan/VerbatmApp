@@ -197,11 +197,11 @@
 
 // Pauses player
 -(void)pauseVideo {
-	[self removePlayerItemObservers];
 	if (self.player) {
 		[self.player pause];
 	}
 	self.isVideoPlaying = NO;
+	self.shouldPlayOnLoad = NO;
 }
 
 #pragma mark - Mute / Unmute -

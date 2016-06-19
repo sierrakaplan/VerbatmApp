@@ -216,7 +216,7 @@
 
 -(void)onScreen {
 	self.currentlyOnScreen = YES;
-	if (!self.hasLoadedMedia || !self.photoVideoSubview) {
+	if (!self.hasLoadedMedia && !self.photoVideoSubview) {
 		[self.customActivityIndicator startCustomActivityIndicator];
 		return;
 	}
