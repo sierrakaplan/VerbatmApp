@@ -18,7 +18,6 @@
 #import "Photo_BackendObject.h"
 #import "Video_BackendObject.h"
 #import "PageTypeAnalyzer.h"
-#import "ExternalShare.h"
 
 @interface PublishingProgressManager()
 //how many media pieces we are trying to publish in total
@@ -79,7 +78,7 @@
 
 	self.channelManager = [[Channel_BackendObject alloc] init];
     [self countMediaContentFromPinchViews:pinchViews];
-
+    
 	[self.channelManager createPostFromPinchViews:pinchViews
 										toChannel:channel
 							  withCompletionBlock:^(PFObject *parsePostObject) {
@@ -131,20 +130,21 @@
 	[self.currentParsePostObject saveInBackground];
 	//register the relationship
 	[Post_Channel_RelationshipManager savePost:self.currentParsePostObject toChannels:[NSMutableArray arrayWithObject:self.currentPublishingChannel] withCompletionBlock:^{
-        
-        if(self.shareToFB){
-            [self.es sharePostToFacebook:self.currentParsePostObject];
-        }
-        
-		self.progressAccountant.completedUnitCount = 0;
-		self.progressAccountant.totalUnitCount = 0;
-		self.currentlyPublishing = NO;
-		[[PostInProgress sharedInstance] clearPostInProgress];
-		[self.delegate publishingComplete];
-		NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_POST_PUBLISHED object:nil userInfo:nil];
-		[[NSNotificationCenter defaultCenter] postNotification: notification];
-		self.currentParsePostObject = nil;
-		self.currentPublishingChannel = nil;
+        [self.es storeShareLinkToPost:self.currentParsePostObject withCaption:self.captionToShare withCompletionBlock:^(bool savedSuccessfully) {
+            if(savedSuccessfully){
+                [self.es sharePostLink:[self.currentParsePostObject objectForKey:POST_SHARE_LINK] toPlatform:self.locationToShare];
+            }
+            
+            self.progressAccountant.completedUnitCount = 0;
+            self.progressAccountant.totalUnitCount = 0;
+            self.currentlyPublishing = NO;
+            [[PostInProgress sharedInstance] clearPostInProgress];
+            [self.delegate publishingComplete];
+            NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_POST_PUBLISHED object:nil userInfo:nil];
+            [[NSNotificationCenter defaultCenter] postNotification: notification];
+            self.currentParsePostObject = nil;
+            self.currentPublishingChannel = nil;
+        }];
 	}];
 }
 

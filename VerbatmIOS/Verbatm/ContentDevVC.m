@@ -32,6 +32,8 @@
 #import "ImagePinchView.h"
 #import "Icons.h"
 
+#import <Social/SLRequest.h>
+
 #import "ParseBackendKeys.h"
 #import "PinchView.h"
 #import "PreviewDisplayView.h"
@@ -573,7 +575,9 @@ rowHeightForComponent:(NSInteger)component{
 		}
 	}
 
-	if(pinchViews.count) [self publishOurStoryWithPinchViews:pinchViews];
+	//if(pinchViews.count)
+        
+        [self publishOurStoryWithPinchViews:pinchViews];
 }
 
 
@@ -2045,6 +2049,15 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 -(void) publishOurStoryWithPinchViews:(NSMutableArray *)pinchViews{
+
+    
+    
+    
+    
+    
+    
+    
+    
     self.pinchViewsToPublish = pinchViews;
     [self presentShareLinkView];
     
@@ -2080,7 +2093,7 @@ andSaveInUserDefaults:(BOOL)save {
         }
     }
     if (channelToPostIn) {
-        [[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn andFacebook:self.postToFB withCaption:self.fbCaption withPinchViews:self.pinchViewsToPublish
+        [[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn andFacebook:TRUE withCaption:self.fbCaption withPinchViews:self.pinchViewsToPublish
                                                      withCompletionBlock:^(BOOL isAlreadyPublishing, BOOL noNetwork) {
                                                          NSString *errorMessage;
                                                          if(isAlreadyPublishing) {

@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "Channel.h"
+#import "ExternalShare.h"
+
 /*
  Manages the publishing of content (by starting the parse domino effect)
  but is mainly used to track progress and to notify relevant ui. Because you can
@@ -34,12 +36,6 @@
 
 
 
-typedef enum
-{
-    shareToFacebook = 1,
-    shareToTwitter = 2,
-    bothFacebookAndTwitter = 3
-} SelectedPlatformsToShareLink;
 
 @interface PublishingProgressManager : NSObject
 
