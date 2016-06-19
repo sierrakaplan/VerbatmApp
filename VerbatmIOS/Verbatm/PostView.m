@@ -287,9 +287,9 @@
 	PFObject *post = [self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST];
 	switch (action) {
 		case Like:
-			if(positive){
+			if(positive) {
 				[Like_BackendManager currentUserLikePost:post];
-			}else{
+			} else{
 				[Like_BackendManager currentUserStopLikingPost:post];
 			}
 			break;

@@ -60,6 +60,7 @@
 -(void)setThumbnailImage:(UIImage *) image andVideo: (NSURL *)videoURL {
 	self.hasLoadedMedia = YES;
 	[self.customActivityIndicator stopCustomActivityIndicator];
+	[self.customActivityIndicator removeFromSuperview];
 	[self fuseVideoArray:@[videoURL]];
 	[self setThumbnailImage: image];
 	if (self.currentlyOnScreen) {
@@ -214,8 +215,11 @@
 }
 
 -(void)onScreen {
-	if (!self.hasLoadedMedia && !self.photoVideoSubview) [self.customActivityIndicator startCustomActivityIndicator];
 	self.currentlyOnScreen = YES;
+	if (!self.hasLoadedMedia || !self.photoVideoSubview) {
+		[self.customActivityIndicator startCustomActivityIndicator];
+		return;
+	}
 	if (self.editContentView){
 		[self.editContentView onScreen];
 	} else {

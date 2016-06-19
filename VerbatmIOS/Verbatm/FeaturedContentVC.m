@@ -60,11 +60,10 @@ ExploreChannelCellViewDelegate>
 	self.tableView.showsVerticalScrollIndicator = NO;
 	self.tableView.delegate = self;
 	[self.view setBackgroundColor:[UIColor clearColor]];
-//	[self.tableView setBackgroundColor:[UIColor redColor]];
 
 	//avoid covering last item in uitableview
 	//todo: change this when bring back search bar
-	UIEdgeInsets inset = UIEdgeInsetsMake(0, 0, TAB_BAR_HEIGHT + STATUS_BAR_HEIGHT, 0);
+	UIEdgeInsets inset = UIEdgeInsetsMake(0, 0, TAB_BAR_HEIGHT + STATUS_BAR_HEIGHT + 50.f, 0);
 	self.tableView.contentInset = inset;
 	self.tableView.scrollIndicatorInsets = inset;
 
