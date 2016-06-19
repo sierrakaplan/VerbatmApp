@@ -28,9 +28,7 @@
 	[self addBackgroundImage];
 	self.headerView.backgroundColor = [UIColor clearColor];
 
-	//todo: bring back search bar
-	self.searchBar.frame = CGRectMake(0.f, STATUS_BAR_HEIGHT, self.searchBar.frame.size.width, 0.f);
-									  //self.searchBar.frame.size.height);
+	self.searchBar.frame = CGRectMake(0.f, STATUS_BAR_HEIGHT, self.searchBar.frame.size.width, self.searchBar.frame.size.height);
 	CGFloat headerViewHeight = self.searchBar.frame.size.height + STATUS_BAR_HEIGHT;
     
     

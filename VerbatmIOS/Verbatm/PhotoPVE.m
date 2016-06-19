@@ -80,6 +80,7 @@
 -(void) displayPhotos:(NSArray *)photos {
 	self.hasLoadedMedia = YES;
 	[self.customActivityIndicator stopCustomActivityIndicator];
+	[self.customActivityIndicator removeFromSuperview];
 	if ([photos count]) {
 		[self addPhotos:photos];
 	}
@@ -355,8 +356,11 @@
 #pragma mark - Overriding ArticleViewingExperience methods -
 
 -(void) onScreen {
-	if (!self.hasLoadedMedia && !self.photoVideoSubview) [self.customActivityIndicator startCustomActivityIndicator];
 	self.currentlyOnScreen = YES;
+	if (!self.hasLoadedMedia && !self.photoVideoSubview) {
+		[self.customActivityIndicator startCustomActivityIndicator];
+		return;
+	}
 	if(self.imageContainerViews.count > 1){
 		if(!self.slideShowPlaying){
 			[self playWithSpeed:2.f];
