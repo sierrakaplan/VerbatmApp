@@ -258,7 +258,6 @@
 		[self formatChannelPicker];
 		[self createBaseSelector];
 		[self loadPostFromUserDefaults];
-//        [self addExternalShareButton];
 	}];
 }
 

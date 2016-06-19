@@ -78,9 +78,7 @@
 -(void)storeLinkWithCaption:(NSString *) caption channelName:(NSString *) channelName postObject:(PFObject *) postObject andBranchUniversalObject: (BranchUniversalObject*) branchUniversalObject withCompletionBlock:(void(^)(bool, PFObject *))block {
     
     
-    NSString * title = (caption && ![caption isEqualToString:@""]) ?
-    caption :
-    [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", self.name, channelName];
+    NSString * title = [NSString stringWithFormat:@"%@ posted on their Verbatm blog : %@!", self.name, channelName];
     
     
     branchUniversalObject.title = title;
@@ -152,11 +150,13 @@
     switch (platform) {
         case shareToTwitter:
             [self sharePostToTwitter:url];
-        case (bothFacebookAndTwitter || shareToFacebook):
+        case shareToFacebook:
            //facebook not working right now
-            // [self sharePostToFacebook:url];
+            //[self sharePostToFacebook:url];
             break;
         default:
+//            [self sharePostToTwitter:url];
+//            [self sharePostToFacebook:url];
             break;
     }
 }
@@ -193,10 +193,7 @@
                                                   NSHTTPURLResponse *urlResponse, NSError *error)
                       {
                           // DONE!!!
-    
                       }];
-                     
-                     
                  }
              }
          }];
