@@ -124,9 +124,6 @@
 		A5E73BA61D1697EA00527ECF /* GTLBatchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BA51D1697EA00527ECF /* GTLBatchResult.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A5E73BA91D16981500527ECF /* GTLErrorObject.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BA81D16981500527ECF /* GTLErrorObject.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A5E73BAC1D16982A00527ECF /* GTLFramework.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BAB1D16982A00527ECF /* GTLFramework.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		A5E73BEF1D1770B400527ECF /* GTLQueryVerbatmApp.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BD41D1770B400527ECF /* GTLQueryVerbatmApp.m */; };
-		A5E73BF01D1770B400527ECF /* GTLServiceVerbatmApp.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BD61D1770B400527ECF /* GTLServiceVerbatmApp.m */; };
-		A5E73BF11D1770B400527ECF /* GTLVerbatmApp_Sources.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BD71D1770B400527ECF /* GTLVerbatmApp_Sources.m */; };
 		A5E73BF21D1770B400527ECF /* GTLVerbatmAppConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BDA1D1770B400527ECF /* GTLVerbatmAppConstants.m */; };
 		A5E73BF31D1770B400527ECF /* GTLVerbatmAppIdentifierListWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BDC1D1770B400527ECF /* GTLVerbatmAppIdentifierListWrapper.m */; };
 		A5E73BF41D1770B400527ECF /* GTLVerbatmAppImage.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BDE1D1770B400527ECF /* GTLVerbatmAppImage.m */; };
@@ -138,7 +135,7 @@
 		A5E73BFA1D1770B400527ECF /* GTLVerbatmAppUploadURI.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BEA1D1770B400527ECF /* GTLVerbatmAppUploadURI.m */; };
 		A5E73BFB1D1770B400527ECF /* GTLVerbatmAppVerbatmUser.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BEC1D1770B400527ECF /* GTLVerbatmAppVerbatmUser.m */; };
 		A5E73BFC1D1770B400527ECF /* GTLVerbatmAppVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BEE1D1770B400527ECF /* GTLVerbatmAppVideo.m */; };
-		A5E73BFF1D17714500527ECF /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BFE1D17714500527ECF /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		A5E73C031D177DBF00527ECF /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73C021D177DBF00527ECF /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A5E860011B96249900E148D0 /* PostPublisher.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E860001B96249900E148D0 /* PostPublisher.m */; };
 		A5E860071B97CC3C00E148D0 /* PreviewDisplayView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E860061B97CC3C00E148D0 /* PreviewDisplayView.m */; };
 		A5FB5D2C1BCB0B9700634A96 /* GMAlbumsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5FB5D151BCB0B9700634A96 /* GMAlbumsViewCell.m */; };
@@ -444,11 +441,6 @@
 		A5E73BA81D16981500527ECF /* GTLErrorObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLErrorObject.m; sourceTree = "<group>"; };
 		A5E73BAA1D16982A00527ECF /* GTLFramework.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLFramework.h; sourceTree = "<group>"; };
 		A5E73BAB1D16982A00527ECF /* GTLFramework.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLFramework.m; sourceTree = "<group>"; };
-		A5E73BD31D1770B400527ECF /* GTLQueryVerbatmApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLQueryVerbatmApp.h; path = API/GTLQueryVerbatmApp.h; sourceTree = "<group>"; };
-		A5E73BD41D1770B400527ECF /* GTLQueryVerbatmApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLQueryVerbatmApp.m; path = API/GTLQueryVerbatmApp.m; sourceTree = "<group>"; };
-		A5E73BD51D1770B400527ECF /* GTLServiceVerbatmApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLServiceVerbatmApp.h; path = API/GTLServiceVerbatmApp.h; sourceTree = "<group>"; };
-		A5E73BD61D1770B400527ECF /* GTLServiceVerbatmApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLServiceVerbatmApp.m; path = API/GTLServiceVerbatmApp.m; sourceTree = "<group>"; };
-		A5E73BD71D1770B400527ECF /* GTLVerbatmApp_Sources.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmApp_Sources.m; path = API/GTLVerbatmApp_Sources.m; sourceTree = "<group>"; };
 		A5E73BD81D1770B400527ECF /* GTLVerbatmApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmApp.h; path = API/GTLVerbatmApp.h; sourceTree = "<group>"; };
 		A5E73BD91D1770B400527ECF /* GTLVerbatmAppConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppConstants.h; path = API/GTLVerbatmAppConstants.h; sourceTree = "<group>"; };
 		A5E73BDA1D1770B400527ECF /* GTLVerbatmAppConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppConstants.m; path = API/GTLVerbatmAppConstants.m; sourceTree = "<group>"; };
@@ -472,8 +464,8 @@
 		A5E73BEC1D1770B400527ECF /* GTLVerbatmAppVerbatmUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppVerbatmUser.m; path = API/GTLVerbatmAppVerbatmUser.m; sourceTree = "<group>"; };
 		A5E73BED1D1770B400527ECF /* GTLVerbatmAppVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppVideo.h; path = API/GTLVerbatmAppVideo.h; sourceTree = "<group>"; };
 		A5E73BEE1D1770B400527ECF /* GTLVerbatmAppVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppVideo.m; path = API/GTLVerbatmAppVideo.m; sourceTree = "<group>"; };
-		A5E73BFD1D17714500527ECF /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
-		A5E73BFE1D17714500527ECF /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		A5E73BFD1D17714500527ECF /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reachability.h; path = Verbatm/Reachability.h; sourceTree = "<group>"; };
+		A5E73C021D177DBF00527ECF /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Reachability.m; path = Verbatm/Reachability.m; sourceTree = "<group>"; };
 		A5E85FFF1B96249900E148D0 /* PostPublisher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostPublisher.h; sourceTree = "<group>"; };
 		A5E860001B96249900E148D0 /* PostPublisher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostPublisher.m; sourceTree = "<group>"; };
 		A5E860051B97CC3C00E148D0 /* PreviewDisplayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreviewDisplayView.h; sourceTree = "<group>"; };
@@ -533,8 +525,6 @@
 		C75690A71D0891FF002C9402 /* OnboardingBlogSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnboardingBlogSelectionViewController.m; sourceTree = "<group>"; };
 		C75985F31B8553DF00FE77F7 /* InternetConnectionMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InternetConnectionMonitor.h; sourceTree = "<group>"; };
 		C75985F41B8553DF00FE77F7 /* InternetConnectionMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InternetConnectionMonitor.m; sourceTree = "<group>"; };
-		C75985F61B85575900FE77F7 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
-		C75985F71B85575900FE77F7 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		C75F155D1C2B4A1B0092912D /* Channel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Channel.h; sourceTree = "<group>"; };
 		C75F155E1C2B4A1B0092912D /* Channel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Channel.m; sourceTree = "<group>"; };
 		C76172721C4C8B1300AB0D84 /* UserAndChannelListsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserAndChannelListsTVC.h; sourceTree = "<group>"; };
@@ -1048,11 +1038,6 @@
 		A5E73B771D1635B500527ECF /* GTL files */ = {
 			isa = PBXGroup;
 			children = (
-				A5E73BD31D1770B400527ECF /* GTLQueryVerbatmApp.h */,
-				A5E73BD41D1770B400527ECF /* GTLQueryVerbatmApp.m */,
-				A5E73BD51D1770B400527ECF /* GTLServiceVerbatmApp.h */,
-				A5E73BD61D1770B400527ECF /* GTLServiceVerbatmApp.m */,
-				A5E73BD71D1770B400527ECF /* GTLVerbatmApp_Sources.m */,
 				A5E73BD81D1770B400527ECF /* GTLVerbatmApp.h */,
 				A5E73BD91D1770B400527ECF /* GTLVerbatmAppConstants.h */,
 				A5E73BDA1D1770B400527ECF /* GTLVerbatmAppConstants.m */,
@@ -1111,8 +1096,6 @@
 				A5E73B7C1D16363C00527ECF /* GTLDefines.h */,
 				A5E73B781D1635C200527ECF /* GTLServiceVerbatmApp.h */,
 				A5E73B791D1635C200527ECF /* GTLServiceVerbatmApp.m */,
-				A5E73BFD1D17714500527ECF /* Reachability.h */,
-				A5E73BFE1D17714500527ECF /* Reachability.m */,
 			);
 			name = "GTL files";
 			sourceTree = "<group>";
@@ -1243,8 +1226,8 @@
 			children = (
 				C75985F31B8553DF00FE77F7 /* InternetConnectionMonitor.h */,
 				C75985F41B8553DF00FE77F7 /* InternetConnectionMonitor.m */,
-				C75985F61B85575900FE77F7 /* Reachability.h */,
-				C75985F71B85575900FE77F7 /* Reachability.m */,
+				A5E73BFD1D17714500527ECF /* Reachability.h */,
+				A5E73C021D177DBF00527ECF /* Reachability.m */,
 			);
 			name = "Internet Connectivity Monitor";
 			path = ..;
@@ -1777,7 +1760,6 @@
 				A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */,
 				C77A20931C03E39E00356465 /* ProfileNavBar.m in Sources */,
 				A56F68721B643B1400CE5744 /* VerbatmKeyboardToolBar.m in Sources */,
-				A5E73BF11D1770B400527ECF /* GTLVerbatmApp_Sources.m in Sources */,
 				A5E860071B97CC3C00E148D0 /* PreviewDisplayView.m in Sources */,
 				C7AA49F81D14739A00A031C6 /* SharingLinkView.m in Sources */,
 				A535E5001BC4459800A087D1 /* UIView+Effects.m in Sources */,
@@ -1800,7 +1782,6 @@
 				C7BF1AB21C59D6BF00CEDE4B /* Channel_BackendObject.m in Sources */,
 				A535E5091BC45CC600A087D1 /* AVAsset+Utilities.m in Sources */,
 				A5076D141BF2B25100303746 /* TextOverMediaView.m in Sources */,
-				A5E73BEF1D1770B400527ECF /* GTLQueryVerbatmApp.m in Sources */,
 				A58656681B61FD99008E358C /* PhotoPVE.m in Sources */,
 				A5C38AC71CC1D1970067D077 /* FeaturedContentCellView.m in Sources */,
 				A5C38AC11CC1B67B0067D077 /* FeaturedContentVC.m in Sources */,
@@ -1859,13 +1840,12 @@
 				12A06D971CD3762B001800C9 /* BlogPopupView.m in Sources */,
 				A5E73B7F1D16365400527ECF /* GTLObject.m in Sources */,
 				A5E73BFB1D1770B400527ECF /* GTLVerbatmAppVerbatmUser.m in Sources */,
-				A5E73BFF1D17714500527ECF /* Reachability.m in Sources */,
+				A5E73C031D177DBF00527ECF /* Reachability.m in Sources */,
 				C761727F1C4E0EB600AB0D84 /* PostCollectionViewCell.m in Sources */,
 				A56B5D261CA4A24300A61D27 /* User_BackendObject.m in Sources */,
 				A5E73B9A1D16970E00527ECF /* GTMHTTPFetcher.m in Sources */,
 				A5FB5D2C1BCB0B9700634A96 /* GMAlbumsViewCell.m in Sources */,
 				A560EFB51BB0AF64003FB041 /* CreateAccountView.m in Sources */,
-				A5E73BF01D1770B400527ECF /* GTLServiceVerbatmApp.m in Sources */,
 				A5FB5D2D1BCB0B9700634A96 /* GMAlbumsViewController.m in Sources */,
 				C7F79E801C3AACC600319330 /* CreateNewChannelView.m in Sources */,
 				A5E73BAC1D16982A00527ECF /* GTLFramework.m in Sources */,
