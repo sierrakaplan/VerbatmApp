@@ -26,7 +26,7 @@
 
 #import "UserSetupParameters.h"
 
-@interface FeedVC () <UIScrollViewDelegate, SharePostViewDelegate, PostListVCProtocol,
+@interface FeedVC () <UIScrollViewDelegate, PostListVCProtocol,
 Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic) BOOL contentCoveringScreen;
@@ -185,13 +185,6 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 	}];
 }
 
--(void) cancelButtonSelected{
-	[self removeSharePostView];
-}
-
--(void) reblogToVerbatm:(BOOL)verbatm andFacebook:(BOOL)facebook {
-	[self removeSharePostView];
-}
 
 -(void)removeSharePostView{
 	if(self.sharePostView){

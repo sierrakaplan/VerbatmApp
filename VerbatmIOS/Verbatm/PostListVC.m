@@ -531,23 +531,80 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	self.view.userInteractionEnabled = YES;
 }
 
+
+-(void) ShareToVerbatmSelected{
+    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Repost to Verbatm Account" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {}];
+    
+    UIAlertAction* action2 = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                   
+                                                       NSMutableArray *channels = [[NSMutableArray alloc] init];
+                                                       [channels addObject:[[UserInfoCache sharedInstance] getUserChannel]];
+                                                       [Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
+                                                           dispatch_async(dispatch_get_main_queue(), ^{
+                                                               [self successfullyReblogged];
+                                                           });
+                                                       }];
+                                                   
+                                                   }];
+    [newAlert addAction:action1];
+    [newAlert addAction:action2];
+    [self presentViewController:newAlert animated:YES completion:nil];
+}
+
+-(void)ShareToTwitterSelected{
+    
+    //NSString * url = [self.postToShare valueForKey:<#(nonnull NSString *)#>]
+    
+    
+    
+}
+
+-(void)ShareToFacebookSelected{
+    
+}
+
+
+-(void)ShareToSmsSelected{
+    
+}
+
+-(void)CopyLinkSelected{
+    
+}
+
+
+
+
 //todo: save share object
--(void) reblogToVerbatm:(BOOL)verbatm andFacebook:(BOOL)facebook {
-	if(verbatm) {
-		//todo: change this eventually to one channel
-		NSMutableArray *channels = [[NSMutableArray alloc] init];
-		[channels addObject:[[UserInfoCache sharedInstance] getUserChannel]];
-		[Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
-			dispatch_async(dispatch_get_main_queue(), ^{
-				[self successfullyReblogged];
-			});
-		}];
-	}
-	if(facebook){
-		dispatch_async(dispatch_get_main_queue(), ^{
-			[self postPostExternal];
-		});
-	}
+-(void) shareToShareOption:(ShareOptions) shareOption{
+
+    
+    switch (shareOption) {
+        case Verbatm:
+            [self ShareToVerbatmSelected];
+            break;
+        case Twitter:
+            [self ShareToVerbatmSelected];
+            break;
+        case Facebook:
+            [self ShareToVerbatmSelected];
+            break;
+        case Sms:
+            [self ShareToVerbatmSelected];
+            break;
+        case CopyLink:
+            [self ShareToVerbatmSelected];
+            break;
+        
+        default:
+            break;
+    }
+    
+
 
 	[self removeSharePOVView];
     self.view.userInteractionEnabled = YES;

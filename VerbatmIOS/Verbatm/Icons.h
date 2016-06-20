@@ -112,11 +112,13 @@
 
 #define FLAG_POST_ICON @"etc_icon"
 
-
 #pragma mark Sharing options
 
 #define FACEBOOK_LOGO @"facebook_logo"
-#define TWITTER_LOGO @"Twitter_logo"
+#define TWITTER_LOGO @"twitter_logo"
+
+#define SMS_ICON @"SMS icon"
+#define COPY_LINK_ICON @"Copy link"
 
 #pragma mark Edit Content View
 

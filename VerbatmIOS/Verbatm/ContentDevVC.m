@@ -59,8 +59,7 @@
 
 @interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,
                             Intro_Notification_Delegate, GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate,
-                            CustomNavigationBarDelegate,PreviewDisplayDelegate, VerbatmCameraViewDelegate,
-                            SharePostViewDelegate,UIPickerViewDataSource, UIPickerViewDelegate,
+                            CustomNavigationBarDelegate,PreviewDisplayDelegate, VerbatmCameraViewDelegate,UIPickerViewDataSource, UIPickerViewDelegate,
                             UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 
 
