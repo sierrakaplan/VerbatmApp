@@ -47,8 +47,10 @@
 #import "UserInfoCache.h"
 #import <TwitterKit/TwitterKit.h>
 
+#import <MessageUI/MFMessageComposeViewController.h>
+
 @interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource, SharePostViewDelegate,
-UIScrollViewDelegate, PostCollectionViewCellDelegate>
+UIScrollViewDelegate, PostCollectionViewCellDelegate, MFMessageComposeViewControllerDelegate>
 
 @property (nonatomic) PostListType listType;
 @property (nonatomic) BOOL isCurrentUserProfile;
@@ -575,8 +577,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if(url){
         
         TWTRComposer *composer = [[TWTRComposer alloc] init];
-        
-        [composer setText:url];
+        NSString * message = @"Hey - checkout this post on Verbatm! ";
+        [composer setText:[message stringByAppendingString:url]];
         [composer setImage:[UIImage imageNamed:@"fabric"]];
         
         // Called from a UIViewController
@@ -588,13 +590,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
                 NSLog(@"Sending Tweet!");
             }
         }];
-        
-        
-        
-        
-        
-        
-        
+
     }else{
         [self.externalShare storeShareLinkToPost:self.postToShare withCaption:nil withCompletionBlock:nil];
         [self reportLinkError];
@@ -626,9 +622,13 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(void)ShareToSmsSelected{
     NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
     if(url){
+        MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
+        NSString * message = @"Hey - checkout this post on Verbatm!   ";
+        controller.body = [message stringByAppendingString:url];
         
-        
-        
+        controller.messageComposeDelegate = self;
+        [self presentViewController:controller animated:YES completion:nil];
+    
         
     }else{
         [self.externalShare storeShareLinkToPost:self.postToShare withCaption:nil withCompletionBlock:nil];
@@ -637,11 +637,23 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     }
 }
 
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result{
+    [controller.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
 -(void)CopyLinkSelected{
     NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
     if(url){
+        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+        pasteboard.string = url;
         
-  
+        UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Link Copied to Clipboard" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * action) {}];
+        [newAlert addAction:action1];
+        [self presentViewController:newAlert animated:YES completion:nil];
+        
     }else{
         [self.externalShare storeShareLinkToPost:self.postToShare withCaption:nil withCompletionBlock:nil];
         [self reportLinkError];
