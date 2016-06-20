@@ -45,8 +45,7 @@
 
 #import "User_BackendObject.h"
 #import "UserInfoCache.h"
-
-#import <Twitter/TWTweetComposeViewController.h>
+#import <TwitterKit/TwitterKit.h>
 
 @interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource, SharePostViewDelegate,
 UIScrollViewDelegate, PostCollectionViewCellDelegate>
@@ -573,27 +572,22 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(void)ShareToTwitterSelected{
     
     NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
-    if(url && [TWTweetComposeViewController canSendTweet]){
+    if(url){
         
-        TWTweetComposeViewController * cmp = [[TWTweetComposeViewController alloc] init];
+        TWTRComposer *composer = [[TWTRComposer alloc] init];
         
-        [cmp setInitialText:@"hello world"];
+        [composer setText:url];
+        [composer setImage:[UIImage imageNamed:@"fabric"]];
         
-        
-//        TWTRComposer *composer = [[TWTRComposer alloc] init];
-//        
-//        [composer setText:@"just setting up my Fabric"];
-//        [composer setImage:[UIImage imageNamed:@"fabric"]];
-//        
-//        // Called from a UIViewController
-//        [composer showFromViewController:self completion:^(TWTRComposerResult result) {
-//            if (result == TWTRComposerResultCancelled) {
-//                NSLog(@"Tweet composition cancelled");
-//            }
-//            else {
-//                NSLog(@"Sending Tweet!");
-//            }
-//        }];
+        // Called from a UIViewController
+        [composer showFromViewController:self completion:^(TWTRComposerResult result) {
+            if (result == TWTRComposerResultCancelled) {
+                NSLog(@"Tweet composition cancelled");
+            }
+            else {
+                NSLog(@"Sending Tweet!");
+            }
+        }];
         
         
         
@@ -665,7 +659,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         case Verbatm:
             [self ShareToVerbatmSelected];
             break;
-        case Twitter:
+        case TwitterShare:
             [self ShareToTwitterSelected];
             break;
         case Facebook:

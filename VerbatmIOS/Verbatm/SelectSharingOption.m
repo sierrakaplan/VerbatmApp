@@ -117,7 +117,7 @@
         selectionButton.buttonSharingOption = Facebook;
     }
     else if ([title isEqualToString:@"Twitter"]){
-        selectionButton.buttonSharingOption = Twitter;
+        selectionButton.buttonSharingOption = TwitterShare;
     }
     else if ([title isEqualToString:@"Sms Link"]){
         selectionButton.buttonSharingOption = Sms;
