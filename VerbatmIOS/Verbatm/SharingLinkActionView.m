@@ -207,9 +207,9 @@
     [self.facebookButton storeBackgroundImage:[UIImage imageNamed:@"Facebook_unselected"] forState:ButtonNotSelected];
     [self.facebookButton storeBackgroundImage:[UIImage imageNamed:@"Facebook_selected"] forState:ButtonSelected];
     
-    [self addSubview:self.facebookButton];
+    //[self addSubview:self.facebookButton];
     
-    self.twitterButton = [[verbatmButton alloc] initWithFrame:CGRectMake((self.frame.size.width/2) + SHARE_BUTTON_GAP, self.facebookButton.frame.origin.y, buttonWidthHeight, buttonWidthHeight)];
+    self.twitterButton = [[verbatmButton alloc] initWithFrame:CGRectMake((self.frame.size.width - buttonWidthHeight)/2 , (self.frame.size.height - buttonWidthHeight)/2, buttonWidthHeight, buttonWidthHeight)];
     
     [self.twitterButton addTarget:self action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchUpInside];
     
