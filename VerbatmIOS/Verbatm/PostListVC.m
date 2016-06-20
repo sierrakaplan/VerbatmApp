@@ -69,6 +69,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 @property (nonatomic) BOOL shouldPlayVideos;
 @property (nonatomic) BOOL isRefreshing;
 @property (nonatomic) BOOL isLoadingMore;
+@property (nonatomic) BOOL isLoadingOlder;
 @property (nonatomic) BOOL footerBarIsUp;//like share bar
 @property (nonatomic) BOOL fbShare;
 @property (nonatomic) NSString *postImageText;
@@ -80,9 +81,9 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 @property (nonatomic) UIImageView *publishSuccessful;
 @property (nonatomic) UIImageView *publishFailed;
 
-@property (nonatomic) void(^refreshPostsCompletionFeed)(NSArray * posts);
-@property (nonatomic) void(^refreshPostsCompletionChannel)(NSArray * posts);
+@property (nonatomic) void(^refreshPostsCompletion)(NSArray * posts);
 @property (nonatomic) void(^loadMorePostsCompletion)(NSArray * posts);
+@property (nonatomic) void(^loadOlderPostsCompletion)(NSArray * posts);
 
 #define LOAD_MORE_POSTS_COUNT 3 //number of posts left to see before we start loading more content
 #define POST_CELL_ID @"postCellId"
@@ -97,7 +98,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 
 -(void) viewDidLoad {
 	[self setDateSourceAndDelegate];
-	[self defineRefreshPostsCompletion];
+	[self defineLoadPostsCompletions];
 	[self registerClassForCustomCells];
 	[self registerForNotifications];
 }
@@ -122,6 +123,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	self.postToShare = nil;
 	self.isRefreshing = NO;
 	self.isLoadingMore = NO;
+	self.isLoadingOlder = NO;
 	self.shouldPlayVideos = YES;
 }
 
@@ -167,7 +169,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 }
 
 -(void)registerForNotifications{
-	
+
 }
 
 //register our custom cell class
@@ -209,30 +211,34 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	}
 }
 
--(void) defineRefreshPostsCompletion {
+-(void) defineLoadPostsCompletions {
 	__weak typeof(self) weakSelf = self;
-	self.refreshPostsCompletionFeed = ^void(NSArray *posts) {
+	self.refreshPostsCompletion = ^void(NSArray *posts) {
 		[weakSelf.customActivityIndicator stopCustomActivityIndicator];
 		if(posts.count) {
-			NSIndexSet *indices = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0,[posts count])];
-			[weakSelf.parsePostObjects insertObjects:posts atIndexes:indices];
+			if (self.listType == listFeed) {
+				//Insert new posts into beginning
+				NSMutableArray *indices = [NSMutableArray array];
+				for (NSInteger i = 0; i < posts.count; i++) {
+					[indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+				}
+				NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0,[posts count])];
+				// Perform the updates
+				[weakSelf.collectionView performBatchUpdates:^{
+					//Insert the new data
+					[weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
+					//Insert the new cells
+					[weakSelf.collectionView insertItemsAtIndexPaths:indices];
+
+				} completion:nil];
+			} else {
+				//Reload all posts in channel
+				weakSelf.parsePostObjects = nil;
+				[weakSelf.parsePostObjects addObjectsFromArray:posts];
+				[weakSelf.collectionView reloadData];
+			}
 
 			[weakSelf removePresentLabel];
-			[weakSelf.collectionView reloadData];
-		} else if(!weakSelf.parsePostObjects.count){
-			[weakSelf nothingToPresentHere];
-		}
-		weakSelf.isRefreshing = NO;
-	};
-
-	self.refreshPostsCompletionChannel = ^void(NSArray *posts) {
-		[weakSelf.customActivityIndicator stopCustomActivityIndicator];
-		if(posts.count) {
-			weakSelf.parsePostObjects = nil;
-			[weakSelf.parsePostObjects addObjectsFromArray:posts];
-
-			[weakSelf removePresentLabel];
-			[weakSelf.collectionView reloadData];
 		} else if(!weakSelf.parsePostObjects.count){
 			[weakSelf nothingToPresentHere];
 		}
@@ -240,22 +246,39 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	};
 
 	self.loadMorePostsCompletion = ^void(NSArray *posts) {
-		if (posts.count) {
-			weakSelf.isLoadingMore = NO;
-			NSMutableArray *indices = [NSMutableArray array];
-			NSInteger index = weakSelf.parsePostObjects.count;
-			for (NSInteger i = index; i < index + posts.count; i++) {
-				[indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
-			}
-			// Perform the updates
-			[weakSelf.collectionView performBatchUpdates:^{
-				//Insert the new data
-				[weakSelf.parsePostObjects addObjectsFromArray:posts];
-				//Insert the new cells
-				[weakSelf.collectionView insertItemsAtIndexPaths:indices];
-
-			} completion:nil];
+		if (!posts.count) return;
+		weakSelf.isLoadingMore = NO;
+		NSMutableArray *indices = [NSMutableArray array];
+		NSInteger index = weakSelf.parsePostObjects.count;
+		for (NSInteger i = index; i < index + posts.count; i++) {
+			[indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
 		}
+		// Perform the updates
+		[weakSelf.collectionView performBatchUpdates:^{
+			//Insert the new data
+			[weakSelf.parsePostObjects addObjectsFromArray:posts];
+			//Insert the new cells
+			[weakSelf.collectionView insertItemsAtIndexPaths:indices];
+
+		} completion:nil];
+
+	};
+
+	self.loadOlderPostsCompletion = ^void(NSArray *posts) {
+		if (!posts.count) return;
+		weakSelf.isLoadingOlder = NO;
+		NSMutableArray *indices = [NSMutableArray array];
+		for (NSInteger i = 0; i < posts.count; i++) {
+			[indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+		}
+		// Perform the updates
+		[weakSelf.collectionView performBatchUpdates:^{
+			//Insert the new data
+			[weakSelf.parsePostObjects addObjectsFromArray:posts];
+			//Insert the new cells
+			[weakSelf.collectionView insertItemsAtIndexPaths:indices];
+
+		} completion:nil];
 	};
 }
 
@@ -265,11 +288,14 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	self.isLoadingMore = NO;
 	[self.customActivityIndicator startCustomActivityIndicator];
 	if(self.listType == listFeed){
-		[self.feedQueryManager refreshFeedWithCompletionHandler:self.refreshPostsCompletionFeed];
+		[self.feedQueryManager refreshFeedWithCompletionHandler:self.refreshPostsCompletion];
 	} else if (self.listType == listChannel) {
-		if (self.isCurrentUserProfile) [self.postsQueryManager refreshPostsInUserChannel:self.channelForList withCompletionBlock:self.refreshPostsCompletionChannel];
-		else [self.postsQueryManager refreshPostsInChannel:self.channelForList startingAt:self.latestDate
-								  withCompletionBlock:self.refreshPostsCompletionChannel];
+		if (self.isCurrentUserProfile) {
+			[self.postsQueryManager refreshPostsInUserChannel:self.channelForList withCompletionBlock: self.refreshPostsCompletion];
+		} else {
+			[self.postsQueryManager refreshPostsInChannel: self.channelForList startingAt:self.latestDate
+									  withCompletionBlock: self.refreshPostsCompletion];
+		}
 	}
 }
 
@@ -285,7 +311,13 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 
 //todo:
 -(void) loadOlderPosts {
-
+	if (self.isLoadingOlder) return;
+	self.isLoadingOlder = YES;
+	if (self.listType == listFeed) {
+		return; // Not logical to load older posts in feed
+	} else {
+		[self.postsQueryManager loadOlderPostsInChannel:self.channelForList withCompletionBlock:self.loadOlderPostsCompletion];
+	}
 }
 
 #pragma mark - DataSource -
@@ -322,7 +354,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 	//Prepare next cell (after first time will just be nextNextCell)
 	self.nextIndexToPresent = indexPath.row+1;
-	self.nextCellToPresent = self.nextNextCell;
+	if (self.nextIndexToPresent == self.nextNextIndex) self.nextCellToPresent = self.nextNextCell;
 	if (!self.nextCellToPresent) {
 		self.nextCellToPresent = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextIndexToPresent inSection:indexPath.section]];
 	}
@@ -337,6 +369,11 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	if(indexPath.row >= (self.parsePostObjects.count - LOAD_MORE_POSTS_COUNT)
 	   && !self.isLoadingMore && !self.isRefreshing) {
 		[self loadMorePosts];
+	}
+
+	//Load older posts
+	if (indexPath.row <= LOAD_MORE_POSTS_COUNT && !self.isLoadingOlder && !self.isRefreshing) {
+		[self loadOlderPosts];
 	}
 
 	return currentCell;
@@ -550,7 +587,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}
 
 	[self removeSharePOVView];
-    self.view.userInteractionEnabled = YES;
+	self.view.userInteractionEnabled = YES;
 }
 
 -(void)postPostExternal {
@@ -569,7 +606,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 				NSString * thumbNailUrl = [videoObject valueForKey:VIDEO_THUMBNAIL_KEY];
 				[self postToFacebookWithShareLink:thumbNailUrl];
 			}];
-		} 
+		}
 	}];
 }
 
@@ -580,83 +617,83 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	Channel_BackendObject *channelObj = [self.postToShare valueForKey:POST_CHANNEL_KEY];
 	NSString *channelName = [channelObj valueForKey:CHANNEL_NAME_KEY];
 
-//	NSDictionary*params = [[NSDictionary alloc] initWithObjects:@[[NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName],
-//																  @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!",
-//																  shareLink,
-//																  @"http://verbatm.io"]
-//														forKeys:@[@"$og_title",
-//																  @"$og_description",
-//																  @"$og_image_url",
-//																  @"$fallback_url"]];
-//	NSLog(@"Getting link for fb for user %@ reblogging from channel %@ for post %@...", name, channelName, postId);
-//	[[Branch getInstance] getShortURLWithParams:params
-//									 andChannel:@"facebook"
-//									 andFeature:@"sharing"
-//									andCallback:^(NSString *url, NSError *err) {
-//										NSLog(@"got callback from branch");
-//										if (!err) {
-//											NSLog(@"got my Branch invite link to share: %@", url);
-//											NSURL *link = [NSURL URLWithString:url];
-//											FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
-//											content.contentURL = link;
-//											[FBSDKShareDialog showFromViewController:self
-//																		 withContent:content
-//																			delegate:nil];
-//										} else {
-//											NSLog(@"An error occured %@", err.description);
-//										}
-//									}];
+	//	NSDictionary*params = [[NSDictionary alloc] initWithObjects:@[[NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName],
+	//																  @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!",
+	//																  shareLink,
+	//																  @"http://verbatm.io"]
+	//														forKeys:@[@"$og_title",
+	//																  @"$og_description",
+	//																  @"$og_image_url",
+	//																  @"$fallback_url"]];
+	//	NSLog(@"Getting link for fb for user %@ reblogging from channel %@ for post %@...", name, channelName, postId);
+	//	[[Branch getInstance] getShortURLWithParams:params
+	//									 andChannel:@"facebook"
+	//									 andFeature:@"sharing"
+	//									andCallback:^(NSString *url, NSError *err) {
+	//										NSLog(@"got callback from branch");
+	//										if (!err) {
+	//											NSLog(@"got my Branch invite link to share: %@", url);
+	//											NSURL *link = [NSURL URLWithString:url];
+	//											FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
+	//											content.contentURL = link;
+	//											[FBSDKShareDialog showFromViewController:self
+	//																		 withContent:content
+	//																			delegate:nil];
+	//										} else {
+	//											NSLog(@"An error occured %@", err.description);
+	//										}
+	//									}];
 
-	    BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:postId];
-	    branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName];
-	    branchUniversalObject.contentDescription = @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!";
-		branchUniversalObject.imageUrl = shareLink;
-	
-	    BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
-	    linkProperties.feature = @"share";
-	    linkProperties.channel = @"facebook";
-	
-		NSLog(@"Getting link for fb for user %@ reblogging from channel %@ for post %@...", name, channelName, postId);
-	    [branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
-			NSLog(@"callback from external share called");
-	        if (!error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    NSLog(@"got my Branch invite link to share: %@", url);
-                    NSURL *link = [NSURL URLWithString:url];
-                    FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
-                    content.contentURL = link;
-                    [FBSDKShareDialog showFromViewController:self
-                                                 withContent:content
-                                                    delegate:nil];
-                });
-	           
-	        } else {
-	            NSLog(@"An error occured %@", error.description);
-	        }
-	    }];
+	BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:postId];
+	branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName];
+	branchUniversalObject.contentDescription = @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!";
+	branchUniversalObject.imageUrl = shareLink;
+
+	BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
+	linkProperties.feature = @"share";
+	linkProperties.channel = @"facebook";
+
+	NSLog(@"Getting link for fb for user %@ reblogging from channel %@ for post %@...", name, channelName, postId);
+	[branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
+		NSLog(@"callback from external share called");
+		if (!error) {
+			dispatch_async(dispatch_get_main_queue(), ^{
+				NSLog(@"got my Branch invite link to share: %@", url);
+				NSURL *link = [NSURL URLWithString:url];
+				FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
+				content.contentURL = link;
+				[FBSDKShareDialog showFromViewController:self
+											 withContent:content
+												delegate:nil];
+			});
+
+		} else {
+			NSLog(@"An error occured %@", error.description);
+		}
+	}];
 	self.view.userInteractionEnabled = YES;
 }
 
 -(void)successfullyReblogged{
-    
-    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Sucessfully Reblogged!" message:@"" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
-                                                   handler:^(UIAlertAction * action) {}];
-    [newAlert addAction:action];
-    [self presentViewController:newAlert animated:YES completion:nil];
-    
-    
-    
-//	[self.view addSubview:self.reblogSucessful];
-//	[self.view bringSubviewToFront:self.reblogSucessful];
-//
-//	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-//		self.reblogSucessful.alpha = 0.f;
-//	}completion:^(BOOL finished) {
-//
-//		[self.reblogSucessful removeFromSuperview];
-//		self.reblogSucessful = nil;
-//	}];
+
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Sucessfully Reblogged!" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+												   handler:^(UIAlertAction * action) {}];
+	[newAlert addAction:action];
+	[self presentViewController:newAlert animated:YES completion:nil];
+
+
+
+	//	[self.view addSubview:self.reblogSucessful];
+	//	[self.view bringSubviewToFront:self.reblogSucessful];
+	//
+	//	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
+	//		self.reblogSucessful.alpha = 0.f;
+	//	}completion:^(BOOL finished) {
+	//
+	//		[self.reblogSucessful removeFromSuperview];
+	//		self.reblogSucessful = nil;
+	//	}];
 }
 
 
