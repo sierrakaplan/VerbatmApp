@@ -164,29 +164,29 @@
 	return YES;
 }
 
-//- (void)textViewDidBeginEditing:(UITextView *)textView {
-//	if (textView == self.blogTitleEditable) {
-//		self.blogTitlePlaceholder.hidden = YES;
-//	} else if(textView == self.blogDescriptionEditable) {
-//		self.blogDescriptionPlaceholder.hidden = YES;
-//	}
-//}
-//
-//- (void)textViewDidChange:(UITextView *)textView {
-//	if (textView == self.blogTitleEditable) {
-//		self.blogTitlePlaceholder.hidden = ([textView.text length] > 0);
-//	} else if(textView == self.blogDescriptionEditable) {
-//		self.blogDescriptionPlaceholder.hidden = ([textView.text length] > 0);
-//	}
-//}
-//
-//- (void)textViewDidEndEditing:(UITextView *)textView {
-//	if (textView == self.blogTitleEditable) {
-//		self.blogTitlePlaceholder.hidden = ([textView.text length] > 0);
-//	} else if(textView == self.blogDescriptionEditable) {
-//		self.blogDescriptionPlaceholder.hidden = ([textView.text length] > 0);
-//	}
-//}
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+	if (textView == self.blogTitleEditable) {
+		self.blogTitlePlaceholder.hidden = YES;
+	} else if(textView == self.blogDescriptionEditable) {
+		self.blogDescriptionPlaceholder.hidden = YES;
+	}
+}
+
+- (void)textViewDidChange:(UITextView *)textView {
+	if (textView == self.blogTitleEditable) {
+		self.blogTitlePlaceholder.hidden = ([textView.text length] > 0);
+	} else if(textView == self.blogDescriptionEditable) {
+		self.blogDescriptionPlaceholder.hidden = ([textView.text length] > 0);
+	}
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView {
+	if (textView == self.blogTitleEditable) {
+		self.blogTitlePlaceholder.hidden = ([textView.text length] > 0);
+	} else if(textView == self.blogDescriptionEditable) {
+		self.blogDescriptionPlaceholder.hidden = ([textView.text length] > 0);
+	}
+}
 
 
 -(void) backButtonSelected {
@@ -243,6 +243,7 @@
 								 self.blogDescriptionEditable.frame.size.height - OFFSET_X - 20.f,
 								 20.f, 20.f);
 	[self.blogDescriptionEditable addSubview: editImage];
+	if (self.blogDescription.text && self.blogDescription.text.length > 0) self.blogDescriptionPlaceholder.hidden = YES;
 	[self.blogDescriptionEditable addSubview: self.blogDescriptionPlaceholder];
 }
 
@@ -252,6 +253,7 @@
 								 self.blogTitleEditable.frame.size.height - OFFSET_X - 20.f,
 								 20.f, 20.f);
 	[self.blogTitleEditable addSubview: editImage];
+	if (self.blogTitle.text && self.blogTitle.text.length > 0) self.blogTitlePlaceholder.hidden = YES;
 	[self.blogTitleEditable addSubview: self.blogTitlePlaceholder];
 }
 
