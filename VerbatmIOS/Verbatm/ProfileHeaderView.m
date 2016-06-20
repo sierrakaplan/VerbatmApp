@@ -156,6 +156,11 @@
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)string {
 	NSInteger length = textView.text.length + string.length - range.length;
+	if([string isEqualToString:@"\n"]) {
+		[textView resignFirstResponder];
+		[self editButtonSelected];
+		return NO;
+	}
 	if (textView == self.blogTitleEditable) {
 		return length <= TITLE_MAX_CHARACTERS;
 	} else if (textView == self.blogDescriptionEditable) {
@@ -187,7 +192,6 @@
 		self.blogDescriptionPlaceholder.hidden = ([textView.text length] > 0);
 	}
 }
-
 
 -(void) backButtonSelected {
 	[self.delegate exitCurrentProfile];
