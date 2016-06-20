@@ -124,17 +124,21 @@
 		A5E73BA61D1697EA00527ECF /* GTLBatchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BA51D1697EA00527ECF /* GTLBatchResult.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A5E73BA91D16981500527ECF /* GTLErrorObject.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BA81D16981500527ECF /* GTLErrorObject.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A5E73BAC1D16982A00527ECF /* GTLFramework.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BAB1D16982A00527ECF /* GTLFramework.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		A5E73BC41D169C4600527ECF /* GTLVerbatmAppIdentifierListWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BB11D169C4600527ECF /* GTLVerbatmAppIdentifierListWrapper.m */; };
-		A5E73BC51D169C4600527ECF /* GTLVerbatmAppImage.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BB31D169C4600527ECF /* GTLVerbatmAppImage.m */; };
-		A5E73BC61D169C4600527ECF /* GTLVerbatmAppPage.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BB51D169C4600527ECF /* GTLVerbatmAppPage.m */; };
-		A5E73BC71D169C4600527ECF /* GTLVerbatmAppPageListWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BB71D169C4600527ECF /* GTLVerbatmAppPageListWrapper.m */; };
-		A5E73BC81D169C4600527ECF /* GTLVerbatmAppPOV.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BB91D169C4600527ECF /* GTLVerbatmAppPOV.m */; };
-		A5E73BC91D169C4600527ECF /* GTLVerbatmAppPOVInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BBB1D169C4600527ECF /* GTLVerbatmAppPOVInfo.m */; };
-		A5E73BCA1D169C4600527ECF /* GTLVerbatmAppResultsWithCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BBD1D169C4600527ECF /* GTLVerbatmAppResultsWithCursor.m */; };
-		A5E73BCB1D169C4600527ECF /* GTLVerbatmAppUploadURI.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BBF1D169C4600527ECF /* GTLVerbatmAppUploadURI.m */; };
-		A5E73BCC1D169C4600527ECF /* GTLVerbatmAppVerbatmUser.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BC11D169C4600527ECF /* GTLVerbatmAppVerbatmUser.m */; };
-		A5E73BCD1D169C4600527ECF /* GTLVerbatmAppVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BC31D169C4600527ECF /* GTLVerbatmAppVideo.m */; };
-		A5E73BD01D169CBD00527ECF /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BCF1D169CBD00527ECF /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		A5E73BEF1D1770B400527ECF /* GTLQueryVerbatmApp.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BD41D1770B400527ECF /* GTLQueryVerbatmApp.m */; };
+		A5E73BF01D1770B400527ECF /* GTLServiceVerbatmApp.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BD61D1770B400527ECF /* GTLServiceVerbatmApp.m */; };
+		A5E73BF11D1770B400527ECF /* GTLVerbatmApp_Sources.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BD71D1770B400527ECF /* GTLVerbatmApp_Sources.m */; };
+		A5E73BF21D1770B400527ECF /* GTLVerbatmAppConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BDA1D1770B400527ECF /* GTLVerbatmAppConstants.m */; };
+		A5E73BF31D1770B400527ECF /* GTLVerbatmAppIdentifierListWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BDC1D1770B400527ECF /* GTLVerbatmAppIdentifierListWrapper.m */; };
+		A5E73BF41D1770B400527ECF /* GTLVerbatmAppImage.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BDE1D1770B400527ECF /* GTLVerbatmAppImage.m */; };
+		A5E73BF51D1770B400527ECF /* GTLVerbatmAppPage.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BE01D1770B400527ECF /* GTLVerbatmAppPage.m */; };
+		A5E73BF61D1770B400527ECF /* GTLVerbatmAppPageListWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BE21D1770B400527ECF /* GTLVerbatmAppPageListWrapper.m */; };
+		A5E73BF71D1770B400527ECF /* GTLVerbatmAppPOV.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BE41D1770B400527ECF /* GTLVerbatmAppPOV.m */; };
+		A5E73BF81D1770B400527ECF /* GTLVerbatmAppPOVInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BE61D1770B400527ECF /* GTLVerbatmAppPOVInfo.m */; };
+		A5E73BF91D1770B400527ECF /* GTLVerbatmAppResultsWithCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BE81D1770B400527ECF /* GTLVerbatmAppResultsWithCursor.m */; };
+		A5E73BFA1D1770B400527ECF /* GTLVerbatmAppUploadURI.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BEA1D1770B400527ECF /* GTLVerbatmAppUploadURI.m */; };
+		A5E73BFB1D1770B400527ECF /* GTLVerbatmAppVerbatmUser.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BEC1D1770B400527ECF /* GTLVerbatmAppVerbatmUser.m */; };
+		A5E73BFC1D1770B400527ECF /* GTLVerbatmAppVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BEE1D1770B400527ECF /* GTLVerbatmAppVideo.m */; };
+		A5E73BFF1D17714500527ECF /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73BFE1D17714500527ECF /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A5E860011B96249900E148D0 /* PostPublisher.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E860001B96249900E148D0 /* PostPublisher.m */; };
 		A5E860071B97CC3C00E148D0 /* PreviewDisplayView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E860061B97CC3C00E148D0 /* PreviewDisplayView.m */; };
 		A5FB5D2C1BCB0B9700634A96 /* GMAlbumsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5FB5D151BCB0B9700634A96 /* GMAlbumsViewCell.m */; };
@@ -407,7 +411,6 @@
 		A5E73B751D1634D300527ECF /* UserManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserManager.m; sourceTree = "<group>"; };
 		A5E73B781D1635C200527ECF /* GTLServiceVerbatmApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLServiceVerbatmApp.h; sourceTree = "<group>"; };
 		A5E73B791D1635C200527ECF /* GTLServiceVerbatmApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLServiceVerbatmApp.m; sourceTree = "<group>"; };
-		A5E73B7B1D1635DE00527ECF /* GTLVerbatmApp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GTLVerbatmApp.h; sourceTree = "<group>"; };
 		A5E73B7C1D16363C00527ECF /* GTLDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLDefines.h; sourceTree = "<group>"; };
 		A5E73B7D1D16365400527ECF /* GTLObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLObject.h; sourceTree = "<group>"; };
 		A5E73B7E1D16365400527ECF /* GTLObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLObject.m; sourceTree = "<group>"; };
@@ -441,28 +444,36 @@
 		A5E73BA81D16981500527ECF /* GTLErrorObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLErrorObject.m; sourceTree = "<group>"; };
 		A5E73BAA1D16982A00527ECF /* GTLFramework.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLFramework.h; sourceTree = "<group>"; };
 		A5E73BAB1D16982A00527ECF /* GTLFramework.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTLFramework.m; sourceTree = "<group>"; };
-		A5E73BB01D169C3400527ECF /* GTLVerbatmAppIdentifierListWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppIdentifierListWrapper.h; path = ../../../../../.Trash/GTLVerbatmAppIdentifierListWrapper.h; sourceTree = "<group>"; };
-		A5E73BB11D169C4600527ECF /* GTLVerbatmAppIdentifierListWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppIdentifierListWrapper.m; path = ../../../../../.Trash/GTLVerbatmAppIdentifierListWrapper.m; sourceTree = "<group>"; };
-		A5E73BB21D169C4600527ECF /* GTLVerbatmAppImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppImage.h; path = ../../../../../.Trash/GTLVerbatmAppImage.h; sourceTree = "<group>"; };
-		A5E73BB31D169C4600527ECF /* GTLVerbatmAppImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppImage.m; path = ../../../../../.Trash/GTLVerbatmAppImage.m; sourceTree = "<group>"; };
-		A5E73BB41D169C4600527ECF /* GTLVerbatmAppPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppPage.h; path = ../../../../../.Trash/GTLVerbatmAppPage.h; sourceTree = "<group>"; };
-		A5E73BB51D169C4600527ECF /* GTLVerbatmAppPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppPage.m; path = ../../../../../.Trash/GTLVerbatmAppPage.m; sourceTree = "<group>"; };
-		A5E73BB61D169C4600527ECF /* GTLVerbatmAppPageListWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppPageListWrapper.h; path = ../../../../../.Trash/GTLVerbatmAppPageListWrapper.h; sourceTree = "<group>"; };
-		A5E73BB71D169C4600527ECF /* GTLVerbatmAppPageListWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppPageListWrapper.m; path = ../../../../../.Trash/GTLVerbatmAppPageListWrapper.m; sourceTree = "<group>"; };
-		A5E73BB81D169C4600527ECF /* GTLVerbatmAppPOV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppPOV.h; path = ../../../../../.Trash/GTLVerbatmAppPOV.h; sourceTree = "<group>"; };
-		A5E73BB91D169C4600527ECF /* GTLVerbatmAppPOV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppPOV.m; path = ../../../../../.Trash/GTLVerbatmAppPOV.m; sourceTree = "<group>"; };
-		A5E73BBA1D169C4600527ECF /* GTLVerbatmAppPOVInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppPOVInfo.h; path = ../../../../../.Trash/GTLVerbatmAppPOVInfo.h; sourceTree = "<group>"; };
-		A5E73BBB1D169C4600527ECF /* GTLVerbatmAppPOVInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppPOVInfo.m; path = ../../../../../.Trash/GTLVerbatmAppPOVInfo.m; sourceTree = "<group>"; };
-		A5E73BBC1D169C4600527ECF /* GTLVerbatmAppResultsWithCursor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppResultsWithCursor.h; path = ../../../../../.Trash/GTLVerbatmAppResultsWithCursor.h; sourceTree = "<group>"; };
-		A5E73BBD1D169C4600527ECF /* GTLVerbatmAppResultsWithCursor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppResultsWithCursor.m; path = ../../../../../.Trash/GTLVerbatmAppResultsWithCursor.m; sourceTree = "<group>"; };
-		A5E73BBE1D169C4600527ECF /* GTLVerbatmAppUploadURI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppUploadURI.h; path = ../../../../../.Trash/GTLVerbatmAppUploadURI.h; sourceTree = "<group>"; };
-		A5E73BBF1D169C4600527ECF /* GTLVerbatmAppUploadURI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppUploadURI.m; path = ../../../../../.Trash/GTLVerbatmAppUploadURI.m; sourceTree = "<group>"; };
-		A5E73BC01D169C4600527ECF /* GTLVerbatmAppVerbatmUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppVerbatmUser.h; path = ../../../../../.Trash/GTLVerbatmAppVerbatmUser.h; sourceTree = "<group>"; };
-		A5E73BC11D169C4600527ECF /* GTLVerbatmAppVerbatmUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppVerbatmUser.m; path = ../../../../../.Trash/GTLVerbatmAppVerbatmUser.m; sourceTree = "<group>"; };
-		A5E73BC21D169C4600527ECF /* GTLVerbatmAppVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppVideo.h; path = ../../../../../.Trash/GTLVerbatmAppVideo.h; sourceTree = "<group>"; };
-		A5E73BC31D169C4600527ECF /* GTLVerbatmAppVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppVideo.m; path = ../../../../../.Trash/GTLVerbatmAppVideo.m; sourceTree = "<group>"; };
-		A5E73BCE1D169CBD00527ECF /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
-		A5E73BCF1D169CBD00527ECF /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		A5E73BD31D1770B400527ECF /* GTLQueryVerbatmApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLQueryVerbatmApp.h; path = API/GTLQueryVerbatmApp.h; sourceTree = "<group>"; };
+		A5E73BD41D1770B400527ECF /* GTLQueryVerbatmApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLQueryVerbatmApp.m; path = API/GTLQueryVerbatmApp.m; sourceTree = "<group>"; };
+		A5E73BD51D1770B400527ECF /* GTLServiceVerbatmApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLServiceVerbatmApp.h; path = API/GTLServiceVerbatmApp.h; sourceTree = "<group>"; };
+		A5E73BD61D1770B400527ECF /* GTLServiceVerbatmApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLServiceVerbatmApp.m; path = API/GTLServiceVerbatmApp.m; sourceTree = "<group>"; };
+		A5E73BD71D1770B400527ECF /* GTLVerbatmApp_Sources.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmApp_Sources.m; path = API/GTLVerbatmApp_Sources.m; sourceTree = "<group>"; };
+		A5E73BD81D1770B400527ECF /* GTLVerbatmApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmApp.h; path = API/GTLVerbatmApp.h; sourceTree = "<group>"; };
+		A5E73BD91D1770B400527ECF /* GTLVerbatmAppConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppConstants.h; path = API/GTLVerbatmAppConstants.h; sourceTree = "<group>"; };
+		A5E73BDA1D1770B400527ECF /* GTLVerbatmAppConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppConstants.m; path = API/GTLVerbatmAppConstants.m; sourceTree = "<group>"; };
+		A5E73BDB1D1770B400527ECF /* GTLVerbatmAppIdentifierListWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppIdentifierListWrapper.h; path = API/GTLVerbatmAppIdentifierListWrapper.h; sourceTree = "<group>"; };
+		A5E73BDC1D1770B400527ECF /* GTLVerbatmAppIdentifierListWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppIdentifierListWrapper.m; path = API/GTLVerbatmAppIdentifierListWrapper.m; sourceTree = "<group>"; };
+		A5E73BDD1D1770B400527ECF /* GTLVerbatmAppImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppImage.h; path = API/GTLVerbatmAppImage.h; sourceTree = "<group>"; };
+		A5E73BDE1D1770B400527ECF /* GTLVerbatmAppImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppImage.m; path = API/GTLVerbatmAppImage.m; sourceTree = "<group>"; };
+		A5E73BDF1D1770B400527ECF /* GTLVerbatmAppPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppPage.h; path = API/GTLVerbatmAppPage.h; sourceTree = "<group>"; };
+		A5E73BE01D1770B400527ECF /* GTLVerbatmAppPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppPage.m; path = API/GTLVerbatmAppPage.m; sourceTree = "<group>"; };
+		A5E73BE11D1770B400527ECF /* GTLVerbatmAppPageListWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppPageListWrapper.h; path = API/GTLVerbatmAppPageListWrapper.h; sourceTree = "<group>"; };
+		A5E73BE21D1770B400527ECF /* GTLVerbatmAppPageListWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppPageListWrapper.m; path = API/GTLVerbatmAppPageListWrapper.m; sourceTree = "<group>"; };
+		A5E73BE31D1770B400527ECF /* GTLVerbatmAppPOV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppPOV.h; path = API/GTLVerbatmAppPOV.h; sourceTree = "<group>"; };
+		A5E73BE41D1770B400527ECF /* GTLVerbatmAppPOV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppPOV.m; path = API/GTLVerbatmAppPOV.m; sourceTree = "<group>"; };
+		A5E73BE51D1770B400527ECF /* GTLVerbatmAppPOVInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppPOVInfo.h; path = API/GTLVerbatmAppPOVInfo.h; sourceTree = "<group>"; };
+		A5E73BE61D1770B400527ECF /* GTLVerbatmAppPOVInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppPOVInfo.m; path = API/GTLVerbatmAppPOVInfo.m; sourceTree = "<group>"; };
+		A5E73BE71D1770B400527ECF /* GTLVerbatmAppResultsWithCursor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppResultsWithCursor.h; path = API/GTLVerbatmAppResultsWithCursor.h; sourceTree = "<group>"; };
+		A5E73BE81D1770B400527ECF /* GTLVerbatmAppResultsWithCursor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppResultsWithCursor.m; path = API/GTLVerbatmAppResultsWithCursor.m; sourceTree = "<group>"; };
+		A5E73BE91D1770B400527ECF /* GTLVerbatmAppUploadURI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppUploadURI.h; path = API/GTLVerbatmAppUploadURI.h; sourceTree = "<group>"; };
+		A5E73BEA1D1770B400527ECF /* GTLVerbatmAppUploadURI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppUploadURI.m; path = API/GTLVerbatmAppUploadURI.m; sourceTree = "<group>"; };
+		A5E73BEB1D1770B400527ECF /* GTLVerbatmAppVerbatmUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppVerbatmUser.h; path = API/GTLVerbatmAppVerbatmUser.h; sourceTree = "<group>"; };
+		A5E73BEC1D1770B400527ECF /* GTLVerbatmAppVerbatmUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppVerbatmUser.m; path = API/GTLVerbatmAppVerbatmUser.m; sourceTree = "<group>"; };
+		A5E73BED1D1770B400527ECF /* GTLVerbatmAppVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppVideo.h; path = API/GTLVerbatmAppVideo.h; sourceTree = "<group>"; };
+		A5E73BEE1D1770B400527ECF /* GTLVerbatmAppVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppVideo.m; path = API/GTLVerbatmAppVideo.m; sourceTree = "<group>"; };
+		A5E73BFD1D17714500527ECF /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		A5E73BFE1D17714500527ECF /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		A5E85FFF1B96249900E148D0 /* PostPublisher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostPublisher.h; sourceTree = "<group>"; };
 		A5E860001B96249900E148D0 /* PostPublisher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostPublisher.m; sourceTree = "<group>"; };
 		A5E860051B97CC3C00E148D0 /* PreviewDisplayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreviewDisplayView.h; sourceTree = "<group>"; };
@@ -1037,7 +1048,34 @@
 		A5E73B771D1635B500527ECF /* GTL files */ = {
 			isa = PBXGroup;
 			children = (
-				A5E73BAF1D169B4200527ECF /* GTL objects */,
+				A5E73BD31D1770B400527ECF /* GTLQueryVerbatmApp.h */,
+				A5E73BD41D1770B400527ECF /* GTLQueryVerbatmApp.m */,
+				A5E73BD51D1770B400527ECF /* GTLServiceVerbatmApp.h */,
+				A5E73BD61D1770B400527ECF /* GTLServiceVerbatmApp.m */,
+				A5E73BD71D1770B400527ECF /* GTLVerbatmApp_Sources.m */,
+				A5E73BD81D1770B400527ECF /* GTLVerbatmApp.h */,
+				A5E73BD91D1770B400527ECF /* GTLVerbatmAppConstants.h */,
+				A5E73BDA1D1770B400527ECF /* GTLVerbatmAppConstants.m */,
+				A5E73BDB1D1770B400527ECF /* GTLVerbatmAppIdentifierListWrapper.h */,
+				A5E73BDC1D1770B400527ECF /* GTLVerbatmAppIdentifierListWrapper.m */,
+				A5E73BDD1D1770B400527ECF /* GTLVerbatmAppImage.h */,
+				A5E73BDE1D1770B400527ECF /* GTLVerbatmAppImage.m */,
+				A5E73BDF1D1770B400527ECF /* GTLVerbatmAppPage.h */,
+				A5E73BE01D1770B400527ECF /* GTLVerbatmAppPage.m */,
+				A5E73BE11D1770B400527ECF /* GTLVerbatmAppPageListWrapper.h */,
+				A5E73BE21D1770B400527ECF /* GTLVerbatmAppPageListWrapper.m */,
+				A5E73BE31D1770B400527ECF /* GTLVerbatmAppPOV.h */,
+				A5E73BE41D1770B400527ECF /* GTLVerbatmAppPOV.m */,
+				A5E73BE51D1770B400527ECF /* GTLVerbatmAppPOVInfo.h */,
+				A5E73BE61D1770B400527ECF /* GTLVerbatmAppPOVInfo.m */,
+				A5E73BE71D1770B400527ECF /* GTLVerbatmAppResultsWithCursor.h */,
+				A5E73BE81D1770B400527ECF /* GTLVerbatmAppResultsWithCursor.m */,
+				A5E73BE91D1770B400527ECF /* GTLVerbatmAppUploadURI.h */,
+				A5E73BEA1D1770B400527ECF /* GTLVerbatmAppUploadURI.m */,
+				A5E73BEB1D1770B400527ECF /* GTLVerbatmAppVerbatmUser.h */,
+				A5E73BEC1D1770B400527ECF /* GTLVerbatmAppVerbatmUser.m */,
+				A5E73BED1D1770B400527ECF /* GTLVerbatmAppVideo.h */,
+				A5E73BEE1D1770B400527ECF /* GTLVerbatmAppVideo.m */,
 				A5E73BAA1D16982A00527ECF /* GTLFramework.h */,
 				A5E73BAB1D16982A00527ECF /* GTLFramework.m */,
 				A5E73BA71D16981500527ECF /* GTLErrorObject.h */,
@@ -1071,40 +1109,12 @@
 				A5E73B7D1D16365400527ECF /* GTLObject.h */,
 				A5E73B7E1D16365400527ECF /* GTLObject.m */,
 				A5E73B7C1D16363C00527ECF /* GTLDefines.h */,
-				A5E73B7B1D1635DE00527ECF /* GTLVerbatmApp.h */,
 				A5E73B781D1635C200527ECF /* GTLServiceVerbatmApp.h */,
 				A5E73B791D1635C200527ECF /* GTLServiceVerbatmApp.m */,
+				A5E73BFD1D17714500527ECF /* Reachability.h */,
+				A5E73BFE1D17714500527ECF /* Reachability.m */,
 			);
 			name = "GTL files";
-			sourceTree = "<group>";
-		};
-		A5E73BAF1D169B4200527ECF /* GTL objects */ = {
-			isa = PBXGroup;
-			children = (
-				A5E73BCE1D169CBD00527ECF /* Reachability.h */,
-				A5E73BCF1D169CBD00527ECF /* Reachability.m */,
-				A5E73BB01D169C3400527ECF /* GTLVerbatmAppIdentifierListWrapper.h */,
-				A5E73BB11D169C4600527ECF /* GTLVerbatmAppIdentifierListWrapper.m */,
-				A5E73BB21D169C4600527ECF /* GTLVerbatmAppImage.h */,
-				A5E73BB31D169C4600527ECF /* GTLVerbatmAppImage.m */,
-				A5E73BB41D169C4600527ECF /* GTLVerbatmAppPage.h */,
-				A5E73BB51D169C4600527ECF /* GTLVerbatmAppPage.m */,
-				A5E73BB61D169C4600527ECF /* GTLVerbatmAppPageListWrapper.h */,
-				A5E73BB71D169C4600527ECF /* GTLVerbatmAppPageListWrapper.m */,
-				A5E73BB81D169C4600527ECF /* GTLVerbatmAppPOV.h */,
-				A5E73BB91D169C4600527ECF /* GTLVerbatmAppPOV.m */,
-				A5E73BBA1D169C4600527ECF /* GTLVerbatmAppPOVInfo.h */,
-				A5E73BBB1D169C4600527ECF /* GTLVerbatmAppPOVInfo.m */,
-				A5E73BBC1D169C4600527ECF /* GTLVerbatmAppResultsWithCursor.h */,
-				A5E73BBD1D169C4600527ECF /* GTLVerbatmAppResultsWithCursor.m */,
-				A5E73BBE1D169C4600527ECF /* GTLVerbatmAppUploadURI.h */,
-				A5E73BBF1D169C4600527ECF /* GTLVerbatmAppUploadURI.m */,
-				A5E73BC01D169C4600527ECF /* GTLVerbatmAppVerbatmUser.h */,
-				A5E73BC11D169C4600527ECF /* GTLVerbatmAppVerbatmUser.m */,
-				A5E73BC21D169C4600527ECF /* GTLVerbatmAppVideo.h */,
-				A5E73BC31D169C4600527ECF /* GTLVerbatmAppVideo.m */,
-			);
-			name = "GTL objects";
 			sourceTree = "<group>";
 		};
 		A5E860081B9919F500E148D0 /* Viewing Posts */ = {
@@ -1746,7 +1756,9 @@
 				A57A92FF1B55A551006C2597 /* CameraFocusSquare.m in Sources */,
 				C7E65F5C1B911A470042AD99 /* FeedVC.m in Sources */,
 				A5076D0E1BED6EF000303746 /* SingleMediaAndTextPinchView.m in Sources */,
+				A5E73BF81D1770B400527ECF /* GTLVerbatmAppPOVInfo.m in Sources */,
 				A535E5031BC44B6900A087D1 /* UITextView+Utilities.m in Sources */,
+				A5E73BF21D1770B400527ECF /* GTLVerbatmAppConstants.m in Sources */,
 				C70E1C4E1C3BC06100346A25 /* SettingsVC.m in Sources */,
 				A560EFB81BB0AF70003FB041 /* LoginView.m in Sources */,
 				A5337BC11CCDD96E00551394 /* PostsQueryManager.m in Sources */,
@@ -1765,20 +1777,22 @@
 				A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */,
 				C77A20931C03E39E00356465 /* ProfileNavBar.m in Sources */,
 				A56F68721B643B1400CE5744 /* VerbatmKeyboardToolBar.m in Sources */,
+				A5E73BF11D1770B400527ECF /* GTLVerbatmApp_Sources.m in Sources */,
 				A5E860071B97CC3C00E148D0 /* PreviewDisplayView.m in Sources */,
 				C7AA49F81D14739A00A031C6 /* SharingLinkView.m in Sources */,
-				A5E73BCC1D169C4600527ECF /* GTLVerbatmAppVerbatmUser.m in Sources */,
 				A535E5001BC4459800A087D1 /* UIView+Effects.m in Sources */,
 				A58656711B621CA4008E358C /* MathOperations.m in Sources */,
 				A535E5061BC44BF100A087D1 /* UIScrollView+Effects.m in Sources */,
 				C75985F51B8553DF00FE77F7 /* InternetConnectionMonitor.m in Sources */,
 				C76172741C4C8B1300AB0D84 /* UserAndChannelListsTVC.m in Sources */,
 				A5E73B881D16943900527ECF /* GTLRuntimeCommon.m in Sources */,
+				A5E73BFA1D1770B400527ECF /* GTLVerbatmAppUploadURI.m in Sources */,
 				1281BBE21CFB878C00161ECC /* ExternalShare.m in Sources */,
 				C7E6C13F1A4E394600863893 /* PhotoVideoPVE.m in Sources */,
 				C7E65F691B9245200042AD99 /* ProfileVC.m in Sources */,
 				C7E2C88F1BB7E97600D83668 /* UtilityFunctions.m in Sources */,
 				A5934C171C11EFBD007C7830 /* CustomTabBarController.m in Sources */,
+				A5E73BF61D1770B400527ECF /* GTLVerbatmAppPageListWrapper.m in Sources */,
 				C7F3D46B1A4F84C000B43238 /* SignInVC.m in Sources */,
 				12A06D9A1CD37B1A001800C9 /* Followers.m in Sources */,
 				A5E73BA31D1697AE00527ECF /* GTLBatchQuery.m in Sources */,
@@ -1786,6 +1800,7 @@
 				C7BF1AB21C59D6BF00CEDE4B /* Channel_BackendObject.m in Sources */,
 				A535E5091BC45CC600A087D1 /* AVAsset+Utilities.m in Sources */,
 				A5076D141BF2B25100303746 /* TextOverMediaView.m in Sources */,
+				A5E73BEF1D1770B400527ECF /* GTLQueryVerbatmApp.m in Sources */,
 				A58656681B61FD99008E358C /* PhotoPVE.m in Sources */,
 				A5C38AC71CC1D1970067D077 /* FeaturedContentCellView.m in Sources */,
 				A5C38AC11CC1B67B0067D077 /* FeaturedContentVC.m in Sources */,
@@ -1793,8 +1808,8 @@
 				A56B5D1D1CA49A8100A61D27 /* UserInfoCache.m in Sources */,
 				A5337BBA1CCD60CF00551394 /* LoginKeyboardToolBar.m in Sources */,
 				C7EF5BB61B0CD5E500E7915B /* MasterNavigationVC.m in Sources */,
+				A5E73BF51D1770B400527ECF /* GTLVerbatmAppPage.m in Sources */,
 				A51E74641C898C4E00CF8DEA /* PostInProgress.m in Sources */,
-				A5E73BC41D169C4600527ECF /* GTLVerbatmAppIdentifierListWrapper.m in Sources */,
 				C734FD9C19B14B8D00B2C370 /* ContentDevVC.m in Sources */,
 				C7E6C1461A4E394600863893 /* VideoPVE.m in Sources */,
 				C7BF1AA81C57F5F500CEDE4B /* Photo_BackendObject.m in Sources */,
@@ -1811,7 +1826,6 @@
 				C70E1C541C3BF74C00346A25 /* TermsAndConditionsVC.m in Sources */,
 				C76172771C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m in Sources */,
 				A5934B8F1C0FDFD6007C7830 /* VerbatmScrollView.m in Sources */,
-				A5E73BC81D169C4600527ECF /* GTLVerbatmAppPOV.m in Sources */,
 				C7AA49FB1D148A8C00A031C6 /* verbatmButton.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
 				C716E9D21BD6C338001B769D /* Analytics.m in Sources */,
@@ -1820,9 +1834,13 @@
 				A5337BBD1CCD99D600551394 /* UserInfoVC.m in Sources */,
 				C7F3EBCC1C814313007D23DF /* VideoDownloadManager.m in Sources */,
 				A5E73B851D16368400527ECF /* GTLDateTime.m in Sources */,
+				A5E73BFC1D1770B400527ECF /* GTLVerbatmAppVideo.m in Sources */,
+				A5E73BF71D1770B400527ECF /* GTLVerbatmAppPOV.m in Sources */,
 				A5C38ACA1CC1D1B80067D077 /* ExploreChannelCellView.m in Sources */,
 				C7BF1AAB1C57F60600CEDE4B /* Video_BackendObject.m in Sources */,
+				A5E73BF41D1770B400527ECF /* GTLVerbatmAppImage.m in Sources */,
 				C741AC581C49D23C0076FFC5 /* FollowInfoBar.m in Sources */,
+				A5E73BF31D1770B400527ECF /* GTLVerbatmAppIdentifierListWrapper.m in Sources */,
 				A5C38ABE1CC1B38F0067D077 /* DiscoverVC.m in Sources */,
 				A5E73B8B1D16945600527ECF /* GTLJSONParser.m in Sources */,
 				C761727B1C4DFB7700AB0D84 /* PostListVC.m in Sources */,
@@ -1837,31 +1855,29 @@
 				A5C38ACD1CC1D4120067D077 /* FeaturedContentChannelView.m in Sources */,
 				C763C1BC1CE4430B00929248 /* onBoardingViewController.m in Sources */,
 				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,
-				A5E73BD01D169CBD00527ECF /* Reachability.m in Sources */,
 				C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */,
 				12A06D971CD3762B001800C9 /* BlogPopupView.m in Sources */,
 				A5E73B7F1D16365400527ECF /* GTLObject.m in Sources */,
-				A5E73BCB1D169C4600527ECF /* GTLVerbatmAppUploadURI.m in Sources */,
+				A5E73BFB1D1770B400527ECF /* GTLVerbatmAppVerbatmUser.m in Sources */,
+				A5E73BFF1D17714500527ECF /* Reachability.m in Sources */,
 				C761727F1C4E0EB600AB0D84 /* PostCollectionViewCell.m in Sources */,
 				A56B5D261CA4A24300A61D27 /* User_BackendObject.m in Sources */,
 				A5E73B9A1D16970E00527ECF /* GTMHTTPFetcher.m in Sources */,
-				A5E73BC51D169C4600527ECF /* GTLVerbatmAppImage.m in Sources */,
 				A5FB5D2C1BCB0B9700634A96 /* GMAlbumsViewCell.m in Sources */,
 				A560EFB51BB0AF64003FB041 /* CreateAccountView.m in Sources */,
-				A5E73BC91D169C4600527ECF /* GTLVerbatmAppPOVInfo.m in Sources */,
+				A5E73BF01D1770B400527ECF /* GTLServiceVerbatmApp.m in Sources */,
 				A5FB5D2D1BCB0B9700634A96 /* GMAlbumsViewController.m in Sources */,
 				C7F79E801C3AACC600319330 /* CreateNewChannelView.m in Sources */,
 				A5E73BAC1D16982A00527ECF /* GTLFramework.m in Sources */,
+				A5E73BF91D1770B400527ECF /* GTLVerbatmAppResultsWithCursor.m in Sources */,
 				A5E73B821D16366E00527ECF /* GTLUtilities.m in Sources */,
 				A56B5D291CA4D39400A61D27 /* Share_BackendManager.m in Sources */,
 				A5E860011B96249900E148D0 /* PostPublisher.m in Sources */,
 				C7F22B381C3841AD00E56EA7 /* SelectSharingOption.m in Sources */,
-				A5E73BC61D169C4600527ECF /* GTLVerbatmAppPage.m in Sources */,
 				A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */,
 				A535E4FD1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m in Sources */,
 				A5FB5D3A1BCB0B9700634A96 /* GMImagePickerController.m in Sources */,
 				C7D596381C66DC3A00161136 /* FeedQueryManager.m in Sources */,
-				A5E73BCD1D169C4600527ECF /* GTLVerbatmAppVideo.m in Sources */,
 				A56F68811B65B43D00CE5744 /* ImagePinchView.m in Sources */,
 				C7F79E7D1C39E13900319330 /* SelectionView.m in Sources */,
 				A58EE8861BA8771700B7B396 /* NoAnimationUnwindSegue.m in Sources */,
@@ -1869,13 +1885,11 @@
 				C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */,
 				A5E73BA01D16976E00527ECF /* GTMHTTPFetchHistory.m in Sources */,
 				A5E73BA91D16981500527ECF /* GTLErrorObject.m in Sources */,
-				A5E73BC71D169C4600527ECF /* GTLVerbatmAppPageListWrapper.m in Sources */,
 				A5E73B8E1D16965700527ECF /* GTLQueryVerbatmApp.m in Sources */,
 				A5C09BE61BA1F43600C0AD86 /* MediaUploader.m in Sources */,
 				C73B7C2F1CA8719200128926 /* Intro_Instruction_Notification_View.m in Sources */,
 				C75F155F1C2B4A1B0092912D /* Channel.m in Sources */,
 				A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */,
-				A5E73BCA1D169C4600527ECF /* GTLVerbatmAppResultsWithCursor.m in Sources */,
 				A5E73B941D1696B000527ECF /* GTLUploadParameters.m in Sources */,
 				C74749911C2B1CB90047C66E /* ProfileInformationBar.m in Sources */,
 				C7AA49FF1D149B8C00A031C6 /* SharingLinkActionView.m in Sources */,
