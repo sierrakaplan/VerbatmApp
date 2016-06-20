@@ -9,7 +9,7 @@
 #import "Channel_BackendObject.h"
 
 #import "Durations.h"
-
+#import "ExternalShare.h"
 #import "FeedQueryManager.h"
 
 #import "Icons.h"
@@ -46,6 +46,8 @@
 #import "User_BackendObject.h"
 #import "UserInfoCache.h"
 
+#import <Twitter/TWTweetComposeViewController.h>
+
 @interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource, SharePostViewDelegate,
 UIScrollViewDelegate, PostCollectionViewCellDelegate>
 
@@ -74,6 +76,9 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 @property (nonatomic) NSString *postImageText;
 @property (nonatomic) PFObject *postToShare;
 //@property (strong, nonatomic) BranchUniversalObject *branchUniversalObject;
+
+@property (nonatomic) ExternalShare * externalShare;
+
 
 @property (nonatomic) UIImageView *reblogSucessful;
 @property (nonatomic) UIImageView *following;
@@ -555,25 +560,98 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [self presentViewController:newAlert animated:YES completion:nil];
 }
 
+
+-(void)reportLinkError{
+    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Oops something went wrong" message:@"Generating link - Please try again in a minute" preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+                                                    handler:^(UIAlertAction * action) {}];
+    [newAlert addAction:action1];
+    [self presentViewController:newAlert animated:YES completion:nil];
+}
+
 -(void)ShareToTwitterSelected{
     
-    //NSString * url = [self.postToShare valueForKey:<#(nonnull NSString *)#>]
+    NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
+    if(url && [TWTweetComposeViewController canSendTweet]){
+        
+        TWTweetComposeViewController * cmp = [[TWTweetComposeViewController alloc] init];
+        
+        [cmp setInitialText:@"hello world"];
+        
+        
+//        TWTRComposer *composer = [[TWTRComposer alloc] init];
+//        
+//        [composer setText:@"just setting up my Fabric"];
+//        [composer setImage:[UIImage imageNamed:@"fabric"]];
+//        
+//        // Called from a UIViewController
+//        [composer showFromViewController:self completion:^(TWTRComposerResult result) {
+//            if (result == TWTRComposerResultCancelled) {
+//                NSLog(@"Tweet composition cancelled");
+//            }
+//            else {
+//                NSLog(@"Sending Tweet!");
+//            }
+//        }];
+        
+        
+        
+        
+        
+        
+        
+    }else{
+        [self.externalShare storeShareLinkToPost:self.postToShare withCaption:nil withCompletionBlock:nil];
+        [self reportLinkError];
+    }
     
     
     
 }
 
 -(void)ShareToFacebookSelected{
-    
+    NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
+    if(url){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"got my Branch invite link to share: %@", url);
+            NSURL *link = [NSURL URLWithString:url];
+            FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
+            content.contentURL = link;
+            [FBSDKShareDialog showFromViewController:self
+                                         withContent:content
+                                            delegate:nil];
+        });
+    }else{
+        [self.externalShare storeShareLinkToPost:self.postToShare withCaption:nil withCompletionBlock:nil];
+        [self reportLinkError];
+    }
 }
 
 
 -(void)ShareToSmsSelected{
-    
+    NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
+    if(url){
+        
+        
+        
+        
+    }else{
+        [self.externalShare storeShareLinkToPost:self.postToShare withCaption:nil withCompletionBlock:nil];
+        
+        [self reportLinkError];
+    }
 }
 
 -(void)CopyLinkSelected{
-    
+    NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
+    if(url){
+        
+  
+    }else{
+        [self.externalShare storeShareLinkToPost:self.postToShare withCaption:nil withCompletionBlock:nil];
+        [self reportLinkError];
+    }
 }
 
 
@@ -588,16 +666,16 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
             [self ShareToVerbatmSelected];
             break;
         case Twitter:
-            [self ShareToVerbatmSelected];
+            [self ShareToTwitterSelected];
             break;
         case Facebook:
-            [self ShareToVerbatmSelected];
+            [self ShareToFacebookSelected];
             break;
         case Sms:
-            [self ShareToVerbatmSelected];
+            [self ShareToSmsSelected];
             break;
         case CopyLink:
-            [self ShareToVerbatmSelected];
+            [self CopyLinkSelected];
             break;
         
         default:
@@ -801,6 +879,11 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+-(ExternalShare *)externalShare{
+    if(!_externalShare)_externalShare = [[ExternalShare alloc] init];
+    return _externalShare;
 }
 
 @end

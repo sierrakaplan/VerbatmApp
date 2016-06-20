@@ -62,6 +62,10 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (3.1.1):
     - PromiseKit/CorePromise
+  - TwitterCore (2.2.0):
+    - Fabric
+  - TwitterKit (2.2.0):
+    - TwitterCore (= 2.2.0)
 
 DEPENDENCIES:
   - AFNetworking (~> 3.0)
@@ -75,6 +79,7 @@ DEPENDENCIES:
   - Parse
   - ParseFacebookUtilsV4
   - PromiseKit (from `https://github.com/philippeauriach/PromiseKit.git`, commit `266cfeb5073277b757efc4a37aa049efc96c596f`)
+  - TwitterKit
 
 EXTERNAL SOURCES:
   PromiseKit:
@@ -100,7 +105,9 @@ SPEC CHECKSUMS:
   Parse: f51c24d2feb412e4b2d6cc73d37cb24e8d0089bc
   ParseFacebookUtilsV4: 2f30c2b7021c8005d3042781da7ef87d06589421
   PromiseKit: 4e8127c22a9b29d1b44958ab2ec762ea6115cbfb
+  TwitterCore: 115527630bb2986954adc928b8c895a92bcd57e5
+  TwitterKit: 2c64ec342a6261ae6bab565bad85dcbbfd3888b7
 
-PODFILE CHECKSUM: 62424f1315023b91c6131c6c6a6cdbd4ba21b5b9
+PODFILE CHECKSUM: 184db4bfade3438b16c262f384b5312c93c014ab
 
 COCOAPODS: 1.0.1
