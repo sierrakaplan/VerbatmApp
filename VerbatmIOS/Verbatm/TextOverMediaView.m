@@ -44,6 +44,7 @@
 			croppedImage = [smallImage imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width, self.bounds.size.height)];
 		}
 		[self.imageView setImage: croppedImage];
+        self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 
 		// After larger image loads, crop it and set it in the image
 		// Only load large image if it's been published already cropped (with s0 tag)

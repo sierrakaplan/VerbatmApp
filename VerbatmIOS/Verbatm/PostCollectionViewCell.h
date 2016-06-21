@@ -40,5 +40,5 @@
 -(void)putInSmallMode;
 -(void)removeFromSmallMode;
 
-
+-(void)changePostFrameToSize:(CGSize) newSize;
 @end

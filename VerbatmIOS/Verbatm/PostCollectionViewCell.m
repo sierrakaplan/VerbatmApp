@@ -43,6 +43,7 @@
 		[self.currentPostView removeFromSuperview];
 		[self.currentPostView clearPost];
 	}
+    self.clipsToBounds = YES;
 	self.currentPostView = nil;
 	self.currentPostActivityObject = nil;
 	self.postBeingPresented = nil;
@@ -60,6 +61,14 @@
     self.inSmallMode = NO;
 }
 
+-(void)changePostFrameToSize:(CGSize) newSize{
+   // self.currentPostView.frame = CGRectMake(0.f, 0.f, newSize.width, newSize.height);
+    
+    
+    
+//    [self.currentPostView setTransform:CGAffineTransformMakeScale(newSize.width/self.currentPostView.frame.size.width, newSize.height/self.currentPostView.frame.size.height)];
+}
+
 -(void) presentPostFromPCActivityObj: (PFObject *) pfActivityObj andChannel:(Channel*) channelForList
 					withDeleteButton: (BOOL) withDelete andLikeShareBarUp:(BOOL) up {
 	self.footerUp = up;
@@ -70,8 +79,10 @@
     [Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
 		self.currentPostView = [[PostView alloc] initWithFrame:self.bounds
 								andPostChannelActivityObject:pfActivityObj small:self.inSmallMode andPageObjects:pages];
+        self.currentPostView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 
 		NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
+        
 		if (self.isOnScreen) {
 			[self.currentPostView postOnScreen];
 		} else if (self.isAlmostOnScreen) {

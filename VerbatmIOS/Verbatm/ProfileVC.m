@@ -66,6 +66,7 @@
 
 @property (nonatomic) PHImageManager* imageManager;
 
+@property (nonatomic) BOOL postListInLargeMode;
 
 @end
 
@@ -150,12 +151,13 @@
 	if(self.profileHeaderView) [self.view insertSubview:self.postListVC.view belowSubview:self.profileHeaderView];
 	else [self.view addSubview:self.postListVC.view];
 	
-    //[self addClearScreenGesture];
+    [self addEnlargeGesture];
 
 }
 
--(void)addClearScreenGesture{
-	UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clearScreen:)];
+
+-(void)addEnlargeGesture{
+	UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(changePostListSize:)];
 	singleTap.numberOfTapsRequired = 1;
 	singleTap.delegate = self;
 	[self.postListVC.view addGestureRecognizer:singleTap];
@@ -380,12 +382,74 @@
 	}
 }
 
--(void)clearScreen:(UIGestureRecognizer *) tapGesture {
-	if (self.headerViewOnScreen) {
-		[self presentHeadAndFooter:NO];
-	} else {
-		[self presentHeadAndFooter:YES];
-	}
+
+
+-(void)makePostListLarger:(BOOL) makeLarge{
+    
+    UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
+    BOOL shouldPage = NO;
+    CGRect postListFrame;
+    
+    if(makeLarge && !self.postListInLargeMode){
+        
+        CGFloat postHeight = self.view.frame.size.height;
+        CGFloat postWidth = self.view.frame.size.width;//same ratio as screen
+        
+        flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+        [flowLayout setMinimumInteritemSpacing:0.3];
+        [flowLayout setMinimumLineSpacing:0.0f];
+        [flowLayout setItemSize:CGSizeMake(postWidth, postHeight)];
+        
+        shouldPage = YES;
+        postListFrame = self.view.bounds;
+        
+        [self.view bringSubviewToFront:self.postListVC.view];
+        
+    }else{
+        CGFloat postHeight = self.view.frame.size.height - (self.view.frame.size.width + ((self.isCurrentUserProfile) ? TAB_BAR_HEIGHT : 0.f));
+        CGFloat postWidth = (self.view.frame.size.width / self.view.frame.size.height ) * postHeight;//same ratio as screen
+        
+        flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+        [flowLayout setMinimumInteritemSpacing:0.3];
+        [flowLayout setMinimumLineSpacing:0.0f];
+        [flowLayout setItemSize:CGSizeMake(postWidth, postHeight)];
+        
+        postListFrame = CGRectMake(0.f, self.view.frame.size.width,self.view.frame.size.width, postHeight);
+        [self.view bringSubviewToFront:self.profileHeaderView];
+        
+    }
+    
+    [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
+        [self.postListVC.collectionView.collectionViewLayout invalidateLayout];
+        [self.postListVC.collectionView setCollectionViewLayout:flowLayout];
+        self.postListVC.view.frame = postListFrame;
+        //[self.postListVC changePostViewsToSize:flowLayout.itemSize];
+        self.postListVC.collectionView.pagingEnabled = shouldPage;
+    }];
+    
+    
+    [self presentHeadAndFooter:!shouldPage];
+}
+
+
+
+-(void)changePostListSize:(UIGestureRecognizer *) tapGesture {
+	
+    if(self.postListInLargeMode){
+        [self makePostListLarger:NO];
+    }else{
+        [self makePostListLarger:YES];
+    }
+    
+    self.postListInLargeMode = !self.postListInLargeMode ;
+
+    
+//    
+//    if (self.headerViewOnScreen) {
+//		[self presentHeadAndFooter:NO];
+//	} else {
+//		[self presentHeadAndFooter:YES];
+//	}
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

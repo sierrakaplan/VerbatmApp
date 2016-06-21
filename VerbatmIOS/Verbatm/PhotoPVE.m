@@ -198,6 +198,8 @@
 	TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
 																		  andImageURL: url withSmallImage:thumbnailimage
 																		   asSmall:self.small];
+    textAndImageView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+
 	BOOL textColorBlack = [textColor isEqual:[UIColor blackColor]];
 	[textAndImageView setText: text
 			 andTextYPosition: textYPosition

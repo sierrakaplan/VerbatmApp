@@ -24,6 +24,7 @@
 		self.currentlyLoadingMedia = NO;
         self.clipsToBounds = YES;
         [self createBorder];
+        self.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     }
     return self;
 }

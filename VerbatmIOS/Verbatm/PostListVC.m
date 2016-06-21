@@ -166,6 +166,18 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	}
 }
 
+
+-(void)changePostViewsToSize:(CGSize) newSize{
+    NSArray * cells = [self.collectionView visibleCells];
+    if(cells){
+        
+        for (PostCollectionViewCell *currentCell in cells){
+            //[currentCell changePostFrameToSize:newSize];
+        }
+    }
+}
+
+
 -(void)registerForNotifications{
 	
 }
