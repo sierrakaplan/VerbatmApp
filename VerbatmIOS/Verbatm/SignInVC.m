@@ -88,8 +88,6 @@
     [self.view sendSubviewToBack:self.backgroundImageView];
 }
 
-
-
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     
     if(scrollView == self.onBoardingView){
