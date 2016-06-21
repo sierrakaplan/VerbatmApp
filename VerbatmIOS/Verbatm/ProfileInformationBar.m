@@ -63,7 +63,7 @@
 		self.profileTab = profileTab;
 		self.isCurrentUser = (user == nil);
 		self.editMode = NO;
-		self.backgroundColor = [UIColor whiteColor];
+		self.backgroundColor = [UIColor clearColor];
 		if (self.profileTab) {
 			[self createSettingsButton];
 			[self createEditButton];
@@ -92,7 +92,7 @@
 
 -(void) createFollowersAndFollowingLabels {
 
-	NSDictionary *textAttributes = @{NSForegroundColorAttributeName: [UIColor blackColor],
+	NSDictionary *textAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
 									  NSFontAttributeName: [UIFont fontWithName:BOLD_FONT size:FONT_SIZE]};
 
 	CGFloat following_x = (self.frame.size.width - SETTINGS_BUTTON_SIZE - PROFILE_HEADER_XOFFSET*3
@@ -151,7 +151,7 @@
 
 -(void) createEditButton {
 	[self createFollowOrEditButton];
-	[self changeFollowButtonTitle:@"edit" toColor:[UIColor blackColor]];
+	[self changeFollowButtonTitle:@"edit" toColor:[UIColor whiteColor]];
 }
 
 -(void) createFollowOrEditButton {
@@ -160,7 +160,7 @@
 	self.followOrEditButton = [[UIButton alloc] initWithFrame: followButtonFrame];
 	self.followOrEditButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
 	self.followOrEditButton.clipsToBounds = YES;
-	self.followOrEditButton.layer.borderColor = [UIColor blackColor].CGColor;
+	self.followOrEditButton.layer.borderColor = [UIColor whiteColor].CGColor;
 	self.followOrEditButton.layer.borderWidth = 2.f;
 	self.followOrEditButton.layer.cornerRadius = 10.f;
 	[self.followOrEditButton addTarget:self action:@selector(followOrEditButtonSelected) forControlEvents:UIControlEventTouchUpInside];

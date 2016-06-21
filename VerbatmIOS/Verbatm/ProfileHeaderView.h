@@ -21,6 +21,8 @@
 -(void) exitCurrentProfile;
 -(void) blockCurrentUserShouldBlock:(BOOL) shouldBlock;
 
+-(void)presentGalleryToSelectImage;
+
 @end
 
 @interface ProfileHeaderView : UIView
@@ -32,5 +34,7 @@
 				  andChannel:(Channel*)channel inProfileTab:(BOOL) profileTab;
 
 @property (weak, nonatomic) id<ProfileHeaderViewDelegate> delegate;
+
+-(void)setCoverPhotoImage:(UIImage *) coverPhotoImage;
 
 @end

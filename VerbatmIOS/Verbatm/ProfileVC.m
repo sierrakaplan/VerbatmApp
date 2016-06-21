@@ -16,6 +16,8 @@
 
 #import "Follow_BackendManager.h"
 
+#import "GMImagePickerController.h"
+
 #import "LoadingIndicator.h"
 
 #import "ParseBackendKeys.h"
@@ -26,6 +28,7 @@
 
 #import "PublishingProgressManager.h"
 
+#import "StringsAndAppConstants.h"
 #import "SharePostView.h"
 #import "SizesAndPositions.h"
 #import "SegueIDs.h"
@@ -39,8 +42,9 @@
 #import <PromiseKit/PromiseKit.h>
 
 @interface ProfileVC() <ProfileHeaderViewDelegate, Intro_Notification_Delegate,
-UIScrollViewDelegate, CreateNewChannelViewProtocol,
-PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
+                        UIScrollViewDelegate, CreateNewChannelViewProtocol,
+                        PublishingProgressProtocol, PostListVCProtocol,
+                        UIGestureRecognizerDelegate,GMImagePickerControllerDelegate>
 
 @property (nonatomic) BOOL currentlyCreatingNewChannel;
 
@@ -60,6 +64,9 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 @property (nonatomic, strong) NSProgress* publishingProgress;
 @property (nonatomic, strong) UIProgressView* progressBar;
 
+@property (nonatomic) PHImageManager* imageManager;
+
+
 @end
 
 @implementation ProfileVC
@@ -68,7 +75,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	[super viewDidLoad];
 	self.automaticallyAdjustsScrollViewInsets = NO;
 	[self setNeedsStatusBarAppearanceUpdate];
-	self.view.backgroundColor = [UIColor blackColor];
+	self.view.backgroundColor = [UIColor whiteColor];
 	[self createHeader];
 	[self checkIntroNotification];
 	[self addPostListVC];
@@ -92,7 +99,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
 -(void) createHeader {
 	[self.channel getFollowersAndFollowingWithCompletionBlock:^{
-		CGRect frame = CGRectMake(0.f, 0.f, self.view.frame.size.width, PROFILE_HEADER_HEIGHT);
+		CGRect frame = CGRectMake(0.f, 0.f, self.view.frame.size.width, self.view.frame.size.width);
 		PFUser* user = self.isCurrentUserProfile ? nil : self.ownerOfProfile;
 		self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andUser:user
 															   andChannel:self.channel inProfileTab:self.isProfileTab];
@@ -125,17 +132,22 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 		[self.postListVC offScreen];
 		[self.postListVC.view removeFromSuperview];
 	}
-
+    
+    CGFloat postHeight = self.view.frame.size.height - (self.view.frame.size.width + TAB_BAR_HEIGHT);
+    CGFloat postWidth = (self.view.frame.size.width / self.view.frame.size.height ) * postHeight;//same ratio as screen
+    
 	UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
 	flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
 	[flowLayout setMinimumInteritemSpacing:0.3];
 	[flowLayout setMinimumLineSpacing:0.0f];
-	[flowLayout setItemSize:self.view.frame.size];
+	[flowLayout setItemSize:CGSizeMake(postWidth, postHeight)];
 	self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
 	self.postListVC.postListDelegate = self;
+    
+    self.postListVC.view.frame = CGRectMake(0.f, self.view.frame.size.width,self.view.frame.size.width, postHeight);
 	if(self.profileHeaderView) [self.view insertSubview:self.postListVC.view belowSubview:self.profileHeaderView];
 	else [self.view addSubview:self.postListVC.view];
-	[self addClearScreenGesture];
+	//[self addClearScreenGesture];
 }
 
 -(void)addClearScreenGesture{
@@ -172,6 +184,58 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 -(void) settingsButtonClicked {
 	[self performSegueWithIdentifier:SETTINGS_PAGE_MODAL_SEGUE sender:self];
 }
+
+-(void)presentGalleryToSelectImage{
+    GMImagePickerController *picker = [[GMImagePickerController alloc] init];
+    picker.delegate = self;
+    //Display or not the selection info Toolbar:
+    picker.displaySelectionInfoToolbar = YES;
+    
+    //Display or not the number of assets in each album:
+    picker.displayAlbumsNumberOfAssets = YES;
+    
+    //Customize the picker title and prompt (helper message over the title)
+    picker.title = GALLERY_PICKER_TITLE;
+    picker.customNavigationBarPrompt = GALLERY_CUSTOM_MESSAGE;
+    
+    [picker setSelectOnlyOneImage:YES];
+    
+    //Customize the number of cols depending on orientation and the inter-item spacing
+    picker.colsInPortrait = 3;
+    picker.colsInLandscape = 5;
+    picker.minimumInteritemSpacing = 2.0;
+    [self presentViewController:picker animated:YES completion:nil];
+}
+
+-(void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray{
+    for(PHAsset * asset in assetArray) {
+        if(asset.mediaType==PHAssetMediaTypeImage) {
+            @autoreleasepool {
+                [self getImageFromAsset:asset];
+            }
+        }
+    }
+}
+
+- (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
+    [picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
+    }];
+}
+
+-(void) getImageFromAsset: (PHAsset *) asset {
+    PHImageRequestOptions *options = [PHImageRequestOptions new];
+    options.synchronous = YES;
+    [self.imageManager requestImageForAsset:asset targetSize:self.view.frame.size contentMode:PHImageContentModeAspectFill
+                                    options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
+                                        // RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                            [self.profileHeaderView setCoverPhotoImage:image];
+                                        });
+                                    }];
+}
+
+
+
 
 //ProfileNavBarDelegate protocol
 -(void) createNewChannel {
@@ -387,6 +451,13 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	if (object == self.publishingProgress && [keyPath isEqualToString:@"completedUnitCount"] ) {
 		[self.progressBar setProgress:self.publishingProgress.fractionCompleted animated:YES];
 	}
+}
+
+-(PHImageManager*) imageManager {
+    if (!_imageManager) {
+        _imageManager = [[PHImageManager alloc] init];
+    }
+    return _imageManager;
 }
 
 @end

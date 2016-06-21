@@ -56,14 +56,14 @@
 #define SUCCESS_PUBLISHING_IMAGE @"publishing_succeeded_notification"
 #define FAILED_PUBLISHING_IMAGE @"publishing_failed_notification"
 
-#pragma mark Edit Content View
+#pragma mark - Edit Content View-
 
 #define MINIMIZE_ICON @"minimize_icon"
 #define DONE_CHECKMARK @"done_checkmark"
 #define PULLDOWN_ICON @"down_arrow"
 #define CREATE_TEXT_ICON @"text_edit_button"
 
-#pragma mark Text Toolbar
+#pragma mark - Text Toolbar -
 
 #define WHITE_FONT_ICON @"text_toolbar_white_font_icon"
 #define BLACK_FONT_ICON @"text_toolbar_black_font_icon"
@@ -73,7 +73,7 @@
 #define CENTER_ALIGN_ICON @"text_toolbar_center_align_icon"
 #define RIGHT_ALIGN_ICON @"text_tooblar_right_align_icon"
 
-#pragma mark Media Capture
+#pragma mark - Media Capture -
 
 #define SWITCH_CAMERA_ORIENTATION_ICON @"camera_orientation"
 #define FLASH_ICON_ON @"flash_on"
@@ -81,19 +81,17 @@
 #define CAPTURE_RECORDING_ICON @"camera_button_recording"
 #define CAPTURE_IMAGE_ICON @"camera_button_with_dot"
 
-#define Pinch Views
-
 #define PLAY_VIDEO_ICON @"play_video_icon"
 #define PLAY_VIDEO_ICON_HALF_CIRCLE @"play_video_icon_half_circle"
 #define PLAY_VIDEO_ICON_QUARTER_CIRCLE @"play_video_icon_quarter_circle"
 
-#pragma mark Media Tile
+#pragma mark - Media Tile -
 
 #define CAMERA_BUTTON_ICON @"camera"
 #define GALLERY_BUTTON_ICON @"galleryIcon"
 #define PLUS_ICON @"plus_sign_black"
 
-#pragma mark GM Image Picker
+#pragma mark - GM Image Picker -
 
 #define GM_VIDEO_ICON @"GMVideoIcon"
 #define GM_IMAGE_PICKER_VIDEO @"GMImagePickerVideo"
@@ -113,7 +111,7 @@
 #define FLAG_POST_ICON @"etc_icon"
 
 
-#pragma mark Sharing options
+#pragma mark - Sharing options -
 
 #define FACEBOOK_LOGO @"facebook_logo"
 #define TWITTER_LOGO @"Twitter_logo"
@@ -136,6 +134,9 @@
 
 #define DISCOVER_BACKGROUND @"background_discover"
 
+#pragma mark - Profile Information Header -
+
+#define ADD_COVER_PHOTO_ICON @"Add cover photo"
 
 
 #endif /* Icons_h */

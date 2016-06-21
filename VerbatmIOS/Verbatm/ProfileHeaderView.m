@@ -10,6 +10,9 @@
 
 #import "Icons.h"
 
+
+
+
 #import "Notifications.h"
 
 #import "ParseBackendKeys.h"
@@ -37,6 +40,10 @@
 @property (nonatomic) UITextView *blogDescriptionEditable;
 @property (nonatomic) UILabel *blogDescriptionPlaceholder;
 
+@property (nonatomic) UIButton * changeCoverPhoto;
+@property (nonatomic) UIImageView * coverPhotoView;
+
+
 #define OFFSET_X 5.f
 #define OFFSET_Y 10.f
 #define USER_NAME_HEIGHT 15.f
@@ -50,7 +57,10 @@
 #define TITLE_MAX_CHARACTERS 30
 #define DESCRIPTION_MAX_CHARACTERS 250
 
+#define COVER_PHOTO_HEIGHT 30.f
+
 @end
+
 
 @implementation ProfileHeaderView
 
@@ -62,12 +72,15 @@
 		self.channel = channel;
 		self.isCurrentUser = (user == nil);
 		self.editMode = NO;
-		self.backgroundColor = [UIColor whiteColor];
+		self.backgroundColor = [UIColor redColor];
+        
 		CGRect userInfoBarFrame = CGRectMake(0.f, STATUS_BAR_HEIGHT, frame.size.width, PROFILE_INFO_BAR_HEIGHT);
 		self.userInformationBar = [[ProfileInformationBar alloc] initWithFrame:userInfoBarFrame andUser:user
 																	andChannel:channel inProfileTab:profileTab];
 		self.userInformationBar.delegate = self;
 		[self addSubview: self.userInformationBar];
+        
+        
 		[self createLabels];
 
 		[[NSNotificationCenter defaultCenter] addObserver:self
@@ -89,8 +102,10 @@
 
 	self.userNameLabel = [[UILabel alloc] initWithFrame: userNameFrame];
 	self.userNameLabel.font = [UIFont fontWithName:REGULAR_FONT size:USER_NAME_FONT_SIZE];
-	self.blogTitle = [[UILabel alloc] initWithFrame: blogTitleFrame];
+	
+    self.blogTitle = [[UILabel alloc] initWithFrame: blogTitleFrame];
 	self.blogTitle.font = [UIFont fontWithName:BOLD_FONT size:BLOG_TITLE_FONT_SIZE];
+    
 	self.blogDescription = [[UILabel alloc] initWithFrame: blogDescriptionFrame];
 	self.blogDescription.font = [UIFont fontWithName:ITALIC_FONT size:BLOG_DESCRIPTION_FONT_SIZE];
 	self.blogDescription.lineBreakMode = NSLineBreakByWordWrapping;
@@ -99,7 +114,9 @@
 	[self changeUserName];
 	[self changeBlogTitle];
 	[self changeBlogDescription];
-
+    
+    if(self.isCurrentUser)[self addChangeCoverPhotoButton];
+    
 	[self addSubview:self.userNameLabel];
 	[self addSubview:self.blogTitle];
 	[self addSubview:self.blogDescription];
@@ -108,23 +125,46 @@
 -(void) changeUserName {
 	NSString *newUserName = self.channelOwner[VERBATM_USER_NAME_KEY];
 	self.userNameLabel.text = newUserName;
+    [self.userNameLabel setTextColor:[UIColor whiteColor]];
 }
 
 -(void) changeBlogTitle {
 	NSString *newTitle = self.channel.name;
 	self.blogTitle.text = newTitle;
 	[self.blogTitle sizeToFit];
+    [self.blogTitle setTextColor:[UIColor whiteColor]];
 }
 
 -(void) changeBlogDescription {
 	NSString *newDescription = self.channel.blogDescription;
 	self.blogDescription.text = newDescription;
 	[self.blogDescription sizeToFit];
-	CGFloat heightDiff = BLOG_DESCRIPTION_HEIGHT - self.blogDescription.frame.size.height - OFFSET_Y;
-	if (heightDiff < 0.f) heightDiff = 0.f;
-	self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, PROFILE_HEADER_HEIGHT - heightDiff);
+    [self.blogDescription setTextColor:[UIColor whiteColor]];
+	//CGFloat heightDiff = BLOG_DESCRIPTION_HEIGHT - self.blogDescription.frame.size.height - OFFSET_Y;
+	//if (heightDiff < 0.f) heightDiff = 0.f;
+	//self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, PROFILE_HEADER_HEIGHT - heightDiff);
 }
 
+-(void)addChangeCoverPhotoButton {
+    self.changeCoverPhoto = [[UIButton alloc] init];
+    [self.changeCoverPhoto setImage:[UIImage imageNamed:ADD_COVER_PHOTO_ICON] forState:UIControlStateNormal];
+    CGFloat coverPhotoIconWidth = (419 /103 ) *COVER_PHOTO_HEIGHT;
+    
+    self.changeCoverPhoto.frame = CGRectMake(self.frame.size.width - coverPhotoIconWidth, self.frame.size.height - COVER_PHOTO_HEIGHT,
+                                             coverPhotoIconWidth, COVER_PHOTO_HEIGHT);
+    [self addSubview:self.changeCoverPhoto];
+    [self.changeCoverPhoto addTarget:self action:@selector(coverPhotoButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+}
+
+-(void)coverPhotoButtonSelected{
+    [self.delegate presentGalleryToSelectImage];
+}
+
+
+-(void)setCoverPhotoImage:(UIImage *) coverPhotoImage{
+    [self.coverPhotoView setImage:coverPhotoImage];
+    self.coverPhotoView.contentMode = UIViewContentModeScaleAspectFit;
+}
 
 #pragma mark - Profile Info Bar Delegate methods -
 
@@ -271,6 +311,15 @@
 		_blogDescriptionPlaceholder.text = @"tap here to add a blog description!";
 	}
 	return _blogDescriptionPlaceholder;
+}
+
+-(UIImageView *)coverPhotoView{
+    if(!_coverPhotoView){
+        _coverPhotoView = [[UIImageView alloc] initWithFrame:self.bounds];
+        [self addSubview:_coverPhotoView];
+        [self sendSubviewToBack:_coverPhotoView];
+    }
+    return _coverPhotoView;
 }
 
 @end
