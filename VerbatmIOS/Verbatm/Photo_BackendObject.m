@@ -33,9 +33,14 @@ andTextAlignment:(NSNumber *) textAlignment
 	 andTextSize:(NSNumber *) textSize
 	atPhotoIndex:(NSInteger) photoIndex
    andPageObject:(PFObject *) pageObject {
+    
+    
     self.mediaPublisher = [[PostPublisher alloc] init];
     return [self.mediaPublisher storeImage:imageData].then(^(id result) {
-		if ([result isKindOfClass:[NSError class]]) {
+		
+        
+        
+        if ([result isKindOfClass:[NSError class]]) {
 			return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 				resolve(result);
 			}];

@@ -47,6 +47,10 @@ typedef enum BarActivityOptions{
 -(void)createDeleteButton;
 -(void)createFlagButton;
 
+-(void)putInSmallProfileMode;
+-(void)removeFromSmallProfileMode;
+
+
 @property (nonatomic, weak) id <PostLikeAndShareBarProtocol> delegate;
 
 @end

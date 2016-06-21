@@ -24,6 +24,8 @@
 
 @property (nonatomic) BOOL footerUp;
 
+@property (nonatomic) BOOL inSmallMode;
+
 @end
 
 @implementation PostCollectionViewCell
@@ -51,15 +53,23 @@
 -(void) layoutSubviews {
 	self.currentPostView.frame = self.bounds;
 }
+-(void)putInSmallMode{
+    self.inSmallMode = YES;
+}
+-(void)removeFromSmallMode{
+    self.inSmallMode = NO;
+}
 
 -(void) presentPostFromPCActivityObj: (PFObject *) pfActivityObj andChannel:(Channel*) channelForList
 					withDeleteButton: (BOOL) withDelete andLikeShareBarUp:(BOOL) up {
 	self.footerUp = up;
 	self.currentPostActivityObject = pfActivityObj;
 	PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
-	[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
+	
+    
+    [Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
 		self.currentPostView = [[PostView alloc] initWithFrame:self.bounds
-								andPostChannelActivityObject:pfActivityObj small:NO andPageObjects:pages];
+								andPostChannelActivityObject:pfActivityObj small:self.inSmallMode andPageObjects:pages];
 
 		NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
 		if (self.isOnScreen) {

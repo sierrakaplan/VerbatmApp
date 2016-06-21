@@ -231,7 +231,11 @@
 	[self addSubview:self.likeShareBar];
 	[self checkIfUserHasLikedThePost];
 	self.pageUpIndicatorDisplayed = YES;
+    
+    if(self.small)[self.likeShareBar putInSmallProfileMode];
 }
+
+
 
 -(void) showWhoLikesThePost {
 	//todo:

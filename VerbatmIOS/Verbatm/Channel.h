@@ -38,4 +38,10 @@
 -(BOOL)channelBelongsToCurrentUser;
 
 -(void)addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator;
+
+
+-(void)storeCoverPhoto:(UIImage *) coverPhoto;
+
+-(void)loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*))block;
+
 @end

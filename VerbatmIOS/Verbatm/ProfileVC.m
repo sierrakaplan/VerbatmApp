@@ -83,7 +83,8 @@
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-	[self.postListVC display:self.channel asPostListType:listChannel withListOwner: self.ownerOfProfile
+    [self setNeedsStatusBarAppearanceUpdate];
+	[self.postListVC display:self.channel asPostListType:listSmallSizedList withListOwner: self.ownerOfProfile
 		isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
 }
 
@@ -94,8 +95,9 @@
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
-	return UIStatusBarStyleDefault;
+	return UIStatusBarStyleLightContent;
 }
+
 
 -(void) createHeader {
 	[self.channel getFollowersAndFollowingWithCompletionBlock:^{
@@ -133,7 +135,7 @@
 		[self.postListVC.view removeFromSuperview];
 	}
     
-    CGFloat postHeight = self.view.frame.size.height - (self.view.frame.size.width + TAB_BAR_HEIGHT);
+    CGFloat postHeight = self.view.frame.size.height - (self.view.frame.size.width + ((self.isCurrentUserProfile) ? TAB_BAR_HEIGHT : 0.f));
     CGFloat postWidth = (self.view.frame.size.width / self.view.frame.size.height ) * postHeight;//same ratio as screen
     
 	UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
@@ -147,7 +149,9 @@
     self.postListVC.view.frame = CGRectMake(0.f, self.view.frame.size.width,self.view.frame.size.width, postHeight);
 	if(self.profileHeaderView) [self.view insertSubview:self.postListVC.view belowSubview:self.profileHeaderView];
 	else [self.view addSubview:self.postListVC.view];
-	//[self addClearScreenGesture];
+	
+    //[self addClearScreenGesture];
+
 }
 
 -(void)addClearScreenGesture{
@@ -459,5 +463,7 @@
     }
     return _imageManager;
 }
+
+
 
 @end

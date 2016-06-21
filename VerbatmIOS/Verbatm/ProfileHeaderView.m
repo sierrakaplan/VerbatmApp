@@ -72,7 +72,7 @@
 		self.channel = channel;
 		self.isCurrentUser = (user == nil);
 		self.editMode = NO;
-		self.backgroundColor = [UIColor redColor];
+		self.backgroundColor = [UIColor clearColor];
         
 		CGRect userInfoBarFrame = CGRectMake(0.f, STATUS_BAR_HEIGHT, frame.size.width, PROFILE_INFO_BAR_HEIGHT);
 		self.userInformationBar = [[ProfileInformationBar alloc] initWithFrame:userInfoBarFrame andUser:user
@@ -82,7 +82,7 @@
         
         
 		[self createLabels];
-
+        [self checkForCoverPhoto];
 		[[NSNotificationCenter defaultCenter] addObserver:self
 												 selector:@selector(changeUserName)
 													 name:NOTIFICATION_USERNAME_CHANGED_SUCCESFULLY
@@ -161,9 +161,18 @@
 }
 
 
+-(void)checkForCoverPhoto{
+    [self.channel loadCoverPhotoWithCompletionBlock:^(UIImage * coverPhoto) {
+       if(coverPhoto)[self setCoverPhotoImage:coverPhoto];
+    }];
+    
+}
+
+
 -(void)setCoverPhotoImage:(UIImage *) coverPhotoImage{
     [self.coverPhotoView setImage:coverPhotoImage];
     self.coverPhotoView.contentMode = UIViewContentModeScaleAspectFit;
+    [self.channel storeCoverPhoto:coverPhotoImage];
 }
 
 #pragma mark - Profile Info Bar Delegate methods -

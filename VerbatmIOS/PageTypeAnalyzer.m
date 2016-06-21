@@ -7,7 +7,6 @@
 //
 
 #import "PageTypeAnalyzer.h"
-#import <PromiseKit/PromiseKit.h>
 
 #import "CollectionPinchView.h"
 

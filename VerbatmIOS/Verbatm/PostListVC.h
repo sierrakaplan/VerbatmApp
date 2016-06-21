@@ -20,6 +20,7 @@
 typedef enum PostListType {
 	listFeed = 0,
 	listChannel = 1,
+    listSmallSizedList = 2 //a list, in a blog, that is minimized in size
 } PostListType;
 
 @interface PostListVC : UICollectionViewController

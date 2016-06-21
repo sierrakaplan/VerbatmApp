@@ -134,7 +134,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	self.listOwner = listOwner;
 	self.isCurrentUserProfile = isCurrentUserProfile;
 	[self refreshPosts];
-	self.footerBarIsUp = (self.listType == listFeed || self.isCurrentUserProfile);
+	self.footerBarIsUp = (listType != listSmallSizedList);
 }
 
 -(void) offScreen {
@@ -266,7 +266,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	[self.customActivityIndicator startCustomActivityIndicator];
 	if(self.listType == listFeed){
 		[self.feedQueryManager refreshFeedWithCompletionHandler:self.refreshPostsCompletionFeed];
-	} else if (self.listType == listChannel) {
+	} else if (self.listType == listChannel || self.listType == listSmallSizedList) {
 		if (self.isCurrentUserProfile) [self.postsQueryManager refreshPostsInUserChannel:self.channelForList withCompletionBlock:self.refreshPostsCompletionChannel];
 		else [self.postsQueryManager refreshPostsInChannel:self.channelForList startingAt:self.latestDate
 								  withCompletionBlock:self.refreshPostsCompletionChannel];
@@ -278,7 +278,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	self.isLoadingMore = YES;
 	if (self.listType == listFeed) {
 		[self.feedQueryManager loadMorePostsWithCompletionHandler:self.loadMorePostsCompletion];
-	} else if (self.listType == listChannel) {
+	} else if (self.listType == listChannel || self.listType ==listSmallSizedList) {
 		[self.postsQueryManager loadMorePostsInChannel:self.channelForList withCompletionBlock:self.loadMorePostsCompletion];
 	}
 }
@@ -349,6 +349,13 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	PFObject *postObject = self.parsePostObjects[indexPath.row];
 	if (cell.currentPostActivityObject != postObject) {
 		[cell clearViews];
+        
+        if(self.listType == listSmallSizedList){
+            [cell putInSmallMode];
+        }else{
+            [cell removeFromSmallMode];
+        }
+        
 		[cell presentPostFromPCActivityObj:postObject andChannel:self.channelForList
 						  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:self.footerBarIsUp];
 	}

@@ -37,5 +37,8 @@
 
 -(void) clearViews;
 
+-(void)putInSmallMode;
+-(void)removeFromSmallMode;
+
 
 @end

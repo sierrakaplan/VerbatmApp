@@ -36,6 +36,9 @@
 
 @property (nonatomic) NSDictionary * followNumberTextAttributes;
 
+
+@property (nonatomic) BOOL inSmallProfileMode;
+
 #define BUTTON_WALLOFFSET 10.f
 #define NUMBER_FONT_SIZE 10.f
 #define ICON_SPACING_GAP 10.f
@@ -259,6 +262,25 @@
     }
     self.totalNumberOfLikes = [NSNumber numberWithInteger:currentLikes];
     [self createLikeButtonNumbers: self.totalNumberOfLikes];
+}
+
+
+-(void)shouldHideLikeAndShareButtons:(BOOL) hide{
+    if(hide){
+        self.shareButon.alpha = self.likeButton.alpha = 0.f;
+    }else{
+        self.shareButon.alpha = self.likeButton.alpha = 1.f;
+    }
+}
+
+-(void)putInSmallProfileMode{
+    self.inSmallProfileMode = YES;
+    [self shouldHideLikeAndShareButtons:YES];
+}
+
+-(void)removeFromSmallProfileMode {
+    self.inSmallProfileMode = NO;
+    [self shouldHideLikeAndShareButtons:NO];
 }
 
 #pragma mark - Display likes and shares -

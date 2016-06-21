@@ -191,12 +191,14 @@
 	<string>Main</string>
 	<key>UIStatusBarHidden</key>
 	<true/>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleLightContent</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<true/>
+	<false/>
 	<key>branch_key</key>
 	<string>key_live_kgmXUck9feGllQX0Vx0WgnletBoQpNUQ</string>
 </dict>
