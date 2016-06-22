@@ -115,7 +115,7 @@
 		self.postMuted = NO;
 		[self addSubview: self.mainScrollView];
 		[self createBorder];
-		[self addPagingLine];
+		[self addPagingLineWithReferenceSize:frame.size];
 	}
 	return self;
 }
@@ -162,6 +162,28 @@
 	}
 }
 
+-(void)viewSizeAbouToChangeTo:(CGSize) newSize{
+    
+    self.mainScrollView.contentSize = CGSizeMake(0.f,
+                                                 self.pageViews.count * newSize.height);
+    self.mainScrollView.contentOffset = CGPointMake(0, 0);
+    CGRect viewFrame = CGRectMake(0, 0, newSize.width, newSize.height);
+    
+    for (int i = 0; i < self.pageViews.count; i++) {
+        PageViewingExperience* pageView = self.pageViews[i];
+//        [pageView offScreen];
+        pageView.frame = viewFrame;
+//        if (self.postMuted && ([pageView isKindOfClass:[VideoPVE class]] ||
+//                               [pageView isKindOfClass:[PhotoVideoPVE class]])) {
+//            [(VideoPVE *)pageView muteVideo: YES];
+//        }
+//        [self.mainScrollView addSubview: pageView];
+        viewFrame = CGRectMake(0, viewFrame.origin.y + viewFrame.size.height, newSize.width, newSize.height);
+    }
+    [self addPagingLineWithReferenceSize:newSize];
+}
+
+
 -(void)createBorder{
 	[self.layer setBorderWidth:2.0];
 	[self.layer setCornerRadius:0.0];
@@ -174,8 +196,12 @@
 									 self.frame.size.width, LIKE_SHARE_BAR_HEIGHT);
 }
 
--(void)addPagingLine{
-	CGRect lineFrame = CGRectMake(self.frame.size.width - PAGING_LINE_WIDTH, self.frame.size.height, PAGING_LINE_WIDTH, 0.f);
+-(void)addPagingLineWithReferenceSize:(CGSize) referenceSize{
+    if(self.pagingLine){
+        [self.pagingLine removeFromSuperview];
+        self.pagingLine = nil;
+    }
+    CGRect lineFrame = CGRectMake(referenceSize.width - PAGING_LINE_WIDTH, referenceSize.height, PAGING_LINE_WIDTH, 0.f);
 	self.pagingLine = [[UIView alloc] initWithFrame:lineFrame];
 	self.pagingLine.backgroundColor = PAGING_LINE_COLE;
 	[self addSubview:self.pagingLine];

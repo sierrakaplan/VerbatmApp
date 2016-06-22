@@ -15,7 +15,7 @@
 
 @protocol ProfileVCDelegate <NSObject>
 
--(void) showTabBar: (BOOL) show;
+-(void) showTabBar: (BOOL) show shouldAnimate:(BOOL) shouldAnimate;
 
 @end
 

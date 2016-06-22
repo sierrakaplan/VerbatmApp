@@ -80,6 +80,8 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 @property (nonatomic) UIImageView *publishSuccessful;
 @property (nonatomic) UIImageView *publishFailed;
 
+@property (nonatomic) NSUInteger selectedCellIndex;
+
 @property (nonatomic) void(^refreshPostsCompletionFeed)(NSArray * posts);
 @property (nonatomic) void(^refreshPostsCompletionChannel)(NSArray * posts);
 @property (nonatomic) void(^loadMorePostsCompletion)(NSArray * posts);
@@ -354,6 +356,33 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	return currentCell;
 }
 
+
+
+-(PostCollectionViewCell * )getCellUnderPoint:(CGPoint) touchPoint{
+    NSArray * visibleCells = [self.collectionView visibleCells];
+    for(PostCollectionViewCell * cell in visibleCells){
+        NSIndexPath * indexPath = [self.collectionView indexPathForCell:cell];
+        CGFloat cellOriginY = indexPath.row * (cell.frame.size.width);
+        CGFloat touchY = touchPoint.y;
+        CGFloat cellWidthSize = cell.frame.size.width;
+        if(cellOriginY < touchY &&
+           cellOriginY + cellWidthSize >= touchPoint.y){
+            return cell;
+        }
+    }
+    //should not reach here
+    return nil;
+}
+
+
+//note point is in our collection view reference frame
+-(void)setReadyToEnlargeWithNewSize:(CGSize) newSize{
+   
+    [self.view layoutIfNeeded];
+   if(self.selectedCellIndex < self.parsePostObjects.count) [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:self.selectedCellIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+    
+}
+
 -(PostCollectionViewCell*) postCellAtIndexPath:(NSIndexPath *)indexPath {
 	if (indexPath.row >= self.parsePostObjects.count) return nil;
 	PostCollectionViewCell *cell = (PostCollectionViewCell *) [self.collectionView dequeueReusableCellWithReuseIdentifier:POST_CELL_ID forIndexPath:indexPath];
@@ -370,10 +399,45 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         
 		[cell presentPostFromPCActivityObj:postObject andChannel:self.channelForList
 						  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:self.footerBarIsUp];
+        [self addEnlargeGestureToCell:cell];
 	}
 	return cell;
 }
 
+-(void)addEnlargeGestureToCell:(PostCollectionViewCell *) cell {
+    
+    if(!cell.hasTapGesture){
+        UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(changePostListSize:)];
+        singleTap.numberOfTapsRequired = 1;
+        [cell addGestureRecognizer:singleTap];
+        cell.hasTapGesture = YES;
+    }
+    
+}
+
+-(void)changePostListSize:(UIGestureRecognizer *) tapGesture {
+    PostCollectionViewCell * selectedCell = (PostCollectionViewCell *) [tapGesture view];
+    if(selectedCell){
+        self.selectedCellIndex = [self.collectionView indexPathForCell:selectedCell].row;
+        [self.postListDelegate cellSelectedWithImage:[self getImageScreenShotFromCell:selectedCell]];
+    
+
+    
+    }
+}
+
+
+-(UIImage *) getImageScreenShotFromCell:(PostCollectionViewCell *) cell{
+
+    UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, NO, [UIScreen mainScreen].scale);
+
+    [cell drawViewHierarchyInRect:self.view.bounds afterScreenUpdates:YES];
+
+    UIImage *screenShotImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return screenShotImage;
+}
 - (void) collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
 	// If the indexpath is not within visible objects then it is offscreen
 	if ([collectionView.indexPathsForVisibleItems indexOfObject:indexPath] == NSNotFound) {
@@ -456,6 +520,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	} completion:^(BOOL finished) {
 	}];
 }
+
+
 
 #pragma mark Flagging & Blocking
 

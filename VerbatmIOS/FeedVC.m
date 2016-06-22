@@ -147,15 +147,15 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 }
 
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
-	if(self.contentCoveringScreen) {
-		[self removeContentFromScreen];
-	} else {
-		[self returnContentToScreen];
-	}
+//	if(self.contentCoveringScreen) {
+//		[self removeContentFromScreen];
+//	} else {
+//		[self returnContentToScreen];
+//	}
 }
 
 -(void)returnContentToScreen{
-	[self.delegate showTabBar:YES];
+	[self.delegate showTabBar:YES ];
 	self.contentCoveringScreen = YES;
 	[self.postListVC footerShowing:YES];
 }

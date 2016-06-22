@@ -49,6 +49,7 @@
 		self.clearsContextBeforeDrawing = YES;
 		self.isMuted = false;
 		[self setBackgroundColor:[UIColor clearColor]];
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 
 	}
 	return self;

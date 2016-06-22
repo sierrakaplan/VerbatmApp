@@ -395,19 +395,29 @@ ProfileVCDelegate>
 
 #pragma mark - Feed VC Delegate -
 
--(void) showTabBar:(BOOL)show {
+-(void) showTabBar: (BOOL) show shouldAnimate:(BOOL) shouldAnimate{
 	if (show) {
 		self.tabBarHidden = NO;
-		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			[self setNeedsStatusBarAppearanceUpdate];
-			self.tabBarController.tabBar.frame = self.tabBarFrameOnScreen;
-		}];
+        if(shouldAnimate){
+            [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+                [self setNeedsStatusBarAppearanceUpdate];
+                self.tabBarController.tabBar.frame = self.tabBarFrameOnScreen;
+            }];
+        }else{
+            [self setNeedsStatusBarAppearanceUpdate];
+            self.tabBarController.tabBar.frame = self.tabBarFrameOnScreen;
+        }
 	} else {
 		self.tabBarHidden = YES;
-		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			[self setNeedsStatusBarAppearanceUpdate];
-			self.tabBarController.tabBar.frame = self.tabBarFrameOffScreen;
-		}];
+        if(shouldAnimate){
+            [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+                [self setNeedsStatusBarAppearanceUpdate];
+                self.tabBarController.tabBar.frame = self.tabBarFrameOffScreen;
+            }];
+        }else{
+            [self setNeedsStatusBarAppearanceUpdate];
+            self.tabBarController.tabBar.frame = self.tabBarFrameOffScreen;
+        }
 	}
 }
 

@@ -56,6 +56,8 @@
 -(void)showPageUpIndicator;
 -(void)removeFromSmallProfileMode;
 -(void)putInSmallProfileMode;
+-(void)viewSizeAbouToChangeTo:(CGSize) newSize;
+
 @end
 
 @protocol PostViewDelegate <NSObject>
@@ -64,6 +66,5 @@
 -(void) channelSelected:(Channel *) channel;
 -(void) deleteButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post reblogged: (BOOL)reblogged;
 -(void) flagButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post;
-
 @end
 

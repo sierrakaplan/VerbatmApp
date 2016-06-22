@@ -15,6 +15,8 @@
 
 -(void)hideNavBarIfPresent;
 -(void)channelSelected:(Channel *) channel;
+-(void)cellSelectedWithImage:(UIImage *) cellImage;
+
 @end
 
 typedef enum PostListType {
@@ -43,4 +45,5 @@ andStartingDate:(NSDate*)date;
 //moves the tap/share bar up and down over the tab bar
 -(void) footerShowing: (BOOL) showing;
 -(void)changePostViewsToSize:(CGSize) newSize;
+-(void)setReadyToEnlargeWithNewSize:(CGSize) newSize;
 @end

@@ -288,9 +288,6 @@
     
     self.inSmallProfileMode = NO;
     [self shouldHideLikeAndShareButtons:NO];
-    self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, [[UIApplication sharedApplication] keyWindow].frame.size.width, self.frame.size.height);
-    self.backgroundColor = [UIColor yellowColor];
-    
     
 }
 

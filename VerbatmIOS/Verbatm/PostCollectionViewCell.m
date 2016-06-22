@@ -67,12 +67,15 @@
 }
 
 -(void)changePostFrameToSize:(CGSize) newSize {
+//    -(void)viewSizeAbouToChangeTo:(CGSize) newSize{
+    [self.currentPostView viewSizeAbouToChangeTo:newSize];
     
-    if(self.inSmallMode){
-        [self removeFromSmallMode];
-    }else{
-        [self putInSmallMode];
-    }
+//    
+//    if(self.inSmallMode){
+//        [self removeFromSmallMode];
+//    }else{
+//        [self putInSmallMode];
+//    }
 }
 
 -(void) presentPostFromPCActivityObj: (PFObject *) pfActivityObj andChannel:(Channel*) channelForList

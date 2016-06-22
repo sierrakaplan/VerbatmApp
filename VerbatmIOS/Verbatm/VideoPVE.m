@@ -129,6 +129,7 @@
     self.thumbnailView = [[UIImageView alloc] initWithImage:image];
     self.thumbnailView.contentMode = UIViewContentModeScaleAspectFill;
     self.thumbnailView.frame = self.bounds;
+    self.thumbnailView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self addSubview: self.thumbnailView];
     [self sendSubviewToBack:self.thumbnailView];
 }

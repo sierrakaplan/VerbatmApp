@@ -25,7 +25,7 @@
         self.clipsToBounds = YES;
         [self createBorder];
         self.autoresizesSubviews= YES;
-        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        self.autoresizingMask =  UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         
         
     }

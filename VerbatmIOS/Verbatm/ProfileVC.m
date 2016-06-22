@@ -44,7 +44,7 @@
 @interface ProfileVC() <ProfileHeaderViewDelegate, Intro_Notification_Delegate,
                         UIScrollViewDelegate, CreateNewChannelViewProtocol,
                         PublishingProgressProtocol, PostListVCProtocol,
-                        UIGestureRecognizerDelegate,GMImagePickerControllerDelegate>
+                        UIGestureRecognizerDelegate,GMImagePickerControllerDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) BOOL currentlyCreatingNewChannel;
 
@@ -151,16 +151,16 @@
 	if(self.profileHeaderView) [self.view insertSubview:self.postListVC.view belowSubview:self.profileHeaderView];
 	else [self.view addSubview:self.postListVC.view];
 	
-    [self addEnlargeGesture];
+    //[self addEnlargeGesture];
 
 }
 
 
 -(void)addEnlargeGesture{
-	UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(changePostListSize:)];
-	singleTap.numberOfTapsRequired = 1;
-	singleTap.delegate = self;
-	[self.postListVC.view addGestureRecognizer:singleTap];
+//	UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(changePostListSize:)];
+//	singleTap.numberOfTapsRequired = 1;
+//	singleTap.delegate = self;
+//	[self.postListVC.view addGestureRecognizer:singleTap];
 }
 
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
@@ -275,7 +275,7 @@
 
 -(void) cancelCreation {
 	[self clearChannelCreationView];
-	[self presentHeadAndFooter:YES];
+	[self presentHeadAndFooter:YES shouldAnimate:YES];
 }
 
 -(void) createChannelWithName:(NSString *) channelName {
@@ -357,34 +357,40 @@
 #pragma mark - POSTListVC Protocol -
 
 -(void)hideNavBarIfPresent{
-	[self presentHeadAndFooter:NO];
+	[self presentHeadAndFooter:NO shouldAnimate:YES];
 }
 
--(void) presentHeadAndFooter:(BOOL) shouldShow {
+-(void) presentHeadAndFooter:(BOOL) shouldShow shouldAnimate:(BOOL) shouldAnimate {
 	if(shouldShow && !self.headerViewOnScreen) {
 		self.headerViewOnScreen = YES;
-		CGRect onScreenFrame = CGRectOffset(self.profileHeaderView.frame, 0.f, self.profileHeaderView.frame.size.height);
-		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			[self.profileHeaderView setFrame: onScreenFrame];
-		}];
-		[self.delegate showTabBar:YES];
+//		CGRect onScreenFrame = CGRectOffset(self.profileHeaderView.frame, 0.f, self.profileHeaderView.frame.size.height);
+//		
+//        if(shouldAnimate){
+//            [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+//                [self.profileHeaderView setFrame: onScreenFrame];
+//            }];
+//        }else{
+//            [self.profileHeaderView setFrame: onScreenFrame];
+//        }
+        
+		[self.delegate showTabBar:YES shouldAnimate:shouldAnimate];
 		if(self.isProfileTab) [self.postListVC footerShowing:YES];
 
 	} else if (!shouldShow && self.headerViewOnScreen) {
 		self.headerViewOnScreen = NO;
-		CGRect offScreenFrame = CGRectOffset(self.profileHeaderView.frame, 0.f, -self.profileHeaderView.frame.size.height);
-		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			[self.profileHeaderView setFrame: offScreenFrame];
-		}];
+//		CGRect offScreenFrame = CGRectOffset(self.profileHeaderView.frame, 0.f, -self.profileHeaderView.frame.size.height);
+//		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+//			[self.profileHeaderView setFrame: offScreenFrame];
+//		}];
 
-		[self.delegate showTabBar:NO];
+		[self.delegate showTabBar:NO shouldAnimate:shouldAnimate];
 		if(self.isCurrentUserProfile) [self.postListVC footerShowing:NO];
 	}
 }
 
 
-
--(void)makePostListLarger:(BOOL) makeLarge{
+//touch point must be in reference frame of self.postListVC.collectionView
+-(void)makePostListLarger:(BOOL) makeLarge animatingView:(UIView *) animatingView{
     
     UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
     BOOL shouldPage = NO;
@@ -413,42 +419,55 @@
         [flowLayout setMinimumInteritemSpacing:0.3];
         [flowLayout setMinimumLineSpacing:0.0f];
         [flowLayout setItemSize:CGSizeMake(postWidth, postHeight)];
-        
         postListFrame = CGRectMake(0.f, self.view.frame.size.width,self.view.frame.size.width, postHeight);
         [self.view bringSubviewToFront:self.profileHeaderView];
         
     }
+    
     [self.postListVC changePostViewsToSize:flowLayout.itemSize];
-    [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-        [self.postListVC.collectionView.collectionViewLayout invalidateLayout];
-        [self.postListVC.collectionView setCollectionViewLayout:flowLayout];
-        self.postListVC.view.frame = postListFrame;
-        self.postListVC.collectionView.pagingEnabled = shouldPage;
-    }];
+    self.postListVC.view.frame = postListFrame;
+    [self.view bringSubviewToFront:self.postListVC.view];
+    
+   // [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
+        [self presentHeadAndFooter:!shouldPage shouldAnimate:NO];
+        PostListVC * __weak postList = self.postListVC;
+    [self.postListVC.collectionView setCollectionViewLayout:flowLayout];
+    [postList setReadyToEnlargeWithNewSize:flowLayout.itemSize];
+    postList.collectionView.pagingEnabled = shouldPage;
+    [animatingView setAlpha:0];
+//
+//    }completion:^(BOOL finished) {
+//        if(finished){
+//         //   [self.postListVC setReadyToEnlargeWithNewSize:flowLayout.itemSize];
+//        }
+//    }];
     
     
-    [self presentHeadAndFooter:!shouldPage];
+    
 }
 
 
 
--(void)changePostListSize:(UIGestureRecognizer *) tapGesture {
-	
-    if(self.postListInLargeMode){
-        [self makePostListLarger:NO];
-    }else{
-        [self makePostListLarger:YES];
-    }
-    
-    self.postListInLargeMode = !self.postListInLargeMode ;
+-(void)cellSelectedWithImage:(UIImage *)cellImage {
 
     
-//    
-//    if (self.headerViewOnScreen) {
-//		[self presentHeadAndFooter:NO];
-//	} else {
-//		[self presentHeadAndFooter:YES];
-//	}
+    UIImageView * imageView = [[UIImageView alloc] initWithImage:cellImage];
+    
+    imageView.frame = CGRectMake(0, self.postListVC.view.frame.origin.y, 150, self.postListVC.view.frame.size.height);
+    
+    [self.view addSubview:imageView];
+    [self.view bringSubviewToFront:imageView];
+    
+    [UIView animateWithDuration:SNAP_ANIMATION_DURATION animations:^{
+        imageView.frame = self.view.bounds;
+    }completion:^(BOOL finished) {
+        if(self.postListInLargeMode) {
+            [self makePostListLarger:NO animatingView:imageView];
+        }else{
+            [self makePostListLarger:YES animatingView:imageView];
+        }
+        self.postListInLargeMode = !self.postListInLargeMode ;
+    }];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

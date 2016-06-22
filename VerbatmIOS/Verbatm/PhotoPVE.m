@@ -109,7 +109,7 @@
 }
 
 -(void) initialFormatting {
-	[self setBackgroundColor:[UIColor grayColor]];
+	[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
 }
 
 #pragma mark - Preview mode -
