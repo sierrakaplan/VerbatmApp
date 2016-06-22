@@ -45,10 +45,13 @@
 @property (nonatomic) BOOL currentUserFollowsUser;
 
 #define FONT_SIZE 12.f
-#define SETTINGS_BUTTON_SIZE self.frame.size.height
-#define FOLLOW_OR_EDIT_BUTTON_SIZE 70.f
+#define NUMBER_FONT_SIZE 15.f
+#define SETTINGS_BUTTON_SIZE (self.frame.size.height - (EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET * 2))
+#define FOLLOW_OR_EDIT_BUTTON_SIZE 65.f
 #define FOLLOWING_LABEL_WIDTH 60.f
 #define NUM_FOLLOWING_WIDTH 17.f
+
+#define EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET 2.f // how much buffer between button and top and bottom of self
 
 @end
 
@@ -84,8 +87,8 @@
 -(void) updateNumFollowersAndFollowing {
 	NSString *numFollowers = [NSNumber numberWithInteger:self.channel.usersFollowingChannel.count].stringValue;
 	NSString *numFollowing = [NSNumber numberWithInteger:self.channel.channelsUserFollowing.count].stringValue;
-	NSDictionary *numAttributes = @{NSForegroundColorAttributeName: [UIColor blueColor],
-									NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size:FONT_SIZE]};
+	NSDictionary *numAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
+									NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size:NUMBER_FONT_SIZE]};
 	self.numFollowersLabel.attributedText = [[NSAttributedString alloc] initWithString:numFollowers attributes:numAttributes];
 	self.numFollowingLabel.attributedText = [[NSAttributedString alloc] initWithString:numFollowing attributes:numAttributes];
 }
@@ -96,8 +99,8 @@
 									  NSFontAttributeName: [UIFont fontWithName:BOLD_FONT size:FONT_SIZE]};
 
 	CGFloat following_x = (self.frame.size.width - SETTINGS_BUTTON_SIZE - PROFILE_HEADER_XOFFSET*3
-						   - FOLLOW_OR_EDIT_BUTTON_SIZE - FOLLOWING_LABEL_WIDTH);
-	CGFloat following_num_x = following_x - NUM_FOLLOWING_WIDTH - 3.f;
+						   - FOLLOW_OR_EDIT_BUTTON_SIZE - FOLLOWING_LABEL_WIDTH -1.f);
+	CGFloat following_num_x = following_x - NUM_FOLLOWING_WIDTH - 4.f;
 	CGFloat followers_x = following_num_x - PROFILE_HEADER_XOFFSET - FOLLOWING_LABEL_WIDTH;
 	CGFloat followers_num_x = followers_x - NUM_FOLLOWING_WIDTH - 3.f;
 	CGRect followingFrame = CGRectMake(following_x, 0.f, FOLLOWING_LABEL_WIDTH, self.frame.size.height);
@@ -155,8 +158,8 @@
 }
 
 -(void) createFollowOrEditButton {
-	CGFloat frame_x = self.settingsButton.frame.origin.x - PROFILE_HEADER_XOFFSET - FOLLOW_OR_EDIT_BUTTON_SIZE;
-	CGRect followButtonFrame = CGRectMake(frame_x, 0.f, FOLLOW_OR_EDIT_BUTTON_SIZE, self.frame.size.height);
+	CGFloat frame_x = self.settingsButton.frame.origin.x - PROFILE_HEADER_XOFFSET - FOLLOW_OR_EDIT_BUTTON_SIZE -2.f;
+	CGRect followButtonFrame = CGRectMake(frame_x, EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET, FOLLOW_OR_EDIT_BUTTON_SIZE, self.frame.size.height - (EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET * 2.f));
 	self.followOrEditButton = [[UIButton alloc] initWithFrame: followButtonFrame];
 	self.followOrEditButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
 	self.followOrEditButton.clipsToBounds = YES;
