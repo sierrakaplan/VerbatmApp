@@ -352,7 +352,7 @@ ProfileVCDelegate>
 	UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
 	button.frame = tabView.frame;
 	[button setBackgroundColor:[UIColor clearColor]];
-	[button addTarget:self action:@selector(revealADK) forControlEvents:UIControlEventTouchUpInside];
+	[button addTarget:self action:@selector(revealADK) forControlEvents:UIControlEventTouchDown];
 
 	//[self.tabBarController.tabBar addSubview:tabView];
 	[self.tabBarController.tabBar addSubview:button];
@@ -391,6 +391,9 @@ ProfileVCDelegate>
                [segue.identifier isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]  ){
 
 	}
+}
+-(void) userCreateFirstPost{
+    [self revealADK];
 }
 
 #pragma mark - Feed VC Delegate -

@@ -117,7 +117,7 @@
     [self.createChannelLabel setFont:[UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:CREATE_CHANNEL_BUTTON_FONT_SIZE]];
     
     [createChannelButton addSubview:self.createChannelLabel];
-	[createChannelButton addTarget:self action:@selector(createChannelButtonSelected:) forControlEvents:UIControlEventTouchUpInside];
+	[createChannelButton addTarget:self action:@selector(createChannelButtonSelected:) forControlEvents:UIControlEventTouchDown];
     
     return createChannelButton;
 }
@@ -142,7 +142,7 @@
     CGRect buttonFrame = CGRectMake(origin.x, origin.y, INITIAL_BUTTON_WIDTH, self.frame.size.height);
 
     ChannelButton * newButton = [[ChannelButton alloc] initWithFrame:buttonFrame andChannel:channel isLoggedInUser:self.isLoggedInUser];
-    [newButton addTarget:self action:@selector(tabPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [newButton addTarget:self action:@selector(tabPressed:) forControlEvents:UIControlEventTouchDown];
     return newButton;
 }
 

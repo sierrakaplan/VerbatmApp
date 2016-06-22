@@ -47,7 +47,7 @@
 		[leftButton setImage:image forState:UIControlStateNormal];
 	}
 	[self addSubview: leftButton];
-	[leftButton addTarget:self action:@selector(leftButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+	[leftButton addTarget:self action:@selector(leftButtonPressed:) forControlEvents:UIControlEventTouchDown];
 }
 
 -(void) createMiddleButtonWithTitle: (NSString*) title orImage: (UIImage*) image {
@@ -61,7 +61,7 @@
 		[middleButton setImage:image forState:UIControlStateNormal];
 	}
 	[self addSubview: middleButton];
-	[middleButton addTarget:self action:@selector(middleButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+	[middleButton addTarget:self action:@selector(middleButtonPressed:) forControlEvents:UIControlEventTouchDown];
 }
 
 //called instead of the middle button  -- don't call both
@@ -83,7 +83,7 @@
 		[rightButton setImage:image forState:UIControlStateNormal];
 	}
 	[self addSubview: rightButton];
-	[rightButton addTarget:self action:@selector(rightButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+	[rightButton addTarget:self action:@selector(rightButtonPressed:) forControlEvents:UIControlEventTouchDown];
 }
 
 -(UILabel*) getLabelWithText:(NSString*) text andAlignment: (NSTextAlignment) alignment {

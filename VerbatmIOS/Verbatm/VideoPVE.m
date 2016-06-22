@@ -151,7 +151,7 @@
 -(void)createRearrangeButton {
 	[self.rearrangeButton setImage:[UIImage imageNamed:MEDIA_REARRANGE_ICON] forState:UIControlStateNormal];
 	self.rearrangeButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-	[self.rearrangeButton addTarget:self action:@selector(rearrangeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+	[self.rearrangeButton addTarget:self action:@selector(rearrangeButtonPressed) forControlEvents:UIControlEventTouchDown];
 	[self addSubview:self.rearrangeButton];
 	[self bringSubviewToFront:self.rearrangeButton];
 }

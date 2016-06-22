@@ -96,7 +96,7 @@
 //        selectionButton.buttonSharingOption = Twitter;
 //    }
         
-    [selectionButton addTarget:self action:@selector(optionSelected:) forControlEvents:UIControlEventTouchUpInside];
+    [selectionButton addTarget:self action:@selector(optionSelected:) forControlEvents:UIControlEventTouchDown];
     
     ourBar.shareOptionButton = selectionButton;
     

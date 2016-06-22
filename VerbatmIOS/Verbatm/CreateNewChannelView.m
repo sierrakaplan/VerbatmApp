@@ -89,7 +89,7 @@
     self.cancelButton.layer.cornerRadius = 2.f;
     self.cancelButton.layer.borderWidth = 0.5;
     self.cancelButton.layer.borderColor = VERBATM_GOLD_COLOR.CGColor;
-    [self.cancelButton addTarget:self action:@selector(cancelButtonSelected:) forControlEvents:UIControlEventTouchUpInside];
+    [self.cancelButton addTarget:self action:@selector(cancelButtonSelected:) forControlEvents:UIControlEventTouchDown];
     
     
     CGRect acceptButtonFrame = CGRectMake(self.frame.size.width/2.f, self.frame.size.height - BUTTON_HEIGHT, (self.frame.size.width/2.f) + 5.f,BUTTON_HEIGHT + 5.f);
@@ -103,7 +103,7 @@
     self.acceptButton.layer.borderWidth = 0.5;
     self.acceptButton.layer.borderColor = VERBATM_GOLD_COLOR.CGColor;
     
-    [self.acceptButton addTarget:self action:@selector(acceptButtonSelected:) forControlEvents:UIControlEventTouchUpInside];
+    [self.acceptButton addTarget:self action:@selector(acceptButtonSelected:) forControlEvents:UIControlEventTouchDown];
     [self addSubview:self.cancelButton];
     [self addSubview:self.acceptButton];
 }

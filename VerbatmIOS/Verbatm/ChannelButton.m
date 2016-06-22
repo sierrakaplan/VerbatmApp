@@ -161,7 +161,7 @@
     
     self.followButton = [[UIButton alloc] initWithFrame:iconFrame];
 	[self updateFollowingIconSelected: self.buttonSelected];
-    [self.followButton addTarget:self action:@selector(followButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+    [self.followButton addTarget:self action:@selector(followButtonSelected) forControlEvents:UIControlEventTouchDown];
     [self addSubview:self.followButton];
 }
 
@@ -179,7 +179,7 @@
 		[self changeNumFollowersLabel];
     } else {
         //since the channel isn't selected then we select it
-        [self sendActionsForControlEvents:UIControlEventTouchUpInside];
+        [self sendActionsForControlEvents:UIControlEventTouchDown];
     }
 }
 

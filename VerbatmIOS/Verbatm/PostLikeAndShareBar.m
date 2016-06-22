@@ -119,7 +119,7 @@
     self.shareButon = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.shareButon setFrame:shareButtonFrame];
     [self.shareButon setImage:[UIImage imageNamed:SHARE_ICON] forState:UIControlStateNormal];
-    [self.shareButon addTarget:self action:@selector(shareButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.shareButon addTarget:self action:@selector(shareButtonPressed) forControlEvents:UIControlEventTouchDown];
     
     [self addSubview:self.shareButon];
 }
@@ -134,7 +134,7 @@
     self.likeButtonLikedImage = [UIImage imageNamed:LIKE_ICON_PRESSED];
     self.likeButtonNotLikedImage = [UIImage imageNamed:LIKE_ICON_UNPRESSED];
     [self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
-    [self.likeButton addTarget:self action:@selector(likeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.likeButton addTarget:self action:@selector(likeButtonPressed) forControlEvents:UIControlEventTouchDown];
     
     [self addSubview:self.likeButton];
 }
@@ -166,7 +166,7 @@
                                               textSize.width, numberHeight);
     [self.numLikesButton setFrame:likeNumberButtonFrame];
     
-    [self.numLikesButton addTarget:self action:@selector(numLikesButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+    [self.numLikesButton addTarget:self action:@selector(numLikesButtonSelected) forControlEvents:UIControlEventTouchDown];
     
     [self addSubview:self.numLikesButton];
 
@@ -208,7 +208,7 @@
     [self.delete_Or_FlagButton.imageView setContentMode:UIViewContentModeScaleAspectFit];
 	if (flag) [self.delete_Or_FlagButton setImageEdgeInsets:UIEdgeInsetsMake(1.f, 1.f, 1.f, 1.f)];
     [self.delete_Or_FlagButton addTarget:self action:
-     (flag) ? @selector(flagButtonPressed):@selector(deleteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+     (flag) ? @selector(flagButtonPressed):@selector(deleteButtonPressed) forControlEvents:UIControlEventTouchDown];
     [self addSubview:self.delete_Or_FlagButton];
 
 }
@@ -324,7 +324,7 @@
         _muteButton.frame = buttonFrame;
         
         [_muteButton setImage:[UIImage imageNamed:UNMUTED_ICON] forState:UIControlStateNormal];
-        [_muteButton addTarget:self action:@selector(muteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+        [_muteButton addTarget:self action:@selector(muteButtonPressed) forControlEvents:UIControlEventTouchDown];
     }
     return _muteButton;
 }

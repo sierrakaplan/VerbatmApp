@@ -102,7 +102,7 @@
     SelectOptionButton * selectOption = [[SelectOptionButton alloc] initWithFrame:buttonFrame];
     
 
-    [selectOption addTarget:self action:@selector(facebookSelected:) forControlEvents:UIControlEventTouchUpInside];
+    [selectOption addTarget:self action:@selector(facebookSelected:) forControlEvents:UIControlEventTouchDown];
  
     CGFloat imageHeight = CHANNEL_LABEL_HEIGHT * 0.5;
     CGRect viewFrame = CGRectMake(WALL_OFFSET_X, 15.f, imageHeight, imageHeight);
@@ -158,7 +158,7 @@
     
     SelectOptionButton * selectOption = [[SelectOptionButton alloc] initWithFrame:buttonFrame];
     selectOption.associatedObject = channel;
-    [selectOption addTarget:self action:@selector(channelButtonSelected:) forControlEvents:UIControlEventTouchUpInside];
+    [selectOption addTarget:self action:@selector(channelButtonSelected:) forControlEvents:UIControlEventTouchDown];
     NSString * channelName = channel.name;
     CGRect labelFrame = CGRectMake(WALL_OFFSET_X, 0.f, xCord , frame.size.height);
     UILabel * newLabel = [[UILabel alloc] initWithFrame:labelFrame];

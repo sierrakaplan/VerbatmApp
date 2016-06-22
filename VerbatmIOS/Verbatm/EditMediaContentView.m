@@ -98,7 +98,7 @@
 	[self.textAndImageView setTextViewDelegate:self];
 	[self.textCreationButton setImage:[UIImage imageNamed:CREATE_TEXT_ICON] forState:UIControlStateNormal];
 	self.textCreationButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-	[self.textCreationButton addTarget:self action:@selector(editText) forControlEvents:UIControlEventTouchUpInside];
+	[self.textCreationButton addTarget:self action:@selector(editText) forControlEvents:UIControlEventTouchDown];
 	[self addSubview:self.textCreationButton];
 	[self bringSubviewToFront:self.textCreationButton];
 	[self addLongPress];

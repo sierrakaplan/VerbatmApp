@@ -38,7 +38,7 @@
 		_nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		_nextButton.frame = self.bounds;
 		_nextButton.backgroundColor = ORANGE_COLOR;
-		[_nextButton addTarget:self action:@selector(nextButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+		[_nextButton addTarget:self action:@selector(nextButtonPressed) forControlEvents:UIControlEventTouchDown];
 	}
 	return _nextButton;
 }

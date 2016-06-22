@@ -142,7 +142,7 @@
     self.cancelButton = [self getButtonWithFrame:cancelButtonFrame andTitleText:@"Cancel"];
     [self addSubview:self.cancelButton];
     [self bringSubviewToFront:self.cancelButton];
-    [self.cancelButton addTarget:self action:@selector(cancelButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+    [self.cancelButton addTarget:self action:@selector(cancelButtonSelected) forControlEvents:UIControlEventTouchDown];
 
     
     CGRect continueButtonFrame = CGRectMake(self.frame.size.width/2 + SHARE_BUTTON_GAP, cancelButtonFrame.origin.y,
@@ -151,7 +151,7 @@
     self.continueButton = [self getButtonWithFrame:continueButtonFrame andTitleText:@"Continue"];
     [self addSubview:self.continueButton];
     [self bringSubviewToFront:self.continueButton];
-   [self.continueButton addTarget:self action:@selector(continueButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+   [self.continueButton addTarget:self action:@selector(continueButtonSelected) forControlEvents:UIControlEventTouchDown];
 
 }
 
@@ -202,7 +202,7 @@
     
    self.facebookButton = [[verbatmButton alloc] initWithFrame:CGRectMake((self.frame.size.width/2) - (buttonWidthHeight + SHARE_BUTTON_GAP), (self.frame.size.height - buttonWidthHeight)/2 , buttonWidthHeight, buttonWidthHeight)];
     
-    [self.facebookButton addTarget:self action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchUpInside];
+    [self.facebookButton addTarget:self action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchDown];
     
     [self.facebookButton storeBackgroundImage:[UIImage imageNamed:@"Facebook_unselected"] forState:ButtonNotSelected];
     [self.facebookButton storeBackgroundImage:[UIImage imageNamed:@"Facebook_selected"] forState:ButtonSelected];
@@ -211,7 +211,7 @@
     
     self.twitterButton = [[verbatmButton alloc] initWithFrame:CGRectMake((self.frame.size.width/2) + SHARE_BUTTON_GAP, self.facebookButton.frame.origin.y, buttonWidthHeight, buttonWidthHeight)];
     
-    [self.twitterButton addTarget:self action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchUpInside];
+    [self.twitterButton addTarget:self action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchDown];
     
     [self.twitterButton storeBackgroundImage:[UIImage imageNamed:@"Twitter_unselected"] forState:ButtonNotSelected];
     [self.twitterButton storeBackgroundImage:[UIImage imageNamed:@"Twitter_selected"] forState:ButtonSelected];

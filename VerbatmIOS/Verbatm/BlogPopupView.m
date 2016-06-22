@@ -81,19 +81,19 @@
     self.followersButton = [[UIButton alloc] initWithFrame:followersFrame];
     [self.followersButton setTitle:@"Followers" forState:UIControlStateNormal];
     [self.followersButton setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
-    [self.followersButton addTarget:self action:@selector(followersButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+    [self.followersButton addTarget:self action:@selector(followersButtonSelected) forControlEvents:UIControlEventTouchDown];
     
     CGRect cancelButtonFrame = CGRectMake(0, self.frame.size.height - 40.f, self.frame.size.width, SHARE_BUTTON_HEIGHT);
     
     self.cancelButton = [[UIButton alloc] initWithFrame:cancelButtonFrame];
     [self.cancelButton  setTitle:@"CANCEL" forState:UIControlStateNormal];
     [self.cancelButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-    [self.cancelButton addTarget:self action:@selector(cancelPopupButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+    [self.cancelButton addTarget:self action:@selector(cancelPopupButtonSelected) forControlEvents:UIControlEventTouchDown];
 
     CGRect topBackButtonFrame = CGRectMake(0, 0, 40, SHARE_BUTTON_HEIGHT);
     self.backButton = [[UIButton alloc] initWithFrame:topBackButtonFrame];
     [self.backButton setImage:[UIImage imageNamed:@"back_arrow"] forState:UIControlStateNormal];
-    [self.backButton addTarget:self action:@selector(backButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+    [self.backButton addTarget:self action:@selector(backButtonSelected) forControlEvents:UIControlEventTouchDown];
     self.backButton.backgroundColor = [UIColor grayColor];
     self.backButton.hidden = YES;
     
@@ -103,7 +103,7 @@
     [self.topButton setTitle:@"FOLLOWERS" forState:UIControlStateNormal];
     [self.topButton setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
     [self.topButton.titleLabel setFont:[UIFont boldSystemFontOfSize:[UIFont systemFontSize]]];
-    [self.topButton addTarget:self action:@selector(topButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+    [self.topButton addTarget:self action:@selector(topButtonSelected) forControlEvents:UIControlEventTouchDown];
     self.topButton.hidden = YES;
     
 

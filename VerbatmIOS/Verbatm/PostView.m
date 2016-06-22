@@ -653,7 +653,7 @@
 		_downArrow.frame = CGRectMake(self.center.x - (DOWN_ARROW_WIDTH/2),
 									  self.frame.size.height - DOWN_ARROW_WIDTH - DOWN_ARROW_DISTANCE_FROM_BOTTOM,
 									  DOWN_ARROW_WIDTH, DOWN_ARROW_WIDTH);
-		[_downArrow addTarget:self action:@selector(downArrowClicked) forControlEvents:UIControlEventTouchUpInside];
+		[_downArrow addTarget:self action:@selector(downArrowClicked) forControlEvents:UIControlEventTouchDown];
 	}
 	return _downArrow;
 }

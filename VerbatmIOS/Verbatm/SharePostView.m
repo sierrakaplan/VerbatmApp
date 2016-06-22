@@ -74,7 +74,7 @@
 	self.shareButton.layer.borderWidth = 1.f;
 	self.shareButton.layer.borderColor = [UIColor whiteColor].CGColor;
 
-	[self.shareButton addTarget:self action:@selector(shareButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+	[self.shareButton addTarget:self action:@selector(shareButtonSelected) forControlEvents:UIControlEventTouchDown];
 	[self addSubview:self.shareButton];
     [self bringSubviewToFront:self.shareButton];
 
@@ -97,7 +97,7 @@
 	self.cancelButton.clipsToBounds = YES;
 	self.cancelButton.layer.borderWidth = 1.f;
 	self.cancelButton.layer.borderColor = [UIColor whiteColor].CGColor;
-	[self.cancelButton addTarget:self action:@selector(cancelButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+	[self.cancelButton addTarget:self action:@selector(cancelButtonSelected) forControlEvents:UIControlEventTouchDown];
 	[self addSubview:self.cancelButton];
 }
 

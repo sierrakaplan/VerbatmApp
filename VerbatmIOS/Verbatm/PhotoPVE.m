@@ -222,7 +222,7 @@
 -(void)createRearrangeButton {
 	[self.pauseToRearrangeButton setImage:[UIImage imageNamed:PAUSE_SLIDESHOW_ICON] forState:UIControlStateNormal];
 	self.pauseToRearrangeButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-	[self.pauseToRearrangeButton addTarget:self action:@selector(pauseToRearrangeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+	[self.pauseToRearrangeButton addTarget:self action:@selector(pauseToRearrangeButtonPressed) forControlEvents:UIControlEventTouchDown];
 	[self bringSubviewToFront:self.pauseToRearrangeButton];
 }
 

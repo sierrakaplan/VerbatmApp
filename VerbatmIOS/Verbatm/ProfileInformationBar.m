@@ -131,7 +131,7 @@
 	[self.settingsButton setImage:image forState:UIControlStateNormal];
 	self.settingsButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
 	self.settingsButton.clipsToBounds = YES;;
-	[self.settingsButton addTarget:self action:@selector(settingsButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+	[self.settingsButton addTarget:self action:@selector(settingsButtonSelected) forControlEvents:UIControlEventTouchDown];
 	[self addSubview: self.settingsButton];
 }
 
@@ -166,7 +166,7 @@
 	self.followOrEditButton.layer.borderColor = [UIColor whiteColor].CGColor;
 	self.followOrEditButton.layer.borderWidth = 2.f;
 	self.followOrEditButton.layer.cornerRadius = 10.f;
-	[self.followOrEditButton addTarget:self action:@selector(followOrEditButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+	[self.followOrEditButton addTarget:self action:@selector(followOrEditButtonSelected) forControlEvents:UIControlEventTouchDown];
 	[self addSubview: self.followOrEditButton];
 }
 
@@ -186,7 +186,7 @@
 	[self.backButton setImage:backButtonImage forState:UIControlStateNormal];
 	self.backButton.imageEdgeInsets = UIEdgeInsetsMake(2.f, 0.f, 2.f, 0.f);
 	self.backButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-	[self.backButton addTarget:self action:@selector(backButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+	[self.backButton addTarget:self action:@selector(backButtonSelected) forControlEvents:UIControlEventTouchDown];
 	[self addSubview: self.backButton];
 }
 

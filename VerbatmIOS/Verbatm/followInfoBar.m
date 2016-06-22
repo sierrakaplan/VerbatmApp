@@ -111,7 +111,7 @@
     
     UIButton * baseView = [[UIButton alloc]initWithFrame:viewFrame];
     [baseView setBackgroundColor:[UIColor clearColor]];
-    [baseView addTarget:self action:selector forControlEvents:UIControlEventTouchUpInside];
+    [baseView addTarget:self action:selector forControlEvents:UIControlEventTouchDown];
 
     [baseView addSubview:titleLabel];
     [baseView addSubview:numberLabel];

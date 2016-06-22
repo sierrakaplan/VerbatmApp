@@ -91,24 +91,26 @@
     CGFloat frameHeight = self.postListVC.view.frame.size.height;
     CGFloat frameWidth = 3.f +  (self.view.frame.size.width/ self.view.frame.size.height) * frameHeight;
     self.postPrompt.frame = CGRectMake(self.postListVC.view.frame.origin.x, self.postListVC.view.frame.origin.y, frameWidth, frameHeight);
-    [self.postListVC.view removeFromSuperview];
+    self.postListVC.view.hidden = YES;
 }
 
 -(void)createFirstPost{
-    
+    [self.delegate userCreateFirstPost];
 }
 
 -(void)removePromptToPost{
-   if(self.postPrompt)[self.postPrompt removeFromSuperview];
-    self.postPrompt = nil;
-    if(self.postListVC){
-        [self.view addSubview:self.postListVC.view];
-        self.postListVC.postListDelegate = self;
+   
+    if(self.isCurrentUserProfile){
+    
+        if(self.postPrompt)[self.postPrompt removeFromSuperview];
+        self.postPrompt = nil;
+        self.postListVC.view.hidden = NO;
+        
     }
 }
 
 -(void)noPostFound{
-    [self createPromptToPost];
+    if(self.isCurrentUserProfile)[self createPromptToPost];
 }
 
 

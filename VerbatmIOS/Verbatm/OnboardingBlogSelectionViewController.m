@@ -57,7 +57,7 @@
     CGRect buttomFrame = CGRectMake(self.view.frame.size.width - (DONE_BUTTON_WIDTH + 2), 15, DONE_BUTTON_WIDTH, DONE_BUTTON_HEIGHT);
     
     UIButton * done = [[UIButton alloc] initWithFrame:buttomFrame];
-    [done addTarget:self action:@selector(exitDiscover) forControlEvents:UIControlEventTouchUpInside];
+    [done addTarget:self action:@selector(exitDiscover) forControlEvents:UIControlEventTouchDown];
     [done setTitle:@"done" forState:UIControlStateNormal];
     [self.view addSubview:done];
     [self.view bringSubviewToFront:done];

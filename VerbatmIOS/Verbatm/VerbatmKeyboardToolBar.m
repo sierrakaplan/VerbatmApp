@@ -105,7 +105,7 @@
 		UIFont* labelFont = [UIFont fontWithName:REGULAR_FONT size:KEYBOARD_TOOLBAR_FONT_SIZE];
 		NSAttributedString* title = [[NSAttributedString alloc] initWithString:@"DONE" attributes:@{NSForegroundColorAttributeName: [UIColor blackColor], NSFontAttributeName : labelFont}];
 		[_doneButton setAttributedTitle:title forState:UIControlStateNormal];
-		[_doneButton addTarget:self action:@selector(doneButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+		[_doneButton addTarget:self action:@selector(doneButtonPressed) forControlEvents:UIControlEventTouchDown];
 	}
 	return _doneButton;
 }
@@ -179,7 +179,7 @@
 	UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
 	button.frame = frame;
 	[button setImage:[UIImage imageNamed:iconName] forState:UIControlStateNormal];
-	[button addTarget:self action:action forControlEvents:UIControlEventTouchUpInside];
+	[button addTarget:self action:action forControlEvents:UIControlEventTouchDown];
 	return button;
 }
 

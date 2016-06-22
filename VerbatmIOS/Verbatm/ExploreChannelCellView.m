@@ -290,7 +290,7 @@
 	if (!_followButton) {
 		_followButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		_followButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-		[_followButton addTarget:self action:@selector(followButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+		[_followButton addTarget:self action:@selector(followButtonPressed) forControlEvents:UIControlEventTouchDown];
 	}
 	return _followButton;
 }

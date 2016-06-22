@@ -39,7 +39,7 @@
 	[self.passwordTextField setReturnKeyType:UIReturnKeyDone];
 	self.passwordTextField.delegate = self;
 	self.passwordTextField.secureTextEntry = YES;
-	[self.logInButton addTarget:self action:@selector(loginButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+	[self.logInButton addTarget:self action:@selector(loginButtonPressed) forControlEvents:UIControlEventTouchDown];
 }
 
 -(void) viewWillAppear:(BOOL)animated {

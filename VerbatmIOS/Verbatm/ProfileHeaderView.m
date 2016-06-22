@@ -156,7 +156,7 @@
     
     self.changeCoverPhoto.frame = CGRectMake(self.frame.size.width - (coverPhotoIconWidth  + 2.f), self.frame.size.height - COVER_PHOTO_HEIGHT,  coverPhotoIconWidth, COVER_PHOTO_HEIGHT);
     [self addSubview:self.changeCoverPhoto];
-    [self.changeCoverPhoto addTarget:self action:@selector(coverPhotoButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+    [self.changeCoverPhoto addTarget:self action:@selector(coverPhotoButtonSelected) forControlEvents:UIControlEventTouchDown];
 }
 
 -(void)coverPhotoButtonSelected{
