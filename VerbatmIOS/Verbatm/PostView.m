@@ -114,7 +114,6 @@
 		self.pageUpIndicatorDisplayed = NO;
 		self.postMuted = NO;
 		[self addSubview: self.mainScrollView];
-		self.mainScrollView.backgroundColor = [UIColor blackColor];
 		[self createBorder];
 		[self addPagingLine];
 	}
@@ -145,7 +144,7 @@
 
 -(void) displayPageViews: (NSMutableArray *) pageViews {
 	self.pageViews = pageViews;
-	self.mainScrollView.contentSize = CGSizeMake(self.frame.size.width,
+	self.mainScrollView.contentSize = CGSizeMake(0.f,
 												 pageViews.count * self.frame.size.height);
 	self.mainScrollView.contentOffset = CGPointMake(0, 0);
 	CGRect viewFrame = self.bounds;
@@ -331,19 +330,20 @@
 			[self removePageUpIndicatorFromView];
 		}
 	}
-
-	PageViewingExperience *newCurrentPage = self.pageViews[currentViewableIndex];
-	[self.currentPage offScreen];
-	self.currentPage = newCurrentPage;
-	[self.currentPage onScreen];
-	if (!self.postMuted && _likeShareBar) {
-		[self checkForMuteButton:self.currentPage];
-	}
-	//Load media for next two pages
-	//(if more than 3 pages at some point the next will already be loading from previous call
-	//- this case is taken care of in loadMediaForPage. Also takes care of case where pages don't exist.)
-	[self loadMediaForPageAtIndex: indexBelow];
-	[self loadMediaForPageAtIndex: indexBelow+1];
+    if(currentViewableIndex < self.pageViews.count){
+        PageViewingExperience *newCurrentPage = self.pageViews[currentViewableIndex];
+        [self.currentPage offScreen];
+        self.currentPage = newCurrentPage;
+        [self.currentPage onScreen];
+        if (!self.postMuted && _likeShareBar) {
+            [self checkForMuteButton:self.currentPage];
+        }
+        //Load media for next two pages
+        //(if more than 3 pages at some point the next will already be loading from previous call
+        //- this case is taken care of in loadMediaForPage. Also takes care of case where pages don't exist.)
+        [self loadMediaForPageAtIndex: indexBelow];
+        [self loadMediaForPageAtIndex: indexBelow+1];
+    }
 }
 
 -(void)checkForMuteButton:(PageViewingExperience * )currentPageOnScreen {
@@ -588,7 +588,7 @@
 -(UIScrollView*) mainScrollView {
 	if (!_mainScrollView) {
 		_mainScrollView = [[UIScrollView alloc] initWithFrame: self.bounds];
-		_mainScrollView.backgroundColor = [UIColor blueColor];
+//		_mainScrollView.backgroundColor = [UIColor clearColor];
 		_mainScrollView.pagingEnabled = YES;
 		_mainScrollView.scrollEnabled = YES;
 		[_mainScrollView setShowsVerticalScrollIndicator:NO];
@@ -596,6 +596,9 @@
 		_mainScrollView.bounces = YES;
 		//scroll view delegate
 		_mainScrollView.delegate = self;
+        _mainScrollView.autoresizesSubviews = YES;
+        _mainScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        _mainScrollView.backgroundColor = [UIColor greenColor];
 	}
 	return _mainScrollView;
 }

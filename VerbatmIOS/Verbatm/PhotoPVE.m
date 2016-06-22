@@ -109,7 +109,7 @@
 }
 
 -(void) initialFormatting {
-	[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
+	[self setBackgroundColor:[UIColor grayColor]];
 }
 
 #pragma mark - Preview mode -
@@ -159,10 +159,11 @@
 	return editMediaContentView;
 }
 
--(void)layoutContainerViews{
+-(void)layoutContainerViews {
 	//adding subviews in reverse order so that imageview at index 0 on top
 	for (int i = (int)[self.imageContainerViews count]-1; i >= 0; i--) {
 		[self addSubview:[self.imageContainerViews objectAtIndex:i]];
+        [self setContraintsForView:[self.imageContainerViews objectAtIndex:i]];
 	}
 }
 
@@ -198,8 +199,7 @@
 	TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
 																		  andImageURL: url withSmallImage:thumbnailimage
 																		   asSmall:self.small];
-    textAndImageView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-
+    
 	BOOL textColorBlack = [textColor isEqual:[UIColor blackColor]];
 	[textAndImageView setText: text
 			 andTextYPosition: textYPosition
@@ -208,6 +208,36 @@
 				  andTextSize: textSize];
 	[textAndImageView showText:YES];
 	return textAndImageView;
+}
+
+
+ - (void)addEdgeConstraint:(NSLayoutAttribute)edge superview:(UIView *)superview subview:(UIView *)subview {
+//    [superview addConstraint:[NSLayoutConstraint constraintWithItem:subview
+//                                                          attribute:edge
+//                                                          relatedBy:NSLayoutRelationEqual
+//                                                             toItem:superview
+//                                                          attribute:edge
+//                                                         multiplier:1
+//                                                           constant:0]];
+
+     subview.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+
+}
+
+
+-(void)setContraintsForView:(UIView *)view{
+    
+    if(view.superview && view){
+        
+        [view setTranslatesAutoresizingMaskIntoConstraints:NO];
+        
+        [self addEdgeConstraint:NSLayoutAttributeLeft superview:view.superview subview:view];
+        [self addEdgeConstraint:NSLayoutAttributeRight superview:view.superview subview:view];
+        [self addEdgeConstraint:NSLayoutAttributeTop superview:view.superview subview:view];
+        [self addEdgeConstraint:NSLayoutAttributeBottom superview:view.superview subview:view];
+    
+    }
+    
 }
 
 #pragma mark - Tap Gesture -

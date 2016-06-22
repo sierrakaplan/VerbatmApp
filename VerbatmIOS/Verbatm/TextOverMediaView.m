@@ -43,12 +43,15 @@
 		if (small) {
 			croppedImage = [smallImage imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width, self.bounds.size.height)];
 		}
+        self.backgroundColor = [UIColor clearColor];
+        self.autoresizesSubviews = YES;
 		[self.imageView setImage: croppedImage];
-        self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-
-		// After larger image loads, crop it and set it in the image
+        
+        self.imageView.autoresizingMask =  UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+		
+        // After larger image loads, crop it and set it in the image
 		// Only load large image if it's been published already cropped (with s0 tag)
-		if (!small && [imageUrl.absoluteString hasSuffix:@"=s0"]) {
+		if ([imageUrl.absoluteString hasSuffix:@"=s0"]) {
 			[UtilityFunctions loadCachedPhotoDataFromURL:imageUrl].then(^(NSData* largeImageData) {
 				// Only display larger data if less than 1000 KB
 				if (largeImageData.length / 1024.f < 1000) {
@@ -60,6 +63,8 @@
 	}
 	return self;
 }
+
+
 
 -(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image {
 	self = [self initWithFrame: frame];
@@ -74,7 +79,7 @@
 	if (self) {
 		//		self.displayingLargeImage = NO;
 		[self revertToDefaultTextSettings];
-		[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
+		//[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
 	}
 	return self;
 }
@@ -261,6 +266,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 		_textView.scrollEnabled = NO;
 		_textView.editable = NO;
 		_textView.selectable = NO;
+        _textView.autoresizingMask =  UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 		[_textView setTintAdjustmentMode:UIViewTintAdjustmentModeNormal];
 	}
 	return _textView;

@@ -24,10 +24,14 @@
 		self.currentlyLoadingMedia = NO;
         self.clipsToBounds = YES;
         [self createBorder];
-        self.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+        self.autoresizesSubviews= YES;
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        
+        
     }
     return self;
 }
+
 
 -(void)createBorder{
     [self.layer setBorderWidth:0.5];

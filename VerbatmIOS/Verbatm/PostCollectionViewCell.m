@@ -49,6 +49,8 @@
 	self.postBeingPresented = nil;
 	self.isOnScreen = NO;
 	self.isAlmostOnScreen = NO;
+    self.autoresizesSubviews = YES;
+    self.backgroundColor = [UIColor blueColor];
 }
 
 -(void) layoutSubviews {
@@ -79,8 +81,9 @@
     [Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
 		self.currentPostView = [[PostView alloc] initWithFrame:self.bounds
 								andPostChannelActivityObject:pfActivityObj small:self.inSmallMode andPageObjects:pages];
-        self.currentPostView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-
+        self.currentPostView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        self.currentPostView.autoresizesSubviews = YES;
+        self.currentPostView.backgroundColor = [UIColor brownColor];
 		NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
         
 		if (self.isOnScreen) {
@@ -93,7 +96,9 @@
 		self.currentPostView.delegate = self;
 		self.currentPostView.listChannel = channelForList;
 		[self addSubview: self.currentPostView];
-
+        
+        
+        
 		AnyPromise *likesPromise = [Like_BackendManager numberOfLikesForPost:post];
 		AnyPromise *sharesPromise = [Share_BackendManager numberOfSharesForPost:post];
 		PMKWhen(@[likesPromise, sharesPromise]).then(^(NSArray *likesAndShares) {
