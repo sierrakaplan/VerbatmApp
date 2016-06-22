@@ -252,6 +252,7 @@
     if(self.videoAsset){
         [self setThumbnailImage: [self.videoAsset getThumbnailFromAsset]];
         [self bringSubviewToFront:self.thumbnailView];
+        [self offScreen];
     }
 }
 

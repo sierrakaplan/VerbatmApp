@@ -2047,14 +2047,10 @@ andSaveInUserDefaults:(BOOL)save {
     
         NSMutableArray* pages = [PageTypeAnalyzer getPageViewsFromPinchViews: @[[pinchViews firstObject]] withFrame: self.view.bounds inPreviewMode:YES];
     
-    
+        //temporarily create POV to screenshot
         PostView * postView = [[PostView alloc] initWithFrame: self.view.bounds andPostChannelActivityObject:nil small:NO andPageObjects:nil];
         [postView displayPageViews: pages];
-       // [postView muteAllVideos:YES];
-        [postView scrollToPageAtIndex:0];
         [postView prepareForScreenShot];
-    
-        //temporarily create POV to screenshot
     
     
         UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, NO, [UIScreen mainScreen].scale);
@@ -2063,13 +2059,16 @@ andSaveInUserDefaults:(BOOL)save {
     
         UIImage *screenShotImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
-        
+        [postView postOffScreen];
+        [postView clearPost];
+    
+    
         [[PublishingProgressManager sharedInstance] storeProgressBackgroundImage:screenShotImage];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                PublishingProgressView * ppV = [[PublishingProgressView alloc] initWithFrame:self.view.bounds];
-                [self.view addSubview:ppV];
-                [self.view bringSubviewToFront:ppV];
-            });
+    dispatch_async(dispatch_get_main_queue(), ^{
+        PublishingProgressView * ppV = [[PublishingProgressView alloc] initWithFrame:self.view.bounds];
+        [self.view addSubview:ppV];
+        [self.view bringSubviewToFront:ppV];
+    });
 }
 
 

@@ -222,11 +222,11 @@
 //this is called right before the view is removed from the screen
 -(void) stopVideo {
 	@autoreleasepool {
-		[self.player pause];
+		if(self.player)[self.player pause];
 		self.shouldPlayOnLoad = NO;
 		self.videoLoading = NO;
 		[self removePlayerItemObservers];
-		[self.loadingIndicator stopAnimating];
+		if(self.loadingIndicator)[self.loadingIndicator stopAnimating];
 
 		for (UIView* view in self.subviews) {
 			[view removeFromSuperview];
@@ -234,13 +234,13 @@
 		for (CALayer *sublayer in self.layer.sublayers) {
 			[sublayer removeFromSuperlayer];
 		}
-		[self.playerLayer removeFromSuperlayer];
+		if(self.playerLayer)[self.playerLayer removeFromSuperlayer];
 		self.loadingIndicator = nil;
 		self.playerItem = nil;
 		self.player = nil;
 		self.playerLayer = nil;
 		self.isVideoPlaying = NO;
-		[self.ourTimer invalidate];
+		if(self.ourTimer)[self.ourTimer invalidate];
 		self.ourTimer = nil;
 	}
 }
