@@ -42,7 +42,7 @@
     [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray * channels) {
         if (channels.count > 0) {
 			self.userChannel = channels[0];
-			 block();
+			block();
 		} else {
 			// First time logging in - create a new channel
 			[Channel_BackendObject createChannelWithName:@"" andCompletionBlock:^(PFObject *channelObj) {

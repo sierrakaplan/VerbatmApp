@@ -249,6 +249,8 @@
 	[self.blogDescriptionEditable addSubview: editImage];
 	if (self.blogDescription.text && self.blogDescription.text.length > 0) {
 		self.blogDescriptionPlaceholder.hidden = YES;
+	} else {
+		self.blogDescriptionPlaceholder.hidden = NO;
 	}
 	[self.blogDescriptionEditable addSubview: self.blogDescriptionPlaceholder];
 }
