@@ -214,6 +214,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 -(void) defineLoadPostsCompletions {
 	__weak typeof(self) weakSelf = self;
 	self.refreshPostsCompletion = ^void(NSArray *posts) {
+		if (!_parsePostObjects) return; // Already left page
 		[weakSelf.customActivityIndicator stopCustomActivityIndicator];
 		if(posts.count) {
 			if (self.listType == listFeed) {
@@ -246,7 +247,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	};
 
 	self.loadMorePostsCompletion = ^void(NSArray *posts) {
-		if (!posts.count) return;
+		if (!posts.count || !_parsePostObjects) return;
 		weakSelf.isLoadingMore = NO;
 		NSMutableArray *indices = [NSMutableArray array];
 		NSInteger index = weakSelf.parsePostObjects.count;
@@ -265,20 +266,29 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	};
 
 	self.loadOlderPostsCompletion = ^void(NSArray *posts) {
-		if (!posts.count) return;
-		weakSelf.isLoadingOlder = NO;
+		if (!posts.count || !_parsePostObjects) return;
 		NSMutableArray *indices = [NSMutableArray array];
 		for (NSInteger i = 0; i < posts.count; i++) {
 			[indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
 		}
+		NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0,[posts count])];
 		// Perform the updates
 		[weakSelf.collectionView performBatchUpdates:^{
 			//Insert the new data
-			[weakSelf.parsePostObjects addObjectsFromArray:posts];
+			[weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
 			//Insert the new cells
 			[weakSelf.collectionView insertItemsAtIndexPaths:indices];
 
-		} completion:nil];
+		} completion: ^(BOOL finished) {
+			if (finished) {
+				// Scroll to previously selected cell so nothing looks different
+				NSArray* visiblePaths = [weakSelf.collectionView indexPathsForVisibleItems];
+				NSInteger row = visiblePaths && visiblePaths.count ? [(NSIndexPath*)visiblePaths[0] row] : 0;
+				NSIndexPath *selectedPostPath = [NSIndexPath indexPathForRow:row + posts.count inSection:0];
+				[weakSelf.collectionView scrollToItemAtIndexPath:selectedPostPath atScrollPosition:UICollectionViewScrollPositionLeft animated:NO];
+				weakSelf.isLoadingOlder = NO;
+			}
+		}];
 	};
 }
 
@@ -309,7 +319,6 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	}
 }
 
-//todo:
 -(void) loadOlderPosts {
 	if (self.isLoadingOlder) return;
 	self.isLoadingOlder = YES;
@@ -341,6 +350,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
 				  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
 
+	NSInteger row = indexPath.row;
 	PostCollectionViewCell *currentCell;
 	if (indexPath.row == self.nextIndexToPresent) {
 		currentCell = self.nextCellToPresent;
@@ -355,7 +365,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	//Prepare next cell (after first time will just be nextNextCell)
 	self.nextIndexToPresent = indexPath.row+1;
 	if (self.nextIndexToPresent == self.nextNextIndex) self.nextCellToPresent = self.nextNextCell;
-	if (!self.nextCellToPresent) {
+	if (!self.nextCellToPresent || self.nextIndexToPresent != self.nextNextIndex) {
 		self.nextCellToPresent = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextIndexToPresent inSection:indexPath.section]];
 	}
 	if (self.nextCellToPresent) [self.nextCellToPresent almostOnScreen];

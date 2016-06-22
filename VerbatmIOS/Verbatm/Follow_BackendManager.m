@@ -100,7 +100,6 @@
 			NSMutableArray *channels = [[NSMutableArray alloc] initWithCapacity: objects.count];
 			for (PFObject *followObject in objects) {
 				PFObject *channelObj = followObject[FOLLOW_CHANNEL_FOLLOWED_KEY];
-				[channelObj fetchIfNeededInBackground];
 				[channels addObject: channelObj];
 			}
 			block (channels);
@@ -128,7 +127,6 @@
 					[followObject deleteInBackground];
 					continue;
 				}
-				[userFollowing fetchIfNeededInBackground];
 				[users addObject:userFollowing];
 			}
 			block (users);
