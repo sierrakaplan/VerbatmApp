@@ -35,8 +35,6 @@
 
 @property (nonatomic) id userIdToPresent;
 
--(void) showPublishingProgress;
-
 -(void) addPostListVC;
 
 @end

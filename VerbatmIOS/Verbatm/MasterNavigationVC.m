@@ -384,7 +384,6 @@ ProfileVCDelegate>
 	if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER]) {
 		if ([[PublishingProgressManager sharedInstance] currentlyPublishing]) {
 			[self.tabBarController setSelectedViewController:self.profileVC];
-			[self.profileVC showPublishingProgress];
 		}
 		[[Analytics getSharedInstance] endOfADKSession];
 	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_USER_SETTINGS_TO_LOGIN] ||
