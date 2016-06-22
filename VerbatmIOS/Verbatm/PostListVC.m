@@ -102,6 +102,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	[self defineRefreshPostsCompletion];
 	[self registerClassForCustomCells];
 	[self registerForNotifications];
+    self.automaticallyAdjustsScrollViewInsets = NO;
 }
 
 -(void) viewDidDisappear:(BOOL)animated {
@@ -125,6 +126,8 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	self.isRefreshing = NO;
 	self.isLoadingMore = NO;
 	self.shouldPlayVideos = YES;
+    
+
 }
 
 -(void) display:(Channel*)channelForList asPostListType:(PostListType)listType
@@ -197,6 +200,8 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	self.collectionView.scrollEnabled = YES;
 	self.collectionView.showsHorizontalScrollIndicator = NO;
 	self.collectionView.bounces = YES;
+    self.collectionView.backgroundColor = [UIColor whiteColor];
+
 }
 
 -(void)nothingToPresentHere {
@@ -217,7 +222,6 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	self.noContentLabel.textAlignment = NSTextAlignmentCenter;
 	self.noContentLabel.lineBreakMode = NSLineBreakByWordWrapping;
 	self.noContentLabel.numberOfLines = 3;
-	self.view.backgroundColor = [UIColor blackColor];
 	[self.view addSubview:self.noContentLabel];
 }
 
@@ -423,8 +427,16 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(void)changePostListSize:(UIGestureRecognizer *) tapGesture {
     PostCollectionViewCell * selectedCell = (PostCollectionViewCell *) [tapGesture view];
     if(selectedCell){
-//        self.selectedCellIndex = [self.collectionView indexPathForCell:selectedCell].row;
-//        [self.postListDelegate cellSelectedWithImage:[self getImageScreenShotFromCell:selectedCell]];
+        self.selectedCellIndex = [self.collectionView indexPathForCell:selectedCell].row;
+        
+        UICollectionViewLayoutAttributes *attributes = [self.collectionView layoutAttributesForItemAtIndexPath:[self.collectionView indexPathForCell:selectedCell]];
+        
+        CGFloat originX = attributes.frame.origin.x - self.collectionView.contentOffset.x;
+        CGFloat originY = attributes.frame.origin.y;
+        
+        
+        
+        [self.postListDelegate cellSelectedWithImage:[self getImageScreenShotFromCell:selectedCell] andStartFrame:CGRectMake(originX, originY, attributes.frame.size.width, attributes.frame.size.height)];
     }
 }
 

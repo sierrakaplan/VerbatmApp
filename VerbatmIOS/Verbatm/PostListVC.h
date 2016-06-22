@@ -15,7 +15,7 @@
 
 -(void)hideNavBarIfPresent;
 -(void)channelSelected:(Channel *) channel;
--(void)cellSelectedWithImage:(UIImage *) cellImage;
+-(void)cellSelectedWithImage:(UIImage *) cellImage andStartFrame:(CGRect) startFrame;
 
 
 -(void)noPostFound;

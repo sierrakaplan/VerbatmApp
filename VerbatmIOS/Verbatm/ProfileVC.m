@@ -174,7 +174,7 @@
     
 	UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
 	flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-	[flowLayout setMinimumInteritemSpacing:0.3];
+	[flowLayout setMinimumInteritemSpacing:2.f];
 	[flowLayout setMinimumLineSpacing:0.0f];
 	[flowLayout setItemSize:CGSizeMake(postWidth, postHeight)];
 	self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
@@ -423,7 +423,7 @@
     
     if(makeLarge && !self.postListInLargeMode){
         
-        CGFloat postHeight = self.view.frame.size.height;
+        CGFloat postHeight = self.view.frame.size.height - (self.postListVC.collectionView.contentInset.top + self.postListVC.collectionView.contentInset.bottom);
         CGFloat postWidth = self.view.frame.size.width;//same ratio as screen
         
         flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
@@ -473,17 +473,18 @@
 
 
 
--(void)cellSelectedWithImage:(UIImage *)cellImage {
+-(void)cellSelectedWithImage:(UIImage *) cellImage andStartFrame:(CGRect) startFrame{
 
     
     UIImageView * imageView = [[UIImageView alloc] initWithImage:cellImage];
     
-    imageView.frame = CGRectMake(0, self.postListVC.view.frame.origin.y, 150, self.postListVC.view.frame.size.height);
+    imageView.frame = CGRectMake(startFrame.origin.x, self.postListVC.view.frame.origin.y,
+                                 startFrame.size.width, startFrame.size.height);
     
     [self.view addSubview:imageView];
     [self.view bringSubviewToFront:imageView];
     
-    [UIView animateWithDuration:SNAP_ANIMATION_DURATION animations:^{
+    [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
         imageView.frame = self.view.bounds;
     }completion:^(BOOL finished) {
         if(self.postListInLargeMode) {
@@ -521,8 +522,10 @@
 -(void) publishingComplete {
 	NSLog(@"Publishing Complete!");
 	[self.publishingProgressView removeFromSuperview];
+    [self removePromptToPost];
 	self.publishingProgressView = nil;
 	[self.postListVC loadMorePosts];
+    
 }
 
 -(void) publishingFailedWithError:(NSError *)error {

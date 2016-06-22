@@ -242,15 +242,21 @@ andTextAlignment:(NSTextAlignment) textAlignment
 									 self.textView.frame.size.width, height);
 }
 
+-(void)drawRect:(CGRect)rect{
+    [super drawRect:rect];
+    [_imageView setNeedsDisplay];
+  
+}
+
 #pragma mark - Lazy Instantiation -
 
 -(UIImageView*) imageView {
 	if (!_imageView) {
+        _imageView.contentMode =  UIViewContentModeScaleAspectFill ;
 		UIImageView *imageView = [[UIImageView alloc] initWithFrame: self.bounds];
 		[self insertSubview:imageView belowSubview:self.textView];
 		_imageView = imageView;
-		_imageView.clipsToBounds = YES;
-		_imageView.contentMode = UIViewContentModeScaleAspectFill;
+		_imageView.clipsToBounds = YES;        
 	}
 	return _imageView;
 }
