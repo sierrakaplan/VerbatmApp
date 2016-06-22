@@ -17,6 +17,10 @@
 -(void)channelSelected:(Channel *) channel;
 -(void)cellSelectedWithImage:(UIImage *) cellImage;
 
+
+-(void)noPostFound;
+
+
 @end
 
 typedef enum PostListType {

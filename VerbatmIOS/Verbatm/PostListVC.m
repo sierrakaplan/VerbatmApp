@@ -200,10 +200,14 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 }
 
 -(void)nothingToPresentHere {
-	if (self.noContentLabel || self.parsePostObjects.count > 0){
+    
+    
+    if (self.noContentLabel || self.parsePostObjects.count > 0){
 		return;
 	}
-
+    
+    [self.postListDelegate noPostFound];
+    
 	self.noContentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.f - NO_POSTS_LABEL_WIDTH/2.f, 0.f,
 																	NO_POSTS_LABEL_WIDTH, self.view.frame.size.height)];
 	self.noContentLabel.text = @"There are no posts to present :(";

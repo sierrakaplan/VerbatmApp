@@ -67,7 +67,7 @@
 @property (nonatomic) PHImageManager* imageManager;
 
 @property (nonatomic) BOOL postListInLargeMode;
-
+@property (nonatomic) UIButton * postPrompt;
 @end
 
 @implementation ProfileVC
@@ -76,15 +76,46 @@
 	[super viewDidLoad];
 	self.automaticallyAdjustsScrollViewInsets = NO;
 	[self setNeedsStatusBarAppearanceUpdate];
-	self.view.backgroundColor = [UIColor whiteColor];
+	self.view.backgroundColor = [UIColor colorWithWhite:0.8 alpha:1];
 	[self createHeader];
 	[self checkIntroNotification];
 	[self addPostListVC];
 }
 
+
+-(void)createPromptToPost{
+    self.postPrompt =  [[UIButton alloc] init];
+    [self.postPrompt setBackgroundImage:[UIImage imageNamed:CREATE_POST_PROMPT_ICON] forState:UIControlStateNormal];
+    [self.view addSubview:self.postPrompt];
+    [self.postPrompt addTarget:self action:@selector(createFirstPost) forControlEvents:UIControlEventTouchDown];
+    CGFloat frameHeight = self.postListVC.view.frame.size.height;
+    CGFloat frameWidth = 3.f +  (self.view.frame.size.width/ self.view.frame.size.height) * frameHeight;
+    self.postPrompt.frame = CGRectMake(self.postListVC.view.frame.origin.x, self.postListVC.view.frame.origin.y, frameWidth, frameHeight);
+    [self.postListVC.view removeFromSuperview];
+}
+
+-(void)createFirstPost{
+    
+}
+
+-(void)removePromptToPost{
+   if(self.postPrompt)[self.postPrompt removeFromSuperview];
+    self.postPrompt = nil;
+    if(self.postListVC){
+        [self.view addSubview:self.postListVC.view];
+        self.postListVC.postListDelegate = self;
+    }
+}
+
+-(void)noPostFound{
+    [self createPromptToPost];
+}
+
+
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
     [self setNeedsStatusBarAppearanceUpdate];
+    [self removePromptToPost];
 	[self.postListVC display:self.channel asPostListType:listSmallSizedList withListOwner: self.ownerOfProfile
 		isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
 }
@@ -151,17 +182,9 @@
 	if(self.profileHeaderView) [self.view insertSubview:self.postListVC.view belowSubview:self.profileHeaderView];
 	else [self.view addSubview:self.postListVC.view];
 	
-    //[self addEnlargeGesture];
-
+   
 }
 
-
--(void)addEnlargeGesture{
-//	UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(changePostListSize:)];
-//	singleTap.numberOfTapsRequired = 1;
-//	singleTap.delegate = self;
-//	[self.postListVC.view addGestureRecognizer:singleTap];
-}
 
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
 	return YES;

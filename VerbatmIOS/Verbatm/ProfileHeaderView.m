@@ -152,10 +152,9 @@
 -(void)addChangeCoverPhotoButton {
     self.changeCoverPhoto = [[UIButton alloc] init];
     [self.changeCoverPhoto setImage:[UIImage imageNamed:ADD_COVER_PHOTO_ICON] forState:UIControlStateNormal];
-    CGFloat coverPhotoIconWidth = (419 /103 ) *COVER_PHOTO_HEIGHT;
+    CGFloat coverPhotoIconWidth = (351 /106 ) *COVER_PHOTO_HEIGHT;
     
-    self.changeCoverPhoto.frame = CGRectMake(self.frame.size.width - coverPhotoIconWidth, self.frame.size.height - COVER_PHOTO_HEIGHT,
-                                             coverPhotoIconWidth, COVER_PHOTO_HEIGHT);
+    self.changeCoverPhoto.frame = CGRectMake(self.frame.size.width - (coverPhotoIconWidth  + 2.f), self.frame.size.height - COVER_PHOTO_HEIGHT,  coverPhotoIconWidth, COVER_PHOTO_HEIGHT);
     [self addSubview:self.changeCoverPhoto];
     [self.changeCoverPhoto addTarget:self action:@selector(coverPhotoButtonSelected) forControlEvents:UIControlEventTouchUpInside];
 }

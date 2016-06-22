@@ -136,7 +136,7 @@
 
 #pragma mark - Profile Information Header -
 
-#define ADD_COVER_PHOTO_ICON @"Add cover photo"
-
+#define ADD_COVER_PHOTO_ICON @"Add_cover_photo"
+#define CREATE_POST_PROMPT_ICON @"Make_First_Post_icon"
 
 #endif /* Icons_h */
