@@ -58,8 +58,10 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 @property (nonatomic) NSMutableArray *parsePostObjects;
 @property (strong, nonatomic) FeedQueryManager *feedQueryManager;
 @property (strong, nonatomic) PostsQueryManager *postsQueryManager;
+@property (nonatomic) BOOL performingUpdate;
 @property (nonatomic) NSInteger nextIndexToPresent;
 @property (nonatomic) NSInteger nextNextIndex;
+@property (nonatomic) PostCollectionViewCell *currentDisplayCell;
 @property (strong, nonatomic) PostCollectionViewCell *nextCellToPresent;
 @property (strong, nonatomic) PostCollectionViewCell *nextNextCell;
 @property (nonatomic, strong) UILabel * noContentLabel;
@@ -100,7 +102,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	[self setDateSourceAndDelegate];
 	[self defineLoadPostsCompletions];
 	[self registerClassForCustomCells];
-	[self registerForNotifications];
+	[self clearViews];
 }
 
 -(void) viewDidDisappear:(BOOL)animated {
@@ -124,6 +126,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	self.isRefreshing = NO;
 	self.isLoadingMore = NO;
 	self.isLoadingOlder = NO;
+	self.performingUpdate = NO;
 	self.shouldPlayVideos = YES;
 }
 
@@ -166,10 +169,6 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 			//todo: show indicator
 		}
 	}
-}
-
--(void)registerForNotifications{
-
 }
 
 //register our custom cell class
@@ -272,6 +271,10 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 			[indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
 		}
 		NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0,[posts count])];
+
+		[CATransaction begin];
+		[CATransaction setDisableActions:YES];
+		weakSelf.performingUpdate = YES;
 		// Perform the updates
 		[weakSelf.collectionView performBatchUpdates:^{
 			//Insert the new data
@@ -283,10 +286,15 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 			if (finished) {
 				// Scroll to previously selected cell so nothing looks different
 				NSArray* visiblePaths = [weakSelf.collectionView indexPathsForVisibleItems];
-				NSInteger row = visiblePaths && visiblePaths.count ? [(NSIndexPath*)visiblePaths[0] row] : 0;
-				NSIndexPath *selectedPostPath = [NSIndexPath indexPathForRow:row + posts.count inSection:0];
-				[weakSelf.collectionView scrollToItemAtIndexPath:selectedPostPath atScrollPosition:UICollectionViewScrollPositionLeft animated:NO];
+				NSInteger oldRow = visiblePaths && visiblePaths.count ? [(NSIndexPath*)visiblePaths[0] row] : 0;
+				NSInteger newRow = oldRow + posts.count;
+				NSIndexPath *selectedPostPath = [NSIndexPath indexPathForRow:newRow inSection:0];
+				[weakSelf.collectionView scrollToItemAtIndexPath:selectedPostPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+				weakSelf.nextIndexToPresent = newRow + 1;
+				weakSelf.nextNextIndex = newRow + 2;
 				weakSelf.isLoadingOlder = NO;
+				weakSelf.performingUpdate = NO;
+				[CATransaction commit];
 			}
 		}];
 	};
@@ -350,6 +358,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
 				  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
 
+	if (self.performingUpdate && self.currentDisplayCell) return self.currentDisplayCell;
 	NSInteger row = indexPath.row;
 	PostCollectionViewCell *currentCell;
 	if (indexPath.row == self.nextIndexToPresent) {
@@ -386,6 +395,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		[self loadOlderPosts];
 	}
 
+	self.currentDisplayCell = currentCell;
 	return currentCell;
 }
 
