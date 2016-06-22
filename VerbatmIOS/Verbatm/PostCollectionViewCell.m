@@ -50,25 +50,29 @@
 	self.isOnScreen = NO;
 	self.isAlmostOnScreen = NO;
     self.autoresizesSubviews = YES;
-    self.backgroundColor = [UIColor blueColor];
 }
 
 -(void) layoutSubviews {
-	self.currentPostView.frame = self.bounds;
+	//self.currentPostView.frame = self.bounds;
 }
 -(void)putInSmallMode{
     self.inSmallMode = YES;
+    [self.currentPostView putInSmallProfileMode];
 }
--(void)removeFromSmallMode{
+-(void)removeFromSmallMode {
+
     self.inSmallMode = NO;
+    [self.currentPostView removeFromSmallProfileMode];
+
 }
 
--(void)changePostFrameToSize:(CGSize) newSize{
-   // self.currentPostView.frame = CGRectMake(0.f, 0.f, newSize.width, newSize.height);
+-(void)changePostFrameToSize:(CGSize) newSize {
     
-    
-    
-//    [self.currentPostView setTransform:CGAffineTransformMakeScale(newSize.width/self.currentPostView.frame.size.width, newSize.height/self.currentPostView.frame.size.height)];
+    if(self.inSmallMode){
+        [self removeFromSmallMode];
+    }else{
+        [self putInSmallMode];
+    }
 }
 
 -(void) presentPostFromPCActivityObj: (PFObject *) pfActivityObj andChannel:(Channel*) channelForList
@@ -83,7 +87,6 @@
 								andPostChannelActivityObject:pfActivityObj small:self.inSmallMode andPageObjects:pages];
         self.currentPostView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         self.currentPostView.autoresizesSubviews = YES;
-        self.currentPostView.backgroundColor = [UIColor brownColor];
 		NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
         
 		if (self.isOnScreen) {
@@ -102,14 +105,14 @@
 		AnyPromise *likesPromise = [Like_BackendManager numberOfLikesForPost:post];
 		AnyPromise *sharesPromise = [Share_BackendManager numberOfSharesForPost:post];
 		PMKWhen(@[likesPromise, sharesPromise]).then(^(NSArray *likesAndShares) {
-			NSNumber *numLikes = likesAndShares[0];
-			NSNumber *numShares = likesAndShares[1];
-			[self.currentPostView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
-											   numberOfPages:numberOfPages
-									   andStartingPageNumber:@(1)
-													 startUp:up
-											withDeleteButton:withDelete];
-			[self.currentPostView addCreatorInfo];
+//			NSNumber *numLikes = likesAndShares[0];
+//			NSNumber *numShares = likesAndShares[1];
+//			[self.currentPostView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
+//											   numberOfPages:numberOfPages
+//									   andStartingPageNumber:@(1)
+//													 startUp:up
+//											withDeleteButton:withDelete];
+//			[self.currentPostView addCreatorInfo];
 		});
 	}];
 }

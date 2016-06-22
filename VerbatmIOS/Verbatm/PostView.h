@@ -54,7 +54,8 @@
 -(void) shiftLikeShareBarDown:(BOOL) down;
 
 -(void)showPageUpIndicator;
-
+-(void)removeFromSmallProfileMode;
+-(void)putInSmallProfileMode;
 @end
 
 @protocol PostViewDelegate <NSObject>

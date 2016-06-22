@@ -169,6 +169,7 @@
     [self.numLikesButton addTarget:self action:@selector(numLikesButtonSelected) forControlEvents:UIControlEventTouchUpInside];
     
     [self addSubview:self.numLikesButton];
+
 }
 
 -(void)shouldStartPostAsLiked:(BOOL) postLiked{
@@ -209,6 +210,11 @@
     [self.delete_Or_FlagButton addTarget:self action:
      (flag) ? @selector(flagButtonPressed):@selector(deleteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.delete_Or_FlagButton];
+
+}
+
+-(void)reposition_DeleteOrFlag_Button{
+    
 }
 
 #pragma mark - Button actions -
@@ -279,8 +285,13 @@
 }
 
 -(void)removeFromSmallProfileMode {
+    
     self.inSmallProfileMode = NO;
     [self shouldHideLikeAndShareButtons:NO];
+    self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, [[UIApplication sharedApplication] keyWindow].frame.size.width, self.frame.size.height);
+    self.backgroundColor = [UIColor yellowColor];
+    
+    
 }
 
 #pragma mark - Display likes and shares -

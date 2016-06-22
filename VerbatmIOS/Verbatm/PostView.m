@@ -222,19 +222,28 @@
 	self.likeShareBar = [[PostLikeAndShareBar alloc] initWithFrame: startFrame numberOfLikes:numLikes
 													numberOfShares:numShares numberOfPages:numPages andStartingPageNumber:startPage];
 	self.likeShareBar.delegate = self;
+    
 	if (withDelete) {
 		[self.likeShareBar createDeleteButton];
 	}else{
 		[self.likeShareBar createFlagButton];
 	}
 	[self addSubview:self.likeShareBar];
+    
+    
 	[self checkIfUserHasLikedThePost];
 	self.pageUpIndicatorDisplayed = YES;
-    
-    if(self.small)[self.likeShareBar putInSmallProfileMode];
+    if(self.small){
+        [self putInSmallProfileMode];
+    }
 }
 
-
+-(void)removeFromSmallProfileMode{
+    [self.likeShareBar removeFromSmallProfileMode];
+}
+-(void)putInSmallProfileMode{
+    [self.likeShareBar putInSmallProfileMode];
+}
 
 -(void) showWhoLikesThePost {
 	//todo:
@@ -588,7 +597,7 @@
 -(UIScrollView*) mainScrollView {
 	if (!_mainScrollView) {
 		_mainScrollView = [[UIScrollView alloc] initWithFrame: self.bounds];
-//		_mainScrollView.backgroundColor = [UIColor clearColor];
+		_mainScrollView.backgroundColor = [UIColor clearColor];
 		_mainScrollView.pagingEnabled = YES;
 		_mainScrollView.scrollEnabled = YES;
 		[_mainScrollView setShowsVerticalScrollIndicator:NO];
@@ -598,7 +607,6 @@
 		_mainScrollView.delegate = self;
         _mainScrollView.autoresizesSubviews = YES;
         _mainScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        _mainScrollView.backgroundColor = [UIColor greenColor];
 	}
 	return _mainScrollView;
 }
@@ -606,7 +614,7 @@
 -(PostLikeAndShareBar*) likeShareBar {
 	if (!_likeShareBar) {
 		_likeShareBar = [[PostLikeAndShareBar alloc] initWithFrame:CGRectMake(0.f, self.frame.size.height - LIKE_SHARE_BAR_HEIGHT, self.frame.size.width, LIKE_SHARE_BAR_HEIGHT)];
-		[self addSubview:_likeShareBar];
+		//[self addSubview:_likeShareBar];
 	}
 	return _likeShareBar;
 }

@@ -172,7 +172,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
     if(cells){
         
         for (PostCollectionViewCell *currentCell in cells){
-            //[currentCell changePostFrameToSize:newSize];
+            [currentCell changePostFrameToSize:newSize];
         }
     }
 }

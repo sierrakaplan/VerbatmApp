@@ -418,12 +418,11 @@
         [self.view bringSubviewToFront:self.profileHeaderView];
         
     }
-    
+    [self.postListVC changePostViewsToSize:flowLayout.itemSize];
     [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
         [self.postListVC.collectionView.collectionViewLayout invalidateLayout];
         [self.postListVC.collectionView setCollectionViewLayout:flowLayout];
         self.postListVC.view.frame = postListFrame;
-        //[self.postListVC changePostViewsToSize:flowLayout.itemSize];
         self.postListVC.collectionView.pagingEnabled = shouldPage;
     }];
     

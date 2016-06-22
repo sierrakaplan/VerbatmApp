@@ -210,34 +210,8 @@
 	return textAndImageView;
 }
 
-
- - (void)addEdgeConstraint:(NSLayoutAttribute)edge superview:(UIView *)superview subview:(UIView *)subview {
-//    [superview addConstraint:[NSLayoutConstraint constraintWithItem:subview
-//                                                          attribute:edge
-//                                                          relatedBy:NSLayoutRelationEqual
-//                                                             toItem:superview
-//                                                          attribute:edge
-//                                                         multiplier:1
-//                                                           constant:0]];
-
-     subview.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-
-}
-
-
 -(void)setContraintsForView:(UIView *)view{
-    
-    if(view.superview && view){
-        
-        [view setTranslatesAutoresizingMaskIntoConstraints:NO];
-        
-        [self addEdgeConstraint:NSLayoutAttributeLeft superview:view.superview subview:view];
-        [self addEdgeConstraint:NSLayoutAttributeRight superview:view.superview subview:view];
-        [self addEdgeConstraint:NSLayoutAttributeTop superview:view.superview subview:view];
-        [self addEdgeConstraint:NSLayoutAttributeBottom superview:view.superview subview:view];
-    
-    }
-    
+    view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 }
 
 #pragma mark - Tap Gesture -
