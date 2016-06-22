@@ -213,10 +213,10 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 -(void) defineLoadPostsCompletions {
 	__weak typeof(self) weakSelf = self;
 	self.refreshPostsCompletion = ^void(NSArray *posts) {
-		if (!_parsePostObjects) return; // Already left page
+		if (!weakSelf.parsePostObjects) return; // Already left page
 		[weakSelf.customActivityIndicator stopCustomActivityIndicator];
 		if(posts.count) {
-			if (self.listType == listFeed) {
+			if (weakSelf.listType == listFeed) {
 				//Insert new posts into beginning
 				NSMutableArray *indices = [NSMutableArray array];
 				for (NSInteger i = 0; i < posts.count; i++) {
@@ -232,10 +232,12 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 
 				} completion:nil];
 			} else {
+                
 				//Reload all posts in channel
 				weakSelf.parsePostObjects = nil;
 				[weakSelf.parsePostObjects addObjectsFromArray:posts];
 				[weakSelf.collectionView reloadData];
+                
 			}
 
 			[weakSelf removePresentLabel];
