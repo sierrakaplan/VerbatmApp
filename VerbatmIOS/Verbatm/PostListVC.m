@@ -418,11 +418,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(void)changePostListSize:(UIGestureRecognizer *) tapGesture {
     PostCollectionViewCell * selectedCell = (PostCollectionViewCell *) [tapGesture view];
     if(selectedCell){
-        self.selectedCellIndex = [self.collectionView indexPathForCell:selectedCell].row;
-        [self.postListDelegate cellSelectedWithImage:[self getImageScreenShotFromCell:selectedCell]];
-    
-
-    
+//        self.selectedCellIndex = [self.collectionView indexPathForCell:selectedCell].row;
+//        [self.postListDelegate cellSelectedWithImage:[self getImageScreenShotFromCell:selectedCell]];
     }
 }
 
