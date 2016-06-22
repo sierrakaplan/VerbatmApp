@@ -47,8 +47,6 @@
         self.autoresizesSubviews = YES;
 		[self.imageView setImage: croppedImage];
         
-        self.imageView.autoresizingMask =  UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-		
         // After larger image loads, crop it and set it in the image
 		// Only load large image if it's been published already cropped (with s0 tag)
 		if ([imageUrl.absoluteString hasSuffix:@"=s0"]) {
@@ -82,6 +80,14 @@
 		//[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
 	}
 	return self;
+}
+
+-(void)recreatNewSizedViews{
+    
+    UIImage * sameImage = self.imageView.image;
+    self.imageView = nil;
+    self.imageView.image = sameImage;
+    
 }
 
 /* Returns image view with image centered */
@@ -245,7 +251,6 @@ andTextAlignment:(NSTextAlignment) textAlignment
 -(void)drawRect:(CGRect)rect{
     [super drawRect:rect];
     [_imageView setNeedsDisplay];
-  
 }
 
 #pragma mark - Lazy Instantiation -
@@ -256,7 +261,8 @@ andTextAlignment:(NSTextAlignment) textAlignment
 		UIImageView *imageView = [[UIImageView alloc] initWithFrame: self.bounds];
 		[self insertSubview:imageView belowSubview:self.textView];
 		_imageView = imageView;
-		_imageView.clipsToBounds = YES;        
+		_imageView.clipsToBounds = YES;
+        _imageView.autoresizingMask =  UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	}
 	return _imageView;
 }

@@ -44,6 +44,7 @@
 -(void)offScreen {}
 
 -(void)almostOnScreen {}
+-(void)recreatNewSizedViews{}
 
 -(LoadingIndicator *) customActivityIndicator{
 	if(!_customActivityIndicator){

@@ -110,6 +110,10 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	[self offScreen];
 }
 
+-(void)viewDidLayoutSubviews{
+    
+}
+
 -(void) clearViews {
 	for (PostCollectionViewCell *cellView in [self.collectionView visibleCells]) {
 		[cellView offScreen];

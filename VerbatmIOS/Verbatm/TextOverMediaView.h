@@ -69,5 +69,5 @@ andTextAlignment:(NSTextAlignment) textAlignment
 -(void) showText: (BOOL) show;
 
 -(BOOL) pointInTextView: (CGPoint)point withBuffer: (CGFloat)buffer;
-
+-(void)recreatNewSizedViews;
 @end

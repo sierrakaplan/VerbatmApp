@@ -349,6 +349,12 @@
 	}
 }
 
+-(void)recreatNewSizedViews{
+    for (TextOverMediaView* textAndImageView in self.imageContainerViews) {
+        [textAndImageView recreatNewSizedViews];
+    }
+}
+
 //sets all views to opaque again
 -(void) reloadImages {
 	for (UIView* imageView in self.imageContainerViews) {

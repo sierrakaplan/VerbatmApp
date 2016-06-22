@@ -34,5 +34,5 @@
 // PinchView can be either ImagePinchView or CollectionPinchView
 -(instancetype) initWithFrame:(CGRect)frame andPinchView:(PinchView *)pinchView
 				inPreviewMode: (BOOL)inPreviewMode isPhotoVideoSubview:(BOOL)halfScreen;
-
+-(void)recreatNewSizedViews;
 @end
