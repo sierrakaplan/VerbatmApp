@@ -204,11 +204,11 @@
 		[self.delegate editButtonSelected];
 		self.editMode = !self.editMode;
 		if (self.editMode) {
-			self.followOrEditButton.backgroundColor = [UIColor blackColor];
-			[self changeFollowButtonTitle:@"edit" toColor:[UIColor whiteColor]];
-		} else {
 			self.followOrEditButton.backgroundColor = [UIColor whiteColor];
 			[self changeFollowButtonTitle:@"edit" toColor:[UIColor blackColor]];
+		} else {
+			self.followOrEditButton.backgroundColor = [UIColor blackColor];
+			[self changeFollowButtonTitle:@"edit" toColor:[UIColor whiteColor]];
 		}
 	} else {
 		self.currentUserFollowsUser = !self.currentUserFollowsUser;
