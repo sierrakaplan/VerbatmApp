@@ -438,6 +438,7 @@
         
     }else{
         CGFloat postHeight = self.view.frame.size.height - (self.view.frame.size.width + ((self.isCurrentUserProfile) ? TAB_BAR_HEIGHT : 0.f));
+        postHeight = postHeight - (self.postListVC.collectionView.contentInset.top + self.postListVC.collectionView.contentInset.bottom);
         CGFloat postWidth = (self.view.frame.size.width / self.view.frame.size.height ) * postHeight;//same ratio as screen
         
         flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
@@ -449,24 +450,42 @@
         
     }
     
+    
+    
+    
+    
+//    
+//    PostListVC * newVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
+//    newVC.postListDelegate = self;
+//    
+//    newVC.view.frame = postListFrame;
+//    [self.view insertSubview:newVC.view belowSubview:animatingView];
+//    [newVC setReadyToEnlargeWithNewSize:flowLayout.itemSize];
+//    newVC.collectionView.pagingEnabled = shouldPage;
+//    [self presentHeadAndFooter:!shouldPage shouldAnimate:NO];
+//    [animatingView setAlpha:0];
+    
+    
+    
     [self.postListVC changePostViewsToSize:flowLayout.itemSize];
     self.postListVC.view.frame = postListFrame;
     [self.view bringSubviewToFront:self.postListVC.view];
     
    // [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-        [self presentHeadAndFooter:!shouldPage shouldAnimate:NO];
-        PostListVC * __weak postList = self.postListVC;
+    [self presentHeadAndFooter:!shouldPage shouldAnimate:NO];
+    PostListVC * __weak postList = self.postListVC;
+    [self.postListVC.collectionViewLayout invalidateLayout];
     [self.postListVC.collectionView setCollectionViewLayout:flowLayout];
     [postList setReadyToEnlargeWithNewSize:flowLayout.itemSize];
     postList.collectionView.pagingEnabled = shouldPage;
     [animatingView setAlpha:0];
-//
+
 //    }completion:^(BOOL finished) {
 //        if(finished){
 //         //   [self.postListVC setReadyToEnlargeWithNewSize:flowLayout.itemSize];
 //        }
 //    }];
-    
+
     
     
 }

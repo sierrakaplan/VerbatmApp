@@ -387,7 +387,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 //note point is in our collection view reference frame
 -(void)setReadyToEnlargeWithNewSize:(CGSize) newSize{
    
-    [self.view layoutIfNeeded];
+    //[self.view layoutIfNeeded];
    if(self.selectedCellIndex < self.parsePostObjects.count) [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:self.selectedCellIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
     
 }
