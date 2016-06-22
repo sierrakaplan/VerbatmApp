@@ -388,7 +388,8 @@ ProfileVCDelegate>
 		}
 		[[Analytics getSharedInstance] endOfADKSession];
 	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_USER_SETTINGS_TO_LOGIN] ||
-               [segue.identifier isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]  ){
+               [segue.identifier isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]) {
+
 
 	}
 }
