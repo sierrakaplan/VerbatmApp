@@ -6,19 +6,29 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
-#import "PinchView.h"
 #import "CollectionPinchView.h"
-#import "PublishingProgressManager.h"
-#import "Notifications.h"
 #import "Channel_BackendObject.h"
+
+#import "ExternalShare.h"
+
+#import "Notifications.h"
+
+
+#import "PinchView.h"
+#import "PublishingProgressManager.h"
 #import "ParseBackendKeys.h"
 #import "Post_Channel_RelationshipManager.h"
 #import "PostInProgress.h"
 #import "Page_BackendObject.h"
 #import "Photo_BackendObject.h"
-#import "Video_BackendObject.h"
 #import "PageTypeAnalyzer.h"
-#import "ExternalShare.h"
+#import "PublishingProgressView.h"
+#import "PreviewDisplayView.h"
+
+#import "UIView+Effects.h"
+
+#import "Video_BackendObject.h"
+
 
 @interface PublishingProgressManager()
 //how many media pieces we are trying to publish in total
@@ -36,7 +46,7 @@
 @property (nonatomic) ExternalShare* es;
 @property (nonatomic) BOOL shareToFB;
 
-
+@property (nonatomic,strong) UIImage * publishingProgressBackgroundImage;
 
 @property (nonatomic) NSString * captionToShare;
 @property (nonatomic) SelectedPlatformsToShareLink locationToShare;
@@ -62,6 +72,12 @@
     self.captionToShare = caption;
 }
 
+-(void)storeProgressBackgroundImage:(UIImage *) image{
+        self.publishingProgressBackgroundImage = image;
+}
+-(UIImage *) getProgressBackgroundImage{
+    return self.publishingProgressBackgroundImage;
+}
 
 // Blocks is publishing something else, no network
 -(void)publishPostToChannel:(Channel *)channel andFacebook:(BOOL)externalShare withCaption:(NSString *)caption withPinchViews:(NSArray *)pinchViews
@@ -83,6 +99,7 @@
 	[self.channelManager createPostFromPinchViews:pinchViews
 										toChannel:channel
 							  withCompletionBlock:^(PFObject *parsePostObject) {
+                                  self.publishingProgressBackgroundImage = nil;
 								  if (!parsePostObject) {
 									  block (NO, YES);
 									  return;

@@ -24,6 +24,8 @@
 #import "ParseBackendKeys.h"
 #import "PageTypeAnalyzer.h"
 
+#import "PostView.h"
+#import "PublishingProgressView.h"
 #import "Durations.h"
 
 #import "GMImagePickerController.h"
@@ -2040,12 +2042,45 @@ andSaveInUserDefaults:(BOOL)save {
 
 #pragma mark - Publishing (PreviewDisplay delegate Methods)
 
+-(void)capturePublishingProgressImageWithPinchViews:(NSMutableArray *) pinchViews{
+
+    
+        NSMutableArray* pages = [PageTypeAnalyzer getPageViewsFromPinchViews: @[[pinchViews firstObject]] withFrame: self.view.bounds inPreviewMode:YES];
+    
+    
+        PostView * postView = [[PostView alloc] initWithFrame: self.view.bounds andPostChannelActivityObject:nil small:NO andPageObjects:nil];
+        [postView displayPageViews: pages];
+       // [postView muteAllVideos:YES];
+        [postView scrollToPageAtIndex:0];
+        [postView prepareForScreenShot];
+    
+        //temporarily create POV to screenshot
+    
+    
+        UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, NO, [UIScreen mainScreen].scale);
+    
+        [postView drawViewHierarchyInRect:self.view.bounds afterScreenUpdates:YES];
+    
+        UIImage *screenShotImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        [[PublishingProgressManager sharedInstance] storeProgressBackgroundImage:screenShotImage];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                PublishingProgressView * ppV = [[PublishingProgressView alloc] initWithFrame:self.view.bounds];
+                [self.view addSubview:ppV];
+                [self.view bringSubviewToFront:ppV];
+            });
+}
+
+
+
 -(void) publishWithTitle:(NSString *)title andPinchViews:(NSMutableArray *)pinchViews {
 	if(pinchViews) [self publishOurStoryWithPinchViews:pinchViews];
 }
 
 -(void) publishOurStoryWithPinchViews:(NSMutableArray *)pinchViews{
     self.pinchViewsToPublish = pinchViews;
+    [self capturePublishingProgressImageWithPinchViews:pinchViews];
     [self presentShareLinkView];
     
 }

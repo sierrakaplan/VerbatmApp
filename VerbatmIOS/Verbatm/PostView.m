@@ -240,7 +240,11 @@
 -(void) showwhoHasSharedThePost{
 	//todo:
 }
-
+-(void)prepareForScreenShot{
+    for(PageViewingExperience * pageView in self.pageViews){
+                [pageView prepareForScreenShot];
+    }
+}
 //todo: optimize this
 -(void) addCreatorInfo {
 	self.creatorBarFrameUp = CGRectMake(0.f, -STATUS_BAR_HEIGHT, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT + STATUS_BAR_HEIGHT);
