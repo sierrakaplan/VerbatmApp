@@ -23,6 +23,8 @@
 @property (nonatomic) BOOL isAlmostOnScreen;
 
 @property (nonatomic) BOOL footerUp;
+@property (nonatomic) UIView * publishingView;
+@property (nonatomic) BOOL hasPublishingView;
 
 @end
 
@@ -41,6 +43,11 @@
 		[self.currentPostView removeFromSuperview];
 		[self.currentPostView clearPost];
 	}
+    
+    if(self.publishingView){
+        [self.publishingView removeFromSuperview];
+        self.publishingView = nil;
+    }
 	self.currentPostView = nil;
 	self.currentPostActivityObject = nil;
 	self.postBeingPresented = nil;
@@ -52,9 +59,19 @@
 	self.currentPostView.frame = self.bounds;
 }
 
+-(void)presentPublishingView:(UIView *)publishingView{
+    self.publishingView = publishingView;
+    [self addSubview:self.publishingView];
+    self.hasPublishingView = YES;
+}
+
+
+
+
 -(void) presentPostFromPCActivityObj: (PFObject *) pfActivityObj andChannel:(Channel*) channelForList
 					withDeleteButton: (BOOL) withDelete andLikeShareBarUp:(BOOL) up {
-	self.footerUp = up;
+    self.hasPublishingView = NO;
+    self.footerUp = up;
 	self.currentPostActivityObject = pfActivityObj;
 	PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
 	[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
@@ -89,7 +106,9 @@
 }
 
 -(void) shiftLikeShareBarDown:(BOOL) down {
-	if (self.currentPostView) {
+    if(self.hasPublishingView) return;
+    
+    if (self.currentPostView) {
 		[self.currentPostView shiftLikeShareBarDown: down];
 	} else {
 		self.footerUp = !down;
@@ -98,6 +117,7 @@
 
 -(void) almostOnScreen {
 	self.isAlmostOnScreen = YES;
+    if(self.hasPublishingView) return;
 	if(self.currentPostView){
 		[self.currentPostView postAlmostOnScreen];
 	}
@@ -106,6 +126,7 @@
 -(void) onScreen {
 	self.isOnScreen = YES;
 	self.isAlmostOnScreen = NO;
+     if(self.hasPublishingView) return;
 	if(self.currentPostView) {
 		[self.currentPostView postOnScreen];
 	}
@@ -113,6 +134,7 @@
 
 -(void) offScreen {
 	self.isOnScreen = NO;
+    if(self.hasPublishingView) return;
 	if(self.currentPostView) {
 		[self.currentPostView postOffScreen];
 	}

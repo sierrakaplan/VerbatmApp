@@ -32,6 +32,8 @@
 #import "ParseBackendKeys.h"
 #import "PostView.h"
 #import <PromiseKit/PromiseKit.h>
+#import "PublishingProgressView.h"
+
 
 #import "Share_BackendManager.h"
 #import "SharePostView.h"
@@ -83,6 +85,11 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 @property (nonatomic) UIImageView *publishSuccessful;
 @property (nonatomic) UIImageView *publishFailed;
 
+@property (nonatomic) BOOL currentlyPublishing;
+
+@property (nonatomic) PublishingProgressView * publishingProgressView;
+
+
 @property (nonatomic) void(^refreshPostsCompletion)(NSArray * posts);
 @property (nonatomic) void(^loadMorePostsCompletion)(NSArray * posts);
 @property (nonatomic) void(^loadOlderPostsCompletion)(NSArray * posts);
@@ -98,11 +105,67 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 
 @implementation PostListVC
 
+
 -(void) viewDidLoad {
 	[self setDateSourceAndDelegate];
 	[self defineLoadPostsCompletions];
 	[self registerClassForCustomCells];
+    [self registerForNotifications];
 	[self clearViews];
+}
+-(void) registerForNotifications {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(userPublishing:)
+                                                 name:NOTIFICATION_POST_CURRENTLY_PUBLISHING
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(publishingFailed:)
+                                                 name:NOTIFICATION_POST_FAILED_TO_PUBLISH
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(publishingSucceeded:)
+                                                 name:NOTIFICATION_POST_PUBLISHED
+                                               object:nil];
+}
+
+-(void)scrollToLastElementInlist{
+    NSInteger section = 0;
+    NSInteger item = [self.collectionView numberOfItemsInSection:section] - 1;
+    if(item > 0){
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:item inSection:section];
+        [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:(UICollectionViewScrollPositionRight) animated:NO];
+    }
+}
+
+-(void)clearPublishingView{
+    if(self.publishingProgressView){
+        [self.publishingProgressView removeFromSuperview];
+        self.publishingProgressView = nil;
+    }
+}
+
+-(void) userPublishing:(NSNotification *) notification {
+    self.currentlyPublishing = YES;
+    self.currentDisplayCell = nil;
+//    NSInteger section = 0;
+//    NSInteger item = [self.collectionView numberOfItemsInSection:section] - 1;
+//    if(item > 0){
+//        [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:i inSection:0]]];
+//    }
+}
+
+
+
+-(void) publishingSucceeded:(NSNotification *) notification {
+    self.currentlyPublishing = NO;
+    [self.collectionView reloadData];
+    [self clearPublishingView];
+
+}
+-(void) publishingFailed:(NSNotification *) notification {
+    self.currentlyPublishing = NO;
+    [self.collectionView reloadData];
+    [self clearPublishingView];
 }
 
 -(void) viewDidDisappear:(BOOL)animated {
@@ -230,13 +293,18 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 					//Insert the new cells
 					[weakSelf.collectionView insertItemsAtIndexPaths:indices];
 
-				} completion:nil];
+				} completion:^(BOOL finished) {
+                    if(finished){
+                        //[self scrollToLastElementInlist];
+                    }
+                }];
 			} else {
                 
 				//Reload all posts in channel
 				weakSelf.parsePostObjects = nil;
 				[weakSelf.parsePostObjects addObjectsFromArray:posts];
 				[weakSelf.collectionView reloadData];
+                [weakSelf scrollToLastElementInlist];
                 
 			}
 
@@ -285,17 +353,23 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 			[weakSelf.collectionView insertItemsAtIndexPaths:indices];
 
 		} completion: ^(BOOL finished) {
-			if (finished) {
+			if (finished && !self.currentlyPublishing) {
 				// Scroll to previously selected cell so nothing looks different
 				NSArray* visiblePaths = [weakSelf.collectionView indexPathsForVisibleItems];
 				NSInteger oldRow = visiblePaths && visiblePaths.count ? [(NSIndexPath*)visiblePaths[0] row] : 0;
 				NSInteger newRow = oldRow + posts.count;
-				NSIndexPath *selectedPostPath = [NSIndexPath indexPathForRow:newRow inSection:0];
-				[weakSelf.collectionView scrollToItemAtIndexPath:selectedPostPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
-				weakSelf.nextIndexToPresent = newRow + 1;
-				weakSelf.nextNextIndex = newRow + 2;
-				weakSelf.isLoadingOlder = NO;
-				weakSelf.performingUpdate = NO;
+                
+                if(newRow >= posts.count){
+                    newRow = [self.collectionView numberOfItemsInSection:0] - 1;
+                    oldRow = newRow -1;
+                }
+                
+                NSIndexPath *selectedPostPath = [NSIndexPath indexPathForRow:newRow inSection:0];
+                [weakSelf.collectionView scrollToItemAtIndexPath:selectedPostPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+                weakSelf.nextIndexToPresent = newRow + 1;
+                weakSelf.nextNextIndex = newRow + 2;
+                weakSelf.isLoadingOlder = NO;
+                weakSelf.performingUpdate = NO;
 				[CATransaction commit];
 			}
 		}];
@@ -307,7 +381,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	self.isRefreshing = YES;
 	self.isLoadingMore = NO;
 	[self.customActivityIndicator startCustomActivityIndicator];
-	if(self.listType == listFeed){
+	if(self.listType == listFeed) {
 		[self.feedQueryManager refreshFeedWithCompletionHandler:self.refreshPostsCompletion];
 	} else if (self.listType == listChannel) {
 		if (self.isCurrentUserProfile) {
@@ -347,7 +421,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView
 	 numberOfItemsInSection:(NSInteger)section {
-	return self.parsePostObjects.count;
+    return (self.parsePostObjects.count + ((self.currentlyPublishing) ? 1 : 0));
 }
 
 #pragma mark - ViewDelegate -
@@ -359,8 +433,10 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
 				  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-
-	if (self.performingUpdate && self.currentDisplayCell) return self.currentDisplayCell;
+    // 1)Sierra to do -- this commented out section prevents the animating publishing view from being presented
+//    if (self.performingUpdate && self.currentDisplayCell){
+//        return self.currentDisplayCell;
+//    }
 	NSInteger row = indexPath.row;
 	PostCollectionViewCell *currentCell;
 	if (indexPath.row == self.nextIndexToPresent) {
@@ -394,7 +470,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 	//Load older posts
 	if (indexPath.row <= LOAD_MORE_POSTS_COUNT && !self.isLoadingOlder && !self.isRefreshing) {
-		[self loadOlderPosts];
+		//Sierra to do
+        //2) this causes part 1) to occur
+        [self loadOlderPosts];
 	}
 
 	self.currentDisplayCell = currentCell;
@@ -402,15 +480,26 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(PostCollectionViewCell*) postCellAtIndexPath:(NSIndexPath *)indexPath {
-	if (indexPath.row >= self.parsePostObjects.count) return nil;
+	if ((self.currentlyPublishing && (indexPath.row > self.parsePostObjects.count)) ||
+        (!self.currentlyPublishing && indexPath.row >= self.parsePostObjects.count)){
+        return nil;
+    }
 	PostCollectionViewCell *cell = (PostCollectionViewCell *) [self.collectionView dequeueReusableCellWithReuseIdentifier:POST_CELL_ID forIndexPath:indexPath];
 	cell.cellDelegate = self;
-	PFObject *postObject = self.parsePostObjects[indexPath.row];
-	if (cell.currentPostActivityObject != postObject) {
-		[cell clearViews];
-		[cell presentPostFromPCActivityObj:postObject andChannel:self.channelForList
-						  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:self.footerBarIsUp];
-	}
+    if(indexPath.row < self.parsePostObjects.count){
+        PFObject *postObject = self.parsePostObjects[indexPath.row];
+        if (cell.currentPostActivityObject != postObject) {
+            [cell clearViews];
+            [cell presentPostFromPCActivityObj:postObject andChannel:self.channelForList
+                              withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:self.footerBarIsUp];
+        }
+        
+    }else{
+        if(self.currentlyPublishing){
+            [cell clearViews];
+            [cell presentPublishingView:self.publishingProgressView];
+        }
+    }
 	return cell;
 }
 
@@ -804,5 +893,19 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
+
+-(PublishingProgressView *)publishingProgressView{
+    if(!_publishingProgressView){
+        CGRect frame =  CGRectMake(0, 0,[(UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout itemSize].width, [(UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout itemSize].height);
+        _publishingProgressView = [[PublishingProgressView alloc] initWithFrame:frame];
+    }
+    return _publishingProgressView;
+}
+
+
+
+
+
+
 
 @end

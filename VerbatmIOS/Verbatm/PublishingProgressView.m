@@ -52,9 +52,9 @@
   
      if ([self.progressView respondsToSelector:@selector(setObservedProgress:)]) {
               [self.progressView setObservedProgress: self.publishingProgress];
-         } else {
+        } else {
                  [self.publishingProgress addObserver:self forKeyPath:@"completedUnitCount" options:NSKeyValueObservingOptionNew context:nil];
-              }
+        }
     
      UIView * edgeView = [[UIView alloc] initWithFrame:self.progressView.frame];
     

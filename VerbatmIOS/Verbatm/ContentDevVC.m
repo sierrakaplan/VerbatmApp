@@ -2064,11 +2064,6 @@ andSaveInUserDefaults:(BOOL)save {
     
     
         [[PublishingProgressManager sharedInstance] storeProgressBackgroundImage:screenShotImage];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        PublishingProgressView * ppV = [[PublishingProgressView alloc] initWithFrame:self.view.bounds];
-        [self.view addSubview:ppV];
-        [self.view bringSubviewToFront:ppV];
-    });
 }
 
 

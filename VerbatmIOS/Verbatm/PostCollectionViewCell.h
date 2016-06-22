@@ -36,6 +36,6 @@
 -(void) offScreen;
 
 -(void) clearViews;
-
+-(void)presentPublishingView:(UIView *)publishingView;
 
 @end

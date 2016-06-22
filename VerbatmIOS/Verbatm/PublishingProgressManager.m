@@ -81,13 +81,13 @@
 
 // Blocks is publishing something else, no network
 -(void)publishPostToChannel:(Channel *)channel andFacebook:(BOOL)externalShare withCaption:(NSString *)caption withPinchViews:(NSArray *)pinchViews
-		withCompletionBlock:(void(^)(BOOL, BOOL))block {
+		withCompletionBlock:(void(^)(BOOL, BOOL))publishHasStartedSuccessfully {
     
     self.es = [[ExternalShare alloc]initWithCaption:caption];
     self.shareToFB = externalShare;
 
 	if (self.currentlyPublishing) {
-		block (YES, NO);
+		publishHasStartedSuccessfully (YES, NO);
 		return;
 	} else {
 		self.currentlyPublishing = YES;
@@ -95,18 +95,20 @@
 
 	self.channelManager = [[Channel_BackendObject alloc] init];
     [self countMediaContentFromPinchViews:pinchViews];
-
-	[self.channelManager createPostFromPinchViews:pinchViews
+    
+    
+	
+    [self.channelManager createPostFromPinchViews:pinchViews
 										toChannel:channel
 							  withCompletionBlock:^(PFObject *parsePostObject) {
-                                  self.publishingProgressBackgroundImage = nil;
 								  if (!parsePostObject) {
-									  block (NO, YES);
+									  publishHasStartedSuccessfully (NO, YES);
 									  return;
 								  }
 								  self.currentParsePostObject = parsePostObject;
 								  self.currentPublishingChannel = channel;
-								  block(NO, NO);
+                                  [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POST_CURRENTLY_PUBLISHING object:nil];
+								  publishHasStartedSuccessfully(NO, NO);
 							  }];
 }
 
@@ -130,6 +132,7 @@
 	self.currentPublishingChannel = NULL;
 	self.currentlyPublishing = NO;
 	self.currentlyPublishing = NO;
+    self.publishingProgressBackgroundImage = nil;
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POST_FAILED_TO_PUBLISH object:error];
 }
 
@@ -162,6 +165,7 @@
 		[[NSNotificationCenter defaultCenter] postNotification: notification];
 		self.currentParsePostObject = nil;
 		self.currentPublishingChannel = nil;
+        self.publishingProgressBackgroundImage = nil;
 	}];
 }
 
