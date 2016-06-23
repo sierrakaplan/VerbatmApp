@@ -117,18 +117,21 @@
 }
 
 -(UILabel *) getLabel:(NSString *) title withOrigin:(CGPoint) origin andAttributes:(NSDictionary *) nameLabelAttribute {
+    UILabel * nameLabel = [[UILabel alloc] init];
+    
+    if(title && nameLabelAttribute){
+        NSAttributedString* tabAttributedTitle = [[NSAttributedString alloc] initWithString:title attributes:nameLabelAttribute];
+        CGSize textSize = [title sizeWithAttributes:nameLabelAttribute];
 
-	NSAttributedString* tabAttributedTitle = [[NSAttributedString alloc] initWithString:title attributes:nameLabelAttribute];
-	CGSize textSize = [title sizeWithAttributes:nameLabelAttribute];
+        CGFloat height = (textSize.height <= (self.frame.size.height/2.f) - 2.f) ?
+        textSize.height : self.frame.size.height/2.f;
 
-	CGFloat height = (textSize.height <= (self.frame.size.height/2.f) - 2.f) ?
-	textSize.height : self.frame.size.height/2.f;
+        CGRect labelFrame = CGRectMake(origin.x, origin.y, textSize.width, height);
 
-	CGRect labelFrame = CGRectMake(origin.x, origin.y, textSize.width, height);
-
-	UILabel * nameLabel = [[UILabel alloc] initWithFrame:labelFrame];
-    nameLabel.backgroundColor = [UIColor clearColor];
-	[nameLabel setAttributedText:tabAttributedTitle];
+        nameLabel.frame = labelFrame;
+        nameLabel.backgroundColor = [UIColor clearColor];
+        [nameLabel setAttributedText:tabAttributedTitle];
+    }
 	return nameLabel;
 }
 

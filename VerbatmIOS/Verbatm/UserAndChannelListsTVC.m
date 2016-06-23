@@ -149,16 +149,15 @@
 //presents every channel in verbatm
 -(void)presentAllVerbatmChannels{
     self.presentAllChannels = YES;
-    
-//    [Channel_BackendObject getAllChannelsButNoneForUser:[PFUser currentUser] withCompletionBlock:^
-//     (NSMutableArray * channels) {
-//         if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
-//         [self.channelsToDisplay addObjectsFromArray:channels];
-//         dispatch_async(dispatch_get_main_queue(), ^{
-//             [self.tableView reloadData];
-//         });
-//     }];
-}
+    [Channel_BackendObject getAllChannelsWithCompletionBlock:^(NSMutableArray * channels) {
+        if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
+        [self.channelsToDisplay addObjectsFromArray:channels];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    }];
+     
+  }
 
 //Gives us the channels to display and if we should show the users that follow them then
 -(void)presentChannelsForUser:(id) userId shouldDisplayFollowers:(BOOL) displayFollowers {

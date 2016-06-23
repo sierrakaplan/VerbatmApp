@@ -21,7 +21,6 @@
 
 
 @protocol UserAndChannelListsTVCDelegate <NSObject>
-
 -(void)openChannel:(Channel *) channel;
 
 -(void)selectedUser:(id)userId;

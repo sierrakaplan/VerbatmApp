@@ -15,6 +15,7 @@
 #import "Intro_Instruction_Notification_View.h"
 
 #import "Follow_BackendManager.h"
+#import "FollowingView.h"
 
 #import "LoadingIndicator.h"
 
@@ -35,12 +36,13 @@
 #import "User_BackendObject.h"
 #import "UserInfoCache.h"
 #import "UserSetupParameters.h"
-
+#import "UserAndChannelListsTVC.h"
 #import <PromiseKit/PromiseKit.h>
 
 @interface ProfileVC() <ProfileHeaderViewDelegate, Intro_Notification_Delegate,
-UIScrollViewDelegate, CreateNewChannelViewProtocol,
-PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
+                        UIScrollViewDelegate, CreateNewChannelViewProtocol,
+                        PublishingProgressProtocol, PostListVCProtocol,
+                        UIGestureRecognizerDelegate,UserAndChannelListsTVCDelegate>
 
 @property (nonatomic) BOOL currentlyCreatingNewChannel;
 
@@ -69,22 +71,46 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	self.automaticallyAdjustsScrollViewInsets = NO;
 	[self setNeedsStatusBarAppearanceUpdate];
 	self.view.backgroundColor = [UIColor blackColor];
-	[self createHeader];
-	[self checkIntroNotification];
-	[self addPostListVC];
+        
+//	[self createHeader];
+//	[self checkIntroNotification];
+//	[self addPostListVC];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-	[self.postListVC display:self.channel asPostListType:listChannel withListOwner: self.ownerOfProfile
-		isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
+//	[self.postListVC display:self.channel asPostListType:listChannel withListOwner: self.ownerOfProfile
+//		isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
-	[self.postListVC offScreen];
-	[self.postListVC clearViews];
+//	[self.postListVC offScreen];
+//	[self.postListVC clearViews];
 }
+
+-(void)openChannel:(Channel *) channel{
+    
+}
+
+-(void)selectedUser:(id)userId{
+    
+}
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    [self testPresent];
+}
+
+-(void)testPresent{
+    UserAndChannelListsTVC * vc = [[UserAndChannelListsTVC alloc] init];
+    [vc presentAllVerbatmChannels];
+    vc.listDelegate= self;
+    [self presentViewController:vc animated:YES completion:^{
+        
+    }];
+}
+
+
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
 	return UIStatusBarStyleDefault;
