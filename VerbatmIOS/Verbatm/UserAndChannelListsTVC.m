@@ -42,6 +42,7 @@
 @property (nonatomic) id userInfoOnDisplay;//the user whose data we are displaying
 
 @property (nonatomic) BOOL presentAllChannels;
+@property (nonatomic) BOOL shouldAnimateViews;
 
 #define CHANNEL_CELL_ID @"channel_cell_id"
 #define CUSTOM_NAV_BAR_HEIGHT 50.f
@@ -62,16 +63,21 @@
     [self addRefreshFeature];
 }
 
-//- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    if (YES) {
-//        CGFloat direction = (YES) ? 1 : -1;
-//        cell.transform = CGAffineTransformMakeTranslation(0, cell.bounds.size.height * direction);
-//        [UIView animateWithDuration:0.2 animations:^{
-//            cell.transform = CGAffineTransformIdentity;
-//        }];
-//    }
-//}
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.shouldAnimateViews) {
+        CGFloat direction = (YES) ? 1 : -1;
+        cell.transform = CGAffineTransformMakeTranslation(0, cell.bounds.size.height * direction);
+        [UIView animateWithDuration:0.4f animations:^{
+            cell.transform = CGAffineTransformIdentity;
+        }];
+        
+        
+        if(cell.bounds.size.height * indexPath.row >= self.view.frame.size.height){
+            self.shouldAnimateViews = NO;
+        }
+    }
+}
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
@@ -196,6 +202,7 @@
                         if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
                         [self.channelsToDisplay addObjectsFromArray:channelList];
                         dispatch_async(dispatch_get_main_queue(), ^{
+                            self.shouldAnimateViews = YES;
                             [self.tableView reloadData];
                             if(self.navBar)[self.view bringSubviewToFront:self.navBar];
                         });
@@ -205,6 +212,7 @@
                     if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
                     [self.channelsToDisplay addObjectsFromArray:[channel channelsUserFollowing]];
                     dispatch_async(dispatch_get_main_queue(), ^{
+                        self.shouldAnimateViews = YES;
                         [self.tableView reloadData];
                         if(self.navBar)[self.view bringSubviewToFront:self.navBar];
                     });
@@ -221,6 +229,7 @@
         if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
         [self.channelsToDisplay addObjectsFromArray:channels];
         dispatch_async(dispatch_get_main_queue(), ^{
+            self.shouldAnimateViews = YES;
             [self.tableView reloadData];
         });
     }];
@@ -272,10 +281,10 @@
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    return [[CustomNavigationBar alloc] initWithFrame:self.navBar.frame andBackgroundColor:CHANNEL_LIST_HEADER_BACKGROUND_COLOR];;
+    return [[CustomNavigationBar alloc] initWithFrame:self.navBar.frame andBackgroundColor:[UIColor whiteColor]];;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return self.navBar.frame.size.height;
+    return 0.f;
 }
 
 //user wants to exit

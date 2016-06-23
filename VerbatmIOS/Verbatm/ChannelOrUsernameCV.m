@@ -40,7 +40,7 @@
 @property (nonatomic) UIButton * followButton;
 @property (nonatomic) BOOL currentUserFollowingChannelUser;
 
-#define CHANNEL_LIST_CELL_SEPERATOR_HEIGHT 1.f
+#define CHANNEL_LIST_CELL_SEPERATOR_HEIGHT 0.6
 #define FOLLOW_BUTTON_SIZE 100.f
 
 
