@@ -195,13 +195,14 @@
     
     self.navBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:CHANNEL_LIST_HEADER_BACKGROUND_COLOR];
     [self.navBar createLeftButtonWithTitle:nil orImage:[UIImage imageNamed:BACK_BUTTON_ICON]];
-    [self.navBar createMiddleButtonWithTitle:@"FOLLOWERS" orImage:nil];
+    //[self.navBar createMiddleButtonWithTitle:@"FOLLOWERS" orImage:nil];
+    
+    [self.navBar createMiddleButtonWithTitle:@"FOLLOWERS" blackText:YES largeSize:YES];
+    
     self.navBar.delegate = self;
     [self.navBar addShadowToView];
     [self.view addSubview:self.navBar];
     [self.view bringSubviewToFront:self.navBar];
-    
-    
     
     
 //    //it can be a navigation bar that lets us go back
