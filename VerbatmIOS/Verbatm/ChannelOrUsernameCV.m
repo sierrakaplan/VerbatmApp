@@ -80,10 +80,13 @@
     
     if(!(self.channel.usersFollowingChannel && self.channel.usersFollowingChannel.count)){
         
-        [self.channel getFollowersAndFollowingWithCompletionBlock:^{
-            self.currentUserFollowingChannelUser = [self.channel.usersFollowingChannel containsObject:[PFUser currentUser]];
+        
+        
+        [Follow_BackendManager currentUserFollowsChannel:self.channel withCompletionBlock:^(bool isFollowing) {
+            self.currentUserFollowingChannelUser = isFollowing;
             if(self.followButton)[self updateUserFollowingChannel];
         }];
+        
     }else{
         self.currentUserFollowingChannelUser = [self.channel.usersFollowingChannel containsObject:[PFUser currentUser]];
         if(self.followButton)[self updateUserFollowingChannel];

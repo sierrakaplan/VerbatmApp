@@ -102,7 +102,6 @@
     }];
 }
 
-//temp
 + (void) getAllChannelsWithCompletionBlock:(void(^)(NSMutableArray *))completionBlock {
     
     PFQuery * userChannelQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];

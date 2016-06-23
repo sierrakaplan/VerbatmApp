@@ -47,7 +47,10 @@
 @property (nonatomic) BOOL shouldAnimateViews;
 
 #define CHANNEL_CELL_ID @"channel_cell_id"
-#define CUSTOM_NAV_BAR_HEIGHT 50.f
+#define CUSTOM_CHANNEL_LIST_BAR_HEIGHT 50.f
+#define LIKERS_TEXT @"Likes"
+#define FOLLOWING_TEXT @"Following"
+#define FOLLOWERS_TEXT @"Followers"
 @end
 
 
@@ -65,7 +68,7 @@
     [self addRefreshFeature];
     
     //avoid covering last item in uitableview
-    UIEdgeInsets inset = UIEdgeInsetsMake(15.f, 0, CUSTOM_NAV_BAR_HEIGHT, 0);
+    UIEdgeInsets inset = UIEdgeInsetsMake(15.f, 0, CUSTOM_CHANNEL_LIST_BAR_HEIGHT, 0);
     self.tableView.contentInset = inset;
     self.tableView.scrollIndicatorInsets = inset;
 }
@@ -101,8 +104,6 @@
         [self.view bringSubviewToFront:self.navBar];
     }
 }
-
-
 
 -(BOOL) prefersStatusBarHidden {
     return YES;
@@ -268,19 +269,19 @@
 
 -(void)setTableViewHeader{
     //temporary list view and should be removable
-    CGRect navBarFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT);
+    CGRect navBarFrame = CGRectMake(0.f, -15.f, self.view.frame.size.width, CUSTOM_CHANNEL_LIST_BAR_HEIGHT);
     
     self.navBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:CHANNEL_LIST_HEADER_BACKGROUND_COLOR];
     [self.navBar createLeftButtonWithTitle:nil orImage:[UIImage imageNamed:BACK_BUTTON_ICON]];
     //[self.navBar createMiddleButtonWithTitle:@"FOLLOWERS" orImage:nil];
     
-    NSString * navBarMiddleText = @"Followers";
+    NSString * navBarMiddleText = FOLLOWERS_TEXT;
     
     if(self.currentListType == likersList){
         
-        navBarMiddleText = @"Likes";
+        navBarMiddleText = LIKERS_TEXT;
     }else if (self.currentListType == followingList){
-        navBarMiddleText = @"Following";
+        navBarMiddleText = FOLLOWING_TEXT;
     }
     
         

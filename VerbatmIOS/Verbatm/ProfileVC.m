@@ -89,13 +89,6 @@
     [self.postListVC clearViews];
 }
 
--(void)openChannel:(Channel *) channel{
-    
-}
-
--(void)selectedUser:(id)userId{
-    
-}
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
 }
@@ -103,10 +96,7 @@
 -(void)presentUserList:(ListLoadType) listType{
     UserAndChannelListsTVC * vc = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
     [vc presentList:listType forChannel:self.channel orPost:nil];
-    vc.listDelegate= self;
-    [self presentViewController:vc animated:YES completion:^{
-        
-    }];
+    [self presentViewController:vc animated:YES completion:nil];
 }
 
 -(void)followersButtonSelected{
