@@ -78,10 +78,16 @@
     self.channel = channel;
 	PFObject *creator = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
     
-    [self.channel getFollowersAndFollowingWithCompletionBlock:^{
+    if(!(self.channel.usersFollowingChannel && self.channel.usersFollowingChannel.count)){
+        
+        [self.channel getFollowersAndFollowingWithCompletionBlock:^{
+            self.currentUserFollowingChannelUser = [self.channel.usersFollowingChannel containsObject:[PFUser currentUser]];
+            if(self.followButton)[self updateUserFollowingChannel];
+        }];
+    }else{
         self.currentUserFollowingChannelUser = [self.channel.usersFollowingChannel containsObject:[PFUser currentUser]];
         if(self.followButton)[self updateUserFollowingChannel];
-    }];
+    }
     
     
 	[creator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
