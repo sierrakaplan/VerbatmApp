@@ -182,6 +182,7 @@
 #define DISCOVER_USERNAME_LABEL_WIDTH (self.frame.size.width - (FOLLOW_BUTTON_WIDTH + OFFSET*2))
 #define DISCOVER_CHANNEL_NAME_HEIGHT 25.f
 
+#define FOLLOW_TEXT_FONT_SIZE 12.f
 
 
 #endif
