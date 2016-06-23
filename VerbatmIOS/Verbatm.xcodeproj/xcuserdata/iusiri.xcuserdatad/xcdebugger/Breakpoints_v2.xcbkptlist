@@ -116,11 +116,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MasterNavigationVC.m"
-            timestampString = "487829513.101552"
+            timestampString = "488331627.986254"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "741"
-            endingLineNumber = "741">
+            startingLineNumber = "740"
+            endingLineNumber = "740">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -176,11 +176,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ContentDevVC.m"
-            timestampString = "487806534.732772"
+            timestampString = "488323836.453831"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "683"
-            endingLineNumber = "683"
+            startingLineNumber = "685"
+            endingLineNumber = "685"
             landmarkName = "-deleteScrollView:"
             landmarkType = "5">
          </BreakpointContent>

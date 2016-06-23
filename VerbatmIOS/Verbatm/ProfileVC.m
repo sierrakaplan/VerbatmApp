@@ -15,6 +15,7 @@
 #import "Intro_Instruction_Notification_View.h"
 
 #import "Follow_BackendManager.h"
+#import "FollowingView.h"
 
 #import "LoadingIndicator.h"
 
@@ -333,13 +334,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
 #pragma mark - Publishing -
 
--(void) showPublishingProgress {
-	if (_publishingProgressView) return;
-	PublishingProgressManager *progressManager = [PublishingProgressManager sharedInstance];
-	self.publishingProgress = [progressManager progressAccountant];
-	[progressManager setDelegate:self];
-	[self.profileHeaderView addSubview: self.publishingProgressView];
-}
+
 
 #pragma mark Publishing Progress Manager Delegate methods
 

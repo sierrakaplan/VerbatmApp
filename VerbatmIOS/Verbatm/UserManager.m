@@ -47,6 +47,20 @@
 	}];
 }
 
+-(void)updateCurrentUserWithName:(NSString *) name andEmail:(NSString *) email{
+    // update current user
+    PFUser* currentUser = [PFUser currentUser];
+    //we don't set the username because that's set by facebook.
+    if(email)currentUser.email = email;
+    if(name)[currentUser setObject: name forKey:VERBATM_USER_NAME_KEY];
+    [currentUser setObject:[NSNumber numberWithBool:NO] forKey:USER_FTUE];
+    [currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if(error) {
+            [[Crashlytics sharedInstance] recordError:error];
+        }
+    }];
+}
+
 // Starts request query for a fb user's name, email, picture, and friends.
 // Assumes the accessToken has been checked somewhere else
 - (void) getUserInfoFromFacebookToken: (FBSDKAccessToken*) accessToken {
@@ -61,44 +75,38 @@
 
 				 NSString* name = result[@"name"];
 				 NSString* email = result[@"email"];
+                 
+                 if(email){
+                            PFQuery *query = [PFUser query];
+                            [query whereKey:@"email" equalTo: email];
+                            [query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+                                if (!error && object) {
+                                    // delete the user created by fb login
+                                    [[PFUser currentUser] deleteInBackground];
+                                    FBSDKLoginManager *loginManager = [[FBSDKLoginManager alloc] init];
+                                    [loginManager logOut];
+                                    NSError* accountWithEmailExistsError = [NSError errorWithDomain:@"world" code: kPFErrorUserEmailTaken userInfo:nil];
+                                    [self notifyFailedLogin: accountWithEmailExistsError];
+                                } else {
+                                    [self updateCurrentUserWithName:name andEmail:email];
 
-				PFQuery *query = [PFUser query];
-				[query whereKey:@"email" equalTo: email];
-				[query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-					if (!error && object) {
-						// delete the user created by fb login
-						[[PFUser currentUser] deleteInBackground];
-						FBSDKLoginManager *loginManager = [[FBSDKLoginManager alloc] init];
-						[loginManager logOut];
-						NSError* accountWithEmailExistsError = [NSError errorWithDomain:@"world" code: kPFErrorUserEmailTaken userInfo:nil];
-						[self notifyFailedLogin: accountWithEmailExistsError];
-					} else {
-						// update current user
-						PFUser* currentUser = [PFUser currentUser];
-                        //we don't set the username because that's set by facebook.
-                        currentUser.email = email;
-						[currentUser setObject: name forKey:VERBATM_USER_NAME_KEY];
-						[currentUser setObject:[NSNumber numberWithBool:NO] forKey:USER_FTUE];
-						[currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-                            if(error) {
-                                [[Crashlytics sharedInstance] recordError:error];
-                            }
-                        }];
+            //						NSString* pictureURL = result[@"picture"][@"data"][@"url"];
+            //						NSLog(@"profile picture url: %@", pictureURL);
 
-//						NSString* pictureURL = result[@"picture"][@"data"][@"url"];
-//						NSLog(@"profile picture url: %@", pictureURL);
-
-						//will only show friends who have signed up for the app with fb
-						NSArray* friends = nil;
-						if ([[FBSDKAccessToken currentAccessToken] hasGranted:@"user_friends"]) {
-							friends = result[@"friends"][@"data"];
-						}
-                        
-						[self notifySuccessfulLogin];
-                        
-					}
-                    
-				}];
+                                    //will only show friends who have signed up for the app with fb
+                                    NSArray* friends = nil;
+                                    if ([[FBSDKAccessToken currentAccessToken] hasGranted:@"user_friends"]) {
+                                        friends = result[@"friends"][@"data"];
+                                    }
+                                    
+                                    [self notifySuccessfulLogin];
+                                    
+                                }
+                                
+                            }];
+                 }else if(name){
+                     [self updateCurrentUserWithName:name andEmail:email];
+                 }
 			 } else {
 				 [[PFUser currentUser] deleteInBackground];
 				 [self notifyFailedLogin: error];

@@ -81,6 +81,7 @@
 //Tells whether should display media in small format
 @property (nonatomic) BOOL small;
 
+
 #define DOWN_ARROW_WIDTH 30.f
 #define DOWN_ARROW_DISTANCE_FROM_BOTTOM 40.f
 #define SCROLL_UP_ANIMATION_DURATION 0.7
@@ -240,7 +241,11 @@
 -(void) showwhoHasSharedThePost{
 	//todo:
 }
-
+-(void)prepareForScreenShot{
+    for(PageViewingExperience * pageView in self.pageViews){
+                [pageView prepareForScreenShot];
+    }
+}
 //todo: optimize this
 -(void) addCreatorInfo {
 	self.creatorBarFrameUp = CGRectMake(0.f, -STATUS_BAR_HEIGHT, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT + STATUS_BAR_HEIGHT);
