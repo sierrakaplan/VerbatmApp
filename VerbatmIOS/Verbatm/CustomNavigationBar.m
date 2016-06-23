@@ -80,6 +80,7 @@
     [middleButton setFrame: CGRectMake(BUTTON_WIDTH, 0.f, curButtonWidth, BUTTON_HEIGHT)];
     if (title) {
         UILabel* titleLabel = [self getLabelWithText:title andAlignment:NSTextAlignmentCenter];
+        titleLabel.adjustsFontSizeToFitWidth = YES;
         if(isBlack)[titleLabel setTextColor:[UIColor blackColor]];
         if(largeSize)[titleLabel setFont:[UIFont fontWithName:NAVIGATION_BAR_BUTTON_FONT size:(NAVIGATION_BAR_BUTTON_FONT_SIZE * 1.3)]];
         

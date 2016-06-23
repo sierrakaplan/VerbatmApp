@@ -167,6 +167,7 @@
         [self.channelsToDisplay addObjectsFromArray:channels];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
+            if(self.navBar)[self.view bringSubviewToFront:self.navBar];
         });
     }];
      
