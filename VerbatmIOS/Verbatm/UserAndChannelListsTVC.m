@@ -63,6 +63,11 @@
     self.tableView.showsHorizontalScrollIndicator = NO;
     self.tableView.showsVerticalScrollIndicator = NO;
     [self addRefreshFeature];
+    
+    //avoid covering last item in uitableview
+    UIEdgeInsets inset = UIEdgeInsetsMake(15.f, 0, CUSTOM_NAV_BAR_HEIGHT, 0);
+    self.tableView.contentInset = inset;
+    self.tableView.scrollIndicatorInsets = inset;
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
