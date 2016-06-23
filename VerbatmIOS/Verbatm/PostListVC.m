@@ -114,6 +114,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	[self registerForNotifications];
 	[self clearViews];
 }
+
 -(void) registerForNotifications {
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(userPublishing:)
@@ -150,8 +151,6 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	self.currentDisplayCell = nil;
 	[self.collectionView reloadData];
 }
-
-
 
 -(void) publishingSucceeded:(NSNotification *) notification {
 	self.currentlyPublishing = NO;
@@ -439,7 +438,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
 				  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-	if (self.performingUpdate && self.currentDisplayCell && !self.currentlyPublishing){
+	if (self.performingUpdate && self.currentDisplayCell ) {//&& !self.currentlyPublishing){
 		return self.currentDisplayCell;
 	}
 	PostCollectionViewCell *currentCell;
