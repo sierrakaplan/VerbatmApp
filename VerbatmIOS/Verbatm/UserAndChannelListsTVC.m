@@ -226,7 +226,7 @@
     [self.navBar createLeftButtonWithTitle:nil orImage:[UIImage imageNamed:BACK_BUTTON_ICON]];
     //[self.navBar createMiddleButtonWithTitle:@"FOLLOWERS" orImage:nil];
     
-    [self.navBar createMiddleButtonWithTitle:@"FOLLOWERS" blackText:YES largeSize:YES];
+    [self.navBar createMiddleButtonWithTitle:@"Followers" blackText:YES largeSize:YES];
     
     self.navBar.delegate = self;
     [self.navBar addShadowToView];

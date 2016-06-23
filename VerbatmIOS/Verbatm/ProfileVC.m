@@ -71,25 +71,22 @@
 	self.automaticallyAdjustsScrollViewInsets = NO;
 	[self setNeedsStatusBarAppearanceUpdate];
 	self.view.backgroundColor = [UIColor blackColor];
-    if(!self.isCurrentUserProfile){
-        [self createHeader];
-        [self checkIntroNotification];
-        [self addPostListVC];
-    }
+    [self createHeader];
+    [self checkIntroNotification];
+    [self addPostListVC];
+    
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-	if(!self.isCurrentUserProfile)[self.postListVC display:self.channel asPostListType:listChannel withListOwner: self.ownerOfProfile
+	[self.postListVC display:self.channel asPostListType:listChannel withListOwner: self.ownerOfProfile
 		isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
-    if(!self.isCurrentUserProfile){
-        [self.postListVC offScreen];
-        [self.postListVC clearViews];
-    }
+    [self.postListVC offScreen];
+    [self.postListVC clearViews];
 }
 
 -(void)openChannel:(Channel *) channel{
@@ -101,19 +98,29 @@
 }
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    if(self.isCurrentUserProfile)[self testPresent];
 }
 
--(void)testPresent{
+-(void)presentUserList:(ListLoadType) listType{
     UserAndChannelListsTVC * vc = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
-    [vc presentList:followingList forChannel:self.channel];
+    [vc presentList:listType forChannel:self.channel];
     vc.listDelegate= self;
     [self presentViewController:vc animated:YES completion:^{
         
     }];
 }
 
-
+-(void)followersButtonSelected{
+    [self showMyFollowers];
+}
+-(void)followingButtonSelected{
+    [self showWhoIAmFollowing];
+}
+-(void)showWhoIAmFollowing{
+    [self presentUserList:followingList];
+}
+-(void)showMyFollowers{
+    [self presentUserList:followersList];
+}
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
 	return UIStatusBarStyleDefault;

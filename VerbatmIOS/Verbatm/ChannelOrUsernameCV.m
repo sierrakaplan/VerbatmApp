@@ -95,7 +95,7 @@
 			NSString *userName = [creator valueForKey:VERBATM_USER_NAME_KEY];
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[self setChannelName:channel.name andUserName: userName];
-                [self createFollowOrEditButton];
+                [self createFollowButton];
 				[self setLabelsForChannel];
                 [self updateUserFollowingChannel];
 			});
@@ -104,7 +104,13 @@
     
 }
 
--(void) createFollowOrEditButton {
+-(void) createFollowButton {
+    
+    if(self.followButton){
+        [self.followButton removeFromSuperview];
+        self.followButton = nil;
+    }
+    
     CGFloat frame_x = self.frame.size.width - PROFILE_HEADER_XOFFSET - FOLLOW_BUTTON_SIZE;
     CGRect followButtonFrame = CGRectMake(frame_x, TAB_BUTTON_PADDING_Y, FOLLOW_BUTTON_SIZE, FOLLOW_BUTTON_SIZE/3.f);
     self.followButton = [[UIButton alloc] initWithFrame: followButtonFrame];
@@ -173,7 +179,17 @@
 
 -(void) setLabelsForChannel{
 
-	CGPoint nameLabelOrigin = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y);
+    if(self.channelNameLabel){
+        [self.channelNameLabel removeFromSuperview];
+        
+        self.channelNameLabel = nil;
+    }
+    if(self.usernameLabel){
+        [self.usernameLabel removeFromSuperview];
+        self.usernameLabel = nil;
+    }
+
+    CGPoint nameLabelOrigin = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y);
 	CGPoint channelNameLabelOrigin  = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y + self.frame.size.height/3.f);
     
     CGFloat maxWidth=self.followButton.frame.origin.x - (TAB_BUTTON_PADDING_X * 2);

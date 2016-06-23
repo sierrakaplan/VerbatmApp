@@ -117,7 +117,28 @@
 	[self updateNumFollowersAndFollowing];
 	[self addSubview: self.numFollowersLabel];
 	[self addSubview: self.numFollowingLabel];
+    [self addTapGestureToFollowersView];
+    [self addTapGestureToFollowingView];
 }
+
+-(void)addTapGestureToFollowersView{
+    self.followersLabel.userInteractionEnabled = YES;
+    [self.followersLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(followersViewTapped)]];
+}
+
+-(void)followersViewTapped{
+    [self.delegate followersButtonSelected];
+}
+
+-(void)addTapGestureToFollowingView{
+    self.followingLabel.userInteractionEnabled = YES;
+    [self.followingLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(followingViewTapped)]];
+}
+
+-(void)followingViewTapped{
+    [self.delegate followingButtonSelected];
+}
+
 
 -(void) createSettingsButton {
 	UIImage *image = [UIImage imageNamed:SETTINGS_BUTTON_ICON];
