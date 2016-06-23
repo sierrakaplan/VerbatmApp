@@ -15,6 +15,7 @@
 #import "Intro_Instruction_Notification_View.h"
 
 #import "Follow_BackendManager.h"
+#import "FollowingView.h"
 
 #import "LoadingIndicator.h"
 
