@@ -167,7 +167,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 }
 
 -(void)registerForNotifications{
-	
+
 }
 
 //register our custom cell class
@@ -269,7 +269,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	} else if (self.listType == listChannel) {
 		if (self.isCurrentUserProfile) [self.postsQueryManager refreshPostsInUserChannel:self.channelForList withCompletionBlock:self.refreshPostsCompletionChannel];
 		else [self.postsQueryManager refreshPostsInChannel:self.channelForList startingAt:self.latestDate
-								  withCompletionBlock:self.refreshPostsCompletionChannel];
+									   withCompletionBlock:self.refreshPostsCompletionChannel];
 	}
 }
 
@@ -550,7 +550,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}
 
 	[self removeSharePOVView];
-    self.view.userInteractionEnabled = YES;
+	self.view.userInteractionEnabled = YES;
 }
 
 -(void)postPostExternal {
@@ -569,7 +569,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 				NSString * thumbNailUrl = [videoObject valueForKey:VIDEO_THUMBNAIL_KEY];
 				[self postToFacebookWithShareLink:thumbNailUrl];
 			}];
-		} 
+		}
 	}];
 }
 
@@ -580,83 +580,83 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	Channel_BackendObject *channelObj = [self.postToShare valueForKey:POST_CHANNEL_KEY];
 	NSString *channelName = [channelObj valueForKey:CHANNEL_NAME_KEY];
 
-//	NSDictionary*params = [[NSDictionary alloc] initWithObjects:@[[NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName],
-//																  @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!",
-//																  shareLink,
-//																  @"http://verbatm.io"]
-//														forKeys:@[@"$og_title",
-//																  @"$og_description",
-//																  @"$og_image_url",
-//																  @"$fallback_url"]];
-//	NSLog(@"Getting link for fb for user %@ reblogging from channel %@ for post %@...", name, channelName, postId);
-//	[[Branch getInstance] getShortURLWithParams:params
-//									 andChannel:@"facebook"
-//									 andFeature:@"sharing"
-//									andCallback:^(NSString *url, NSError *err) {
-//										NSLog(@"got callback from branch");
-//										if (!err) {
-//											NSLog(@"got my Branch invite link to share: %@", url);
-//											NSURL *link = [NSURL URLWithString:url];
-//											FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
-//											content.contentURL = link;
-//											[FBSDKShareDialog showFromViewController:self
-//																		 withContent:content
-//																			delegate:nil];
-//										} else {
-//											NSLog(@"An error occured %@", err.description);
-//										}
-//									}];
+	//	NSDictionary*params = [[NSDictionary alloc] initWithObjects:@[[NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName],
+	//																  @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!",
+	//																  shareLink,
+	//																  @"http://verbatm.io"]
+	//														forKeys:@[@"$og_title",
+	//																  @"$og_description",
+	//																  @"$og_image_url",
+	//																  @"$fallback_url"]];
+	//	NSLog(@"Getting link for fb for user %@ reblogging from channel %@ for post %@...", name, channelName, postId);
+	//	[[Branch getInstance] getShortURLWithParams:params
+	//									 andChannel:@"facebook"
+	//									 andFeature:@"sharing"
+	//									andCallback:^(NSString *url, NSError *err) {
+	//										NSLog(@"got callback from branch");
+	//										if (!err) {
+	//											NSLog(@"got my Branch invite link to share: %@", url);
+	//											NSURL *link = [NSURL URLWithString:url];
+	//											FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
+	//											content.contentURL = link;
+	//											[FBSDKShareDialog showFromViewController:self
+	//																		 withContent:content
+	//																			delegate:nil];
+	//										} else {
+	//											NSLog(@"An error occured %@", err.description);
+	//										}
+	//									}];
 
-	    BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:postId];
-	    branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName];
-	    branchUniversalObject.contentDescription = @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!";
-		branchUniversalObject.imageUrl = shareLink;
-	
-	    BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
-	    linkProperties.feature = @"share";
-	    linkProperties.channel = @"facebook";
-	
-		NSLog(@"Getting link for fb for user %@ reblogging from channel %@ for post %@...", name, channelName, postId);
-	    [branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
-			NSLog(@"callback from external share called");
-	        if (!error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    NSLog(@"got my Branch invite link to share: %@", url);
-                    NSURL *link = [NSURL URLWithString:url];
-                    FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
-                    content.contentURL = link;
-                    [FBSDKShareDialog showFromViewController:self
-                                                 withContent:content
-                                                    delegate:nil];
-                });
-	           
-	        } else {
-	            NSLog(@"An error occured %@", error.description);
-	        }
-	    }];
+	BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:postId];
+	branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName];
+	branchUniversalObject.contentDescription = @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!";
+	branchUniversalObject.imageUrl = shareLink;
+
+	BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
+	linkProperties.feature = @"share";
+	linkProperties.channel = @"facebook";
+
+	NSLog(@"Getting link for fb for user %@ reblogging from channel %@ for post %@...", name, channelName, postId);
+	[branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
+		NSLog(@"callback from external share called");
+		if (!error) {
+			dispatch_async(dispatch_get_main_queue(), ^{
+				NSLog(@"got my Branch invite link to share: %@", url);
+				NSURL *link = [NSURL URLWithString:url];
+				FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
+				content.contentURL = link;
+				[FBSDKShareDialog showFromViewController:self
+											 withContent:content
+												delegate:nil];
+			});
+
+		} else {
+			NSLog(@"An error occured %@", error.description);
+		}
+	}];
 	self.view.userInteractionEnabled = YES;
 }
 
 -(void)successfullyReblogged{
-    
-    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Sucessfully Reblogged!" message:@"" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
-                                                   handler:^(UIAlertAction * action) {}];
-    [newAlert addAction:action];
-    [self presentViewController:newAlert animated:YES completion:nil];
-    
-    
-    
-//	[self.view addSubview:self.reblogSucessful];
-//	[self.view bringSubviewToFront:self.reblogSucessful];
-//
-//	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-//		self.reblogSucessful.alpha = 0.f;
-//	}completion:^(BOOL finished) {
-//
-//		[self.reblogSucessful removeFromSuperview];
-//		self.reblogSucessful = nil;
-//	}];
+
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Sucessfully Reblogged!" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+												   handler:^(UIAlertAction * action) {}];
+	[newAlert addAction:action];
+	[self presentViewController:newAlert animated:YES completion:nil];
+
+
+
+	//	[self.view addSubview:self.reblogSucessful];
+	//	[self.view bringSubviewToFront:self.reblogSucessful];
+	//
+	//	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
+	//		self.reblogSucessful.alpha = 0.f;
+	//	}completion:^(BOOL finished) {
+	//
+	//		[self.reblogSucessful removeFromSuperview];
+	//		self.reblogSucessful = nil;
+	//	}];
 }
 
 
