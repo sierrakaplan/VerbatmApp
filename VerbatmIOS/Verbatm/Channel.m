@@ -104,15 +104,28 @@
 -(void) getFollowersAndFollowingWithCompletionBlock:(void(^)(void))block {
 	self.usersFollowingChannel = nil;
 	self.channelsUserFollowing = nil;
-	[Follow_BackendManager usersFollowingChannel:self withCompletionBlock:^(NSArray *users) {
-		self.usersFollowingChannel = [[NSMutableArray alloc] initWithArray:users];
-		if (self.channelsUserFollowing) block();
-	}];
-
-	[Follow_BackendManager channelsUserFollowing:self.channelCreator withCompletionBlock:^(NSArray *channels) {
-		self.channelsUserFollowing = [[NSMutableArray alloc] initWithArray: channels];
-		if (self.usersFollowingChannel) block();
-	}];
+	
+    NSMutableArray * loadPromises = [[NSMutableArray alloc] init];
+    
+    [loadPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve)
+     {
+         [Follow_BackendManager usersFollowingChannel:self withCompletionBlock:^(NSArray *users) {
+             self.usersFollowingChannel = [[NSMutableArray alloc] initWithArray:users];
+             resolve(nil);
+         }];
+     }]];
+    
+    [loadPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve)
+     {
+         [Follow_BackendManager channelsUserFollowing:self.channelCreator withCompletionBlock:^(NSArray *channels) {
+             self.channelsUserFollowing = [[NSMutableArray alloc] initWithArray: channels];
+             resolve(nil);
+         }];
+     }]];
+    
+    PMKWhen(loadPromises).then(^(id nothing) {
+        block();
+    });
 }
 
 -(BOOL)channelBelongsToCurrentUser {

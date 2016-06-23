@@ -130,12 +130,13 @@
 	[self.channel getFollowersAndFollowingWithCompletionBlock:^{
 		CGRect frame = CGRectMake(0.f, 0.f, self.view.frame.size.width, PROFILE_HEADER_HEIGHT);
 		PFUser* user = self.isCurrentUserProfile ? nil : self.ownerOfProfile;
-		self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andUser:user
-															   andChannel:self.channel inProfileTab:self.isProfileTab];
-		self.profileHeaderView.delegate = self;
-		[self.view addSubview: self.profileHeaderView];
-		[self.view bringSubviewToFront: self.profileHeaderView];
-		self.headerViewOnScreen = YES;
+		
+            self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andUser:user
+                                                                   andChannel:self.channel inProfileTab:self.isProfileTab];
+            self.profileHeaderView.delegate = self;
+            [self.view addSubview: self.profileHeaderView];
+            [self.view bringSubviewToFront: self.profileHeaderView];
+            self.headerViewOnScreen = YES;
 	}];
 }
 

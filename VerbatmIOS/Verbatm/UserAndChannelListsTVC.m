@@ -26,6 +26,7 @@
 #import "QuartzCore/QuartzCore.h"
 
 @interface UserAndChannelListsTVC () <CustomNavigationBarDelegate>
+@property (nonatomic) Channel * channelOnDisplay;
 
 @property (nonatomic) CustomNavigationBar * navBar;
 
@@ -55,7 +56,6 @@
     self.tableView.backgroundColor = [UIColor clearColor];
     [self setNeedsStatusBarAppearanceUpdate];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    [self setTableViewHeader];
     self.tableView.allowsMultipleSelection = NO;
     self.tableView.showsHorizontalScrollIndicator = NO;
     self.tableView.showsVerticalScrollIndicator = NO;
@@ -65,7 +65,18 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    if(self.navBar)[self.view bringSubviewToFront:self.navBar];
+    if(self.navBar){
+        [self.view bringSubviewToFront:self.navBar];
+    }else{
+        [self setTableViewHeader];
+    }
+}
+
+-(void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+    if(self.navBar){
+        [self.view bringSubviewToFront:self.navBar];
+    }
 }
 
 
@@ -86,7 +97,7 @@
 
 - (void)refresh:(UIRefreshControl *)refreshControl {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self presentAllVerbatmChannels];
+        [self presentList:self.currentListType forChannel:self.channelOnDisplay];
     });
     
     [refreshControl endRefreshing];
@@ -163,6 +174,7 @@
 
 -(void)presentList:(ListLoadType) listType forChannel:(Channel *) channel{
     self.currentListType = listType;
+    self.channelOnDisplay = channel;
     switch (listType) {
         case likersList:
             break;
@@ -200,7 +212,6 @@
         [self.channelsToDisplay addObjectsFromArray:channels];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
-            if(self.navBar)[self.view bringSubviewToFront:self.navBar];
         });
     }];
      
@@ -226,7 +237,17 @@
     [self.navBar createLeftButtonWithTitle:nil orImage:[UIImage imageNamed:BACK_BUTTON_ICON]];
     //[self.navBar createMiddleButtonWithTitle:@"FOLLOWERS" orImage:nil];
     
-    [self.navBar createMiddleButtonWithTitle:@"Followers" blackText:YES largeSize:YES];
+    NSString * navBarMiddleText = @"Followers";
+    
+    if(self.currentListType == likersList){
+        
+        navBarMiddleText = @"Likers";
+    }else if (self.currentListType == followingList){
+        navBarMiddleText = @"Following";
+    }
+    
+    
+    [self.navBar createMiddleButtonWithTitle:navBarMiddleText blackText:YES largeSize:YES];
     
     self.navBar.delegate = self;
     [self.navBar addShadowToView];
@@ -311,7 +332,7 @@
         Channel *channel = [self.channelsToDisplay objectAtIndex:objectIndex];
         [cell presentChannel:channel];
     }
-    
+    if(self.navBar)[self.view bringSubviewToFront:self.navBar];
     return cell;
 }
 
