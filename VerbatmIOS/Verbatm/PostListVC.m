@@ -436,9 +436,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
 				  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-	if (self.currentlyPublishing && indexPath.row == self.parsePostObjects.count) {
-		self.currentDisplayCell = [self postCellAtIndexPath:indexPath];
-		return self.currentDisplayCell;
+	if (self.currentlyPublishing) {
+		return [self postCellAtIndexPath:indexPath];
 	}
 	if (self.performingUpdate && self.currentDisplayCell){
 		return self.currentDisplayCell;
