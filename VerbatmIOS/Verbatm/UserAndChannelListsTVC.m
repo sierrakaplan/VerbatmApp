@@ -52,7 +52,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor clearColor];
+    self.view.backgroundColor = [UIColor whiteColor];
     self.tableView.backgroundColor = [UIColor clearColor];
     [self setNeedsStatusBarAppearanceUpdate];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
@@ -62,6 +62,16 @@
     [self addRefreshFeature];
 }
 
+//- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    if (YES) {
+//        CGFloat direction = (YES) ? 1 : -1;
+//        cell.transform = CGAffineTransformMakeTranslation(0, cell.bounds.size.height * direction);
+//        [UIView animateWithDuration:0.2 animations:^{
+//            cell.transform = CGAffineTransformIdentity;
+//        }];
+//    }
+//}
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
@@ -274,6 +284,7 @@
         //nothing to execute
     }];
 }
+-(void) middleButtonPressed{}
 
 -(UILabel *) getHeaderTitleForViewWithText:(NSString *) text{
     

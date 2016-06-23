@@ -103,7 +103,6 @@
             NSMutableArray * channelPromises = [[NSMutableArray alloc] init];
 			for (PFObject *followObject in objects) {
 				PFObject *channelObj = followObject[FOLLOW_CHANNEL_FOLLOWED_KEY];
-				
                 
                 [channelPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve)
                     {
@@ -114,12 +113,11 @@
                             resolve(nil);
                     }];
                 }]];
-                
-                PMKWhen(channelPromises).then(^(id nothing) {
-                    block(channels);
-                });
-				
 			}
+            
+            PMKWhen(channelPromises).then(^(id nothing) {
+                block(channels);
+            });
             
 		} else {
 			[[Crashlytics sharedInstance] recordError:error];
