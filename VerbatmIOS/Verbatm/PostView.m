@@ -81,6 +81,7 @@
 //Tells whether should display media in small format
 @property (nonatomic) BOOL small;
 
+
 #define DOWN_ARROW_WIDTH 30.f
 #define DOWN_ARROW_DISTANCE_FROM_BOTTOM 40.f
 #define SCROLL_UP_ANIMATION_DURATION 0.7
