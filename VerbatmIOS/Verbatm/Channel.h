@@ -38,4 +38,8 @@
 -(BOOL)channelBelongsToCurrentUser;
 
 -(void)addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator;
+
+
++(void)getChannelsForUserList:(NSMutableArray *) userList andCompletionBlock:(void(^)(NSMutableArray *))block;
+
 @end

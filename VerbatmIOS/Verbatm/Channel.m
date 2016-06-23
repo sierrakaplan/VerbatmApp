@@ -7,9 +7,11 @@
 //
 
 #import "Channel.h"
+#import "Channel_BackendObject.h"
 #import "Follow_BackendManager.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
+#import <PromiseKit/PromiseKit.h>
 
 @interface Channel ()
 
@@ -79,6 +81,24 @@
 			block(userName);
 		}];
 	}
+}
+
+
++(void)getChannelsForUserList:(NSMutableArray *) userList andCompletionBlock:(void(^)(NSMutableArray *))block{
+    
+    NSMutableArray * userChannelPromises = [[NSMutableArray alloc] init];
+    NSMutableArray * userChannelList = [[NSMutableArray alloc] init];
+    for (PFUser * user in userList) {
+        [userChannelPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+            [Channel_BackendObject getChannelsForUser:user withCompletionBlock:^(NSMutableArray * userChannels) {
+                [userChannelList addObjectsFromArray:userChannels];
+                resolve(nil);
+            }];
+        }]];
+    }
+    PMKWhen(userChannelPromises).then(^(id nothing) {
+        block(userChannelList);
+    });
 }
 
 -(void) getFollowersAndFollowingWithCompletionBlock:(void(^)(void))block {

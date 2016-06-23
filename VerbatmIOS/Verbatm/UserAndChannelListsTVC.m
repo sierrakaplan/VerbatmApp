@@ -160,6 +160,39 @@
 
 /* NOT IN USE */
 //presents every channel in verbatm
+
+-(void)presentList:(ListLoadType) listType forChannel:(Channel *) channel{
+    self.currentListType = listType;
+    switch (listType) {
+        case likersList:
+            break;
+        case followersList:
+        case followingList:
+            [channel getFollowersAndFollowingWithCompletionBlock:^{
+                if(listType == followersList){
+                    [Channel getChannelsForUserList:[channel usersFollowingChannel] andCompletionBlock:^(NSMutableArray * channelList) {
+                        if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
+                        [self.channelsToDisplay addObjectsFromArray:channelList];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self.tableView reloadData];
+                            if(self.navBar)[self.view bringSubviewToFront:self.navBar];
+                        });
+
+                    }];
+                }else{
+                    if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
+                    [self.channelsToDisplay addObjectsFromArray:[channel channelsUserFollowing]];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.tableView reloadData];
+                        if(self.navBar)[self.view bringSubviewToFront:self.navBar];
+                    });
+
+                }
+            }];
+            break;
+    }
+}
+
 -(void)presentAllVerbatmChannels{
     //self.presentAllChannels = YES;
     [Channel_BackendObject getAllChannelsWithCompletionBlock:^(NSMutableArray * channels) {

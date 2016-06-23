@@ -106,7 +106,7 @@
 
 -(void)testPresent{
     UserAndChannelListsTVC * vc = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
-    [vc presentAllVerbatmChannels];
+    [vc presentList:followersList forChannel:self.channel];
     vc.listDelegate= self;
     [self presentViewController:vc animated:YES completion:^{
         

@@ -8,7 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import <Parse/PFUser.h>
-#import "Channel.h"
+@class Channel;
+
 @interface Channel_BackendObject : NSObject
 
 +(void)createChannelWithName:(NSString *)channelName andCompletionBlock:(void(^)(PFObject *))block;
