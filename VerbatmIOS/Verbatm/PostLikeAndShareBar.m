@@ -17,6 +17,7 @@
 
 @property (nonatomic,strong) UIButton *likeButton;
 @property (nonatomic,strong) UIButton *numLikesButton;
+
 @property (nonatomic, strong) UIButton *shareButon;
 @property (nonatomic, strong) UIButton *delete_Or_FlagButton;
 @property (nonatomic,strong) UIButton *numSharesButton;
@@ -34,7 +35,7 @@
 
 @property (nonatomic) NSNumber * totalNumberOfLikes;//number of likes on our related AVE
 
-@property (nonatomic) NSDictionary * followNumberTextAttributes;
+@property (nonatomic) NSDictionary * likeNumberTextAttributes;
 
 #define BUTTON_WALLOFFSET 10.f
 #define NUMBER_FONT_SIZE 10.f
@@ -116,7 +117,7 @@
     self.shareButon = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.shareButon setFrame:shareButtonFrame];
     [self.shareButon setImage:[UIImage imageNamed:SHARE_ICON] forState:UIControlStateNormal];
-    [self.shareButon addTarget:self action:@selector(shareButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.shareButon addTarget:self action:@selector(shareButtonPressed) forControlEvents:UIControlEventTouchDown];
     
     [self addSubview:self.shareButon];
 }
@@ -131,7 +132,7 @@
     self.likeButtonLikedImage = [UIImage imageNamed:LIKE_ICON_PRESSED];
     self.likeButtonNotLikedImage = [UIImage imageNamed:LIKE_ICON_UNPRESSED];
     [self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
-    [self.likeButton addTarget:self action:@selector(likeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.likeButton addTarget:self action:@selector(likeButtonPressed) forControlEvents:UIControlEventTouchDown];
     
     [self addSubview:self.likeButton];
 }
@@ -152,18 +153,19 @@
     }
     self.numLikesButton = [UIButton buttonWithType:UIButtonTypeCustom];
     
-    NSAttributedString * followersText = [[NSAttributedString alloc] initWithString:numLikes.stringValue attributes:self.followNumberTextAttributes];
+    NSAttributedString * followersText = [[NSAttributedString alloc] initWithString:[numLikes.stringValue stringByAppendingString:@" likes"] attributes:self.likeNumberTextAttributes];
     [self.numLikesButton setAttributedTitle:followersText forState:UIControlStateNormal];
-    CGSize textSize = [numLikes.stringValue sizeWithAttributes:self.followNumberTextAttributes];
+    CGSize textSize = [[numLikes.stringValue stringByAppendingString:@" likes"] sizeWithAttributes:self.likeNumberTextAttributes];
     
     CGFloat numberHeight = self.frame.size.height - (BUTTON_WALLOFFSET*2);
     
-    CGRect likeNumberButtonFrame = CGRectMake(self.likeButton.frame.origin.x + LIKE_SHARE_BAR_BUTTON_SIZE/2.f - 2.f,
+    CGRect likeNumberButtonFrame = CGRectMake(self.likeButton.frame.origin.x +
+                                              self.likeButton.frame.size.width +  ICON_SPACING_GAP,
 											  self.likeButton.center.y - (numberHeight/2.f),
                                               textSize.width, numberHeight);
     [self.numLikesButton setFrame:likeNumberButtonFrame];
     
-    [self.numLikesButton addTarget:self action:@selector(numLikesButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+    [self.numLikesButton addTarget:self action:@selector(numLikesButtonSelected) forControlEvents:UIControlEventTouchDown];
     
     [self addSubview:self.numLikesButton];
 }
@@ -204,7 +206,7 @@
     [self.delete_Or_FlagButton.imageView setContentMode:UIViewContentModeScaleAspectFit];
 	if (flag) [self.delete_Or_FlagButton setImageEdgeInsets:UIEdgeInsetsMake(1.f, 1.f, 1.f, 1.f)];
     [self.delete_Or_FlagButton addTarget:self action:
-     (flag) ? @selector(flagButtonPressed):@selector(deleteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+     (flag) ? @selector(flagButtonPressed):@selector(deleteButtonPressed) forControlEvents:UIControlEventTouchDown];
     [self addSubview:self.delete_Or_FlagButton];
 }
 
@@ -265,7 +267,7 @@
 
 //the actual number view is selected
 -(void) numLikesButtonSelected {
-    
+    [self.delegate showWhoLikesThePost];
 }
 
 //the actual number view is selected
@@ -275,26 +277,26 @@
 
 #pragma mark - Lazy instantiation -
 
--(NSDictionary *)followNumberTextAttributes{
-    if(!_followNumberTextAttributes){
-        _followNumberTextAttributes =@{
+-(NSDictionary *)likeNumberTextAttributes{
+    if(!_likeNumberTextAttributes){
+        _likeNumberTextAttributes =@{
                            NSForegroundColorAttributeName: [UIColor whiteColor],
                            NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:NUMBER_FONT_SIZE]};
     }
     
-    return _followNumberTextAttributes;
+    return _likeNumberTextAttributes;
 }
 
 -(UIButton *)muteButton{
     if(!_muteButton){
         _muteButton = [[UIButton alloc] init];
         
-        CGRect buttonFrame = CGRectMake(self.likeButton.frame.origin.x + self.likeButton.frame.size.width + ICON_SPACING_GAP,
+        CGRect buttonFrame = CGRectMake(self.numLikesButton.frame.origin.x + self.numLikesButton.frame.size.width + ICON_SPACING_GAP,
 										BUTTON_WALLOFFSET, LIKE_SHARE_BAR_BUTTON_SIZE, LIKE_SHARE_BAR_BUTTON_SIZE);
         _muteButton.frame = buttonFrame;
         
         [_muteButton setImage:[UIImage imageNamed:UNMUTED_ICON] forState:UIControlStateNormal];
-        [_muteButton addTarget:self action:@selector(muteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+        [_muteButton addTarget:self action:@selector(muteButtonPressed) forControlEvents:UIControlEventTouchDown];
     }
     return _muteButton;
 }

@@ -80,6 +80,7 @@
 	return self;
 }
 
+
 -(void) updateNumFollowersAndFollowing {
 	NSString *numFollowers = [NSNumber numberWithInteger:self.channel.usersFollowingChannel.count].stringValue;
 	NSString *numFollowing = [NSNumber numberWithInteger:self.channel.channelsUserFollowing.count].stringValue;
@@ -88,6 +89,7 @@
 	self.numFollowersLabel.attributedText = [[NSAttributedString alloc] initWithString:numFollowers attributes:numAttributes];
 	self.numFollowingLabel.attributedText = [[NSAttributedString alloc] initWithString:numFollowing attributes:numAttributes];
 }
+
 
 -(void) createFollowersAndFollowingLabels {
 

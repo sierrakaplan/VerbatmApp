@@ -11,6 +11,8 @@
 
 #import "Channel_BackendObject.h"
 
+#import "Like_BackendManager.h"
+
 #import "ProfileVC.h"
 #import "ParseBackendKeys.h"
 
@@ -27,7 +29,7 @@
 
 @interface UserAndChannelListsTVC () <CustomNavigationBarDelegate>
 @property (nonatomic) Channel * channelOnDisplay;
-
+@property (nonatomic) PFObject * postObject;
 @property (nonatomic) CustomNavigationBar * navBar;
 
 @property (nonatomic) NSMutableArray * channelsToDisplay;
@@ -113,7 +115,7 @@
 
 - (void)refresh:(UIRefreshControl *)refreshControl {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self presentList:self.currentListType forChannel:self.channelOnDisplay];
+        [self presentList:self.currentListType forChannel:self.channelOnDisplay orPost:self.postObject];
     });
     
     [refreshControl endRefreshing];
@@ -188,38 +190,49 @@
 /* NOT IN USE */
 //presents every channel in verbatm
 
--(void)presentList:(ListLoadType) listType forChannel:(Channel *) channel{
+-(void)presentList:(ListLoadType) listType forChannel:(Channel *) channel orPost:(PFObject *) post{
     self.currentListType = listType;
     self.channelOnDisplay = channel;
-    switch (listType) {
-        case likersList:
-            break;
-        case followersList:
-        case followingList:
-            [channel getFollowersAndFollowingWithCompletionBlock:^{
-                if(listType == followersList){
-                    [Channel getChannelsForUserList:[channel usersFollowingChannel] andCompletionBlock:^(NSMutableArray * channelList) {
-                        if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
-                        [self.channelsToDisplay addObjectsFromArray:channelList];
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            self.shouldAnimateViews = YES;
-                            [self.tableView reloadData];
-                            if(self.navBar)[self.view bringSubviewToFront:self.navBar];
-                        });
+    self.postObject = post;
+    if(listType == likersList){
 
-                    }];
-                }else{
+        [Like_BackendManager getUsersWhoLikePost:post withCompletionBlock:^(NSArray * users) {
+            [Channel getChannelsForUserList:[NSMutableArray arrayWithArray: users] andCompletionBlock:^(NSMutableArray * channelList) {
+                if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
+                [self.channelsToDisplay addObjectsFromArray:channelList];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.shouldAnimateViews = YES;
+                    [self.tableView reloadData];
+                    if(self.navBar)[self.view bringSubviewToFront:self.navBar];
+                });
+                
+            }];
+        }];
+
+    }else{
+        [channel getFollowersAndFollowingWithCompletionBlock:^{
+            if(listType == followersList){
+                [Channel getChannelsForUserList:[channel usersFollowingChannel] andCompletionBlock:^(NSMutableArray * channelList) {
                     if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
-                    [self.channelsToDisplay addObjectsFromArray:[channel channelsUserFollowing]];
+                    [self.channelsToDisplay addObjectsFromArray:channelList];
                     dispatch_async(dispatch_get_main_queue(), ^{
                         self.shouldAnimateViews = YES;
                         [self.tableView reloadData];
                         if(self.navBar)[self.view bringSubviewToFront:self.navBar];
                     });
-
-                }
-            }];
-            break;
+                    
+                }];
+            }else{
+                if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
+                [self.channelsToDisplay addObjectsFromArray:[channel channelsUserFollowing]];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.shouldAnimateViews = YES;
+                    [self.tableView reloadData];
+                    if(self.navBar)[self.view bringSubviewToFront:self.navBar];
+                });
+                
+            }
+        }];
     }
 }
 
@@ -260,12 +273,12 @@
     
     if(self.currentListType == likersList){
         
-        navBarMiddleText = @"Likers";
+        navBarMiddleText = @"Likes";
     }else if (self.currentListType == followingList){
         navBarMiddleText = @"Following";
     }
     
-    
+        
     [self.navBar createMiddleButtonWithTitle:navBarMiddleText blackText:YES largeSize:YES];
     
     self.navBar.delegate = self;

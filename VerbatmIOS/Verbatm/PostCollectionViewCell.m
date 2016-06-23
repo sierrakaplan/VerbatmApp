@@ -87,6 +87,9 @@
 		});
 	}];
 }
+-(void) showWhoLikesThePost:(PFObject *) post{
+    [self.cellDelegate showWhoLikesThePost:post];
+}
 
 -(void) shiftLikeShareBarDown:(BOOL) down {
 	if (self.currentPostView) {

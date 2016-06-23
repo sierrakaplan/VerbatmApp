@@ -53,5 +53,5 @@ typedef enum{
 
 @property (nonatomic, weak) id<UserAndChannelListsTVCDelegate> listDelegate;
 @property (nonatomic) ListLoadType currentListType;
--(void)presentList:(ListLoadType) listType forChannel:(Channel *) channel;
+-(void)presentList:(ListLoadType) listType forChannel:(Channel *) channel orPost:(PFObject *) post;
 @end

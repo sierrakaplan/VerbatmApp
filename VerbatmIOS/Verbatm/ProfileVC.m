@@ -102,7 +102,7 @@
 
 -(void)presentUserList:(ListLoadType) listType{
     UserAndChannelListsTVC * vc = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
-    [vc presentList:listType forChannel:self.channel];
+    [vc presentList:listType forChannel:self.channel orPost:nil];
     vc.listDelegate= self;
     [self presentViewController:vc animated:YES completion:^{
         

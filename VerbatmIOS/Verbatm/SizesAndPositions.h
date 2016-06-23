@@ -184,6 +184,7 @@
 
 #define FOLLOW_TEXT_FONT_SIZE 12.f
 
+#define PAGE_UP_ICON_SIZE 45.f
 
 #endif
 
