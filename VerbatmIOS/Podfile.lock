@@ -20,12 +20,12 @@ PODS:
   - Bolts/AppLinks (1.7.0):
     - Bolts/Tasks
   - Bolts/Tasks (1.7.0)
-  - Branch (0.12.2):
-    - Branch/Core (= 0.12.2)
-    - Branch/without-IDFA (= 0.12.2)
-  - Branch/Core (0.12.2)
-  - Branch/without-IDFA (0.12.2)
-  - Crashlytics (3.7.1):
+  - Branch (0.12.3):
+    - Branch/Core (= 0.12.3)
+    - Branch/without-IDFA (= 0.12.3)
+  - Branch/Core (0.12.3)
+  - Branch/without-IDFA (0.12.3)
+  - Crashlytics (3.7.2):
     - Fabric (~> 1.6.3)
   - Fabric (1.6.7)
   - FBSDKCoreKit (4.13.1):
@@ -94,8 +94,8 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   Bolts: a0058fa3b331c5a1e4402d534f2dae36dbff31e4
-  Branch: 8dc4c9b6c3bcdc6ad590938a0b333ddbfe60efe4
-  Crashlytics: 3cdd4c9655be68032a0cf0379e0fb5ef6af22cad
+  Branch: eced5b5201554811ecb039c74f9913b72caf6cc5
+  Crashlytics: 130ab943f8c78cda7a814b434f270b2e2c8a3cba
   Fabric: caf7580c725e64db144f610ac65cd60956911dc7
   FBSDKCoreKit: 2807fe0da2ddb49a1469da6d6ff597f99912980f
   FBSDKLoginKit: 6d350cb6a22d6956e9d078885de6ee8a0ebc51b4
