@@ -16,10 +16,12 @@
 
 #import "PostCollectionViewCell.h"
 
+#import "Icons.h"
 #import "Styles.h"
 #import "SizesAndPositions.h"
 
 #import "UserAndChannelListsTVC.h"
+#import "UIView+Effects.h"
 
 #import "QuartzCore/QuartzCore.h"
 
@@ -41,7 +43,7 @@
 @property (nonatomic) BOOL presentAllChannels;
 
 #define CHANNEL_CELL_ID @"channel_cell_id"
-#define CUSTOM_NAV_BAR_HEIGHT 40.f
+#define CUSTOM_NAV_BAR_HEIGHT 50.f
 @end
 
 
@@ -51,7 +53,7 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor clearColor];
     self.tableView.backgroundColor = [UIColor clearColor];
-
+    [self setNeedsStatusBarAppearanceUpdate];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self setTableViewHeader];
     self.tableView.allowsMultipleSelection = NO;
@@ -63,6 +65,22 @@
     UIEdgeInsets inset = UIEdgeInsetsMake(0, 0, CUSTOM_NAV_BAR_HEIGHT, 0);
     self.tableView.contentInset = inset;
     self.tableView.scrollIndicatorInsets = inset;
+}
+
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    if(self.navBar)[self.view bringSubviewToFront:self.navBar];
+}
+
+
+
+-(BOOL) prefersStatusBarHidden {
+    return YES;
+}
+
+- (UIStatusBarAnimation) preferredStatusBarUpdateAnimation {
+    return UIStatusBarAnimationSlide;
 }
 
 -(void)addRefreshFeature{
@@ -148,7 +166,7 @@
 /* NOT IN USE */
 //presents every channel in verbatm
 -(void)presentAllVerbatmChannels{
-    self.presentAllChannels = YES;
+    //self.presentAllChannels = YES;
     [Channel_BackendObject getAllChannelsWithCompletionBlock:^(NSMutableArray * channels) {
         if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
         [self.channelsToDisplay addObjectsFromArray:channels];
@@ -172,16 +190,31 @@
 }
 
 -(void)setTableViewHeader{
-    if (!self.presentAllChannels) {
-        //temporary list view and should be removable
-        CGRect navBarFrame = CGRectMake(0, 0, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT);
-        self.navBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:ADK_NAV_BAR_COLOR];
-        [self.navBar createLeftButtonWithTitle:@"CLOSE" orImage:nil];
-        self.navBar.delegate = self;
-        //it can be a navigation bar that lets us go back
-        [self.view addSubview:self.navBar];
-        [self.view bringSubviewToFront:self.navBar];
-    }
+    //temporary list view and should be removable
+    CGRect navBarFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT);
+    
+    self.navBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:CHANNEL_LIST_HEADER_BACKGROUND_COLOR];
+    [self.navBar createLeftButtonWithTitle:nil orImage:[UIImage imageNamed:BACK_BUTTON_ICON]];
+    [self.navBar createMiddleButtonWithTitle:@"FOLLOWERS" orImage:nil];
+    self.navBar.delegate = self;
+    [self.navBar addShadowToView];
+    [self.view addSubview:self.navBar];
+    [self.view bringSubviewToFront:self.navBar];
+    
+    
+    
+    
+//    //it can be a navigation bar that lets us go back
+//    [self.view addSubview:self.navBar];
+//    [self.view bringSubviewToFront:self.navBar];
+}
+
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    return [[CustomNavigationBar alloc] initWithFrame:self.navBar.frame andBackgroundColor:CHANNEL_LIST_HEADER_BACKGROUND_COLOR];;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return self.navBar.frame.size.height;
 }
 
 //user wants to exit
@@ -221,6 +254,13 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return (self.channelsToDisplay.count + self.presentAllChannels);
+}
+
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [scrollView bringSubviewToFront:self.navBar];
+    self.navBar.frame = CGRectMake(0.f, scrollView.contentOffset.y, self.navBar.frame.size.width, self.navBar.frame.size.height);
+    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

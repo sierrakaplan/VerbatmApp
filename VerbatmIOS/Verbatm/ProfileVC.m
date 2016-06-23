@@ -71,22 +71,25 @@
 	self.automaticallyAdjustsScrollViewInsets = NO;
 	[self setNeedsStatusBarAppearanceUpdate];
 	self.view.backgroundColor = [UIColor blackColor];
-        
-//	[self createHeader];
-//	[self checkIntroNotification];
-//	[self addPostListVC];
+    if(!self.isCurrentUserProfile){
+        [self createHeader];
+        [self checkIntroNotification];
+        [self addPostListVC];
+    }
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-//	[self.postListVC display:self.channel asPostListType:listChannel withListOwner: self.ownerOfProfile
-//		isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
+	if(!self.isCurrentUserProfile)[self.postListVC display:self.channel asPostListType:listChannel withListOwner: self.ownerOfProfile
+		isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
-//	[self.postListVC offScreen];
-//	[self.postListVC clearViews];
+    if(!self.isCurrentUserProfile){
+        [self.postListVC offScreen];
+        [self.postListVC clearViews];
+    }
 }
 
 -(void)openChannel:(Channel *) channel{
@@ -98,11 +101,11 @@
 }
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    [self testPresent];
+    if(self.isCurrentUserProfile)[self testPresent];
 }
 
 -(void)testPresent{
-    UserAndChannelListsTVC * vc = [[UserAndChannelListsTVC alloc] init];
+    UserAndChannelListsTVC * vc = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
     [vc presentAllVerbatmChannels];
     vc.listDelegate= self;
     [self presentViewController:vc animated:YES completion:^{

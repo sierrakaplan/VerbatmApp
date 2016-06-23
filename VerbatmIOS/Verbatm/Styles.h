@@ -171,7 +171,7 @@
 #define SPLV_BACKGROUND_COLOR [UIColor colorWithWhite:1.f alpha:0.9f]
 
 
-
+#define CHANNEL_LIST_HEADER_BACKGROUND_COLOR [UIColor colorWithWhite:0.95 alpha:1.f]
 
 
 #endif /* Styles_h */

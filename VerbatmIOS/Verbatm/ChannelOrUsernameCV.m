@@ -34,7 +34,7 @@
 @property (nonatomic) UILabel * headerTitle;//makes the cell a header for the table view
 @property (nonatomic) BOOL isHeaderTile;
 
-#define CHANNEL_LIST_CELL_SEPERATOR_HEIGHT 5.f
+#define CHANNEL_LIST_CELL_SEPERATOR_HEIGHT 1.f
 
 @end
 
@@ -49,8 +49,9 @@
 
 	if (self) {
 
-        self.backgroundColor = [UIColor clearColor];//CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED;
+        self.backgroundColor = [UIColor whiteColor];
 		self.isAChannel = isChannel;
+        self.clipsToBounds = YES;
 		self.isAChannelIFollow = channelThatIFollow;
 		if(!self.channelNameLabelAttributes)[self createSelectedTextAttributes];
 	}
@@ -93,14 +94,21 @@
 	} else {
 		if(self.headerTitle)[self.headerTitle removeFromSuperview];
 		self.headerTitle = nil;
-
 	}
+    [self addCellSeperator];
+}
+-(void)addCellSeperator{
+    if(!self.seperatorView){
+        self.seperatorView = [[UIView alloc] initWithFrame:CGRectMake(0.f, self.frame.size.height - CHANNEL_LIST_CELL_SEPERATOR_HEIGHT, self.frame.size.width,CHANNEL_LIST_CELL_SEPERATOR_HEIGHT)];
+        self.seperatorView.backgroundColor = [UIColor blackColor];
+        [self addSubview:self.seperatorView];
+    }
 }
 
 -(void) setLabelsForChannel{
 
-	CGPoint channelNameLabelOrigin = CGPointMake(TAB_BUTTON_PADDING,2.f);
-	CGPoint nameLabelOrigin = CGPointMake(TAB_BUTTON_PADDING,self.frame.size.height/2.f);
+	CGPoint nameLabelOrigin = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y);
+	CGPoint channelNameLabelOrigin  = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y + self.frame.size.height/3.f);
 
 	self.channelNameLabel = [self getLabel:self.channelName withOrigin:channelNameLabelOrigin andAttributes:self.channelNameLabelAttributes];
 	self.usernameLabel = [self getLabel:self.userName withOrigin:nameLabelOrigin andAttributes:self.userNameLabelAttributes];
@@ -108,12 +116,7 @@
 	[self addSubview: self.channelNameLabel];
 	[self addSubview: self.usernameLabel];
     
-
-	if(!self.seperatorView){
-		self.seperatorView = [[UIView alloc] initWithFrame:CGRectMake(0.f, self.frame.size.height, self.frame.size.width,CHANNEL_LIST_CELL_SEPERATOR_HEIGHT)];
-        self.seperatorView.backgroundColor = [UIColor clearColor];//CHANNEL_LIST_CELL_SEPERATOR_COLOR;
-		[self addSubview:self.seperatorView];
-	}
+    
 }
 
 -(UILabel *) getLabel:(NSString *) title withOrigin:(CGPoint) origin andAttributes:(NSDictionary *) nameLabelAttribute {
@@ -140,12 +143,12 @@
 -(void)createSelectedTextAttributes{
 	NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
 	paragraphStyle.alignment                = NSTextAlignmentCenter;
-	self.channelNameLabelAttributes =@{NSForegroundColorAttributeName: VERBATM_GOLD_COLOR,
+	self.channelNameLabelAttributes =@{NSForegroundColorAttributeName: [UIColor blackColor],
 									   NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT size:CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE],
 									   NSParagraphStyleAttributeName:paragraphStyle};
 
 	//create "followers" text
-	self.userNameLabelAttributes =@{NSForegroundColorAttributeName: [UIColor grayColor],
+	self.userNameLabelAttributes =@{NSForegroundColorAttributeName: [UIColor blackColor],
 									NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:CHANNEL_USER_LIST_USER_NAME_FONT_SIZE]};
 }
 
