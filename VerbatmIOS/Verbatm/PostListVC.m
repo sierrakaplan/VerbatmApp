@@ -147,21 +147,19 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 }
 
 -(void) userPublishing:(NSNotification *) notification {
+	if (self.currentlyPublishing) return;
 	self.currentlyPublishing = YES;
-	self.currentDisplayCell = nil;
 	[self.collectionView reloadData];
 }
 
 -(void) publishingSucceeded:(NSNotification *) notification {
 	self.currentlyPublishing = NO;
 	[self refreshPosts];
-	[self clearPublishingView];
 
 }
 -(void) publishingFailed:(NSNotification *) notification {
 	self.currentlyPublishing = NO;
 	[self.collectionView reloadData];
-	[self clearPublishingView];
 }
 -(void)viewWillAppear:(BOOL)animated{
 	self.exitedView = NO;
@@ -438,7 +436,10 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
 				  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-	if (self.performingUpdate && self.currentDisplayCell ) {//&& !self.currentlyPublishing){
+	if (self.currentlyPublishing) {
+		return [self postCellAtIndexPath:indexPath];
+	}
+	if (self.performingUpdate && self.currentDisplayCell){
 		return self.currentDisplayCell;
 	}
 	PostCollectionViewCell *currentCell;
@@ -495,11 +496,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 							  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:self.footerBarIsUp];
 		}
 
-	}else{
-		if(self.currentlyPublishing){
-			[cell clearViews];
-			[cell presentPublishingView:self.publishingProgressView];
-		}
+	} else if(self.currentlyPublishing){
+		[cell clearViews];
+		[cell presentPublishingView:self.publishingProgressView];
 	}
 	return cell;
 }
