@@ -32,6 +32,8 @@
 #import "ImagePinchView.h"
 #import "Icons.h"
 
+#import <Social/SLRequest.h>
+
 #import "ParseBackendKeys.h"
 #import "PinchView.h"
 #import "PreviewDisplayView.h"
@@ -59,8 +61,7 @@
 
 @interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,
                             Intro_Notification_Delegate, GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate,
-                            CustomNavigationBarDelegate,PreviewDisplayDelegate, VerbatmCameraViewDelegate,
-                            SharePostViewDelegate,UIPickerViewDataSource, UIPickerViewDelegate,
+                            CustomNavigationBarDelegate,PreviewDisplayDelegate, VerbatmCameraViewDelegate,UIPickerViewDataSource, UIPickerViewDelegate,
                             UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 
 
@@ -256,7 +257,6 @@
 		[self formatChannelPicker];
 		[self createBaseSelector];
 		[self loadPostFromUserDefaults];
-//        [self addExternalShareButton];
 	}];
 }
 
@@ -560,11 +560,6 @@ rowHeightForComponent:(NSInteger)component{
 
 #pragma mark Preview Button
 -(void) rightButtonPressed {
-	//todo: allow direct sharing to fb
-//    self.sharePostView = [[SharePostView alloc] initWithFrame:CGRectMake(self.view.center.x/3, self.view.center.y/3, self.view.bounds.size.width * 0.67, self.view.bounds.size.height * 0.67) shouldStartOnChannels:NO fromContentDev:YES];
-//    self.sharePostView.delegate = self;
-//    [self.view addSubview:self.sharePostView];
-//    [self.view bringSubviewToFront:self.sharePostView];
 	NSMutableArray * pinchViews = [[NSMutableArray alloc] init];
 
 	for(ContentPageElementScrollView * contentElementScrollView in self.pageElementScrollViews){
@@ -573,7 +568,7 @@ rowHeightForComponent:(NSInteger)component{
 		}
 	}
 
-	if(pinchViews.count) [self publishOurStoryWithPinchViews:pinchViews];
+	if(pinchViews.count)[self publishOurStoryWithPinchViews:pinchViews];
 }
 
 
@@ -2080,7 +2075,7 @@ andSaveInUserDefaults:(BOOL)save {
         }
     }
     if (channelToPostIn) {
-        [[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn andFacebook:self.postToFB withCaption:self.fbCaption withPinchViews:self.pinchViewsToPublish
+        [[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn andFacebook:TRUE withCaption:self.fbCaption withPinchViews:self.pinchViewsToPublish
                                                      withCompletionBlock:^(BOOL isAlreadyPublishing, BOOL noNetwork) {
                                                          NSString *errorMessage;
                                                          if(isAlreadyPublishing) {

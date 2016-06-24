@@ -9,7 +9,7 @@
 #import "Channel_BackendObject.h"
 
 #import "Durations.h"
-
+#import "ExternalShare.h"
 #import "FeedQueryManager.h"
 
 #import "Icons.h"
@@ -46,10 +46,14 @@
 #import "UserAndChannelListsTVC.h"
 #import "User_BackendObject.h"
 #import "UserInfoCache.h"
+#import <TwitterKit/TwitterKit.h>
+
+#import <MessageUI/MFMessageComposeViewController.h>
 
 @interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource,
                             SharePostViewDelegate,UserAndChannelListsTVCDelegate,
-                            UIScrollViewDelegate, PostCollectionViewCellDelegate>
+                            UIScrollViewDelegate, PostCollectionViewCellDelegate, MFMessageComposeViewControllerDelegate>
+
 
 @property (nonatomic) PostListType listType;
 @property (nonatomic) BOOL isCurrentUserProfile;
@@ -76,6 +80,9 @@
 @property (nonatomic) NSString *postImageText;
 @property (nonatomic) PFObject *postToShare;
 //@property (strong, nonatomic) BranchUniversalObject *branchUniversalObject;
+
+@property (nonatomic) ExternalShare * externalShare;
+
 
 @property (nonatomic) UIImageView *reblogSucessful;
 @property (nonatomic) UIImageView *following;
@@ -533,23 +540,158 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	self.view.userInteractionEnabled = YES;
 }
 
+
+-(void) ShareToVerbatmSelected{
+    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Repost to Verbatm Account" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {}];
+    
+    UIAlertAction* action2 = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                   
+                                                       NSMutableArray *channels = [[NSMutableArray alloc] init];
+                                                       [channels addObject:[[UserInfoCache sharedInstance] getUserChannel]];
+                                                       [Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
+                                                           dispatch_async(dispatch_get_main_queue(), ^{
+                                                               [self successfullyReblogged];
+                                                           });
+                                                       }];
+                                                   
+                                                   }];
+    [newAlert addAction:action1];
+    [newAlert addAction:action2];
+    [self presentViewController:newAlert animated:YES completion:nil];
+}
+
+
+-(void)reportLinkError{
+    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Oops something went wrong" message:@"Generating link - Please try again in a minute" preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+                                                    handler:^(UIAlertAction * action) {}];
+    [newAlert addAction:action1];
+    [self presentViewController:newAlert animated:YES completion:nil];
+}
+
+-(void)ShareToTwitterSelected{
+    
+    NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
+    if(url){
+        
+        TWTRComposer *composer = [[TWTRComposer alloc] init];
+        NSString * message = @"Hey - checkout this post on Verbatm! ";
+        [composer setText:[message stringByAppendingString:url]];
+        [composer setImage:[UIImage imageNamed:@"fabric"]];
+        
+        // Called from a UIViewController
+        [composer showFromViewController:self completion:^(TWTRComposerResult result) {
+            if (result == TWTRComposerResultCancelled) {
+                NSLog(@"Tweet composition cancelled");
+            }
+            else {
+                NSLog(@"Sending Tweet!");
+            }
+        }];
+
+    }else{
+        [self.externalShare storeShareLinkToPost:self.postToShare withCaption:nil withCompletionBlock:nil];
+        [self reportLinkError];
+    }
+    
+    
+    
+}
+
+-(void)ShareToFacebookSelected{
+    NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
+    if(url){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"got my Branch invite link to share: %@", url);
+            NSURL *link = [NSURL URLWithString:url];
+            FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
+            content.contentURL = link;
+            [FBSDKShareDialog showFromViewController:self
+                                         withContent:content
+                                            delegate:nil];
+        });
+    }else{
+        [self.externalShare storeShareLinkToPost:self.postToShare withCaption:nil withCompletionBlock:nil];
+        [self reportLinkError];
+    }
+}
+
+
+-(void)ShareToSmsSelected{
+    NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
+    if(url){
+        MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
+        NSString * message = @"Hey - checkout this post on Verbatm!   ";
+        controller.body = [message stringByAppendingString:url];
+        
+        controller.messageComposeDelegate = self;
+        [self presentViewController:controller animated:YES completion:nil];
+    
+        
+    }else{
+        [self.externalShare storeShareLinkToPost:self.postToShare withCaption:nil withCompletionBlock:nil];
+        
+        [self reportLinkError];
+    }
+}
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result{
+    [controller.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)CopyLinkSelected{
+    NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
+    if(url){
+        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+        pasteboard.string = url;
+        
+        UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Link Copied to Clipboard" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * action) {}];
+        [newAlert addAction:action1];
+        [self presentViewController:newAlert animated:YES completion:nil];
+        
+    }else{
+        [self.externalShare storeShareLinkToPost:self.postToShare withCaption:nil withCompletionBlock:nil];
+        [self reportLinkError];
+    }
+}
+
+
+
+
 //todo: save share object
--(void) reblogToVerbatm:(BOOL)verbatm andFacebook:(BOOL)facebook {
-	if(verbatm) {
-		//todo: change this eventually to one channel
-		NSMutableArray *channels = [[NSMutableArray alloc] init];
-		[channels addObject:[[UserInfoCache sharedInstance] getUserChannel]];
-		[Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
-			dispatch_async(dispatch_get_main_queue(), ^{
-				[self successfullyReblogged];
-			});
-		}];
-	}
-	if(facebook){
-		dispatch_async(dispatch_get_main_queue(), ^{
-			[self postPostExternal];
-		});
-	}
+-(void) shareToShareOption:(ShareOptions) shareOption{
+
+    
+    switch (shareOption) {
+        case Verbatm:
+            [self ShareToVerbatmSelected];
+            break;
+        case TwitterShare:
+            [self ShareToTwitterSelected];
+            break;
+        case Facebook:
+            [self ShareToFacebookSelected];
+            break;
+        case Sms:
+            [self ShareToSmsSelected];
+            break;
+        case CopyLink:
+            [self CopyLinkSelected];
+            break;
+        
+        default:
+            break;
+    }
+    
+
 
 	[self removeSharePOVView];
 	self.view.userInteractionEnabled = YES;
@@ -753,6 +895,11 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+-(ExternalShare *)externalShare{
+    if(!_externalShare)_externalShare = [[ExternalShare alloc] init];
+    return _externalShare;
 }
 
 @end
