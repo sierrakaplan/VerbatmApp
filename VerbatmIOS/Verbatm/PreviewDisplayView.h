@@ -27,5 +27,5 @@
 
 //the start index is the page that we should start viewing at not including cover page
 -(void) displayPreviewPostWithTitle: (NSString*) title andPinchViews: (NSMutableArray*) pinchViews withStartIndex: (NSInteger) index;
-
+-(void)prepareToRemovePreviewView;
 @end

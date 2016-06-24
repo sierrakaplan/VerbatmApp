@@ -102,8 +102,7 @@
 			NSMutableArray *channels = [[NSMutableArray alloc] initWithCapacity: objects.count];
             NSMutableArray * channelPromises = [[NSMutableArray alloc] init];
 			for (PFObject *followObject in objects) {
-				PFObject *channelObj = followObject[FOLLOW_CHANNEL_FOLLOWED_KEY];
-                
+				PFObject *channelObj = followObject[FOLLOW_CHANNEL_FOLLOWED_KEY];                
                 [channelPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve)
                     {
                         [channelObj fetchInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
@@ -142,7 +141,6 @@
 					[followObject deleteInBackground];
 					continue;
 				}
-				[userFollowing fetchIfNeededInBackground];
 				[users addObject:userFollowing];
 			}
 			block (users);

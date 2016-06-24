@@ -5,6 +5,7 @@
 //  Created by Lucio Dery Jnr Mwinmaarong on 12/18/14.
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
+#import "AVAsset+Utilities.h"
 
 #import "CollectionPinchView.h"
 
@@ -245,6 +246,14 @@
 
 -(void) muteVideo:(BOOL)mute {
 	[self.videoPlayer muteVideo:mute];
+}
+
+-(void)prepareForScreenShot{
+    if(self.videoAsset){
+        [self setThumbnailImage: [self.videoAsset getThumbnailFromAsset]];
+        [self bringSubviewToFront:self.thumbnailView];
+        [self offScreen];
+    }
 }
 
 #pragma mark - Lazy Instantiation -

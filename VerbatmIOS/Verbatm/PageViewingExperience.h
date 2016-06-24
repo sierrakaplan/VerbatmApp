@@ -29,5 +29,5 @@
 -(void)offScreen;
 
 -(void)almostOnScreen;
-
+-(void)prepareForScreenShot;
 @end

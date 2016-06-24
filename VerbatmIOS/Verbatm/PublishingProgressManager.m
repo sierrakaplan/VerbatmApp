@@ -6,18 +6,29 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
-#import "PinchView.h"
 #import "CollectionPinchView.h"
-#import "PublishingProgressManager.h"
-#import "Notifications.h"
 #import "Channel_BackendObject.h"
+
+#import "ExternalShare.h"
+
+#import "Notifications.h"
+
+
+#import "PinchView.h"
+#import "PublishingProgressManager.h"
 #import "ParseBackendKeys.h"
 #import "Post_Channel_RelationshipManager.h"
 #import "PostInProgress.h"
 #import "Page_BackendObject.h"
 #import "Photo_BackendObject.h"
-#import "Video_BackendObject.h"
 #import "PageTypeAnalyzer.h"
+#import "PublishingProgressView.h"
+#import "PreviewDisplayView.h"
+
+#import "UIView+Effects.h"
+
+#import "Video_BackendObject.h"
+
 
 @interface PublishingProgressManager()
 //how many media pieces we are trying to publish in total
@@ -35,7 +46,7 @@
 @property (nonatomic) ExternalShare* es;
 @property (nonatomic) BOOL shareToFB;
 
-
+@property (nonatomic,strong) UIImage * publishingProgressBackgroundImage;
 
 @property (nonatomic) NSString * captionToShare;
 @property (nonatomic) SelectedPlatformsToShareLink locationToShare;
@@ -61,16 +72,22 @@
     self.captionToShare = caption;
 }
 
+-(void)storeProgressBackgroundImage:(UIImage *) image{
+        self.publishingProgressBackgroundImage = image;
+}
+-(UIImage *) getProgressBackgroundImage{
+    return self.publishingProgressBackgroundImage;
+}
 
 // Blocks is publishing something else, no network
 -(void)publishPostToChannel:(Channel *)channel andFacebook:(BOOL)externalShare withCaption:(NSString *)caption withPinchViews:(NSArray *)pinchViews
-		withCompletionBlock:(void(^)(BOOL, BOOL))block {
+		withCompletionBlock:(void(^)(BOOL, BOOL))publishHasStartedSuccessfully {
     
     self.es = [[ExternalShare alloc]initWithCaption:caption];
     self.shareToFB = externalShare;
 
 	if (self.currentlyPublishing) {
-		block (YES, NO);
+		publishHasStartedSuccessfully (YES, NO);
 		return;
 	} else {
 		self.currentlyPublishing = YES;
@@ -80,15 +97,17 @@
     [self countMediaContentFromPinchViews:pinchViews];
     
 	[self.channelManager createPostFromPinchViews:pinchViews
+
 										toChannel:channel
 							  withCompletionBlock:^(PFObject *parsePostObject) {
 								  if (!parsePostObject) {
-									  block (NO, YES);
+									  publishHasStartedSuccessfully (NO, YES);
 									  return;
 								  }
 								  self.currentParsePostObject = parsePostObject;
 								  self.currentPublishingChannel = channel;
-								  block(NO, NO);
+                                  [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POST_CURRENTLY_PUBLISHING object:nil];
+								  publishHasStartedSuccessfully(NO, NO);
 							  }];
 }
 
@@ -112,6 +131,7 @@
 	self.currentPublishingChannel = NULL;
 	self.currentlyPublishing = NO;
 	self.currentlyPublishing = NO;
+    self.publishingProgressBackgroundImage = nil;
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POST_FAILED_TO_PUBLISH object:error];
 }
 
@@ -139,16 +159,16 @@
             }
         }];
         
-        
-        self.progressAccountant.completedUnitCount = 0;
-        self.progressAccountant.totalUnitCount = 0;
-        self.currentlyPublishing = NO;
-        [[PostInProgress sharedInstance] clearPostInProgress];
-        [self.delegate publishingComplete];
-        NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_POST_PUBLISHED object:nil userInfo:nil];
-        [[NSNotificationCenter defaultCenter] postNotification: notification];
-        self.currentParsePostObject = nil;
-        self.currentPublishingChannel = nil;
+		self.progressAccountant.completedUnitCount = 0;
+		self.progressAccountant.totalUnitCount = 0;
+		self.currentlyPublishing = NO;
+		[[PostInProgress sharedInstance] clearPostInProgress];
+		[self.delegate publishingComplete];
+		NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_POST_PUBLISHED object:nil userInfo:nil];
+		[[NSNotificationCenter defaultCenter] postNotification: notification];
+		self.currentParsePostObject = nil;
+		self.currentPublishingChannel = nil;
+        self.publishingProgressBackgroundImage = nil;
 	}];
 }
 

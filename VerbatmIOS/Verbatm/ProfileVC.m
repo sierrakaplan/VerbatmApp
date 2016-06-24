@@ -361,13 +361,7 @@
 
 #pragma mark - Publishing -
 
--(void) showPublishingProgress {
-	if (_publishingProgressView) return;
-	PublishingProgressManager *progressManager = [PublishingProgressManager sharedInstance];
-	self.publishingProgress = [progressManager progressAccountant];
-	[progressManager setDelegate:self];
-	[self.profileHeaderView addSubview: self.publishingProgressView];
-}
+
 
 #pragma mark Publishing Progress Manager Delegate methods
 

@@ -32,6 +32,8 @@
 #import "ParseBackendKeys.h"
 #import "PostView.h"
 #import <PromiseKit/PromiseKit.h>
+#import "PublishingProgressView.h"
+
 
 #import "Share_BackendManager.h"
 #import "SharePostView.h"
@@ -51,7 +53,7 @@
 #import <MessageUI/MFMessageComposeViewController.h>
 
 @interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource,
-                            SharePostViewDelegate,UserAndChannelListsTVCDelegate,
+                            SharePostViewDelegate,
                             UIScrollViewDelegate, PostCollectionViewCellDelegate, MFMessageComposeViewControllerDelegate>
 
 
@@ -64,8 +66,10 @@
 @property (nonatomic) NSMutableArray *parsePostObjects;
 @property (strong, nonatomic) FeedQueryManager *feedQueryManager;
 @property (strong, nonatomic) PostsQueryManager *postsQueryManager;
+@property (nonatomic) BOOL performingUpdate;
 @property (nonatomic) NSInteger nextIndexToPresent;
 @property (nonatomic) NSInteger nextNextIndex;
+@property (nonatomic) PostCollectionViewCell *currentDisplayCell;
 @property (strong, nonatomic) PostCollectionViewCell *nextCellToPresent;
 @property (strong, nonatomic) PostCollectionViewCell *nextNextCell;
 @property (nonatomic, strong) UILabel * noContentLabel;
@@ -75,6 +79,7 @@
 @property (nonatomic) BOOL shouldPlayVideos;
 @property (nonatomic) BOOL isRefreshing;
 @property (nonatomic) BOOL isLoadingMore;
+@property (nonatomic) BOOL isLoadingOlder;
 @property (nonatomic) BOOL footerBarIsUp;//like share bar
 @property (nonatomic) BOOL fbShare;
 @property (nonatomic) NSString *postImageText;
@@ -89,9 +94,15 @@
 @property (nonatomic) UIImageView *publishSuccessful;
 @property (nonatomic) UIImageView *publishFailed;
 
-@property (nonatomic) void(^refreshPostsCompletionFeed)(NSArray * posts);
-@property (nonatomic) void(^refreshPostsCompletionChannel)(NSArray * posts);
+@property (nonatomic) BOOL currentlyPublishing;
+@property (nonatomic) BOOL exitedView;
+
+@property (nonatomic) PublishingProgressView * publishingProgressView;
+
+
+@property (nonatomic) void(^refreshPostsCompletion)(NSArray * posts);
 @property (nonatomic) void(^loadMorePostsCompletion)(NSArray * posts);
+@property (nonatomic) void(^loadOlderPostsCompletion)(NSArray * posts);
 
 #define LOAD_MORE_POSTS_COUNT 3 //number of posts left to see before we start loading more content
 #define POST_CELL_ID @"postCellId"
@@ -104,19 +115,71 @@
 
 @implementation PostListVC
 
+
 -(void) viewDidLoad {
 	[self setDateSourceAndDelegate];
-	[self defineRefreshPostsCompletion];
+	[self defineLoadPostsCompletions];
 	[self registerClassForCustomCells];
 	[self registerForNotifications];
+	[self clearViews];
 }
 
+-(void) registerForNotifications {
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(userPublishing:)
+												 name:NOTIFICATION_POST_CURRENTLY_PUBLISHING
+											   object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(publishingFailed:)
+												 name:NOTIFICATION_POST_FAILED_TO_PUBLISH
+											   object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(publishingSucceeded:)
+												 name:NOTIFICATION_POST_PUBLISHED
+											   object:nil];
+}
+
+-(void)scrollToLastElementInlist{
+	NSInteger section = 0;
+	NSInteger item = [self.collectionView numberOfItemsInSection:section] - 1;
+	if(item > 0){
+		NSIndexPath *indexPath = [NSIndexPath indexPathForItem:item inSection:section];
+		[self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:(UICollectionViewScrollPositionRight) animated:NO];
+	}
+}
+
+-(void)clearPublishingView{
+	if(self.publishingProgressView){
+		[self.publishingProgressView removeFromSuperview];
+		self.publishingProgressView = nil;
+	}
+}
+
+-(void) userPublishing:(NSNotification *) notification {
+	if (self.currentlyPublishing) return;
+	self.currentlyPublishing = YES;
+	[self.collectionView reloadData];
+}
+
+-(void) publishingSucceeded:(NSNotification *) notification {
+	self.currentlyPublishing = NO;
+	[self refreshPosts];
+
+}
+-(void) publishingFailed:(NSNotification *) notification {
+	self.currentlyPublishing = NO;
+	[self.collectionView reloadData];
+}
+-(void)viewWillAppear:(BOOL)animated{
+	self.exitedView = NO;
+}
 -(void) viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
 	[self offScreen];
 }
 
 -(void) clearViews {
+	self.exitedView = YES;
 	for (PostCollectionViewCell *cellView in [self.collectionView visibleCells]) {
 		[cellView offScreen];
 		[cellView clearViews];
@@ -131,7 +194,10 @@
 	self.postToShare = nil;
 	self.isRefreshing = NO;
 	self.isLoadingMore = NO;
+	self.isLoadingOlder = NO;
+	self.performingUpdate = NO;
 	self.shouldPlayVideos = YES;
+
 }
 
 -(void) display:(Channel*)channelForList asPostListType:(PostListType)listType
@@ -147,6 +213,7 @@
 }
 
 -(void) offScreen {
+	self.exitedView = YES;
 	for (PostCollectionViewCell *cellView in [self.collectionView visibleCells]) {
 		[cellView offScreen];
 	}
@@ -173,10 +240,6 @@
 			//todo: show indicator
 		}
 	}
-}
-
--(void)registerForNotifications{
-
 }
 
 //register our custom cell class
@@ -218,30 +281,42 @@
 	}
 }
 
--(void) defineRefreshPostsCompletion {
+-(void) defineLoadPostsCompletions {
 	__weak typeof(self) weakSelf = self;
-	self.refreshPostsCompletionFeed = ^void(NSArray *posts) {
+	self.refreshPostsCompletion = ^void(NSArray *posts) {
+		if (weakSelf.exitedView) return; // Already left page
 		[weakSelf.customActivityIndicator stopCustomActivityIndicator];
 		if(posts.count) {
-			NSIndexSet *indices = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0,[posts count])];
-			[weakSelf.parsePostObjects insertObjects:posts atIndexes:indices];
+			if (weakSelf.listType == listFeed) {
+				//Insert new posts into beginning
+				NSMutableArray *indices = [NSMutableArray array];
+				for (NSInteger i = 0; i < posts.count; i++) {
+					[indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+				}
+				NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0,[posts count])];
+				// Perform the updates
+				[weakSelf.collectionView performBatchUpdates:^{
+					//Insert the new data
+					[weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
+					//Insert the new cells
+					[weakSelf.collectionView insertItemsAtIndexPaths:indices];
+
+				} completion:^(BOOL finished) {
+					if(finished){
+						//[self scrollToLastElementInlist];
+					}
+				}];
+			} else {
+
+				//Reload all posts in channel
+				weakSelf.parsePostObjects = nil;
+				[weakSelf.parsePostObjects addObjectsFromArray:posts];
+				[weakSelf.collectionView reloadData];
+				[weakSelf scrollToLastElementInlist];
+
+			}
 
 			[weakSelf removePresentLabel];
-			[weakSelf.collectionView reloadData];
-		} else if(!weakSelf.parsePostObjects.count){
-			[weakSelf nothingToPresentHere];
-		}
-		weakSelf.isRefreshing = NO;
-	};
-
-	self.refreshPostsCompletionChannel = ^void(NSArray *posts) {
-		[weakSelf.customActivityIndicator stopCustomActivityIndicator];
-		if(posts.count) {
-			weakSelf.parsePostObjects = nil;
-			[weakSelf.parsePostObjects addObjectsFromArray:posts];
-
-			[weakSelf removePresentLabel];
-			[weakSelf.collectionView reloadData];
 		} else if(!weakSelf.parsePostObjects.count){
 			[weakSelf nothingToPresentHere];
 		}
@@ -249,52 +324,105 @@
 	};
 
 	self.loadMorePostsCompletion = ^void(NSArray *posts) {
-		if (posts.count) {
-			weakSelf.isLoadingMore = NO;
-			NSMutableArray *indices = [NSMutableArray array];
-			NSInteger index = weakSelf.parsePostObjects.count;
-			for (NSInteger i = index; i < index + posts.count; i++) {
-				[indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
-			}
-			// Perform the updates
-			[weakSelf.collectionView performBatchUpdates:^{
-				//Insert the new data
-				[weakSelf.parsePostObjects addObjectsFromArray:posts];
-				//Insert the new cells
-				[weakSelf.collectionView insertItemsAtIndexPaths:indices];
-
-			} completion:nil];
+		if (!posts.count || weakSelf.exitedView) return;
+		weakSelf.isLoadingMore = NO;
+		NSMutableArray *indices = [NSMutableArray array];
+		NSInteger index = weakSelf.parsePostObjects.count;
+		for (NSInteger i = index; i < index + posts.count; i++) {
+			[indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
 		}
+		// Perform the updates
+		[weakSelf.collectionView performBatchUpdates:^{
+			//Insert the new data
+			[weakSelf.parsePostObjects addObjectsFromArray:posts];
+			//Insert the new cells
+			[weakSelf.collectionView insertItemsAtIndexPaths:indices];
+
+		} completion:nil];
+
+	};
+
+	self.loadOlderPostsCompletion = ^void(NSArray *posts) {
+		if (!posts.count || weakSelf.exitedView) return;
+		NSMutableArray *indices = [NSMutableArray array];
+		for (NSInteger i = 0; i < posts.count; i++) {
+			[indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+		}
+		NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0,[posts count])];
+
+		[CATransaction begin];
+		[CATransaction setDisableActions:YES];
+		weakSelf.performingUpdate = YES;
+		// Perform the updates
+		[weakSelf.collectionView performBatchUpdates:^{
+			//Insert the new data
+			[weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
+			//Insert the new cells
+			[weakSelf.collectionView insertItemsAtIndexPaths:indices];
+
+		} completion: ^(BOOL finished) {
+			if (finished && !self.currentlyPublishing) {
+				// Scroll to previously selected cell so nothing looks different
+				NSArray* visiblePaths = [weakSelf.collectionView indexPathsForVisibleItems];
+				NSInteger oldRow = visiblePaths && visiblePaths.count ? [(NSIndexPath*)visiblePaths[0] row] : 0;
+				NSInteger newRow = oldRow + posts.count;
+
+				if(newRow >= posts.count){
+					newRow = [self.collectionView numberOfItemsInSection:0] - 1;
+					oldRow = newRow -1;
+				}
+
+				NSIndexPath *selectedPostPath = [NSIndexPath indexPathForRow:newRow inSection:0];
+				[weakSelf.collectionView scrollToItemAtIndexPath:selectedPostPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+				weakSelf.nextIndexToPresent = newRow + 1;
+				weakSelf.nextNextIndex = newRow + 2;
+				weakSelf.isLoadingOlder = NO;
+				weakSelf.performingUpdate = NO;
+				[CATransaction commit];
+			}
+		}];
 	};
 }
 
 -(void) refreshPosts {
-	if (self.isRefreshing) return;
-	self.isRefreshing = YES;
-	self.isLoadingMore = NO;
-	[self.customActivityIndicator startCustomActivityIndicator];
-	if(self.listType == listFeed){
-		[self.feedQueryManager refreshFeedWithCompletionHandler:self.refreshPostsCompletionFeed];
-	} else if (self.listType == listChannel) {
-		if (self.isCurrentUserProfile) [self.postsQueryManager refreshPostsInUserChannel:self.channelForList withCompletionBlock:self.refreshPostsCompletionChannel];
-		else [self.postsQueryManager refreshPostsInChannel:self.channelForList startingAt:self.latestDate
-									   withCompletionBlock:self.refreshPostsCompletionChannel];
+	if (!self.isRefreshing){
+		self.exitedView = NO;
+		self.isRefreshing = YES;
+		self.isLoadingMore = NO;
+		[self.customActivityIndicator startCustomActivityIndicator];
+		if(self.listType == listFeed) {
+			[self.feedQueryManager refreshFeedWithCompletionHandler:self.refreshPostsCompletion];
+		} else if (self.listType == listChannel) {
+			if (self.isCurrentUserProfile) {
+				[self.postsQueryManager refreshPostsInUserChannel:self.channelForList withCompletionBlock: self.refreshPostsCompletion];
+			} else {
+				[self.postsQueryManager refreshPostsInChannel: self.channelForList startingAt:self.latestDate
+										  withCompletionBlock: self.refreshPostsCompletion];
+			}
+		}
 	}
 }
 
 -(void) loadMorePosts {
-	if (self.isLoadingMore) return;
-	self.isLoadingMore = YES;
-	if (self.listType == listFeed) {
-		[self.feedQueryManager loadMorePostsWithCompletionHandler:self.loadMorePostsCompletion];
-	} else if (self.listType == listChannel) {
-		[self.postsQueryManager loadMorePostsInChannel:self.channelForList withCompletionBlock:self.loadMorePostsCompletion];
+	if (!self.isLoadingMore){
+		self.isLoadingMore = YES;
+		self.exitedView = NO;
+		if (self.listType == listFeed) {
+			[self.feedQueryManager loadMorePostsWithCompletionHandler:self.loadMorePostsCompletion];
+		} else if (self.listType == listChannel) {
+			[self.postsQueryManager loadMorePostsInChannel:self.channelForList withCompletionBlock:self.loadMorePostsCompletion];
+		}
 	}
 }
 
-//todo:
 -(void) loadOlderPosts {
-
+	if (self.isLoadingOlder) return;
+	self.isLoadingOlder = YES;
+	if (self.listType == listFeed) {
+		return; // Not logical to load older posts in feed
+	} else {
+		[self.postsQueryManager loadOlderPostsInChannel:self.channelForList withCompletionBlock:self.loadOlderPostsCompletion];
+	}
 }
 
 #pragma mark - DataSource -
@@ -305,7 +433,7 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView
 	 numberOfItemsInSection:(NSInteger)section {
-	return self.parsePostObjects.count;
+	return self.currentlyPublishing ? self.parsePostObjects.count + 1 : self.parsePostObjects.count;
 }
 
 #pragma mark - ViewDelegate -
@@ -317,7 +445,12 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
 				  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-
+	if (self.currentlyPublishing) {
+		return [self postCellAtIndexPath:indexPath];
+	}
+	if (self.performingUpdate && self.currentDisplayCell){
+		return self.currentDisplayCell;
+	}
 	PostCollectionViewCell *currentCell;
 	if (indexPath.row == self.nextIndexToPresent) {
 		currentCell = self.nextCellToPresent;
@@ -331,8 +464,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 	//Prepare next cell (after first time will just be nextNextCell)
 	self.nextIndexToPresent = indexPath.row+1;
-	self.nextCellToPresent = self.nextNextCell;
-	if (!self.nextCellToPresent) {
+	if (self.nextIndexToPresent == self.nextNextIndex) self.nextCellToPresent = self.nextNextCell;
+	if (!self.nextCellToPresent || self.nextIndexToPresent != self.nextNextIndex) {
 		self.nextCellToPresent = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextIndexToPresent inSection:indexPath.section]];
 	}
 	if (self.nextCellToPresent) [self.nextCellToPresent almostOnScreen];
@@ -348,18 +481,33 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		[self loadMorePosts];
 	}
 
+	//Load older posts
+	if (indexPath.row <= LOAD_MORE_POSTS_COUNT && !self.isLoadingOlder && !self.isRefreshing) {
+		[self loadOlderPosts];
+	}
+
+	self.currentDisplayCell = currentCell;
 	return currentCell;
 }
 
 -(PostCollectionViewCell*) postCellAtIndexPath:(NSIndexPath *)indexPath {
-	if (indexPath.row >= self.parsePostObjects.count) return nil;
+	if ((self.currentlyPublishing && (indexPath.row > self.parsePostObjects.count)) ||
+		(!self.currentlyPublishing && indexPath.row >= self.parsePostObjects.count)){
+		return nil;
+	}
 	PostCollectionViewCell *cell = (PostCollectionViewCell *) [self.collectionView dequeueReusableCellWithReuseIdentifier:POST_CELL_ID forIndexPath:indexPath];
 	cell.cellDelegate = self;
-	PFObject *postObject = self.parsePostObjects[indexPath.row];
-	if (cell.currentPostActivityObject != postObject) {
+	if(indexPath.row < self.parsePostObjects.count){
+		PFObject *postObject = self.parsePostObjects[indexPath.row];
+		if (cell.currentPostActivityObject != postObject) {
+			[cell clearViews];
+			[cell presentPostFromPCActivityObj:postObject andChannel:self.channelForList
+							  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:self.footerBarIsUp];
+		}
+
+	} else if(self.currentlyPublishing){
 		[cell clearViews];
-		[cell presentPostFromPCActivityObj:postObject andChannel:self.channelForList
-						  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:self.footerBarIsUp];
+		[cell presentPublishingView:self.publishingProgressView];
 	}
 	return cell;
 }
@@ -690,8 +838,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         default:
             break;
     }
-    
-
 
 	[self removeSharePOVView];
 	self.view.userInteractionEnabled = YES;
@@ -723,33 +869,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	NSString *name = [user valueForKey:VERBATM_USER_NAME_KEY];
 	Channel_BackendObject *channelObj = [self.postToShare valueForKey:POST_CHANNEL_KEY];
 	NSString *channelName = [channelObj valueForKey:CHANNEL_NAME_KEY];
-
-	//	NSDictionary*params = [[NSDictionary alloc] initWithObjects:@[[NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName],
-	//																  @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!",
-	//																  shareLink,
-	//																  @"http://verbatm.io"]
-	//														forKeys:@[@"$og_title",
-	//																  @"$og_description",
-	//																  @"$og_image_url",
-	//																  @"$fallback_url"]];
-	//	NSLog(@"Getting link for fb for user %@ reblogging from channel %@ for post %@...", name, channelName, postId);
-	//	[[Branch getInstance] getShortURLWithParams:params
-	//									 andChannel:@"facebook"
-	//									 andFeature:@"sharing"
-	//									andCallback:^(NSString *url, NSError *err) {
-	//										NSLog(@"got callback from branch");
-	//										if (!err) {
-	//											NSLog(@"got my Branch invite link to share: %@", url);
-	//											NSURL *link = [NSURL URLWithString:url];
-	//											FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
-	//											content.contentURL = link;
-	//											[FBSDKShareDialog showFromViewController:self
-	//																		 withContent:content
-	//																			delegate:nil];
-	//										} else {
-	//											NSLog(@"An error occured %@", err.description);
-	//										}
-	//									}];
 
 	BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:postId];
 	branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName];
@@ -789,7 +908,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	[newAlert addAction:action];
 	[self presentViewController:newAlert animated:YES completion:nil];
 
-
+	//todo: delete?
 
 	//	[self.view addSubview:self.reblogSucessful];
 	//	[self.view bringSubviewToFront:self.reblogSucessful];
@@ -900,6 +1019,13 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(ExternalShare *)externalShare{
     if(!_externalShare)_externalShare = [[ExternalShare alloc] init];
     return _externalShare;
+}
+-(PublishingProgressView *)publishingProgressView{
+	if(!_publishingProgressView){
+		CGRect frame =  CGRectMake(0, 0,[(UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout itemSize].width, [(UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout itemSize].height);
+		_publishingProgressView = [[PublishingProgressView alloc] initWithFrame:frame];
+	}
+	return _publishingProgressView;
 }
 
 @end

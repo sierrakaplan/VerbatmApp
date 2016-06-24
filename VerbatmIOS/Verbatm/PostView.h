@@ -54,7 +54,7 @@
 -(void) shiftLikeShareBarDown:(BOOL) down;
 
 -(void)showPageUpIndicator;
-
+-(void)prepareForScreenShot;
 @end
 
 @protocol PostViewDelegate <NSObject>

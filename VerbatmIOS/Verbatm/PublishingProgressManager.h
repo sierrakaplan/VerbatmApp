@@ -58,6 +58,9 @@
 -(void)savingMediaFailedWithError:(NSError*)error;
 
 -(void)storeLocationToShare:(SelectedPlatformsToShareLink)locationToShare withCaption:(NSString *) caption;
+//stores a screenshot of the first page to be used during the progress report
+-(void)storeProgressBackgroundImage:(UIImage *) image;
+-(UIImage *) getProgressBackgroundImage;
 
 @end
 
