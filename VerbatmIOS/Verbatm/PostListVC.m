@@ -43,11 +43,13 @@
 #import <FBSDKShareKit/FBSDKShareDialog.h>
 #import "PageTypeAnalyzer.h"
 
+#import "UserAndChannelListsTVC.h"
 #import "User_BackendObject.h"
 #import "UserInfoCache.h"
 
-@interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource, SharePostViewDelegate,
-UIScrollViewDelegate, PostCollectionViewCellDelegate>
+@interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource,
+                            SharePostViewDelegate,UserAndChannelListsTVCDelegate,
+                            UIScrollViewDelegate, PostCollectionViewCellDelegate>
 
 @property (nonatomic) PostListType listType;
 @property (nonatomic) BOOL isCurrentUserProfile;
@@ -669,6 +671,13 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(void)channelSelected:(Channel *) channel{
 	[self.postListDelegate channelSelected:channel];
 }
+
+-(void) showWhoLikesThePost:(PFObject *) post{
+    UserAndChannelListsTVC * vc = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    [vc presentList:likersList forChannel:nil orPost:post];
+    [self presentViewController:vc animated:YES completion:nil];
+}
+
 
 #pragma mark -Lazy instantiation-
 

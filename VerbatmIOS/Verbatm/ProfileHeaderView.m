@@ -193,6 +193,14 @@
 	}
 }
 
+
+-(void)followersButtonSelected{
+    [self.delegate followersButtonSelected];
+}
+-(void)followingButtonSelected{
+    [self.delegate followingButtonSelected];
+}
+
 -(void) backButtonSelected {
 	[self.delegate exitCurrentProfile];
 }

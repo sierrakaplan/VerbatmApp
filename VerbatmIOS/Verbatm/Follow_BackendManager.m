@@ -13,6 +13,8 @@
 #import <Parse/PFUser.h>
 #import <Parse/PFObject.h>
 #import <Parse/PFRelation.h>
+#import <PromiseKit/PromiseKit.h>
+
 #import "Notifications.h"
 
 @implementation Follow_BackendManager
@@ -98,17 +100,29 @@
 														  NSError * _Nullable error) {
 		if(objects && !error) {
 			NSMutableArray *channels = [[NSMutableArray alloc] initWithCapacity: objects.count];
+            NSMutableArray * channelPromises = [[NSMutableArray alloc] init];
 			for (PFObject *followObject in objects) {
 				PFObject *channelObj = followObject[FOLLOW_CHANNEL_FOLLOWED_KEY];
-				[channelObj fetchIfNeededInBackground];
-				[channels addObject: channelObj];
+                
+                [channelPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve)
+                    {
+                        [channelObj fetchInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+                            if(object){
+                                [channels addObject: [[Channel alloc] initWithChannelName:[channelObj valueForKey:CHANNEL_NAME_KEY] andParseChannelObject:channelObj andChannelCreator:user]];
+                            }
+                            resolve(nil);
+                    }];
+                }]];
 			}
-			block (channels);
-			return;
+            
+            PMKWhen(channelPromises).then(^(id nothing) {
+                block(channels);
+            });
+            
 		} else {
 			[[Crashlytics sharedInstance] recordError:error];
+            block (nil);
 		}
-		block (nil);
 	}];
 }
 

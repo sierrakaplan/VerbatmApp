@@ -76,7 +76,7 @@
 #define CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE 20.f
 #define CHANNEL_USER_LIST_USER_NAME_FONT_SIZE 15.f
 
-#define LIKE_SHARE_BAR_BACKGROUND_COLOR [UIColor clearColor]//[UIColor colorWithWhite:0.f alpha:0.3]
+#define LIKE_SHARE_BAR_BACKGROUND_COLOR [UIColor colorWithWhite:0.f alpha:0.3]
 
 #pragma mark - Page Views -
 
@@ -171,7 +171,7 @@
 #define SPLV_BACKGROUND_COLOR [UIColor colorWithWhite:1.f alpha:0.9f]
 
 
-
+#define CHANNEL_LIST_HEADER_BACKGROUND_COLOR [UIColor colorWithWhite:0.95 alpha:1.f]
 
 
 #endif /* Styles_h */

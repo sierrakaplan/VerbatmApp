@@ -234,7 +234,7 @@
 }
 
 -(void) showWhoLikesThePost {
-	//todo:
+    [self.delegate showWhoLikesThePost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
 }
 
 -(void) showwhoHasSharedThePost{
@@ -555,9 +555,10 @@
 	}
 	[self.pageUpIndicator removeFromSuperview];
 	[self.likeShareBar addSubview:self.pageUpIndicator];
-	CGFloat size = 50.f;
+    self.likeShareBar.clipsToBounds = NO;
+	CGFloat size = PAGE_UP_ICON_SIZE;
 	CGFloat x_cord = self.frame.size.width/2.f - size/2.f;
-	CGFloat y_cord = 0.f;
+	CGFloat y_cord = size * -1;
 	CGRect frame = CGRectMake(x_cord, y_cord, size, size);
 	self.pageUpIndicator.frame = frame;
 }
