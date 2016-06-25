@@ -169,7 +169,7 @@
 
 #pragma mark Profile Header
 #define PROFILE_INFO_BAR_HEIGHT 30.f
-#define PROFILE_HEADER_HEIGHT (162.f + STATUS_BAR_HEIGHT + PROFILE_INFO_BAR_HEIGHT)
+#define PROFILE_HEADER_HEIGHT (self.view.frame.size.width)
 #define PROFILE_HEADER_XOFFSET 5.f
 
 #pragma mark Other profile

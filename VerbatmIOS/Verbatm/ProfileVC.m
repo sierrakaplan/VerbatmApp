@@ -397,16 +397,20 @@
 
 -(PostListVC *) postListVC{
     if(!_postListVC){
+        
+        CGFloat postHeight = self.view.frame.size.height - (self.view.frame.size.width + TAB_BAR_HEIGHT);
+        CGFloat postWidth = (self.view.frame.size.width / self.view.frame.size.height ) * postHeight;//same ratio as screen
+
         UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
         flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         [flowLayout setMinimumInteritemSpacing:0.3];
         [flowLayout setMinimumLineSpacing:0.0f];
-        [flowLayout setItemSize:self.view.frame.size];
+        [flowLayout setItemSize:CGSizeMake(postWidth, postHeight)];
         _postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
         _postListVC.postListDelegate = self;
         if(self.profileHeaderView) [self.view insertSubview:_postListVC.view belowSubview:self.profileHeaderView];
         else [self.view addSubview:_postListVC.view];
-        [self addClearScreenGesture];
+        //ter[self addClearScreenGesture];
 
     }
     return _postListVC;
