@@ -12,6 +12,9 @@
 #import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
 #import <PromiseKit/PromiseKit.h>
+#import "PostPublisher.h"
+#import <PromiseKit/PromiseKit.h>
+#import "UtilityFunctions.h"
 
 @interface Channel ()
 
@@ -22,6 +25,7 @@
 @property (nonatomic, readwrite) NSMutableArray *usersFollowingChannel;
 @property (nonatomic, readwrite) NSMutableArray *channelsUserFollowing;
 
+@property (nonatomic) PostPublisher * mediaPublisher;
 
 @end
 
@@ -44,6 +48,56 @@
     }
     return self;
 }
+
+-(void)storeCoverPhoto:(UIImage *) coverPhoto{
+  self.mediaPublisher = [[PostPublisher alloc] init];
+  dispatch_async(dispatch_get_global_queue(0, 0), ^{
+           [self getImageDataFromImage:coverPhoto withCompletionBlock:^(NSData * imageData) {
+                 [self.mediaPublisher storeImage:imageData].then(^(id result) {
+                        if(result){
+                                NSString *blobstoreUrl = (NSString*) result;
+                          if (![blobstoreUrl hasSuffix:@"=s0"]) {
+                        blobstoreUrl = [blobstoreUrl stringByAppendingString:@"=s0"];
+         }
+                      [self.parseChannelObject setValue:blobstoreUrl forKey:CHANNEL_COVER_PHOTO_URL];
+                     [self.parseChannelObject saveInBackground];
+                   }
+               });
+        }];
+    });
+}
+
+-(void)getImageDataFromImage:(UIImage *) profileImage withCompletionBlock:(void(^)(NSData*))block{
+   NSData* imageData = UIImagePNGRepresentation(profileImage);
+      block(imageData);
+}
+
+-(void)loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*))block{
+   
+   dispatch_async(dispatch_get_global_queue(0, 0), ^{
+         NSString * url = [self.parseChannelObject valueForKey:CHANNEL_COVER_PHOTO_URL];
+         if(url){
+  
+                [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString: url]].then(^(NSData* data) {
+                             if(data){
+                                          UIImage * photo = [UIImage imageWithData:data];
+                                          dispatch_async(dispatch_get_main_queue(), ^{
+                                                 block(photo);
+                                           });
+                                  }else{
+                                           block(nil);
+                                       }
+                           });
+            
+            
+                  } else {
+                      
+                              block(nil);
+                
+            }
+         });
+}
+
 
 -(void) changeTitle:(NSString*)title andDescription:(NSString*)description {
 	self.name = title;

@@ -26,6 +26,8 @@
 -(void) exitCurrentProfile;
 -(void) blockCurrentUserShouldBlock:(BOOL) shouldBlock;
 
+-(void)presentGalleryToSelectImage;
+
 @end
 
 @interface ProfileHeaderView : UIView
@@ -38,4 +40,5 @@
 
 @property (weak, nonatomic) id<ProfileHeaderViewDelegate> delegate;
 
+-(void)setCoverPhotoImage:(UIImage *) coverPhotoImage;
 @end

@@ -62,7 +62,7 @@
 		self.profileTab = profileTab;
 		self.isCurrentUser = (user == nil);
 		self.editMode = NO;
-		self.backgroundColor = [UIColor whiteColor];
+		self.backgroundColor = PROFILE_INFO_BAR_BACKGROUND_COLRO;
 		if (self.profileTab) {
 			[self createSettingsButton];
 			[self createEditButton];

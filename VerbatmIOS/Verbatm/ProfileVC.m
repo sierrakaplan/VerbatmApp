@@ -17,6 +17,8 @@
 #import "Follow_BackendManager.h"
 #import "FollowingView.h"
 
+#import "GMImagePickerController.h"
+
 #import "LoadingIndicator.h"
 
 #import "ParseBackendKeys.h"
@@ -31,6 +33,7 @@
 #import "SizesAndPositions.h"
 #import "SegueIDs.h"
 #import "SettingsVC.h"
+#import "StringsAndAppConstants.h"
 
 #import "UIView+Effects.h"
 #import "User_BackendObject.h"
@@ -42,7 +45,7 @@
 @interface ProfileVC() <ProfileHeaderViewDelegate, Intro_Notification_Delegate,
                         UIScrollViewDelegate, CreateNewChannelViewProtocol,
                         PublishingProgressProtocol, PostListVCProtocol,
-                        UIGestureRecognizerDelegate,UserAndChannelListsTVCDelegate>
+                        UIGestureRecognizerDelegate,UserAndChannelListsTVCDelegate, GMImagePickerControllerDelegate>
 
 @property (nonatomic) BOOL currentlyCreatingNewChannel;
 
@@ -62,6 +65,8 @@
 @property (nonatomic, strong) NSProgress* publishingProgress;
 @property (nonatomic, strong) UIProgressView* progressBar;
 
+
+@property (nonatomic) PHImageManager* imageManager;
 @end
 
 @implementation ProfileVC
@@ -77,18 +82,18 @@
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-	[self.postListVC display:self.channel asPostListType:listChannel withListOwner: self.ownerOfProfile
-		isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
+	//[self.postListVC display:self.channel asPostListType:listChannel withListOwner: self.ownerOfProfile
+		//isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
     
-    [self.postListVC offScreen];
-    [self.postListVC clearViews];
-    @autoreleasepool {
-         self.postListVC = nil;
-    }
+//    [self.postListVC offScreen];
+//    [self.postListVC clearViews];
+//    @autoreleasepool {
+//         self.postListVC = nil;
+//    }
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -115,7 +120,7 @@
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
-	return UIStatusBarStyleDefault;
+	 return UIStatusBarStyleLightContent;
 }
 
 -(void) createHeader {
@@ -132,6 +137,59 @@
             self.headerViewOnScreen = YES;
 	}];
 }
+
+
+
+#pragma mark -Profile Photo-
+-(void)presentGalleryToSelectImage{
+       GMImagePickerController *picker = [[GMImagePickerController alloc] init];
+       picker.delegate = self;
+        //Display or not the selection info Toolbar:
+        picker.displaySelectionInfoToolbar = YES;
+    
+     //Display or not the number of assets in each album:
+        picker.displayAlbumsNumberOfAssets = YES;
+    
+        //Customize the picker title and prompt (helper message over the title)
+        picker.title = GALLERY_PICKER_TITLE;
+        picker.customNavigationBarPrompt = GALLERY_CUSTOM_MESSAGE;
+    
+        [picker setSelectOnlyOneImage:YES];
+    
+        //Customize the number of cols depending on orientation and the inter-item spacing
+        picker.colsInPortrait = 3;
+        picker.colsInLandscape = 5;
+        picker.minimumInteritemSpacing = 2.0;
+        [self presentViewController:picker animated:YES completion:nil];
+}
+
+-(void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray{
+     for(PHAsset * asset in assetArray) {
+        if(asset.mediaType==PHAssetMediaTypeImage) {
+            @autoreleasepool {
+                [self getImageFromAsset:asset];
+            }
+        }
+    }
+}
+
+- (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
+      [picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
+    }];
+}
+
+-(void) getImageFromAsset: (PHAsset *) asset {
+    PHImageRequestOptions *options = [PHImageRequestOptions new];
+    options.synchronous = YES;
+    [self.imageManager requestImageForAsset:asset targetSize:self.view.frame.size contentMode:PHImageContentModeAspectFill
+                 options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
+               // RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+                dispatch_async(dispatch_get_main_queue(), ^{
+                       [self.profileHeaderView setCoverPhotoImage:image];
+                    });
+           }];
+}
+
 
 -(void)checkIntroNotification{
 	if(![[UserSetupParameters sharedInstance] checkAndSetProfileInstructionShown] &&
@@ -398,7 +456,7 @@
 -(PostListVC *) postListVC{
     if(!_postListVC){
         
-        CGFloat postHeight = self.view.frame.size.height - (self.view.frame.size.width + TAB_BAR_HEIGHT);
+        CGFloat postHeight = self.view.frame.size.height - (self.view.frame.size.width + ((self.isCurrentUserProfile) ? TAB_BAR_HEIGHT : 0.f));
         CGFloat postWidth = (self.view.frame.size.width / self.view.frame.size.height ) * postHeight;//same ratio as screen
 
         UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
@@ -414,6 +472,12 @@
 
     }
     return _postListVC;
+}
+-(PHImageManager*) imageManager {
+    if (!_imageManager) {
+             _imageManager = [[PHImageManager alloc] init];
+        }
+       return _imageManager;
 }
 
 @end

@@ -255,7 +255,7 @@
 -(void)setDateSourceAndDelegate{
 	self.collectionView.dataSource = self;
 	self.collectionView.delegate = self;
-	self.collectionView.pagingEnabled = YES;
+	self.collectionView.pagingEnabled = NO;
 	self.collectionView.scrollEnabled = YES;
 	self.collectionView.showsHorizontalScrollIndicator = NO;
 	self.collectionView.bounces = YES;

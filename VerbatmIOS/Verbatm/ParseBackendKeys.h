@@ -86,5 +86,6 @@
 #define CHANNEL_CREATOR_KEY @"ChannelCreator" //the user that has created this channel
 #define CHANNEL_NUM_FOLLOWS @"ChannelNumFollows"
 #define CHANNEL_FEATURED_BOOL @"Featured"
+#define CHANNEL_COVER_PHOTO_URL @"CoverPhotoURL"
 
 #endif /* ParseBackendKeys_h */
