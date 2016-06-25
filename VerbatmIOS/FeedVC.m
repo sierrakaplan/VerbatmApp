@@ -47,13 +47,13 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 
 -(void)viewDidLoad {
 	[super viewDidLoad];
-	[self addPostListVC];
 	[self addClearScreenGesture];
 	self.didJustLoadForTheFirstTime = YES;
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
+    
 	self.didJustLoadForTheFirstTime = NO;
 	[self.postListVC display:nil asPostListType:listFeed withListOwner:[PFUser currentUser]
 		isCurrentUserProfile:NO andStartingDate:nil];
@@ -69,7 +69,12 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
-	[self.postListVC clearViews];
+    
+    [self.postListVC offScreen];
+    [self.postListVC clearViews];
+    @autoreleasepool {
+        self.postListVC = nil;
+    }
 }
 
 -(void)checkIntroNotification{
@@ -221,6 +226,23 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 
 -(void) dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+-(PostListVC *) postListVC{
+    if(!_postListVC){
+        UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
+        flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+        [flowLayout setMinimumInteritemSpacing:0.3];
+        [flowLayout setMinimumLineSpacing:0.0f];
+        [flowLayout setItemSize:self.view.frame.size];
+        _postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
+        _postListVC.postListDelegate = self;
+        [self.postListContainerView setFrame:self.view.bounds];
+        [self.postListContainerView addSubview:_postListVC.view];
+        [self.view addSubview:self.postListContainerView];
+        
+    }
+    return _postListVC;
 }
 
 @end

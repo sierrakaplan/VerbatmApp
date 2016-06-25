@@ -71,20 +71,22 @@
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
 												  NSError * _Nullable error) {
 		if(activities && !error) {
-			NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
-			for(PFObject * pc_activity in activities){
-				PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
-				[post fetchIfNeededInBackground];
-				[finalPostObjects addObject:pc_activity];
-			}
-			if (activities.count > 0) {
-				// reversed because we ordered by descending
-				self.oldestDate = [(PFObject*)(activities[activities.count-1]) createdAt];
-				self.latestDate = [(PFObject*)(activities[0]) createdAt];
-			}
-			finalPostObjects = [[[finalPostObjects reverseObjectEnumerator] allObjects] mutableCopy];
-			self.postsDownloaded = finalPostObjects.count;
-			block(finalPostObjects);
+            @autoreleasepool {
+                NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
+                for(PFObject * pc_activity in activities){
+                    PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
+                    [post fetchIfNeededInBackground];
+                    [finalPostObjects addObject:pc_activity];
+                }
+                if (activities.count > 0) {
+                    // reversed because we ordered by descending
+                    self.oldestDate = [(PFObject*)(activities[activities.count-1]) createdAt];
+                    self.latestDate = [(PFObject*)(activities[0]) createdAt];
+                }
+                
+                self.postsDownloaded = finalPostObjects.count;
+                block([[[finalPostObjects reverseObjectEnumerator] allObjects] mutableCopy]);
+            }
 		}
 	}];
 }

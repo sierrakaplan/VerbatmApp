@@ -73,8 +73,6 @@
 	self.view.backgroundColor = [UIColor blackColor];
     [self createHeader];
     [self checkIntroNotification];
-    [self addPostListVC];
-    
 }
 
 -(void) viewWillAppear:(BOOL)animated {
@@ -85,8 +83,12 @@
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
+    
     [self.postListVC offScreen];
     [self.postListVC clearViews];
+    @autoreleasepool {
+         self.postListVC = nil;
+    }
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -146,24 +148,6 @@
 		[self.introInstruction removeFromSuperview];
 		self.introInstruction = nil;
 	}
-}
-
--(void) addPostListVC {
-	if(self.postListVC) {
-		[self.postListVC offScreen];
-		[self.postListVC.view removeFromSuperview];
-	}
-
-	UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
-	flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-	[flowLayout setMinimumInteritemSpacing:0.3];
-	[flowLayout setMinimumLineSpacing:0.0f];
-	[flowLayout setItemSize:self.view.frame.size];
-	self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
-	self.postListVC.postListDelegate = self;
-	if(self.profileHeaderView) [self.view insertSubview:self.postListVC.view belowSubview:self.profileHeaderView];
-	else [self.view addSubview:self.postListVC.view];
-	[self addClearScreenGesture];
 }
 
 -(void)addClearScreenGesture{
@@ -409,6 +393,23 @@
 	if (object == self.publishingProgress && [keyPath isEqualToString:@"completedUnitCount"] ) {
 		[self.progressBar setProgress:self.publishingProgress.fractionCompleted animated:YES];
 	}
+}
+
+-(PostListVC *) postListVC{
+    if(!_postListVC){
+        UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
+        flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+        [flowLayout setMinimumInteritemSpacing:0.3];
+        [flowLayout setMinimumLineSpacing:0.0f];
+        [flowLayout setItemSize:self.view.frame.size];
+        _postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
+        _postListVC.postListDelegate = self;
+        if(self.profileHeaderView) [self.view insertSubview:_postListVC.view belowSubview:self.profileHeaderView];
+        else [self.view addSubview:_postListVC.view];
+        [self addClearScreenGesture];
+
+    }
+    return _postListVC;
 }
 
 @end

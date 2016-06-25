@@ -63,7 +63,7 @@
 @property (nonatomic) Channel *channelForList;
 @property (nonatomic) NSDate *latestDate;
 
-@property (nonatomic) NSMutableArray *parsePostObjects;
+@property (nonatomic) NSMutableArray * parsePostObjects;
 @property (strong, nonatomic) FeedQueryManager *feedQueryManager;
 @property (strong, nonatomic) PostsQueryManager *postsQueryManager;
 @property (nonatomic) BOOL performingUpdate;
@@ -179,24 +179,28 @@
 }
 
 -(void) clearViews {
-	self.exitedView = YES;
-	for (PostCollectionViewCell *cellView in [self.collectionView visibleCells]) {
-		[cellView offScreen];
-		[cellView clearViews];
-	}
-	self.parsePostObjects = nil;
-	[self.collectionView reloadData];
-	self.feedQueryManager = nil;
-	self.nextIndexToPresent = 0;
-	self.nextNextIndex = 1;
-	self.nextCellToPresent = nil;
-	self.nextNextCell = nil;
-	self.postToShare = nil;
-	self.isRefreshing = NO;
-	self.isLoadingMore = NO;
-	self.isLoadingOlder = NO;
-	self.performingUpdate = NO;
-	self.shouldPlayVideos = YES;
+	
+    @autoreleasepool {
+        self.exitedView = YES;
+        for (PostCollectionViewCell *cellView in [self.collectionView visibleCells]) {
+            [cellView offScreen];
+            [cellView clearViews];
+        }
+        self.parsePostObjects = nil;
+        [self.collectionView reloadData];
+        self.feedQueryManager = nil;
+        self.nextIndexToPresent = 0;
+        self.nextNextIndex = 1;
+        self.nextCellToPresent = nil;
+        self.nextNextCell = nil;
+        self.postToShare = nil;
+        self.isRefreshing = NO;
+        self.isLoadingMore = NO;
+        self.isLoadingOlder = NO;
+        self.performingUpdate = NO;
+        self.shouldPlayVideos = YES;
+    }
+    
 
 }
 
@@ -289,24 +293,26 @@
 		if(posts.count) {
 			if (weakSelf.listType == listFeed) {
 				//Insert new posts into beginning
-				NSMutableArray *indices = [NSMutableArray array];
-				for (NSInteger i = 0; i < posts.count; i++) {
-					[indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
-				}
-				NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0,[posts count])];
-				// Perform the updates
-				[weakSelf.collectionView performBatchUpdates:^{
-					//Insert the new data
-					[weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
-					//Insert the new cells
-					[weakSelf.collectionView insertItemsAtIndexPaths:indices];
+                @autoreleasepool {
+                    
+                    NSMutableArray *indices = [NSMutableArray array];
+                    for (NSInteger i = 0; i < posts.count; i++) {
+                        [indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+                    }
+                    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0,[posts count])];
+                    // Perform the updates
+                    [weakSelf.collectionView performBatchUpdates:^{
+                        //Insert the new data
+                        [weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
+                        //Insert the new cells
+                        [weakSelf.collectionView insertItemsAtIndexPaths:indices];
 
-				} completion:^(BOOL finished) {
-					if(finished){
-						//[self scrollToLastElementInlist];
-					}
-				}];
-			} else {
+                    } completion:^(BOOL finished) {
+                        if(finished){
+                        }
+                    }];
+                }
+            } else {
 
 				//Reload all posts in channel
 				weakSelf.parsePostObjects = nil;
@@ -326,20 +332,21 @@
 	self.loadMorePostsCompletion = ^void(NSArray *posts) {
 		if (!posts.count || weakSelf.exitedView) return;
 		weakSelf.isLoadingMore = NO;
-		NSMutableArray *indices = [NSMutableArray array];
-		NSInteger index = weakSelf.parsePostObjects.count;
-		for (NSInteger i = index; i < index + posts.count; i++) {
-			[indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
-		}
-		// Perform the updates
-		[weakSelf.collectionView performBatchUpdates:^{
-			//Insert the new data
-			[weakSelf.parsePostObjects addObjectsFromArray:posts];
-			//Insert the new cells
-			[weakSelf.collectionView insertItemsAtIndexPaths:indices];
+        @autoreleasepool {
+            NSMutableArray *indices = [NSMutableArray array];
+            NSInteger index = weakSelf.parsePostObjects.count;
+            for (NSInteger i = index; i < index + posts.count; i++) {
+                [indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+            }
+            // Perform the updates
+            [weakSelf.collectionView performBatchUpdates:^{
+                //Insert the new data
+                [weakSelf.parsePostObjects addObjectsFromArray:posts];
+                //Insert the new cells
+                [weakSelf.collectionView insertItemsAtIndexPaths:indices];
 
-		} completion:nil];
-
+            } completion:nil];
+        }
 	};
 
 	self.loadOlderPostsCompletion = ^void(NSArray *posts) {
@@ -482,7 +489,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}
 
 	//Load older posts
-	if (indexPath.row <= LOAD_MORE_POSTS_COUNT && !self.isLoadingOlder && !self.isRefreshing) {
+	if ( indexPath.row <= LOAD_MORE_POSTS_COUNT && !self.isLoadingOlder && !self.isRefreshing) {
 		[self loadOlderPosts];
 	}
 
