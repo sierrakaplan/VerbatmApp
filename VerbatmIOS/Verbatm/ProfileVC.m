@@ -59,12 +59,18 @@
 @property (nonatomic) UIView * darkScreenCover;
 @property (nonatomic) SharePostView * sharePOVView;
 
+@property (nonatomic) BOOL inFullScreenMode;
+
 #pragma mark Publishing
 
 @property (nonatomic, strong) UIView* publishingProgressView;
 @property (nonatomic, strong) NSProgress* publishingProgress;
 @property (nonatomic, strong) UIProgressView* progressBar;
 
+
+@property (nonatomic) CGRect  postListSmallFrame;
+@property (nonatomic) CGRect  postListLargeFrame;
+@property (nonatomic) CGSize  cellSmallFrameSize;
 
 @property (nonatomic) PHImageManager* imageManager;
 @end
@@ -124,7 +130,7 @@
 
 -(void) createHeader {
 	[self.channel getFollowersAndFollowingWithCompletionBlock:^{
-		CGRect frame = CGRectMake(0.f, 0.f, self.view.frame.size.width, PROFILE_HEADER_HEIGHT);
+		CGRect frame = self.view.bounds;
 		PFUser* user = self.isCurrentUserProfile ? nil : self.ownerOfProfile;
 		
             self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andUser:user
@@ -132,7 +138,7 @@
             self.profileHeaderView.delegate = self;
             [self.profileHeaderView addShadowToView];
             [self.view addSubview: self.profileHeaderView];
-            [self.view bringSubviewToFront: self.profileHeaderView];
+            [self.view sendSubviewToBack:self.profileHeaderView];
             self.headerViewOnScreen = YES;
 	}];
 }
@@ -234,6 +240,50 @@
 	userProfile.channel = channel;
 	[self presentViewController:userProfile animated:YES completion:^{
 	}];
+}
+
+-(void)cellSelectedAtPostIndex:(NSIndexPath *) cellPath{
+    self.inFullScreenMode = !self.inFullScreenMode;
+    UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
+    CGRect newFrame;
+    BOOL shouldPage = NO;
+    if(self.inFullScreenMode){
+        [self.view bringSubviewToFront:self.postListVC.view];
+        newFrame = self.postListLargeFrame;
+        flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+        [flowLayout setMinimumInteritemSpacing:0.3];
+        [flowLayout setMinimumLineSpacing:0.0f];
+        [flowLayout setItemSize:self.postListLargeFrame.size];
+        shouldPage = YES;
+    }else{
+        newFrame = self.postListSmallFrame;
+        flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+        [flowLayout setMinimumInteritemSpacing:5.f];
+        [flowLayout setMinimumLineSpacing:1.f];
+        [flowLayout setItemSize:self.cellSmallFrameSize];
+    }
+    
+    
+    [UIView animateWithDuration:REVEAL_NEW_MEDIA_TILE_ANIMATION_DURATION animations:^{
+        [self.postListVC.collectionView performBatchUpdates:^{
+            self.postListVC.view.frame = newFrame;
+            self.postListVC.collectionView.pagingEnabled = shouldPage;
+            [self.postListVC.collectionViewLayout invalidateLayout];
+            [self.postListVC.collectionView setCollectionViewLayout:flowLayout];
+            [self.postListVC.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
+            
+        } completion:^(BOOL finished) {
+            if(finished){
+               
+            }
+        }];
+    }completion:^(BOOL finished) {
+        if(finished){
+             [self.postListVC.collectionView reloadData];
+        }
+    }];
+    
+    
 }
 
 #pragma mark - Profile Nav Bar Delegate Methods -
@@ -457,18 +507,19 @@
         
         CGFloat postHeight = self.view.frame.size.height - (self.view.frame.size.width + ((self.isCurrentUserProfile) ? TAB_BAR_HEIGHT : 0.f));
         CGFloat postWidth = (self.view.frame.size.width / self.view.frame.size.height ) * postHeight;//same ratio as screen
+        self.cellSmallFrameSize = CGSizeMake(postWidth, postHeight);
         UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
         flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-        [flowLayout setMinimumInteritemSpacing:0.3];
-        [flowLayout setMinimumLineSpacing:0.0f];
-        [flowLayout setItemSize:CGSizeMake(postWidth, postHeight)];
+        [flowLayout setMinimumInteritemSpacing:5.f];
+        [flowLayout setMinimumLineSpacing:1.f];
+        [flowLayout setItemSize:self.cellSmallFrameSize];
         _postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
         _postListVC.postListDelegate = self;
-        [_postListVC.view setFrame:CGRectMake(0.f, self.view.frame.size.width, self.view.frame.size.width, postHeight)];
-        if(self.profileHeaderView) [self.view insertSubview:_postListVC.view belowSubview:self.profileHeaderView];
-        else [self.view addSubview:_postListVC.view];
-        //[self addClearScreenGesture];
-
+        self.postListSmallFrame = CGRectMake(0.f, self.view.frame.size.width, self.view.frame.size.width, postHeight);
+        self.postListLargeFrame = self.view.bounds;
+        [_postListVC.view setFrame:self.postListSmallFrame];
+        [self.view addSubview:_postListVC.view];
+        [self.view bringSubviewToFront:_postListVC.view];
     }
     return _postListVC;
 }

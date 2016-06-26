@@ -20,6 +20,8 @@
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
+#import "UIView+Effects.h"
+
 @interface ProfileHeaderView() <ProfileInformationBarDelegate, UITextViewDelegate>
 
 @property (nonatomic) PFUser *channelOwner;
@@ -41,7 +43,7 @@
 
 @property (nonatomic) UIButton * changeCoverPhoto;
 @property (nonatomic) UIImageView * coverPhotoView;
-
+@property (nonatomic) UIImageView * flippedCoverPhoto;
 @property (nonatomic) UIView * coverView;
 
 #define OFFSET_X 5.f
@@ -166,8 +168,10 @@
     [self.coverPhotoView setImage:coverPhotoImage];
     self.coverPhotoView.contentMode = UIViewContentModeScaleAspectFit;
     [self.channel storeCoverPhoto:coverPhotoImage];
-
     [self insertSubview:self.coverView aboveSubview:self.coverPhotoView];
+    [self.flippedCoverPhoto setImage:coverPhotoImage];
+    self.flippedCoverPhoto.transform = CGAffineTransformMakeRotation(M_PI);
+    [self.flippedCoverPhoto createBlurViewOnViewWithStyle:UIBlurEffectStyleDark];
 }
 
 #pragma mark - Profile Info Bar Delegate methods -
@@ -351,13 +355,21 @@
 }
 -(UIImageView *)coverPhotoView{
        if(!_coverPhotoView){
-            _coverPhotoView = [[UIImageView alloc] initWithFrame:self.bounds];
+            _coverPhotoView = [[UIImageView alloc] initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width,self.frame.size.width)];
                [self addSubview:_coverPhotoView];
                [self sendSubviewToBack:_coverPhotoView];
            }
       return _coverPhotoView;
 }
 
+-(UIImageView *)flippedCoverPhoto{
+    if(!_flippedCoverPhoto){
+        _flippedCoverPhoto = [[UIImageView alloc] initWithFrame:CGRectMake(0.f, self.frame.size.width, self.frame.size.width,self.frame.size.width)];
+        [self addSubview:_flippedCoverPhoto];
+        [self sendSubviewToBack:_flippedCoverPhoto];
+    }
+    return _flippedCoverPhoto;
+}
 -(UIView *)coverView{
     if(!_coverView){
         _coverView = [[UIView alloc] initWithFrame: self.coverPhotoView.frame];

@@ -122,6 +122,7 @@
 	[self registerClassForCustomCells];
 	[self registerForNotifications];
 	[self clearViews];
+    self.collectionView.backgroundColor = [UIColor clearColor];
 }
 
 -(void) registerForNotifications {
@@ -276,7 +277,7 @@
 	self.noContentLabel.textAlignment = NSTextAlignmentCenter;
 	self.noContentLabel.lineBreakMode = NSLineBreakByWordWrapping;
 	self.noContentLabel.numberOfLines = 3;
-	self.view.backgroundColor = [UIColor blackColor];
+	self.view.backgroundColor = [UIColor clearColor];
 	[self.view addSubview:self.noContentLabel];
 }
 
@@ -515,11 +516,13 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 			[cell presentPostFromPCActivityObj:postObject andChannel:self.channelForList
 							  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:self.footerBarIsUp];
 		}
-
-	} else if(self.currentlyPublishing){
+	} else if(self.currentlyPublishing) {
 		[cell clearViews];
 		[cell presentPublishingView:self.publishingProgressView];
 	}
+    
+    [self addTapGestureToCell:cell];
+    
 	return cell;
 }
 
@@ -535,6 +538,10 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void)cellTapped:(UIGestureRecognizer *) tap{
+    
+    PostCollectionViewCell * cellTapped = (PostCollectionViewCell *) tap.view;
+    
+    [self.postListDelegate cellSelectedAtPostIndex:[self.collectionView indexPathForCell:cellTapped]];
     
 }
 

@@ -13,6 +13,8 @@
 
 @protocol PostListVCProtocol <NSObject>
 
+-(void)cellSelectedAtPostIndex:(NSIndexPath *) cellPath;
+
 -(void)hideNavBarIfPresent;
 -(void)channelSelected:(Channel *) channel;
 @end
