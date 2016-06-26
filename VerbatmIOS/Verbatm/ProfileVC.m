@@ -75,25 +75,24 @@
 	[super viewDidLoad];
 	self.automaticallyAdjustsScrollViewInsets = NO;
 	[self setNeedsStatusBarAppearanceUpdate];
-	self.view.backgroundColor = [UIColor blackColor];
+	self.view.backgroundColor = [UIColor whiteColor];
     [self createHeader];
     [self checkIntroNotification];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-	//[self.postListVC display:self.channel asPostListType:listChannel withListOwner: self.ownerOfProfile
-		//isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
+    [self.postListVC display:self.channel asPostListType:listChannel withListOwner: self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
     
-//    [self.postListVC offScreen];
-//    [self.postListVC clearViews];
-//    @autoreleasepool {
-//         self.postListVC = nil;
-//    }
+    [self.postListVC offScreen];
+    [self.postListVC clearViews];
+    @autoreleasepool {
+         self.postListVC = nil;
+    }
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -458,7 +457,6 @@
         
         CGFloat postHeight = self.view.frame.size.height - (self.view.frame.size.width + ((self.isCurrentUserProfile) ? TAB_BAR_HEIGHT : 0.f));
         CGFloat postWidth = (self.view.frame.size.width / self.view.frame.size.height ) * postHeight;//same ratio as screen
-
         UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
         flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         [flowLayout setMinimumInteritemSpacing:0.3];
@@ -466,9 +464,10 @@
         [flowLayout setItemSize:CGSizeMake(postWidth, postHeight)];
         _postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
         _postListVC.postListDelegate = self;
+        [_postListVC.view setFrame:CGRectMake(0.f, self.view.frame.size.width, self.view.frame.size.width, postHeight)];
         if(self.profileHeaderView) [self.view insertSubview:_postListVC.view belowSubview:self.profileHeaderView];
         else [self.view addSubview:_postListVC.view];
-        //ter[self addClearScreenGesture];
+        //[self addClearScreenGesture];
 
     }
     return _postListVC;

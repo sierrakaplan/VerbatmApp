@@ -253,12 +253,14 @@
 
 //set the data source and delegate of the collection view
 -(void)setDateSourceAndDelegate{
+    
 	self.collectionView.dataSource = self;
 	self.collectionView.delegate = self;
 	self.collectionView.pagingEnabled = NO;
 	self.collectionView.scrollEnabled = YES;
 	self.collectionView.showsHorizontalScrollIndicator = NO;
 	self.collectionView.bounces = YES;
+    
 }
 
 -(void)nothingToPresentHere {
@@ -318,7 +320,7 @@
 				weakSelf.parsePostObjects = nil;
 				[weakSelf.parsePostObjects addObjectsFromArray:posts];
 				[weakSelf.collectionView reloadData];
-				[weakSelf scrollToLastElementInlist];
+				//[weakSelf scrollToLastElementInlist];
 
 			}
 
@@ -452,12 +454,14 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
 				  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-	if (self.currentlyPublishing) {
-		return [self postCellAtIndexPath:indexPath];
-	}
-	if (self.performingUpdate && self.currentDisplayCell){
-		return self.currentDisplayCell;
-	}
+
+    //TO DO
+    //	if (self.currentlyPublishing) {
+//		return [self postCellAtIndexPath:indexPath];
+//	}
+//	if (self.performingUpdate && self.currentDisplayCell){
+//		return self.currentDisplayCell;
+//	}
 	PostCollectionViewCell *currentCell;
 	if (indexPath.row == self.nextIndexToPresent) {
 		currentCell = self.nextCellToPresent;
@@ -517,6 +521,21 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		[cell presentPublishingView:self.publishingProgressView];
 	}
 	return cell;
+}
+
+
+
+-(void)addTapGestureToCell:(PostCollectionViewCell *) cell{
+    
+    if(cell && !cell.cellHasTapGesture){
+        [cell addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cellTapped:)]];
+        cell.cellHasTapGesture = YES;
+        
+    }
+}
+
+-(void)cellTapped:(UIGestureRecognizer *) tap{
+    
 }
 
 - (void) collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {

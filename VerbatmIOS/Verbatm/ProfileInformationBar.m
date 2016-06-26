@@ -44,10 +44,14 @@
 @property (nonatomic) BOOL hasBlockedUser;
 @property (nonatomic) BOOL currentUserFollowsUser;
 
-#define SETTINGS_BUTTON_SIZE self.frame.size.height
-#define FOLLOW_OR_EDIT_BUTTON_SIZE 70.f
+#define FONT_SIZE 12.f
+#define NUMBER_FONT_SIZE 15.f
+#define SETTINGS_BUTTON_SIZE (self.frame.size.height - (EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET * 2))
+#define FOLLOW_OR_EDIT_BUTTON_SIZE 65.f
 #define FOLLOWING_LABEL_WIDTH 60.f
 #define NUM_FOLLOWING_WIDTH 17.f
+
+#define EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET 2.f // how much buffer between button and top and bottom of self
 
 @end
 
@@ -84,8 +88,9 @@
 -(void) updateNumFollowersAndFollowing {
 	NSString *numFollowers = [NSNumber numberWithInteger:self.channel.usersFollowingChannel.count].stringValue;
 	NSString *numFollowing = [NSNumber numberWithInteger:self.channel.channelsUserFollowing.count].stringValue;
-	NSDictionary *numAttributes = @{NSForegroundColorAttributeName: [UIColor blueColor],
-									NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size:FOLLOW_TEXT_FONT_SIZE]};
+    NSDictionary *numAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
+                                    NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size:NUMBER_FONT_SIZE]};
+    
 	self.numFollowersLabel.attributedText = [[NSAttributedString alloc] initWithString:numFollowers attributes:numAttributes];
 	self.numFollowingLabel.attributedText = [[NSAttributedString alloc] initWithString:numFollowing attributes:numAttributes];
 }
@@ -93,34 +98,32 @@
 
 -(void) createFollowersAndFollowingLabels {
 
-	NSDictionary *textAttributes = @{NSForegroundColorAttributeName: [UIColor blackColor],
+	NSDictionary *textAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
 									  NSFontAttributeName: [UIFont fontWithName:BOLD_FONT size:FOLLOW_TEXT_FONT_SIZE]};
 
-	CGFloat following_x = (self.frame.size.width - SETTINGS_BUTTON_SIZE - PROFILE_HEADER_XOFFSET*3
-						   - FOLLOW_OR_EDIT_BUTTON_SIZE - FOLLOWING_LABEL_WIDTH);
-	CGFloat following_num_x = following_x - NUM_FOLLOWING_WIDTH - 3.f;
-	CGFloat followers_x = following_num_x - PROFILE_HEADER_XOFFSET - FOLLOWING_LABEL_WIDTH;
-	CGFloat followers_num_x = followers_x - NUM_FOLLOWING_WIDTH - 3.f;
-	CGRect followingFrame = CGRectMake(following_x, 0.f, FOLLOWING_LABEL_WIDTH, self.frame.size.height);
-	CGRect followersFrame = CGRectMake(followers_x, 0.f, FOLLOWING_LABEL_WIDTH, self.frame.size.height);
-	CGRect numFollowersFrame = CGRectMake(followers_num_x, 0.f, NUM_FOLLOWING_WIDTH, self.frame.size.height);
-	CGRect numFollowingFrame = CGRectMake(following_num_x, 0.f, NUM_FOLLOWING_WIDTH, self.frame.size.height);
-
-	self.numFollowersLabel = [[UILabel alloc] initWithFrame: numFollowersFrame];
-	self.numFollowingLabel = [[UILabel alloc] initWithFrame: numFollowingFrame];
-	self.numFollowersLabel.textAlignment = NSTextAlignmentRight;
-	self.numFollowingLabel.textAlignment = NSTextAlignmentRight;
-	self.followersLabel = [[UILabel alloc] initWithFrame: followersFrame];
-	self.followersLabel.attributedText = [[NSAttributedString alloc] initWithString:@"Followers" attributes:textAttributes];
-	self.followingLabel = [[UILabel alloc] initWithFrame: followingFrame];
-	self.followingLabel.attributedText = [[NSAttributedString alloc] initWithString:@"Following" attributes:textAttributes];
-	[self addSubview: self.followersLabel];
-	[self addSubview: self.followingLabel];
-	[self updateNumFollowersAndFollowing];
-	[self addSubview: self.numFollowersLabel];
-	[self addSubview: self.numFollowingLabel];
-    [self addTapGestureToFollowersView];
-    [self addTapGestureToFollowingView];
+    CGFloat following_x = (self.frame.size.width - SETTINGS_BUTTON_SIZE - PROFILE_HEADER_XOFFSET*3
+    						   - FOLLOW_OR_EDIT_BUTTON_SIZE - FOLLOWING_LABEL_WIDTH -1.f);
+    CGFloat following_num_x = following_x - NUM_FOLLOWING_WIDTH - 4.f;
+    CGFloat followers_x = following_num_x - PROFILE_HEADER_XOFFSET - FOLLOWING_LABEL_WIDTH;
+    CGFloat followers_num_x = followers_x - NUM_FOLLOWING_WIDTH - 3.f;
+    CGRect followingFrame = CGRectMake(following_x, 0.f, FOLLOWING_LABEL_WIDTH, self.frame.size.height);
+    CGRect followersFrame = CGRectMake(followers_x, 0.f, FOLLOWING_LABEL_WIDTH, self.frame.size.height);
+    CGRect numFollowersFrame = CGRectMake(followers_num_x, 0.f, NUM_FOLLOWING_WIDTH, self.frame.size.height);
+    CGRect numFollowingFrame = CGRectMake(following_num_x, 0.f, NUM_FOLLOWING_WIDTH, self.frame.size.height);
+    
+    self.numFollowersLabel = [[UILabel alloc] initWithFrame: numFollowersFrame];
+    self.numFollowingLabel = [[UILabel alloc] initWithFrame: numFollowingFrame];
+    self.numFollowersLabel.textAlignment = NSTextAlignmentRight;
+    self.numFollowingLabel.textAlignment = NSTextAlignmentRight;
+    self.followersLabel = [[UILabel alloc] initWithFrame: followersFrame];
+    self.followersLabel.attributedText = [[NSAttributedString alloc] initWithString:@"followers" attributes:textAttributes];
+    self.followingLabel = [[UILabel alloc] initWithFrame: followingFrame];
+    self.followingLabel.attributedText = [[NSAttributedString alloc] initWithString:@"following" attributes:textAttributes];
+    [self addSubview: self.followersLabel];
+    [self addSubview: self.followingLabel];
+    [self updateNumFollowersAndFollowing];
+    [self addSubview: self.numFollowersLabel];
+    [self addSubview: self.numFollowingLabel];
 }
 
 -(void)addTapGestureToFollowersView{
@@ -173,21 +176,20 @@
 
 -(void) createEditButton {
 	[self createFollowOrEditButton];
-	[self changeFollowButtonTitle:@"Edit" toColor:[UIColor blackColor]];
+	[self changeFollowButtonTitle:@"Edit" toColor:[UIColor whiteColor]];
 }
 
 -(void) createFollowOrEditButton {
-	CGFloat frame_x = self.settingsButton.frame.origin.x - PROFILE_HEADER_XOFFSET - FOLLOW_OR_EDIT_BUTTON_SIZE;
-	CGRect followButtonFrame = CGRectMake(frame_x, 0.f, FOLLOW_OR_EDIT_BUTTON_SIZE, self.frame.size.height);
-	self.followOrEditButton = [[UIButton alloc] initWithFrame: followButtonFrame];
-	self.followOrEditButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-	self.followOrEditButton.clipsToBounds = YES;
-	self.followOrEditButton.layer.borderColor = [UIColor blackColor].CGColor;
-	self.followOrEditButton.layer.borderWidth = 2.f;
-	self.followOrEditButton.layer.cornerRadius = 10.f;
-	[self.followOrEditButton addTarget:self action:@selector(followOrEditButtonSelected) forControlEvents:UIControlEventTouchUpInside];
-	[self addSubview: self.followOrEditButton];
-}
+    CGFloat frame_x = self.settingsButton.frame.origin.x - PROFILE_HEADER_XOFFSET - FOLLOW_OR_EDIT_BUTTON_SIZE -2.f;
+    CGRect followButtonFrame = CGRectMake(frame_x, EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET, FOLLOW_OR_EDIT_BUTTON_SIZE, self.frame.size.height - (EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET * 2.f));
+    self.followOrEditButton = [[UIButton alloc] initWithFrame: followButtonFrame];
+    self.followOrEditButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.followOrEditButton.clipsToBounds = YES;
+    self.followOrEditButton.layer.borderColor = [UIColor whiteColor].CGColor;
+    self.followOrEditButton.layer.borderWidth = 2.f;
+    self.followOrEditButton.layer.cornerRadius = 10.f;
+    [self.followOrEditButton addTarget:self action:@selector(followOrEditButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview: self.followOrEditButton];}
 
 -(void) changeFollowButtonTitle:(NSString*)title toColor:(UIColor*) color{
 	NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: color,
@@ -223,12 +225,12 @@
 		[self.delegate editButtonSelected];
 		self.editMode = !self.editMode;
 		if (self.editMode) {
-			self.followOrEditButton.backgroundColor = [UIColor blackColor];
-			[self changeFollowButtonTitle:@"Edit" toColor:[UIColor whiteColor]];
-		} else {
-			self.followOrEditButton.backgroundColor = [UIColor whiteColor];
-			[self changeFollowButtonTitle:@"Edit" toColor:[UIColor blackColor]];
-		}
+            self.followOrEditButton.backgroundColor = [UIColor whiteColor];
+            [self changeFollowButtonTitle:@"edit" toColor:[UIColor blackColor]];
+        } else {
+              	self.followOrEditButton.backgroundColor = [UIColor blackColor];
+           		[self changeFollowButtonTitle:@"edit" toColor:[UIColor whiteColor]];
+        }
 	} else {
 		self.currentUserFollowsUser = !self.currentUserFollowsUser;
 		if (self.currentUserFollowsUser) {

@@ -30,6 +30,8 @@
 @property (nonatomic) UILabel *blogTitle;
 @property (nonatomic) UILabel *blogDescription;
 
+@property (nonatomic) NSString * originalTitle;
+
 // If this is the current user's profile, can go into edit mode
 @property (nonatomic) BOOL editMode;
 @property (nonatomic) UITextView *blogTitleEditable;
@@ -40,17 +42,19 @@
 @property (nonatomic) UIButton * changeCoverPhoto;
 @property (nonatomic) UIImageView * coverPhotoView;
 
+@property (nonatomic) UIView * coverView;
+
 #define OFFSET_X 5.f
 #define OFFSET_Y 10.f
 #define USER_NAME_HEIGHT 15.f
 #define BLOG_TITLE_HEIGHT 25.f
 #define BLOG_DESCRIPTION_HEIGHT 90.f
 
-#define USER_NAME_FONT_SIZE 14.f
+#define USER_NAME_FONT_SIZE 15.f
 #define BLOG_TITLE_FONT_SIZE 20.f
-#define BLOG_DESCRIPTION_FONT_SIZE 14.f
+#define BLOG_DESCRIPTION_FONT_SIZE 16.f
 
-#define TITLE_MAX_CHARACTERS 30
+#define TITLE_MAX_CHARACTERS 27.f
 #define DESCRIPTION_MAX_CHARACTERS 250
 
 #define COVER_PHOTO_HEIGHT 30.f
@@ -67,7 +71,7 @@
 		self.isCurrentUser = (user == nil);
 		self.editMode = NO;
 		self.backgroundColor = [UIColor whiteColor];
-		CGRect userInfoBarFrame = CGRectMake(0.f, STATUS_BAR_HEIGHT, frame.size.width, PROFILE_INFO_BAR_HEIGHT);
+		CGRect userInfoBarFrame = CGRectMake(0.f, 0.f, frame.size.width, PROFILE_INFO_BAR_HEIGHT);
 		self.userInformationBar = [[ProfileInformationBar alloc] initWithFrame:userInfoBarFrame andUser:user
 																	andChannel:channel inProfileTab:profileTab];
 		self.userInformationBar.delegate = self;
@@ -146,7 +150,7 @@
 -(void)addChangeCoverPhotoButton {
       self.changeCoverPhoto = [[UIButton alloc] init];
       [self.changeCoverPhoto setImage:[UIImage imageNamed:ADD_COVER_PHOTO_ICON] forState:UIControlStateNormal];
-       CGFloat coverPhotoIconWidth = (419 /103 ) *COVER_PHOTO_HEIGHT;
+       CGFloat coverPhotoIconWidth = (351 /106 ) *COVER_PHOTO_HEIGHT;
     
       self.changeCoverPhoto.frame = CGRectMake(self.frame.size.width - coverPhotoIconWidth, self.frame.size.height - COVER_PHOTO_HEIGHT,
                                                   +                                             coverPhotoIconWidth, COVER_PHOTO_HEIGHT);
@@ -159,9 +163,11 @@
 }
 
 -(void)setCoverPhotoImage:(UIImage *) coverPhotoImage{
-       [self.coverPhotoView setImage:coverPhotoImage];
+    [self.coverPhotoView setImage:coverPhotoImage];
     self.coverPhotoView.contentMode = UIViewContentModeScaleAspectFit;
-     [self.channel storeCoverPhoto:coverPhotoImage];
+    [self.channel storeCoverPhoto:coverPhotoImage];
+
+    [self insertSubview:self.coverView aboveSubview:self.coverPhotoView];
 }
 
 #pragma mark - Profile Info Bar Delegate methods -
@@ -174,6 +180,7 @@
 -(void) editButtonSelected {
 	self.editMode = !self.editMode;
 	if (self.editMode) {
+        self.originalTitle = self.blogTitle.text;
 		[self.blogTitle removeFromSuperview];
 		[self.blogDescription removeFromSuperview];
 		[self addSubview: self.blogTitleEditable];
@@ -182,7 +189,8 @@
 		[self addSubviewsToDescription];
 		//self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, PROFILE_INFO_BAR_HEIGHT);
 	} else {
-		[self.channel changeTitle:self.blogTitleEditable.text andDescription:self.blogDescriptionEditable.text];
+        NSString * newTitle = ([self.blogTitleEditable.text isEqualToString:@""]) ? self.originalTitle: self.blogTitleEditable.text;
+        [self.channel changeTitle:newTitle andDescription:self.blogDescriptionEditable.text];
 		[self.blogTitleEditable removeFromSuperview];
 		[self.blogDescriptionEditable removeFromSuperview];
 		[self addSubview: self.blogTitle];
@@ -193,18 +201,24 @@
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)string {
-	NSInteger length = textView.text.length + string.length - range.length;
-	if([string isEqualToString:@"\n"]) {
-		[textView resignFirstResponder];
-		[self editButtonSelected];
-		return NO;
-	}
-	if (textView == self.blogTitleEditable) {
-		return length <= TITLE_MAX_CHARACTERS;
-	} else if (textView == self.blogDescriptionEditable) {
-		return length <= DESCRIPTION_MAX_CHARACTERS;
-	}
-	return YES;
+    NSInteger length = textView.text.length + string.length - range.length;
+    if (textView == self.blogTitleEditable) {
+        return length <= TITLE_MAX_CHARACTERS;
+        if(self.blogTitlePlaceholder){
+             [self.blogTitlePlaceholder removeFromSuperview];
+              self.blogTitlePlaceholder = nil;
+           }
+
+         return length <= TITLE_MAX_CHARACTERS;
+    } else if (textView == self.blogDescriptionEditable) {
+     
+          if(self.blogDescriptionPlaceholder){
+             [self.blogDescriptionPlaceholder removeFromSuperview];
+             self.blogDescriptionPlaceholder = nil;
+            }
+        return length <= DESCRIPTION_MAX_CHARACTERS;
+    }
+    return YES;
 }
 
 - (void)textViewDidBeginEditing:(UITextView *)textView {
@@ -250,22 +264,24 @@
 #pragma mark - Lazy Instantiation -
 
 -(UITextView *) blogTitleEditable {
-	if (!_blogTitleEditable) {
-		_blogTitleEditable = [[UITextView alloc] initWithFrame: CGRectMake(OFFSET_X, self.blogTitle.frame.origin.y,
-																				 self.frame.size.width - OFFSET_X*2,
-																				 BLOG_TITLE_HEIGHT)];
-		_blogTitleEditable.layer.borderWidth = 0.5f;
-		_blogTitleEditable.layer.borderColor = [UIColor blackColor].CGColor;
-		_blogTitleEditable.layer.cornerRadius = 2.f;
-		_blogTitleEditable.text = self.blogTitle.text;
-		_blogTitleEditable.editable = YES;
-		_blogTitleEditable.delegate = self;
-		_blogTitleEditable.font = [UIFont fontWithName:BOLD_FONT size:BLOG_TITLE_FONT_SIZE];
-		_blogTitleEditable.textContainerInset = UIEdgeInsetsMake(0.f, 2.f, 0.f, 0.f);
-		_blogTitleEditable.textContainer.lineFragmentPadding = 0;
-		_blogTitleEditable.returnKeyType = UIReturnKeyDone;
-	}
-	return _blogTitleEditable;
+    if (!_blogTitleEditable) {
+        _blogTitleEditable = [[UITextView alloc] initWithFrame: CGRectMake(OFFSET_X, self.blogTitle.frame.origin.y,
+                                                                           self.frame.size.width - OFFSET_X*2,
+                                                                                       BLOG_TITLE_HEIGHT)];
+            _blogTitleEditable.backgroundColor = [UIColor clearColor];
+          _blogTitleEditable.layer.borderWidth = 0.5f;
+       	_blogTitleEditable.layer.borderColor = [UIColor whiteColor].CGColor;
+        _blogTitleEditable.layer.cornerRadius = 2.f;
+        _blogTitleEditable.text = self.blogTitle.text;
+        _blogTitleEditable.editable = YES;
+        _blogTitleEditable.delegate = self;
+       _blogTitleEditable.textColor = [UIColor whiteColor];
+        _blogTitleEditable.font = [UIFont fontWithName:BOLD_FONT size:BLOG_TITLE_FONT_SIZE];
+        _blogTitleEditable.textContainerInset = UIEdgeInsetsMake(0.f, 2.f, 0.f, 0.f);
+        _blogTitleEditable.textContainer.lineFragmentPadding = 0;
+        _blogTitleEditable.returnKeyType = UIReturnKeyDone;
+    }
+    return _blogTitleEditable;
 }
 
 -(UITextView *) blogDescriptionEditable {
@@ -273,13 +289,15 @@
 		_blogDescriptionEditable = [[UITextView alloc] initWithFrame: CGRectMake(OFFSET_X, self.blogDescription.frame.origin.y,
 																				 self.frame.size.width - OFFSET_X*2,
 																				 BLOG_DESCRIPTION_HEIGHT)];
-		_blogDescriptionEditable.layer.borderWidth = 0.5f;
-		_blogDescriptionEditable.layer.borderColor = [UIColor blackColor].CGColor;
+        _blogDescriptionEditable.backgroundColor = [UIColor clearColor];
+    _blogDescriptionEditable.layer.borderWidth = 0.5f;
+        _blogDescriptionEditable.layer.borderColor = [UIColor whiteColor].CGColor;
 		_blogDescriptionEditable.layer.cornerRadius = 2.f;
 		_blogDescriptionEditable.text = self.blogDescription.text;
 		_blogDescriptionEditable.editable = YES;
 		_blogDescriptionEditable.delegate = self;
 		_blogDescriptionEditable.font = [UIFont fontWithName:ITALIC_FONT size:BLOG_DESCRIPTION_FONT_SIZE];
+         _blogDescriptionEditable.textColor = [UIColor whiteColor];
 		_blogDescriptionEditable.textContainerInset = UIEdgeInsetsMake(0.f, 2.f, 0.f, 0.f);
 		_blogDescriptionEditable.textContainer.lineFragmentPadding = 0;
 		_blogDescriptionEditable.returnKeyType = UIReturnKeyDone;
@@ -288,29 +306,27 @@
 }
 
 -(void) addSubviewsToDescription {
-	UIImageView *editImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EDIT_PINCHVIEW_ICON]];
-	editImage.frame = CGRectMake(self.blogDescriptionEditable.frame.size.width - OFFSET_X - 20.f,
-								 self.blogDescriptionEditable.frame.size.height - OFFSET_X - 20.f,
-								 20.f, 20.f);
-	[self.blogDescriptionEditable addSubview: editImage];
-	if (self.blogDescription.text && self.blogDescription.text.length > 0) {
-		self.blogDescriptionPlaceholder.hidden = YES;
-	} else {
-		self.blogDescriptionPlaceholder.hidden = NO;
-	}
-	[self.blogDescriptionEditable addSubview: self.blogDescriptionPlaceholder];
+    UIImageView *editImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EDIT_PINCHVIEW_ICON]];
+    editImage.frame = CGRectMake(self.blogDescriptionEditable.frame.size.width - OFFSET_X - 20.f,
+                                 self.blogDescriptionEditable.frame.size.height - OFFSET_X - 20.f,
+                                 20.f, 20.f);
+    [self.blogDescriptionEditable addSubview: editImage];
+   [self.blogDescriptionEditable addSubview: self.blogDescriptionPlaceholder];
+    if([self.blogDescriptionEditable.text isEqualToString:@""]){
+        [self.blogDescriptionEditable addSubview: self.blogDescriptionPlaceholder];
+    }
 }
 
 -(void) addSubviewsToTitle {
-	UIImageView *editImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EDIT_PINCHVIEW_ICON]];
-	editImage.frame = CGRectMake(self.blogTitleEditable.frame.size.width - OFFSET_X - 20.f,
-								 self.blogTitleEditable.frame.size.height - OFFSET_X - 20.f,
-								 20.f, 20.f);
-	[self.blogTitleEditable addSubview: editImage];
-	if (self.blogTitle.text && self.blogTitle.text.length > 0) {
-		self.blogTitlePlaceholder.hidden = YES;
-	}
-	[self.blogTitleEditable addSubview: self.blogTitlePlaceholder];
+    UIImageView *editImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EDIT_PINCHVIEW_ICON]];
+    editImage.frame = CGRectMake(self.blogTitleEditable.frame.size.width - OFFSET_X - 20.f,
+                                 self.blogTitleEditable.frame.size.height - OFFSET_X - 20.f,
+                                 20.f, 20.f);
+    [self.blogTitleEditable addSubview: editImage];
+    [self.blogTitleEditable addSubview: self.blogTitlePlaceholder];
+     if([self.blogTitleEditable.text isEqualToString:@""]){
+       [self.blogTitleEditable addSubview: self.blogTitlePlaceholder];
+    }
 }
 
 -(UILabel *) blogTitlePlaceholder {
@@ -324,9 +340,12 @@
 
 -(UILabel *) blogDescriptionPlaceholder {
 	if (!_blogDescriptionPlaceholder) {
-		_blogDescriptionPlaceholder = [[UILabel alloc] initWithFrame: CGRectMake(0.f, 0.f, self.frame.size.width, self.blogDescription.frame.size.height)];
-		_blogDescriptionPlaceholder.font = [UIFont fontWithName:LIGHT_ITALIC_FONT size:BLOG_DESCRIPTION_FONT_SIZE];
-		_blogDescriptionPlaceholder.text = @"tap here to add a blog description!";
+        _blogDescriptionPlaceholder = [[UILabel alloc] initWithFrame: CGRectMake(0.f, 0.f, self.frame.size.width, self.blogDescription.frame.size.height)];
+     	_blogDescriptionPlaceholder = [[UILabel alloc] initWithFrame: CGRectMake(2.f, 0.f, self.frame.size.width, self.blogDescriptionEditable.frame.size.height)];
+        _blogDescriptionPlaceholder.font = [UIFont fontWithName:LIGHT_ITALIC_FONT size:BLOG_DESCRIPTION_FONT_SIZE];
+        _blogDescriptionPlaceholder.text = @"tap here to add a blog description!";
+        [_blogDescriptionPlaceholder setTextColor:[UIColor whiteColor]];
+       _blogDescriptionPlaceholder.text = @"Tap here to add a blog description!";
 	}
 	return _blogDescriptionPlaceholder;
 }
@@ -339,4 +358,21 @@
       return _coverPhotoView;
 }
 
+-(UIView *)coverView{
+    if(!_coverView){
+        _coverView = [[UIView alloc] initWithFrame: self.coverPhotoView.frame];
+        _coverView.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.5];
+        [self insertSubview:_coverView aboveSubview:self.coverPhotoView];
+    }
+    return _coverView;
+}
+
 @end
+
+
+
+
+
+
+
+
