@@ -207,6 +207,20 @@
 
 }
 
+-(void) loadPostListFromOlPostListWithDisplay:(Channel*)channelForList postListType:(PostListType)listType
+  listOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile startingDate:(NSDate*)date andParseObjects:(NSMutableArray *)newParseObjects {
+    [self clearViews];
+    self.latestDate = date;
+    self.channelForList = channelForList;
+    self.listType = listType;
+    self.listOwner = listOwner;
+    self.isCurrentUserProfile = isCurrentUserProfile;
+    self.parsePostObjects = newParseObjects;
+    self.footerBarIsUp = (self.listType == listFeed || self.isCurrentUserProfile);
+    [self.collectionView reloadData];
+}
+
+
 -(void) display:(Channel*)channelForList asPostListType:(PostListType)listType
   withListOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	[self clearViews];

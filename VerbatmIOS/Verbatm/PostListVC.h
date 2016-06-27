@@ -35,6 +35,10 @@ typedef enum PostListType {
   withListOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile
 andStartingDate:(NSDate*)date;
 
+
+//used when a cell view is tapped and we need to create a new postlist VC from an older one
+-(void) loadPostListFromOlPostListWithDisplay:(Channel*)channelForList postListType:(PostListType)listType
+                                    listOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile startingDate:(NSDate*)date andParseObjects:(NSMutableArray *)newParseObjects;
 -(void) clearViews;
 
 //marks all posts as off screen
