@@ -122,26 +122,38 @@
 	return self;
 }
 
+-(void)addPageToPageViews:(PFObject *)pageObject{
+    PageTypes type = [((NSNumber *)[pageObject valueForKey:PAGE_VIEW_TYPE]) intValue];
+    switch (type) {
+        case PageTypePhoto:
+            [self.pageViews addObject:[[PhotoPVE alloc] initWithFrame:self.bounds small:self.small
+                                                  isPhotoVideoSubview:NO]];
+            break;
+        case PageTypeVideo:
+            [self.pageViews addObject:[[VideoPVE alloc] initWithFrame:self.bounds]];
+            break;
+        case PageTypePhotoVideo:
+            [self.pageViews addObject:[[PhotoVideoPVE alloc] initWithFrame:self.bounds small:self.small]];
+            break;
+        default:
+            break;
+    }
+
+}
+
 // Creates empty PageViewingExperiences to show activity icons but doesn't load media
 -(void) createPageViews {
-	for (PFObject *pageObject in self.pageObjects) {
-		PageTypes type = [((NSNumber *)[pageObject valueForKey:PAGE_VIEW_TYPE]) intValue];
-		switch (type) {
-			case PageTypePhoto:
-				[self.pageViews addObject:[[PhotoPVE alloc] initWithFrame:self.bounds small:self.small
-													  isPhotoVideoSubview:NO]];
-				break;
-			case PageTypeVideo:
-				[self.pageViews addObject:[[VideoPVE alloc] initWithFrame:self.bounds]];
-				break;
-			case PageTypePhotoVideo:
-				[self.pageViews addObject:[[PhotoVideoPVE alloc] initWithFrame:self.bounds small:self.small]];
-				break;
-			default:
-				break;
-		}
-	}
-	[self displayPageViews: self.pageViews];
+    if(self.small){
+        PFObject *pageObject = [self.pageObjects firstObject];
+        [self addPageToPageViews:pageObject];
+    }else{
+        for (PFObject *pageObject in self.pageObjects) {
+            [self addPageToPageViews:pageObject];
+        }
+    }
+	
+    [self displayPageViews: self.pageViews];
+
 }
 
 -(void) displayPageViews: (NSMutableArray *) pageViews {
@@ -355,6 +367,7 @@
     for(PageViewingExperience *pageView in self.pageViews){
         [pageView setInPreviewMode:inSmallMode];
     }
+    self.mainScrollView.scrollEnabled = inSmallMode;
 }
 
 -(void)checkForMuteButton:(PageViewingExperience * )currentPageOnScreen {

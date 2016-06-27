@@ -7,13 +7,16 @@
 //
 
 #import "FeedTableViewController.h"
+#import "FeedTableCell.h"
+#import "UserInfoCache.h"
 #import "Channel.h"
+
 @interface FeedTableViewController ()
 
 
 @property(nonatomic) NSMutableArray * FollowingProfileList;
-
 @property (nonatomic) Channel * currentUserChannel;
+
 
 @end
 
@@ -21,8 +24,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-   
-  
+    [self.tableView registerClass:[FeedTableCell class] forCellReuseIdentifier:@"FeedTableCell"];
+    [self prepareListOfContent];
+    self.tableView.pagingEnabled = YES;
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -32,11 +36,16 @@
 }
 
 
-
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+}
 
 -(void)prepareListOfContent{
+    self.currentUserChannel = [[UserInfoCache sharedInstance] getUserChannel] ;
+    
     [self.currentUserChannel getFollowersAndFollowingWithCompletionBlock:^{
         self.FollowingProfileList = [self.currentUserChannel channelsUserFollowing];
+        [self.tableView reloadData];
     }];
 }
 
@@ -53,6 +62,20 @@
 
 
 
+//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    NSString *identifier = [NSString stringWithFormat:@"cell,%ld", (long)indexPath.row];
+//    FeedTableCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+//    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+//    [cell presentProfileForChannel:self.FollowingProfileList[indexPath.row]];
+//    return cell;
+//}
+
+#pragma mark - Table View Delegate methods (view customization) -
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return self.view.frame.size.height;
+}
+
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -66,19 +89,28 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-#warning Incomplete implementation, return the number of rows
-    return 0;
+    NSLog(@"self.FollowingProfileList.count = %d", self.FollowingProfileList.count);
+    return self.FollowingProfileList.count;
 }
 
-/*
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
+   // NSString *identifier = [NSString stringWithFormat:@"cell,%ld", (long)indexPath.row];
+    FeedTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FeedTableCell" forIndexPath:indexPath];
     
+    if(cell == nil) {
+        cell = [[FeedTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"FeedTableCell"];
+        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+    } else {
+        [cell removeFromSuperview];
+    }
+    [cell presentProfileForChannel:self.FollowingProfileList[indexPath.row]];
+
     // Configure the cell...
     
     return cell;
 }
-*/
+
 
 /*
 // Override to support conditional editing of the table view.

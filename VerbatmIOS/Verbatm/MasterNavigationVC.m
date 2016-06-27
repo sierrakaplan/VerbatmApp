@@ -15,7 +15,7 @@
 #import "Durations.h"
 
 #import "FeedVC.h"
-
+#import "FeedTableViewController.h"
 #import "Icons.h"
 
 #import "MasterNavigationVC.h"
@@ -56,7 +56,7 @@ ProfileVCDelegate>
 #pragma mark View Controllers in tab bar Controller
 
 @property (strong,nonatomic) ProfileVC *profileVC;
-@property (strong,nonatomic) FeedVC *feedVC;
+@property (strong,nonatomic) FeedTableViewController *feedVC;
 @property (strong,nonatomic) DiscoverVC *discoverVC;
 
 
@@ -310,8 +310,9 @@ ProfileVCDelegate>
 	self.profileVC.channel = [[UserInfoCache sharedInstance] getUserChannel];
 	self.profileVC.isProfileTab = YES;
 
-	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
-	self.feedVC.delegate = self;
+    self.feedVC = [[FeedTableViewController alloc] init];
+    self.feedVC.view.frame = self.view.bounds;
+	//self.feedVC.delegate = self;
 
 	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															  image:[UIImage imageNamed:PROFILE_NAV_ICON]

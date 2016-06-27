@@ -83,7 +83,7 @@
 	PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
 	[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
 		self.currentPostView = [[PostView alloc] initWithFrame:self.bounds
-								andPostChannelActivityObject:pfActivityObj small:self.currentPostView.inSmallMode andPageObjects:pages];
+								andPostChannelActivityObject:pfActivityObj small:self.inSmallMode andPageObjects:pages];
 
         if(self.inSmallMode)[self.currentPostView muteAllVideos:YES];
 		NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];

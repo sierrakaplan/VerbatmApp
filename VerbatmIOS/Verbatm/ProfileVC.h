@@ -36,5 +36,5 @@
 @property (nonatomic) id userIdToPresent;
 
 -(void) addPostListVC;
-
+-(void)clearOurViews;
 @end

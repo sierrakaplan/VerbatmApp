@@ -97,10 +97,14 @@
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
     
-    [self.postListVC offScreen];
-    [self.postListVC clearViews];
+    [self clearOurViews];
+}
+
+-(void)clearOurViews{
+    if(self.postListVC)[self.postListVC offScreen];
+    if(self.postListVC)[self.postListVC clearViews];
     @autoreleasepool {
-         self.postListVC = nil;
+        self.postListVC = nil;
     }
 }
 

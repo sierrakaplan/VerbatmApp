@@ -1,5 +1,5 @@
 //
-//  FeedTableViewController.h
+//  FeedTableCell.h
 //  Verbatm
 //
 //  Created by Iain Usiri on 6/27/16.
@@ -7,9 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface FeedTableViewController : UITableViewController
-
+#import "Channel.h"
 
 
+
+
+
+@interface FeedTableCell : UITableViewCell
+-(void)presentProfileForChannel:(Channel *) channel;
 @end
