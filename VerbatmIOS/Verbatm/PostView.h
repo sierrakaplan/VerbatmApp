@@ -18,6 +18,8 @@
 @property (strong, nonatomic) Channel *postChannel; /* Original channel posted to */
 @property (strong, nonatomic) PFObject* parsePostChannelActivityObject;
 
+@property (nonatomic) BOOL inSmallMode;
+
 @property (nonatomic) id<PostViewDelegate> delegate;
 
 // stores pov info associated with this view

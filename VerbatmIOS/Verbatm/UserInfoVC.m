@@ -30,6 +30,8 @@
 @implementation UserInfoVC
 
 -(void) viewDidLoad {
+    [super viewDidLoad];
+    
 	self.successfullyLoggedIn = NO;
 	[self.backgroundImageView setFrame:self.view.bounds];
 	[self centerViews];

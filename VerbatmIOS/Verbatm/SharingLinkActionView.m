@@ -244,7 +244,7 @@
 -(void)continueButtonSelected{
     //save caption for later use -- probably in publish manager
     if(self.numberOfSelectedButtons > 0){
-        SelectedPlatformsToShareLink whereToShare;
+        SelectedPlatformsToShareLink whereToShare = shareToTwitter;
         if(self.numberOfSelectedButtons == 1.f){
             if(self.facebookButton.buttonInSelectedState == ButtonSelected){
                 whereToShare = shareToFacebook;

@@ -73,6 +73,9 @@
 @property (nonatomic) CGSize  cellSmallFrameSize;
 
 @property (nonatomic) PHImageManager* imageManager;
+
+#define CELL_SPACING_SMALL 2.f
+#define CELL_SPACING_LARGE 0.3
 @end
 
 @implementation ProfileVC
@@ -251,21 +254,24 @@
         [self.view bringSubviewToFront:self.postListVC.view];
         newFrame = self.postListLargeFrame;
         flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-        [flowLayout setMinimumInteritemSpacing:0.3];
+        [flowLayout setMinimumInteritemSpacing:CELL_SPACING_LARGE];
         [flowLayout setMinimumLineSpacing:0.0f];
         [flowLayout setItemSize:self.postListLargeFrame.size];
+        self.postListVC.inSmallMode = NO;
         shouldPage = YES;
     }else{
         newFrame = self.postListSmallFrame;
         flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-        [flowLayout setMinimumInteritemSpacing:5.f];
-        [flowLayout setMinimumLineSpacing:1.f];
+        [flowLayout setMinimumInteritemSpacing:CELL_SPACING_SMALL];
+        [flowLayout setMinimumLineSpacing:CELL_SPACING_SMALL];
         [flowLayout setItemSize:self.cellSmallFrameSize];
+        self.postListVC.inSmallMode = YES;
     }
     
     
     [UIView animateWithDuration:REVEAL_NEW_MEDIA_TILE_ANIMATION_DURATION animations:^{
         [self.postListVC.collectionView performBatchUpdates:^{
+             [self.postListVC.collectionView setContentInset:UIEdgeInsetsMake(0, 0, 0, 0)];
             self.postListVC.view.frame = newFrame;
             self.postListVC.collectionView.pagingEnabled = shouldPage;
             [self.postListVC.collectionViewLayout invalidateLayout];
@@ -504,18 +510,18 @@
 
 -(PostListVC *) postListVC{
     if(!_postListVC){
-        
-        CGFloat postHeight = self.view.frame.size.height - (self.view.frame.size.width + ((self.isCurrentUserProfile) ? TAB_BAR_HEIGHT : 0.f));
+        CGFloat postHeight = self.view.frame.size.height - self.view.frame.size.width;
         CGFloat postWidth = (self.view.frame.size.width / self.view.frame.size.height ) * postHeight;//same ratio as screen
         self.cellSmallFrameSize = CGSizeMake(postWidth, postHeight);
         UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
         flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-        [flowLayout setMinimumInteritemSpacing:5.f];
-        [flowLayout setMinimumLineSpacing:1.f];
+        [flowLayout setMinimumInteritemSpacing:CELL_SPACING_SMALL];
+        [flowLayout setMinimumLineSpacing:CELL_SPACING_SMALL];
         [flowLayout setItemSize:self.cellSmallFrameSize];
         _postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
         _postListVC.postListDelegate = self;
-        self.postListSmallFrame = CGRectMake(0.f, self.view.frame.size.width, self.view.frame.size.width, postHeight);
+        _postListVC.inSmallMode = YES;
+        self.postListSmallFrame = CGRectMake(0.f, postHeight + TAB_BAR_HEIGHT, self.view.frame.size.width, postHeight);
         self.postListLargeFrame = self.view.bounds;
         [_postListVC.view setFrame:self.postListSmallFrame];
         [self.view addSubview:_postListVC.view];

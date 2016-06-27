@@ -53,11 +53,14 @@
 				NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
 			}
 		} success:^(NSURLSessionDataTask * _Nonnull task, NSData* responseData) {
-			[[PublishingProgressManager sharedInstance] mediaSavingProgressed:(self.mediaUploadProgress.totalUnitCount - self.mediaUploadProgress.completedUnitCount)];
-			[self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
-			NSLog(@"Video published!");
-			NSString *response = [[NSString alloc] initWithData:responseData encoding: NSUTF8StringEncoding];
-			resolve(response);
+            @autoreleasepool {
+                [[PublishingProgressManager sharedInstance] mediaSavingProgressed:(self.mediaUploadProgress.totalUnitCount - self.mediaUploadProgress.completedUnitCount)];
+                [self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
+                NSLog(@"Video published!");
+                NSString *response = [[NSString alloc] initWithData:responseData encoding: NSUTF8StringEncoding];
+            
+                resolve(response);
+            }
 		} failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
 			[self savingMediaFailed: error];
 			resolve(error);

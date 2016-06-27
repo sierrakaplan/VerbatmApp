@@ -27,6 +27,7 @@
 @property (nonatomic, readonly) PFObject *currentPostActivityObject;
 
 @property (nonatomic) BOOL cellHasTapGesture;
+@property (nonatomic) BOOL inSmallMode;
 
 -(void) presentPostFromPCActivityObj: (PFObject *) pfActivityObj andChannel:(Channel*) channelForList
 					withDeleteButton: (BOOL) withDelete andLikeShareBarUp:(BOOL) up;

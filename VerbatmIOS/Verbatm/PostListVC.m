@@ -117,6 +117,7 @@
 
 
 -(void) viewDidLoad {
+    [super viewDidLoad];
 	[self setDateSourceAndDelegate];
 	[self defineLoadPostsCompletions];
 	[self registerClassForCustomCells];
@@ -172,6 +173,7 @@
 	[self.collectionView reloadData];
 }
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
 	self.exitedView = NO;
 }
 -(void) viewDidDisappear:(BOOL)animated {
@@ -379,7 +381,7 @@
 
 				if(newRow >= posts.count){
 					newRow = [self.collectionView numberOfItemsInSection:0] - 1;
-					oldRow = newRow -1;
+					//oldRow = newRow -1;
 				}
 
 				NSIndexPath *selectedPostPath = [NSIndexPath indexPathForRow:newRow inSection:0];
@@ -453,6 +455,55 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	return NO;
 }
 
+
+-(PostCollectionViewCell *)handleCellsForLargeModeForIndexPath:(NSIndexPath *)indexPath{
+    PostCollectionViewCell *currentCell;
+    if (indexPath.row == self.nextIndexToPresent) {
+        currentCell = self.nextCellToPresent;
+    } else if (indexPath.row == self.nextNextIndex) {
+        currentCell = self.nextNextCell;
+    }
+    if (currentCell == nil) {
+        currentCell = [self postCellAtIndexPath:indexPath];
+    }
+    [currentCell onScreen];
+    
+    //Prepare next cell (after first time will just be nextNextCell)
+    self.nextIndexToPresent = indexPath.row+1;
+    if (self.nextIndexToPresent == self.nextNextIndex) self.nextCellToPresent = self.nextNextCell;
+    if (!self.nextCellToPresent || self.nextIndexToPresent != self.nextNextIndex) {
+        self.nextCellToPresent = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextIndexToPresent inSection:indexPath.section]];
+    }
+    if (self.nextCellToPresent) [self.nextCellToPresent almostOnScreen];
+    
+    //Prepare next next cell
+    self.nextNextIndex = indexPath.row+2;
+    self.nextNextCell = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextNextIndex inSection:indexPath.section]];
+    if (self.nextNextCell) [self.nextNextCell almostOnScreen];
+    
+    // Load more posts
+    if(indexPath.row >= (self.parsePostObjects.count - LOAD_MORE_POSTS_COUNT)
+       && !self.isLoadingMore && !self.isRefreshing) {
+        [self loadMorePosts];
+    }
+    
+    //Load older posts
+    if ( indexPath.row <= LOAD_MORE_POSTS_COUNT && !self.isLoadingOlder && !self.isRefreshing) {
+        [self loadOlderPosts];
+    }
+    
+    return currentCell;
+    
+}
+
+
+-(PostCollectionViewCell *)handleCellsForSmallModeForIndexPath:(NSIndexPath *)indexPath{
+    PostCollectionViewCell *currentCell;
+    
+    return currentCell;
+    
+}
+
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
 				  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
 
@@ -463,41 +514,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 //	if (self.performingUpdate && self.currentDisplayCell){
 //		return self.currentDisplayCell;
 //	}
-	PostCollectionViewCell *currentCell;
-	if (indexPath.row == self.nextIndexToPresent) {
-		currentCell = self.nextCellToPresent;
-	} else if (indexPath.row == self.nextNextIndex) {
-		currentCell = self.nextNextCell;
-	}
-	if (currentCell == nil) {
-		currentCell = [self postCellAtIndexPath:indexPath];
-	}
-	[currentCell onScreen];
-
-	//Prepare next cell (after first time will just be nextNextCell)
-	self.nextIndexToPresent = indexPath.row+1;
-	if (self.nextIndexToPresent == self.nextNextIndex) self.nextCellToPresent = self.nextNextCell;
-	if (!self.nextCellToPresent || self.nextIndexToPresent != self.nextNextIndex) {
-		self.nextCellToPresent = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextIndexToPresent inSection:indexPath.section]];
-	}
-	if (self.nextCellToPresent) [self.nextCellToPresent almostOnScreen];
-
-	//Prepare next next cell
-	self.nextNextIndex = indexPath.row+2;
-	self.nextNextCell = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextNextIndex inSection:indexPath.section]];
-	if (self.nextNextCell) [self.nextNextCell almostOnScreen];
-
-	// Load more posts
-	if(indexPath.row >= (self.parsePostObjects.count - LOAD_MORE_POSTS_COUNT)
-	   && !self.isLoadingMore && !self.isRefreshing) {
-		[self loadMorePosts];
-	}
-
-	//Load older posts
-	if ( indexPath.row <= LOAD_MORE_POSTS_COUNT && !self.isLoadingOlder && !self.isRefreshing) {
-		[self loadOlderPosts];
-	}
-
+	
+    PostCollectionViewCell * currentCell = [self handleCellsForLargeModeForIndexPath:indexPath];
 	self.currentDisplayCell = currentCell;
 	return currentCell;
 }
@@ -522,7 +540,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}
     
     [self addTapGestureToCell:cell];
-    
+    cell.inSmallMode = self.inSmallMode;
 	return cell;
 }
 

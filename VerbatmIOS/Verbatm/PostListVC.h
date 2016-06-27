@@ -28,6 +28,9 @@ typedef enum PostListType {
 
 @property (nonatomic, weak) id <PostListVCProtocol> postListDelegate;
 
+@property (nonatomic) BOOL inSmallMode;
+
+
 -(void) display:(Channel*)channelForList asPostListType:(PostListType)listType
   withListOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile
 andStartingDate:(NSDate*)date;

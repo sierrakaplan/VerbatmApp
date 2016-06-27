@@ -276,6 +276,7 @@
 }
 
 -(void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear: animated];
 	[self checkIntroNotification];
     [self checkAdkSlideShowOnboarding];
 }
@@ -720,7 +721,7 @@ andSaveInUserDefaults:(BOOL)save {
 	[pinchView renderMedia];
 	[self addTapGestureToPinchView:pinchView];
 	// must be below base media tile selector
-	NSUInteger index = self.pageElementScrollViews.count-1;
+	NSUInteger index;
 
 	CGRect newElementScrollViewFrame;
 	if(!upperScrollView) {

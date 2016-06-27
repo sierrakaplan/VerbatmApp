@@ -245,7 +245,7 @@
 
 //new pinchview tapped in rearange view so we need to change what's presented
 -(void)pinchViewSelected:(PinchView *) pv{
-	NSInteger imageIndex;
+	NSInteger imageIndex = 0;
 	for(NSInteger index = 0; index < self.imageContainerViews.count; index++){
 		EditMediaContentView *eview = self.imageContainerViews[index];
 		if(eview.pinchView == pv){

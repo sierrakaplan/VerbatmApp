@@ -337,14 +337,24 @@
 	[self.currentPage offScreen];
 	self.currentPage = newCurrentPage;
 	[self.currentPage onScreen];
+    //if(self.inSmallMode)[self muteAllVideos:YES];
 	if (!self.postMuted && _likeShareBar) {
 		[self checkForMuteButton:self.currentPage];
 	}
-	//Load media for next two pages
-	//(if more than 3 pages at some point the next will already be loading from previous call
-	//- this case is taken care of in loadMediaForPage. Also takes care of case where pages don't exist.)
-	[self loadMediaForPageAtIndex: indexBelow];
-	[self loadMediaForPageAtIndex: indexBelow+1];
+    if(!self.small){
+        //Load media for next two pages
+        //(if more than 3 pages at some point the next will already be loading from previous call
+        //- this case is taken care of in loadMediaForPage. Also takes care of case where pages don't exist.)
+        [self loadMediaForPageAtIndex: indexBelow];
+        [self loadMediaForPageAtIndex: indexBelow+1];
+    }
+}
+
+-(void)setInSmallMode:(BOOL)inSmallMode{
+    _inSmallMode = inSmallMode;
+    for(PageViewingExperience *pageView in self.pageViews){
+        [pageView setInPreviewMode:inSmallMode];
+    }
 }
 
 -(void)checkForMuteButton:(PageViewingExperience * )currentPageOnScreen {

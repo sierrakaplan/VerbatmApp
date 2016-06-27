@@ -12,7 +12,7 @@
 #import "ParseBackendKeys.h"
 #import "PostCollectionViewCell.h"
 #import "Share_BackendManager.h"
-
+#import "UIView+Effects.h"
 @interface PostCollectionViewCell () <PostViewDelegate>
 
 @property (nonatomic, readwrite) PFObject *currentPostActivityObject;
@@ -25,7 +25,7 @@
 @property (nonatomic) BOOL footerUp;
 @property (nonatomic) UIView * publishingView;
 @property (nonatomic) BOOL hasPublishingView;
-
+@property (nonatomic) BOOL hasShadow;
 @end
 
 @implementation PostCollectionViewCell
@@ -36,6 +36,7 @@
 	if (self) {
         self.backgroundColor = [UIColor clearColor];
 		[self clearViews];
+        [self setClipsToBounds:YES];
 	}
 	return self;
 }
@@ -59,6 +60,10 @@
 
 -(void) layoutSubviews {
 	self.currentPostView.frame = self.bounds;
+    if(!self.hasShadow){
+        //[self addShadowToView];
+        self.hasShadow = YES;
+    }
 }
 
 -(void)presentPublishingView:(UIView *)publishingView{
@@ -78,8 +83,9 @@
 	PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
 	[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
 		self.currentPostView = [[PostView alloc] initWithFrame:self.bounds
-								andPostChannelActivityObject:pfActivityObj small:NO andPageObjects:pages];
+								andPostChannelActivityObject:pfActivityObj small:self.currentPostView.inSmallMode andPageObjects:pages];
 
+        if(self.inSmallMode)[self.currentPostView muteAllVideos:YES];
 		NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
 		if (self.isOnScreen) {
 			[self.currentPostView postOnScreen];
@@ -91,19 +97,22 @@
 		self.currentPostView.delegate = self;
 		self.currentPostView.listChannel = channelForList;
 		[self addSubview: self.currentPostView];
-
-		AnyPromise *likesPromise = [Like_BackendManager numberOfLikesForPost:post];
-		AnyPromise *sharesPromise = [Share_BackendManager numberOfSharesForPost:post];
-		PMKWhen(@[likesPromise, sharesPromise]).then(^(NSArray *likesAndShares) {
-			NSNumber *numLikes = likesAndShares[0];
-			NSNumber *numShares = likesAndShares[1];
-			[self.currentPostView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
-											   numberOfPages:numberOfPages
-									   andStartingPageNumber:@(1)
-													 startUp:up
-											withDeleteButton:withDelete];
-			[self.currentPostView addCreatorInfo];
-		});
+        self.currentPostView.inSmallMode = self.inSmallMode;
+        
+        if(!self.inSmallMode){
+            AnyPromise *likesPromise = [Like_BackendManager numberOfLikesForPost:post];
+            AnyPromise *sharesPromise = [Share_BackendManager numberOfSharesForPost:post];
+            PMKWhen(@[likesPromise, sharesPromise]).then(^(NSArray *likesAndShares) {
+                NSNumber *numLikes = likesAndShares[0];
+                NSNumber *numShares = likesAndShares[1];
+                [self.currentPostView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
+                                                   numberOfPages:numberOfPages
+                                           andStartingPageNumber:@(1)
+                                                         startUp:up
+                                                withDeleteButton:withDelete];
+                [self.currentPostView addCreatorInfo];
+            });
+        }
 	}];
 }
 -(void) showWhoLikesThePost:(PFObject *) post{
@@ -117,6 +126,13 @@
         } else {
             self.footerUp = !down;
         }
+    }
+}
+
+-(void)setInSmallMode:(BOOL)inSmallMode{
+    _inSmallMode = inSmallMode;
+    if(_currentPostView){
+        _currentPostView.inSmallMode = inSmallMode;
     }
 }
 
