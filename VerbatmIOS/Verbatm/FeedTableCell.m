@@ -26,6 +26,7 @@
     self.currentProfile = newProfile;
     self.currentProfile.delegate = self;
     [self addSubview:self.currentProfile.view];
+    self.clipsToBounds = YES;
 }
 
 -(void)presentProfileForChannel:(Channel *) channel{

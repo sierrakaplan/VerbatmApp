@@ -18,7 +18,7 @@
 @property(nonatomic) NSMutableArray * FollowingProfileList;
 @property (nonatomic) Channel * currentUserChannel;
 @property (nonatomic) ProfileVC * nextProfileToPresent;
-@property (nonatomic) NSUInteger nextProfileIndex;
+@property (nonatomic) NSInteger nextProfileIndex;
 @end
 
 @implementation FeedTableViewController
@@ -99,8 +99,7 @@
     return self.FollowingProfileList.count;
 }
 
--(void)prepareNextPostFromCurrentIndex:(NSInteger) index{
-    NSInteger nextIndex = index ++ ;
+-(void)prepareNextPostFromNextIndex:(NSInteger) nextIndex{
     
     if(nextIndex < self.FollowingProfileList.count){
         Channel * nextChannel = self.FollowingProfileList[nextIndex];
@@ -127,8 +126,9 @@
     }else{
         [cell presentProfileForChannel:self.FollowingProfileList[indexPath.row]];
     }
-    [self prepareNextPostFromCurrentIndex:indexPath.row];
-    self.nextProfileIndex = indexPath.row + 1;
+     self.nextProfileIndex = indexPath.row + 1;
+    [self prepareNextPostFromNextIndex:self.nextProfileIndex];
+   
     return cell;
 }
 

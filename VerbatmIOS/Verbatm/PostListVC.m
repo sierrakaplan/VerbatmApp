@@ -122,6 +122,7 @@
 	[self registerForNotifications];
 	[self clearViews];
     self.collectionView.backgroundColor = [UIColor clearColor];
+    self.collectionView.bounces = YES;
 }
 
 -(void) registerForNotifications {
@@ -158,7 +159,7 @@
 -(void) userPublishing:(NSNotification *) notification {
 	if (self.currentlyPublishing) return;
 	self.currentlyPublishing = YES;
-	[self.collectionView reloadData];
+    [self refreshPosts];
     [self.postListDelegate postsFound];
 }
 
