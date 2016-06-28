@@ -47,6 +47,10 @@
 }
 
 
+-(void)reloadProfile{
+    [self.currentProfile refreshProfile];
+}
+
 -(void) showTabBar:(BOOL) show{
     [self.delegate shouldHideTabBar:!show];
 }

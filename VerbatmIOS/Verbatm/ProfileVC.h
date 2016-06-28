@@ -39,4 +39,6 @@
 -(void)clearOurViews;
 //instructs the Profile to begin loading postlist content
 -(void)loadContentToPostList;
+//to be used sparingly
+-(void)refreshProfile;
 @end

@@ -40,6 +40,13 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    
+    NSArray * visibleCell = [self.tableView visibleCells];
+    
+    if(visibleCell && visibleCell.count){
+        FeedTableCell * cell = [visibleCell firstObject];
+        [cell reloadProfile];
+    }
 }
 
 -(void)prepareListOfContent{

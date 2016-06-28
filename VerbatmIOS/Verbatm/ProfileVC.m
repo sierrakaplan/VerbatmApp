@@ -95,6 +95,13 @@
    if(!self.postListVC.isInitiated) [self.postListVC display:self.channel asPostListType:listChannel withListOwner: self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
 }
 
+//to be used sparingly -- has the postlist refresh content
+-(void)refreshProfile{
+    if(self.postListVC)[self.postListVC refreshPosts];
+    [self createHeader];
+    
+}
+
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
     [self loadContentToPostList];
@@ -141,19 +148,37 @@
 	 return UIStatusBarStyleLightContent;
 }
 
+-(void)buildHeaderView{
+    
+    if(self.profileHeaderView){
+        [self.profileHeaderView removeFromSuperview];
+        self.headerViewOnScreen = NO;
+        @autoreleasepool {
+            self.profileHeaderView = nil;
+        }
+    }
+    
+    CGRect frame = self.view.bounds;
+    PFUser* user = self.isCurrentUserProfile ? nil : self.channel.channelCreator;
+    
+    self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andUser:user                                                                   andChannel:self.channel inProfileTab:self.isProfileTab];
+    
+    self.profileHeaderView.delegate = self;
+    [self.profileHeaderView addShadowToView];
+    [self.view addSubview: self.profileHeaderView];
+    [self.view sendSubviewToBack:self.profileHeaderView];
+    self.headerViewOnScreen = YES;
+}
+
 -(void) createHeader {
-	[self.channel getFollowersAndFollowingWithCompletionBlock:^{
-		CGRect frame = self.view.bounds;
-            PFUser* user = self.isCurrentUserProfile ? nil : self.channel.channelCreator;
-		
-            self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andUser:user                                                                   andChannel:self.channel inProfileTab:self.isProfileTab];
-        
-            self.profileHeaderView.delegate = self;
-            [self.profileHeaderView addShadowToView];
-            [self.view addSubview: self.profileHeaderView];
-            [self.view sendSubviewToBack:self.profileHeaderView];
-            self.headerViewOnScreen = YES;
-	}];
+    if(self.channel.channelsUserFollowing == nil || !self.channel.channelsUserFollowing.count){
+        [self.channel getFollowersAndFollowingWithCompletionBlock:^{
+            [self buildHeaderView];
+        }];
+    }else{
+        [self buildHeaderView];
+    }
+    
 }
 
 

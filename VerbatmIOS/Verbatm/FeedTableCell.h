@@ -22,4 +22,5 @@
 -(void)presentProfileForChannel:(Channel *) channel;
 @property (nonatomic) id<FeedCellDelegate> delegate;
 -(void)setProfileAlreadyLoaded:(ProfileVC *) newProfile;
+-(void)reloadProfile;
 @end
