@@ -144,7 +144,7 @@
 
 -(void)checkForCoverPhoto{
      [self.channel loadCoverPhotoWithCompletionBlock:^(UIImage * coverPhoto) {
-       if(coverPhoto)[self setCoverPhotoImage:coverPhoto];
+       if(coverPhoto)[self createTopAndReflectionCoverImageFromImage:coverPhoto];
    }];
    
 }
@@ -164,14 +164,19 @@
        [self.delegate presentGalleryToSelectImage];
 }
 
--(void)setCoverPhotoImage:(UIImage *) coverPhotoImage{
+
+-(void)createTopAndReflectionCoverImageFromImage:(UIImage *)coverPhotoImage{
     [self.coverPhotoView setImage:coverPhotoImage];
     self.coverPhotoView.contentMode = UIViewContentModeScaleAspectFit;
-    [self.channel storeCoverPhoto:coverPhotoImage];
     [self insertSubview:self.coverView aboveSubview:self.coverPhotoView];
     [self.flippedCoverPhoto setImage:coverPhotoImage];
     self.flippedCoverPhoto.transform = CGAffineTransformMakeRotation(M_PI);
     [self.flippedCoverPhoto createBlurViewOnViewWithStyle:UIBlurEffectStyleDark];
+}
+
+-(void)setCoverPhotoImage:(UIImage *) coverPhotoImage{
+    [self createTopAndReflectionCoverImageFromImage:coverPhotoImage];
+    [self.channel storeCoverPhoto:coverPhotoImage];
 }
 
 #pragma mark - Profile Info Bar Delegate methods -
