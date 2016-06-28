@@ -254,6 +254,24 @@
     UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
     CGRect newFrame;
     BOOL shouldPage = NO;
+    BOOL inSmallMode = YES;
+//    CGFloat postHeight = self.view.frame.size.height - self.view.frame.size.width;
+//    CGFloat postWidth = (self.view.frame.size.width / self.view.frame.size.height ) * postHeight;//same ratio as screen
+//    self.cellSmallFrameSize = CGSizeMake(postWidth, postHeight);
+//    UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
+//    flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+//    [flowLayout setMinimumInteritemSpacing:CELL_SPACING_SMALL];
+//    [flowLayout setMinimumLineSpacing:CELL_SPACING_SMALL];
+//    [flowLayout setItemSize:self.cellSmallFrameSize];
+//    _postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
+//    _postListVC.postListDelegate = self;
+//    _postListVC.inSmallMode = YES;
+//    self.postListSmallFrame = CGRectMake(0.f, postHeight + TAB_BAR_HEIGHT, self.view.frame.size.width, postHeight);
+//    self.postListLargeFrame = self.view.bounds;
+//    [_postListVC.view setFrame:self.postListSmallFrame];
+//    [self.view addSubview:_postListVC.view];
+//    [self.view bringSubviewToFront:_postListVC.view];
+    
     if(self.inFullScreenMode){
         [self.view bringSubviewToFront:self.postListVC.view];
         newFrame = self.postListLargeFrame;
@@ -261,7 +279,7 @@
         [flowLayout setMinimumInteritemSpacing:CELL_SPACING_LARGE];
         [flowLayout setMinimumLineSpacing:0.0f];
         [flowLayout setItemSize:self.postListLargeFrame.size];
-        self.postListVC.inSmallMode = NO;
+        inSmallMode = NO;
         shouldPage = YES;
     }else{
         newFrame = self.postListSmallFrame;
@@ -269,27 +287,42 @@
         [flowLayout setMinimumInteritemSpacing:CELL_SPACING_SMALL];
         [flowLayout setMinimumLineSpacing:CELL_SPACING_SMALL];
         [flowLayout setItemSize:self.cellSmallFrameSize];
-        self.postListVC.inSmallMode = YES;
+        inSmallMode = YES;
     }
     
+    PostListVC * newVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
+    newVC.postListDelegate = self;
+    newVC.inSmallMode = inSmallMode;
+    newVC.collectionView.pagingEnabled = shouldPage;
+    [newVC.view setFrame: (inSmallMode) ? self.postListSmallFrame : self.postListLargeFrame];
+    [newVC loadPostListFromOlPostListWithDisplay:self.channel postListType:listChannel listOwner:self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile startingDate:self.startingDate andParseObjects:self.postListVC.parsePostObjects];
+    [self.postListVC.view removeFromSuperview];
     
     [UIView animateWithDuration:REVEAL_NEW_MEDIA_TILE_ANIMATION_DURATION animations:^{
-        [self.postListVC.collectionView performBatchUpdates:^{
-             [self.postListVC.collectionView setContentInset:UIEdgeInsetsMake(0, 0, 0, 0)];
-            self.postListVC.view.frame = newFrame;
-            self.postListVC.collectionView.pagingEnabled = shouldPage;
-            [self.postListVC.collectionViewLayout invalidateLayout];
-            [self.postListVC.collectionView setCollectionViewLayout:flowLayout];
-            [self.postListVC.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
-            
-        } completion:^(BOOL finished) {
-            if(finished){
-               
-            }
-        }];
+//        [self.postListVC.collectionView performBatchUpdates:^{
+//             [self.postListVC.collectionView setContentInset:UIEdgeInsetsMake(0, 0, 0, 0)];
+//            self.postListVC.view.frame = newFrame;
+//            self.postListVC.collectionView.pagingEnabled = shouldPage;
+//            [self.postListVC.collectionViewLayout invalidateLayout];
+//            [self.postListVC.collectionView setCollectionViewLayout:flowLayout];
+//            [self.postListVC.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
+        
+//        } completion:^(BOOL finished) {
+//            if(finished){
+//               
+//            }
+//        }];
+        [self.view addSubview:newVC.view];
+        [self.view bringSubviewToFront:newVC.view];
+        [newVC.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
     }completion:^(BOOL finished) {
         if(finished){
-             [self.postListVC.collectionView reloadData];
+            
+            @autoreleasepool {
+                self.postListVC = nil;
+            }
+            self.postListVC = newVC;
+             //[self.postListVC.collectionView reloadData];
         }
     }];
     

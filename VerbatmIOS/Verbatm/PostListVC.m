@@ -63,7 +63,7 @@
 @property (nonatomic) Channel *channelForList;
 @property (nonatomic) NSDate *latestDate;
 
-@property (nonatomic) NSMutableArray * parsePostObjects;
+@property (nonatomic, readwrite) NSMutableArray * parsePostObjects;
 @property (strong, nonatomic) FeedQueryManager *feedQueryManager;
 @property (strong, nonatomic) PostsQueryManager *postsQueryManager;
 @property (nonatomic) BOOL performingUpdate;
