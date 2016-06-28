@@ -290,8 +290,9 @@
     [newVC.view setFrame: (inSmallMode) ? self.postListSmallFrame : self.postListLargeFrame];
     
     if(self.postListVC.parsePostObjects && self.postListVC.parsePostObjects.count){
+        newVC.postsQueryManager = self.postListVC.postsQueryManager;
         [newVC loadPostListFromOlPostListWithDisplay:self.channel postListType:listChannel listOwner:self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile startingDate:self.startingDate andParseObjects:self.postListVC.parsePostObjects];
-    }
+            }
     
     if(inSmallMode)[self.postListVC.view removeFromSuperview];
     

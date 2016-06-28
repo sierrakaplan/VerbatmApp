@@ -21,7 +21,6 @@
 
 #import "Page_BackendObject.h"
 #import "PostListVC.h"
-#import "PostsQueryManager.h"
 #import "PostCollectionViewCell.h"
 #import "Post_BackendObject.h"
 #import "Post_Channel_RelationshipManager.h"
@@ -65,7 +64,6 @@
 
 @property (nonatomic, readwrite) NSMutableArray * parsePostObjects;
 @property (strong, nonatomic) FeedQueryManager *feedQueryManager;
-@property (strong, nonatomic) PostsQueryManager *postsQueryManager;
 @property (nonatomic) BOOL performingUpdate;
 @property (nonatomic) NSInteger nextIndexToPresent;
 @property (nonatomic) NSInteger nextNextIndex;
@@ -161,6 +159,7 @@
 	if (self.currentlyPublishing) return;
 	self.currentlyPublishing = YES;
 	[self.collectionView reloadData];
+    [self.postListDelegate postsFound];
 }
 
 -(void) publishingSucceeded:(NSNotification *) notification {

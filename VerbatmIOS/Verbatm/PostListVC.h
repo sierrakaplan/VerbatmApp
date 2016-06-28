@@ -9,6 +9,7 @@
 #import "Channel.h"
 #import <UIKit/UIKit.h>
 #import <Parse/PFUser.h>
+#import "PostsQueryManager.h"
 
 
 @protocol PostListVCProtocol <NSObject>
@@ -27,6 +28,8 @@ typedef enum PostListType {
 } PostListType;
 
 @interface PostListVC : UICollectionViewController
+
+@property (strong, nonatomic) PostsQueryManager *postsQueryManager;
 
 @property (nonatomic) BOOL isInitiated;
 
