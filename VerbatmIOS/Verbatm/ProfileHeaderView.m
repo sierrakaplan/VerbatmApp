@@ -68,7 +68,7 @@
 				  andChannel:(Channel*)channel inProfileTab:(BOOL) profileTab {
 	self = [super initWithFrame:frame];
 	if (self) {
-		self.channelOwner = user ? user : [PFUser currentUser];
+        self.channelOwner = channel.channelCreator;//(user != nil) ? channel.channelCreator : [PFUser currentUser];
 		self.channel = channel;
 		self.isCurrentUser = (user == nil);
 		self.editMode = NO;
@@ -154,7 +154,7 @@
       [self.changeCoverPhoto setImage:[UIImage imageNamed:ADD_COVER_PHOTO_ICON] forState:UIControlStateNormal];
        CGFloat coverPhotoIconWidth = (351 /106 ) *COVER_PHOTO_HEIGHT;
     
-      self.changeCoverPhoto.frame = CGRectMake(self.frame.size.width - coverPhotoIconWidth, self.frame.size.width - (COVER_PHOTO_HEIGHT*2),
+      self.changeCoverPhoto.frame = CGRectMake(self.frame.size.width - coverPhotoIconWidth, self.frame.size.width - (COVER_PHOTO_HEIGHT + TAB_BAR_HEIGHT),
                                                   +                                             coverPhotoIconWidth, COVER_PHOTO_HEIGHT);
       [self addSubview:self.changeCoverPhoto];
       [self.changeCoverPhoto addTarget:self action:@selector(coverPhotoButtonSelected) forControlEvents:UIControlEventTouchUpInside];
@@ -171,7 +171,7 @@
     [self insertSubview:self.coverView aboveSubview:self.coverPhotoView];
     [self.flippedCoverPhoto setImage:coverPhotoImage];
     self.flippedCoverPhoto.transform = CGAffineTransformMakeRotation(M_PI);
-    [self.flippedCoverPhoto createBlurViewOnViewWithStyle:UIBlurEffectStyleExtraLight];
+    [self.flippedCoverPhoto createBlurViewOnViewWithStyle:UIBlurEffectStyleDark];
 }
 
 #pragma mark - Profile Info Bar Delegate methods -

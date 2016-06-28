@@ -37,4 +37,6 @@
 
 -(void) addPostListVC;
 -(void)clearOurViews;
+//instructs the Profile to begin loading postlist content
+-(void)loadContentToPostList;
 @end

@@ -26,6 +26,8 @@ typedef enum PostListType {
 
 @interface PostListVC : UICollectionViewController
 
+@property (nonatomic) BOOL isInitiated;
+
 @property (nonatomic, weak) id <PostListVCProtocol> postListDelegate;
 
 @property (nonatomic) BOOL inSmallMode;

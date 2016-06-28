@@ -150,6 +150,7 @@
         for (PFObject *pageObject in self.pageObjects) {
             [self addPageToPageViews:pageObject];
         }
+        self.mainScrollView.scrollEnabled = (self.pageObjects.count > 1);
     }
 	
     [self displayPageViews: self.pageViews];

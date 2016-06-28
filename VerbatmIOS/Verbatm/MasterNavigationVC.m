@@ -40,7 +40,7 @@
 #import <Crashlytics/Crashlytics.h>
 
 
-@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate,
+@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedTableViewDelegate,
 ProfileVCDelegate>
 
 #pragma mark - Tab Bar Controller -
@@ -312,7 +312,7 @@ ProfileVCDelegate>
 
     self.feedVC = [[FeedTableViewController alloc] init];
     self.feedVC.view.frame = self.view.bounds;
-	//self.feedVC.delegate = self;
+	self.feedVC.delegate = self;
 
 	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															  image:[UIImage imageNamed:PROFILE_NAV_ICON]

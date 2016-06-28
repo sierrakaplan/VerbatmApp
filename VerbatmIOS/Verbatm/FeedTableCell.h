@@ -8,11 +8,18 @@
 
 #import <UIKit/UIKit.h>
 #import "Channel.h"
+#import "ProfileVC.h"
 
 
+@protocol FeedCellDelegate <NSObject>
 
+-(void)shouldHideTabBar:(BOOL) shouldHide;
+
+@end
 
 
 @interface FeedTableCell : UITableViewCell
 -(void)presentProfileForChannel:(Channel *) channel;
+@property (nonatomic) id<FeedCellDelegate> delegate;
+-(void)setProfileAlreadyLoaded:(ProfileVC *) newProfile;
 @end

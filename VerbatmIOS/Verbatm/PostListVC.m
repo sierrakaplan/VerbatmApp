@@ -218,6 +218,7 @@
     self.parsePostObjects = newParseObjects;
     self.footerBarIsUp = (self.listType == listFeed || self.isCurrentUserProfile);
     [self.collectionView reloadData];
+    self.isInitiated = YES;
 }
 
 
@@ -231,6 +232,7 @@
 	self.isCurrentUserProfile = isCurrentUserProfile;
 	[self refreshPosts];
 	self.footerBarIsUp = (self.listType == listFeed || self.isCurrentUserProfile);
+    self.isInitiated = YES;
 }
 
 -(void) offScreen {

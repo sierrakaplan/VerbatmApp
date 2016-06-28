@@ -10,14 +10,15 @@
 #import "FeedTableCell.h"
 #import "UserInfoCache.h"
 #import "Channel.h"
+#import "ProfileVC.h"
 
-@interface FeedTableViewController ()
+@interface FeedTableViewController ()<FeedCellDelegate>
 
 
 @property(nonatomic) NSMutableArray * FollowingProfileList;
 @property (nonatomic) Channel * currentUserChannel;
-
-
+@property (nonatomic) ProfileVC * nextProfileToPresent;
+@property (nonatomic) NSUInteger nextProfileIndex;
 @end
 
 @implementation FeedTableViewController
@@ -27,6 +28,7 @@
     [self.tableView registerClass:[FeedTableCell class] forCellReuseIdentifier:@"FeedTableCell"];
     [self prepareListOfContent];
     self.tableView.pagingEnabled = YES;
+    self.tableView.allowsSelection = NO;
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -84,6 +86,10 @@
 
 #pragma mark - Table view data source
 
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    [self.delegate showTabBar:YES];
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
@@ -93,25 +99,45 @@
     return self.FollowingProfileList.count;
 }
 
+-(void)prepareNextPostFromCurrentIndex:(NSInteger) index{
+    NSInteger nextIndex = index ++ ;
+    
+    if(nextIndex < self.FollowingProfileList.count){
+        Channel * nextChannel = self.FollowingProfileList[nextIndex];
+        if(self.nextProfileToPresent){
+            @autoreleasepool {
+                self.nextProfileToPresent = nil;
+            }
+        }
+        self.nextProfileToPresent = [[ProfileVC alloc] init];
+        self.nextProfileToPresent.isCurrentUserProfile = NO;
+        self.nextProfileToPresent.isProfileTab = NO;
+        //self.nextProfileToPresent.delegate = self;
+        self.nextProfileToPresent.ownerOfProfile = nextChannel.channelCreator;
+        self.nextProfileToPresent.channel = nextChannel;
+        [self.nextProfileToPresent loadContentToPostList];
+    }
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-   // NSString *identifier = [NSString stringWithFormat:@"cell,%ld", (long)indexPath.row];
     FeedTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FeedTableCell" forIndexPath:indexPath];
-    
-    if(cell == nil) {
-        cell = [[FeedTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"FeedTableCell"];
-        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-    } else {
-        [cell removeFromSuperview];
+    cell.delegate = self;
+    if(self.nextProfileToPresent && indexPath.row == self.nextProfileIndex){
+        [cell setProfileAlreadyLoaded:self.nextProfileToPresent];
+    }else{
+        [cell presentProfileForChannel:self.FollowingProfileList[indexPath.row]];
     }
-    [cell presentProfileForChannel:self.FollowingProfileList[indexPath.row]];
-
-    // Configure the cell...
-    
+    [self prepareNextPostFromCurrentIndex:indexPath.row];
+    self.nextProfileIndex = indexPath.row + 1;
     return cell;
 }
 
 
+#pragma mark -Feed Cell Protocol-
+-(void)shouldHideTabBar:(BOOL) shouldHide{
+    [self.delegate showTabBar:!shouldHide];
+    self.tableView.scrollEnabled = !shouldHide;
+}
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {

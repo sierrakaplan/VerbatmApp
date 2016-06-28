@@ -89,9 +89,13 @@
     [self checkIntroNotification];
 }
 
+-(void)loadContentToPostList{
+   if(!self.postListVC.isInitiated) [self.postListVC display:self.channel asPostListType:listChannel withListOwner: self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
+}
+
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-    [self.postListVC display:self.channel asPostListType:listChannel withListOwner: self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
+    [self loadContentToPostList];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
@@ -138,10 +142,10 @@
 -(void) createHeader {
 	[self.channel getFollowersAndFollowingWithCompletionBlock:^{
 		CGRect frame = self.view.bounds;
-		PFUser* user = self.isCurrentUserProfile ? nil : self.ownerOfProfile;
+       // PFUser* user = self.isCurrentUserProfile ? nil : ;
 		
-            self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andUser:user
-                                                                   andChannel:self.channel inProfileTab:self.isProfileTab];
+            self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andUser:self.channel.channelCreator                                                                   andChannel:self.channel inProfileTab:self.isProfileTab];
+        
             self.profileHeaderView.delegate = self;
             [self.profileHeaderView addShadowToView];
             [self.view addSubview: self.profileHeaderView];
@@ -255,24 +259,9 @@
     CGRect newFrame;
     BOOL shouldPage = NO;
     BOOL inSmallMode = YES;
-//    CGFloat postHeight = self.view.frame.size.height - self.view.frame.size.width;
-//    CGFloat postWidth = (self.view.frame.size.width / self.view.frame.size.height ) * postHeight;//same ratio as screen
-//    self.cellSmallFrameSize = CGSizeMake(postWidth, postHeight);
-//    UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
-//    flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-//    [flowLayout setMinimumInteritemSpacing:CELL_SPACING_SMALL];
-//    [flowLayout setMinimumLineSpacing:CELL_SPACING_SMALL];
-//    [flowLayout setItemSize:self.cellSmallFrameSize];
-//    _postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
-//    _postListVC.postListDelegate = self;
-//    _postListVC.inSmallMode = YES;
-//    self.postListSmallFrame = CGRectMake(0.f, postHeight + TAB_BAR_HEIGHT, self.view.frame.size.width, postHeight);
-//    self.postListLargeFrame = self.view.bounds;
-//    [_postListVC.view setFrame:self.postListSmallFrame];
-//    [self.view addSubview:_postListVC.view];
-//    [self.view bringSubviewToFront:_postListVC.view];
-    
+
     if(self.inFullScreenMode){
+        
         [self.view bringSubviewToFront:self.postListVC.view];
         newFrame = self.postListLargeFrame;
         flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
@@ -281,13 +270,16 @@
         [flowLayout setItemSize:self.postListLargeFrame.size];
         inSmallMode = NO;
         shouldPage = YES;
+        
     }else{
+        
         newFrame = self.postListSmallFrame;
         flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         [flowLayout setMinimumInteritemSpacing:CELL_SPACING_SMALL];
         [flowLayout setMinimumLineSpacing:CELL_SPACING_SMALL];
         [flowLayout setItemSize:self.cellSmallFrameSize];
         inSmallMode = YES;
+        
     }
     
     PostListVC * newVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
@@ -296,33 +288,20 @@
     newVC.collectionView.pagingEnabled = shouldPage;
     [newVC.view setFrame: (inSmallMode) ? self.postListSmallFrame : self.postListLargeFrame];
     [newVC loadPostListFromOlPostListWithDisplay:self.channel postListType:listChannel listOwner:self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile startingDate:self.startingDate andParseObjects:self.postListVC.parsePostObjects];
-    [self.postListVC.view removeFromSuperview];
-    
+    if(inSmallMode)[self.postListVC.view removeFromSuperview];
     [UIView animateWithDuration:REVEAL_NEW_MEDIA_TILE_ANIMATION_DURATION animations:^{
-//        [self.postListVC.collectionView performBatchUpdates:^{
-//             [self.postListVC.collectionView setContentInset:UIEdgeInsetsMake(0, 0, 0, 0)];
-//            self.postListVC.view.frame = newFrame;
-//            self.postListVC.collectionView.pagingEnabled = shouldPage;
-//            [self.postListVC.collectionViewLayout invalidateLayout];
-//            [self.postListVC.collectionView setCollectionViewLayout:flowLayout];
-//            [self.postListVC.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
-        
-//        } completion:^(BOOL finished) {
-//            if(finished){
-//               
-//            }
-//        }];
         [self.view addSubview:newVC.view];
         [self.view bringSubviewToFront:newVC.view];
-        [newVC.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
+        if(cellPath.row < self.postListVC.parsePostObjects.count)[newVC.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
+        [self.delegate showTabBar:!shouldPage];
     }completion:^(BOOL finished) {
         if(finished){
-            
+          if(!inSmallMode)[self.postListVC.view removeFromSuperview];
             @autoreleasepool {
+                [self.postListVC clearViews];
                 self.postListVC = nil;
             }
             self.postListVC = newVC;
-             //[self.postListVC.collectionView reloadData];
         }
     }];
     

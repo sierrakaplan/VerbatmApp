@@ -7,8 +7,7 @@
 //
 
 #import "FeedTableCell.h"
-#import "ProfileVC.h"
-@interface FeedTableCell ()
+@interface FeedTableCell ()<ProfileVCDelegate>
 @property (nonatomic) ProfileVC * currentProfile;
 @end
 
@@ -16,6 +15,18 @@
 @implementation FeedTableCell
 
 
+
+-(void)setProfileAlreadyLoaded:(ProfileVC *) newProfile{
+    if(self.currentProfile){
+        [self.currentProfile clearOurViews];
+        @autoreleasepool {
+            self.currentProfile = nil;
+        }
+    }
+    self.currentProfile = newProfile;
+    self.currentProfile.delegate = self;
+    [self addSubview:self.currentProfile.view];
+}
 
 -(void)presentProfileForChannel:(Channel *) channel{
     
@@ -25,13 +36,18 @@
             self.currentProfile = nil;
         }
     }
-    
     self.currentProfile = [[ProfileVC alloc] init];
     self.currentProfile.isCurrentUserProfile = NO;
     self.currentProfile.isProfileTab = NO;
+    self.currentProfile.delegate = self;
     self.currentProfile.ownerOfProfile = channel.channelCreator;
     self.currentProfile.channel = channel;
     [self addSubview:self.currentProfile.view];
+}
+
+
+-(void) showTabBar:(BOOL) show{
+    [self.delegate shouldHideTabBar:!show];
 }
 
 - (void)awakeFromNib {

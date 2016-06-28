@@ -8,8 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+
+@protocol FeedTableViewDelegate <NSObject>
+
+-(void) showTabBar: (BOOL) show;
+
+
+@end
+
 @interface FeedTableViewController : UITableViewController
 
-
+@property (nonatomic) id<FeedTableViewDelegate> delegate;
 
 @end
