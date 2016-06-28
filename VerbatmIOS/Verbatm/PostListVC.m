@@ -553,7 +553,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		if (cell.currentPostActivityObject != postObject) {
 			[cell clearViews];
 			[cell presentPostFromPCActivityObj:postObject andChannel:self.channelForList
-							  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:self.footerBarIsUp];
+							  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:NO];
 		}
 	} else if(self.currentlyPublishing) {
 		[cell clearViews];

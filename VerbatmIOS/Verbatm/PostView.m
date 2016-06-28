@@ -157,6 +157,7 @@
 
 }
 
+
 -(void) displayPageViews: (NSMutableArray *) pageViews {
 	self.pageViews = pageViews;
 	self.mainScrollView.contentSize = CGSizeMake(self.frame.size.width,
@@ -286,19 +287,19 @@
 
 //todo: go through how this works in all cases
 -(void) shiftLikeShareBarDown:(BOOL) down{
-	if(down) {
-		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			self.likeShareBar.frame = self.lsBarDownFrame;
-			self.creatorAndChannelBar.frame = self.creatorBarFrameUp;
-		} completion:^(BOOL finished) {
-		}];
-	}else{
-		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			self.likeShareBar.frame = self.lsBarUpFrame;
-			self.creatorAndChannelBar.frame = self.creatorBarFrameDown;
-		} completion:^(BOOL finished) {
-		}];
-	}
+//	if(down) {
+//		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+//			self.likeShareBar.frame = self.lsBarDownFrame;
+//			self.creatorAndChannelBar.frame = self.creatorBarFrameUp;
+//		} completion:^(BOOL finished) {
+//		}];
+//	}else{
+//		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+//			self.likeShareBar.frame = self.lsBarUpFrame;
+//			self.creatorAndChannelBar.frame = self.creatorBarFrameDown;
+//		} completion:^(BOOL finished) {
+//		}];
+//	}
 }
 
 -(void)userAction:(ActivityOptions) action isPositive:(BOOL) positive {
@@ -361,6 +362,7 @@
             //- this case is taken care of in loadMediaForPage. Also takes care of case where pages don't exist.)
             [self loadMediaForPageAtIndex: indexBelow];
             [self loadMediaForPageAtIndex: indexBelow+1];
+            self.mainScrollView.scrollEnabled = YES;
         }
     }
 }
