@@ -13,6 +13,8 @@
 
 @protocol PostListVCProtocol <NSObject>
 
+-(void)noPostFound;
+-(void)postsFound;
 -(void)cellSelectedAtPostIndex:(NSIndexPath *) cellPath;
 
 -(void)hideNavBarIfPresent;

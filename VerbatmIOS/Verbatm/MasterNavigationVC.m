@@ -395,6 +395,11 @@ ProfileVCDelegate>
 	}
 }
 
+#pragma mark -Profile VC Delegate-
+-(void) userCreateFirstPost{
+    [self revealADK];
+}
+
 #pragma mark - Feed VC Delegate -
 
 -(void) showTabBar:(BOOL)show {

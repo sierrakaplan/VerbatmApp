@@ -47,6 +47,8 @@
                         PublishingProgressProtocol, PostListVCProtocol,
                         UIGestureRecognizerDelegate,UserAndChannelListsTVCDelegate, GMImagePickerControllerDelegate>
 
+@property (nonatomic) UIButton * postPrompt;
+
 @property (nonatomic) BOOL currentlyCreatingNewChannel;
 
 @property (strong, nonatomic) PostListVC * postListVC;
@@ -84,7 +86,7 @@
 	[super viewDidLoad];
 	self.automaticallyAdjustsScrollViewInsets = NO;
 	[self setNeedsStatusBarAppearanceUpdate];
-	self.view.backgroundColor = [UIColor whiteColor];
+	self.view.backgroundColor = [UIColor colorWithWhite:0.95 alpha:1.f];
     [self createHeader];
     [self checkIntroNotification];
 }
@@ -142,9 +144,9 @@
 -(void) createHeader {
 	[self.channel getFollowersAndFollowingWithCompletionBlock:^{
 		CGRect frame = self.view.bounds;
-       // PFUser* user = self.isCurrentUserProfile ? nil : ;
+            PFUser* user = self.isCurrentUserProfile ? nil : self.channel.channelCreator;
 		
-            self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andUser:self.channel.channelCreator                                                                   andChannel:self.channel inProfileTab:self.isProfileTab];
+            self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andUser:user                                                                   andChannel:self.channel inProfileTab:self.isProfileTab];
         
             self.profileHeaderView.delegate = self;
             [self.profileHeaderView addShadowToView];
@@ -261,7 +263,6 @@
     BOOL inSmallMode = YES;
 
     if(self.inFullScreenMode){
-        
         [self.view bringSubviewToFront:self.postListVC.view];
         newFrame = self.postListLargeFrame;
         flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
@@ -287,8 +288,13 @@
     newVC.inSmallMode = inSmallMode;
     newVC.collectionView.pagingEnabled = shouldPage;
     [newVC.view setFrame: (inSmallMode) ? self.postListSmallFrame : self.postListLargeFrame];
-    [newVC loadPostListFromOlPostListWithDisplay:self.channel postListType:listChannel listOwner:self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile startingDate:self.startingDate andParseObjects:self.postListVC.parsePostObjects];
+    
+    if(self.postListVC.parsePostObjects && self.postListVC.parsePostObjects.count){
+        [newVC loadPostListFromOlPostListWithDisplay:self.channel postListType:listChannel listOwner:self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile startingDate:self.startingDate andParseObjects:self.postListVC.parsePostObjects];
+    }
+    
     if(inSmallMode)[self.postListVC.view removeFromSuperview];
+    
     [UIView animateWithDuration:REVEAL_NEW_MEDIA_TILE_ANIMATION_DURATION animations:^{
         [self.view addSubview:newVC.view];
         [self.view bringSubviewToFront:newVC.view];
@@ -365,6 +371,36 @@
 		[self.createNewChannelView removeFromSuperview];
 		self.createNewChannelView = nil;
 	}
+}
+
+
+-(void)createPromptToPost{
+    self.postPrompt =  [[UIButton alloc] init];
+    [self.postPrompt setBackgroundImage:[UIImage imageNamed:CREATE_POST_PROMPT_ICON] forState:UIControlStateNormal];
+    [self.view addSubview:self.postPrompt];
+    [self.postPrompt addTarget:self action:@selector(createFirstPost) forControlEvents:UIControlEventTouchDown];
+    CGFloat frameHeight = self.postListVC.view.frame.size.height;
+    CGFloat frameWidth = 3.f +  (self.view.frame.size.width/ self.view.frame.size.height) * frameHeight;
+    self.postPrompt.frame = CGRectMake(self.postListVC.view.frame.origin.x, self.postListVC.view.frame.origin.y, frameWidth, frameHeight);
+    self.postListVC.view.hidden = YES;
+}
+
+-(void)createFirstPost{
+ [self.delegate userCreateFirstPost];
+}
+-(void)postsFound{
+    [self removePromptToPost];
+}
+-(void)removePromptToPost{
+    if(self.isCurrentUserProfile){
+            if(self.postPrompt)[self.postPrompt removeFromSuperview];
+            self.postPrompt = nil;
+            if(self.postListVC.view.isHidden)self.postListVC.view.hidden = NO;
+    }
+}
+
+-(void)noPostFound{
+   if(self.isCurrentUserProfile)[self createPromptToPost];
 }
 
 #pragma mark -Navigate profile-

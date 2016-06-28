@@ -345,21 +345,23 @@
 			[self removePageUpIndicatorFromView];
 		}
 	}
-
-	PageViewingExperience *newCurrentPage = self.pageViews[currentViewableIndex];
-	[self.currentPage offScreen];
-	self.currentPage = newCurrentPage;
-	[self.currentPage onScreen];
-    //if(self.inSmallMode)[self muteAllVideos:YES];
-	if (!self.postMuted && _likeShareBar) {
-		[self checkForMuteButton:self.currentPage];
-	}
-    if(!self.small){
-        //Load media for next two pages
-        //(if more than 3 pages at some point the next will already be loading from previous call
-        //- this case is taken care of in loadMediaForPage. Also takes care of case where pages don't exist.)
-        [self loadMediaForPageAtIndex: indexBelow];
-        [self loadMediaForPageAtIndex: indexBelow+1];
+    
+    if(currentViewableIndex < self.pageViews.count){
+        PageViewingExperience *newCurrentPage = self.pageViews[currentViewableIndex];
+        [self.currentPage offScreen];
+        self.currentPage = newCurrentPage;
+        [self.currentPage onScreen];
+        //if(self.inSmallMode)[self muteAllVideos:YES];
+        if (!self.postMuted && _likeShareBar) {
+            [self checkForMuteButton:self.currentPage];
+        }
+        if(!self.small){
+            //Load media for next two pages
+            //(if more than 3 pages at some point the next will already be loading from previous call
+            //- this case is taken care of in loadMediaForPage. Also takes care of case where pages don't exist.)
+            [self loadMediaForPageAtIndex: indexBelow];
+            [self loadMediaForPageAtIndex: indexBelow+1];
+        }
     }
 }
 
@@ -469,7 +471,7 @@
 }
 
 -(void) loadMediaForPageAtIndex:(NSInteger)index {
-	if (index >= self.pageViews.count) return;
+	if (index >= self.pageViews.count || self.pageViews == nil ||self.pageViews.count == 0) return;
 	//preview mode
 	if (!self.pageObjects) {
 		PageViewingExperience *pageView = self.pageViews[index];

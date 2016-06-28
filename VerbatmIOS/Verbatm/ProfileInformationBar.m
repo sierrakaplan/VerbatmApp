@@ -124,6 +124,8 @@
     [self updateNumFollowersAndFollowing];
     [self addSubview: self.numFollowersLabel];
     [self addSubview: self.numFollowingLabel];
+    [self addTapGestureToFollowersView];
+    [self addTapGestureToFollowingView];
 }
 
 -(void)addTapGestureToFollowersView{

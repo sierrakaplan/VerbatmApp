@@ -283,7 +283,9 @@
 }
 
 -(void)nothingToPresentHere {
-	if (self.noContentLabel || self.parsePostObjects.count > 0){
+    if(self.parsePostObjects.count == 0)[self.postListDelegate noPostFound];
+	
+    if (self.noContentLabel || self.parsePostObjects.count > 0){
 		return;
 	}
 
@@ -310,6 +312,7 @@
 	__weak typeof(self) weakSelf = self;
 	self.refreshPostsCompletion = ^void(NSArray *posts) {
 		if (weakSelf.exitedView) return; // Already left page
+        [self.postListDelegate postsFound];
 		[weakSelf.customActivityIndicator stopCustomActivityIndicator];
 		if(posts.count) {
 			if (weakSelf.listType == listFeed) {
@@ -353,6 +356,7 @@
 	self.loadMorePostsCompletion = ^void(NSArray *posts) {
 		if (!posts.count || weakSelf.exitedView) return;
 		weakSelf.isLoadingMore = NO;
+        [self.postListDelegate postsFound];
         @autoreleasepool {
             NSMutableArray *indices = [NSMutableArray array];
             NSInteger index = weakSelf.parsePostObjects.count;
@@ -365,13 +369,14 @@
                 [weakSelf.parsePostObjects addObjectsFromArray:posts];
                 //Insert the new cells
                 [weakSelf.collectionView insertItemsAtIndexPaths:indices];
-
+                
             } completion:nil];
         }
 	};
 
 	self.loadOlderPostsCompletion = ^void(NSArray *posts) {
 		if (!posts.count || weakSelf.exitedView) return;
+        [self.postListDelegate postsFound];
 		NSMutableArray *indices = [NSMutableArray array];
 		for (NSInteger i = 0; i < posts.count; i++) {
 			[indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
