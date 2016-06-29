@@ -55,7 +55,7 @@
 #define PAGE_INDEX_KEY @"PageIndex"
 #define PAGE_POST_KEY @"PostForPage" // the post this page belongs to
 #define PAGE_VIEW_TYPE @"AveType"
-#define PAGE_PHOTOS_PFRELATION @"PhotoObjectsInPage"
+#define PAGE_PHOTOS_PFRELATION @"PhotoObjectsInPageRelation"
 
 
 #define POST_PFCLASS_KEY @"PostClass"

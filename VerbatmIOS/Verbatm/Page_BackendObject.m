@@ -186,9 +186,9 @@
 
     //first try with the new pfrelation style
     PFRelation * pageRelation = [post relationForKey:POST_PAGES_PFRELATION];
-    
     PFQuery * pageQuery = [pageRelation query];
-    
+//    pageQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
+//    __block BOOL cachedResult = YES;
     [pageQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 														 NSError * _Nullable error) {
 		if(objects && !error){

@@ -68,8 +68,8 @@
                   andChannel:(Channel*)channel inProfileTab:(BOOL) profileTab inFeed:(BOOL) inFeed {
 	self = [super initWithFrame:frame];
 	if (self) {
-        self.channelOwner = channel.channelCreator;//(user != nil) ? channel.channelCreator : [PFUser currentUser];
-		self.channel = channel;
+        self.channelOwner = channel.channelCreator;
+        self.channel = channel;
 		self.isCurrentUser = (user == nil);
 		self.editMode = NO;
 		self.backgroundColor = [UIColor clearColor];
@@ -117,9 +117,14 @@
 }
 
 -(void) changeUserName {
-	NSString *newUserName = self.channelOwner[VERBATM_USER_NAME_KEY];
-	self.userNameLabel.text = newUserName;
-    [self.userNameLabel setTextColor:[UIColor whiteColor]];
+    
+    [self.channel getChannelOwnerNameWithCompletionBlock:^(NSString * creator) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.userNameLabel.text = creator;
+            [self.userNameLabel setTextColor:[UIColor whiteColor]];
+        });
+        
+    }];
 }
 
 -(void) changeBlogTitle {

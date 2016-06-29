@@ -469,7 +469,8 @@
 }
 
 -(void) loadMediaForPageAtIndex:(NSInteger)index {
-	if (index >= self.pageViews.count || self.pageViews == nil ||self.pageViews.count == 0) return;
+	if (index >= self.pageViews.count || self.pageViews == nil ||
+        self.pageViews.count == 0 || (self.pageObjects && self.pageObjects.count == 0)) return;
 	//preview mode
 	if (!self.pageObjects) {
 		PageViewingExperience *pageView = self.pageViews[index];

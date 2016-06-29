@@ -29,6 +29,7 @@
     [self prepareListOfContent];
     self.tableView.pagingEnabled = YES;
     self.tableView.allowsSelection = NO;
+    [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;

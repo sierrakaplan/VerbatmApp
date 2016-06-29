@@ -113,29 +113,29 @@ andTextAlignment:(NSNumber *) textAlignment
 
 +(void)getPhotosForPage:(PFObject *) page andCompletionBlock:(void(^)(NSArray *))block {
     
-    //first check for the pfrelation
-    PFRelation * photoRelation = [page relationForKey:PAGE_PHOTOS_PFRELATION];
-    PFQuery * photoQuery = [photoRelation query];
-    [photoQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-                                                         NSError * _Nullable error) {
-        if(objects && !error){
-            objects = [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
-                PFObject * photoA = obj1;
-                PFObject * photoB = obj2;
-                
-                NSNumber * photoAnum = [photoA valueForKey:PHOTO_INDEX_KEY];
-                NSNumber * photoBnum = [photoB valueForKey:PHOTO_INDEX_KEY];
-                
-                if([photoAnum integerValue] > [photoBnum integerValue]){
-                    return NSOrderedDescending;
-                }else if ([photoAnum integerValue] < [photoBnum integerValue]){
-                    return NSOrderedAscending;
-                }
-                return NSOrderedSame;
-            }];
-            
-            block(objects);
-        }else{
+//    //first check for the pfrelation
+//    PFRelation * photoRelation = [page relationForKey:PAGE_PHOTOS_PFRELATION];
+//    PFQuery * photoQuery = [photoRelation query];
+//    [photoQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+//                                                         NSError * _Nullable error) {
+//        if(objects && !error){
+//            objects = [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+//                PFObject * photoA = obj1;
+//                PFObject * photoB = obj2;
+//                
+//                NSNumber * photoAnum = [photoA valueForKey:PHOTO_INDEX_KEY];
+//                NSNumber * photoBnum = [photoB valueForKey:PHOTO_INDEX_KEY];
+//                
+//                if([photoAnum integerValue] > [photoBnum integerValue]){
+//                    return NSOrderedDescending;
+//                }else if ([photoAnum integerValue] < [photoBnum integerValue]){
+//                    return NSOrderedAscending;
+//                }
+//                return NSOrderedSame;
+//            }];
+//            
+//            block(objects);
+//        }else{
             //no pfrelation yet so check for the old style
             PFQuery *imagesQuery = [PFQuery queryWithClassName:PHOTO_PFCLASS_KEY];
             [imagesQuery whereKey:PHOTO_PAGE_OBJECT_KEY equalTo:page];
@@ -167,8 +167,8 @@ andTextAlignment:(NSNumber *) textAlignment
                     block(objects);
                 }
             }];
-        }
-    }];
+//        }
+//    }];
 }
 
 +(void)deletePhotosInPage:(PFObject *)page withCompeletionBlock:(void(^)(BOOL))block {
