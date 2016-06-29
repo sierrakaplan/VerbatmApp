@@ -65,7 +65,7 @@
 @implementation ProfileHeaderView
 
 -(instancetype)initWithFrame:(CGRect)frame andUser:(PFUser*)user
-				  andChannel:(Channel*)channel inProfileTab:(BOOL) profileTab {
+                  andChannel:(Channel*)channel inProfileTab:(BOOL) profileTab inFeed:(BOOL) inFeed {
 	self = [super initWithFrame:frame];
 	if (self) {
         self.channelOwner = channel.channelCreator;//(user != nil) ? channel.channelCreator : [PFUser currentUser];
@@ -75,7 +75,7 @@
 		self.backgroundColor = [UIColor clearColor];
 		CGRect userInfoBarFrame = CGRectMake(0.f, 0.f, frame.size.width,STATUS_BAR_HEIGHT + PROFILE_INFO_BAR_HEIGHT);
 		self.userInformationBar = [[ProfileInformationBar alloc] initWithFrame:userInfoBarFrame andUser:user
-																	andChannel:channel inProfileTab:profileTab];
+																	andChannel:channel inProfileTab:profileTab inFeed:inFeed];
 		self.userInformationBar.delegate = self;
 		[self addSubview: self.userInformationBar];
 		[self createLabels];

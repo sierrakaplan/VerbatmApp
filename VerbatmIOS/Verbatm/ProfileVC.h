@@ -21,6 +21,8 @@
 
 @interface ProfileVC : UIViewController
 
+@property (nonatomic) BOOL profileInFeed;
+
 @property (weak, nonatomic) id<ProfileVCDelegate> delegate;
 
 @property (weak, nonatomic) PFUser* ownerOfProfile;

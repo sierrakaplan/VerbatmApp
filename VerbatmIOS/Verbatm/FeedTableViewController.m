@@ -116,6 +116,7 @@
             }
         }
         self.nextProfileToPresent = [[ProfileVC alloc] init];
+        self.nextProfileToPresent.profileInFeed = YES;
         self.nextProfileToPresent.isCurrentUserProfile = NO;
         self.nextProfileToPresent.isProfileTab = NO;
         //self.nextProfileToPresent.delegate = self;

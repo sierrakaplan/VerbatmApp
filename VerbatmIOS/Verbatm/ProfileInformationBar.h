@@ -35,6 +35,6 @@
 // profileTab tells us where in navigation we are - editing and settings are only available
 // from the profile tab.
 -(instancetype)initWithFrame:(CGRect)frame andUser:(PFUser*)user
-				  andChannel:(Channel*)channel inProfileTab:(BOOL) profileTab;
+				  andChannel:(Channel*)channel inProfileTab:(BOOL) profileTab inFeed:(BOOL) inFeed;
 
 @end

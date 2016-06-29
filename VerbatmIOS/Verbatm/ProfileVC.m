@@ -165,7 +165,7 @@
     CGRect frame = self.view.bounds;
     PFUser* user = self.isCurrentUserProfile ? nil : self.channel.channelCreator;
     
-    self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andUser:user                                                                   andChannel:self.channel inProfileTab:self.isProfileTab];
+    self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andUser:user                                                                   andChannel:self.channel inProfileTab:self.isProfileTab inFeed:self.profileInFeed];
     
     self.profileHeaderView.delegate = self;
     [self.view addSubview: self.profileHeaderView];

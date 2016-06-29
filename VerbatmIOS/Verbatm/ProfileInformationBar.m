@@ -58,7 +58,7 @@
 @implementation ProfileInformationBar
 
 -(instancetype)initWithFrame:(CGRect)frame andUser:(PFUser*)user
-				  andChannel:(Channel*)channel inProfileTab:(BOOL) profileTab {
+                  andChannel:(Channel*)channel inProfileTab:(BOOL) profileTab inFeed:(BOOL) inFeed{
 	self =  [super initWithFrame:frame];
 	if(self) {
 		self.user = user;
@@ -71,7 +71,7 @@
 			[self createSettingsButton];
 			[self createEditButton];
 		} else {
-			[self createBackButton];
+			if(!inFeed)[self createBackButton];
 			if (!self.isCurrentUser) {
 				// This allows a user to block another user
 				[self createSettingsButton];

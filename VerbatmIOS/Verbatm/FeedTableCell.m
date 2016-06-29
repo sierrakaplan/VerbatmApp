@@ -39,6 +39,7 @@
     }
     self.currentProfile = [[ProfileVC alloc] init];
     self.currentProfile.isCurrentUserProfile = NO;
+    self.currentProfile.profileInFeed = YES;
     self.currentProfile.isProfileTab = NO;
     self.currentProfile.delegate = self;
     self.currentProfile.ownerOfProfile = channel.channelCreator;
