@@ -169,21 +169,22 @@
 	}
 }
 
-
-+(void)savePagesToPFRelation:(PFObject *) page andPost:(PFObject *) post{
-    PFRelation * pageRelation = [post relationForKey:POST_PAGES_PFRELATION];
-    [pageRelation addObject:page];
++(void)savePageToPFRelation:(PFObject *) page andPost:(PFObject *) post{
+    PFRelation * postRelation = [post relationForKey:POST_PAGES_PFRELATION];
+    [postRelation addObject:page];
     [post saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if(succeeded){
-            NSLog(@"saved new page relation");
-        }else NSLog(@"Failed to save new page relation");
+            NSLog(@"saved new post relation");
+        }else NSLog(@"Failed to save new post relation");
     }];
-
+    
 }
+
 
 
 +(void)getPagesFromPost:(PFObject *) post andCompletionBlock:(void(^)(NSArray *))block {
 
+    //first try with the new pfrelation style
     PFRelation * pageRelation = [post relationForKey:POST_PAGES_PFRELATION];
     
     PFQuery * pageQuery = [pageRelation query];
@@ -207,7 +208,43 @@
 				return NSOrderedSame;
 			}];
 			block(objects);
-		}
+        }else{
+            //perhaps the relation isn't there so lets use the old version
+            //no pfrelation yet so check for the old style
+            PFQuery *pageQuery = [PFQuery queryWithClassName:PAGE_PFCLASS_KEY];
+            [pageQuery whereKey:PAGE_POST_KEY equalTo:post];
+            [pageQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+                                                            NSError * _Nullable error) {
+                if(objects && !error){
+                    //this object is still in the old style relation
+                    
+                    objects = [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+                        PFObject * photoA = obj1;
+                        PFObject * photoB = obj2;
+                        
+                        NSNumber * photoAnum = [photoA valueForKey:PHOTO_INDEX_KEY];
+                        NSNumber * photoBnum = [photoB valueForKey:PHOTO_INDEX_KEY];
+                        
+                        if([photoAnum integerValue] > [photoBnum integerValue]){
+                            return NSOrderedDescending;
+                        }else if ([photoAnum integerValue] < [photoBnum integerValue]){
+                            return NSOrderedAscending;
+                        }
+                        return NSOrderedSame;
+                    }];
+                    
+                    //save the objects to the new relation for the future
+                    for(PFObject * page in objects){
+                        [Page_BackendObject savePageToPFRelation:page andPost:post];
+                    }
+                    
+                    block(objects);
+                }else {
+                    block(nil);
+                    [[Crashlytics sharedInstance] recordError: error];
+                }
+            }];
+        }
 	}];
 }
 
@@ -217,21 +254,17 @@
     
     PFQuery * pageQuery = [pageRelation query];
     
-    [pageQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-														 NSError * _Nullable error) {
-		if(objects && !error){
-			for (PFObject *obj in objects) {
-				[Photo_BackendObject deletePhotosInPage:obj withCompeletionBlock:^(BOOL success) {
-					[Video_BackendObject deleteVideosInPage:obj withCompeletionBlock:^(BOOL success) {
-						[obj deleteInBackground];
-					}];
-				}];
-			}
-		} else {
-			[[Crashlytics sharedInstance] recordError: error];
-		}
-		
-	}];
+   [Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * objects) {
+       if(objects){
+           for (PFObject *obj in objects) {
+               [Photo_BackendObject deletePhotosInPage:obj withCompeletionBlock:^(BOOL success) {
+                   [Video_BackendObject deleteVideosInPage:obj withCompeletionBlock:^(BOOL success) {
+                       [obj deleteInBackground];
+                   }];
+               }];
+           }
+       } 
+   }];
 }
 
 

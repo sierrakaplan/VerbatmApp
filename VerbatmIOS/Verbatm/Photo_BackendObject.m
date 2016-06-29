@@ -99,42 +99,24 @@ andTextAlignment:(NSNumber *) textAlignment
 	}];
 }
 
-//+(void)saveAllPostAndPFRelations{
-//    NSInteger skipAmount = 0;
-//    
-//    PFQuery * postQuery = [PFQuery queryWithClassName:POST_PFCLASS_KEY];
-//    [postQuery setLimit:1000];
-//    while (skipAmount <= 1000) {
-//        [postQuery setSkip:skipAmount];
-//        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-//            [postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable posts,
-//                                                          NSError * _Nullable error) {
-//                if(posts && !error){
-//                    for (PFObject * post in posts){
-//                        [Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
-//                            for(id page in pages){
-//                                [Page_BackendObject savePagesToPFRelation:page andPost:post];
-//                            }
-//                            
-//                        }];
-//                    }
-//                    
-//                }
-//            }];
-//        });
-//        
-//        skipAmount += 1000;
-//        [NSThread sleepForTimeInterval:3.f];
-//    }
-//    
-//    
-//}
+
++(void)savePhotosToPFRelation:(PFObject *) photo andPost:(PFObject *) page{
+    PFRelation * pageRelation = [page relationForKey:PAGE_PHOTOS_PFRELATION];
+    [pageRelation addObject:photo];
+    [page saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if(succeeded){
+            NSLog(@"saved new photo relation");
+        }else NSLog(@"Failed to save new photo relation");
+    }];
+    
+}
 
 +(void)getPhotosForPage:(PFObject *) page andCompletionBlock:(void(^)(NSArray *))block {
     
-    PFQuery *imagesQuery = [PFQuery queryWithClassName:PHOTO_PFCLASS_KEY];
-    [imagesQuery whereKey:PHOTO_PAGE_OBJECT_KEY equalTo:page];
-    [imagesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+    //first check for the pfrelation
+    PFRelation * photoRelation = [page relationForKey:PAGE_PHOTOS_PFRELATION];
+    PFQuery * photoQuery = [photoRelation query];
+    [photoQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                          NSError * _Nullable error) {
         if(objects && !error){
             objects = [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
@@ -153,24 +135,53 @@ andTextAlignment:(NSNumber *) textAlignment
             }];
             
             block(objects);
+        }else{
+            //no pfrelation yet so check for the old style
+            PFQuery *imagesQuery = [PFQuery queryWithClassName:PHOTO_PFCLASS_KEY];
+            [imagesQuery whereKey:PHOTO_PAGE_OBJECT_KEY equalTo:page];
+            [imagesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+                                                            NSError * _Nullable error) {
+                if(objects && !error){
+                    //this object is still in the old style relation
+                    
+                    objects = [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+                        PFObject * photoA = obj1;
+                        PFObject * photoB = obj2;
+                        
+                        NSNumber * photoAnum = [photoA valueForKey:PHOTO_INDEX_KEY];
+                        NSNumber * photoBnum = [photoB valueForKey:PHOTO_INDEX_KEY];
+                        
+                        if([photoAnum integerValue] > [photoBnum integerValue]){
+                            return NSOrderedDescending;
+                        }else if ([photoAnum integerValue] < [photoBnum integerValue]){
+                            return NSOrderedAscending;
+                        }
+                        return NSOrderedSame;
+                    }];
+                    
+                    //save the objects to the new relation for the future
+                    for(PFObject * photo in objects){
+                        [Photo_BackendObject savePhotosToPFRelation:photo andPost:page];
+                    }
+                    
+                    block(objects);
+                }
+            }];
         }
     }];
 }
 
 +(void)deletePhotosInPage:(PFObject *)page withCompeletionBlock:(void(^)(BOOL))block {
-	PFQuery *imagesQuery = [PFQuery queryWithClassName:PHOTO_PFCLASS_KEY];
-	[imagesQuery whereKey:PHOTO_PAGE_OBJECT_KEY equalTo:page];
-	[imagesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-													NSError * _Nullable error) {
-		if(objects && !error){
-			for (PFObject *photoObj in objects) {
-				[photoObj deleteInBackground];
-			}
-			block(YES);
-			return;
-		}
-		block (NO);
-	}];
+	[Photo_BackendObject getPhotosForPage:page andCompletionBlock:^(NSArray * photos) {
+        if(photos){
+            for (PFObject *photoObj in photos) {
+                [photoObj deleteInBackground];
+            }
+            block(YES);
+            return;
+        }
+        block (NO);
+    }];
 }
 
 @end
