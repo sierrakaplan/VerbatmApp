@@ -100,7 +100,7 @@ andTextAlignment:(NSNumber *) textAlignment
 }
 
 
-+(void)savePhotosToPFRelation:(PFObject *) photo andPost:(PFObject *) page{
++(void)savePhotosToPFRelation:(PFObject *) photo andPage:(PFObject *) page{
     PFRelation * pageRelation = [page relationForKey:PAGE_PHOTOS_PFRELATION];
     [pageRelation addObject:photo];
     [page saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
@@ -161,7 +161,7 @@ andTextAlignment:(NSNumber *) textAlignment
                     
                     //save the objects to the new relation for the future
                     for(PFObject * photo in objects){
-                        [Photo_BackendObject savePhotosToPFRelation:photo andPost:page];
+                        [Photo_BackendObject savePhotosToPFRelation:photo andPage:page];
                     }
                     
                     block(objects);

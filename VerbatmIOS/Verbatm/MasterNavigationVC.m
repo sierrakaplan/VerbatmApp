@@ -25,7 +25,6 @@
 #import "ParseBackendKeys.h"
 #import "ProfileVC.h"
 #import "PublishingProgressManager.h"
-#import "Photo_BackendObject.h"
 
 #import "StoryboardVCIdentifiers.h"
 #import "SegueIDs.h"
@@ -73,8 +72,6 @@ ProfileVCDelegate>
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-    [Photo_BackendObject saveAllPostAndPFRelations];
-    
 	[self registerForNotifications];
 	if ([PFUser currentUser].isAuthenticated) {
 		[self checkMigrated];
