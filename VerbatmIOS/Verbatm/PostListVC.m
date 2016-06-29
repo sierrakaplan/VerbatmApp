@@ -119,7 +119,7 @@
 	[self registerClassForCustomCells];
 	[self registerForNotifications];
 	[self clearViews];
-    self.collectionView.backgroundColor = [UIColor clearColor];
+    self.collectionView.backgroundColor = (self.inSmallMode) ? [UIColor clearColor] : [UIColor blackColor];
     self.collectionView.bounces = YES;
 }
 

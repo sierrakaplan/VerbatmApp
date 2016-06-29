@@ -53,13 +53,13 @@
 #define BLOG_DESCRIPTION_HEIGHT 90.f
 
 #define USER_NAME_FONT_SIZE 15.f
-#define BLOG_TITLE_FONT_SIZE 20.f
+#define BLOG_TITLE_FONT_SIZE 25.f
 #define BLOG_DESCRIPTION_FONT_SIZE 16.f
 
 #define TITLE_MAX_CHARACTERS 27.f
 #define DESCRIPTION_MAX_CHARACTERS 250
 
-#define COVER_PHOTO_HEIGHT 30.f
+#define COVER_PHOTO_HEIGHT 25.f
 @end
 
 @implementation ProfileHeaderView
@@ -152,7 +152,8 @@
 -(void)addChangeCoverPhotoButton {
       self.changeCoverPhoto = [[UIButton alloc] init];
       [self.changeCoverPhoto setImage:[UIImage imageNamed:ADD_COVER_PHOTO_ICON] forState:UIControlStateNormal];
-       CGFloat coverPhotoIconWidth = (351 /106 ) *COVER_PHOTO_HEIGHT;
+    
+       CGFloat coverPhotoIconWidth = (351.f/106.f) * COVER_PHOTO_HEIGHT;
     
       self.changeCoverPhoto.frame = CGRectMake(self.frame.size.width - (coverPhotoIconWidth+OFFSET_X), self.frame.size.width - (COVER_PHOTO_HEIGHT + TAB_BAR_HEIGHT + OFFSET_X),coverPhotoIconWidth, COVER_PHOTO_HEIGHT);
       [self addSubview:self.changeCoverPhoto];
@@ -193,8 +194,12 @@
 		[self.blogDescription removeFromSuperview];
 		[self addSubview: self.blogTitleEditable];
 		[self addSubview: self.blogDescriptionEditable];
-		[self addSubviewsToTitle];
-		[self addSubviewsToDescription];
+		
+        if([self.originalTitle isEqualToString:@""]){
+            [self addSubviewsToTitle];
+            [self addSubviewsToDescription];
+        }
+        
 		//self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, PROFILE_INFO_BAR_HEIGHT);
 	} else {
         NSString * newTitle = ([self.blogTitleEditable.text isEqualToString:@""]) ? self.originalTitle: self.blogTitleEditable.text;

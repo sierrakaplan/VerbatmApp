@@ -13,7 +13,7 @@
 
 #import "PageTypeAnalyzer.h"
 #import <Parse/PFQuery.h>
-
+#import <Parse/PFRelation.h>
 #import "Page_BackendObject.h"
 #import "ParseBackendKeys.h"
 #import "Photo_BackendObject.h"
@@ -52,7 +52,7 @@
 		[newPageObject setObject:[NSNumber numberWithInt:PageTypeVideo] forKey:PAGE_VIEW_TYPE];
 	}
 
-	return [self savePageObject:newPageObject].then(^(void) {
+	return [self savePageObject:newPageObject withPostObkect:post].then(^(void) {
 		return [self storeImagesFromPinchView:pinchView withPageReference:newPageObject];
 	}).then(^(NSError *error) {
 		if (error) {
@@ -64,12 +64,18 @@
 	});
 }
 
--(AnyPromise*) savePageObject: (PFObject*)newPageObject {
+-(AnyPromise*) savePageObject: (PFObject*)newPageObject withPostObkect:(PFObject *) post {
 	return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
-		[newPageObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        [newPageObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 			if(succeeded){//now we save the media for the specific
-				resolve (newPageObject);
-			} else resolve(error);
+                PFRelation * pageRelation = [post relationForKey:POST_PAGES_PFRELATION];
+                [pageRelation addObject:newPageObject];
+                [post saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+                    if(succeeded){
+                        resolve (newPageObject);
+                    }else resolve(error);
+                }];
+			}
 		}];
 	}];
 }
@@ -163,6 +169,19 @@
 	}
 }
 
+
++(void)savePagesToPFRelation:(PFObject *) page andPost:(PFObject *) post{
+    PFRelation * pageRelation = [post relationForKey:POST_PAGES_PFRELATION];
+    [pageRelation addObject:page];
+    [post saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if(succeeded){
+            NSLog(@"saved new page relation");
+        }else NSLog(@"Failed to save new page relation");
+    }];
+
+}
+
+
 +(void)getPagesFromPost:(PFObject *) post andCompletionBlock:(void(^)(NSArray *))block {
 
 	PFQuery * pagesQuery = [PFQuery queryWithClassName:PAGE_PFCLASS_KEY];
@@ -170,7 +189,8 @@
 	[pagesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 														 NSError * _Nullable error) {
 		if(objects && !error){
-			objects = [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+            
+            objects = [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
 				PFObject * pageA = obj1;
 				PFObject * pageB = obj2;
 
@@ -190,9 +210,12 @@
 }
 
 +(void)deletePagesInPost:(PFObject *)post {
-	PFQuery * pagesQuery = [PFQuery queryWithClassName:PAGE_PFCLASS_KEY];
-	[pagesQuery whereKey:PAGE_POST_KEY equalTo:post];
-	[pagesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+    
+    PFRelation * pageRelation = [post relationForKey:POST_PAGES_PFRELATION];
+    
+    PFQuery * pageQuery = [pageRelation query];
+    
+    [pageQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 														 NSError * _Nullable error) {
 		if(objects && !error){
 			for (PFObject *obj in objects) {

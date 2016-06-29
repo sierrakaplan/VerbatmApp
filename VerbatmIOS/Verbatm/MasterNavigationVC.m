@@ -25,6 +25,7 @@
 #import "ParseBackendKeys.h"
 #import "ProfileVC.h"
 #import "PublishingProgressManager.h"
+#import "Page_BackendObject.h"
 
 #import "StoryboardVCIdentifiers.h"
 #import "SegueIDs.h"
