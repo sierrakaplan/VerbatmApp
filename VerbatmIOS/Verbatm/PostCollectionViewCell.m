@@ -10,6 +10,7 @@
 #import <Parse/PFObject.h>
 #import "Page_BackendObject.h"
 #import "ParseBackendKeys.h"
+#import "PublishingProgressView.h"
 #import "PostCollectionViewCell.h"
 #import "Share_BackendManager.h"
 #import "UIView+Effects.h"
@@ -23,7 +24,7 @@
 @property (nonatomic) BOOL isAlmostOnScreen;
 
 @property (nonatomic) BOOL footerUp;
-@property (nonatomic) UIView * publishingView;
+@property (nonatomic) PublishingProgressView * publishingProgressView;
 @property (nonatomic) BOOL hasPublishingView;
 @property (nonatomic) BOOL hasShadow;
 @end
@@ -47,10 +48,7 @@
 		[self.currentPostView clearPost];
 	}
     
-    if(self.publishingView){
-        [self.publishingView removeFromSuperview];
-        self.publishingView = nil;
-    }
+    [self removePublishingProgress];
 	self.currentPostView = nil;
 	self.currentPostActivityObject = nil;
 	self.postBeingPresented = nil;
@@ -66,17 +64,25 @@
     }
 }
 
--(void)presentPublishingView:(UIView *)publishingView{
-    self.publishingView = publishingView;
-    [self addSubview:self.publishingView];
+-(void)presentPublishingView{
+    [self addSubview:self.publishingProgressView];
     self.hasPublishingView = YES;
 }
 
+-(void)removePublishingProgress{
+    if(_publishingProgressView){
+        [self.publishingProgressView removeFromSuperview];
+        self.publishingProgressView = nil;
+    }
+}
 
 
 
 -(void) presentPostFromPCActivityObj: (PFObject *) pfActivityObj andChannel:(Channel*) channelForList
 					withDeleteButton: (BOOL) withDelete andLikeShareBarUp:(BOOL) up {
+    
+    [self removePublishingProgress];
+    
     self.hasPublishingView = NO;
     self.footerUp = up;
 	self.currentPostActivityObject = pfActivityObj;
@@ -181,6 +187,13 @@
 
 -(void) flagButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post {
 	[self.cellDelegate flagOrBlockButtonSelectedOnPostView:postView withPostObject:post];
+}
+
+-(PublishingProgressView *)publishingProgressView{
+    if(!_publishingProgressView){
+        _publishingProgressView = [[PublishingProgressView alloc] initWithFrame:self.bounds];
+    }
+    return _publishingProgressView;
 }
 
 @end

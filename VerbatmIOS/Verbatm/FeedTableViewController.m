@@ -135,7 +135,6 @@
     }
      self.nextProfileIndex = indexPath.row + 1;
     [self prepareNextPostFromNextIndex:self.nextProfileIndex];
-   
     return cell;
 }
 

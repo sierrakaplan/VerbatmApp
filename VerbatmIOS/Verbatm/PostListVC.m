@@ -31,7 +31,6 @@
 #import "ParseBackendKeys.h"
 #import "PostView.h"
 #import <PromiseKit/PromiseKit.h>
-#import "PublishingProgressView.h"
 
 
 #import "Share_BackendManager.h"
@@ -84,6 +83,7 @@
 @property (nonatomic) PFObject *postToShare;
 //@property (strong, nonatomic) BranchUniversalObject *branchUniversalObject;
 
+@property (nonatomic) NSNumber * publishingProgressViewPositionHolder;
 @property (nonatomic) ExternalShare * externalShare;
 
 
@@ -94,8 +94,6 @@
 
 @property (nonatomic) BOOL currentlyPublishing;
 @property (nonatomic) BOOL exitedView;
-
-@property (nonatomic) PublishingProgressView * publishingProgressView;
 
 
 @property (nonatomic) void(^refreshPostsCompletion)(NSArray * posts);
@@ -143,32 +141,34 @@
 -(void)scrollToLastElementInlist{
 	NSInteger section = 0;
 	NSInteger item = [self.collectionView numberOfItemsInSection:section] - 1;
-	if(item > 0){
+	if(item > 0) {
 		NSIndexPath *indexPath = [NSIndexPath indexPathForItem:item inSection:section];
 		[self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:(UICollectionViewScrollPositionRight) animated:NO];
 	}
 }
 
 -(void)clearPublishingView{
-	if(self.publishingProgressView){
-		[self.publishingProgressView removeFromSuperview];
-		self.publishingProgressView = nil;
-	}
 }
 
 -(void) userPublishing:(NSNotification *) notification {
-	if (self.currentlyPublishing) return;
+	if (self.currentlyPublishing || !self.isCurrentUserProfile) return;
 	self.currentlyPublishing = YES;
-    [self refreshPosts];
-    [self.postListDelegate postsFound];
+    @synchronized (self.parsePostObjects) {
+        //add progress view to parseObjects
+        [self.parsePostObjects addObject:self.publishingProgressViewPositionHolder];
+        [self.collectionView reloadData];
+        [self.postListDelegate postsFound];
+    }
 }
 
 -(void) publishingSucceeded:(NSNotification *) notification {
+    if(!self.isCurrentUserProfile) return;
 	self.currentlyPublishing = NO;
 	[self refreshPosts];
 
 }
 -(void) publishingFailed:(NSNotification *) notification {
+    if(!self.isCurrentUserProfile) return;
 	self.currentlyPublishing = NO;
 	[self.collectionView reloadData];
 }
@@ -272,7 +272,6 @@
 
 //set the data source and delegate of the collection view
 -(void)setDateSourceAndDelegate{
-    
 	self.collectionView.dataSource = self;
 	self.collectionView.delegate = self;
 	self.collectionView.pagingEnabled = NO;
@@ -312,7 +311,7 @@
 	__weak typeof(self) weakSelf = self;
 	self.refreshPostsCompletion = ^void(NSArray *posts) {
 		if (weakSelf.exitedView) return; // Already left page
-        [self.postListDelegate postsFound];
+        [weakSelf.postListDelegate postsFound];
 		[weakSelf.customActivityIndicator stopCustomActivityIndicator];
 		if(posts.count) {
 			if (weakSelf.listType == listFeed) {
@@ -327,7 +326,15 @@
                     // Perform the updates
                     [weakSelf.collectionView performBatchUpdates:^{
                         //Insert the new data
-                        [weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
+                        if(weakSelf.currentlyPublishing){
+                            id publishingObject = [weakSelf.parsePostObjects lastObject];
+                            [weakSelf.parsePostObjects removeObject:publishingObject];
+                            [weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
+                            [weakSelf.parsePostObjects addObject:publishingObject];
+                        }else{
+                            [weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
+                        }
+                        
                         //Insert the new cells
                         [weakSelf.collectionView insertItemsAtIndexPaths:indices];
 
@@ -337,12 +344,28 @@
                     }];
                 }
             } else {
-
-				//Reload all posts in channel
-				weakSelf.parsePostObjects = nil;
-				[weakSelf.parsePostObjects addObjectsFromArray:posts];
+               
+                    if(weakSelf.currentlyPublishing){
+                         @synchronized (weakSelf.parsePostObjects) {
+                            id publishingObject = [weakSelf.parsePostObjects lastObject];
+                            //Reload all posts in channel
+                            [weakSelf.parsePostObjects removeAllObjects];
+                            
+                            [weakSelf.parsePostObjects addObjectsFromArray:posts];
+                            if(publishingObject != NULL)[weakSelf.parsePostObjects addObject:publishingObject];
+                         }
+                        
+                    }else{
+                        @synchronized (weakSelf.parsePostObjects) {
+                            //Reload all posts in channel
+                            [weakSelf.parsePostObjects removeAllObjects];
+                            [weakSelf.parsePostObjects addObjectsFromArray:posts];
+                        }
+                    }
+				
+                
 				[weakSelf.collectionView reloadData];
-				//[weakSelf scrollToLastElementInlist];
+				[weakSelf scrollToLastElementInlist];
 
 			}
 
@@ -466,7 +489,7 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView
 	 numberOfItemsInSection:(NSInteger)section {
-	return self.currentlyPublishing ? self.parsePostObjects.count + 1 : self.parsePostObjects.count;
+	return self.parsePostObjects.count;
 }
 
 #pragma mark - ViewDelegate -
@@ -520,9 +543,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(PostCollectionViewCell *)handleCellsForSmallModeForIndexPath:(NSIndexPath *)indexPath{
     PostCollectionViewCell *currentCell;
-    
     return currentCell;
-    
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
@@ -535,29 +556,30 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 //	if (self.performingUpdate && self.currentDisplayCell){
 //		return self.currentDisplayCell;
 //	}
-	
     PostCollectionViewCell * currentCell = [self handleCellsForLargeModeForIndexPath:indexPath];
 	self.currentDisplayCell = currentCell;
 	return currentCell;
 }
 
 -(PostCollectionViewCell*) postCellAtIndexPath:(NSIndexPath *)indexPath {
-	if ((self.currentlyPublishing && (indexPath.row > self.parsePostObjects.count)) ||
-		(!self.currentlyPublishing && indexPath.row >= self.parsePostObjects.count)){
+	if (indexPath.row >= self.parsePostObjects.count){
 		return nil;
 	}
+    
 	PostCollectionViewCell *cell = (PostCollectionViewCell *) [self.collectionView dequeueReusableCellWithReuseIdentifier:POST_CELL_ID forIndexPath:indexPath];
 	cell.cellDelegate = self;
 	if(indexPath.row < self.parsePostObjects.count){
-		PFObject *postObject = self.parsePostObjects[indexPath.row];
+		id postObject = self.parsePostObjects[indexPath.row];
 		if (cell.currentPostActivityObject != postObject) {
 			[cell clearViews];
+            if(self.currentlyPublishing && [postObject isKindOfClass:[NSNumber class]]){
+                [cell presentPublishingView];
+            }else{
+            
 			[cell presentPostFromPCActivityObj:postObject andChannel:self.channelForList
 							  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:NO];
+            }
 		}
-	} else if(self.currentlyPublishing) {
-		[cell clearViews];
-		[cell presentPublishingView:self.publishingProgressView];
 	}
     
     [self addTapGestureToCell:cell];
@@ -591,9 +613,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}
 }
 
-//- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
-//    [(PostCollectionViewCell*)cell onScreen];
-//}
 
 -(void) footerShowing: (BOOL) showing {
 	self.footerBarIsUp = showing;
@@ -1096,12 +1115,10 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if(!_externalShare)_externalShare = [[ExternalShare alloc] init];
     return _externalShare;
 }
--(PublishingProgressView *)publishingProgressView{
-	if(!_publishingProgressView){
-		CGRect frame =  CGRectMake(0, 0,[(UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout itemSize].width, [(UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout itemSize].height);
-		_publishingProgressView = [[PublishingProgressView alloc] initWithFrame:frame];
-	}
-	return _publishingProgressView;
+
+-(NSNumber*)publishingProgressViewPositionHolder{
+    if(!_publishingProgressViewPositionHolder)_publishingProgressViewPositionHolder = [NSNumber numberWithBool:YES];
+    return _publishingProgressViewPositionHolder;
 }
 
 @end

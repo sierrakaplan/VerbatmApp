@@ -72,7 +72,7 @@
 		self.channel = channel;
 		self.isCurrentUser = (user == nil);
 		self.editMode = NO;
-		self.backgroundColor = [UIColor whiteColor];
+		self.backgroundColor = [UIColor clearColor];
 		CGRect userInfoBarFrame = CGRectMake(0.f, 0.f, frame.size.width,STATUS_BAR_HEIGHT + PROFILE_INFO_BAR_HEIGHT);
 		self.userInformationBar = [[ProfileInformationBar alloc] initWithFrame:userInfoBarFrame andUser:user
 																	andChannel:channel inProfileTab:profileTab];

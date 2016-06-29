@@ -86,13 +86,17 @@
 	[super viewDidLoad];
 	self.automaticallyAdjustsScrollViewInsets = NO;
 	[self setNeedsStatusBarAppearanceUpdate];
-	self.view.backgroundColor = [UIColor colorWithWhite:0.95 alpha:1.f];
+	self.view.backgroundColor = [UIColor colorWithWhite:0.90 alpha:1.f];
     [self createHeader];
     [self checkIntroNotification];
 }
 
 -(void)loadContentToPostList{
-   if(!self.postListVC.isInitiated) [self.postListVC display:self.channel asPostListType:listChannel withListOwner: self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
+   if(!self.postListVC.isInitiated){
+       [self.postListVC display:self.channel asPostListType:listChannel withListOwner: self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
+   }else{
+       [self.postListVC refreshPosts];
+   }
 }
 
 //to be used sparingly -- has the postlist refresh content
@@ -116,9 +120,9 @@
 -(void)clearOurViews{
     if(self.postListVC)[self.postListVC offScreen];
     if(self.postListVC)[self.postListVC clearViews];
-    @autoreleasepool {
-        self.postListVC = nil;
-    }
+//    @autoreleasepool {
+//        self.postListVC = nil;
+//    }
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -164,7 +168,6 @@
     self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andUser:user                                                                   andChannel:self.channel inProfileTab:self.isProfileTab];
     
     self.profileHeaderView.delegate = self;
-    [self.profileHeaderView addShadowToView];
     [self.view addSubview: self.profileHeaderView];
     [self.view sendSubviewToBack:self.profileHeaderView];
     self.headerViewOnScreen = YES;

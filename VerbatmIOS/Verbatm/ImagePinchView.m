@@ -109,11 +109,13 @@
 	PHAsset* imageAsset = fetchResult.firstObject;
 	CGSize size = half ? HALF_SCREEN_SIZE : FULL_SCREEN_SIZE;
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
-		[[PHImageManager defaultManager] requestImageForAsset:imageAsset targetSize:size contentMode:PHImageContentModeAspectFill
-													  options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
-														  image = [image imageByScalingAndCroppingForSize: CGSizeMake(size.width, size.height)];
-														  resolve(image);
-													  }];
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            [[PHImageManager defaultManager] requestImageForAsset:imageAsset targetSize:size contentMode:PHImageContentModeAspectFill
+                                                          options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
+                                                              image = [image imageByScalingAndCroppingForSize: CGSizeMake(size.width, size.height)];
+                                                              resolve(image);
+                                                          }];
+        });
 	}];
 	return promise;
 }
