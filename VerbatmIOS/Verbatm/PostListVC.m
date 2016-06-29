@@ -591,6 +591,10 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}
 }
 
+//- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+//    [(PostCollectionViewCell*)cell onScreen];
+//}
+
 -(void) footerShowing: (BOOL) showing {
 	self.footerBarIsUp = showing;
 	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
