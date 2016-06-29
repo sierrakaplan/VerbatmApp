@@ -16,6 +16,7 @@
 #import "PostPublisher.h"
 #import "PublishingProgressManager.h"
 #import <PromiseKit/AnyPromise.h>
+#import <Parse/PFRelation.h>
 
 @interface Photo_BackendObject ()
 
@@ -82,14 +83,52 @@ andTextAlignment:(NSNumber *) textAlignment
 	return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 		[newPhotoObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 			if(succeeded && !error){
-				[[PublishingProgressManager sharedInstance] mediaSavingProgressed:1];
-				resolve(nil);
+                PFRelation * photoRelation = [pageObject relationForKey:PAGE_PHOTOS_PFRELATION];
+                [photoRelation addObject:newPhotoObject];
+                [pageObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+                    if(succeeded){
+                        [[PublishingProgressManager sharedInstance] mediaSavingProgressed:1];
+                        resolve(nil);
+                    }else resolve(error);
+                }];
+				
 			} else {
 				resolve(error);
 			}
 		}];
 	}];
 }
+
+//+(void)saveAllPostAndPFRelations{
+//    NSInteger skipAmount = 0;
+//    
+//    PFQuery * postQuery = [PFQuery queryWithClassName:POST_PFCLASS_KEY];
+//    [postQuery setLimit:1000];
+//    while (skipAmount <= 1000) {
+//        [postQuery setSkip:skipAmount];
+//        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+//            [postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable posts,
+//                                                          NSError * _Nullable error) {
+//                if(posts && !error){
+//                    for (PFObject * post in posts){
+//                        [Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
+//                            for(id page in pages){
+//                                [Page_BackendObject savePagesToPFRelation:page andPost:post];
+//                            }
+//                            
+//                        }];
+//                    }
+//                    
+//                }
+//            }];
+//        });
+//        
+//        skipAmount += 1000;
+//        [NSThread sleepForTimeInterval:3.f];
+//    }
+//    
+//    
+//}
 
 +(void)getPhotosForPage:(PFObject *) page andCompletionBlock:(void(^)(NSArray *))block {
     

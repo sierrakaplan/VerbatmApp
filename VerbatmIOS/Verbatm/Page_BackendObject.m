@@ -184,9 +184,11 @@
 
 +(void)getPagesFromPost:(PFObject *) post andCompletionBlock:(void(^)(NSArray *))block {
 
-	PFQuery * pagesQuery = [PFQuery queryWithClassName:PAGE_PFCLASS_KEY];
-	[pagesQuery whereKey:PAGE_POST_KEY equalTo:post];
-	[pagesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+    PFRelation * pageRelation = [post relationForKey:POST_PAGES_PFRELATION];
+    
+    PFQuery * pageQuery = [pageRelation query];
+    
+    [pageQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 														 NSError * _Nullable error) {
 		if(objects && !error){
             
