@@ -10,6 +10,7 @@
 
 #import <UIKit/UIKit.h>
 #import "Channel.h"
+#import "SelectSharingOption.h"
 
 
 /*
@@ -19,7 +20,9 @@
 @protocol SharePostViewDelegate <NSObject>
 
 -(void) cancelButtonSelected;
--(void) reblogToVerbatm:(BOOL)verbatm andFacebook:(BOOL)facebook;
+
+@optional
+-(void) shareToShareOption:(ShareOptions) shareOption;
 
 @end
 

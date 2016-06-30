@@ -17,7 +17,7 @@
 -(void) deleteButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post andPostChannelActivityObj:(PFObject*)pfActivityObj
 							 reblogged:(BOOL)reblogged;
 -(void) flagOrBlockButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post;
-
+-(void) showWhoLikesThePost:(PFObject *) post;
 @end
 
 @interface PostCollectionViewCell : UICollectionViewCell
@@ -36,6 +36,6 @@
 -(void) offScreen;
 
 -(void) clearViews;
-
+-(void)presentPublishingView:(UIView *)publishingView;
 
 @end

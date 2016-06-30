@@ -15,6 +15,7 @@
 #import "Intro_Instruction_Notification_View.h"
 
 #import "Follow_BackendManager.h"
+#import "FollowingView.h"
 
 #import "LoadingIndicator.h"
 
@@ -35,12 +36,13 @@
 #import "User_BackendObject.h"
 #import "UserInfoCache.h"
 #import "UserSetupParameters.h"
-
+#import "UserAndChannelListsTVC.h"
 #import <PromiseKit/PromiseKit.h>
 
 @interface ProfileVC() <ProfileHeaderViewDelegate, Intro_Notification_Delegate,
-UIScrollViewDelegate, CreateNewChannelViewProtocol,
-PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
+                        UIScrollViewDelegate, CreateNewChannelViewProtocol,
+                        PublishingProgressProtocol, PostListVCProtocol,
+                        UIGestureRecognizerDelegate,UserAndChannelListsTVCDelegate>
 
 @property (nonatomic) BOOL currentlyCreatingNewChannel;
 
@@ -69,9 +71,8 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	self.automaticallyAdjustsScrollViewInsets = NO;
 	[self setNeedsStatusBarAppearanceUpdate];
 	self.view.backgroundColor = [UIColor blackColor];
-	[self createHeader];
-	[self checkIntroNotification];
-	[self addPostListVC];
+    [self createHeader];
+    [self checkIntroNotification];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
@@ -82,8 +83,35 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
-	[self.postListVC offScreen];
-	[self.postListVC clearViews];
+    
+    [self.postListVC offScreen];
+    [self.postListVC clearViews];
+    @autoreleasepool {
+         self.postListVC = nil;
+    }
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+}
+
+-(void)presentUserList:(ListLoadType) listType{
+    UserAndChannelListsTVC * vc = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    [vc presentList:listType forChannel:self.channel orPost:nil];
+    [self presentViewController:vc animated:YES completion:nil];
+}
+
+-(void)followersButtonSelected{
+    [self showMyFollowers];
+}
+-(void)followingButtonSelected{
+    [self showWhoIAmFollowing];
+}
+-(void)showWhoIAmFollowing{
+    [self presentUserList:followingList];
+}
+-(void)showMyFollowers{
+    [self presentUserList:followersList];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -94,12 +122,14 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	[self.channel getFollowersAndFollowingWithCompletionBlock:^{
 		CGRect frame = CGRectMake(0.f, 0.f, self.view.frame.size.width, PROFILE_HEADER_HEIGHT);
 		PFUser* user = self.isCurrentUserProfile ? nil : self.ownerOfProfile;
-		self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andUser:user
-															   andChannel:self.channel inProfileTab:self.isProfileTab];
-		self.profileHeaderView.delegate = self;
-		[self.view addSubview: self.profileHeaderView];
-		[self.view bringSubviewToFront: self.profileHeaderView];
-		self.headerViewOnScreen = YES;
+		
+            self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andUser:user
+                                                                   andChannel:self.channel inProfileTab:self.isProfileTab];
+            self.profileHeaderView.delegate = self;
+            [self.profileHeaderView addShadowToView];
+            [self.view addSubview: self.profileHeaderView];
+            [self.view bringSubviewToFront: self.profileHeaderView];
+            self.headerViewOnScreen = YES;
 	}];
 }
 
@@ -118,24 +148,6 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 		[self.introInstruction removeFromSuperview];
 		self.introInstruction = nil;
 	}
-}
-
--(void) addPostListVC {
-	if(self.postListVC) {
-		[self.postListVC offScreen];
-		[self.postListVC.view removeFromSuperview];
-	}
-
-	UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
-	flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-	[flowLayout setMinimumInteritemSpacing:0.3];
-	[flowLayout setMinimumLineSpacing:0.0f];
-	[flowLayout setItemSize:self.view.frame.size];
-	self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
-	self.postListVC.postListDelegate = self;
-	if(self.profileHeaderView) [self.view insertSubview:self.postListVC.view belowSubview:self.profileHeaderView];
-	else [self.view addSubview:self.postListVC.view];
-	[self addClearScreenGesture];
 }
 
 -(void)addClearScreenGesture{
@@ -333,13 +345,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
 #pragma mark - Publishing -
 
--(void) showPublishingProgress {
-	if (_publishingProgressView) return;
-	PublishingProgressManager *progressManager = [PublishingProgressManager sharedInstance];
-	self.publishingProgress = [progressManager progressAccountant];
-	[progressManager setDelegate:self];
-	[self.profileHeaderView addSubview: self.publishingProgressView];
-}
+
 
 #pragma mark Publishing Progress Manager Delegate methods
 
@@ -387,6 +393,23 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	if (object == self.publishingProgress && [keyPath isEqualToString:@"completedUnitCount"] ) {
 		[self.progressBar setProgress:self.publishingProgress.fractionCompleted animated:YES];
 	}
+}
+
+-(PostListVC *) postListVC{
+    if(!_postListVC){
+        UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
+        flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+        [flowLayout setMinimumInteritemSpacing:0.3];
+        [flowLayout setMinimumLineSpacing:0.0f];
+        [flowLayout setItemSize:self.view.frame.size];
+        _postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
+        _postListVC.postListDelegate = self;
+        if(self.profileHeaderView) [self.view insertSubview:_postListVC.view belowSubview:self.profileHeaderView];
+        else [self.view addSubview:_postListVC.view];
+        [self addClearScreenGesture];
+
+    }
+    return _postListVC;
 }
 
 @end

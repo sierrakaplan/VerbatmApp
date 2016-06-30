@@ -168,6 +168,7 @@
 		C734FD9719B13D7700B2C370 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9619B13D7700B2C370 /* CoreVideo.framework */; };
 		C734FD9919B13D8600B2C370 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9819B13D8600B2C370 /* CoreMedia.framework */; };
 		C734FD9C19B14B8D00B2C370 /* ContentDevVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */; };
+		C736C9FF1D1B2AE500535C7E /* PublishingProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = C736C9FE1D1B2AE500535C7E /* PublishingProgressView.m */; };
 		C73B7C2F1CA8719200128926 /* Intro_Instruction_Notification_View.m in Sources */ = {isa = PBXBuildFile; fileRef = C73B7C2E1CA8719200128926 /* Intro_Instruction_Notification_View.m */; };
 		C741AC581C49D23C0076FFC5 /* FollowInfoBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C741AC571C49D23B0076FFC5 /* FollowInfoBar.m */; };
 		C7469BF41B4874A600EA7B10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7469BF21B4874A600EA7B10 /* Main.storyboard */; };
@@ -182,6 +183,8 @@
 		C761727B1C4DFB7700AB0D84 /* PostListVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C761727A1C4DFB7700AB0D84 /* PostListVC.m */; };
 		C761727F1C4E0EB600AB0D84 /* PostCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C761727E1C4E0EB600AB0D84 /* PostCollectionViewCell.m */; };
 		C763C1BC1CE4430B00929248 /* onBoardingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C763C1BB1CE4430B00929248 /* onBoardingViewController.m */; };
+		C764CD6F1D189A3B00F75760 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C764CD6E1D189A3B00F75760 /* Twitter.framework */; };
+		C764CD711D18A26200F75760 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C764CD701D18A26200F75760 /* MessageUI.framework */; };
 		C774040F19BE6538004C50EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C774040E19BE6538004C50EA /* Images.xcassets */; };
 		C77A20931C03E39E00356465 /* ProfileNavBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C77A20921C03E39E00356465 /* ProfileNavBar.m */; };
 		C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = C77C7D371A22E9FC00694B20 /* PinchView.m */; };
@@ -510,6 +513,8 @@
 		C734FD9819B13D8600B2C370 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		C734FD9A19B14B8D00B2C370 /* ContentDevVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentDevVC.h; sourceTree = "<group>"; };
 		C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentDevVC.m; sourceTree = "<group>"; };
+		C736C9FD1D1B2AE500535C7E /* PublishingProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PublishingProgressView.h; sourceTree = "<group>"; };
+		C736C9FE1D1B2AE500535C7E /* PublishingProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PublishingProgressView.m; sourceTree = "<group>"; };
 		C73B7C2D1CA8719200128926 /* Intro_Instruction_Notification_View.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Intro_Instruction_Notification_View.h; sourceTree = "<group>"; };
 		C73B7C2E1CA8719200128926 /* Intro_Instruction_Notification_View.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Intro_Instruction_Notification_View.m; sourceTree = "<group>"; };
 		C741AC561C49D23B0076FFC5 /* FollowInfoBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowInfoBar.h; sourceTree = "<group>"; };
@@ -538,6 +543,8 @@
 		C761727E1C4E0EB600AB0D84 /* PostCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostCollectionViewCell.m; sourceTree = "<group>"; };
 		C763C1BA1CE4430B00929248 /* onBoardingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = onBoardingViewController.h; sourceTree = "<group>"; };
 		C763C1BB1CE4430B00929248 /* onBoardingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = onBoardingViewController.m; sourceTree = "<group>"; };
+		C764CD6E1D189A3B00F75760 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
+		C764CD701D18A26200F75760 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		C774040E19BE6538004C50EA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		C77A20911C03E39E00356465 /* ProfileNavBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileNavBar.h; sourceTree = "<group>"; };
 		C77A20921C03E39E00356465 /* ProfileNavBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileNavBar.m; sourceTree = "<group>"; };
@@ -639,6 +646,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C764CD711D18A26200F75760 /* MessageUI.framework in Frameworks */,
+				C764CD6F1D189A3B00F75760 /* Twitter.framework in Frameworks */,
 				C7F3EBD01C86249E007D23DF /* libcompression.tbd in Frameworks */,
 				C7F3EBCE1C859B8C007D23DF /* libbz2.1.0.tbd in Frameworks */,
 				A55AA12E1BD5B7DC00EB883A /* CoreMotion.framework in Frameworks */,
@@ -1285,6 +1294,8 @@
 				C73B7C2D1CA8719200128926 /* Intro_Instruction_Notification_View.h */,
 				C73B7C2E1CA8719200128926 /* Intro_Instruction_Notification_View.m */,
 				C7AA49FC1D148A9100A031C6 /* Custom Button */,
+				C736C9FD1D1B2AE500535C7E /* PublishingProgressView.h */,
+				C736C9FE1D1B2AE500535C7E /* PublishingProgressView.m */,
 			);
 			name = "Custom Views";
 			sourceTree = "<group>";
@@ -1332,6 +1343,8 @@
 		C7BC4374199D97F5004B91A1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C764CD701D18A26200F75760 /* MessageUI.framework */,
+				C764CD6E1D189A3B00F75760 /* Twitter.framework */,
 				A5F94ABC1CCC115500341D01 /* PromiseKit.framework */,
 				C7F3EBCF1C86249E007D23DF /* libcompression.tbd */,
 				C7F3EBCD1C859B8C007D23DF /* libbz2.1.0.tbd */,
@@ -1868,6 +1881,7 @@
 				A5E73B8E1D16965700527ECF /* GTLQueryVerbatmApp.m in Sources */,
 				A5C09BE61BA1F43600C0AD86 /* MediaUploader.m in Sources */,
 				C73B7C2F1CA8719200128926 /* Intro_Instruction_Notification_View.m in Sources */,
+				C736C9FF1D1B2AE500535C7E /* PublishingProgressView.m in Sources */,
 				C75F155F1C2B4A1B0092912D /* Channel.m in Sources */,
 				A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */,
 				A5E73B941D1696B000527ECF /* GTLUploadParameters.m in Sources */,

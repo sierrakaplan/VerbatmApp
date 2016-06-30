@@ -12,6 +12,7 @@
 
 #import "Channel_BackendObject.h"
 #import "Channel.h"
+
 #import "Post_BackendObject.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFQuery.h>
@@ -98,6 +99,26 @@
             }
             completionBlock(finalChannelObjects);
         }];
+    }];
+}
+
++ (void) getAllChannelsWithCompletionBlock:(void(^)(NSMutableArray *))completionBlock {
+    
+    PFQuery * userChannelQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
+    [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+                                                         NSError * _Nullable error) {
+        NSMutableArray * finalChannelObjects = [[NSMutableArray alloc] init];
+        if(objects && !error) {
+            for(PFObject * parseChannelObject in objects){
+                NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
+                // get number of follows from follow objects
+                    Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
+                                                                    andParseChannelObject:parseChannelObject
+                                                                        andChannelCreator:[PFUser currentUser]];
+                    [finalChannelObjects addObject:verbatmChannelObject];
+            }
+        }
+        completionBlock(finalChannelObjects);
     }];
 }
 

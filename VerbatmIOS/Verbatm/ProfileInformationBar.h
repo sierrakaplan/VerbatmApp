@@ -22,7 +22,8 @@
 
 // Only available in someone else's profile
 -(void) blockCurrentUserShouldBlock:(BOOL) shouldBlock;
-
+-(void)followersButtonSelected;
+-(void)followingButtonSelected;
 
 @end
 

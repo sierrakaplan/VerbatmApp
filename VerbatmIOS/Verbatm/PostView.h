@@ -18,7 +18,7 @@
 @property (strong, nonatomic) Channel *postChannel; /* Original channel posted to */
 @property (strong, nonatomic) PFObject* parsePostChannelActivityObject;
 
-@property (nonatomic, weak) id<PostViewDelegate> delegate;
+@property (nonatomic) id<PostViewDelegate> delegate;
 
 // stores pov info associated with this view
 -(instancetype)initWithFrame:(CGRect)frame andPostChannelActivityObject:(PFObject*) postObject
@@ -54,7 +54,7 @@
 -(void) shiftLikeShareBarDown:(BOOL) down;
 
 -(void)showPageUpIndicator;
-
+-(void)prepareForScreenShot;
 @end
 
 @protocol PostViewDelegate <NSObject>
@@ -63,6 +63,6 @@
 -(void) channelSelected:(Channel *) channel;
 -(void) deleteButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post reblogged: (BOOL)reblogged;
 -(void) flagButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post;
-
+-(void) showWhoLikesThePost:(PFObject *) post;
 @end
 

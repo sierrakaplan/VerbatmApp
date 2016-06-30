@@ -71,6 +71,31 @@
 }
 
 
+-(void) createMiddleButtonWithTitle: (NSString*) title blackText:(BOOL) isBlack largeSize:(BOOL) largeSize {
+    
+    UIButton* middleButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    
+    CGFloat curButtonWidth = BUTTON_WIDTH + ((largeSize) ? BUTTON_WIDTH : 0.f);
+    
+    [middleButton setFrame: CGRectMake(BUTTON_WIDTH, 0.f, curButtonWidth, BUTTON_HEIGHT)];
+    if (title) {
+        UILabel* titleLabel = [self getLabelWithText:title andAlignment:NSTextAlignmentCenter];
+        titleLabel.adjustsFontSizeToFitWidth = YES;
+        if(isBlack)[titleLabel setTextColor:[UIColor blackColor]];
+        if(largeSize)[titleLabel setFont:[UIFont fontWithName:NAVIGATION_BAR_BUTTON_FONT size:(NAVIGATION_BAR_BUTTON_FONT_SIZE * 1.3)]];
+        
+        [middleButton addSubview:titleLabel];
+    }
+    
+    [self addSubview: middleButton];
+    [middleButton addTarget:self action:@selector(middleButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+}
+
+
+
+
+
+
 -(void) createRightButtonWithTitle: (NSString*) title orImage: (UIImage*) image {
 	UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[rightButton setFrame: CGRectMake(BUTTON_WIDTH*2, 0.f, BUTTON_WIDTH, BUTTON_HEIGHT)];

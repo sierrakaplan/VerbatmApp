@@ -14,8 +14,11 @@
 //this key gives you access to a string that tells you if the connection is established or not
 #define INTERNET_CONNECTION_KEY @"internet_connection_key"
 
+#define NOTIFICATION_POST_CURRENTLY_PUBLISHING @"notification_pov_publishing"
 #define NOTIFICATION_POST_PUBLISHED @"notification_pov_published"
 #define NOTIFICATION_POST_FAILED_TO_PUBLISH @"notification_pov_failed_to_publish"
+
+
 #define NOTIFICATION_REFRESH_FEEDS @"notification_refresh_feeds"
 
 

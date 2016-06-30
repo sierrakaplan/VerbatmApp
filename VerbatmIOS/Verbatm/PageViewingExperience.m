@@ -39,6 +39,7 @@
 -(void)offScreen {}
 
 -(void)almostOnScreen {}
+-(void)prepareForScreenShot{}
 
 -(LoadingIndicator *) customActivityIndicator{
 	if(!_customActivityIndicator){
