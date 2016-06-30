@@ -191,66 +191,33 @@
 
 +(void)getPagesFromPost:(PFObject *) post andCompletionBlock:(void(^)(NSArray *))block {
 
-    //first try with the new pfrelation style
-    PFRelation * pageRelation = [post relationForKey:POST_PAGES_PFRELATION];
-    PFQuery * pageQuery = [pageRelation query];
-//    pageQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
-//    __block BOOL cachedResult = YES;
+    PFQuery *pageQuery = [PFQuery queryWithClassName:PAGE_PFCLASS_KEY];
+    [pageQuery whereKey:PAGE_POST_KEY equalTo:post];
     [pageQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-														 NSError * _Nullable error) {
-		if(objects && !error){
+                                                    NSError * _Nullable error) {
+        if(objects && !error){
+            //this object is still in the old style relation
             
             objects = [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
-				PFObject * pageA = obj1;
-				PFObject * pageB = obj2;
-
-				NSNumber * pageAnum = [pageA valueForKey:PAGE_INDEX_KEY];
-				NSNumber * pageBnum = [pageB valueForKey:PAGE_INDEX_KEY];
-
-				if([pageAnum integerValue] > [pageBnum integerValue]){
-					return NSOrderedDescending;
-				} else if ([pageAnum integerValue] < [pageBnum integerValue]){
-					return NSOrderedAscending;
-				}
-				return NSOrderedSame;
-			}];
-			block(objects);
-        }else{
-            //perhaps the relation isn't there so lets use the old version
-            //no pfrelation yet so check for the old style
-            PFQuery *pageQuery = [PFQuery queryWithClassName:PAGE_PFCLASS_KEY];
-            [pageQuery whereKey:PAGE_POST_KEY equalTo:post];
-            [pageQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-                                                            NSError * _Nullable error) {
-                if(objects && !error){
-                    //this object is still in the old style relation
-                    
-                    objects = [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
-                        PFObject * photoA = obj1;
-                        PFObject * photoB = obj2;
-                        
-                        NSNumber * photoAnum = [photoA valueForKey:PHOTO_INDEX_KEY];
-                        NSNumber * photoBnum = [photoB valueForKey:PHOTO_INDEX_KEY];
-                        
-                        if([photoAnum integerValue] > [photoBnum integerValue]){
-                            return NSOrderedDescending;
-                        }else if ([photoAnum integerValue] < [photoBnum integerValue]){
-                            return NSOrderedAscending;
-                        }
-                        return NSOrderedSame;
-                    }];
-                    
-                    //save the objects to the new relation for the future
-                    for(PFObject * page in objects){
-                        [Page_BackendObject savePageToPFRelation:page andPost:post];
-                    }
-                    
-                    block(objects);
-                }else {
-                    block(nil);
-                    [[Crashlytics sharedInstance] recordError: error];
+                PFObject * photoA = obj1;
+                PFObject * photoB = obj2;
+                
+                NSNumber * photoAnum = [photoA valueForKey:PHOTO_INDEX_KEY];
+                NSNumber * photoBnum = [photoB valueForKey:PHOTO_INDEX_KEY];
+                
+                if([photoAnum integerValue] > [photoBnum integerValue]){
+                    return NSOrderedDescending;
+                }else if ([photoAnum integerValue] < [photoBnum integerValue]){
+                    return NSOrderedAscending;
                 }
+                return NSOrderedSame;
             }];
+
+            
+            block(objects);
+        }else {
+            block(nil);
+            [[Crashlytics sharedInstance] recordError: error];
         }
 	}];
 }
