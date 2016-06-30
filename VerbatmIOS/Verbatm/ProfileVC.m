@@ -317,6 +317,7 @@
     
     if(self.postListVC.parsePostObjects && self.postListVC.parsePostObjects.count){
         newVC.postsQueryManager = self.postListVC.postsQueryManager;
+        newVC.currentlyPublishing = self.postListVC.currentlyPublishing;
         [newVC loadPostListFromOlPostListWithDisplay:self.channel postListType:listChannel listOwner:self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile startingDate:self.startingDate andParseObjects:self.postListVC.parsePostObjects];
             }
     

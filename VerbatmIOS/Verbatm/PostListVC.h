@@ -38,6 +38,7 @@ typedef enum PostListType {
 @property (nonatomic) BOOL inSmallMode;
 
 @property (nonatomic, readonly) NSMutableArray * parsePostObjects;
+@property (nonatomic) BOOL currentlyPublishing;
 
 
 -(void) display:(Channel*)channelForList asPostListType:(PostListType)listType

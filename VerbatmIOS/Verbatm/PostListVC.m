@@ -94,7 +94,6 @@
 @property (nonatomic) UIImageView *publishSuccessful;
 @property (nonatomic) UIImageView *publishFailed;
 
-@property (nonatomic) BOOL currentlyPublishing;
 @property (nonatomic) BOOL exitedView;
 
 
@@ -154,7 +153,10 @@
 -(void)clearPublishingView{
     if(self.currentlyPublishing){
         self.currentlyPublishing = NO;
-        [self removePostAtIndex:self.parsePostObjects.count];
+        if(self.parsePostObjects.count){
+            [self.parsePostObjects removeLastObject];
+            [self removePostAtIndex:self.parsePostObjects.count];
+        }
     }
 }
 
@@ -628,7 +630,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
                 [cell presentPublishingView];
             }else if(![postObject isKindOfClass:[NSNumber class]]){
             
-			[cell presentPostFromPCActivityObj:postObject andChannel:self.channelForList
+                [cell presentPostFromPCActivityObj:postObject andChannel:self.channelForList
 							  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:NO];
             }
 		}
