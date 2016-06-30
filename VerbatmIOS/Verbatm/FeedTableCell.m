@@ -17,16 +17,21 @@
 
 
 -(void)setProfileAlreadyLoaded:(ProfileVC *) newProfile{
-    if(self.currentProfile){
-        [self.currentProfile clearOurViews];
-        @autoreleasepool {
-            self.currentProfile = nil;
-        }
-    }
+    
+    ProfileVC * __block oldProfile = self.currentProfile;
+    
     self.currentProfile = newProfile;
     self.currentProfile.delegate = self;
     [self addSubview:self.currentProfile.view];
     self.clipsToBounds = YES;
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        if(oldProfile){
+            [oldProfile clearOurViews];
+            @autoreleasepool {
+                oldProfile = nil;
+            }
+        }
+    });
 }
 
 -(void)presentProfileForChannel:(Channel *) channel{

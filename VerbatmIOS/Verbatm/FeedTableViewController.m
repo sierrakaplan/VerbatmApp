@@ -91,13 +91,19 @@
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    
+    @autoreleasepool {
+        if(self.nextProfileToPresent){
+            [self.nextProfileToPresent clearOurViews];
+            self.nextProfileToPresent = nil;
+        }
+    }
 }
 
 #pragma mark - Table view data source
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    [self.delegate showTabBar:YES];
+    //[self.delegate showTabBar:YES];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
