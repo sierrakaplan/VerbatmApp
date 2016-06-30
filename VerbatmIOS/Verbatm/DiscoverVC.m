@@ -11,7 +11,8 @@
 #import "SizesAndPositions.h"
 #import "FeaturedContentVC.h"
 #import "StoryboardVCIdentifiers.h"
-@interface DiscoverVC()
+
+@interface DiscoverVC() <UISearchBarDelegate>
 
 @property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
 @property (weak, nonatomic) IBOutlet UIView *tableContainerView;
@@ -28,6 +29,7 @@
 	[self addBackgroundImage];
 	self.headerView.backgroundColor = [UIColor clearColor];
 
+	self.searchBar.delegate = self;
 	self.searchBar.frame = CGRectMake(0.f, STATUS_BAR_HEIGHT, self.searchBar.frame.size.width, self.searchBar.frame.size.height);
 	CGFloat headerViewHeight = self.searchBar.frame.size.height + STATUS_BAR_HEIGHT;
     
