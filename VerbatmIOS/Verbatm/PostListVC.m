@@ -7,10 +7,15 @@
 //
 
 #import "Channel_BackendObject.h"
+#import <Branch/BranchUniversalObject.h>
+#import <Branch/BranchLinkProperties.h>
 
 #import "Durations.h"
 #import "ExternalShare.h"
+
 #import "FeedQueryManager.h"
+#import <FBSDKShareKit/FBSDKShareLinkContent.h>
+#import <FBSDKShareKit/FBSDKShareDialog.h>
 
 #import "Icons.h"
 
@@ -31,17 +36,14 @@
 #import "ParseBackendKeys.h"
 #import "PostView.h"
 #import <PromiseKit/PromiseKit.h>
-
+#import "PageTypeAnalyzer.h"
+#import <Parse/PFQuery.h>
 
 #import "Share_BackendManager.h"
 #import "SharePostView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
-#import <Branch/BranchUniversalObject.h>
-#import <Branch/BranchLinkProperties.h>
-#import <FBSDKShareKit/FBSDKShareLinkContent.h>
-#import <FBSDKShareKit/FBSDKShareDialog.h>
-#import "PageTypeAnalyzer.h"
+
 
 #import "UserAndChannelListsTVC.h"
 #import "User_BackendObject.h"
@@ -155,22 +157,38 @@
 -(void) userPublishing:(NSNotification *) notification {
 	if (self.currentlyPublishing || !self.isCurrentUserProfile) return;
 	self.currentlyPublishing = YES;
-    @synchronized (self.parsePostObjects) {
+    self.nextIndexToPresent = -1;
+    self.nextNextIndex = -1;
+    //@synchronized (self.parsePostObjects) {
         //add progress view to parseObjects
-        [self.parsePostObjects addObject:self.publishingProgressViewPositionHolder];
-        [self.collectionView reloadData];
-        [self.postListDelegate postsFound];
-    }
+        NSInteger index = self.parsePostObjects.count;
+        [self.collectionView performBatchUpdates:^{
+            //Insert the new data
+            [self.parsePostObjects addObject:self.publishingProgressViewPositionHolder];
+            //Insert the new cells
+            [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:index inSection:0]]];
+            
+        } completion:^(BOOL finished) {
+           
+            if(finished){
+            //[self.collectionView reloadData];
+                [self.postListDelegate postsFound];
+            }
+        }];
+    //}
 }
 
 -(void) publishingSucceeded:(NSNotification *) notification {
+    NSLog(@"publishing done");
     if(!self.isCurrentUserProfile) return;
 	self.currentlyPublishing = NO;
+    [PFQuery clearAllCachedResults];
 	[self refreshPosts];
 
 }
 -(void) publishingFailed:(NSNotification *) notification {
     if(!self.isCurrentUserProfile) return;
+    NSLog(@"publishing failed");
 	self.currentlyPublishing = NO;
 	[self.collectionView reloadData];
 }
@@ -348,21 +366,24 @@
             } else {
                
                     if(weakSelf.currentlyPublishing){
-                         @synchronized (weakSelf.parsePostObjects) {
+                        // @synchronized (weakSelf.parsePostObjects) {
                             id publishingObject = [weakSelf.parsePostObjects lastObject];
                             //Reload all posts in channel
                             [weakSelf.parsePostObjects removeAllObjects];
                             
                             [weakSelf.parsePostObjects addObjectsFromArray:posts];
-                            if(publishingObject != NULL)[weakSelf.parsePostObjects addObject:publishingObject];
-                         }
+                        if(publishingObject == NULL){
+                            publishingObject = @(0);//create placeholder
+                        }
+                        [weakSelf.parsePostObjects addObject:publishingObject];
+                         //}
                         
                     }else{
-                        @synchronized (weakSelf.parsePostObjects) {
+                       // @synchronized (weakSelf.parsePostObjects) {
                             //Reload all posts in channel
                             [weakSelf.parsePostObjects removeAllObjects];
                             [weakSelf.parsePostObjects addObjectsFromArray:posts];
-                        }
+                        //}
                     }
 				
                 
@@ -378,10 +399,14 @@
 		weakSelf.isRefreshing = NO;
 	};
 
+    
+    
+    
+    
 	self.loadMorePostsCompletion = ^void(NSArray *posts) {
 		if (!posts.count || weakSelf.exitedView) return;
 		weakSelf.isLoadingMore = NO;
-        [self.postListDelegate postsFound];
+        [weakSelf.postListDelegate postsFound];
         @autoreleasepool {
             NSMutableArray *indices = [NSMutableArray array];
             NSInteger index = weakSelf.parsePostObjects.count;
@@ -399,9 +424,14 @@
         }
 	};
 
+    
+    
+    
+    
+    
 	self.loadOlderPostsCompletion = ^void(NSArray *posts) {
 		if (!posts.count || weakSelf.exitedView) return;
-        [self.postListDelegate postsFound];
+        [weakSelf.postListDelegate postsFound];
 		NSMutableArray *indices = [NSMutableArray array];
 		for (NSInteger i = 0; i < posts.count; i++) {
 			[indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
@@ -503,7 +533,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 
 -(PostCollectionViewCell *)handleCellsForLargeModeForIndexPath:(NSIndexPath *)indexPath{
+    
     PostCollectionViewCell *currentCell;
+    
     if (indexPath.row == self.nextIndexToPresent) {
         currentCell = self.nextCellToPresent;
     } else if (indexPath.row == self.nextNextIndex) {
@@ -564,14 +596,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
 				  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-
-    //TO DO
-    //	if (self.currentlyPublishing) {
-//		return [self postCellAtIndexPath:indexPath];
-//	}
-//	if (self.performingUpdate && self.currentDisplayCell){
-//		return self.currentDisplayCell;
-//	}
+    
     PostCollectionViewCell * currentCell = [self handleCellsForLargeModeForIndexPath:indexPath];
 	self.currentDisplayCell = currentCell;
 	return currentCell;

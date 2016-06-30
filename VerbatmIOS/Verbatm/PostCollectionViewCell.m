@@ -45,15 +45,17 @@
 -(void) clearViews {
 	if (self.currentPostView) {
 		[self.currentPostView removeFromSuperview];
-		[self.currentPostView clearPost];
 	}
     
     [self removePublishingProgress];
-	self.currentPostView = nil;
-	self.currentPostActivityObject = nil;
-	self.postBeingPresented = nil;
-	self.isOnScreen = NO;
-	self.isAlmostOnScreen = NO;
+    @autoreleasepool {
+        self.currentPostView = nil;
+        self.currentPostActivityObject = nil;
+        self.postBeingPresented = nil;
+       
+    }
+    self.isOnScreen = NO;
+    self.isAlmostOnScreen = NO;
 }
 
 -(void) layoutSubviews {

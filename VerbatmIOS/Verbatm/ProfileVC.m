@@ -120,9 +120,7 @@
 -(void)clearOurViews{
     if(self.postListVC)[self.postListVC offScreen];
     if(self.postListVC)[self.postListVC clearViews];
-//    @autoreleasepool {
-//        self.postListVC = nil;
-//    }
+
 }
 
 -(void)viewDidAppear:(BOOL)animated{

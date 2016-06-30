@@ -63,25 +63,6 @@
 
 
 
-
--(void)creatProfile{
-//    ProfileVC * userProfile = [[ProfileVC alloc] init];
-//    userProfile.isCurrentUserProfile = channel.channelCreator == [PFUser currentUser];
-//    userProfile.isProfileTab = NO;
-//    userProfile.ownerOfProfile = channel.channelCreator;
-//    userProfile.channel = channel;
-}
-
-
-
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    NSString *identifier = [NSString stringWithFormat:@"cell,%ld", (long)indexPath.row];
-//    FeedTableCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-//    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-//    [cell presentProfileForChannel:self.FollowingProfileList[indexPath.row]];
-//    return cell;
-//}
-
 #pragma mark - Table View Delegate methods (view customization) -
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return self.view.frame.size.height;
@@ -117,22 +98,27 @@
 
 -(void)prepareNextPostFromNextIndex:(NSInteger) nextIndex{
     
-    if(nextIndex < self.FollowingProfileList.count){
-        Channel * nextChannel = self.FollowingProfileList[nextIndex];
-        if(self.nextProfileToPresent){
-            @autoreleasepool {
-                self.nextProfileToPresent = nil;
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        if(nextIndex < self.FollowingProfileList.count) {
+            
+            Channel * nextChannel = self.FollowingProfileList[nextIndex];
+            if(self.nextProfileToPresent){
+                @autoreleasepool {
+                    self.nextProfileToPresent = nil;
+                }
             }
+            
+            self.nextProfileToPresent = [[ProfileVC alloc] init];
+            self.nextProfileToPresent.profileInFeed = YES;
+            self.nextProfileToPresent.isCurrentUserProfile = NO;
+            self.nextProfileToPresent.isProfileTab = NO;
+            self.nextProfileToPresent.ownerOfProfile = nextChannel.channelCreator;
+            self.nextProfileToPresent.channel = nextChannel;
+            [self.nextProfileToPresent loadContentToPostList];
+            
         }
-        self.nextProfileToPresent = [[ProfileVC alloc] init];
-        self.nextProfileToPresent.profileInFeed = YES;
-        self.nextProfileToPresent.isCurrentUserProfile = NO;
-        self.nextProfileToPresent.isProfileTab = NO;
-        //self.nextProfileToPresent.delegate = self;
-        self.nextProfileToPresent.ownerOfProfile = nextChannel.channelCreator;
-        self.nextProfileToPresent.channel = nextChannel;
-        [self.nextProfileToPresent loadContentToPostList];
-    }
+    });
+    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

@@ -105,51 +105,51 @@ andTextAlignment:(NSNumber *) textAlignment
 
 +(void)getPhotosForPage:(PFObject *) page andCompletionBlock:(void(^)(NSArray *))block {
     
-            //no pfrelation yet so check for the old style
-            PFQuery *imagesQuery = [PFQuery queryWithClassName:PHOTO_PFCLASS_KEY];
-            [imagesQuery whereKey:PHOTO_PAGE_OBJECT_KEY equalTo:page];
-            imagesQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
-            BOOL __block isCacheResponse = YES;
-            BOOL __block cacheResponsePassed = NO;
-            [imagesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-                                                            NSError * _Nullable error) {
-                if(objects && !error){
-                    
-                    //the result may have been cached and so we don't need to load this page again.
-                    if(!isCacheResponse && cacheResponsePassed) return;
-                    
-                    objects = [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
-                        PFObject * photoA = obj1;
-                        PFObject * photoB = obj2;
-                        
-                        NSNumber * photoAnum = [photoA valueForKey:PHOTO_INDEX_KEY];
-                        NSNumber * photoBnum = [photoB valueForKey:PHOTO_INDEX_KEY];
-                        
-                        if([photoAnum integerValue] > [photoBnum integerValue]){
-                            return NSOrderedDescending;
-                        }else if ([photoAnum integerValue] < [photoBnum integerValue]){
-                            return NSOrderedAscending;
-                        }
-                        return NSOrderedSame;
-                    }];
-                    
-                    if(isCacheResponse){
-                        NSLog(@"Just used cache for photo");
-                    }else{
-                        NSLog(@"Missed cache using network for photo");
-                    }
-                    cacheResponsePassed = YES;
-                    isCacheResponse = NO;
-                    block(objects);
-                }else{
-                    cacheResponsePassed = NO;
-                    if(!cacheResponsePassed && !isCacheResponse){
-                        NSLog(error);
-                        block(nil);
-                    }
-                    isCacheResponse = NO;
+    //no pfrelation yet so check for the old style
+    PFQuery *imagesQuery = [PFQuery queryWithClassName:PHOTO_PFCLASS_KEY];
+    [imagesQuery whereKey:PHOTO_PAGE_OBJECT_KEY equalTo:page];
+    imagesQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
+    BOOL __block isCacheResponse = YES;
+    BOOL __block cacheResponsePassed = NO;
+    [imagesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+                                                    NSError * _Nullable error) {
+        if(objects && !error){
+            
+            //the result may have been cached and so we don't need to load this page again.
+            if(!isCacheResponse && cacheResponsePassed) return;
+            
+            objects = [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+                PFObject * photoA = obj1;
+                PFObject * photoB = obj2;
+                
+                NSNumber * photoAnum = [photoA valueForKey:PHOTO_INDEX_KEY];
+                NSNumber * photoBnum = [photoB valueForKey:PHOTO_INDEX_KEY];
+                
+                if([photoAnum integerValue] > [photoBnum integerValue]){
+                    return NSOrderedDescending;
+                }else if ([photoAnum integerValue] < [photoBnum integerValue]){
+                    return NSOrderedAscending;
                 }
+                return NSOrderedSame;
             }];
+            
+            if(isCacheResponse){
+                NSLog(@"Just used cache for photo");
+            }else{
+                NSLog(@"Missed cache using network for photo");
+            }
+            cacheResponsePassed = YES;
+            isCacheResponse = NO;
+            block(objects);
+        }else{
+            cacheResponsePassed = NO;
+            if(!cacheResponsePassed && !isCacheResponse){
+                NSLog(error);
+                block(nil);
+            }
+            isCacheResponse = NO;
+        }
+    }];
 
 }
 

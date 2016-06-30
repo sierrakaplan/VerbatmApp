@@ -201,7 +201,7 @@
 }
 
 -(void) createBackButton {
-	UIImage *backButtonImage = [UIImage imageNamed:BACK_BUTTON_ICON];
+	UIImage *backButtonImage = [UIImage imageNamed:PROFILE_BACK_BUTTON_ICON];
 	CGRect iconFrame = CGRectMake(PROFILE_HEADER_XOFFSET, STATUS_BAR_HEIGHT,
 								  PROFILE_INFO_BAR_HEIGHT, PROFILE_INFO_BAR_HEIGHT);
 

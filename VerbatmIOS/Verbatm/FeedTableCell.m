@@ -19,37 +19,45 @@
 -(void)setProfileAlreadyLoaded:(ProfileVC *) newProfile{
     
     ProfileVC * __block oldProfile = self.currentProfile;
-    
     self.currentProfile = newProfile;
     self.currentProfile.delegate = self;
     [self addSubview:self.currentProfile.view];
     self.clipsToBounds = YES;
+    
+    if(oldProfile){
+            [oldProfile clearOurViews];
+            @autoreleasepool {
+                oldProfile = nil;
+            }
+    }
+}
+
+-(void)presentProfileForChannel:(Channel *) channel{
+    
+    ProfileVC * __block oldProfile = self.currentProfile;
+    
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        if(oldProfile){
+        self.currentProfile = [[ProfileVC alloc] init];
+        self.currentProfile.isCurrentUserProfile = NO;
+        self.currentProfile.profileInFeed = YES;
+        self.currentProfile.isProfileTab = NO;
+        self.currentProfile.delegate = self;
+        self.currentProfile.ownerOfProfile = channel.channelCreator;
+        self.currentProfile.channel = channel;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self addSubview:self.currentProfile.view];
+        });
+    });
+
+    if(oldProfile){
             [oldProfile clearOurViews];
             @autoreleasepool {
                 oldProfile = nil;
             }
         }
-    });
-}
 
--(void)presentProfileForChannel:(Channel *) channel{
-    
-    if(self.currentProfile){
-        [self.currentProfile clearOurViews];
-        @autoreleasepool {
-            self.currentProfile = nil;
-        }
-    }
-    self.currentProfile = [[ProfileVC alloc] init];
-    self.currentProfile.isCurrentUserProfile = NO;
-    self.currentProfile.profileInFeed = YES;
-    self.currentProfile.isProfileTab = NO;
-    self.currentProfile.delegate = self;
-    self.currentProfile.ownerOfProfile = channel.channelCreator;
-    self.currentProfile.channel = channel;
-    [self addSubview:self.currentProfile.view];
+
 }
 
 
