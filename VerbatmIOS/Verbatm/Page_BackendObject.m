@@ -193,32 +193,48 @@
 
     PFQuery *pageQuery = [PFQuery queryWithClassName:PAGE_PFCLASS_KEY];
     [pageQuery whereKey:PAGE_POST_KEY equalTo:post];
+    pageQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
+    BOOL __block isCacheResponse = YES;
+    BOOL __block cacheResponsePassed = NO;
+    //the cache policy makes our block get called twice. First time is always cache and second time
+    //is always network.
     [pageQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                     NSError * _Nullable error) {
-        if(objects && !error){
-            //this object is still in the old style relation
-            
-            objects = [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
-                PFObject * photoA = obj1;
-                PFObject * photoB = obj2;
+        
+            if(objects && !error){
+                //the result may have been cached and so we don't need to load this page again.
+                if(!isCacheResponse && cacheResponsePassed) return;
                 
-                NSNumber * photoAnum = [photoA valueForKey:PHOTO_INDEX_KEY];
-                NSNumber * photoBnum = [photoB valueForKey:PHOTO_INDEX_KEY];
-                
-                if([photoAnum integerValue] > [photoBnum integerValue]){
-                    return NSOrderedDescending;
-                }else if ([photoAnum integerValue] < [photoBnum integerValue]){
-                    return NSOrderedAscending;
+                objects = [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+                    PFObject * photoA = obj1;
+                    PFObject * photoB = obj2;
+                    
+                    NSNumber * photoAnum = [photoA valueForKey:PHOTO_INDEX_KEY];
+                    NSNumber * photoBnum = [photoB valueForKey:PHOTO_INDEX_KEY];
+                    
+                    if([photoAnum integerValue] > [photoBnum integerValue]){
+                        return NSOrderedDescending;
+                    }else if ([photoAnum integerValue] < [photoBnum integerValue]){
+                        return NSOrderedAscending;
+                    }
+                    return NSOrderedSame;
+                }];
+                if(isCacheResponse){
+                    NSLog(@"Just used cache for page");
+                }else{
+                    NSLog(@"Missed cache using network for page");
                 }
-                return NSOrderedSame;
-            }];
-
-            
-            block(objects);
-        }else {
-            block(nil);
-            [[Crashlytics sharedInstance] recordError: error];
-        }
+                cacheResponsePassed = YES;
+                isCacheResponse = NO;
+                block(objects);
+            }else{
+                cacheResponsePassed = NO;
+                if(!cacheResponsePassed && !isCacheResponse){
+                    block(nil);
+                    [[Crashlytics sharedInstance] recordError: error];
+                }
+                isCacheResponse = NO;
+            }
 	}];
 }
 

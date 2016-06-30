@@ -479,7 +479,7 @@
 	if (self.listType == listFeed) {
 		return; // Not logical to load older posts in feed
 	} else {
-		[self.postsQueryManager loadOlderPostsInChannel:self.channelForList withCompletionBlock:self.loadOlderPostsCompletion];
+		[self.postsQueryManager loadOlderPostsInChannel:self.channelForList  inSmallMode:self.inSmallMode withCompletionBlock:self.loadOlderPostsCompletion];
 	}
 }
 

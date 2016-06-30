@@ -25,6 +25,7 @@
 #import "ParseBackendKeys.h"
 #import "ProfileVC.h"
 #import "PublishingProgressManager.h"
+#import <Parse/PFQuery.h>
 
 #import "StoryboardVCIdentifiers.h"
 #import "SegueIDs.h"
@@ -76,6 +77,8 @@ ProfileVCDelegate>
 	if ([PFUser currentUser].isAuthenticated) {
 		[self checkMigrated];
 	}
+    //new product instance so we should clear all our querry caches
+    [PFQuery clearAllCachedResults];
 }
 
 -(void)viewDidAppear:(BOOL)animated {

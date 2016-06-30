@@ -108,10 +108,15 @@ andTextAlignment:(NSNumber *) textAlignment
             //no pfrelation yet so check for the old style
             PFQuery *imagesQuery = [PFQuery queryWithClassName:PHOTO_PFCLASS_KEY];
             [imagesQuery whereKey:PHOTO_PAGE_OBJECT_KEY equalTo:page];
+            imagesQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
+            BOOL __block isCacheResponse = YES;
+            BOOL __block cacheResponsePassed = NO;
             [imagesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                             NSError * _Nullable error) {
                 if(objects && !error){
-                    //this object is still in the old style relation
+                    
+                    //the result may have been cached and so we don't need to load this page again.
+                    if(!isCacheResponse && cacheResponsePassed) return;
                     
                     objects = [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
                         PFObject * photoA = obj1;
@@ -127,9 +132,22 @@ andTextAlignment:(NSNumber *) textAlignment
                         }
                         return NSOrderedSame;
                     }];
-
                     
+                    if(isCacheResponse){
+                        NSLog(@"Just used cache for photo");
+                    }else{
+                        NSLog(@"Missed cache using network for photo");
+                    }
+                    cacheResponsePassed = YES;
+                    isCacheResponse = NO;
                     block(objects);
+                }else{
+                    cacheResponsePassed = NO;
+                    if(!cacheResponsePassed && !isCacheResponse){
+                        NSLog(error);
+                        block(nil);
+                    }
+                    isCacheResponse = NO;
                 }
             }];
 
