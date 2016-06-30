@@ -72,9 +72,12 @@
 }
 
 -(void)removePublishingProgress{
-    if(_publishingProgressView){
+    if(_publishingProgressView != nil){
         [self.publishingProgressView removeFromSuperview];
-        self.publishingProgressView = nil;
+        @autoreleasepool {
+            _publishingProgressView = nil;
+        }
+
     }
 }
 
@@ -84,7 +87,6 @@
 					withDeleteButton: (BOOL) withDelete andLikeShareBarUp:(BOOL) up {
     
     [self removePublishingProgress];
-    
     self.hasPublishingView = NO;
     self.footerUp = up;
 	self.currentPostActivityObject = pfActivityObj;
@@ -168,6 +170,11 @@
     if(!self.hasPublishingView){
         if(self.currentPostView) {
             [self.currentPostView postOffScreen];
+        }
+    }else{
+        [self.publishingProgressView removeFromSuperview];
+        @autoreleasepool {
+            _publishingProgressView = nil;
         }
     }
 }

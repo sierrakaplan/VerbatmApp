@@ -159,23 +159,26 @@
 	self.currentlyPublishing = YES;
     self.nextIndexToPresent = -1;
     self.nextNextIndex = -1;
-    //@synchronized (self.parsePostObjects) {
-        //add progress view to parseObjects
-        NSInteger index = self.parsePostObjects.count;
-        [self.collectionView performBatchUpdates:^{
-            //Insert the new data
-            [self.parsePostObjects addObject:self.publishingProgressViewPositionHolder];
-            //Insert the new cells
-            [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:index inSection:0]]];
-            
-        } completion:^(BOOL finished) {
-           
-            if(finished){
-            //[self.collectionView reloadData];
-                [self.postListDelegate postsFound];
-            }
-        }];
-    //}
+    
+    
+    [CATransaction begin];
+    [CATransaction setDisableActions:YES];
+    self.performingUpdate = YES;
+    //add progress view to parseObjects
+    NSInteger index = self.parsePostObjects.count;
+    [self.collectionView performBatchUpdates:^{
+        //Insert the new data
+        [self.parsePostObjects addObject:self.publishingProgressViewPositionHolder];
+        //Insert the new cells
+        [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:index inSection:0]]];
+        
+    } completion:^(BOOL finished) {
+       
+        if(finished){
+            [CATransaction commit];
+            [self.postListDelegate postsFound];
+        }
+    }];
 }
 
 -(void) publishingSucceeded:(NSNotification *) notification {
@@ -430,7 +433,10 @@
     
     
 	self.loadOlderPostsCompletion = ^void(NSArray *posts) {
-		if (!posts.count || weakSelf.exitedView) return;
+        if (!posts.count || weakSelf.exitedView){
+            weakSelf.isLoadingOlder = NO;
+            return;
+        }
         [weakSelf.postListDelegate postsFound];
 		NSMutableArray *indices = [NSMutableArray array];
 		for (NSInteger i = 0; i < posts.count; i++) {
@@ -449,7 +455,7 @@
 			[weakSelf.collectionView insertItemsAtIndexPaths:indices];
 
 		} completion: ^(BOOL finished) {
-			if (finished && !self.currentlyPublishing) {
+			if (finished) {
 				// Scroll to previously selected cell so nothing looks different
 				NSArray* visiblePaths = [weakSelf.collectionView indexPathsForVisibleItems];
 				NSInteger oldRow = visiblePaths && visiblePaths.count ? [(NSIndexPath*)visiblePaths[0] row] : 0;
@@ -568,7 +574,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         }
         
         //Load older posts
-        if ( indexPath.row <= LOAD_MORE_POSTS_COUNT_SMALL && !self.isLoadingOlder && !self.isRefreshing) {
+        if ( self.currentlyPublishing ||( indexPath.row <= LOAD_MORE_POSTS_COUNT_SMALL && !self.isRefreshing)) {
             [self loadOlderPosts];
         }
     }else{
