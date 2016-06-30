@@ -333,34 +333,6 @@
             </objects>
             <point key="canvasLocation" x="-4041" y="-2175"/>
         </scene>
-        <!--Featured ContentVC-->
-        <scene sceneID="Fww-pk-cdT">
-            <objects>
-                <tableViewController id="1ae-Vq-0ax" customClass="FeaturedContentVC" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="V0O-dA-Ak3">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="UgJ-E4-5Pe">
-                                <rect key="frame" x="0.0" y="28" width="320" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="UgJ-E4-5Pe" id="oHC-Np-dTU">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="1ae-Vq-0ax" id="8kA-hI-lNA"/>
-                            <outlet property="delegate" destination="1ae-Vq-0ax" id="nBH-h0-5Xt"/>
-                        </connections>
-                    </tableView>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="TtM-Yb-1Za" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-5005" y="-842"/>
-        </scene>
         <!--Content Dev-->
         <scene sceneID="8XD-Tr-4db">
             <objects>
@@ -525,6 +497,6 @@
         <image name="verbatm_logo" width="1395" height="1142"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="FiA-Do-sEN"/>
+        <segue reference="BFi-wQ-plH"/>
     </inferredMetricsTieBreakers>
 </document>
