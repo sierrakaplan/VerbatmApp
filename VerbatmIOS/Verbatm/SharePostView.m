@@ -7,11 +7,10 @@
 //
 
 #import "SharePostView.h"
-#import "SelectSharingOption.h"
 #import "SelectChannel.h"
 #import "Styles.h"
 #import "UIImage+ImageEffectsAndTransforms.h"
-#define SHARE_BUTTON_HEIGHT CANCEL_BUTTON_HEIGHT - 10.f
+#define SHARE_BUTTON_HEIGHT (CANCEL_BUTTON_HEIGHT - 10.f)
 #define CANCEL_BUTTON_HEIGHT 40.f
 
 #define BUTTON_WALL_OFFSET_X  10.f
@@ -49,18 +48,17 @@
 -(void)createSelections{
 
 	self.sharingOption = [[SelectSharingOption alloc] initWithFrame: CGRectMake(0.f, SHARE_BUTTON_HEIGHT,
-																				self.frame.size.width, self.frame.size.height- (SHARE_BUTTON_HEIGHT * 2.f))];
+																				self.frame.size.width, self.frame.size.height)];
 	[self addSubview:self.sharingOption];
 	self.sharingOption.sharingDelegate = self;
-
-	[self createShareButton];
+	//[self createShareButton];
 	[self createCancelButton];
 }
 
 -(void)createShareButton {
 
 	//create share button
-	CGRect shareButtonFrame = CGRectMake(BUTTON_WALL_OFFSET_X, SHARE_BUTTON_HEIGHT + self.frame.size.height - (SHARE_BUTTON_HEIGHT * 2.f),
+	CGRect shareButtonFrame = CGRectMake(BUTTON_WALL_OFFSET_X, self.frame.size.height - (SHARE_BUTTON_HEIGHT * 2.f),
 										 self.frame.size.width - (BUTTON_WALL_OFFSET_X * 2),SHARE_BUTTON_HEIGHT );
 
 	self.shareButton =  [[UIButton alloc] initWithFrame:shareButtonFrame];
@@ -106,18 +104,13 @@
 }
 
 -(void)shareButtonSelected {
-	[self.delegate reblogToVerbatm:self.verbatmSelected andFacebook:self.facebookSelected];
+//	[self.delegate reblogToVerbatm:self.verbatmSelected andFacebook:self.facebookSelected];
 }
 
 #pragma mark Share options protocol
 
 -(void)shareOptionSelected:(ShareOptions) shareOption{
-	if(shareOption == Verbatm){
-		self.verbatmSelected = YES;
-	}
-    if (shareOption == Facebook){
-		self.facebookSelected = YES;
-	}
+    [self.delegate shareToShareOption:shareOption];
 }
 
 -(void) shareOptionDeselected:(ShareOptions)shareOption {

@@ -62,6 +62,8 @@
 #define POST_ORIGINAL_CREATOR_KEY @"OriginalCreator" //Original creator or post
 #define POST_NUM_LIKES @"PostNumLikes"
 #define POST_NUM_REBLOGS @"PostNumReblogs"
+#define POST_SHARE_LINK @"PostSocialShareLink" //string url to share to social media
+
 
 #define POST_COMPLETED_SAVING @"PostDoneSaving"//we store
 

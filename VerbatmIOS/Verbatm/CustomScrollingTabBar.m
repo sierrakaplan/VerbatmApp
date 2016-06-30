@@ -188,7 +188,7 @@
     NSUInteger originDiff = 0;
     for(int i = 0; i < self.tabButtons.count; i++) {
         UIButton *currentButton = self.tabButtons[i];
-        CGFloat width = ([currentButton isKindOfClass:[ChannelButton class]]) ? [(ChannelButton *)currentButton suggestedWidth] : ((TAB_BUTTON_PADDING * 3.f) + self.createChannelLabel.frame.size.width);
+        CGFloat width = ([currentButton isKindOfClass:[ChannelButton class]]) ? [(ChannelButton *)currentButton suggestedWidth] : ((TAB_BUTTON_PADDING_X * 3.f) + self.createChannelLabel.frame.size.width);
         
         //check if it's the last button in the scroll bar
         if(i == (self.tabButtons.count-1)){

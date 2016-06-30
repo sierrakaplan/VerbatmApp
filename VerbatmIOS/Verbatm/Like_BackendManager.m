@@ -10,6 +10,7 @@
 #import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
 #import <Parse/PFQuery.h>
+#import <PromiseKit/PromiseKit.h>
 
 @implementation Like_BackendManager
 
@@ -37,6 +38,44 @@
 			}
 		}
 	}];
+}
+
+
++ (void)getUsersWhoLikePost:(PFObject *) postParseObject withCompletionBlock:(void(^)(NSArray *))block{
+    if(!postParseObject)return;
+    //we just delete the Follow Object
+    PFQuery * userChannelQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
+    [userChannelQuery whereKey:LIKE_POST_LIKED_KEY equalTo:postParseObject];
+    [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+                                                         NSError * _Nullable error) {
+        if(objects && !error) {
+            block(objects);
+            NSMutableArray * userPromises = [[NSMutableArray alloc] init];
+            NSMutableArray * userList = [[NSMutableArray alloc] init];
+            for(PFObject * likeObject in objects){
+                [userPromises addObject:
+                    [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+                        [[likeObject valueForKey:LIKE_USER_KEY] fetchInBackgroundWithBlock:^(PFObject * _Nullable user, NSError * _Nullable error) {
+                            
+                            if(user){
+                                [userList addObject:user];
+                            }
+                            resolve(nil);
+                        }];
+                        
+                    }]
+                 ];
+            }
+        
+            PMKWhen(userPromises).then(^(id nothing) {
+                block(userList);
+            });
+        
+        
+        }else{
+            block(nil);
+        }
+    }];
 }
 
 //tests to see if the logged in user likes this post

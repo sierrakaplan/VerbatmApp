@@ -104,17 +104,17 @@
     CGPoint numFollowersOrigin = CGPointMake(0.f,self.frame.size.height/2.f);
     self.numberOfFollowersLabel = [self getChannelFollowersLabel:channel origin:numFollowersOrigin followersTextAttribute:self.unSelectedFollowersTabTitleAttributes andNumberOfFollowersAttribute:self.unSelectedNumberOfFollowersTitleAttributes];
     
-    CGFloat buttonWidth = (TAB_BUTTON_PADDING * 3.f) + FOLLOW_BUTTON_WIDTH + ((self.numberOfFollowersLabel.frame.size.width > self.channelNameLabel.frame.size.width) ? self.numberOfFollowersLabel.frame.size.width :  self.channelNameLabel.frame.size.width);
+    CGFloat buttonWidth = (TAB_BUTTON_PADDING_X * 3.f) + FOLLOW_BUTTON_WIDTH + ((self.numberOfFollowersLabel.frame.size.width > self.channelNameLabel.frame.size.width) ? self.numberOfFollowersLabel.frame.size.width :  self.channelNameLabel.frame.size.width);
     
     //adjust label frame sizes to be the same with some padding
-     self.channelNameLabel.frame = CGRectMake(TAB_BUTTON_PADDING,
+     self.channelNameLabel.frame = CGRectMake(TAB_BUTTON_PADDING_X,
                                               self.channelNameLabel.frame.origin.y,
                                               self.channelNameLabel.frame.size.width,
                                               self.channelNameLabel.frame.size.height);
 
     CGFloat numFollowersLabelX;
     if(self.numberOfFollowersLabel.frame.size.width > self.channelNameLabel.frame.size.width){
-        numFollowersLabelX = TAB_BUTTON_PADDING;
+        numFollowersLabelX = TAB_BUTTON_PADDING_X;
     } else {
         numFollowersLabelX = self.channelNameLabel.center.x - (self.numberOfFollowersLabel.frame.size.width/2.f);
     }
@@ -154,7 +154,7 @@
     
     CGFloat height = FOLLOW_BUTTON_HEIGHT;
     CGFloat width = FOLLOW_BUTTON_WIDTH;
-    CGFloat frame_x = self.suggestedWidth - width - (TAB_BUTTON_PADDING);
+    CGFloat frame_x = self.suggestedWidth - width - (TAB_BUTTON_PADDING_X);
     CGFloat frame_y = self.center.y - (height/2.f);
     
     CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height);

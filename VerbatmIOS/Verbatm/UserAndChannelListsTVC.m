@@ -11,20 +11,25 @@
 
 #import "Channel_BackendObject.h"
 
+#import "Like_BackendManager.h"
+
 #import "ProfileVC.h"
 #import "ParseBackendKeys.h"
 
 #import "PostCollectionViewCell.h"
 
+#import "Icons.h"
 #import "Styles.h"
 #import "SizesAndPositions.h"
 
 #import "UserAndChannelListsTVC.h"
+#import "UIView+Effects.h"
 
 #import "QuartzCore/QuartzCore.h"
 
 @interface UserAndChannelListsTVC () <CustomNavigationBarDelegate>
-
+@property (nonatomic) Channel * channelOnDisplay;
+@property (nonatomic) PFObject * postObject;
 @property (nonatomic) CustomNavigationBar * navBar;
 
 @property (nonatomic) NSMutableArray * channelsToDisplay;
@@ -39,9 +44,13 @@
 @property (nonatomic) id userInfoOnDisplay;//the user whose data we are displaying
 
 @property (nonatomic) BOOL presentAllChannels;
+@property (nonatomic) BOOL shouldAnimateViews;
 
 #define CHANNEL_CELL_ID @"channel_cell_id"
-#define CUSTOM_NAV_BAR_HEIGHT 40.f
+#define CUSTOM_CHANNEL_LIST_BAR_HEIGHT 50.f
+#define LIKERS_TEXT @"Likes"
+#define FOLLOWING_TEXT @"Following"
+#define FOLLOWERS_TEXT @"Followers"
 @end
 
 
@@ -49,20 +58,59 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor clearColor];
+    self.view.backgroundColor = [UIColor whiteColor];
     self.tableView.backgroundColor = [UIColor clearColor];
-
+    [self setNeedsStatusBarAppearanceUpdate];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    [self setTableViewHeader];
     self.tableView.allowsMultipleSelection = NO;
     self.tableView.showsHorizontalScrollIndicator = NO;
     self.tableView.showsVerticalScrollIndicator = NO;
     [self addRefreshFeature];
     
     //avoid covering last item in uitableview
-    UIEdgeInsets inset = UIEdgeInsetsMake(0, 0, CUSTOM_NAV_BAR_HEIGHT, 0);
+    UIEdgeInsets inset = UIEdgeInsetsMake(15.f, 0, CUSTOM_CHANNEL_LIST_BAR_HEIGHT, 0);
     self.tableView.contentInset = inset;
     self.tableView.scrollIndicatorInsets = inset;
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.shouldAnimateViews) {
+        CGFloat direction = (YES) ? 1 : -1;
+        cell.transform = CGAffineTransformMakeTranslation(0, cell.bounds.size.height * direction);
+        [UIView animateWithDuration:0.4f animations:^{
+            cell.transform = CGAffineTransformIdentity;
+        }];
+        
+        
+        if(cell.bounds.size.height * indexPath.row >= self.view.frame.size.height){
+            self.shouldAnimateViews = NO;
+        }
+    }
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    if(self.navBar){
+        [self.view bringSubviewToFront:self.navBar];
+    }else{
+        [self setTableViewHeader];
+    }
+}
+
+-(void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+    if(self.navBar){
+        [self.view bringSubviewToFront:self.navBar];
+    }
+}
+
+-(BOOL) prefersStatusBarHidden {
+    return YES;
+}
+
+- (UIStatusBarAnimation) preferredStatusBarUpdateAnimation {
+    return UIStatusBarAnimationSlide;
 }
 
 -(void)addRefreshFeature{
@@ -73,7 +121,7 @@
 
 - (void)refresh:(UIRefreshControl *)refreshControl {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self presentAllVerbatmChannels];
+        [self presentList:self.currentListType forChannel:self.channelOnDisplay orPost:self.postObject];
     });
     
     [refreshControl endRefreshing];
@@ -147,18 +195,65 @@
 
 /* NOT IN USE */
 //presents every channel in verbatm
--(void)presentAllVerbatmChannels{
-    self.presentAllChannels = YES;
-    
-//    [Channel_BackendObject getAllChannelsButNoneForUser:[PFUser currentUser] withCompletionBlock:^
-//     (NSMutableArray * channels) {
-//         if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
-//         [self.channelsToDisplay addObjectsFromArray:channels];
-//         dispatch_async(dispatch_get_main_queue(), ^{
-//             [self.tableView reloadData];
-//         });
-//     }];
+
+-(void)presentList:(ListLoadType) listType forChannel:(Channel *) channel orPost:(PFObject *) post{
+    self.currentListType = listType;
+    self.channelOnDisplay = channel;
+    self.postObject = post;
+    if(listType == likersList){
+
+        [Like_BackendManager getUsersWhoLikePost:post withCompletionBlock:^(NSArray * users) {
+            [Channel getChannelsForUserList:[NSMutableArray arrayWithArray: users] andCompletionBlock:^(NSMutableArray * channelList) {
+                if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
+                [self.channelsToDisplay addObjectsFromArray:channelList];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.shouldAnimateViews = YES;
+                    [self.tableView reloadData];
+                    if(self.navBar)[self.view bringSubviewToFront:self.navBar];
+                });
+                
+            }];
+        }];
+
+    }else{
+        [channel getFollowersAndFollowingWithCompletionBlock:^{
+            if(listType == followersList){
+                [Channel getChannelsForUserList:[channel usersFollowingChannel] andCompletionBlock:^(NSMutableArray * channelList) {
+                    if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
+                    [self.channelsToDisplay addObjectsFromArray:channelList];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        self.shouldAnimateViews = YES;
+                        [self.tableView reloadData];
+                        if(self.navBar)[self.view bringSubviewToFront:self.navBar];
+                    });
+                    
+                }];
+            }else{
+                if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
+                [self.channelsToDisplay addObjectsFromArray:[channel channelsUserFollowing]];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.shouldAnimateViews = YES;
+                    [self.tableView reloadData];
+                    if(self.navBar)[self.view bringSubviewToFront:self.navBar];
+                });
+                
+            }
+        }];
+    }
 }
+
+-(void)presentAllVerbatmChannels{
+    //self.presentAllChannels = YES;
+    [Channel_BackendObject getAllChannelsWithCompletionBlock:^(NSMutableArray * channels) {
+        if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
+        [self.channelsToDisplay addObjectsFromArray:channels];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.shouldAnimateViews = YES;
+            [self.tableView reloadData];
+        });
+    }];
+     
+  }
 
 //Gives us the channels to display and if we should show the users that follow them then
 -(void)presentChannelsForUser:(id) userId shouldDisplayFollowers:(BOOL) displayFollowers {
@@ -173,16 +268,42 @@
 }
 
 -(void)setTableViewHeader{
-    if (!self.presentAllChannels) {
-        //temporary list view and should be removable
-        CGRect navBarFrame = CGRectMake(0, 0, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT);
-        self.navBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:ADK_NAV_BAR_COLOR];
-        [self.navBar createLeftButtonWithTitle:@"CLOSE" orImage:nil];
-        self.navBar.delegate = self;
-        //it can be a navigation bar that lets us go back
-        [self.view addSubview:self.navBar];
-        [self.view bringSubviewToFront:self.navBar];
+    //temporary list view and should be removable
+    CGRect navBarFrame = CGRectMake(0.f, -15.f, self.view.frame.size.width, CUSTOM_CHANNEL_LIST_BAR_HEIGHT);
+    
+    self.navBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:CHANNEL_LIST_HEADER_BACKGROUND_COLOR];
+    [self.navBar createLeftButtonWithTitle:nil orImage:[UIImage imageNamed:BACK_BUTTON_ICON]];
+    //[self.navBar createMiddleButtonWithTitle:@"FOLLOWERS" orImage:nil];
+    
+    NSString * navBarMiddleText = FOLLOWERS_TEXT;
+    
+    if(self.currentListType == likersList){
+        
+        navBarMiddleText = LIKERS_TEXT;
+    }else if (self.currentListType == followingList){
+        navBarMiddleText = FOLLOWING_TEXT;
     }
+    
+        
+    [self.navBar createMiddleButtonWithTitle:navBarMiddleText blackText:YES largeSize:YES];
+    
+    self.navBar.delegate = self;
+    [self.navBar addShadowToView];
+    [self.view addSubview:self.navBar];
+    [self.view bringSubviewToFront:self.navBar];
+    
+    
+//    //it can be a navigation bar that lets us go back
+//    [self.view addSubview:self.navBar];
+//    [self.view bringSubviewToFront:self.navBar];
+}
+
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    return [[CustomNavigationBar alloc] initWithFrame:self.navBar.frame andBackgroundColor:[UIColor whiteColor]];;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return 0.f;
 }
 
 //user wants to exit
@@ -191,6 +312,7 @@
         //nothing to execute
     }];
 }
+-(void) middleButtonPressed{}
 
 -(UILabel *) getHeaderTitleForViewWithText:(NSString *) text{
     
@@ -224,6 +346,13 @@
     return (self.channelsToDisplay.count + self.presentAllChannels);
 }
 
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [scrollView bringSubviewToFront:self.navBar];
+    self.navBar.frame = CGRectMake(0.f, scrollView.contentOffset.y, self.navBar.frame.size.width, self.navBar.frame.size.height);
+    
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *identifier = [NSString stringWithFormat:@"cell,%ld", (long)indexPath.row];
     ChannelOrUsernameCV *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
@@ -242,7 +371,7 @@
         Channel *channel = [self.channelsToDisplay objectAtIndex:objectIndex];
         [cell presentChannel:channel];
     }
-    
+    if(self.navBar)[self.view bringSubviewToFront:self.navBar];
     return cell;
 }
 

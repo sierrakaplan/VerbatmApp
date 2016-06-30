@@ -81,6 +81,7 @@
 //Tells whether should display media in small format
 @property (nonatomic) BOOL small;
 
+
 #define DOWN_ARROW_WIDTH 30.f
 #define DOWN_ARROW_DISTANCE_FROM_BOTTOM 40.f
 #define SCROLL_UP_ANIMATION_DURATION 0.7
@@ -234,13 +235,17 @@
 }
 
 -(void) showWhoLikesThePost {
-	//todo:
+    [self.delegate showWhoLikesThePost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
 }
 
 -(void) showwhoHasSharedThePost{
 	//todo:
 }
-
+-(void)prepareForScreenShot{
+    for(PageViewingExperience * pageView in self.pageViews){
+                [pageView prepareForScreenShot];
+    }
+}
 //todo: optimize this
 -(void) addCreatorInfo {
 	self.creatorBarFrameUp = CGRectMake(0.f, -STATUS_BAR_HEIGHT, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT + STATUS_BAR_HEIGHT);
@@ -555,9 +560,10 @@
 	}
 	[self.pageUpIndicator removeFromSuperview];
 	[self.likeShareBar addSubview:self.pageUpIndicator];
-	CGFloat size = 50.f;
+    self.likeShareBar.clipsToBounds = NO;
+	CGFloat size = PAGE_UP_ICON_SIZE;
 	CGFloat x_cord = self.frame.size.width/2.f - size/2.f;
-	CGFloat y_cord = 0.f;
+	CGFloat y_cord = size * -1;
 	CGRect frame = CGRectMake(x_cord, y_cord, size, size);
 	self.pageUpIndicator.frame = frame;
 }

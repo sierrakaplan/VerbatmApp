@@ -14,6 +14,11 @@
 
 @protocol ProfileHeaderViewDelegate <NSObject>
 
+
+-(void)followersButtonSelected;
+-(void)followingButtonSelected;
+
+
 // If profile tab
 -(void) settingsButtonClicked;
 

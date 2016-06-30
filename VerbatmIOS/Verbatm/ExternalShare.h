@@ -11,11 +11,21 @@
 #import <Branch/BranchLinkProperties.h>
 #import <Parse/PFObject.h>
 
+
+
+typedef enum
+{
+    shareToFacebook = 1,
+    shareToTwitter = 2,
+    bothFacebookAndTwitter = 3
+} SelectedPlatformsToShareLink;
+
 @interface ExternalShare : NSObject
 
 -(instancetype) initWithCaption:(NSString *) caption;
 -(instancetype) init;
 
--(void) sharePostToFacebook:(PFObject *)postObject;
+-(void)storeShareLinkToPost:(PFObject *)postObject withCaption:(NSString *) caption withCompletionBlock:(void(^)(bool, PFObject *))block ;
 
+-(void) sharePostLink: (NSString *) url  toPlatform:(SelectedPlatformsToShareLink) platform ;
 @end
