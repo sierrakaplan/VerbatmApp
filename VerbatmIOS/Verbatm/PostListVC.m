@@ -100,7 +100,9 @@
 @property (nonatomic) void(^loadMorePostsCompletion)(NSArray * posts);
 @property (nonatomic) void(^loadOlderPostsCompletion)(NSArray * posts);
 
-#define LOAD_MORE_POSTS_COUNT 3 //number of posts left to see before we start loading more content
+
+#define LOAD_MORE_POSTS_COUNT_SMALL 6
+#define LOAD_MORE_POSTS_COUNT_LARGE 3 //number of posts left to see before we start loading more content
 #define POST_CELL_ID @"postCellId"
 #define NUM_POVS_TO_PREPARE_EARLY 2 //we prepare this number of POVVs after the current one for viewing
 
@@ -525,15 +527,29 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     self.nextNextCell = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextNextIndex inSection:indexPath.section]];
     if (self.nextNextCell) [self.nextNextCell almostOnScreen];
     
-    // Load more posts
-    if(indexPath.row >= (self.parsePostObjects.count - LOAD_MORE_POSTS_COUNT)
-       && !self.isLoadingMore && !self.isRefreshing) {
-        [self loadMorePosts];
-    }
     
-    //Load older posts
-    if ( indexPath.row <= LOAD_MORE_POSTS_COUNT && !self.isLoadingOlder && !self.isRefreshing) {
-        [self loadOlderPosts];
+    if(self.inSmallMode){
+        // Load more posts
+        if(indexPath.row >= (self.parsePostObjects.count - LOAD_MORE_POSTS_COUNT_SMALL)
+           && !self.isLoadingMore && !self.isRefreshing) {
+            [self loadMorePosts];
+        }
+        
+        //Load older posts
+        if ( indexPath.row <= LOAD_MORE_POSTS_COUNT_SMALL && !self.isLoadingOlder && !self.isRefreshing) {
+            [self loadOlderPosts];
+        }
+    }else{
+        // Load more posts
+        if(indexPath.row >= (self.parsePostObjects.count - LOAD_MORE_POSTS_COUNT_LARGE)
+           && !self.isLoadingMore && !self.isRefreshing) {
+            [self loadMorePosts];
+        }
+        
+        //Load older posts
+        if ( indexPath.row <= LOAD_MORE_POSTS_COUNT_LARGE && !self.isLoadingOlder && !self.isRefreshing) {
+            [self loadOlderPosts];
+        }
     }
     
     return currentCell;
