@@ -119,4 +119,28 @@
 	return indicator;
 }
 
+-(UIImage *)getViewscreenshotWithTextView:(UITextView *) textView{
+    UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, [UIScreen mainScreen].scale);
+    [self drawViewHierarchyInRect:self.bounds afterScreenUpdates:YES];
+    if(textView){
+        [textView drawViewHierarchyInRect:textView.frame afterScreenUpdates:YES];
+    }
+    UIImage *screenShotImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    NSLog(@"Just got screenshotfor view");
+    return screenShotImage;
+}
+
+
+    
 @end
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

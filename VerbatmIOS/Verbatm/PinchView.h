@@ -18,6 +18,9 @@
 
 @interface PinchView : UIView <NSCoding, ContentDevElementDelegate>
 
+@property (nonatomic) BOOL beingPublished;
+
+
 @property (nonatomic,readonly) float radius;
 @property (nonatomic,readonly) CGPoint center;
 

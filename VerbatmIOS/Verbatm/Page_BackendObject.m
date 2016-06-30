@@ -102,14 +102,21 @@
 	}
 
 	//Publishing images sequentially
+    ((PinchView *)imagePinchViews[0]).beingPublished = YES;
 	AnyPromise *getImageDataPromise = [imagePinchViews[0] getImageDataWithHalfSize:half];
 	for (int i = 1; i < imagePinchViews.count; i++) {
 		getImageDataPromise = getImageDataPromise.then(^(NSData *imageData) {
+            
 			NSArray* photoWithText = pinchViewPhotosWithText[i-1];
+            
 			return [self storeImageFromImageData:imageData andPhotoWithTextArray:photoWithText
 										 atIndex:i withPageObject:page].then(^(void) {
+                
+                ((PinchView *)imagePinchViews[i]).beingPublished = YES;
 				return [imagePinchViews[i] getImageDataWithHalfSize:half];
+                
 			});
+            
 		});
 	}
 	return getImageDataPromise.then(^(NSData *imageData) {

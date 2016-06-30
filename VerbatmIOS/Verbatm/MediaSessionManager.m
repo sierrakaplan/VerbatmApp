@@ -15,11 +15,11 @@
 @interface MediaSessionManager() <AVCaptureFileOutputRecordingDelegate>
 
 @property (strong, nonatomic) AVCaptureSession* session;
-@property (strong, nonatomic) PHAssetCollection* verbatmAlbum;
 @property (strong, nonatomic) AVCaptureDeviceInput* videoInput;
 @property (strong, nonatomic) AVCaptureDeviceInput* audioInput;
 @property (strong, nonatomic) AVCaptureMovieFileOutput * movieOutputFile;
 @property (strong) AVCaptureStillImageOutput* stillImageOutput;
+@property (strong, nonatomic) PHAssetCollection* verbatmAlbum;
 
 
 #define N_FRAMES_PER_SECOND 24
