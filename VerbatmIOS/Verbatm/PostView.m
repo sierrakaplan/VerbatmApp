@@ -595,7 +595,7 @@
 		_mainScrollView.scrollEnabled = YES;
 		[_mainScrollView setShowsVerticalScrollIndicator:NO];
 		[_mainScrollView setShowsHorizontalScrollIndicator:NO];
-		_mainScrollView.bounces = YES;
+		_mainScrollView.bounces = NO;
 		//scroll view delegate
 		_mainScrollView.delegate = self;
 	}

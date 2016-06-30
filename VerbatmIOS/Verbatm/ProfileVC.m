@@ -80,20 +80,33 @@
 	[self.postListVC display:self.channel asPostListType:listChannel withListOwner: self.ownerOfProfile
 		isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
 }
+-(void)loadContentToPostList{
+    if(!self.postListVC.isInitiated) [self.postListVC display:self.channel asPostListType:listChannel withListOwner: self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
+}
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
     
-    [self.postListVC offScreen];
-    [self.postListVC clearViews];
-    @autoreleasepool {
-         self.postListVC = nil;
-    }
+    [self clearOurViews];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
 }
+
+-(void)refreshProfile{
+    if(self.postListVC)[self.postListVC refreshPosts];
+}
+
+-(void) clearOurViews{
+    if(self.postListVC)[self.postListVC offScreen];
+    if(self.postListVC)[self.postListVC clearViews];
+    @autoreleasepool {
+        self.postListVC = nil;
+    }
+}
+
+
 
 -(void)presentUserList:(ListLoadType) listType{
     UserAndChannelListsTVC * vc = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];

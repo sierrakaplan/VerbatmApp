@@ -21,7 +21,9 @@
 
 @interface ProfileVC : UIViewController
 
-@property (weak, nonatomic) id<ProfileVCDelegate> delegate;
+@property (nonatomic) BOOL profileInFeed;
+
+@property (weak, nonatomic) id <ProfileVCDelegate> delegate;
 
 @property (weak, nonatomic) PFUser* ownerOfProfile;
 @property (nonatomic) Channel* channel; 
@@ -35,6 +37,9 @@
 
 @property (nonatomic) id userIdToPresent;
 
+-(void)loadContentToPostList;
 -(void) addPostListVC;
+-(void)refreshProfile;
+-(void) clearOurViews;
 
 @end

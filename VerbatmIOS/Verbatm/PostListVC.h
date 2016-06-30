@@ -25,6 +25,7 @@ typedef enum PostListType {
 @interface PostListVC : UICollectionViewController
 
 @property (nonatomic, weak) id <PostListVCProtocol> postListDelegate;
+@property (nonatomic) BOOL isInitiated;
 
 -(void) display:(Channel*)channelForList asPostListType:(PostListType)listType
   withListOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile

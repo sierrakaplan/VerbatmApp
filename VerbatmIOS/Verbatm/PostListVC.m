@@ -212,6 +212,7 @@
 	self.listType = listType;
 	self.listOwner = listOwner;
 	self.isCurrentUserProfile = isCurrentUserProfile;
+    self.isInitiated = YES;
 	[self refreshPosts];
 	self.footerBarIsUp = (self.listType == listFeed || self.isCurrentUserProfile);
 }
