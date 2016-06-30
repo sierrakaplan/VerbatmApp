@@ -35,6 +35,4 @@
 
 @property (nonatomic) id userIdToPresent;
 
--(void) addPostListVC;
-
 @end

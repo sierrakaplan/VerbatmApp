@@ -27,7 +27,7 @@
 #import "UserSetupParameters.h"
 
 @interface FeedVC () <UIScrollViewDelegate, PostListVCProtocol,
-Intro_Notification_Delegate, UIGestureRecognizerDelegate>
+Intro_Notification_Delegate, UIGestureRecognizerDelegate, SharePostViewDelegate>
 
 @property (nonatomic) BOOL contentCoveringScreen;
 

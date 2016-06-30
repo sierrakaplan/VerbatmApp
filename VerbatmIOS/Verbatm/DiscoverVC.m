@@ -18,8 +18,6 @@
 @property (weak, nonatomic) IBOutlet UIView *tableContainerView;
 @property (weak, nonatomic) IBOutlet UIView *headerView;
 
-
-
 @end
 
 @implementation DiscoverVC

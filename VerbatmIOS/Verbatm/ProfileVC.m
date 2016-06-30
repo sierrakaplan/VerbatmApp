@@ -42,7 +42,7 @@
 @interface ProfileVC() <ProfileHeaderViewDelegate, Intro_Notification_Delegate,
                         UIScrollViewDelegate, CreateNewChannelViewProtocol,
                         PublishingProgressProtocol, PostListVCProtocol,
-                        UIGestureRecognizerDelegate,UserAndChannelListsTVCDelegate>
+                        UIGestureRecognizerDelegate>
 
 @property (nonatomic) BOOL currentlyCreatingNewChannel;
 
