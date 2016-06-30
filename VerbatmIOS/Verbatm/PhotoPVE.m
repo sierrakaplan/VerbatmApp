@@ -224,7 +224,6 @@
 	if(!self.rearrangeView){
 		[self offScreen];
 		CGFloat y_pos = (self.photoVideoSubview) ? 0.f : CUSTOM_NAV_BAR_HEIGHT;
-
 		CGRect frame = CGRectMake(0.f,y_pos, self.frame.size.width, OPEN_COLLECTION_FRAME_HEIGHT);
 		OpenCollectionView *rearrangeView = [[OpenCollectionView alloc] initWithFrame:frame
 																	andPinchViewArray:((CollectionPinchView*)self.pinchView).imagePinchViews];
@@ -283,7 +282,7 @@
 	self.slideShowPlaying = YES;
 }
 
--(void)stopSlideshow{
+-(void)stopSlideshow {
 	self.slideShowPlaying = NO;
 	if(self.inPreviewMode){
 		[self.panGestureSensingViewHorizontal removeFromSuperview];
@@ -314,9 +313,6 @@
 		self.rearrangeView = nil;
 	}
 	self.imageContainerViews = nil;
-	for (UIView * view in self.subviews) {
-		[view removeFromSuperview];
-	}
 	((CollectionPinchView*)self.pinchView).imagePinchViews = pinchViews;
 	[[PostInProgress sharedInstance] removePinchViewAtIndex:self.indexInPost andReplaceWithPinchView:self.pinchView];
 	[self.pinchView renderMedia];

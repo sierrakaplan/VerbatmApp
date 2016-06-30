@@ -16,7 +16,6 @@
 #import "ParseBackendKeys.h"
 #import <Parse/PFQuery.h>
 
-#import "UserManager.h"
 #import "UserInfoCache.h"
 
 @interface Channel_BackendObject ()

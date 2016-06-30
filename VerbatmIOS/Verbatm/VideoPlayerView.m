@@ -159,14 +159,10 @@
 			} else {
 				NSLog(@"Ready but not playing.");
 			}
-		} else {
-			if (self.shouldPlayOnLoad) {
-				NSLog(@"play back will not keep up");
-				[self.loadingIndicator startAnimating];
-				if (self.loadingIndicator.hidden) NSLog(@"wtf");
-				if (!self.loadingIndicator.superview) NSLog(@"WTF2");
-				self.videoLoading = YES;
-			}
+		} else if (self.shouldPlayOnLoad) {
+			NSLog(@"play back will not keep up");
+			[self.loadingIndicator startAnimating];
+			self.videoLoading = YES;
 		}
 	}
 }

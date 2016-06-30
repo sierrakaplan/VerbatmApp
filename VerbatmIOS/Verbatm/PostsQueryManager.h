@@ -11,6 +11,9 @@
 
 @interface PostsQueryManager : NSObject
 
+//Loads most recent posts
+-(void) refreshPostsInUserChannel:(Channel*)channel withCompletionBlock:(void(^)(NSArray *))block;
+
 -(void) refreshPostsInChannel:(Channel *)channel startingAt:(NSDate*)date withCompletionBlock:(void(^)(NSArray *))block;
 
 -(void) loadMorePostsInChannel:(Channel*)channel withCompletionBlock:(void(^)(NSArray *))block;

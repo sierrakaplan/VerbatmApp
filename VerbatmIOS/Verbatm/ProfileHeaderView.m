@@ -156,6 +156,11 @@
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)string {
 	NSInteger length = textView.text.length + string.length - range.length;
+	if([string isEqualToString:@"\n"]) {
+		[textView resignFirstResponder];
+		[self editButtonSelected];
+		return NO;
+	}
 	if (textView == self.blogTitleEditable) {
 		return length <= TITLE_MAX_CHARACTERS;
 	} else if (textView == self.blogDescriptionEditable) {
@@ -164,30 +169,29 @@
 	return YES;
 }
 
-//- (void)textViewDidBeginEditing:(UITextView *)textView {
-//	if (textView == self.blogTitleEditable) {
-//		self.blogTitlePlaceholder.hidden = YES;
-//	} else if(textView == self.blogDescriptionEditable) {
-//		self.blogDescriptionPlaceholder.hidden = YES;
-//	}
-//}
-//
-//- (void)textViewDidChange:(UITextView *)textView {
-//	if (textView == self.blogTitleEditable) {
-//		self.blogTitlePlaceholder.hidden = ([textView.text length] > 0);
-//	} else if(textView == self.blogDescriptionEditable) {
-//		self.blogDescriptionPlaceholder.hidden = ([textView.text length] > 0);
-//	}
-//}
-//
-//- (void)textViewDidEndEditing:(UITextView *)textView {
-//	if (textView == self.blogTitleEditable) {
-//		self.blogTitlePlaceholder.hidden = ([textView.text length] > 0);
-//	} else if(textView == self.blogDescriptionEditable) {
-//		self.blogDescriptionPlaceholder.hidden = ([textView.text length] > 0);
-//	}
-//}
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+	if (textView == self.blogTitleEditable) {
+		self.blogTitlePlaceholder.hidden = YES;
+	} else if(textView == self.blogDescriptionEditable) {
+		self.blogDescriptionPlaceholder.hidden = YES;
+	}
+}
 
+- (void)textViewDidChange:(UITextView *)textView {
+	if (textView == self.blogTitleEditable) {
+		self.blogTitlePlaceholder.hidden = ([textView.text length] > 0);
+	} else if(textView == self.blogDescriptionEditable) {
+		self.blogDescriptionPlaceholder.hidden = ([textView.text length] > 0);
+	}
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView {
+	if (textView == self.blogTitleEditable) {
+		self.blogTitlePlaceholder.hidden = ([textView.text length] > 0);
+	} else if(textView == self.blogDescriptionEditable) {
+		self.blogDescriptionPlaceholder.hidden = ([textView.text length] > 0);
+	}
+}
 
 -(void) backButtonSelected {
 	[self.delegate exitCurrentProfile];
@@ -243,6 +247,11 @@
 								 self.blogDescriptionEditable.frame.size.height - OFFSET_X - 20.f,
 								 20.f, 20.f);
 	[self.blogDescriptionEditable addSubview: editImage];
+	if (self.blogDescription.text && self.blogDescription.text.length > 0) {
+		self.blogDescriptionPlaceholder.hidden = YES;
+	} else {
+		self.blogDescriptionPlaceholder.hidden = NO;
+	}
 	[self.blogDescriptionEditable addSubview: self.blogDescriptionPlaceholder];
 }
 
@@ -252,6 +261,9 @@
 								 self.blogTitleEditable.frame.size.height - OFFSET_X - 20.f,
 								 20.f, 20.f);
 	[self.blogTitleEditable addSubview: editImage];
+	if (self.blogTitle.text && self.blogTitle.text.length > 0) {
+		self.blogTitlePlaceholder.hidden = YES;
+	}
 	[self.blogTitleEditable addSubview: self.blogTitlePlaceholder];
 }
 

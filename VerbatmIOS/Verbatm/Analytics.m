@@ -7,7 +7,6 @@
 //
 
 #import "Analytics.h"
-#import "GTLVerbatmAppVerbatmUser.h"
 #import <Parse/PFAnalytics.h>
 #import <Parse/PFUser.h>
 #import "UserManager.h"

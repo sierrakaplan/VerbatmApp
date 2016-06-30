@@ -60,6 +60,31 @@
 	}];
 }
 
+//todo: change
+-(void) refreshPostsInUserChannel:(Channel*)channel withCompletionBlock:(void(^)(NSArray *))block {
+	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
+	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
+	[postQuery orderByDescending:@"createdAt"];
+	[postQuery setLimit: POSTS_DOWNLOAD_SIZE];
+	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
+												  NSError * _Nullable error) {
+		if(activities && !error) {
+			NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
+			for(PFObject * pc_activity in activities){
+				PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
+				[post fetchIfNeededInBackground];
+				[finalPostObjects addObject:pc_activity];
+			}
+			if (activities.count > 0) {
+				self.latestDate = [(PFObject*)(activities[0]) createdAt];
+			}
+			finalPostObjects = [[[finalPostObjects reverseObjectEnumerator] allObjects] mutableCopy];
+			self.postsDownloaded = finalPostObjects.count;
+			block(finalPostObjects);
+		}
+	}];
+}
+
 // Loads newer posts in channel from date that left off
 -(void) loadMorePostsInChannel:(Channel*)channel withCompletionBlock:(void(^)(NSArray *))block {
 	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];

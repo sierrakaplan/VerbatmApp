@@ -429,8 +429,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "302"
             endingLineNumber = "302"
-            landmarkName = "-collectionView:shouldSelectItemAtIndexPath:"
-            landmarkType = "5">
+            landmarkName = "@implementation PostListVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

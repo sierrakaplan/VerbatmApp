@@ -7,8 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GTLVerbatmAppImage.h"
-#import "GTLVerbatmAppVideo.h"
 #import <PromiseKit/PromiseKit.h>
 
 @interface PostPublisher : NSObject

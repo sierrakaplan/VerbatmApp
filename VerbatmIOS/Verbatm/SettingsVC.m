@@ -7,6 +7,7 @@
 //
 
 #import "CustomNavigationBar.h"
+#import <Parse/PFUser.h>
 #import "User_BackendObject.h"
 #import <MessageUI/MessageUI.h>
 #import "TermsAndConditionsVC.h"
@@ -130,16 +131,12 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
     }];
 }
 
-
 - (IBAction)signOutButtonSelected:(id)sender {
-    //sign out functionality -- not sure what this should be
+    //todo - exit app
     [self exitSettingsPageWithCompletionBlock:^{
-        [[UserManager sharedInstance] logOutUser];
+		[[UserManager sharedInstance] logOutUser];
     }];
 }
-
-
-
 
 
 #pragma mark -seding email functionality-
@@ -164,15 +161,9 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
 
 }
 
-- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
-{
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
-
-
-
-
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
