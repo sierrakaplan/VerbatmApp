@@ -40,7 +40,7 @@
 @interface PublishingProgressManager : NSObject
 
 #define INITIAL_PROGRESS_UNITS 3
-#define IMAGE_PROGRESS_UNITS 4
+#define IMAGE_PROGRESS_UNITS 3
 #define VIDEO_PROGRESS_UNITS 21
 
 @property (nonatomic, weak) id<PublishingProgressProtocol> delegate;

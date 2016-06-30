@@ -152,6 +152,10 @@
 }
 
 -(void)clearPublishingView{
+    if(self.currentlyPublishing){
+        self.currentlyPublishing = NO;
+        [self removePostAtIndex:self.parsePostObjects.count];
+    }
 }
 
 -(void) userPublishing:(NSNotification *) notification {
@@ -184,8 +188,8 @@
 -(void) publishingSucceeded:(NSNotification *) notification {
     NSLog(@"publishing done");
     if(!self.isCurrentUserProfile) return;
-	self.currentlyPublishing = NO;
     [PFQuery clearAllCachedResults];
+    [self clearPublishingView];
 	[self refreshPosts];
 
 }
@@ -193,7 +197,8 @@
     if(!self.isCurrentUserProfile) return;
     NSLog(@"publishing failed");
 	self.currentlyPublishing = NO;
-	[self.collectionView reloadData];
+    [PFQuery clearAllCachedResults];
+    [self clearPublishingView];
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
@@ -621,7 +626,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 			[cell clearViews];
             if(self.currentlyPublishing && [postObject isKindOfClass:[NSNumber class]]){
                 [cell presentPublishingView];
-            }else{
+            }else if(![postObject isKindOfClass:[NSNumber class]]){
             
 			[cell presentPostFromPCActivityObj:postObject andChannel:self.channelForList
 							  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:NO];
