@@ -57,7 +57,10 @@ ExploreChannelCellViewDelegate>
 	self.loadingMoreChannels = NO;
 	self.refreshing = NO;
 	[self formatTableView];
-	[self setUpSearchController];
+
+	if (!self.onboardingBlogSelection) {
+		[self setUpSearchController];
+	}
 
 	[self addRefreshFeature];
 	[self refreshChannels];
@@ -180,7 +183,7 @@ ExploreChannelCellViewDelegate>
 #pragma mark - Table View delegate methods -
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-	if(self.onboardingBlogSelection)return 1;
+	if(self.onboardingBlogSelection) return 1;
     return 2;
 }
 
