@@ -77,17 +77,13 @@
 @property (nonatomic) LoadingIndicator *customActivityIndicator;
 @property (nonatomic) SharePostView *sharePostView;
 @property (nonatomic) BOOL shouldPlayVideos;
-@property (nonatomic) BOOL isRefreshing;
-@property (nonatomic) BOOL isLoadingMore;
-@property (nonatomic) BOOL isLoadingOlder;
+
 @property (nonatomic) BOOL footerBarIsUp;//like share bar
 @property (nonatomic) BOOL fbShare;
 @property (nonatomic) NSString *postImageText;
 @property (nonatomic) PFObject *postToShare;
-//@property (strong, nonatomic) BranchUniversalObject *branchUniversalObject;
 
 @property (nonatomic) ExternalShare * externalShare;
-
 
 @property (nonatomic) UIImageView *reblogSucessful;
 @property (nonatomic) UIImageView *following;
@@ -99,6 +95,11 @@
 
 @property (nonatomic) PublishingProgressView * publishingProgressView;
 
+@property (nonatomic) BOOL isRefreshing;
+@property (nonatomic) BOOL isLoadingMore;
+@property (nonatomic) BOOL isLoadingOlder;
+
+@property (nonatomic) NSInteger scrollDirection; // -1 if scrolling backwards, +1 if forwards
 
 @property (nonatomic) void(^refreshPostsCompletion)(NSArray * posts);
 @property (nonatomic) void(^loadMorePostsCompletion)(NSArray * posts);
@@ -137,15 +138,6 @@
 											 selector:@selector(publishingSucceeded:)
 												 name:NOTIFICATION_POST_PUBLISHED
 											   object:nil];
-}
-
--(void)scrollToLastElementInlist{
-	NSInteger section = 0;
-	NSInteger item = [self.collectionView numberOfItemsInSection:section] - 1;
-	if(item > 0){
-		NSIndexPath *indexPath = [NSIndexPath indexPathForItem:item inSection:section];
-		[self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:(UICollectionViewScrollPositionRight) animated:NO];
-	}
 }
 
 -(void)clearPublishingView{
@@ -189,8 +181,10 @@
         self.parsePostObjects = nil;
         [self.collectionView reloadData];
         self.feedQueryManager = nil;
-        self.nextIndexToPresent = 0;
-        self.nextNextIndex = 1;
+		// Start off assuming scrolling backwards
+		self.scrollDirection = -1;
+        self.nextIndexToPresent = -1;
+        self.nextNextIndex = -1;
         self.nextCellToPresent = nil;
         self.nextNextCell = nil;
         self.postToShare = nil;
@@ -221,6 +215,7 @@
 	}
 }
 
+//todo: change refresh
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	if (scrollView == self.collectionView) {
 		CGPoint offset = scrollView.contentOffset;
@@ -311,13 +306,11 @@
                     }];
                 }
             } else {
-
 				//Reload all posts in channel
 				weakSelf.parsePostObjects = nil;
 				[weakSelf.parsePostObjects addObjectsFromArray:posts];
 				[weakSelf.collectionView reloadData];
-				[weakSelf scrollToLastElementInlist];
-
+				[weakSelf scrollToLastElementInList];
 			}
 
 			[weakSelf removePresentLabel];
@@ -373,21 +366,25 @@
 				NSInteger oldRow = visiblePaths && visiblePaths.count ? [(NSIndexPath*)visiblePaths[0] row] : 0;
 				NSInteger newRow = oldRow + posts.count;
 
-//				if(newRow >= posts.count){
-//					newRow = [self.collectionView numberOfItemsInSection:0] - 1;
-//					oldRow = newRow -1;
-//				}
-
 				NSIndexPath *selectedPostPath = [NSIndexPath indexPathForRow:newRow inSection:0];
 				[weakSelf.collectionView scrollToItemAtIndexPath:selectedPostPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
-				weakSelf.nextIndexToPresent = newRow - 1;
-				weakSelf.nextNextIndex = newRow - 2;
+				weakSelf.nextIndexToPresent += posts.count;
+				weakSelf.nextNextIndex += posts.count;
 				weakSelf.isLoadingOlder = NO;
 				weakSelf.performingUpdate = NO;
 				[CATransaction commit];
 			}
 		}];
 	};
+}
+
+-(void)scrollToLastElementInList{
+	NSInteger section = 0;
+	NSInteger item = [self.collectionView numberOfItemsInSection:section] - 1;
+	if(item > 0){
+		NSIndexPath *indexPath = [NSIndexPath indexPathForItem:item inSection:section];
+		[self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:(UICollectionViewScrollPositionRight) animated:NO];
+	}
 }
 
 //todo: change to refresh newest and just load posts
@@ -450,35 +447,20 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
 				  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-	if (self.currentlyPublishing) {
-		return [self postCellAtIndexPath:indexPath];
-	}
+	[self checkShouldReverseScrollDirectionFromIndexPath: indexPath];
 	if (self.performingUpdate && self.currentDisplayCell){
 		return self.currentDisplayCell;
 	}
+
 	PostCollectionViewCell *currentCell;
 	if (indexPath.row == self.nextIndexToPresent) {
 		currentCell = self.nextCellToPresent;
-	} else if (indexPath.row == self.nextNextIndex) {
-		currentCell = self.nextNextCell;
 	}
 	if (currentCell == nil) {
 		currentCell = [self postCellAtIndexPath:indexPath];
 	}
 	[currentCell onScreen];
-
-	//Prepare next cell (after first time will just be nextNextCell)
-	self.nextIndexToPresent = indexPath.row-1;
-	if (self.nextIndexToPresent == self.nextNextIndex) self.nextCellToPresent = self.nextNextCell;
-	if (!self.nextCellToPresent || self.nextIndexToPresent != self.nextNextIndex) {
-		self.nextCellToPresent = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextIndexToPresent inSection:indexPath.section]];
-	}
-	if (self.nextCellToPresent) [self.nextCellToPresent almostOnScreen];
-
-	//Prepare next next cell
-	self.nextNextIndex = indexPath.row-2;
-	self.nextNextCell = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextNextIndex inSection:indexPath.section]];
-	if (self.nextNextCell) [self.nextNextCell almostOnScreen];
+	[self prepareNextPostsFromIndexPath:indexPath];
 
 	// Load more posts
 	//todo: remove
@@ -494,6 +476,30 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 	self.currentDisplayCell = currentCell;
 	return currentCell;
+}
+
+-(void) checkShouldReverseScrollDirectionFromIndexPath:(NSIndexPath*)indexPath  {
+	// Check if should reverse scroll direction (only if this isn't the first time getting a cell)
+	if (self.nextIndexToPresent != -1) {
+		self.scrollDirection = (indexPath.row == self.nextIndexToPresent) ? self.scrollDirection : self.scrollDirection*-1;
+	}
+}
+
+-(void) prepareNextPostsFromIndexPath:(NSIndexPath*)indexPath {
+	self.nextIndexToPresent = indexPath.row + self.scrollDirection;
+	// If next cell is previously prepared next next cell, just set it equal
+	if (self.nextIndexToPresent == self.nextNextIndex) {
+		self.nextCellToPresent = self.nextNextCell;
+		// Otherwise, reset it
+	} else {
+		self.nextCellToPresent = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextIndexToPresent inSection:indexPath.section]];
+	}
+	if (self.nextCellToPresent) [self.nextCellToPresent almostOnScreen];
+
+	//Prepare next next cell
+	self.nextNextIndex = indexPath.row + self.scrollDirection*2;
+	self.nextNextCell = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextNextIndex inSection:indexPath.section]];
+	if (self.nextNextCell) [self.nextNextCell almostOnScreen];
 }
 
 -(PostCollectionViewCell*) postCellAtIndexPath:(NSIndexPath *)indexPath {
