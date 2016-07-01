@@ -16,7 +16,7 @@
 @property (strong, nonatomic) NSDate *latestDate;
 @property (strong, nonatomic) NSDate *oldestDate;
 
-#define POSTS_DOWNLOAD_SIZE 10
+#define POSTS_DOWNLOAD_SIZE 5
 
 @end
 

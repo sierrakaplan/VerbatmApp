@@ -200,8 +200,6 @@
         self.performingUpdate = NO;
         self.shouldPlayVideos = YES;
     }
-    
-
 }
 
 -(void) display:(Channel*)channelForList asPostListType:(PostListType)listType
@@ -368,21 +366,22 @@
 			[weakSelf.collectionView insertItemsAtIndexPaths:indices];
 
 		} completion: ^(BOOL finished) {
+			
 			if (finished && !self.currentlyPublishing) {
 				// Scroll to previously selected cell so nothing looks different
 				NSArray* visiblePaths = [weakSelf.collectionView indexPathsForVisibleItems];
 				NSInteger oldRow = visiblePaths && visiblePaths.count ? [(NSIndexPath*)visiblePaths[0] row] : 0;
 				NSInteger newRow = oldRow + posts.count;
 
-				if(newRow >= posts.count){
-					newRow = [self.collectionView numberOfItemsInSection:0] - 1;
-					oldRow = newRow -1;
-				}
+//				if(newRow >= posts.count){
+//					newRow = [self.collectionView numberOfItemsInSection:0] - 1;
+//					oldRow = newRow -1;
+//				}
 
 				NSIndexPath *selectedPostPath = [NSIndexPath indexPathForRow:newRow inSection:0];
 				[weakSelf.collectionView scrollToItemAtIndexPath:selectedPostPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
-				weakSelf.nextIndexToPresent = newRow + 1;
-				weakSelf.nextNextIndex = newRow + 2;
+				weakSelf.nextIndexToPresent = newRow - 1;
+				weakSelf.nextNextIndex = newRow - 2;
 				weakSelf.isLoadingOlder = NO;
 				weakSelf.performingUpdate = NO;
 				[CATransaction commit];
@@ -469,7 +468,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	[currentCell onScreen];
 
 	//Prepare next cell (after first time will just be nextNextCell)
-	self.nextIndexToPresent = indexPath.row+1;
+	self.nextIndexToPresent = indexPath.row-1;
 	if (self.nextIndexToPresent == self.nextNextIndex) self.nextCellToPresent = self.nextNextCell;
 	if (!self.nextCellToPresent || self.nextIndexToPresent != self.nextNextIndex) {
 		self.nextCellToPresent = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextIndexToPresent inSection:indexPath.section]];
@@ -477,7 +476,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	if (self.nextCellToPresent) [self.nextCellToPresent almostOnScreen];
 
 	//Prepare next next cell
-	self.nextNextIndex = indexPath.row+2;
+	self.nextNextIndex = indexPath.row-2;
 	self.nextNextCell = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextNextIndex inSection:indexPath.section]];
 	if (self.nextNextCell) [self.nextNextCell almostOnScreen];
 
@@ -1035,4 +1034,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	return _publishingProgressView;
 }
 
+-(void) didReceiveMemoryWarning {
+
+}
 @end
