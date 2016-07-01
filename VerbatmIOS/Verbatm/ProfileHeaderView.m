@@ -71,7 +71,7 @@
 		[self createLabels];
 
 		[[NSNotificationCenter defaultCenter] addObserver:self
-												 selector:@selector(changeUserName)
+												 selector:@selector(userNameChanged)
 													 name:NOTIFICATION_USERNAME_CHANGED_SUCCESFULLY
 												   object:nil];
 	}
@@ -105,11 +105,16 @@
 	[self addSubview:self.blogDescription];
 }
 
+-(void) userNameChanged {
+	NSString *newUserName = self.channelOwner[VERBATM_USER_NAME_KEY];
+	[self.channel.parseChannelObject setObject:newUserName forKey:CHANNEL_CREATOR_NAME_KEY];
+	[self.channel.parseChannelObject saveInBackground];
+	[self changeUserName];
+}
+
 -(void) changeUserName {
 	NSString *newUserName = self.channelOwner[VERBATM_USER_NAME_KEY];
 	self.userNameLabel.text = newUserName;
-	[self.channel.parseChannelObject setObject:newUserName forKey:CHANNEL_CREATOR_NAME_KEY];
-	[self.channel.parseChannelObject saveInBackground];
 }
 
 -(void) changeBlogTitle {

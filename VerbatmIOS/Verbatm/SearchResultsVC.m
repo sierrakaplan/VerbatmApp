@@ -19,6 +19,7 @@
 @interface SearchResultsVC ()
 
 @property (strong, nonatomic) NSArray *searchResults;
+@property (weak, nonatomic) PFQuery *currentQuery;
 
 @end
 
@@ -34,10 +35,11 @@
 	[channelNameQuery whereKey:CHANNEL_NAME_KEY matchesRegex:searchTerm modifiers:@"i"];
 	PFQuery *channelCreatorQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
 	[channelCreatorQuery whereKey:CHANNEL_CREATOR_NAME_KEY matchesRegex:searchTerm modifiers:@"i"];
-	PFQuery *query = [PFQuery orQueryWithSubqueries:@[channelNameQuery, channelCreatorQuery]];
-	[query orderByDescending:CHANNEL_NUM_FOLLOWS];
-	query.limit = SEARCH_RESULTS_LIMIT;
-	[query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+	if (self.currentQuery) [self.currentQuery cancel];
+	self.currentQuery = [PFQuery orQueryWithSubqueries:@[channelNameQuery, channelCreatorQuery]];
+	[self.currentQuery orderByDescending:CHANNEL_NUM_FOLLOWS];
+	self.currentQuery.limit = SEARCH_RESULTS_LIMIT;
+	[self.currentQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
 		if (error) {
 			[[Crashlytics sharedInstance] recordError:error];
 		} else {
@@ -62,6 +64,7 @@
 		[cell removeFromSuperview];
 	}
 	PFObject *result = self.searchResults[indexPath.row];
+	[result[CHANNEL_CREATOR_KEY] fetchIfNeededInBackground];
 	NSString *userName = result[CHANNEL_CREATOR_NAME_KEY];
 	NSString *blogText = result[CHANNEL_NAME_KEY];
 	if(userName) {
