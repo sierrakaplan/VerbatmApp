@@ -143,6 +143,7 @@
 #pragma mark - Profile Information Header -
 #define ADD_COVER_PHOTO_ICON @"Add cover photo"
 
+#define NO_COVER_PHOTO_IMAGE @"Empty_Cover_Photo_Image"
 #define PROFILE_BACK_BUTTON_ICON @"back_arrow_white"
 
 

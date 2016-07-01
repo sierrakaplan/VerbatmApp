@@ -148,8 +148,19 @@
 
 
 -(void)checkForCoverPhoto{
+    //set default cover photo
+    
+    //Now look for cloud one
      [self.channel loadCoverPhotoWithCompletionBlock:^(UIImage * coverPhoto) {
-       if(coverPhoto)[self createTopAndReflectionCoverImageFromImage:coverPhoto];
+         [self createTopAndReflectionCoverImageFromImage:[UIImage imageNamed:NO_COVER_PHOTO_IMAGE]];
+         
+         if([[NSThread currentThread] isMainThread]){
+             if(coverPhoto)[self createTopAndReflectionCoverImageFromImage:coverPhoto];
+         }else{
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 if(coverPhoto)[self createTopAndReflectionCoverImageFromImage:coverPhoto];
+             });
+         }
    }];
    
 }
