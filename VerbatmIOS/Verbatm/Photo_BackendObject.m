@@ -138,11 +138,10 @@ andTextAlignment:(NSNumber *) textAlignment
             }else{
                 NSLog(@"Missed cache using network for photo");
             }
-            cacheResponsePassed = YES;
-            isCacheResponse = NO;
+            cacheResponsePassed = !cacheResponsePassed;
+            isCacheResponse = !isCacheResponse;
             block(objects);
         }else{
-            cacheResponsePassed = NO;
             if(!cacheResponsePassed && !isCacheResponse){
                 NSLog(error);
                 block(nil);

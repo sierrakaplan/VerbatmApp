@@ -61,7 +61,7 @@
 //stores a screenshot of the first page to be used during the progress report
 -(void)storeProgressBackgroundImage:(UIImage *) image;
 -(UIImage *) getProgressBackgroundImage;
-
+-(void)onePieceOfMediaSaved;
 @end
 
 

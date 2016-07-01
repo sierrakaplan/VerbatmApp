@@ -67,8 +67,9 @@
 -(void) refreshPostsInUserChannel:(Channel*)channel withCompletionBlock:(void(^)(NSArray *))block {
 	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
+    //[postQuery whereKey:@"createdAt" equalTo:<#(nonnull id)#>]
 	[postQuery orderByDescending:@"createdAt"];
-	[postQuery setLimit: 1];
+	//[postQuery setLimit: 1];
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
 												  NSError * _Nullable error) {
 		if(activities && !error) {
@@ -125,7 +126,7 @@
 	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
 	[postQuery orderByAscending:@"createdAt"];
 	if (self.oldestDate) [postQuery whereKey:@"createdAt" lessThan:self.oldestDate];
-	if(smallMode)[postQuery setLimit: POSTS_DOWNLOAD_SIZE_LARGE_MODE];
+	if(smallMode)[postQuery setLimit:POSTS_DOWNLOAD_SIZE_SMALL_MODE ];
     else [postQuery setLimit: POSTS_DOWNLOAD_SIZE_LARGE_MODE];
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
 												  NSError * _Nullable error) {

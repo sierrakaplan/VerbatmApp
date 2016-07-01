@@ -55,6 +55,7 @@
 		} success:^(NSURLSessionDataTask * _Nonnull task, NSData* responseData) {
                 [[PublishingProgressManager sharedInstance] mediaSavingProgressed:(self.mediaUploadProgress.totalUnitCount - self.mediaUploadProgress.completedUnitCount)];
                 [self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
+                [[PublishingProgressManager sharedInstance] onePieceOfMediaSaved];
                 NSLog(@"Video published!");
                 NSString *response = [[NSString alloc] initWithData:responseData encoding: NSUTF8StringEncoding];
             
@@ -84,6 +85,8 @@
 			}
 		} success:^(NSURLSessionDataTask * _Nonnull task, NSData* responseData) {
 			[[PublishingProgressManager sharedInstance] mediaSavingProgressed:(self.mediaUploadProgress.completedUnitCount)];
+            [[PublishingProgressManager sharedInstance] onePieceOfMediaSaved];
+            
 			[self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
 			NSLog(@"Image published!");
 			NSString *response = [[NSString alloc] initWithData:responseData encoding: NSUTF8StringEncoding];

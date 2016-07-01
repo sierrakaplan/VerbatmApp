@@ -228,12 +228,14 @@
 		[self removePlayerItemObservers];
 		if(self.loadingIndicator)[self.loadingIndicator stopAnimating];
 
-		for (UIView* view in self.subviews) {
-			[view removeFromSuperview];
+        for (int i = 0; i < self.subviews.count; i++) {
+			[self.subviews[i] removeFromSuperview];
 		}
-		for (CALayer *sublayer in self.layer.sublayers) {
-			[sublayer removeFromSuperlayer];
-		}
+        
+        for(int i =0; i < self.layer.sublayers.count; i++){
+            [self.layer.sublayers[i] removeFromSuperlayer];
+        }
+        
 		if(self.playerLayer)[self.playerLayer removeFromSuperlayer];
 		self.loadingIndicator = nil;
 		self.playerItem = nil;

@@ -231,23 +231,18 @@
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)string {
+    
     NSInteger length = textView.text.length + string.length - range.length;
+    if([string isEqualToString:@"\n"]) {
+        [textView resignFirstResponder];
+       [self editButtonSelected];
+       return NO;
+     }
     if (textView == self.blogTitleEditable) {
-        return length <= TITLE_MAX_CHARACTERS;
-        if(self.blogTitlePlaceholder){
-             [self.blogTitlePlaceholder removeFromSuperview];
-              self.blogTitlePlaceholder = nil;
-           }
-
-         return length <= TITLE_MAX_CHARACTERS;
-    } else if (textView == self.blogDescriptionEditable) {
-     
-          if(self.blogDescriptionPlaceholder){
-             [self.blogDescriptionPlaceholder removeFromSuperview];
-             self.blogDescriptionPlaceholder = nil;
-            }
-        return length <= DESCRIPTION_MAX_CHARACTERS;
-    }
+       return length <= TITLE_MAX_CHARACTERS;
+       } else if (textView == self.blogDescriptionEditable) {
+            return length <= DESCRIPTION_MAX_CHARACTERS;
+     }
     return YES;
 }
 

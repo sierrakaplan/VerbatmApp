@@ -45,11 +45,13 @@
 #define PHOTO_INDEX_KEY @"PhotoIndex"
 #define PHOTO_USER_KEY @"UsersPhoto"
 
+
 #define VIDEO_INDEX_KEY @"VideoIndex" //if we have multiple videos how they are organized
 #define VIDEO_PFCLASS_KEY @"VideoClass"
 #define BLOB_STORE_URL @"BlobStoreUrl"
 #define VIDEO_PAGE_OBJECT_KEY @"Page"
 #define VIDEO_THUMBNAIL_KEY @"Thumbnail"
+
 
 #define PAGE_PFCLASS_KEY @"PageClass"
 #define PAGE_INDEX_KEY @"PageIndex"
