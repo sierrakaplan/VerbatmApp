@@ -391,6 +391,7 @@
 	};
 }
 
+//todo: change to refresh newest and just load posts
 -(void) refreshPosts {
 	if (!self.isRefreshing){
 		self.exitedView = NO;
@@ -400,16 +401,14 @@
 		if(self.listType == listFeed) {
 			[self.feedQueryManager refreshFeedWithCompletionHandler:self.refreshPostsCompletion];
 		} else if (self.listType == listChannel) {
-			if (self.isCurrentUserProfile) {
-				[self.postsQueryManager refreshPostsInUserChannel:self.channelForList withCompletionBlock: self.refreshPostsCompletion];
-			} else {
-				[self.postsQueryManager refreshPostsInChannel: self.channelForList startingAt:self.latestDate
-										  withCompletionBlock: self.refreshPostsCompletion];
-			}
+			[self.postsQueryManager loadPostsInChannel: self.channelForList withLatestDate:self.latestDate withCompletionBlock:self.refreshPostsCompletion];
+//			[self.postsQueryManager refreshPostsInChannel: self.channelForList startingAt:self.latestDate
+//									  withCompletionBlock: self.refreshPostsCompletion];
 		}
 	}
 }
 
+//todo: delete
 -(void) loadMorePosts {
 	if (!self.isLoadingMore){
 		self.isLoadingMore = YES;
@@ -417,7 +416,7 @@
 		if (self.listType == listFeed) {
 			[self.feedQueryManager loadMorePostsWithCompletionHandler:self.loadMorePostsCompletion];
 		} else if (self.listType == listChannel) {
-			[self.postsQueryManager loadMorePostsInChannel:self.channelForList withCompletionBlock:self.loadMorePostsCompletion];
+//			[self.postsQueryManager loadMorePostsInChannel:self.channelForList withCompletionBlock:self.loadMorePostsCompletion];
 		}
 	}
 }
@@ -483,13 +482,14 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	if (self.nextNextCell) [self.nextNextCell almostOnScreen];
 
 	// Load more posts
+	//todo: remove
 	if(indexPath.row >= (self.parsePostObjects.count - LOAD_MORE_POSTS_COUNT)
 	   && !self.isLoadingMore && !self.isRefreshing) {
 		[self loadMorePosts];
 	}
 
 	//Load older posts
-	if ( indexPath.row <= LOAD_MORE_POSTS_COUNT && !self.isLoadingOlder && !self.isRefreshing) {
+	if (indexPath.row <= LOAD_MORE_POSTS_COUNT && !self.isLoadingOlder && !self.isRefreshing) {
 		[self loadOlderPosts];
 	}
 

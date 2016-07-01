@@ -11,15 +11,21 @@
 
 @interface PostsQueryManager : NSObject
 
-//Loads most recent posts
--(void) refreshPostsInUserChannel:(Channel*)channel withCompletionBlock:(void(^)(NSArray *))block;
 
--(void) refreshPostsInChannel:(Channel *)channel startingAt:(NSDate*)date withCompletionBlock:(void(^)(NSArray *))block;
+/* Loads newest posts in channel older than latest date (if date is nil, just loads newest
+ posts).
+ */
+-(void) loadPostsInChannel:(Channel*)channel withLatestDate:(NSDate*)date
+	   withCompletionBlock:(void(^)(NSArray *))block;
 
--(void) loadMorePostsInChannel:(Channel*)channel withCompletionBlock:(void(^)(NSArray *))block;
-
+// Loads posts older than the current oldest date
 -(void) loadOlderPostsInChannel:(Channel*)channel withCompletionBlock:(void(^)(NSArray *))block;
 
+// Finds all posts newer than latest date (if there are any) or if latest date is nil
+// just finds newest posts
+-(void) refreshNewestPostsInChannel:(Channel *)channel withCompletionBlock:(void(^)(NSArray *))block;
+
+// Loads newest posts in channel up to the given limit
 +(void) getPostsInChannel:(Channel*)channel withLimit:(NSInteger)limit withCompletionBlock:(void(^)(NSArray *))block;
 
 @end

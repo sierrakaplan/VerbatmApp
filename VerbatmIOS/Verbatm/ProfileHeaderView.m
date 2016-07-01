@@ -179,6 +179,9 @@
 
 - (void)textViewDidChange:(UITextView *)textView {
 	if (textView == self.blogTitleEditable) {
+		if ([textView.text length] == 0) {
+			//todo: delete
+		}
 		self.blogTitlePlaceholder.hidden = ([textView.text length] > 0);
 	} else if(textView == self.blogDescriptionEditable) {
 		self.blogDescriptionPlaceholder.hidden = ([textView.text length] > 0);
@@ -192,7 +195,6 @@
 		self.blogDescriptionPlaceholder.hidden = ([textView.text length] > 0);
 	}
 }
-
 
 -(void)followersButtonSelected{
     [self.delegate followersButtonSelected];
@@ -255,12 +257,12 @@
 								 self.blogDescriptionEditable.frame.size.height - OFFSET_X - 20.f,
 								 20.f, 20.f);
 	[self.blogDescriptionEditable addSubview: editImage];
+	[self.blogDescriptionEditable addSubview: self.blogDescriptionPlaceholder];
 	if (self.blogDescription.text && self.blogDescription.text.length > 0) {
 		self.blogDescriptionPlaceholder.hidden = YES;
 	} else {
 		self.blogDescriptionPlaceholder.hidden = NO;
 	}
-	[self.blogDescriptionEditable addSubview: self.blogDescriptionPlaceholder];
 }
 
 -(void) addSubviewsToTitle {
@@ -269,10 +271,12 @@
 								 self.blogTitleEditable.frame.size.height - OFFSET_X - 20.f,
 								 20.f, 20.f);
 	[self.blogTitleEditable addSubview: editImage];
+	[self.blogTitleEditable addSubview: self.blogTitlePlaceholder];
 	if (self.blogTitle.text && self.blogTitle.text.length > 0) {
 		self.blogTitlePlaceholder.hidden = YES;
+	} else {
+		self.blogTitlePlaceholder.hidden = NO;
 	}
-	[self.blogTitleEditable addSubview: self.blogTitlePlaceholder];
 }
 
 -(UILabel *) blogTitlePlaceholder {
