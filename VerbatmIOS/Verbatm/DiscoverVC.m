@@ -10,7 +10,7 @@
 #import "ExploreChannelCellView.h"
 #import "Icons.h"
 #import "FeedQueryManager.h"
-#import "FeaturedContentVC.h"
+#import "DiscoverVC.h"
 #import "FeaturedContentCellView.h"
 #import "Follow_BackendManager.h"
 #import "Notifications.h"
@@ -19,7 +19,7 @@
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
-@interface FeaturedContentVC() <UIScrollViewDelegate, FeaturedContentCellViewDelegate,
+@interface DiscoverVC() <UIScrollViewDelegate, FeaturedContentCellViewDelegate,
 ExploreChannelCellViewDelegate>
 
 @property (strong, nonatomic) UISearchController *searchController;
@@ -43,7 +43,7 @@ ExploreChannelCellViewDelegate>
 
 @end
 
-@implementation FeaturedContentVC
+@implementation DiscoverVC
 
 @dynamic refreshControl;
 

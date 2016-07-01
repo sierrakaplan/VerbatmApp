@@ -13,7 +13,7 @@
 
 #import "Durations.h"
 
-#import "FeaturedContentVC.h"
+#import "DiscoverVC.h"
 #import "FeedVC.h"
 
 #import "Icons.h"
@@ -57,7 +57,7 @@ ProfileVCDelegate>
 
 @property (strong,nonatomic) ProfileVC *profileVC;
 @property (strong,nonatomic) FeedVC *feedVC;
-@property (strong,nonatomic) FeaturedContentVC *discoverVC;
+@property (strong,nonatomic) DiscoverVC *discoverVC;
 
 
 #define ANIMATION_NOTIFICATION_DURATION 0.5

@@ -8,7 +8,7 @@
 
 #import <Crashlytics/Crashlytics.h>
 #import "OnboardingBlogSelectionViewController.h"
-#import "FeaturedContentVC.h"
+#import "DiscoverVC.h"
 #import "SizesAndPositions.h"
 #import "StoryboardVCIdentifiers.h"
 #import "Icons.h"
@@ -43,7 +43,7 @@
 }
 
 -(void)addListVC{
-    FeaturedContentVC * fvc = [self.storyboard instantiateViewControllerWithIdentifier:FEATURED_CONTENT_VC_ID];
+    DiscoverVC * fvc = [self.storyboard instantiateViewControllerWithIdentifier:FEATURED_CONTENT_VC_ID];
     fvc.onboardingBlogSelection = YES;
     [self.tableContainerView addSubview:fvc.view];
     [self addChildViewController:fvc];

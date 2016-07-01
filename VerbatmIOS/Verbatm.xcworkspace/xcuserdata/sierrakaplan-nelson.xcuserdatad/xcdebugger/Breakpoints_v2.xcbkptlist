@@ -368,7 +368,11 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/PhotoPVE.m"
+<<<<<<< Updated upstream
                   timestampString = "489108289.484912"
+=======
+                  timestampString = "489098146.429375"
+>>>>>>> Stashed changes
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "235"
@@ -383,7 +387,11 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/PhotoPVE.m"
+<<<<<<< Updated upstream
                   timestampString = "489108289.485019"
+=======
+                  timestampString = "489098146.429479"
+>>>>>>> Stashed changes
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "235"
@@ -656,12 +664,21 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileHeaderView.m"
+<<<<<<< Updated upstream
             timestampString = "489103905.711066"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "272"
             endingLineNumber = "272"
             landmarkName = "-addSubviewsToTitle"
+=======
+            timestampString = "489097769.323941"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "270"
+            endingLineNumber = "270"
+            landmarkName = "-addSubviewsToDescription"
+>>>>>>> Stashed changes
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -672,12 +689,21 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileHeaderView.m"
+<<<<<<< Updated upstream
             timestampString = "489103905.711066"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "258"
             endingLineNumber = "258"
             landmarkName = "-addSubviewsToDescription"
+=======
+            timestampString = "489097769.323941"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "256"
+            endingLineNumber = "256"
+            landmarkName = "-blogDescriptionEditable"
+>>>>>>> Stashed changes
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -688,11 +714,19 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileHeaderView.m"
+<<<<<<< Updated upstream
             timestampString = "489103905.711066"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "261"
             endingLineNumber = "261"
+=======
+            timestampString = "489097769.323941"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "258"
+            endingLineNumber = "258"
+>>>>>>> Stashed changes
             landmarkName = "-addSubviewsToDescription"
             landmarkType = "5">
          </BreakpointContent>
@@ -704,11 +738,19 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileHeaderView.m"
+<<<<<<< Updated upstream
             timestampString = "489103905.711066"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "275"
             endingLineNumber = "275"
+=======
+            timestampString = "489097769.323941"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "272"
+            endingLineNumber = "272"
+>>>>>>> Stashed changes
             landmarkName = "-addSubviewsToTitle"
             landmarkType = "5">
          </BreakpointContent>
@@ -720,12 +762,21 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileHeaderView.m"
+<<<<<<< Updated upstream
             timestampString = "489103905.711066"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "186"
             endingLineNumber = "186"
             landmarkName = "-textViewDidChange:"
+=======
+            timestampString = "489097769.323941"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "183"
+            endingLineNumber = "183"
+            landmarkName = "-textViewDidBeginEditing:"
+>>>>>>> Stashed changes
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -736,12 +787,21 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileHeaderView.m"
+<<<<<<< Updated upstream
             timestampString = "489103905.711066"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "201"
             endingLineNumber = "201"
             landmarkName = "-followersButtonSelected"
+=======
+            timestampString = "489097769.323941"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "199"
+            endingLineNumber = "199"
+            landmarkName = "-textViewDidEndEditing:"
+>>>>>>> Stashed changes
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -752,12 +812,21 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileHeaderView.m"
+<<<<<<< Updated upstream
             timestampString = "489103905.711066"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "194"
             endingLineNumber = "194"
             landmarkName = "-textViewDidEndEditing:"
+=======
+            timestampString = "489097769.323941"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "191"
+            endingLineNumber = "191"
+            landmarkName = "-textViewDidChange:"
+>>>>>>> Stashed changes
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1325,6 +1394,7 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
+<<<<<<< Updated upstream
             filePath = "Verbatm/ProfileHeaderView.m"
             timestampString = "489103905.711066"
             startingColumnNumber = "9223372036854775807"
@@ -1602,6 +1672,15 @@
             startingLineNumber = "485"
             endingLineNumber = "485"
             landmarkName = "-collectionView:cellForItemAtIndexPath:"
+=======
+            filePath = "Verbatm/PostsQueryManager.m"
+            timestampString = "489097990.00409"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "45"
+            endingLineNumber = "45"
+            landmarkName = "-refreshPostsInChannel:startingAt:withCompletionBlock:"
+>>>>>>> Stashed changes
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

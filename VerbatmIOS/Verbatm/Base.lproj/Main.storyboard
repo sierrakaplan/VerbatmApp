@@ -422,10 +422,10 @@
             </objects>
             <point key="canvasLocation" x="-5333" y="-2673"/>
         </scene>
-        <!--Featured ContentVC-->
+        <!--DiscoverVC-->
         <scene sceneID="Ztj-7g-WJd">
             <objects>
-                <viewController storyboardIdentifier="featured_content_vc" id="i9B-d6-FOW" customClass="FeaturedContentVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="featured_content_vc" id="i9B-d6-FOW" customClass="DiscoverVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Cf5-tW-Arb" customClass="UITableView">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
