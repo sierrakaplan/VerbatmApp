@@ -399,7 +399,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "77"
             endingLineNumber = "77"
-            landmarkName = "-loadCoverPhotoWithCompletionBlock:"
+            landmarkName = "-getChannelOwnerNameWithCompletionBlock:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -415,7 +415,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "76"
             endingLineNumber = "76"
-            landmarkName = "-loadCoverPhotoWithCompletionBlock:"
+            landmarkName = "-getChannelOwnerNameWithCompletionBlock:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -431,7 +431,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "72"
             endingLineNumber = "72"
-            landmarkName = "-loadCoverPhotoWithCompletionBlock:"
+            landmarkName = "-getChannelOwnerNameWithCompletionBlock:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -447,8 +447,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "85"
             endingLineNumber = "85"
-            landmarkName = "-changeTitle:andDescription:"
-            landmarkType = "5">
+            landmarkName = "@implementation Channel"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -623,7 +623,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "255"
             endingLineNumber = "255"
-            landmarkName = "-showWhoLikesThePost"
+            landmarkName = "-addCreatorInfo"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -719,7 +719,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "74"
             endingLineNumber = "74"
-            landmarkName = "-loadCoverPhotoWithCompletionBlock:"
+            landmarkName = "-getChannelOwnerNameWithCompletionBlock:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -735,8 +735,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "81"
             endingLineNumber = "81"
-            landmarkName = "@implementation Channel"
-            landmarkType = "3">
+            landmarkName = "-getChannelOwnerNameWithCompletionBlock:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -751,7 +751,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "75"
             endingLineNumber = "75"
-            landmarkName = "-loadCoverPhotoWithCompletionBlock:"
+            landmarkName = "-getChannelOwnerNameWithCompletionBlock:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -910,9 +910,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "384"
-            endingLineNumber = "384"
-            landmarkName = "-coverPhotoView"
-            landmarkType = "5">
+            endingLineNumber = "384">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1135,7 +1133,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "147"
             endingLineNumber = "147"
-            landmarkName = "-createPageViews"
+            landmarkName = "-displayPageViews:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1151,7 +1149,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "150"
             endingLineNumber = "150"
-            landmarkName = "-createPageViews"
+            landmarkName = "-displayPageViews:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -1231,7 +1229,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "73"
             endingLineNumber = "73"
-            landmarkName = "-initWithFrame:andUser:andChannel:inProfileTab:inFeed:"
+            landmarkName = "-initWithFrame:andUser:andChannel:inProfileTab:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1929,8 +1927,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "212"
             endingLineNumber = "212"
-            landmarkName = "-editButtonSelected"
-            landmarkType = "5">
+            landmarkName = "@implementation ProfileHeaderView"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2929,7 +2927,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "53"
             endingLineNumber = "53"
-            landmarkName = "-storeCoverPhoto:"
+            landmarkName = "-changeTitle:andDescription:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2945,7 +2943,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "124"
             endingLineNumber = "124"
-            landmarkName = "-changeUserName"
+            landmarkName = "-changeBlogDescription"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
