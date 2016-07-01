@@ -12,6 +12,7 @@
 #import "ParseBackendKeys.h"
 #import <Parse/PFObject.h>
 #import <Parse/PFQuery.h>
+#import "ProfileVC.h"
 
 #define SEARCH_RESULTS_LIMIT 50
 
@@ -69,6 +70,20 @@
 	}
 	[cell.textLabel setText: blogText];
 	return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	PFObject *channelObj = self.searchResults[indexPath.row];
+	Channel *channel = [[Channel alloc] initWithChannelName:channelObj[CHANNEL_NAME_KEY]
+												   andParseChannelObject:channelObj
+													   andChannelCreator:channelObj[CHANNEL_CREATOR_KEY]];
+	ProfileVC * userProfile = [[ProfileVC alloc] init];
+	userProfile.isCurrentUserProfile = channel.channelCreator == [PFUser currentUser];
+	userProfile.isProfileTab = NO;
+	userProfile.ownerOfProfile = channel.channelCreator;
+	userProfile.channel = channel;
+	[self presentViewController:userProfile animated:YES completion:^{
+	}];
 }
 
 @end
