@@ -77,8 +77,6 @@ ProfileVCDelegate>
 	if ([PFUser currentUser].isAuthenticated) {
 		[self checkMigrated];
 	}
-    //new product instance so we should clear all our querry caches
-    [PFQuery clearAllCachedResults];
 }
 
 -(void)viewDidAppear:(BOOL)animated {

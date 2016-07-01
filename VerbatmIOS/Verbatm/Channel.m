@@ -33,94 +33,75 @@
 
 -(instancetype) initWithChannelName:(NSString *) channelName
               andParseChannelObject:(PFObject *) parseChannelObject
-				  andChannelCreator:(PFUser *) channelCreator {
+                  andChannelCreator:(PFUser *) channelCreator {
     
     self = [super init];
     if(self){
         self.name = channelName;
-		if (parseChannelObject) {
-			[self addParseChannelObject:parseChannelObject andChannelCreator:channelCreator];
-			self.blogDescription = parseChannelObject[CHANNEL_DESCRIPTION_KEY];
-		}
-		if (self.blogDescription == nil) {
-			self.blogDescription = @"";
-		}
+        if (parseChannelObject) {
+            [self addParseChannelObject:parseChannelObject andChannelCreator:channelCreator];
+            self.blogDescription = parseChannelObject[CHANNEL_DESCRIPTION_KEY];
+        }
+        if (self.blogDescription == nil) {
+            self.blogDescription = @"";
+        }
     }
     return self;
 }
 
 -(void)storeCoverPhoto:(UIImage *) coverPhoto{
-  self.mediaPublisher = [[PostPublisher alloc] init];
-  dispatch_async(dispatch_get_global_queue(0, 0), ^{
-           [self getImageDataFromImage:coverPhoto withCompletionBlock:^(NSData * imageData) {
-                 [self.mediaPublisher storeImage:imageData].then(^(id result) {
-                        if(result){
-                                NSString *blobstoreUrl = (NSString*) result;
-                          if (![blobstoreUrl hasSuffix:@"=s0"]) {
-                        blobstoreUrl = [blobstoreUrl stringByAppendingString:@"=s0"];
-         }
-                      [self.parseChannelObject setValue:blobstoreUrl forKey:CHANNEL_COVER_PHOTO_URL];
-                     [self.parseChannelObject saveInBackground];
-                   }
-               });
-        }];
-    });
+    [Channel_BackendObject storeCoverPhoto:coverPhoto withParseChannelObject:self.parseChannelObject];
 }
 
 -(void)getImageDataFromImage:(UIImage *) profileImage withCompletionBlock:(void(^)(NSData*))block{
-   NSData* imageData = UIImagePNGRepresentation(profileImage);
-      block(imageData);
+    NSData* imageData = UIImagePNGRepresentation(profileImage);
+    block(imageData);
 }
 
 -(void)loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*))block{
-   
-   dispatch_async(dispatch_get_global_queue(0, 0), ^{
-         NSString * url = [self.parseChannelObject valueForKey:CHANNEL_COVER_PHOTO_URL];
-         if(url){
-  
-                [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString: url]].then(^(NSData* data) {
-                             if(data){
-                                          UIImage * photo = [UIImage imageWithData:data];
-                                          dispatch_async(dispatch_get_main_queue(), ^{
-                                                 block(photo);
-                                           });
-                                  }else{
-                                           block(nil);
-                                       }
-                           });
-            
-            
-                  } else {
-                      
-                              block(nil);
-                
-            }
-         });
+    
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSString * url = [self.parseChannelObject valueForKey:CHANNEL_COVER_PHOTO_URL];
+        if(url){
+            [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString: url]].then(^(NSData* data) {
+                if(data){
+                    UIImage * photo = [UIImage imageWithData:data];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        block(photo);
+                    });
+                }else{
+                    block(nil);
+                }
+            });
+        } else {
+            block(nil);
+        }
+    });
 }
 
 
 -(void) changeTitle:(NSString*)title andDescription:(NSString*)description {
-	self.name = title;
-	self.blogDescription = description;
-	self.parseChannelObject[CHANNEL_NAME_KEY] = title;
-	self.parseChannelObject[CHANNEL_DESCRIPTION_KEY] = description;
-	[self.parseChannelObject saveInBackground];
+    self.name = title;
+    self.blogDescription = description;
+    self.parseChannelObject[CHANNEL_NAME_KEY] = title;
+    self.parseChannelObject[CHANNEL_DESCRIPTION_KEY] = description;
+    [self.parseChannelObject saveInBackground];
 }
 
 -(void) currentUserFollowsChannel:(BOOL) follows {
-	PFUser *currentUser = [PFUser currentUser];
-	if (follows) {
-		if (![self.usersFollowingChannel containsObject:currentUser]) [self.usersFollowingChannel addObject:currentUser];
-	} else {
-		if ([self.usersFollowingChannel containsObject:currentUser]) [self.usersFollowingChannel removeObject:currentUser];
-	}
+    PFUser *currentUser = [PFUser currentUser];
+    if (follows) {
+        if (![self.usersFollowingChannel containsObject:currentUser]) [self.usersFollowingChannel addObject:currentUser];
+    } else {
+        if ([self.usersFollowingChannel containsObject:currentUser]) [self.usersFollowingChannel removeObject:currentUser];
+    }
 }
 
 -(void)getChannelOwnerNameWithCompletionBlock:(void(^)(NSString *))block {
-	if (!self.parseChannelObject) {
-		block(@"");
-		return;
-	}
+    if (!self.parseChannelObject) {
+        block(@"");
+        return;
+    }
     [[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
         self.channelCreator = (PFUser*)object;
         [self.channelCreator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
@@ -128,7 +109,7 @@
             block(userName);
         }];
     }];
-
+    
 }
 
 
@@ -150,26 +131,26 @@
 }
 
 -(void) getFollowersAndFollowingWithCompletionBlock:(void(^)(void))block {
-	self.usersFollowingChannel = nil;
-	self.channelsUserFollowing = nil;
-	
+    self.usersFollowingChannel = nil;
+    self.channelsUserFollowing = nil;
+    
     NSMutableArray * loadPromises = [[NSMutableArray alloc] init];
     
     [loadPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve)
-     {
-         [Follow_BackendManager usersFollowingChannel:self withCompletionBlock:^(NSArray *users) {
-             self.usersFollowingChannel = [[NSMutableArray alloc] initWithArray:users];
-             resolve(nil);
-         }];
-     }]];
+                             {
+                                 [Follow_BackendManager usersFollowingChannel:self withCompletionBlock:^(NSArray *users) {
+                                     self.usersFollowingChannel = [[NSMutableArray alloc] initWithArray:users];
+                                     resolve(nil);
+                                 }];
+                             }]];
     
     [loadPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve)
-     {
-         [Follow_BackendManager channelsUserFollowing:self.channelCreator withCompletionBlock:^(NSArray *channels) {
-             self.channelsUserFollowing = [[NSMutableArray alloc] initWithArray: channels];
-             resolve(nil);
-         }];
-     }]];
+                             {
+                                 [Follow_BackendManager channelsUserFollowing:self.channelCreator withCompletionBlock:^(NSArray *channels) {
+                                     self.channelsUserFollowing = [[NSMutableArray alloc] initWithArray: channels];
+                                     resolve(nil);
+                                 }];
+                             }]];
     
     PMKWhen(loadPromises).then(^(id nothing) {
         block();
@@ -177,14 +158,14 @@
 }
 
 -(BOOL)channelBelongsToCurrentUser {
-	if (!self.parseChannelObject) return false;
-	return ([[PFUser currentUser].objectId isEqualToString:self.channelCreator.objectId]);
+    if (!self.parseChannelObject) return false;
+    return ([[PFUser currentUser].objectId isEqualToString:self.channelCreator.objectId]);
 }
 
 -(void)addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator{
-	self.parseChannelObject = object;
-	self.channelCreator = channelCreator;
-	self.blogDescription = object[CHANNEL_DESCRIPTION_KEY];
+    self.parseChannelObject = object;
+    self.channelCreator = channelCreator;
+    self.blogDescription = object[CHANNEL_DESCRIPTION_KEY];
 }
 
 @end

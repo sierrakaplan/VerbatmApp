@@ -60,6 +60,8 @@
 #define DESCRIPTION_MAX_CHARACTERS 250
 
 #define COVER_PHOTO_HEIGHT 25.f
+
+#define COVER_PHOTO_IMAGE_RATIO (351.f/106.f)
 @end
 
 @implementation ProfileHeaderView
@@ -107,9 +109,8 @@
 	self.blogDescription.numberOfLines = 5;
 
 	[self changeUserName];
-	[self changeBlogTitle];
+    [self changeBlogTitleToTitle:self.channel.name];
 	[self changeBlogDescription];
-
 	[self addSubview:self.userNameLabel];
 	[self addSubview:self.blogTitle];
 	[self addSubview:self.blogDescription];
@@ -118,21 +119,23 @@
 
 -(void) changeUserName {
     
-    [self.channel getChannelOwnerNameWithCompletionBlock:^(NSString * creator) {
-        NSLog(@"Channel owner is : %@", creator);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.userNameLabel.text = creator;
-            [self.userNameLabel setTextColor:[UIColor whiteColor]];
-        });
-        
+    [self.channel.channelCreator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+        NSString * userName = [self.channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY];
+        self.userNameLabel.text = userName;
+        [self.userNameLabel setTextColor:[UIColor whiteColor]];
     }];
+
+    
 }
 
--(void) changeBlogTitle {
-	NSString *newTitle = self.channel.name;
-	self.blogTitle.text = newTitle;
-	[self.blogTitle sizeToFit];
-    [self.blogTitle setTextColor:[UIColor whiteColor]];
+-(void) changeBlogTitleToTitle:(NSString *)newTitle {
+    if(![newTitle isEqualToString:@""]){
+        self.blogTitle.text = newTitle;
+        [self.blogTitle sizeToFit];
+        [self.blogTitle setTextColor:[UIColor whiteColor]];
+
+    }
+	
 }
 
 -(void) changeBlogDescription {
@@ -140,9 +143,6 @@
 	self.blogDescription.text = newDescription;
 	[self.blogDescription sizeToFit];
     [self.blogDescription setTextColor:[UIColor whiteColor]];
-//	CGFloat heightDiff = BLOG_DESCRIPTION_HEIGHT - self.blogDescription.frame.size.height - OFFSET_Y;
-//	if (heightDiff < 0.f) heightDiff = 0.f;
-//	self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, PROFILE_HEADER_HEIGHT - heightDiff);
 }
 
 
@@ -170,7 +170,7 @@
       self.changeCoverPhoto = [[UIButton alloc] init];
       [self.changeCoverPhoto setImage:[UIImage imageNamed:ADD_COVER_PHOTO_ICON] forState:UIControlStateNormal];
     
-       CGFloat coverPhotoIconWidth = (351.f/106.f) * COVER_PHOTO_HEIGHT;
+       CGFloat coverPhotoIconWidth = COVER_PHOTO_IMAGE_RATIO * COVER_PHOTO_HEIGHT;
     
       self.changeCoverPhoto.frame = CGRectMake(self.frame.size.width - (coverPhotoIconWidth+OFFSET_X), self.frame.size.width - (COVER_PHOTO_HEIGHT + TAB_BAR_HEIGHT + OFFSET_X),coverPhotoIconWidth, COVER_PHOTO_HEIGHT);
       [self addSubview:self.changeCoverPhoto];
@@ -225,7 +225,7 @@
 		[self.blogDescriptionEditable removeFromSuperview];
 		[self addSubview: self.blogTitle];
 		[self addSubview: self.blogDescription];
-		[self changeBlogTitle];
+		[self changeBlogTitleToTitle:self.channel.name];
 		[self changeBlogDescription];
 	}
 }

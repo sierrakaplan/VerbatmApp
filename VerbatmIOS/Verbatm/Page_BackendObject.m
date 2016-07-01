@@ -68,14 +68,8 @@
 	return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
         [newPageObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 			if(succeeded){//now we save the media for the specific
-                PFRelation * pageRelation = [post relationForKey:POST_PAGES_PFRELATION];
-                [pageRelation addObject:newPageObject];
-                [post saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-                    if(succeeded){
-                        resolve (newPageObject);
-                    }else resolve(error);
-                }];
-			}
+                    resolve (newPageObject);
+            }else resolve(error);
 		}];
 	}];
 }
@@ -187,6 +181,22 @@
     
 }
 
++(id)comparatorSortPhotosByIndex{
+    return ^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+        PFObject * photoA = obj1;
+        PFObject * photoB = obj2;
+        
+        NSNumber * photoAnum = [photoA valueForKey:PHOTO_INDEX_KEY];
+        NSNumber * photoBnum = [photoB valueForKey:PHOTO_INDEX_KEY];
+        
+        if([photoAnum integerValue] > [photoBnum integerValue]){
+            return NSOrderedDescending;
+        }else if ([photoAnum integerValue] < [photoBnum integerValue]){
+            return NSOrderedAscending;
+        }
+        return NSOrderedSame;
+    };
+}
 
 
 +(void)getPagesFromPost:(PFObject *) post andCompletionBlock:(void(^)(NSArray *))block {
@@ -205,20 +215,7 @@
                 //the result may have been cached and so we don't need to load this page again.
                 if(!isCacheResponse && cacheResponsePassed) return;
                 
-                objects = [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
-                    PFObject * photoA = obj1;
-                    PFObject * photoB = obj2;
-                    
-                    NSNumber * photoAnum = [photoA valueForKey:PHOTO_INDEX_KEY];
-                    NSNumber * photoBnum = [photoB valueForKey:PHOTO_INDEX_KEY];
-                    
-                    if([photoAnum integerValue] > [photoBnum integerValue]){
-                        return NSOrderedDescending;
-                    }else if ([photoAnum integerValue] < [photoBnum integerValue]){
-                        return NSOrderedAscending;
-                    }
-                    return NSOrderedSame;
-                }];
+                objects = [objects sortedArrayUsingComparator:[Page_BackendObject comparatorSortPhotosByIndex]];
                 if(isCacheResponse){
                     NSLog(@"Just used cache for page");
                 }else{

@@ -129,15 +129,6 @@
     [self.cellDelegate showWhoLikesThePost:post];
 }
 
--(void) shiftLikeShareBarDown:(BOOL) down {
-    if(!self.hasPublishingView){
-        if (self.currentPostView) {
-            [self.currentPostView shiftLikeShareBarDown: down];
-        } else {
-            self.footerUp = !down;
-        }
-    }
-}
 
 -(void)setInSmallMode:(BOOL)inSmallMode{
     _inSmallMode = inSmallMode;

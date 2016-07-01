@@ -289,22 +289,6 @@
 
 #pragma mark - Like Share Bar -
 
-//todo: go through how this works in all cases
--(void) shiftLikeShareBarDown:(BOOL) down{
-//	if(down) {
-//		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-//			self.likeShareBar.frame = self.lsBarDownFrame;
-//			self.creatorAndChannelBar.frame = self.creatorBarFrameUp;
-//		} completion:^(BOOL finished) {
-//		}];
-//	}else{
-//		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-//			self.likeShareBar.frame = self.lsBarUpFrame;
-//			self.creatorAndChannelBar.frame = self.creatorBarFrameDown;
-//		} completion:^(BOOL finished) {
-//		}];
-//	}
-}
 
 -(void)userAction:(ActivityOptions) action isPositive:(BOOL) positive {
 	PFObject *post = [self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST];

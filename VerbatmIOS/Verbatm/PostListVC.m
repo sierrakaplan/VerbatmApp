@@ -102,8 +102,8 @@
 @property (nonatomic) void(^loadOlderPostsCompletion)(NSArray * posts);
 
 
-#define LOAD_MORE_POSTS_COUNT_SMALL 6
-#define LOAD_MORE_POSTS_COUNT_LARGE 3 //number of posts left to see before we start loading more content
+#define LOAD_MORE_POSTS_COUNT (self.inSmallMode ? 6 : 3)
+
 #define POST_CELL_ID @"postCellId"
 #define NUM_POVS_TO_PREPARE_EARLY 2 //we prepare this number of POVVs after the current one for viewing
 
@@ -190,7 +190,6 @@
 -(void) publishingSucceeded:(NSNotification *) notification {
     NSLog(@"publishing done");
     if(!self.isCurrentUserProfile) return;
-    [PFQuery clearAllCachedResults];
     [self clearPublishingView];
 	[self refreshPosts];
 
@@ -340,9 +339,9 @@
 -(void) defineLoadPostsCompletions {
 	__weak typeof(self) weakSelf = self;
 	self.refreshPostsCompletion = ^void(NSArray *posts) {
-		if (weakSelf.exitedView) return; // Already left page
+        [weakSelf.customActivityIndicator stopCustomActivityIndicator];
+		if(weakSelf.exitedView) return; // Already left page
         [weakSelf.postListDelegate postsFound];
-		[weakSelf.customActivityIndicator stopCustomActivityIndicator];
 		if(posts.count) {
 			if (weakSelf.listType == listFeed) {
 				//Insert new posts into beginning
@@ -376,7 +375,6 @@
             } else {
                
                     if(weakSelf.currentlyPublishing){
-                        // @synchronized (weakSelf.parsePostObjects) {
                             id publishingObject = [weakSelf.parsePostObjects lastObject];
                             //Reload all posts in channel
                             [weakSelf.parsePostObjects removeAllObjects];
@@ -386,14 +384,11 @@
                             publishingObject = @(0);//create placeholder
                         }
                         [weakSelf.parsePostObjects addObject:publishingObject];
-                         //}
                         
                     }else{
-                       // @synchronized (weakSelf.parsePostObjects) {
                             //Reload all posts in channel
                             [weakSelf.parsePostObjects removeAllObjects];
                             [weakSelf.parsePostObjects addObjectsFromArray:posts];
-                        //}
                     }
 				
                 
@@ -470,7 +465,7 @@
 
 				if(newRow >= posts.count){
 					newRow = [self.collectionView numberOfItemsInSection:0] - 1;
-					//oldRow = newRow -1;
+					oldRow = newRow -1;
 				}
 
 				NSIndexPath *selectedPostPath = [NSIndexPath indexPathForRow:newRow inSection:0];
@@ -573,29 +568,17 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (self.nextNextCell) [self.nextNextCell almostOnScreen];
     
     
-    if(self.inSmallMode){
-        // Load more posts
-        if(indexPath.row >= (self.parsePostObjects.count - LOAD_MORE_POSTS_COUNT_SMALL)
-           && !self.isLoadingMore && !self.isRefreshing) {
-            [self loadMorePosts];
-        }
-        
-        //Load older posts
-        if ( self.currentlyPublishing ||( indexPath.row <= LOAD_MORE_POSTS_COUNT_SMALL && !self.isRefreshing)) {
-            [self loadOlderPosts];
-        }
-    }else{
-        // Load more posts
-        if(indexPath.row >= (self.parsePostObjects.count - LOAD_MORE_POSTS_COUNT_LARGE)
-           && !self.isLoadingMore && !self.isRefreshing) {
-            [self loadMorePosts];
-        }
-        
-        //Load older posts
-        if ( indexPath.row <= LOAD_MORE_POSTS_COUNT_LARGE && !self.isLoadingOlder && !self.isRefreshing) {
-            [self loadOlderPosts];
-        }
+    // Load more posts
+    if(indexPath.row >= (self.parsePostObjects.count - LOAD_MORE_POSTS_COUNT)
+       && !self.isLoadingMore && !self.isRefreshing) {
+        [self loadMorePosts];
     }
+    
+    //Load older posts
+    if ( (self.inSmallMode && self.currentlyPublishing) ||( indexPath.row <= LOAD_MORE_POSTS_COUNT && !self.isRefreshing)) {
+        [self loadOlderPosts];
+    }
+   
     
     return currentCell;
     
@@ -680,15 +663,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		[self setNeedsStatusBarAppearanceUpdate];
 	} completion:^(BOOL finished) {
 	}];
-	//todo: this is only for visible cell for some reason - see if can find all cells that exist
-	for (NSInteger i = 0; i < [self.collectionView numberOfItemsInSection:0]; ++i) {
-		PostCollectionViewCell* cell = (PostCollectionViewCell*)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-		if (cell) {
-			[cell shiftLikeShareBarDown:!showing];
-		}
-	}
-	[self.nextCellToPresent shiftLikeShareBarDown:!showing];
-	[self.nextNextCell shiftLikeShareBarDown:!showing];
 }
 
 #pragma mark - PostCollectionViewCell delegate -

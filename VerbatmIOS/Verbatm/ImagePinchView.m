@@ -145,28 +145,6 @@
 }
 
 
-//-(void)prepareToPublish{
-//    __block PHObjectPlaceholder *assetPlaceholder;
-//    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
-//        PHAssetChangeRequest* assetChangeRequest;
-//            assetChangeRequest = [PHAssetChangeRequest creationRequestForAssetFromImage: [self getImage]];
-//
-//        PHAssetCollectionChangeRequest* collectionChangeRequest = [PHAssetCollectionChangeRequest changeRequestForAssetCollection:self.verbatmAlbum];
-//        assetPlaceholder = [assetChangeRequest placeholderForCreatedAsset];
-//        [collectionChangeRequest addAssets:@[assetPlaceholder]];
-//    } completionHandler:^(BOOL success, NSError * _Nullable error) {
-//        if (success) {
-//            self.phAssetLocalIdentifier = assetPlaceholder.localIdentifier;
-////            PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[assetPlaceholder.localIdentifier] options:nil];
-////            PHAsset* savedAsset = fetchResult.firstObject;
-////            dispatch_async(dispatch_get_main_queue(), ^{
-////                [self.delegate didFinishSavingMediaToAsset:savedAsset];
-////            });
-//        }
-//    }];
-//
-//}
-
 
 
 

@@ -13,6 +13,7 @@
 #import "Channel_BackendObject.h"
 #import "Channel.h"
 
+#import "PostPublisher.h"
 #import "Post_BackendObject.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFQuery.h>
@@ -101,6 +102,33 @@
         }];
     }];
 }
+
+
+
+
++(void)storeCoverPhoto:(UIImage *) coverPhoto withParseChannelObject:(PFObject *) channel{
+    PostPublisher * __block mediaPublisher = [[PostPublisher alloc] init];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [self getImageDataFromImage:coverPhoto withCompletionBlock:^(NSData * imageData) {
+            [mediaPublisher storeImage:imageData].then(^(id result) {
+                if(result){
+                    NSString *blobstoreUrl = (NSString*) result;
+                    if (![blobstoreUrl hasSuffix:@"=s0"]) {
+                        blobstoreUrl = [blobstoreUrl stringByAppendingString:@"=s0"];
+                    }
+                    [channel setValue:blobstoreUrl forKey:CHANNEL_COVER_PHOTO_URL];
+                    [channel saveInBackground];
+                }
+            });
+        }];
+    });
+}
+
++(void)getImageDataFromImage:(UIImage *) profileImage withCompletionBlock:(void(^)(NSData*))block{
+    NSData* imageData = UIImagePNGRepresentation(profileImage);
+    block(imageData);
+}
+
 
 + (void) getAllChannelsWithCompletionBlock:(void(^)(NSMutableArray *))completionBlock {
     

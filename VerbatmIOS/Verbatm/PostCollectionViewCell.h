@@ -32,8 +32,6 @@
 -(void) presentPostFromPCActivityObj: (PFObject *) pfActivityObj andChannel:(Channel*) channelForList
 					withDeleteButton: (BOOL) withDelete andLikeShareBarUp:(BOOL) up;
 
--(void) shiftLikeShareBarDown:(BOOL) down;
-
 -(void) almostOnScreen;
 -(void) onScreen;
 -(void) offScreen;

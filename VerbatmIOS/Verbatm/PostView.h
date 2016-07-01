@@ -53,7 +53,6 @@
 -(void) muteAllVideos:(BOOL) shouldMute;
 
 //moves the like share bar up and down to be above tab bar when tab bar is showing
--(void) shiftLikeShareBarDown:(BOOL) down;
 
 -(void)showPageUpIndicator;
 -(void)prepareForScreenShot;
