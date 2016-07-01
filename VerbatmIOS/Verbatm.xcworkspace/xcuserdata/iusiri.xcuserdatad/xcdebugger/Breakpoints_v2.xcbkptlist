@@ -623,7 +623,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "255"
             endingLineNumber = "255"
-            landmarkName = "-showWhoLikesThePost"
+            landmarkName = "-addCreatorInfo"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1133,7 +1133,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "147"
             endingLineNumber = "147"
-            landmarkName = "-createPageViews"
+            landmarkName = "-displayPageViews:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1149,7 +1149,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "150"
             endingLineNumber = "150"
-            landmarkName = "-createPageViews"
+            landmarkName = "-displayPageViews:"
             landmarkType = "5">
             <Locations>
                <Location
