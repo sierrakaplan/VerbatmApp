@@ -42,4 +42,9 @@
 
 +(void)getChannelsForUserList:(NSMutableArray *) userList andCompletionBlock:(void(^)(NSMutableArray *))block;
 
+
+-(void)storeCoverPhoto:(UIImage *) coverPhoto;
+
+-(void)loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*))block;
+
 @end

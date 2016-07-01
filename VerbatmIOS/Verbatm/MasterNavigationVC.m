@@ -15,7 +15,7 @@
 #import "Durations.h"
 
 #import "FeedVC.h"
-
+#import "FeedTableViewController.h"
 #import "Icons.h"
 
 #import "MasterNavigationVC.h"
@@ -25,6 +25,7 @@
 #import "ParseBackendKeys.h"
 #import "ProfileVC.h"
 #import "PublishingProgressManager.h"
+#import <Parse/PFQuery.h>
 
 #import "StoryboardVCIdentifiers.h"
 #import "SegueIDs.h"
@@ -40,7 +41,7 @@
 #import <Crashlytics/Crashlytics.h>
 
 
-@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate,
+@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedTableViewDelegate,
 ProfileVCDelegate>
 
 #pragma mark - Tab Bar Controller -
@@ -56,7 +57,7 @@ ProfileVCDelegate>
 #pragma mark View Controllers in tab bar Controller
 
 @property (strong,nonatomic) ProfileVC *profileVC;
-@property (strong,nonatomic) FeedVC *feedVC;
+@property (strong,nonatomic) FeedTableViewController *feedVC;
 @property (strong,nonatomic) DiscoverVC *discoverVC;
 
 
@@ -310,7 +311,8 @@ ProfileVCDelegate>
 	self.profileVC.channel = [[UserInfoCache sharedInstance] getUserChannel];
 	self.profileVC.isProfileTab = YES;
 
-	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
+    self.feedVC = [[FeedTableViewController alloc] init];
+    self.feedVC.view.frame = self.view.bounds;
 	self.feedVC.delegate = self;
 
 	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
@@ -392,6 +394,11 @@ ProfileVCDelegate>
 
 
 	}
+}
+
+#pragma mark -Profile VC Delegate-
+-(void) userCreateFirstPost{
+    [self revealADK];
 }
 
 #pragma mark - Feed VC Delegate -

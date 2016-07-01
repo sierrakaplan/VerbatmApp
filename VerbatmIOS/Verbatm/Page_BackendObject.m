@@ -13,7 +13,7 @@
 
 #import "PageTypeAnalyzer.h"
 #import <Parse/PFQuery.h>
-
+#import <Parse/PFRelation.h>
 #import "Page_BackendObject.h"
 #import "ParseBackendKeys.h"
 #import "Photo_BackendObject.h"
@@ -52,7 +52,7 @@
 		[newPageObject setObject:[NSNumber numberWithInt:PageTypeVideo] forKey:PAGE_VIEW_TYPE];
 	}
 
-	return [self savePageObject:newPageObject].then(^(void) {
+	return [self savePageObject:newPageObject withPostObkect:post].then(^(void) {
 		return [self storeImagesFromPinchView:pinchView withPageReference:newPageObject];
 	}).then(^(NSError *error) {
 		if (error) {
@@ -64,12 +64,12 @@
 	});
 }
 
--(AnyPromise*) savePageObject: (PFObject*)newPageObject {
+-(AnyPromise*) savePageObject: (PFObject*)newPageObject withPostObkect:(PFObject *) post {
 	return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
-		[newPageObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        [newPageObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 			if(succeeded){//now we save the media for the specific
-				resolve (newPageObject);
-			} else resolve(error);
+                    resolve (newPageObject);
+            }else resolve(error);
 		}];
 	}];
 }
@@ -96,14 +96,21 @@
 	}
 
 	//Publishing images sequentially
+    ((PinchView *)imagePinchViews[0]).beingPublished = YES;
 	AnyPromise *getImageDataPromise = [imagePinchViews[0] getImageDataWithHalfSize:half];
 	for (int i = 1; i < imagePinchViews.count; i++) {
 		getImageDataPromise = getImageDataPromise.then(^(NSData *imageData) {
+            
 			NSArray* photoWithText = pinchViewPhotosWithText[i-1];
+            
 			return [self storeImageFromImageData:imageData andPhotoWithTextArray:photoWithText
 										 atIndex:i withPageObject:page].then(^(void) {
+                
+                ((PinchView *)imagePinchViews[i]).beingPublished = YES;
 				return [imagePinchViews[i] getImageDataWithHalfSize:half];
+                
 			});
+            
 		});
 	}
 	return getImageDataPromise.then(^(NSData *imageData) {
@@ -163,50 +170,88 @@
 	}
 }
 
++(void)savePageToPFRelation:(PFObject *) page andPost:(PFObject *) post{
+    PFRelation * postRelation = [post relationForKey:POST_PAGES_PFRELATION];
+    [postRelation addObject:page];
+    [post saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if(succeeded){
+            NSLog(@"saved new post relation");
+        }else NSLog(@"Failed to save new post relation");
+    }];
+    
+}
+
++(id)comparatorSortPhotosByIndex{
+    return ^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+        PFObject * photoA = obj1;
+        PFObject * photoB = obj2;
+        
+        NSNumber * photoAnum = [photoA valueForKey:PHOTO_INDEX_KEY];
+        NSNumber * photoBnum = [photoB valueForKey:PHOTO_INDEX_KEY];
+        
+        if([photoAnum integerValue] > [photoBnum integerValue]){
+            return NSOrderedDescending;
+        }else if ([photoAnum integerValue] < [photoBnum integerValue]){
+            return NSOrderedAscending;
+        }
+        return NSOrderedSame;
+    };
+}
+
+
 +(void)getPagesFromPost:(PFObject *) post andCompletionBlock:(void(^)(NSArray *))block {
 
-	PFQuery * pagesQuery = [PFQuery queryWithClassName:PAGE_PFCLASS_KEY];
-	[pagesQuery whereKey:PAGE_POST_KEY equalTo:post];
-	[pagesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-														 NSError * _Nullable error) {
-		if(objects && !error){
-			objects = [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
-				PFObject * pageA = obj1;
-				PFObject * pageB = obj2;
-
-				NSNumber * pageAnum = [pageA valueForKey:PAGE_INDEX_KEY];
-				NSNumber * pageBnum = [pageB valueForKey:PAGE_INDEX_KEY];
-
-				if([pageAnum integerValue] > [pageBnum integerValue]){
-					return NSOrderedDescending;
-				} else if ([pageAnum integerValue] < [pageBnum integerValue]){
-					return NSOrderedAscending;
-				}
-				return NSOrderedSame;
-			}];
-			block(objects);
-		}
+    PFQuery *pageQuery = [PFQuery queryWithClassName:PAGE_PFCLASS_KEY];
+    [pageQuery whereKey:PAGE_POST_KEY equalTo:post];
+    pageQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
+    BOOL __block isCacheResponse = YES;
+    BOOL __block cacheResponsePassed = NO;
+    //the cache policy makes our block get called twice. First time is always cache and second time
+    //is always network.
+    [pageQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+                                                    NSError * _Nullable error) {
+        
+            if(objects && !error){
+                //the result may have been cached and so we don't need to load this page again.
+                if(!isCacheResponse && cacheResponsePassed) return;
+                
+                objects = [objects sortedArrayUsingComparator:[Page_BackendObject comparatorSortPhotosByIndex]];
+                if(isCacheResponse){
+                    NSLog(@"Just used cache for page");
+                }else{
+                    NSLog(@"Missed cache using network for page");
+                }
+                cacheResponsePassed = YES;
+                isCacheResponse = NO;
+                block(objects);
+            }else{
+                cacheResponsePassed = NO;
+                if(!cacheResponsePassed && !isCacheResponse){
+                    block(nil);
+                    [[Crashlytics sharedInstance] recordError: error];
+                }
+                isCacheResponse = NO;
+            }
 	}];
 }
 
 +(void)deletePagesInPost:(PFObject *)post {
-	PFQuery * pagesQuery = [PFQuery queryWithClassName:PAGE_PFCLASS_KEY];
-	[pagesQuery whereKey:PAGE_POST_KEY equalTo:post];
-	[pagesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-														 NSError * _Nullable error) {
-		if(objects && !error){
-			for (PFObject *obj in objects) {
-				[Photo_BackendObject deletePhotosInPage:obj withCompeletionBlock:^(BOOL success) {
-					[Video_BackendObject deleteVideosInPage:obj withCompeletionBlock:^(BOOL success) {
-						[obj deleteInBackground];
-					}];
-				}];
-			}
-		} else {
-			[[Crashlytics sharedInstance] recordError: error];
-		}
-		
-	}];
+    
+    PFRelation * pageRelation = [post relationForKey:POST_PAGES_PFRELATION];
+    
+    PFQuery * pageQuery = [pageRelation query];
+    
+   [Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * objects) {
+       if(objects){
+           for (PFObject *obj in objects) {
+               [Photo_BackendObject deletePhotosInPage:obj withCompeletionBlock:^(BOOL success) {
+                   [Video_BackendObject deleteVideosInPage:obj withCompeletionBlock:^(BOOL success) {
+                       [obj deleteInBackground];
+                   }];
+               }];
+           }
+       } 
+   }];
 }
 
 

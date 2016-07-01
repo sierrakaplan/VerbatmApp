@@ -45,16 +45,20 @@
 #define PHOTO_INDEX_KEY @"PhotoIndex"
 #define PHOTO_USER_KEY @"UsersPhoto"
 
+
 #define VIDEO_INDEX_KEY @"VideoIndex" //if we have multiple videos how they are organized
 #define VIDEO_PFCLASS_KEY @"VideoClass"
 #define BLOB_STORE_URL @"BlobStoreUrl"
 #define VIDEO_PAGE_OBJECT_KEY @"Page"
 #define VIDEO_THUMBNAIL_KEY @"Thumbnail"
 
+
 #define PAGE_PFCLASS_KEY @"PageClass"
 #define PAGE_INDEX_KEY @"PageIndex"
 #define PAGE_POST_KEY @"PostForPage" // the post this page belongs to
 #define PAGE_VIEW_TYPE @"AveType"
+#define PAGE_PHOTOS_PFRELATION @"PhotoObjectsInPageRelation"
+
 
 #define POST_PFCLASS_KEY @"PostClass"
 #define POST_CHANNEL_KEY @"ChannelForPost" //the channel the post lives in
@@ -63,7 +67,7 @@
 #define POST_NUM_LIKES @"PostNumLikes"
 #define POST_NUM_REBLOGS @"PostNumReblogs"
 #define POST_SHARE_LINK @"PostSocialShareLink" //string url to share to social media
-
+#define POST_PAGES_PFRELATION @"PagesInPost"
 
 #define POST_COMPLETED_SAVING @"PostDoneSaving"//we store
 
@@ -86,5 +90,6 @@
 #define CHANNEL_CREATOR_KEY @"ChannelCreator" //the user that has created this channel
 #define CHANNEL_NUM_FOLLOWS @"ChannelNumFollows"
 #define CHANNEL_FEATURED_BOOL @"Featured"
+#define CHANNEL_COVER_PHOTO_URL @"CoverPhotoURL"
 
 #endif /* ParseBackendKeys_h */

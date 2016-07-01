@@ -112,14 +112,29 @@
 }
 
 -(void)countMediaContentFromPinchViews:(NSArray *)pinchViews{
+    self.totalMediaCount = 0;
 	CGFloat totalProgressUnits = INITIAL_PROGRESS_UNITS;
 	for(PinchView * pinchView in pinchViews){
 		if([pinchView isKindOfClass:[CollectionPinchView class]]){
-			totalProgressUnits+= [(CollectionPinchView *)pinchView imagePinchViews].count * IMAGE_PROGRESS_UNITS;
-			totalProgressUnits+= [(CollectionPinchView *)pinchView videoPinchViews].count > 0 ? (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS) : 0;
-		} else {
-			//Saves thumbnail for every video too
-			totalProgressUnits += ([pinchView isKindOfClass:[VideoPinchView class]]) ? (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS) : IMAGE_PROGRESS_UNITS;
+            
+            CGFloat numImagePinchViews = [(CollectionPinchView *)pinchView imagePinchViews].count;
+            CGFloat numVideoPinchViews = [(CollectionPinchView *)pinchView videoPinchViews].count;
+            
+			totalProgressUnits+=  numImagePinchViews* IMAGE_PROGRESS_UNITS;
+			totalProgressUnits+=  numVideoPinchViews> 0 ? (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS) : 0;
+            
+            
+            self.totalMediaCount += (numVideoPinchViews + numVideoPinchViews);
+		} else {//only one piece of media
+            
+			//Saves thumbnail for every video too so include the progress for that.
+            if([pinchView isKindOfClass:[VideoPinchView class]]){
+                self.totalMediaCount+=2;//2 because of the thumbnail
+                totalProgressUnits += (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS);
+            }else{
+                self.totalMediaCount++;
+                 totalProgressUnits += IMAGE_PROGRESS_UNITS;
+            }
 		}
 	}
 	self.progressAccountant = [NSProgress progressWithTotalUnitCount: totalProgressUnits];
@@ -134,6 +149,16 @@
     self.publishingProgressBackgroundImage = nil;
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POST_FAILED_TO_PUBLISH object:error];
 }
+
+
+-(void)onePieceOfMediaSaved{
+    self.totalMediaCount --;
+    if(self.totalMediaCount <= 0 && self.currentlyPublishing && self.currentParsePostObject){
+        [self postPublishedSuccessfully];
+    }
+}
+
+
 
 -(void)mediaSavingProgressed:(int64_t) newProgress {
 	self.progressAccountant.completedUnitCount += newProgress;

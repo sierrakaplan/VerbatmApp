@@ -96,6 +96,7 @@
 	[self.textAndImageView setTextViewEditable:YES];
 	[self.textAndImageView showText:YES];
 	[self.textAndImageView setTextViewDelegate:self];
+    
 	[self.textCreationButton setImage:[UIImage imageNamed:CREATE_TEXT_ICON] forState:UIControlStateNormal];
 	self.textCreationButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
 	[self.textCreationButton addTarget:self action:@selector(editText) forControlEvents:UIControlEventTouchUpInside];

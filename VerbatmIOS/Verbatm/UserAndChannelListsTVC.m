@@ -30,7 +30,7 @@
 @interface UserAndChannelListsTVC () <CustomNavigationBarDelegate>
 @property (nonatomic) Channel * channelOnDisplay;
 @property (nonatomic) PFObject * postObject;
-@property (nonatomic) CustomNavigationBar * navBar;
+@property (nonatomic) UIView * navBar;
 
 @property (nonatomic) NSMutableArray * channelsToDisplay;
 
@@ -59,16 +59,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-    self.tableView.backgroundColor = [UIColor clearColor];
-    [self setNeedsStatusBarAppearanceUpdate];
+    self.tableView.backgroundColor = [UIColor whiteColor];
+    
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     self.tableView.allowsMultipleSelection = NO;
     self.tableView.showsHorizontalScrollIndicator = NO;
     self.tableView.showsVerticalScrollIndicator = NO;
     [self addRefreshFeature];
     
+    [self setNeedsStatusBarAppearanceUpdate];
+
     //avoid covering last item in uitableview
-    UIEdgeInsets inset = UIEdgeInsetsMake(15.f, 0, CUSTOM_CHANNEL_LIST_BAR_HEIGHT, 0);
+    UIEdgeInsets inset = UIEdgeInsetsMake((15.f + STATUS_BAR_HEIGHT), 0, CUSTOM_CHANNEL_LIST_BAR_HEIGHT, 0);
     self.tableView.contentInset = inset;
     self.tableView.scrollIndicatorInsets = inset;
 }
@@ -269,10 +271,18 @@
 
 -(void)setTableViewHeader{
     //temporary list view and should be removable
-    CGRect navBarFrame = CGRectMake(0.f, -15.f, self.view.frame.size.width, CUSTOM_CHANNEL_LIST_BAR_HEIGHT);
+    CGRect navBarFrame = CGRectMake(0.f, -(15.f + STATUS_BAR_HEIGHT) , self.view.frame.size.width, CUSTOM_CHANNEL_LIST_BAR_HEIGHT);
     
-    self.navBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:CHANNEL_LIST_HEADER_BACKGROUND_COLOR];
-    [self.navBar createLeftButtonWithTitle:nil orImage:[UIImage imageNamed:BACK_BUTTON_ICON]];
+    CGRect customBarFrame = CGRectMake(0.f, STATUS_BAR_HEIGHT, self.view.frame.size.width, CUSTOM_CHANNEL_LIST_BAR_HEIGHT);
+    
+    self.navBar = [[UIView alloc]initWithFrame:navBarFrame];
+    self.navBar.backgroundColor = CHANNEL_LIST_HEADER_BACKGROUND_COLOR;
+    
+    CustomNavigationBar * customNavBar =  [[CustomNavigationBar alloc] initWithFrame:customBarFrame andBackgroundColor:CHANNEL_LIST_HEADER_BACKGROUND_COLOR];
+    
+    
+
+    [customNavBar createLeftButtonWithTitle:nil orImage:[UIImage imageNamed:BACK_BUTTON_ICON]];
     //[self.navBar createMiddleButtonWithTitle:@"FOLLOWERS" orImage:nil];
     
     NSString * navBarMiddleText = FOLLOWERS_TEXT;
@@ -285,9 +295,10 @@
     }
     
         
-    [self.navBar createMiddleButtonWithTitle:navBarMiddleText blackText:YES largeSize:YES];
+    [customNavBar createMiddleButtonWithTitle:navBarMiddleText blackText:YES largeSize:YES];
     
-    self.navBar.delegate = self;
+    customNavBar.delegate = self;
+    [self.navBar addSubview:customNavBar];
     [self.navBar addShadowToView];
     [self.view addSubview:self.navBar];
     [self.view bringSubviewToFront:self.navBar];

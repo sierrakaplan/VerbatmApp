@@ -18,6 +18,8 @@
 @property (strong, nonatomic) Channel *postChannel; /* Original channel posted to */
 @property (strong, nonatomic) PFObject* parsePostChannelActivityObject;
 
+@property (nonatomic) BOOL inSmallMode;
+
 @property (nonatomic) id<PostViewDelegate> delegate;
 
 // stores pov info associated with this view
@@ -51,7 +53,6 @@
 -(void) muteAllVideos:(BOOL) shouldMute;
 
 //moves the like share bar up and down to be above tab bar when tab bar is showing
--(void) shiftLikeShareBarDown:(BOOL) down;
 
 -(void)showPageUpIndicator;
 -(void)prepareForScreenShot;

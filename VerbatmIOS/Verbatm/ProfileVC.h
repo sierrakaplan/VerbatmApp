@@ -16,10 +16,12 @@
 @protocol ProfileVCDelegate <NSObject>
 
 -(void) showTabBar: (BOOL) show;
-
+-(void) userCreateFirstPost;
 @end
 
 @interface ProfileVC : UIViewController
+
+@property (nonatomic) BOOL profileInFeed;
 
 @property (weak, nonatomic) id<ProfileVCDelegate> delegate;
 
@@ -36,5 +38,9 @@
 @property (nonatomic) id userIdToPresent;
 
 -(void) addPostListVC;
-
+-(void)clearOurViews;
+//instructs the Profile to begin loading postlist content
+-(void)loadContentToPostList;
+//to be used sparingly
+-(void)refreshProfile;
 @end

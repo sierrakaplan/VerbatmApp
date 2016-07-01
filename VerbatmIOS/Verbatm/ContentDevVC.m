@@ -54,6 +54,8 @@
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "UserInfoCache.h"
 #import "UserSetupParameters.h"
+#import "UIView+Effects.h"
+
 
 #import "VerbatmCameraView.h"
 #import "VideoPinchView.h"
@@ -276,6 +278,7 @@
 }
 
 -(void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear: animated];
 	[self checkIntroNotification];
     [self checkAdkSlideShowOnboarding];
 }
@@ -720,7 +723,7 @@ andSaveInUserDefaults:(BOOL)save {
 	[pinchView renderMedia];
 	[self addTapGestureToPinchView:pinchView];
 	// must be below base media tile selector
-	NSUInteger index = self.pageElementScrollViews.count-1;
+	NSUInteger index;
 
 	CGRect newElementScrollViewFrame;
 	if(!upperScrollView) {
@@ -2046,14 +2049,16 @@ andSaveInUserDefaults:(BOOL)save {
         PostView * postView = [[PostView alloc] initWithFrame: self.view.bounds andPostChannelActivityObject:nil small:NO andPageObjects:nil];
         [postView displayPageViews: pages];
         [postView prepareForScreenShot];
+//    
+//    
+//    
+//        UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, NO, [UIScreen mainScreen].scale);
+//    
+//        [postView drawViewHierarchyInRect:self.view.bounds afterScreenUpdates:YES];
     
+        UIImage *screenShotImage = [postView getViewscreenshotWithTextView:nil];
     
-        UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, NO, [UIScreen mainScreen].scale);
-    
-        [postView drawViewHierarchyInRect:self.view.bounds afterScreenUpdates:YES];
-    
-        UIImage *screenShotImage = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
+//        UIGraphicsEndImageContext();
         [postView postOffScreen];
         [postView clearPost];
     

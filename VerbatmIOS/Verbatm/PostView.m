@@ -122,27 +122,41 @@
 	return self;
 }
 
+-(void)addPageToPageViews:(PFObject *)pageObject{
+    PageTypes type = [((NSNumber *)[pageObject valueForKey:PAGE_VIEW_TYPE]) intValue];
+    switch (type) {
+        case PageTypePhoto:
+            [self.pageViews addObject:[[PhotoPVE alloc] initWithFrame:self.bounds small:self.small
+                                                  isPhotoVideoSubview:NO]];
+            break;
+        case PageTypeVideo:
+            [self.pageViews addObject:[[VideoPVE alloc] initWithFrame:self.bounds]];
+            break;
+        case PageTypePhotoVideo:
+            [self.pageViews addObject:[[PhotoVideoPVE alloc] initWithFrame:self.bounds small:self.small]];
+            break;
+        default:
+            break;
+    }
+
+}
+
 // Creates empty PageViewingExperiences to show activity icons but doesn't load media
 -(void) createPageViews {
-	for (PFObject *pageObject in self.pageObjects) {
-		PageTypes type = [((NSNumber *)[pageObject valueForKey:PAGE_VIEW_TYPE]) intValue];
-		switch (type) {
-			case PageTypePhoto:
-				[self.pageViews addObject:[[PhotoPVE alloc] initWithFrame:self.bounds small:self.small
-													  isPhotoVideoSubview:NO]];
-				break;
-			case PageTypeVideo:
-				[self.pageViews addObject:[[VideoPVE alloc] initWithFrame:self.bounds]];
-				break;
-			case PageTypePhotoVideo:
-				[self.pageViews addObject:[[PhotoVideoPVE alloc] initWithFrame:self.bounds small:self.small]];
-				break;
-			default:
-				break;
-		}
-	}
-	[self displayPageViews: self.pageViews];
+    if(self.small){
+        PFObject *pageObject = [self.pageObjects firstObject];
+        [self addPageToPageViews:pageObject];
+    }else{
+        for (PFObject *pageObject in self.pageObjects) {
+            [self addPageToPageViews:pageObject];
+        }
+        self.mainScrollView.scrollEnabled = (self.pageObjects.count > 1);
+    }
+	
+    [self displayPageViews: self.pageViews];
+
 }
+
 
 -(void) displayPageViews: (NSMutableArray *) pageViews {
 	self.pageViews = pageViews;
@@ -231,7 +245,11 @@
 	}
 	[self addSubview:self.likeShareBar];
 	[self checkIfUserHasLikedThePost];
-	self.pageUpIndicatorDisplayed = YES;
+    
+    if(numPages.integerValue > 1){
+        [self showPageUpIndicator];
+        self.mainScrollView.scrollEnabled = YES;
+    }
 }
 
 -(void) showWhoLikesThePost {
@@ -271,22 +289,6 @@
 
 #pragma mark - Like Share Bar -
 
-//todo: go through how this works in all cases
--(void) shiftLikeShareBarDown:(BOOL) down{
-	if(down) {
-		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			self.likeShareBar.frame = self.lsBarDownFrame;
-			self.creatorAndChannelBar.frame = self.creatorBarFrameUp;
-		} completion:^(BOOL finished) {
-		}];
-	}else{
-		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			self.likeShareBar.frame = self.lsBarUpFrame;
-			self.creatorAndChannelBar.frame = self.creatorBarFrameDown;
-		} completion:^(BOOL finished) {
-		}];
-	}
-}
 
 -(void)userAction:(ActivityOptions) action isPositive:(BOOL) positive {
 	PFObject *post = [self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST];
@@ -324,27 +326,33 @@
 -(void) displayMediaOnCurrentPage {
 	NSInteger currentViewableIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
 	NSInteger indexBelow = currentViewableIndex + 1;
+    
+    if (!self.postMuted && self.likeShareBar) {
+        [self checkForMuteButton:self.currentPage];
+    }
+    
+    if(currentViewableIndex < self.pageViews.count){
+        PageViewingExperience *newCurrentPage = self.pageViews[currentViewableIndex];
+        [self.currentPage offScreen];
+        self.currentPage = newCurrentPage;
+        [self.currentPage onScreen];
+        
+        if(!self.small){
+            //Load media for next two pages
+            //(if more than 3 pages at some point the next will already be loading from previous call
+            //- this case is taken care of in loadMediaForPage. Also takes care of case where pages don't exist.)
+            [self loadMediaForPageAtIndex: indexBelow];
+            [self loadMediaForPageAtIndex: indexBelow+1];
+        }
+    }
+}
 
-	if (self.pageUpIndicatorDisplayed) {
-		if (indexBelow < self.pageViews.count) {
-			[self showPageUpIndicator];
-		} else {
-			[self removePageUpIndicatorFromView];
-		}
-	}
-
-	PageViewingExperience *newCurrentPage = self.pageViews[currentViewableIndex];
-	[self.currentPage offScreen];
-	self.currentPage = newCurrentPage;
-	[self.currentPage onScreen];
-	if (!self.postMuted && _likeShareBar) {
-		[self checkForMuteButton:self.currentPage];
-	}
-	//Load media for next two pages
-	//(if more than 3 pages at some point the next will already be loading from previous call
-	//- this case is taken care of in loadMediaForPage. Also takes care of case where pages don't exist.)
-	[self loadMediaForPageAtIndex: indexBelow];
-	[self loadMediaForPageAtIndex: indexBelow+1];
+-(void)setInSmallMode:(BOOL)inSmallMode{
+    _inSmallMode = inSmallMode;
+    for(PageViewingExperience *pageView in self.pageViews){
+        [pageView setInPreviewMode:inSmallMode];
+    }
+    self.mainScrollView.scrollEnabled = inSmallMode;
 }
 
 -(void)checkForMuteButton:(PageViewingExperience * )currentPageOnScreen {
@@ -445,7 +453,8 @@
 }
 
 -(void) loadMediaForPageAtIndex:(NSInteger)index {
-	if (index >= self.pageViews.count) return;
+	if (index >= self.pageViews.count || self.pageViews == nil ||
+        self.pageViews.count == 0 || (self.pageObjects && self.pageObjects.count == 0)) return;
 	//preview mode
 	if (!self.pageObjects) {
 		PageViewingExperience *pageView = self.pageViews[index];
@@ -492,7 +501,7 @@
 -(void) postOffScreen{
 	self.postIsCurrentlyBeingShown = NO;
 	[self stopAllVideos];
-	[self removePageUpIndicatorFromView];
+	//[self removePageUpIndicatorFromView];
 }
 
 -(void) postAlmostOnScreen {
@@ -515,7 +524,7 @@
 	self.likeShareBar =  nil;
 	self.currentPageIndex = -1;
 	self.pageViews = nil;
-	[self removePageUpIndicatorFromView];
+	//[self removePageUpIndicatorFromView];
 }
 
 //make sure to stop all videos
@@ -534,6 +543,7 @@
 		} completion:^(BOOL finished) {
 			[self.pageUpIndicator removeFromSuperview];
 			self.pageUpIndicator = nil;
+            self.pageUpIndicatorDisplayed = NO;
 		}];
 	}
 }
@@ -552,20 +562,23 @@
 }
 
 -(void)showPageUpIndicator {
-	self.pageUpIndicatorDisplayed = YES;
-	if(!self.pageUpIndicator && self.pageViews.count) {
-		UIImage * arrowImage = [UIImage imageNamed:PAGE_UP_ICON_IMAGE];
-		self.pageUpIndicator = [[UIImageView alloc] initWithImage:arrowImage];
-		self.pageUpIndicator.contentMode = UIViewContentModeScaleAspectFit;
-	}
-	[self.pageUpIndicator removeFromSuperview];
-	[self.likeShareBar addSubview:self.pageUpIndicator];
-    self.likeShareBar.clipsToBounds = NO;
-	CGFloat size = PAGE_UP_ICON_SIZE;
-	CGFloat x_cord = self.frame.size.width/2.f - size/2.f;
-	CGFloat y_cord = size * -1;
-	CGRect frame = CGRectMake(x_cord, y_cord, size, size);
-	self.pageUpIndicator.frame = frame;
+    if(!self.pageUpIndicatorDisplayed){
+        self.pageUpIndicatorDisplayed = YES;
+        if(!self.pageUpIndicator && self.pageViews.count) {
+            UIImage * arrowImage = [UIImage imageNamed:PAGE_UP_ICON_IMAGE];
+            self.pageUpIndicator = [[UIImageView alloc] initWithImage:arrowImage];
+            self.pageUpIndicator.contentMode = UIViewContentModeScaleAspectFit;
+        }
+        [self.pageUpIndicator removeFromSuperview];
+        [self.likeShareBar addSubview:self.pageUpIndicator];
+        self.likeShareBar.clipsToBounds = NO;
+        CGFloat size = PAGE_UP_ICON_SIZE;
+        CGFloat x_cord = self.frame.size.width/2.f - size/2.f;
+        CGFloat y_cord = size * -1;
+        CGRect frame = CGRectMake(x_cord, y_cord, size, size);
+        self.pageUpIndicator.frame = frame;
+
+    }
 }
 
 #pragma mark - Delete Post -

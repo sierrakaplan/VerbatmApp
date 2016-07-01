@@ -107,7 +107,7 @@
                     {
                         [channelObj fetchInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
                             if(object){
-                                [channels addObject: [[Channel alloc] initWithChannelName:[channelObj valueForKey:CHANNEL_NAME_KEY] andParseChannelObject:channelObj andChannelCreator:user]];
+                                [channels addObject: [[Channel alloc] initWithChannelName:[channelObj valueForKey:CHANNEL_NAME_KEY] andParseChannelObject:channelObj andChannelCreator:[channelObj valueForKey:CHANNEL_CREATOR_KEY]]];
                             }
                             resolve(nil);
                     }];

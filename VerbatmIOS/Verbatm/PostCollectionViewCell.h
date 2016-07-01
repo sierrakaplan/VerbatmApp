@@ -26,16 +26,16 @@
 @property (nonatomic, readonly) PostView *currentPostView;
 @property (nonatomic, readonly) PFObject *currentPostActivityObject;
 
+@property (nonatomic) BOOL cellHasTapGesture;
+@property (nonatomic) BOOL inSmallMode;
+
 -(void) presentPostFromPCActivityObj: (PFObject *) pfActivityObj andChannel:(Channel*) channelForList
 					withDeleteButton: (BOOL) withDelete andLikeShareBarUp:(BOOL) up;
-
--(void) shiftLikeShareBarDown:(BOOL) down;
 
 -(void) almostOnScreen;
 -(void) onScreen;
 -(void) offScreen;
 
 -(void) clearViews;
--(void)presentPublishingView:(UIView *)publishingView;
-
+-(void)presentPublishingView;
 @end
