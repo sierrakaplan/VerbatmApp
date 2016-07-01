@@ -150,11 +150,11 @@
 
 -(void)checkForCoverPhoto{
     //set default cover photo
+    [self createTopAndReflectionCoverImageFromImage:[UIImage imageNamed:NO_COVER_PHOTO_IMAGE]];
     
     //Now look for cloud one
      [self.channel loadCoverPhotoWithCompletionBlock:^(UIImage * coverPhoto) {
-         [self createTopAndReflectionCoverImageFromImage:[UIImage imageNamed:NO_COVER_PHOTO_IMAGE]];
-         
+
          if([[NSThread currentThread] isMainThread]){
              if(coverPhoto)[self createTopAndReflectionCoverImageFromImage:coverPhoto];
          }else{

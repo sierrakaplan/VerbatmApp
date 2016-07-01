@@ -60,13 +60,15 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     self.tableView.backgroundColor = [UIColor whiteColor];
-    [self setNeedsStatusBarAppearanceUpdate];
+    
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     self.tableView.allowsMultipleSelection = NO;
     self.tableView.showsHorizontalScrollIndicator = NO;
     self.tableView.showsVerticalScrollIndicator = NO;
     [self addRefreshFeature];
     
+    [self setNeedsStatusBarAppearanceUpdate];
+
     //avoid covering last item in uitableview
     UIEdgeInsets inset = UIEdgeInsetsMake(15.f, 0, CUSTOM_CHANNEL_LIST_BAR_HEIGHT, 0);
     self.tableView.contentInset = inset;

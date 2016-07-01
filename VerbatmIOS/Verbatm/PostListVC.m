@@ -667,6 +667,12 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}
 }
 
+- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+    if ([collectionView.indexPathsForVisibleItems indexOfObject:indexPath] == NSNotFound) {
+        [(PostCollectionViewCell*)cell onScreen];
+    }
+}
+
 
 -(void) footerShowing: (BOOL) showing {
 	self.footerBarIsUp = showing;
