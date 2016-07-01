@@ -121,20 +121,14 @@
 		block(@"");
 		return;
 	}
-	if (!self.channelCreator) {
-		[[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-			self.channelCreator = (PFUser*)object;
-			[self.channelCreator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-				NSString * userName = [self.channelCreator valueForKey:VERBATM_USER_NAME_KEY];
-				block(userName);
-			}];
-		}];
-	} else {
-		[self.channelCreator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-			NSString * userName = [self.channelCreator valueForKey:VERBATM_USER_NAME_KEY];
-			block(userName);
-		}];
-	}
+    [[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+        self.channelCreator = (PFUser*)object;
+        [self.channelCreator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+            NSString * userName = [self.channelCreator valueForKey:VERBATM_USER_NAME_KEY];
+            block(userName);
+        }];
+    }];
+
 }
 
 

@@ -119,6 +119,7 @@
 -(void) changeUserName {
     
     [self.channel getChannelOwnerNameWithCompletionBlock:^(NSString * creator) {
+        NSLog(@"Channel owner is : %@", creator);
         dispatch_async(dispatch_get_main_queue(), ^{
             self.userNameLabel.text = creator;
             [self.userNameLabel setTextColor:[UIColor whiteColor]];
