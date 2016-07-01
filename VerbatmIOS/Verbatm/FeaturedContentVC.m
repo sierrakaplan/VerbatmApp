@@ -19,7 +19,9 @@
 #import "Styles.h"
 
 @interface FeaturedContentVC() <UIScrollViewDelegate, FeaturedContentCellViewDelegate,
-ExploreChannelCellViewDelegate>
+ExploreChannelCellViewDelegate, UISearchResultsUpdating>
+
+@property (strong, nonatomic) UISearchController *searchController;
 
 @property (strong, nonatomic) NSMutableArray *exploreChannels;
 @property (strong, nonatomic) NSMutableArray *featuredChannels;
@@ -52,29 +54,35 @@ ExploreChannelCellViewDelegate>
 	[super viewDidLoad];
 	self.loadingMoreChannels = NO;
 	self.refreshing = NO;
-	self.view.backgroundColor = [UIColor clearColor];
-    self.tableView.backgroundColor = [UIColor clearColor];
 	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 	self.tableView.allowsMultipleSelection = NO;
 	self.tableView.showsHorizontalScrollIndicator = NO;
 	self.tableView.showsVerticalScrollIndicator = NO;
 	self.tableView.delegate = self;
+	UIImageView * backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:DISCOVER_BACKGROUND]];
+	[self.tableView setBackgroundView:backgroundView];
+	self.tableView.backgroundView.layer.zPosition -= 1;
 	[self.view setBackgroundColor:[UIColor clearColor]];
 
-	//avoid covering last item in uitableview
-	//todo: change this when bring back search bar
-	UIEdgeInsets inset = UIEdgeInsetsMake(0, 0, TAB_BAR_HEIGHT + STATUS_BAR_HEIGHT + 50.f, 0);
+	//avoid covering status bar and last item in uitableview
+	UIEdgeInsets inset = UIEdgeInsetsMake(STATUS_BAR_HEIGHT, 0, TAB_BAR_HEIGHT + STATUS_BAR_HEIGHT + 50.f, 0);
 	self.tableView.contentInset = inset;
 	self.tableView.scrollIndicatorInsets = inset;
+
+	self.searchController = [[UISearchController alloc] initWithSearchResultsController: nil];
+
+	// Use the current view controller to update the search results.
+	self.searchController.searchResultsUpdater = self;
+	self.tableView.tableHeaderView = self.searchController.searchBar;
+	self.searchController.searchBar.barTintColor = [UIColor clearColor];
+	self.searchController.searchBar.backgroundColor = [UIColor clearColor];
+	self.searchController.searchBar.backgroundImage = [UIImage new];
 
 	[self addRefreshFeature];
 	[self refreshChannels];
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearViews) name:NOTIFICATION_FREE_MEMORY_DISCOVER object:nil];
 }
-
-
-
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
@@ -86,6 +94,10 @@ ExploreChannelCellViewDelegate>
 -(void) viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
 	[self offScreen];
+}
+
+-(BOOL) prefersStatusBarHidden {
+	return YES;
 }
 
 -(void) clearViews {
@@ -163,25 +175,11 @@ ExploreChannelCellViewDelegate>
     return 2;
 }
 
-//-(UIView*) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-//	UITableViewHeaderFooterView *header = [[UITableViewHeaderFooterView alloc] init];
-//	UIImageView *imageView;
-//	if (section == 0) {
-//		imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"featured_header"]];
-//	} else {
-//		imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"explore_header"]];
-//	}
-//	imageView.frame = header.bounds;
-//	imageView.contentMode = UIViewContentModeScaleAspectFit;
-//	[header addSubview: imageView];
-//	return header;
-//}
-
 -(NSString*) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
 	
     if(self.onboardingBlogSelection){
         return ONBOARDING_TEXT;
-    }else{
+    } else {
     
         if (section == 0) {
             return @"Featured";
