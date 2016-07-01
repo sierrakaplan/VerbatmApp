@@ -80,7 +80,7 @@
     if(!self.mediaPublisher)self.mediaPublisher = [[PostPublisher alloc] init];
 
 	//todo:get data for thumbnail in background
-    return [self.mediaPublisher storeImage:UIImagePNGRepresentation(thumbnail)].then(^(NSString* blobstoreUrl) {
+    return [self.mediaPublisher storeImageWithName:@"videoThumbnail.png" andData:UIImagePNGRepresentation(thumbnail)].then(^(NSString* blobstoreUrl) {
         PFObject * newVideoObj = [PFObject objectWithClassName:VIDEO_PFCLASS_KEY];
         [newVideoObj setObject:blobStoreVideoUrl forKey:BLOB_STORE_URL];
         [newVideoObj setObject:blobstoreUrl forKey:VIDEO_THUMBNAIL_KEY];

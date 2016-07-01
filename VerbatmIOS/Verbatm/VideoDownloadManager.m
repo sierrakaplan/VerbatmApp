@@ -72,7 +72,7 @@
         if (!error && downloadedData && (downloadedData.bytes > 0)) {
             //  STORE IN FILESYSTEM
             NSString *cachesDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-            NSString *pathString = [[url.absoluteString stringByReplacingOccurrencesOfString:@"/" withString:@""] stringByAppendingString:@".mp4"];
+            NSString *pathString = [[url.absoluteString stringByReplacingOccurrencesOfString:@"/" withString:@""] stringByAppendingString:@".mov"];
             
             NSString *file = [cachesDirectory stringByAppendingPathComponent:pathString];
             //decompress data before writing

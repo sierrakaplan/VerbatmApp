@@ -25,7 +25,8 @@
 
 @implementation Photo_BackendObject
 
--(AnyPromise*) saveImageData:(NSData *) imageData
+-(AnyPromise*) saveImageWithName:(NSString*)fileName
+						 andData:(NSData *) imageData
 		withText:(NSString *) text
 andTextYPosition:(NSNumber *) textYPosition
 	andTextColor:(UIColor *) textColor
@@ -34,7 +35,7 @@ andTextAlignment:(NSNumber *) textAlignment
 	atPhotoIndex:(NSInteger) photoIndex
    andPageObject:(PFObject *) pageObject {
     self.mediaPublisher = [[PostPublisher alloc] init];
-    return [self.mediaPublisher storeImage:imageData].then(^(id result) {
+    return [self.mediaPublisher storeImageWithName:fileName andData:imageData].then(^(id result) {
 		if ([result isKindOfClass:[NSError class]]) {
 			return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 				resolve(result);

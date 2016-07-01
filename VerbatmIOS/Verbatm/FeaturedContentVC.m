@@ -39,6 +39,7 @@ ExploreChannelCellViewDelegate, UISearchResultsUpdating>
 #define LOAD_MORE_CUTOFF 3
 
 #define ONBOARDING_TEXT @"Start Following Some Blogs!"
+
 @end
 
 @implementation FeaturedContentVC
@@ -70,13 +71,13 @@ ExploreChannelCellViewDelegate, UISearchResultsUpdating>
 	self.tableView.scrollIndicatorInsets = inset;
 
 	self.searchController = [[UISearchController alloc] initWithSearchResultsController: nil];
-
 	// Use the current view controller to update the search results.
 	self.searchController.searchResultsUpdater = self;
 	self.tableView.tableHeaderView = self.searchController.searchBar;
 	self.searchController.searchBar.barTintColor = [UIColor clearColor];
 	self.searchController.searchBar.backgroundColor = [UIColor clearColor];
 	self.searchController.searchBar.backgroundImage = [UIImage new];
+	self.searchController.searchBar.scopeButtonTitles = @[@"Users", @"Blogs"];
 
 	[self addRefreshFeature];
 	[self refreshChannels];
@@ -314,6 +315,13 @@ ExploreChannelCellViewDelegate, UISearchResultsUpdating>
 
 -(CGFloat) getVisibileCellIndex{
 	return self.tableView.contentOffset.y / CELL_HEIGHT;
+}
+
+#pragma mark - Search -
+
+//todo:
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+
 }
 
 #pragma mark - Lazy Instantiation -

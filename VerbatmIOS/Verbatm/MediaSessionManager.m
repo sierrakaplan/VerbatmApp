@@ -215,7 +215,7 @@
 #pragma mark - Record Video -
 
 -(void)startVideoRecordingInOrientation:(UIDeviceOrientation)startOrientation {
-	NSString *movieOutput = [[NSString alloc] initWithFormat:@"%@%@", NSTemporaryDirectory(), @"output.mp4"];
+	NSString *movieOutput = [[NSString alloc] initWithFormat:@"%@%@", NSTemporaryDirectory(), @"output.mov"];
 	NSURL *outputURL = [[NSURL alloc] initFileURLWithPath:movieOutput];
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	// Remove previous file at this path
