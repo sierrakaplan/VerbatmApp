@@ -15,11 +15,12 @@
 #import "Follow_BackendManager.h"
 #import "Notifications.h"
 #import "ProfileVC.h"
+#import "SearchResultsVC.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
 @interface FeaturedContentVC() <UIScrollViewDelegate, FeaturedContentCellViewDelegate,
-ExploreChannelCellViewDelegate, UISearchResultsUpdating>
+ExploreChannelCellViewDelegate>
 
 @property (strong, nonatomic) UISearchController *searchController;
 
@@ -55,29 +56,8 @@ ExploreChannelCellViewDelegate, UISearchResultsUpdating>
 	[super viewDidLoad];
 	self.loadingMoreChannels = NO;
 	self.refreshing = NO;
-	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-	self.tableView.allowsMultipleSelection = NO;
-	self.tableView.showsHorizontalScrollIndicator = NO;
-	self.tableView.showsVerticalScrollIndicator = NO;
-	self.tableView.delegate = self;
-	UIImageView * backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:DISCOVER_BACKGROUND]];
-	[self.tableView setBackgroundView:backgroundView];
-	self.tableView.backgroundView.layer.zPosition -= 1;
-	[self.view setBackgroundColor:[UIColor clearColor]];
-
-	//avoid covering status bar and last item in uitableview
-	UIEdgeInsets inset = UIEdgeInsetsMake(STATUS_BAR_HEIGHT, 0, TAB_BAR_HEIGHT + STATUS_BAR_HEIGHT + 50.f, 0);
-	self.tableView.contentInset = inset;
-	self.tableView.scrollIndicatorInsets = inset;
-
-	self.searchController = [[UISearchController alloc] initWithSearchResultsController: nil];
-	// Use the current view controller to update the search results.
-	self.searchController.searchResultsUpdater = self;
-	self.tableView.tableHeaderView = self.searchController.searchBar;
-	self.searchController.searchBar.barTintColor = [UIColor clearColor];
-	self.searchController.searchBar.backgroundColor = [UIColor clearColor];
-	self.searchController.searchBar.backgroundImage = [UIImage new];
-	self.searchController.searchBar.scopeButtonTitles = @[@"Users", @"Blogs"];
+	[self formatTableView];
+	[self setUpSearchController];
 
 	[self addRefreshFeature];
 	[self refreshChannels];
@@ -99,6 +79,34 @@ ExploreChannelCellViewDelegate, UISearchResultsUpdating>
 
 -(BOOL) prefersStatusBarHidden {
 	return YES;
+}
+
+-(void) formatTableView {
+	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+	self.tableView.allowsMultipleSelection = NO;
+	self.tableView.showsHorizontalScrollIndicator = NO;
+	self.tableView.showsVerticalScrollIndicator = NO;
+	self.tableView.delegate = self;
+	UIImageView * backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:DISCOVER_BACKGROUND]];
+	[self.tableView setBackgroundView:backgroundView];
+	self.tableView.backgroundView.layer.zPosition -= 1;
+	[self.view setBackgroundColor:[UIColor clearColor]];
+	//avoid covering status bar and last item in uitableview
+	UIEdgeInsets inset = UIEdgeInsetsMake(STATUS_BAR_HEIGHT, 0, TAB_BAR_HEIGHT + STATUS_BAR_HEIGHT + 50.f, 0);
+	self.tableView.contentInset = inset;
+	self.tableView.scrollIndicatorInsets = inset;
+}
+
+-(void) setUpSearchController {
+	SearchResultsVC *searchResultsController = [[SearchResultsVC alloc] init];
+	self.searchController = [[UISearchController alloc] initWithSearchResultsController: searchResultsController];
+	self.searchController.searchResultsUpdater = searchResultsController;
+	self.tableView.tableHeaderView = self.searchController.searchBar;
+	self.definesPresentationContext = YES;
+	self.searchController.searchBar.barTintColor = [UIColor clearColor];
+	self.searchController.searchBar.backgroundColor = [UIColor clearColor];
+	self.searchController.searchBar.backgroundImage = [UIImage new];
+	//	self.searchController.searchBar.scopeButtonTitles = @[@"Users", @"Blogs"];
 }
 
 -(void) clearViews {
@@ -315,13 +323,6 @@ ExploreChannelCellViewDelegate, UISearchResultsUpdating>
 
 -(CGFloat) getVisibileCellIndex{
 	return self.tableView.contentOffset.y / CELL_HEIGHT;
-}
-
-#pragma mark - Search -
-
-//todo:
-- (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
-
 }
 
 #pragma mark - Lazy Instantiation -

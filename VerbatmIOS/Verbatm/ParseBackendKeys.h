@@ -84,6 +84,7 @@
 #define CHANNEL_NAME_KEY @"ChannelName"
 #define CHANNEL_DESCRIPTION_KEY @"ChannelDescription"
 #define CHANNEL_CREATOR_KEY @"ChannelCreator" //the user that has created this channel
+#define CHANNEL_CREATOR_NAME_KEY @"ChannelCreatorName"
 #define CHANNEL_NUM_FOLLOWS @"ChannelNumFollows"
 #define CHANNEL_FEATURED_BOOL @"Featured"
 

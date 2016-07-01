@@ -40,6 +40,7 @@
 		[newChannelObject setObject:channelName forKey:CHANNEL_NAME_KEY];
 		[newChannelObject setObject:[NSNumber numberWithInteger:0] forKey:CHANNEL_NUM_FOLLOWS];
 		[newChannelObject setObject:[PFUser currentUser] forKey:CHANNEL_CREATOR_KEY];
+		[newChannelObject setObject:[PFUser currentUser][VERBATM_USER_NAME_KEY] forKey:CHANNEL_CREATOR_NAME_KEY];
 		[newChannelObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 			if(succeeded){
 				block(newChannelObject);
@@ -88,7 +89,7 @@
                                                              NSError * _Nullable error) {
             NSMutableArray * finalChannelObjects = [[NSMutableArray alloc] init];
             if(objects && !error) {
-                for(PFObject * parseChannelObject in objects){
+                for(PFObject *parseChannelObject in objects){
                     NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
                     // get number of follows from follow objects
                     Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName

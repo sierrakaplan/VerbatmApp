@@ -108,6 +108,8 @@
 -(void) changeUserName {
 	NSString *newUserName = self.channelOwner[VERBATM_USER_NAME_KEY];
 	self.userNameLabel.text = newUserName;
+	[self.channel.parseChannelObject setObject:newUserName forKey:CHANNEL_CREATOR_NAME_KEY];
+	[self.channel.parseChannelObject saveInBackground];
 }
 
 -(void) changeBlogTitle {
