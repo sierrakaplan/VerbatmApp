@@ -108,7 +108,7 @@
     PostPublisher * __block mediaPublisher = [[PostPublisher alloc] init];
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         [self getImageDataFromImage:coverPhoto withCompletionBlock:^(NSData * imageData) {
-			//todo: get actual file name for cover photo? 
+			//todo: get actual file name for cover photo?
             [mediaPublisher storeImageWithName:@"CoverPhoto.png" andData:imageData].then(^(id result) {
                 if(result){
                     NSString *blobstoreUrl = (NSString*) result;

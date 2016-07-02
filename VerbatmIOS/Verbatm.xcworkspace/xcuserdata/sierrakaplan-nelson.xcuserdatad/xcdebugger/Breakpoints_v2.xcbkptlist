@@ -496,11 +496,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileVC.m"
-            timestampString = "488151461.628526"
+            timestampString = "489114191.210566"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "94"
-            endingLineNumber = "94"
+            startingLineNumber = "90"
+            endingLineNumber = "90"
             landmarkName = "-viewDidLoad"
             landmarkType = "5">
             <Locations>
@@ -560,11 +560,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileVC.m"
-            timestampString = "488151470.927577"
+            timestampString = "489114191.210566"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "70"
-            endingLineNumber = "70">
+            startingLineNumber = "66"
+            endingLineNumber = "66">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -574,11 +574,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileVC.m"
-            timestampString = "488151484.792398"
+            timestampString = "489114191.210566"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "95"
-            endingLineNumber = "95"
+            startingLineNumber = "91"
+            endingLineNumber = "91"
             landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
@@ -606,11 +606,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileVC.m"
-            timestampString = "488151725.796501"
+            timestampString = "489114191.210566"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "107"
-            endingLineNumber = "107"
+            startingLineNumber = "103"
+            endingLineNumber = "103"
             landmarkName = "-refreshProfile"
             landmarkType = "5">
          </BreakpointContent>
@@ -1132,11 +1132,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileVC.m"
-            timestampString = "489056312.506798"
+            timestampString = "489114191.210566"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "122"
-            endingLineNumber = "122"
+            startingLineNumber = "118"
+            endingLineNumber = "118"
             landmarkName = "-viewWillDisappear:"
             landmarkType = "5">
             <Locations>
@@ -1228,11 +1228,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileVC.m"
-            timestampString = "489056359.68238"
+            timestampString = "489114191.210566"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "124"
-            endingLineNumber = "124"
+            startingLineNumber = "120"
+            endingLineNumber = "120"
             landmarkName = "-clearOurViews"
             landmarkType = "5">
          </BreakpointContent>
