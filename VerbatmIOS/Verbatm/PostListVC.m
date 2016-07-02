@@ -146,7 +146,9 @@
     if(self.currentlyPublishing){
         self.currentlyPublishing = NO;
         if(self.parsePostObjects.count){
-            [self removePostAtIndex:[self.parsePostObjects indexOfObject:self.publishingProgressViewPositionHolder]];
+            [self removePostAtIndex:[self.parsePostObjects indexOfObject:self.publishingProgressViewPositionHolder] withCompletionBlock:^() {
+                [self refreshPosts];
+            }];
         }
     }
 }
@@ -183,8 +185,6 @@
     NSLog(@"publishing done");
     if(!self.isCurrentUserProfile) return;
     [self clearPublishingView];
-	[self refreshPosts];
-
 }
 -(void) publishingFailed:(NSNotification *) notification {
     if(!self.isCurrentUserProfile) return;
@@ -723,7 +723,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 														 handler:^(UIAlertAction * action) {}];
 	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
 		NSInteger postIndex = [self.parsePostObjects indexOfObject: pfActivityObj];
-		[self removePostAtIndex: postIndex];
+		[self removePostAtIndex: postIndex withCompletionBlock:nil];
 		[postView clearPost];
 		[Post_BackendObject deletePost:post];
 	}];
@@ -742,7 +742,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 														 handler:^(UIAlertAction * action) {}];
 	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
 		NSInteger postIndex = [self.parsePostObjects indexOfObject: pfActivityObj];
-		[self removePostAtIndex: postIndex];
+		[self removePostAtIndex: postIndex withCompletionBlock:nil];
 		[postView clearPost];
 		[postView.parsePostChannelActivityObject deleteInBackground];
 	}];
@@ -752,7 +752,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	[self presentViewController:alert animated:YES completion:nil];
 }
 
--(void)removePostAtIndex:(NSInteger)i {
+-(void)removePostAtIndex:(NSInteger)i withCompletionBlock:(void(^)(void)) block; {
     [CATransaction begin];
     [CATransaction setDisableActions:YES];
     self.performingUpdate = YES;
@@ -767,6 +767,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
             }
             self.performingUpdate = NO;
             [CATransaction commit];
+            if(block)block();
         }
 	}];
 }
