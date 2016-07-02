@@ -14,6 +14,7 @@
 		9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995719BA7EBD005EBC8A /* MediaSessionManager.m */; };
 		A5076D0E1BED6EF000303746 /* SingleMediaAndTextPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5076D0D1BED6EF000303746 /* SingleMediaAndTextPinchView.m */; };
 		A5076D141BF2B25100303746 /* TextOverMediaView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5076D131BF2B25100303746 /* TextOverMediaView.m */; };
+		A51BB2A81D2657D00020D529 /* SearchResultsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A51BB2A71D2657D00020D529 /* SearchResultsVC.m */; };
 		A51E74641C898C4E00CF8DEA /* PostInProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = A51E74631C898C4E00CF8DEA /* PostInProgress.m */; };
 		A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */ = {isa = PBXBuildFile; fileRef = A52919751B5DD24F00233712 /* UIView+Glow.m */; };
 		A52B960A1CFE193800EFA7EB /* ProfileHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = A52B96091CFE193800EFA7EB /* ProfileHeaderView.m */; };
@@ -100,8 +101,7 @@
 		A5BFA5CC1CA8C506002C3884 /* Raleway-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A5BFA5A91CA8C506002C3884 /* Raleway-ThinItalic.ttf */; };
 		A5BFA5CD1CA8C506002C3884 /* Raleway-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A5BFA5A91CA8C506002C3884 /* Raleway-ThinItalic.ttf */; };
 		A5C09BE61BA1F43600C0AD86 /* MediaUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BE51BA1F43600C0AD86 /* MediaUploader.m */; };
-		A5C38ABE1CC1B38F0067D077 /* DiscoverVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38ABD1CC1B38F0067D077 /* DiscoverVC.m */; };
-		A5C38AC11CC1B67B0067D077 /* FeaturedContentVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38AC01CC1B67B0067D077 /* FeaturedContentVC.m */; };
+		A5C38AC11CC1B67B0067D077 /* DiscoverVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38AC01CC1B67B0067D077 /* DiscoverVC.m */; };
 		A5C38AC71CC1D1970067D077 /* FeaturedContentCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38AC61CC1D1970067D077 /* FeaturedContentCellView.m */; };
 		A5C38ACA1CC1D1B80067D077 /* ExploreChannelCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38AC91CC1D1B80067D077 /* ExploreChannelCellView.m */; };
 		A5C38ACD1CC1D4120067D077 /* FeaturedContentChannelView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38ACC1CC1D4120067D077 /* FeaturedContentChannelView.m */; };
@@ -284,6 +284,8 @@
 		A5076D0D1BED6EF000303746 /* SingleMediaAndTextPinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SingleMediaAndTextPinchView.m; sourceTree = "<group>"; };
 		A5076D121BF2B25100303746 /* TextOverMediaView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextOverMediaView.h; sourceTree = "<group>"; };
 		A5076D131BF2B25100303746 /* TextOverMediaView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextOverMediaView.m; sourceTree = "<group>"; };
+		A51BB2A61D2657D00020D529 /* SearchResultsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchResultsVC.h; sourceTree = "<group>"; };
+		A51BB2A71D2657D00020D529 /* SearchResultsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchResultsVC.m; sourceTree = "<group>"; };
 		A51E74621C898C4E00CF8DEA /* PostInProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostInProgress.h; sourceTree = "<group>"; };
 		A51E74631C898C4E00CF8DEA /* PostInProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostInProgress.m; sourceTree = "<group>"; };
 		A529196E1B59ADD500233712 /* Notifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Notifications.h; sourceTree = "<group>"; };
@@ -397,10 +399,8 @@
 		A5BFA5A91CA8C506002C3884 /* Raleway-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Raleway-ThinItalic.ttf"; sourceTree = "<group>"; };
 		A5C09BE41BA1F43600C0AD86 /* MediaUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaUploader.h; sourceTree = "<group>"; };
 		A5C09BE51BA1F43600C0AD86 /* MediaUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaUploader.m; sourceTree = "<group>"; };
-		A5C38ABC1CC1B38F0067D077 /* DiscoverVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiscoverVC.h; sourceTree = "<group>"; };
-		A5C38ABD1CC1B38F0067D077 /* DiscoverVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiscoverVC.m; sourceTree = "<group>"; };
-		A5C38ABF1CC1B67B0067D077 /* FeaturedContentVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeaturedContentVC.h; sourceTree = "<group>"; };
-		A5C38AC01CC1B67B0067D077 /* FeaturedContentVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeaturedContentVC.m; sourceTree = "<group>"; };
+		A5C38ABF1CC1B67B0067D077 /* DiscoverVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiscoverVC.h; sourceTree = "<group>"; };
+		A5C38AC01CC1B67B0067D077 /* DiscoverVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiscoverVC.m; sourceTree = "<group>"; };
 		A5C38AC51CC1D1970067D077 /* FeaturedContentCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeaturedContentCellView.h; sourceTree = "<group>"; };
 		A5C38AC61CC1D1970067D077 /* FeaturedContentCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeaturedContentCellView.m; sourceTree = "<group>"; };
 		A5C38AC81CC1D1B80067D077 /* ExploreChannelCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreChannelCellView.h; sourceTree = "<group>"; };
@@ -1019,12 +1019,12 @@
 			children = (
 				C76172721C4C8B1300AB0D84 /* UserAndChannelListsTVC.h */,
 				C76172731C4C8B1300AB0D84 /* UserAndChannelListsTVC.m */,
-				A5C38ABF1CC1B67B0067D077 /* FeaturedContentVC.h */,
-				A5C38AC01CC1B67B0067D077 /* FeaturedContentVC.m */,
-				A5C38ABC1CC1B38F0067D077 /* DiscoverVC.h */,
-				A5C38ABD1CC1B38F0067D077 /* DiscoverVC.m */,
+				A5C38ABF1CC1B67B0067D077 /* DiscoverVC.h */,
+				A5C38AC01CC1B67B0067D077 /* DiscoverVC.m */,
 				C75690A61D0891FF002C9402 /* OnboardingBlogSelectionViewController.h */,
 				C75690A71D0891FF002C9402 /* OnboardingBlogSelectionViewController.m */,
+				A51BB2A61D2657D00020D529 /* SearchResultsVC.h */,
+				A51BB2A71D2657D00020D529 /* SearchResultsVC.m */,
 			);
 			name = Discover;
 			sourceTree = "<group>";
@@ -1816,7 +1816,7 @@
 				A5076D141BF2B25100303746 /* TextOverMediaView.m in Sources */,
 				A58656681B61FD99008E358C /* PhotoPVE.m in Sources */,
 				A5C38AC71CC1D1970067D077 /* FeaturedContentCellView.m in Sources */,
-				A5C38AC11CC1B67B0067D077 /* FeaturedContentVC.m in Sources */,
+				A5C38AC11CC1B67B0067D077 /* DiscoverVC.m in Sources */,
 				C7F22B311C38408E00E56EA7 /* SharePostView.m in Sources */,
 				A56B5D1D1CA49A8100A61D27 /* UserInfoCache.m in Sources */,
 				A5337BBA1CCD60CF00551394 /* LoginKeyboardToolBar.m in Sources */,
@@ -1854,7 +1854,6 @@
 				A5E73BF41D1770B400527ECF /* GTLVerbatmAppImage.m in Sources */,
 				C741AC581C49D23C0076FFC5 /* FollowInfoBar.m in Sources */,
 				A5E73BF31D1770B400527ECF /* GTLVerbatmAppIdentifierListWrapper.m in Sources */,
-				A5C38ABE1CC1B38F0067D077 /* DiscoverVC.m in Sources */,
 				A5E73B8B1D16945600527ECF /* GTLJSONParser.m in Sources */,
 				C761727B1C4DFB7700AB0D84 /* PostListVC.m in Sources */,
 				C7540F741C09A47F00DE1AA6 /* ChannelButton.m in Sources */,
@@ -1887,6 +1886,7 @@
 				A5E860011B96249900E148D0 /* PostPublisher.m in Sources */,
 				C7178E0B1D21A12000B90643 /* FeedTableCell.m in Sources */,
 				C7F22B381C3841AD00E56EA7 /* SelectSharingOption.m in Sources */,
+				A51BB2A81D2657D00020D529 /* SearchResultsVC.m in Sources */,
 				A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */,
 				A535E4FD1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m in Sources */,
 				A5FB5D3A1BCB0B9700634A96 /* GMImagePickerController.m in Sources */,

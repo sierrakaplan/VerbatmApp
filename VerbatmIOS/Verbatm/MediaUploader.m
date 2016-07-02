@@ -39,7 +39,7 @@
 		self.operationManager.responseSerializer = [AFHTTPResponseSerializer serializer];
 		[self.operationManager POST:uri parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull multipartFormData) {
 			NSError *error;
-			if (![multipartFormData appendPartWithFileURL:videoURL name:@"defaultVideo" fileName:@"defaultVideo.mp4" mimeType:@"video/mp4" error:&error]) {
+			if (![multipartFormData appendPartWithFileURL:videoURL name:@"defaultVideo" fileName:videoURL.lastPathComponent mimeType:@"video/quicktime" error:&error]) {
 				NSLog(@"error appending part: %@", error);
 				[self savingMediaFailed:error];
 				resolve(error);
@@ -53,9 +53,9 @@
 				NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
 			}
 		} success:^(NSURLSessionDataTask * _Nonnull task, NSData* responseData) {
+                [[PublishingProgressManager sharedInstance] onePieceOfMediaSaved];
                 [[PublishingProgressManager sharedInstance] mediaSavingProgressed:(self.mediaUploadProgress.totalUnitCount - self.mediaUploadProgress.completedUnitCount)];
                 [self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
-                [[PublishingProgressManager sharedInstance] onePieceOfMediaSaved];
                 NSLog(@"Video published!");
                 NSString *response = [[NSString alloc] initWithData:responseData encoding: NSUTF8StringEncoding];
             
@@ -70,11 +70,11 @@
 	return promise;
 }
 
--(AnyPromise*) uploadImageWithData:(NSData*)imageData andUri:(NSString*)uri {
+-(AnyPromise*) uploadImageWithName:(NSString*)fileName andData:(NSData*)imageData andUri:(NSString*)uri {
 	self.mediaUploadProgress = [NSProgress progressWithTotalUnitCount: IMAGE_PROGRESS_UNITS-1];
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		[self.operationManager POST:uri parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull multipartFormData) {
-			[multipartFormData appendPartWithFileData:imageData name:@"defaultImage" fileName:@"defaultImage.png" mimeType:@"image/png"];
+			[multipartFormData appendPartWithFileData:imageData name:@"defaultImage" fileName:fileName mimeType:@"image/png"];
 		} progress:^(NSProgress * _Nonnull uploadProgress) {
 			float progressAmount = ((float)uploadProgress.completedUnitCount/(float)uploadProgress.totalUnitCount);
 			NSInteger newProgressUnits = (NSInteger)(progressAmount*(float)self.mediaUploadProgress.totalUnitCount);

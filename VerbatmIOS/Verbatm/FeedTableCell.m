@@ -14,6 +14,11 @@
 
 @implementation FeedTableCell
 
+-(void)clearProfile{
+    if(_currentProfile){
+        [_currentProfile clearOurViews];
+    }
+}
 
 
 -(void)setProfileAlreadyLoaded:(ProfileVC *) newProfile{

@@ -114,6 +114,7 @@
 	options.synchronous = YES;
 	PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[self.phAssetLocalIdentifier] options:nil];
 	PHAsset* imageAsset = fetchResult.firstObject;
+	self.imageName = [imageAsset valueForKey:@"filename"];
 	CGSize size = half ? HALF_SCREEN_SIZE : FULL_SCREEN_SIZE;
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
         dispatch_async(dispatch_get_global_queue(0, 0), ^{

@@ -13,121 +13,92 @@
 
 @interface PostsQueryManager()
 
-@property (nonatomic) NSInteger postsDownloaded;
 @property (strong, nonatomic) NSDate *latestDate;
 @property (strong, nonatomic) NSDate *oldestDate;
+@property (nonatomic) BOOL smallMode;
 
-#define POSTS_DOWNLOAD_SIZE_LARGE_MODE 5
-#define POSTS_DOWNLOAD_SIZE_SMALL_MODE 10
+#define POSTS_DOWNLOAD_SIZE (self.smallMode ? 10 : 5)
 
 @end
 
 @implementation PostsQueryManager
 
--(instancetype) init {
+-(instancetype) initInSmallMode:(BOOL)smallMode {
 	self = [super init];
 	if (self) {
-		self.postsDownloaded = 0;
+		self.latestDate = nil;
+		self.oldestDate = nil;
+		self.smallMode = smallMode;
 	}
 	return self;
 }
 
-// Loads oldest posts in channel starting at date
--(void) refreshPostsInChannel:(Channel *)channel startingAt:(NSDate*)date withCompletionBlock:(void(^)(NSArray *))block {
-	if(!channel) {
-		block (@[]);
-		return;
-	}
-	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
-	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
-	[postQuery orderByAscending:@"createdAt"];
-	if (date) [postQuery whereKey:@"createdAt" greaterThan:date];
-	self.latestDate = date;
-	[postQuery setLimit: POSTS_DOWNLOAD_SIZE_LARGE_MODE];
-	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
-												  NSError * _Nullable error) {
-		if(activities && !error) {
-			NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
-			for(PFObject * pc_activity in activities){
-				PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
-				[post fetchIfNeededInBackground];
-				[finalPostObjects addObject:pc_activity];
-			}
-			if (activities.count > 0) {
-				self.oldestDate = [(PFObject*)(activities[0]) createdAt];
-				self.latestDate = [(PFObject*)(activities[activities.count-1]) createdAt];
-			}
-			self.postsDownloaded = finalPostObjects.count;
-			block(finalPostObjects);
-		}
-	}];
-}
+/* Loads newest posts in channel older than latest date (if date is nil, just loads newest
+   posts).
+ */
+-(void) loadPostsInChannel:(Channel*)channel withLatestDate:(NSDate*)date
+	 withCompletionBlock:(void(^)(NSArray *))block {
 
-//todo: change to make consistent
--(void) refreshPostsInUserChannel:(Channel*)channel withCompletionBlock:(void(^)(NSArray *))block {
 	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
-    //[postQuery whereKey:@"createdAt" equalTo:<#(nonnull id)#>]
 	[postQuery orderByDescending:@"createdAt"];
-	//[postQuery setLimit: 1];
+	if (date) [postQuery whereKey:@"createdAt" lessThanOrEqualTo:date];
+	self.latestDate = date;
+	[postQuery setLimit: POSTS_DOWNLOAD_SIZE];
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
 												  NSError * _Nullable error) {
 		if(activities && !error) {
-            @autoreleasepool {
-                NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
-                for(PFObject * pc_activity in activities){
-                    PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
-                    [post fetchIfNeededInBackground];
-                    [finalPostObjects addObject:pc_activity];
-                }
-                if (activities.count > 0) {
-                    // reversed because we ordered by descending
-                    self.oldestDate = [(PFObject*)(activities[activities.count-1]) createdAt];
-                    self.latestDate = [(PFObject*)(activities[0]) createdAt];
-                }
-                
-                self.postsDownloaded = finalPostObjects.count;
-                block([[[finalPostObjects reverseObjectEnumerator] allObjects] mutableCopy]);
-            }
+			NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
+			for(PFObject * pc_activity in activities){
+				PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
+				[post fetchIfNeededInBackground];
+				[finalPostObjects addObject:pc_activity];
+			}
+			if (activities.count > 0) {
+				// Posts are in reverse chronological order
+				self.oldestDate = [(PFObject*)(activities[activities.count-1]) createdAt];
+				self.latestDate = [(PFObject*)(activities[0]) createdAt];
+			}
+			block([[[finalPostObjects reverseObjectEnumerator] allObjects] mutableCopy]);
 		}
 	}];
 }
 
-// Loads newer posts in channel from date that left off
--(void) loadMorePostsInChannel:(Channel*)channel withCompletionBlock:(void(^)(NSArray *))block {
+// Finds all posts newer than latest date (if there are any) or if latest date is nil
+// just finds newest posts
+-(void) refreshNewestPostsInChannel:(Channel *)channel withCompletionBlock:(void(^)(NSArray *))block {
 	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
-	[postQuery orderByAscending:@"createdAt"];
+	[postQuery orderByDescending:@"createdAt"];
 	if (self.latestDate) [postQuery whereKey:@"createdAt" greaterThan:self.latestDate];
-	[postQuery setLimit: POSTS_DOWNLOAD_SIZE_LARGE_MODE];
-	//	[postQuery setSkip: self.postsDownloaded]; //todo: delete?
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
 												  NSError * _Nullable error) {
 		if(activities && !error) {
 			NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
-
 			for(PFObject * pc_activity in activities){
 				PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
 				[post fetchIfNeededInBackground];
 				[finalPostObjects addObject:pc_activity];
 			}
-
 			if (activities.count > 0) {
-				self.latestDate = [(PFObject*)(activities[activities.count-1]) createdAt];
+				// Posts are in reverse chronological order
+				self.latestDate = [(PFObject*)(activities[0]) createdAt];
 			}
-			self.postsDownloaded += finalPostObjects.count;
-			block(finalPostObjects);
+			block([[[finalPostObjects reverseObjectEnumerator] allObjects] mutableCopy]);
 		}
 	}];
 }
 
--(void) loadOlderPostsInChannel:(Channel*)channel inSmallMode:(BOOL) smallMode withCompletionBlock:(void(^)(NSArray *))block {
+// Loads posts older than the current oldest date 
+-(void) loadOlderPostsInChannel:(Channel*)channel withCompletionBlock:(void(^)(NSArray *))block {
+	// If oldest date has not been set then no posts have been loaded previously
+	// or there are no posts
+	if (!self.oldestDate) block (@[]);
 	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
-	[postQuery orderByAscending:@"createdAt"];
-	if (self.oldestDate) [postQuery whereKey:@"createdAt" lessThan:self.oldestDate];
-	if(smallMode)[postQuery setLimit:POSTS_DOWNLOAD_SIZE_SMALL_MODE ];
-    else [postQuery setLimit: POSTS_DOWNLOAD_SIZE_LARGE_MODE];
+	[postQuery orderByDescending:@"createdAt"];
+	[postQuery whereKey:@"createdAt" lessThan:self.oldestDate];
+	[postQuery setLimit: POSTS_DOWNLOAD_SIZE];
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
 												  NSError * _Nullable error) {
 		if(activities && !error) {
@@ -140,15 +111,15 @@
 			}
 
 			if (activities.count > 0) {
-				self.oldestDate = [(PFObject*)(activities[0]) createdAt];
+				// Posts are in reverse chronological order
+				self.oldestDate = [(PFObject*)(activities[activities.count-1]) createdAt];
 			}
-			self.postsDownloaded += finalPostObjects.count;
-			block(finalPostObjects);
+			block([[[finalPostObjects reverseObjectEnumerator] allObjects] mutableCopy]);
 		}
 	}];
 }
 
-// Loads newest posts in channel
+// Loads newest posts in channel up to the given limit
 +(void) getPostsInChannel:(Channel*)channel withLimit:(NSInteger)limit withCompletionBlock:(void(^)(NSArray *))block {
 	if(!channel) {
 		block (@[]);
@@ -167,7 +138,7 @@
 				[post fetchIfNeededInBackground];
 				[finalPostObjects addObject:pc_activity];
 			}
-			block(finalPostObjects);
+			block([[[finalPostObjects reverseObjectEnumerator] allObjects] mutableCopy]);
 		}
 	}];
 }

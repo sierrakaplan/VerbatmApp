@@ -124,15 +124,16 @@
 			totalProgressUnits+=  numVideoPinchViews> 0 ? (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS) : 0;
             
             
-            self.totalMediaCount += (numVideoPinchViews + numVideoPinchViews);
+            self.totalMediaCount = self.totalMediaCount + (numVideoPinchViews + numImagePinchViews);
+            
 		} else {//only one piece of media
             
 			//Saves thumbnail for every video too so include the progress for that.
             if([pinchView isKindOfClass:[VideoPinchView class]]){
-                self.totalMediaCount+=2;//2 because of the thumbnail
+                self.totalMediaCount = self.totalMediaCount + 2.f;//2 because of the thumbnail
                 totalProgressUnits += (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS);
             }else{
-                self.totalMediaCount++;
+                 self.totalMediaCount = self.totalMediaCount + 1.f;
                  totalProgressUnits += IMAGE_PROGRESS_UNITS;
             }
 		}
@@ -154,6 +155,7 @@
 -(void)onePieceOfMediaSaved{
     self.totalMediaCount --;
     if(self.totalMediaCount <= 0 && self.currentlyPublishing && self.currentParsePostObject){
+         NSLog(@"Counter worked -- published successfully");
         [self postPublishedSuccessfully];
     }
 }
@@ -164,10 +166,10 @@
 	self.progressAccountant.completedUnitCount += newProgress;
 	NSLog(@"Media saving progressed %lld new units to completed %lld units of total %lld units", newProgress,
 		  self.progressAccountant.completedUnitCount, self.progressAccountant.totalUnitCount);
-	if (self.progressAccountant.completedUnitCount >= self.progressAccountant.totalUnitCount
-		&& self.currentlyPublishing && self.currentParsePostObject) {
-		[self postPublishedSuccessfully];
-	}
+//	if (self.progressAccountant.completedUnitCount >= self.progressAccountant.totalUnitCount
+//		&& self.currentlyPublishing && self.currentParsePostObject) {
+//		[self postPublishedSuccessfully];
+//	}
 }
 
 -(void)postPublishedSuccessfully {

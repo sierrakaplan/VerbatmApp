@@ -7,6 +7,7 @@
 //
 
 #import "UserInfoCache.h"
+#import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
 #import "Channel_BackendObject.h"
 #import "Notifications.h"
@@ -42,6 +43,8 @@
     [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray * channels) {
         if (channels.count > 0) {
 			self.userChannel = channels[0];
+			[self.userChannel.parseChannelObject setObject:[PFUser currentUser][VERBATM_USER_NAME_KEY] forKey:CHANNEL_CREATOR_NAME_KEY];
+			[self.userChannel.parseChannelObject saveInBackground];
 			block();
 		} else {
 			// First time logging in - create a new channel

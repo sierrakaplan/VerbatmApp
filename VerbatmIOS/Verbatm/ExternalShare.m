@@ -103,8 +103,7 @@
                 [self.storeLinkCondition lock];
                 if (!error) {
                     self.aquiredURLSuccesfully = YES;
-                    NSLog(@"got my Branch invite link to share: %@", url);
-                   // NSURL *link = [NSURL URLWithString:url];
+                    NSLog(@"Successfully acquired my Branch invite link to share: %@", url);
                     //we save the link to the PFObject
                     [postObject setObject:url forKey:POST_SHARE_LINK];
                     [postObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {

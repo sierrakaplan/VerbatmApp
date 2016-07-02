@@ -32,15 +32,25 @@
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 }
 
-
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-    
+-(void)reloadCellsOnScreen{
     NSArray * visibleCell = [self.tableView visibleCells];
     
     if(visibleCell && visibleCell.count){
         FeedTableCell * cell = [visibleCell firstObject];
         [cell reloadProfile];
+    }
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self reloadCellsOnScreen];
+}
+
+-(void)viewDidDisappear:(BOOL)animated{
+    NSArray * visibleCell = [self.tableView visibleCells];
+    if(visibleCell && visibleCell.count){
+        FeedTableCell * cell = [visibleCell firstObject];
+        [cell clearProfile];
     }
 }
 

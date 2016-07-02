@@ -37,6 +37,10 @@ typedef enum{
 }ListLoadType;
 
 @interface UserAndChannelListsTVC : UITableViewController
+
+@property (nonatomic, weak) id<UserAndChannelListsTVCDelegate> listDelegate;
+@property (nonatomic) ListLoadType currentListType;
+
 //show which users like this post
 -(void) presentUserLikeInformationForPost:(id) post;
 
@@ -49,8 +53,6 @@ typedef enum{
 //show which users are being followed by userId
 -(void)presentWhoIsFollowedBy:(id)userId;
 
-@property (nonatomic, weak) id<UserAndChannelListsTVCDelegate> listDelegate;
-@property (nonatomic) ListLoadType currentListType;
-
 -(void)presentList:(ListLoadType) listType forChannel:(Channel *) channel orPost:(PFObject *) post;
+
 @end

@@ -28,6 +28,8 @@
 #define BLOCK_USER_ICON @"settings_icon"
 
 #define SETTINGS_BUTTON_ICON @"settings_icon"
+
+#define BACK_BUTTON_ICON @"back_arrow_black"
 #define DOWN_ARROW_ICON @"down_arrow_white"
 #define CREATE_POST_PROMPT_ICON @"Make First Post icon"
 
@@ -145,7 +147,5 @@
 #define NO_COVER_PHOTO_IMAGE @"Empty_Cover_Photo_Image"
 #define PROFILE_BACK_BUTTON_ICON @"back_arrow_white"
 
-
-#define BACK_BUTTON_ICON @"back_arrow_black"
 
 #endif /* Icons_h */

@@ -83,7 +83,7 @@
 		[self createLabels];
         [self checkForCoverPhoto];
 		[[NSNotificationCenter defaultCenter] addObserver:self
-												 selector:@selector(changeUserName)
+												 selector:@selector(userNameChanged)
 													 name:NOTIFICATION_USERNAME_CHANGED_SUCCESFULLY
 												   object:nil];
 	}
@@ -115,6 +115,13 @@
 	[self addSubview:self.blogTitle];
 	[self addSubview:self.blogDescription];
     if(self.isCurrentUser)[self addChangeCoverPhotoButton];
+}
+
+-(void) userNameChanged {
+	NSString *newUserName = self.channelOwner[VERBATM_USER_NAME_KEY];
+	[self.channel.parseChannelObject setObject:newUserName forKey:CHANNEL_CREATOR_NAME_KEY];
+	[self.channel.parseChannelObject saveInBackground];
+	[self changeUserName];
 }
 
 -(void) changeUserName {
@@ -256,6 +263,9 @@
 
 - (void)textViewDidChange:(UITextView *)textView {
 	if (textView == self.blogTitleEditable) {
+		if ([textView.text length] == 0) {
+			//todo: delete
+		}
 		self.blogTitlePlaceholder.hidden = ([textView.text length] > 0);
 	} else if(textView == self.blogDescriptionEditable) {
 		self.blogDescriptionPlaceholder.hidden = ([textView.text length] > 0);
@@ -269,7 +279,6 @@
 		self.blogDescriptionPlaceholder.hidden = ([textView.text length] > 0);
 	}
 }
-
 
 -(void)followersButtonSelected{
     [self.delegate followersButtonSelected];
@@ -331,27 +340,55 @@
 }
 
 -(void) addSubviewsToDescription {
-    UIImageView *editImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EDIT_PINCHVIEW_ICON]];
-    editImage.frame = CGRectMake(self.blogDescriptionEditable.frame.size.width - OFFSET_X - 20.f,
-                                 self.blogDescriptionEditable.frame.size.height - OFFSET_X - 20.f,
-                                 20.f, 20.f);
-    [self.blogDescriptionEditable addSubview: editImage];
-   [self.blogDescriptionEditable addSubview: self.blogDescriptionPlaceholder];
-    if([self.blogDescriptionEditable.text isEqualToString:@""]){
-        [self.blogDescriptionEditable addSubview: self.blogDescriptionPlaceholder];
-    }
+	//todo: delete
+//<<<<<<< HEAD
+//    UIImageView *editImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EDIT_PINCHVIEW_ICON]];
+//    editImage.frame = CGRectMake(self.blogDescriptionEditable.frame.size.width - OFFSET_X - 20.f,
+//                                 self.blogDescriptionEditable.frame.size.height - OFFSET_X - 20.f,
+//                                 20.f, 20.f);
+//    [self.blogDescriptionEditable addSubview: editImage];
+//   [self.blogDescriptionEditable addSubview: self.blogDescriptionPlaceholder];
+//    if([self.blogDescriptionEditable.text isEqualToString:@""]){
+//        [self.blogDescriptionEditable addSubview: self.blogDescriptionPlaceholder];
+//    }
+//}
+//
+//-(void) addSubviewsToTitle {
+//    UIImageView *editImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EDIT_PINCHVIEW_ICON]];
+//    editImage.frame = CGRectMake(self.blogTitleEditable.frame.size.width - OFFSET_X - 20.f,
+//                                 self.blogTitleEditable.frame.size.height - OFFSET_X - 20.f,
+//                                 20.f, 20.f);
+//    [self.blogTitleEditable addSubview: editImage];
+//    [self.blogTitleEditable addSubview: self.blogTitlePlaceholder];
+//     if([self.blogTitleEditable.text isEqualToString:@""]){
+//       [self.blogTitleEditable addSubview: self.blogTitlePlaceholder];
+//    }
+//=======
+	UIImageView *editImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EDIT_PINCHVIEW_ICON]];
+	editImage.frame = CGRectMake(self.blogDescriptionEditable.frame.size.width - OFFSET_X - 20.f,
+								 self.blogDescriptionEditable.frame.size.height - OFFSET_X - 20.f,
+								 20.f, 20.f);
+	[self.blogDescriptionEditable addSubview: editImage];
+	[self.blogDescriptionEditable addSubview: self.blogDescriptionPlaceholder];
+	if (self.blogDescription.text && self.blogDescription.text.length > 0) {
+		self.blogDescriptionPlaceholder.hidden = YES;
+	} else {
+		self.blogDescriptionPlaceholder.hidden = NO;
+	}
 }
 
 -(void) addSubviewsToTitle {
-    UIImageView *editImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EDIT_PINCHVIEW_ICON]];
-    editImage.frame = CGRectMake(self.blogTitleEditable.frame.size.width - OFFSET_X - 20.f,
-                                 self.blogTitleEditable.frame.size.height - OFFSET_X - 20.f,
-                                 20.f, 20.f);
-    [self.blogTitleEditable addSubview: editImage];
-    [self.blogTitleEditable addSubview: self.blogTitlePlaceholder];
-     if([self.blogTitleEditable.text isEqualToString:@""]){
-       [self.blogTitleEditable addSubview: self.blogTitlePlaceholder];
-    }
+	UIImageView *editImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EDIT_PINCHVIEW_ICON]];
+	editImage.frame = CGRectMake(self.blogTitleEditable.frame.size.width - OFFSET_X - 20.f,
+								 self.blogTitleEditable.frame.size.height - OFFSET_X - 20.f,
+								 20.f, 20.f);
+	[self.blogTitleEditable addSubview: editImage];
+	[self.blogTitleEditable addSubview: self.blogTitlePlaceholder];
+	if (self.blogTitle.text && self.blogTitle.text.length > 0) {
+		self.blogTitlePlaceholder.hidden = YES;
+	} else {
+		self.blogTitlePlaceholder.hidden = NO;
+	}
 }
 
 -(UILabel *) blogTitlePlaceholder {
