@@ -6,6 +6,8 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+#import <Crashlytics/Crashlytics.h>
+
 
 #import "Notifications.h"
 
@@ -143,7 +145,7 @@ andTextAlignment:(NSNumber *) textAlignment
             block(objects);
         }else{
             if(!cacheResponsePassed && !isCacheResponse){
-                NSLog(error);
+                [[Crashlytics sharedInstance] recordError:error];
                 block(nil);
             }
             isCacheResponse = NO;

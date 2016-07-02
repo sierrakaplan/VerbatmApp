@@ -94,9 +94,8 @@
             //						NSLog(@"profile picture url: %@", pictureURL);
 
                                     //will only show friends who have signed up for the app with fb
-                                    NSArray* friends = nil;
                                     if ([[FBSDKAccessToken currentAccessToken] hasGranted:@"user_friends"]) {
-                                        //friends = result[@"friends"][@"data"];
+                                       
                                     }
                                     
                                     [self notifySuccessfulLogin];

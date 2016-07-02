@@ -45,7 +45,7 @@
 @interface ProfileVC() <ProfileHeaderViewDelegate, Intro_Notification_Delegate,
                         UIScrollViewDelegate, CreateNewChannelViewProtocol,
                         PublishingProgressProtocol, PostListVCProtocol,
-                        UIGestureRecognizerDelegate,UserAndChannelListsTVCDelegate, GMImagePickerControllerDelegate>
+                        UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 @property (nonatomic) UIButton * postPrompt;
 
@@ -416,7 +416,9 @@
 }
 
 -(void)createFirstPost{
- [self.delegate userCreateFirstPost];
+    if([self.delegate respondsToSelector:@selector(userCreateFirstPost)]){
+        [self.delegate userCreateFirstPost];
+    }
 }
 -(void)postsFound{
     [self removePromptToPost];

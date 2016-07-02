@@ -59,7 +59,7 @@
 #define TEXT_VIEW_HEIGHT 70.f
 #define SLIDESHOW_ANIMATION_DURATION 1.5f
 #define OPEN_COLLECTION_FRAME_HEIGHT 70.f
-
+#define IMAGE_FADE_OUT_ANIMATION_DURATION 1.5f
 @property (nonatomic) BOOL animating;
 @property (nonatomic) BOOL slideShowPlaying;
 @end
@@ -294,13 +294,22 @@
 
 -(void)animateNextView{
 	if(self.slideShowPlaying && !self.animating){
-		[UIView animateWithDuration:1.5f animations:^{
+		[UIView animateWithDuration:IMAGE_FADE_OUT_ANIMATION_DURATION animations:^{
 			self.animating = YES;
 			[self setImageViewsToLocation:(self.currentPhotoIndex + 1)];
 		} completion:^(BOOL finished) {
 			self.animating = NO;
 			[NSTimer scheduledTimerWithTimeInterval:SLIDESHOW_ANIMATION_DURATION target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
 		}];
+        
+//        [UIView animateKeyframesWithDuration:1.5f delay:0.f options: (UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionAllowAnimatedContent) animations:^{
+//            self.animating = YES;
+//            [self setImageViewsToLocation:(self.currentPhotoIndex + 1)];
+//        } completion:^(BOOL finished) {
+//            self.animating = NO;
+//            [NSTimer scheduledTimerWithTimeInterval:SLIDESHOW_ANIMATION_DURATION target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
+//        }];
+
 	}
 }
 

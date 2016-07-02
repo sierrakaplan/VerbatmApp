@@ -49,9 +49,8 @@ typedef enum{
 //show which users are being followed by userId
 -(void)presentWhoIsFollowedBy:(id)userId;
 
--(void)presentList:(ListLoadType) listType forChannel:(Channel *) channel;
-
 @property (nonatomic, weak) id<UserAndChannelListsTVCDelegate> listDelegate;
 @property (nonatomic) ListLoadType currentListType;
+
 -(void)presentList:(ListLoadType) listType forChannel:(Channel *) channel orPost:(PFObject *) post;
 @end

@@ -236,11 +236,6 @@
 }
 
 +(void)deletePagesInPost:(PFObject *)post {
-    
-    PFRelation * pageRelation = [post relationForKey:POST_PAGES_PFRELATION];
-    
-    PFQuery * pageQuery = [pageRelation query];
-    
    [Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * objects) {
        if(objects){
            for (PFObject *obj in objects) {

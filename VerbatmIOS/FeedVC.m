@@ -93,6 +93,17 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 	}
 }
 
+//not implemented because we are not using this feed anymore
+-(void)noPostFound{
+    
+}
+-(void)postsFound{
+    
+}
+-(void)cellSelectedAtPostIndex:(NSIndexPath *) cellPath{
+    
+}
+
 -(void) addPostListVC {
 	UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
 	flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
@@ -179,7 +190,6 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 	CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
 	CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
 	self.sharePostView = [[SharePostView alloc] initWithFrame:offScreenFrame];
-	self.sharePostView.delegate = self;
 	[self.view addSubview:self.sharePostView];
 	[self.view bringSubviewToFront:self.sharePostView];
 	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
