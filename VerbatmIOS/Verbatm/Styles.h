@@ -36,6 +36,9 @@
 
 #pragma mark - Profile -
 
+#define PROFILE_INFO_BAR_BACKGROUND_COLRO [UIColor colorWithWhite:0.f alpha:0.7]
+
+
 #define USER_CHANNEL_LIST_FONT REGULAR_FONT
 #define USER_CHANNEL_LIST_FONT_SIZE 20.f
 

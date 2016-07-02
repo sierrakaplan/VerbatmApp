@@ -18,7 +18,7 @@
 
 -(void) loadMorePostsInChannel:(Channel*)channel withCompletionBlock:(void(^)(NSArray *))block;
 
--(void) loadOlderPostsInChannel:(Channel*)channel withCompletionBlock:(void(^)(NSArray *))block;
+-(void) loadOlderPostsInChannel:(Channel*)channel inSmallMode:(BOOL) smallMode withCompletionBlock:(void(^)(NSArray *))block;
 
 +(void) getPostsInChannel:(Channel*)channel withLimit:(NSInteger)limit withCompletionBlock:(void(^)(NSArray *))block;
 

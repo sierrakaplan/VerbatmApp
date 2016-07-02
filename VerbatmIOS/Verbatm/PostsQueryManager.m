@@ -17,7 +17,8 @@
 @property (strong, nonatomic) NSDate *latestDate;
 @property (strong, nonatomic) NSDate *oldestDate;
 
-#define POSTS_DOWNLOAD_SIZE 5
+#define POSTS_DOWNLOAD_SIZE_LARGE_MODE 5
+#define POSTS_DOWNLOAD_SIZE_SMALL_MODE 10
 
 @end
 
@@ -42,7 +43,7 @@
 	[postQuery orderByAscending:@"createdAt"];
 	if (date) [postQuery whereKey:@"createdAt" greaterThan:date];
 	self.latestDate = date;
-	[postQuery setLimit: POSTS_DOWNLOAD_SIZE];
+	[postQuery setLimit: POSTS_DOWNLOAD_SIZE_LARGE_MODE];
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
 												  NSError * _Nullable error) {
 		if(activities && !error) {
@@ -66,8 +67,9 @@
 -(void) refreshPostsInUserChannel:(Channel*)channel withCompletionBlock:(void(^)(NSArray *))block {
 	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
+    //[postQuery whereKey:@"createdAt" equalTo:<#(nonnull id)#>]
 	[postQuery orderByDescending:@"createdAt"];
-	[postQuery setLimit: 1];
+	//[postQuery setLimit: 1];
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
 												  NSError * _Nullable error) {
 		if(activities && !error) {
@@ -97,7 +99,7 @@
 	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
 	[postQuery orderByAscending:@"createdAt"];
 	if (self.latestDate) [postQuery whereKey:@"createdAt" greaterThan:self.latestDate];
-	[postQuery setLimit: POSTS_DOWNLOAD_SIZE];
+	[postQuery setLimit: POSTS_DOWNLOAD_SIZE_LARGE_MODE];
 	//	[postQuery setSkip: self.postsDownloaded]; //todo: delete?
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
 												  NSError * _Nullable error) {
@@ -119,12 +121,13 @@
 	}];
 }
 
--(void) loadOlderPostsInChannel:(Channel*)channel withCompletionBlock:(void(^)(NSArray *))block {
+-(void) loadOlderPostsInChannel:(Channel*)channel inSmallMode:(BOOL) smallMode withCompletionBlock:(void(^)(NSArray *))block {
 	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
 	[postQuery orderByAscending:@"createdAt"];
 	if (self.oldestDate) [postQuery whereKey:@"createdAt" lessThan:self.oldestDate];
-	[postQuery setLimit: POSTS_DOWNLOAD_SIZE];
+	if(smallMode)[postQuery setLimit:POSTS_DOWNLOAD_SIZE_SMALL_MODE ];
+    else [postQuery setLimit: POSTS_DOWNLOAD_SIZE_LARGE_MODE];
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
 												  NSError * _Nullable error) {
 		if(activities && !error) {

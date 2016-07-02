@@ -20,5 +20,4 @@
 +(void)getPagesFromPost:(PFObject *) post andCompletionBlock:(void(^)(NSArray *))block;
 
 +(void)deletePagesInPost:(PFObject *)post;
-
 @end

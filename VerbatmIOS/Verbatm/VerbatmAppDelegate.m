@@ -75,7 +75,7 @@
 -(void) setUpParseWithLaunchOptions: (NSDictionary*)launchOptions {
 	// [Optional] Power your app with Local Datastore. For more info, go to
 	// https://parse.com/docs/ios_guide#localdatastore/iOS
-	[Parse enableLocalDatastore];
+	//[Parse enableLocalDatastore];
 	// Initialize Parse.
 	[Parse setApplicationId:@"rzSvJWHhiN8KUnhDVXTlapJkJ4eCe3xAlmEscSK3"
 				  clientKey:@"qmXzBTKKMNqm5A3eogopkL2ZY6SeKGcWah0zP9kk"];

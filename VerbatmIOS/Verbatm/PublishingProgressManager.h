@@ -40,7 +40,7 @@
 @interface PublishingProgressManager : NSObject
 
 #define INITIAL_PROGRESS_UNITS 3
-#define IMAGE_PROGRESS_UNITS 4
+#define IMAGE_PROGRESS_UNITS 3
 #define VIDEO_PROGRESS_UNITS 21
 
 @property (nonatomic, weak) id<PublishingProgressProtocol> delegate;
@@ -61,7 +61,7 @@
 //stores a screenshot of the first page to be used during the progress report
 -(void)storeProgressBackgroundImage:(UIImage *) image;
 -(UIImage *) getProgressBackgroundImage;
-
+-(void)onePieceOfMediaSaved;
 @end
 
 

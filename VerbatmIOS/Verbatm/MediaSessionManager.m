@@ -15,11 +15,11 @@
 @interface MediaSessionManager() <AVCaptureFileOutputRecordingDelegate>
 
 @property (strong, nonatomic) AVCaptureSession* session;
-@property (strong, nonatomic) PHAssetCollection* verbatmAlbum;
 @property (strong, nonatomic) AVCaptureDeviceInput* videoInput;
 @property (strong, nonatomic) AVCaptureDeviceInput* audioInput;
 @property (strong, nonatomic) AVCaptureMovieFileOutput * movieOutputFile;
 @property (strong) AVCaptureStillImageOutput* stillImageOutput;
+@property (strong, nonatomic) PHAssetCollection* verbatmAlbum;
 
 
 #define N_FRAMES_PER_SECOND 24
@@ -201,11 +201,13 @@
 	[self.stillImageOutput captureStillImageAsynchronouslyFromConnection: videoConnection
 													   completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
 		if(!error) {
-			NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-			UIImage* capturedImage = [[UIImage alloc] initWithData: dataForImage];
-			capturedImage = [capturedImage getImageWithOrientationUp];
-			[self.delegate capturedImage: capturedImage];
-			[self saveAssetFromImage:capturedImage orVideoFile:nil];
+            @autoreleasepool {
+                NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
+                UIImage* capturedImage = [[UIImage alloc] initWithData: dataForImage];
+                capturedImage = [capturedImage getImageWithOrientationUp];
+                [self.delegate capturedImage: capturedImage];
+                [self saveAssetFromImage:capturedImage orVideoFile:nil];
+            }
 		} else {
 			[[Crashlytics sharedInstance] recordError: error];
 		}
