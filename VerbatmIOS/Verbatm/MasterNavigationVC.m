@@ -11,9 +11,9 @@
 #import "CustomTabBarController.h"
 #import "ContentDevVC.h"
 
-#import "DiscoverVC.h"
 #import "Durations.h"
 
+#import "DiscoverVC.h"
 #import "FeedVC.h"
 #import "FeedTableViewController.h"
 #import "Icons.h"
@@ -85,7 +85,6 @@ ProfileVCDelegate>
 		[self bringUpLogin];
     }
 }
-
 
 -(void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
@@ -302,7 +301,7 @@ ProfileVCDelegate>
 
 //the view controllers that will be tabbed
 -(void)createViewControllers {
-	self.discoverVC = [self.storyboard instantiateViewControllerWithIdentifier:DISCOVER_VC_ID];
+	self.discoverVC = [self.storyboard instantiateViewControllerWithIdentifier:FEATURED_CONTENT_VC_ID];
 
 	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
 	self.profileVC.delegate = self;

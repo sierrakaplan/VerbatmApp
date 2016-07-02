@@ -17,6 +17,6 @@
 -(AnyPromise*) storeVideoFromURL: (NSURL*) url;
 
 //Resolves to either NSString *blobstoreurl or an NSError
--(AnyPromise*) storeImage: (NSData*) imageData;
+-(AnyPromise*) storeImageWithName:(NSString*)fileName andData:(NSData*) imageData;
 
 @end

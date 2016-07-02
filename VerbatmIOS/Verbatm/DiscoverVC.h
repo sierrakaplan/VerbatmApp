@@ -1,5 +1,5 @@
 //
-//  DiscoverVC.h
+//  FeaturedContentVC.h
 //  Verbatm
 //
 //  Created by Sierra Kaplan-Nelson on 4/15/16.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DiscoverVC : UIViewController
+@interface DiscoverVC : UITableViewController
+@property (nonatomic) BOOL onboardingBlogSelection;
 
-//Used to know if we should present the first time blog selection view
 @end

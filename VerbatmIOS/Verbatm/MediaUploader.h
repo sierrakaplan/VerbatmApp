@@ -20,6 +20,6 @@ typedef void(^MediaUploadCompletionBlock)(NSError* error, NSString* responseURL)
 
 -(AnyPromise*) uploadVideoWithUrl:(NSURL*)videoURL andUri:(NSString*)uri;
 
--(AnyPromise*) uploadImageWithData:(NSData*)imageData andUri:(NSString*)uri;
+-(AnyPromise*) uploadImageWithName:(NSString*)fileName andData:(NSData*)imageData andUri:(NSString*)uri;
 
 @end

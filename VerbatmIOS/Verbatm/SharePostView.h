@@ -19,9 +19,8 @@
 
 @protocol SharePostViewDelegate <NSObject>
 
--(void) cancelButtonSelected;
-
 @optional
+-(void) cancelButtonSelected;
 -(void) shareToShareOption:(ShareOptions) shareOption;
 
 @end

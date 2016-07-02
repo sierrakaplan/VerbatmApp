@@ -501,7 +501,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "94"
             endingLineNumber = "94"
-            landmarkName = "-viewDidAppear:"
+            landmarkName = "-viewDidLoad"
             landmarkType = "5">
             <Locations>
                <Location
@@ -564,9 +564,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "70"
-            endingLineNumber = "70"
-            landmarkName = "-viewDidLoad"
-            landmarkType = "5">
+            endingLineNumber = "70">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -581,7 +579,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "95"
             endingLineNumber = "95"
-            landmarkName = "-viewDidAppear:"
+            landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -613,7 +611,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "107"
             endingLineNumber = "107"
-            landmarkName = "-followingButtonSelected"
+            landmarkName = "-refreshProfile"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1139,7 +1137,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "122"
             endingLineNumber = "122"
-            landmarkName = "-createHeader"
+            landmarkName = "-viewWillDisappear:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -1235,7 +1233,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "124"
             endingLineNumber = "124"
-            landmarkName = "-createHeader"
+            landmarkName = "-clearOurViews"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

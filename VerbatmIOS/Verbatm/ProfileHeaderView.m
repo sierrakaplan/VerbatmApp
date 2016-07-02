@@ -83,7 +83,7 @@
 		[self createLabels];
         [self checkForCoverPhoto];
 		[[NSNotificationCenter defaultCenter] addObserver:self
-												 selector:@selector(changeUserName)
+												 selector:@selector(userNameChanged)
 													 name:NOTIFICATION_USERNAME_CHANGED_SUCCESFULLY
 												   object:nil];
 	}
@@ -115,6 +115,13 @@
 	[self addSubview:self.blogTitle];
 	[self addSubview:self.blogDescription];
     if(self.isCurrentUser)[self addChangeCoverPhotoButton];
+}
+
+-(void) userNameChanged {
+	NSString *newUserName = self.channelOwner[VERBATM_USER_NAME_KEY];
+	[self.channel.parseChannelObject setObject:newUserName forKey:CHANNEL_CREATOR_NAME_KEY];
+	[self.channel.parseChannelObject saveInBackground];
+	[self changeUserName];
 }
 
 -(void) changeUserName {

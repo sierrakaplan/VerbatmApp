@@ -102,11 +102,9 @@
 		getImageDataPromise = getImageDataPromise.then(^(NSData *imageData) {
             
 			NSArray* photoWithText = pinchViewPhotosWithText[i-1];
-            
-			return [self storeImageFromImageData:imageData andPhotoWithTextArray:photoWithText
-										 atIndex:i withPageObject:page].then(^(void) {
-                
-                ((PinchView *)imagePinchViews[i]).beingPublished = YES;
+			return [self storeImageWithName:((ImagePinchView*)imagePinchViews[i-1]).imageName andData:imageData andPhotoWithTextArray:photoWithText
+										 atIndex:i-1 withPageObject:page].then(^(void) {
+				((PinchView *)imagePinchViews[i]).beingPublished = YES;
 				return [imagePinchViews[i] getImageDataWithHalfSize:half];
                 
 			});
@@ -116,12 +114,12 @@
 	return getImageDataPromise.then(^(NSData *imageData) {
 		NSInteger index = imagePinchViews.count - 1;
 		NSArray* photoWithText = pinchViewPhotosWithText[index];
-		return [self storeImageFromImageData:imageData andPhotoWithTextArray:photoWithText
+		return [self storeImageWithName:((ImagePinchView*)imagePinchViews[index]).imageName andData:imageData andPhotoWithTextArray:photoWithText
 									 atIndex:index withPageObject:page];
 	});
 }
 
--(AnyPromise*) storeImageFromImageData: (NSData *) imageData andPhotoWithTextArray: (NSArray *)photoWithText
+-(AnyPromise*) storeImageWithName:(NSString*)fileName andData: (NSData *) imageData andPhotoWithTextArray: (NSArray *)photoWithText
 							   atIndex: (NSInteger) index withPageObject: (PFObject *) page {
 	NSString* text = photoWithText[1];
 	NSNumber* textYPosition = photoWithText[2];
@@ -131,7 +129,7 @@
 
 	Photo_BackendObject * photoObj = [[Photo_BackendObject alloc] init];
 	[self.photoAndVideoSavers addObject:photoObj];
-	return [photoObj saveImageData:imageData withText:text
+	return [photoObj saveImageWithName:fileName andData:imageData withText:text
 				  andTextYPosition:textYPosition
 					  andTextColor:textColor
 				  andTextAlignment:textAlignment
@@ -151,7 +149,7 @@
 	AVAsset* videoAsset = [pinchView getVideo];
 	if (![videoAsset isKindOfClass:[AVURLAsset class]]) {
 		NSString *videoFileName = [UtilityFunctions randomStringWithLength:10];
-		NSURL* exportURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@%@", NSTemporaryDirectory(), videoFileName, @".mp4"]];
+		NSURL* exportURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@%@", NSTemporaryDirectory(), videoFileName, @".mov"]];
 		AVAssetExportSession* exporter = [[AVAssetExportSession alloc] initWithAsset:videoAsset
 																		  presetName:AVAssetExportPresetPassthrough];
 
@@ -159,7 +157,6 @@
 		[exporter setOutputFileType:AVFileTypeMPEG4];
 		return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 			[exporter exportAsynchronouslyWithCompletionHandler:^(void){
-				//todo: add progress units for this part
 				resolve(exportURL);
 			}];
 		}].then(^(NSURL* exportURL) {
@@ -236,11 +233,7 @@
 }
 
 +(void)deletePagesInPost:(PFObject *)post {
-    
-    PFRelation * pageRelation = [post relationForKey:POST_PAGES_PFRELATION];
-    
-    PFQuery * pageQuery = [pageRelation query];
-    
+
    [Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * objects) {
        if(objects){
            for (PFObject *obj in objects) {

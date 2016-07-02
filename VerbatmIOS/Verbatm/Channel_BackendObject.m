@@ -41,6 +41,7 @@
 		[newChannelObject setObject:channelName forKey:CHANNEL_NAME_KEY];
 		[newChannelObject setObject:[NSNumber numberWithInteger:0] forKey:CHANNEL_NUM_FOLLOWS];
 		[newChannelObject setObject:[PFUser currentUser] forKey:CHANNEL_CREATOR_KEY];
+		[newChannelObject setObject:[PFUser currentUser][VERBATM_USER_NAME_KEY] forKey:CHANNEL_CREATOR_NAME_KEY];
 		[newChannelObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 			if(succeeded){
 				block(newChannelObject);
@@ -89,7 +90,7 @@
                                                              NSError * _Nullable error) {
             NSMutableArray * finalChannelObjects = [[NSMutableArray alloc] init];
             if(objects && !error) {
-                for(PFObject * parseChannelObject in objects){
+                for(PFObject *parseChannelObject in objects){
                     NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
                     // get number of follows from follow objects
                     Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
@@ -103,14 +104,12 @@
     }];
 }
 
-
-
-
-+(void)storeCoverPhoto:(UIImage *) coverPhoto withParseChannelObject:(PFObject *) channel{
++ (void)storeCoverPhoto:(UIImage *) coverPhoto withParseChannelObject:(PFObject *) channel{
     PostPublisher * __block mediaPublisher = [[PostPublisher alloc] init];
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         [self getImageDataFromImage:coverPhoto withCompletionBlock:^(NSData * imageData) {
-            [mediaPublisher storeImage:imageData].then(^(id result) {
+			//todo: get actual file name for cover photo? 
+            [mediaPublisher storeImageWithName:@"CoverPhoto.png" andData:imageData].then(^(id result) {
                 if(result){
                     NSString *blobstoreUrl = (NSString*) result;
                     if (![blobstoreUrl hasSuffix:@"=s0"]) {

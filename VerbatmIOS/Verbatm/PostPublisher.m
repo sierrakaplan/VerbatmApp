@@ -49,13 +49,7 @@
 
 -(AnyPromise*) storeVideoFromURL: (NSURL*) url {
 
-
-//	return PMKWhen(@[getVideoDataPromise, getVideoUploadURIPromise])
-
-//	AnyPromise* getVideoDataPromise = [UtilityFunctions loadCachedVideoDataFromURL:url];
 	return [self getVideoUploadURI].then(^(NSString* uri) {
-//		NSData* videoData = results[0];
-//		NSString* uri = results[1];
 		self.videoUploader = [[MediaUploader alloc] init];
 		if ([self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
 			[self.publishingProgress addChild:self.videoUploader.mediaUploadProgress withPendingUnitCount: VIDEO_PROGRESS_UNITS - 1];
@@ -68,7 +62,7 @@
 // (get image upload uri) then (upload image to blobstore using uri) then (store gtlimage with serving url from blobstore)
 // Resolves to what insertImage resolves to,
 // Which should be the ID of the GTL image just stored
--(AnyPromise*) storeImage: (NSData*) imageData {
+-(AnyPromise*) storeImageWithName:(NSString*)fileName andData:(NSData*) imageData {
 	return [self getImageUploadURI].then(^(id result) {
 		if ([result isKindOfClass:[NSError class]]) {
 			return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
@@ -80,7 +74,7 @@
 		if ([self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
 			[self.publishingProgress addChild:self.imageUploader.mediaUploadProgress withPendingUnitCount: IMAGE_PROGRESS_UNITS - 1];
 		}
-		return [self.imageUploader uploadImageWithData:imageData andUri:uri];
+		return [self.imageUploader uploadImageWithName:fileName andData:imageData andUri:uri];
 	});
 }
 

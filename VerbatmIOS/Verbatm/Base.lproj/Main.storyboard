@@ -355,34 +355,6 @@
             </objects>
             <point key="canvasLocation" x="-4041" y="-2175"/>
         </scene>
-        <!--Featured ContentVC-->
-        <scene sceneID="Fww-pk-cdT">
-            <objects>
-                <tableViewController id="1ae-Vq-0ax" customClass="FeaturedContentVC" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="V0O-dA-Ak3">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="UgJ-E4-5Pe">
-                                <rect key="frame" x="0.0" y="28" width="320" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="UgJ-E4-5Pe" id="oHC-Np-dTU">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="1ae-Vq-0ax" id="8kA-hI-lNA"/>
-                            <outlet property="delegate" destination="1ae-Vq-0ax" id="nBH-h0-5Xt"/>
-                        </connections>
-                    </tableView>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="TtM-Yb-1Za" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-5005" y="-842"/>
-        </scene>
         <!--Content Dev-->
         <scene sceneID="8XD-Tr-4db">
             <objects>
@@ -432,59 +404,6 @@
             </objects>
             <point key="canvasLocation" x="-4205" y="-153"/>
         </scene>
-        <!--DiscoverVC-->
-        <scene sceneID="hNI-n8-7Cf">
-            <objects>
-                <viewController storyboardIdentifier="discover_vc" id="Hhc-hu-zb3" customClass="DiscoverVC" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="FMo-lH-YSb">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <containerView opaque="NO" contentMode="scaleToFill" id="eqy-rr-7Zi">
-                                <rect key="frame" x="0.0" y="44" width="320" height="524"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                            </containerView>
-                            <view contentMode="scaleToFill" id="ymp-df-Ltq">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                            </view>
-                            <searchBar contentMode="redraw" id="7gN-KE-qzP">
-                                <rect key="frame" x="0.0" y="44" width="320" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </searchBar>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <connections>
-                        <outlet property="headerView" destination="ymp-df-Ltq" id="UHq-vI-Qij"/>
-                        <outlet property="searchBar" destination="7gN-KE-qzP" id="aTf-ip-feN"/>
-                        <outlet property="searchDisplayController" destination="N54-Ic-Hel" id="DKj-dN-Kna"/>
-                        <outlet property="tableContainerView" destination="eqy-rr-7Zi" id="f0Z-AK-ewr"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="jmU-sY-VEf" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <searchDisplayController id="07b-bQ-TLh">
-                    <connections>
-                        <outlet property="delegate" destination="Hhc-hu-zb3" id="d7U-s4-DcD"/>
-                        <outlet property="searchContentsController" destination="Hhc-hu-zb3" id="bmg-92-AHV"/>
-                        <outlet property="searchResultsDataSource" destination="Hhc-hu-zb3" id="ebS-3s-xii"/>
-                        <outlet property="searchResultsDelegate" destination="Hhc-hu-zb3" id="WfM-C2-yd0"/>
-                    </connections>
-                </searchDisplayController>
-                <searchDisplayController id="N54-Ic-Hel">
-                    <connections>
-                        <outlet property="delegate" destination="Hhc-hu-zb3" id="GOc-Po-t38"/>
-                        <outlet property="searchContentsController" destination="Hhc-hu-zb3" id="Zlq-8i-3e7"/>
-                        <outlet property="searchResultsDataSource" destination="Hhc-hu-zb3" id="Bv3-PY-7EI"/>
-                        <outlet property="searchResultsDelegate" destination="Hhc-hu-zb3" id="I1l-qG-lG7"/>
-                    </connections>
-                </searchDisplayController>
-            </objects>
-            <point key="canvasLocation" x="-4096" y="-1104"/>
-        </scene>
         <!--Onboarding Blog Selection View Controller-->
         <scene sceneID="8qh-Xk-TQn">
             <objects>
@@ -526,10 +445,10 @@
             </objects>
             <point key="canvasLocation" x="-5333" y="-2673"/>
         </scene>
-        <!--Featured ContentVC-->
+        <!--DiscoverVC-->
         <scene sceneID="Ztj-7g-WJd">
             <objects>
-                <viewController storyboardIdentifier="featured_content_vc" id="i9B-d6-FOW" customClass="FeaturedContentVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="featured_content_vc" id="i9B-d6-FOW" customClass="DiscoverVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Cf5-tW-Arb" customClass="UITableView">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -548,6 +467,6 @@
         <image name="verbatm_logo" width="1395" height="1142"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="FiA-Do-sEN"/>
+        <segue reference="BFi-wQ-plH"/>
     </inferredMetricsTieBreakers>
 </document>

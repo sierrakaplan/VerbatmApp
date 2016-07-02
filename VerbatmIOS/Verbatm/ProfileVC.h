@@ -38,9 +38,10 @@
 @property (nonatomic) id userIdToPresent;
 
 -(void) addPostListVC;
--(void)clearOurViews;
+-(void) clearOurViews;
 //instructs the Profile to begin loading postlist content
--(void)loadContentToPostList;
+-(void) loadContentToPostList;
 //to be used sparingly
--(void)refreshProfile;
+-(void) refreshProfile;
+
 @end
