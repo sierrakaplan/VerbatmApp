@@ -32,8 +32,6 @@
 @property (nonatomic) UILabel *blogTitle;
 @property (nonatomic) UILabel *blogDescription;
 
-@property (nonatomic) NSString * originalTitle;
-
 // If this is the current user's profile, can go into edit mode
 @property (nonatomic) BOOL editMode;
 @property (nonatomic) UITextView *blogTitleEditable;
@@ -131,8 +129,6 @@
         self.userNameLabel.text = userName;
         [self.userNameLabel setTextColor:[UIColor whiteColor]];
     }];
-
-    
 }
 
 -(void) changeBlogTitleToTitle:(NSString *)newTitle {
@@ -140,9 +136,7 @@
         self.blogTitle.text = newTitle;
         [self.blogTitle sizeToFit];
         [self.blogTitle setTextColor:[UIColor whiteColor]];
-
     }
-	
 }
 
 -(void) changeBlogDescription {
@@ -213,20 +207,15 @@
 -(void) editButtonSelected {
 	self.editMode = !self.editMode;
 	if (self.editMode) {
-        self.originalTitle = self.blogTitle.text;
 		[self.blogTitle removeFromSuperview];
 		[self.blogDescription removeFromSuperview];
 		[self addSubview: self.blogTitleEditable];
 		[self addSubview: self.blogDescriptionEditable];
 		
-        if([self.originalTitle isEqualToString:@""]){
-            [self addSubviewsToTitle];
-            [self addSubviewsToDescription];
-        }
-        
-		//self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, PROFILE_INFO_BAR_HEIGHT);
+		[self addSubviewsToTitle];
+		[self addSubviewsToDescription];
 	} else {
-        NSString * newTitle = ([self.blogTitleEditable.text isEqualToString:@""]) ? self.originalTitle: self.blogTitleEditable.text;
+        NSString * newTitle = ([self.blogTitleEditable.text isEqualToString:@""]) ? self.channel.name: self.blogTitleEditable.text;
         [self.channel changeTitle:newTitle andDescription:self.blogDescriptionEditable.text];
 		[self.blogTitleEditable removeFromSuperview];
 		[self.blogDescriptionEditable removeFromSuperview];
@@ -340,30 +329,6 @@
 }
 
 -(void) addSubviewsToDescription {
-	//todo: delete
-//<<<<<<< HEAD
-//    UIImageView *editImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EDIT_PINCHVIEW_ICON]];
-//    editImage.frame = CGRectMake(self.blogDescriptionEditable.frame.size.width - OFFSET_X - 20.f,
-//                                 self.blogDescriptionEditable.frame.size.height - OFFSET_X - 20.f,
-//                                 20.f, 20.f);
-//    [self.blogDescriptionEditable addSubview: editImage];
-//   [self.blogDescriptionEditable addSubview: self.blogDescriptionPlaceholder];
-//    if([self.blogDescriptionEditable.text isEqualToString:@""]){
-//        [self.blogDescriptionEditable addSubview: self.blogDescriptionPlaceholder];
-//    }
-//}
-//
-//-(void) addSubviewsToTitle {
-//    UIImageView *editImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EDIT_PINCHVIEW_ICON]];
-//    editImage.frame = CGRectMake(self.blogTitleEditable.frame.size.width - OFFSET_X - 20.f,
-//                                 self.blogTitleEditable.frame.size.height - OFFSET_X - 20.f,
-//                                 20.f, 20.f);
-//    [self.blogTitleEditable addSubview: editImage];
-//    [self.blogTitleEditable addSubview: self.blogTitlePlaceholder];
-//     if([self.blogTitleEditable.text isEqualToString:@""]){
-//       [self.blogTitleEditable addSubview: self.blogTitlePlaceholder];
-//    }
-//=======
 	UIImageView *editImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EDIT_PINCHVIEW_ICON]];
 	editImage.frame = CGRectMake(self.blogDescriptionEditable.frame.size.width - OFFSET_X - 20.f,
 								 self.blogDescriptionEditable.frame.size.height - OFFSET_X - 20.f,
@@ -394,8 +359,9 @@
 -(UILabel *) blogTitlePlaceholder {
 	if (!_blogTitlePlaceholder) {
 		_blogTitlePlaceholder = [[UILabel alloc] initWithFrame: CGRectMake(0.f, 0.f, self.frame.size.width, self.blogTitle.frame.size.height)];
-		_blogTitlePlaceholder.font = [UIFont fontWithName:LIGHT_ITALIC_FONT size:BLOG_TITLE_FONT_SIZE];
-		_blogTitlePlaceholder.text = @"tap here to title your blog!";
+		_blogTitlePlaceholder.font = [UIFont fontWithName:LIGHT_ITALIC_FONT size:BLOG_DESCRIPTION_FONT_SIZE];
+		[_blogTitlePlaceholder setTextColor:[UIColor whiteColor]];
+		_blogTitlePlaceholder.text = @"Tap here to title your blog!";
 	}
 	return _blogTitlePlaceholder;
 }
@@ -405,12 +371,12 @@
         _blogDescriptionPlaceholder = [[UILabel alloc] initWithFrame: CGRectMake(0.f, 0.f, self.frame.size.width, self.blogDescription.frame.size.height)];
      	_blogDescriptionPlaceholder = [[UILabel alloc] initWithFrame: CGRectMake(2.f, 0.f, self.frame.size.width, self.blogDescriptionEditable.frame.size.height)];
         _blogDescriptionPlaceholder.font = [UIFont fontWithName:LIGHT_ITALIC_FONT size:BLOG_DESCRIPTION_FONT_SIZE];
-        _blogDescriptionPlaceholder.text = @"tap here to add a blog description!";
         [_blogDescriptionPlaceholder setTextColor:[UIColor whiteColor]];
        _blogDescriptionPlaceholder.text = @"Tap here to add a blog description!";
 	}
 	return _blogDescriptionPlaceholder;
 }
+
 -(UIImageView *)coverPhotoView{
        if(!_coverPhotoView){
             _coverPhotoView = [[UIImageView alloc] initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width,self.frame.size.width)];

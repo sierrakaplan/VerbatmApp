@@ -182,10 +182,9 @@
     
 }
 
+#pragma mark - Profile Photo -
 
-
-#pragma mark -Profile Photo-
--(void)presentGalleryToSelectImage{
+-(void)presentGalleryToSelectImage {
        GMImagePickerController *picker = [[GMImagePickerController alloc] init];
        picker.delegate = self;
         //Display or not the selection info Toolbar:
@@ -289,9 +288,7 @@
         [flowLayout setMinimumInteritemSpacing:CELL_SPACING_LARGE];
         [flowLayout setMinimumLineSpacing:0.0f];
         [flowLayout setItemSize:self.postListLargeFrame.size];
-        
-    }else{
-        
+    } else {
         flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         [flowLayout setMinimumInteritemSpacing:CELL_SPACING_SMALL];
         [flowLayout setMinimumLineSpacing:CELL_SPACING_SMALL];
@@ -300,7 +297,6 @@
     
     return flowLayout;
 }
-
 
 -(void)presentViewPostView:(PostListVC *) postList inSmallMode:(BOOL) inSmallMode shouldPage:(BOOL) shouldPage fromCellPath:(NSIndexPath *) cellPath{
     if(inSmallMode)[self.postListVC.view removeFromSuperview];
