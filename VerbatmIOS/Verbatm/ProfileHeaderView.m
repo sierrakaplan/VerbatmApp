@@ -113,6 +113,9 @@
 	[self addSubview:self.blogTitle];
 	[self addSubview:self.blogDescription];
     if(self.isCurrentUser)[self addChangeCoverPhotoButton];
+	if (!self.blogTitle.text.length) {
+		[self editButtonSelected];
+	}
 }
 
 -(void) userNameChanged {
@@ -131,7 +134,7 @@
     }];
 }
 
--(void) changeBlogTitleToTitle:(NSString *)newTitle {
+-(void) changeBlogTitleToTitle:(NSString *) newTitle {
     if(![newTitle isEqualToString:@""]){
         self.blogTitle.text = newTitle;
         [self.blogTitle sizeToFit];
@@ -205,13 +208,15 @@
 }
 
 -(void) editButtonSelected {
+	// Don't allow user to exit edit mode if their blog has no title
+	if (self.editMode && !self.blogTitleEditable.text.length) return;
 	self.editMode = !self.editMode;
 	if (self.editMode) {
 		[self.blogTitle removeFromSuperview];
 		[self.blogDescription removeFromSuperview];
 		[self addSubview: self.blogTitleEditable];
 		[self addSubview: self.blogDescriptionEditable];
-		
+
 		[self addSubviewsToTitle];
 		[self addSubviewsToDescription];
 	} else {
