@@ -225,14 +225,6 @@
 -(void) followOrEditButtonSelected {
 	if (self.isCurrentUser) {
 		[self.delegate editButtonSelected];
-		self.editMode = !self.editMode;
-		if (self.editMode) {
-            self.followOrEditButton.backgroundColor = [UIColor whiteColor];
-            [self changeFollowButtonTitle:@"edit" toColor:[UIColor blackColor]];
-        } else {
-              	self.followOrEditButton.backgroundColor = [UIColor blackColor];
-           		[self changeFollowButtonTitle:@"edit" toColor:[UIColor whiteColor]];
-        }
 	} else {
 		self.currentUserFollowsUser = !self.currentUserFollowsUser;
 		if (self.currentUserFollowsUser) {
@@ -242,6 +234,17 @@
 		}
 		[self.channel currentUserFollowsChannel: self.currentUserFollowsUser];
 		[self updateUserFollowingChannel];
+	}
+}
+
+-(void) changeEditMode: (BOOL) editMode {
+	self.editMode = editMode;
+	if (self.editMode) {
+		self.followOrEditButton.backgroundColor = [UIColor whiteColor];
+		[self changeFollowButtonTitle:@"done" toColor:[UIColor blackColor]];
+	} else {
+		self.followOrEditButton.backgroundColor = [UIColor blackColor];
+		[self changeFollowButtonTitle:@"edit" toColor:[UIColor whiteColor]];
 	}
 }
 
