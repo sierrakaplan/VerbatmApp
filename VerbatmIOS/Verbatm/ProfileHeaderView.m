@@ -47,7 +47,7 @@
 #define OFFSET_X 5.f
 #define OFFSET_Y 10.f
 #define USER_NAME_HEIGHT 15.f
-#define BLOG_TITLE_HEIGHT 25.f
+#define BLOG_TITLE_HEIGHT 30.f
 #define BLOG_DESCRIPTION_HEIGHT 90.f
 
 #define USER_NAME_FONT_SIZE 15.f
