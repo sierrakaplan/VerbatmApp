@@ -126,7 +126,6 @@
 }
 
 -(void) changeUserName {
-
 	[self.channel.channelCreator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
 		NSString * userName = [self.channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY];
 		self.userNameLabel.text = userName;
@@ -210,6 +209,7 @@
 	// Don't allow user to exit edit mode if their blog has no title
 	if (self.editMode && !self.blogTitleEditable.text.length) return;
 	self.editMode = !self.editMode;
+	[self.userInformationBar changeEditMode: self.editMode];
 	if (self.editMode) {
 		[self.blogTitle removeFromSuperview];
 		[self.blogDescription removeFromSuperview];

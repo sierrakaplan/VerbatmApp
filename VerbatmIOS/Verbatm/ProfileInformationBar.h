@@ -22,8 +22,8 @@
 
 // Only available in someone else's profile
 -(void) blockCurrentUserShouldBlock:(BOOL) shouldBlock;
--(void)followersButtonSelected;
--(void)followingButtonSelected;
+-(void) followersButtonSelected;
+-(void) followingButtonSelected;
 
 @end
 
@@ -36,5 +36,7 @@
 // from the profile tab.
 -(instancetype)initWithFrame:(CGRect)frame andUser:(PFUser*)user
 				  andChannel:(Channel*)channel inProfileTab:(BOOL) profileTab inFeed:(BOOL) inFeed;
+
+-(void) changeEditMode: (BOOL) editMode;
 
 @end
