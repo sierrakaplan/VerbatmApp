@@ -31,6 +31,8 @@
 #import "Post_Channel_RelationshipManager.h"
 #import "Page_BackendObject.h"
 #import "Photo_BackendObject.h"
+#import "PublishingProgressManager.h"
+
 #import "Video_BackendObject.h"
 #import "Channel_BackendObject.h"
 #import "ParseBackendKeys.h"
@@ -153,9 +155,13 @@
     }
 }
 
--(void) userPublishing:(NSNotification *) notification {
-	if (self.currentlyPublishing || !self.isCurrentUserProfile) return;
-	self.currentlyPublishing = YES;
+-(void)startMonitoringPublishing{
+    //don't run the script when publishing isn't happening and
+    if(self.currentlyPublishing) return;
+    if(!self.isCurrentUserProfile) return;
+    if (!([PublishingProgressManager sharedInstance].currentlyPublishing)) return;
+
+    self.currentlyPublishing = YES;
     self.nextIndexToPresent = -1;
     self.nextNextIndex = -1;
     
@@ -172,13 +178,18 @@
         [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:index inSection:0]]];
         
     } completion:^(BOOL finished) {
-       
+        
         if(finished){
             self.performingUpdate = NO;
             [CATransaction commit];
             [self.postListDelegate postsFound];
         }
     }];
+
+}
+
+-(void) userPublishing:(NSNotification *) notification {
+    [self startMonitoringPublishing];
 }
 
 -(void) publishingSucceeded:(NSNotification *) notification {
@@ -340,6 +351,7 @@
 				//Insert new posts into beginning
                 @autoreleasepool {
                     
+                    
                     NSMutableArray *indices = [NSMutableArray array];
                     for (NSInteger i = 0; i < posts.count; i++) {
                         [indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
@@ -347,15 +359,8 @@
                     NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0,[posts count])];
                     // Perform the updates
                     [weakSelf.collectionView performBatchUpdates:^{
-                        //Insert the new data
-                        if(weakSelf.currentlyPublishing){
-                            id publishingObject = [weakSelf.parsePostObjects lastObject];
-                            [weakSelf.parsePostObjects removeObject:publishingObject];
-                            [weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
-                            [weakSelf.parsePostObjects addObject:publishingObject];
-                        }else{
-                            [weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
-                        }
+                      
+                        [weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
                         
                         //Insert the new cells
                         [weakSelf.collectionView insertItemsAtIndexPaths:indices];
@@ -366,23 +371,11 @@
                     }];
                 }
             } else {
-
-                    if(weakSelf.currentlyPublishing){
-                            id publishingObject = [weakSelf.parsePostObjects lastObject];
-                            //Reload all posts in channel
-                            [weakSelf.parsePostObjects removeAllObjects];
-                            
-                            [weakSelf.parsePostObjects addObjectsFromArray:posts];
-                        if(publishingObject == NULL){
-                            publishingObject = @(0);//create placeholder
-                        }
-                        [weakSelf.parsePostObjects addObject:publishingObject];
-                        
-                    }else{
-                            //Reload all posts in channel
-                            [weakSelf.parsePostObjects removeAllObjects];
-                            [weakSelf.parsePostObjects addObjectsFromArray:posts];
-                    }
+                [weakSelf.parsePostObjects removeAllObjects];
+                [weakSelf.parsePostObjects addObjectsFromArray:posts];
+              if(weakSelf.currentlyPublishing){
+                        [weakSelf.parsePostObjects addObject:weakSelf.publishingProgressViewPositionHolder];
+                }
 				[weakSelf.collectionView reloadData];
 				[weakSelf scrollToLastElementInList];
 			}

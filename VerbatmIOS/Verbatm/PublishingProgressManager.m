@@ -146,7 +146,6 @@
 	self.progressAccountant.completedUnitCount = 0;
 	self.currentPublishingChannel = NULL;
 	self.currentlyPublishing = NO;
-	self.currentlyPublishing = NO;
     self.publishingProgressBackgroundImage = nil;
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POST_FAILED_TO_PUBLISH object:error];
 }

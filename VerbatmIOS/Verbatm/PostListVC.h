@@ -60,5 +60,5 @@ andStartingDate:(NSDate*)date;
 
 //moves the tap/share bar up and down over the tab bar
 -(void) footerShowing: (BOOL) showing;
-
+-(void)startMonitoringPublishing;
 @end

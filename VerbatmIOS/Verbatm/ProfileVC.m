@@ -97,6 +97,7 @@
    }else{
        [self.postListVC refreshPosts];
    }
+    [self.postListVC startMonitoringPublishing];
 }
 
 //to be used sparingly -- has the postlist refresh content
