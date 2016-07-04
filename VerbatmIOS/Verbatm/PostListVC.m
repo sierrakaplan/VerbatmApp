@@ -185,7 +185,6 @@
             [self.postListDelegate postsFound];
         }
     }];
-
 }
 
 -(void) userPublishing:(NSNotification *) notification {

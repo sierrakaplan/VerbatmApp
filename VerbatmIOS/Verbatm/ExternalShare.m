@@ -6,6 +6,7 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 #import "Channel_BackendObject.h"
+#import <Crashlytics/Crashlytics.h>
 
 #import "ExternalShare.h"
 
@@ -107,17 +108,12 @@
                     //we save the link to the PFObject
                     [postObject setObject:url forKey:POST_SHARE_LINK];
                     [postObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-                        if(succeeded){
-                            NSLog(@"Saved link to pfobject");
-                            ///to do -- call completion block
-                            
-                        }
-                        if(block)block(succeeded, postObject);
+                        if(block) block(succeeded, postObject);
                     }];
                 } else {
                     self.aquiredURLSuccesfully = NO;
-                    
-                    NSLog(@"An eerror occured %@", error);
+					[[Crashlytics sharedInstance] recordError:error];
+                    NSLog(@"An error occured %@", error);
                 }
                 self.waitingForUrlBranchResponse = NO;
                 [self.storeLinkCondition unlock];

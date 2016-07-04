@@ -93,7 +93,10 @@
 -(void) loadOlderPostsInChannel:(Channel*)channel withCompletionBlock:(void(^)(NSArray *))block {
 	// If oldest date has not been set then no posts have been loaded previously
 	// or there are no posts
-	if (!self.oldestDate) block (@[]);
+	if (!self.oldestDate) {
+		block (@[]);
+		return;
+	}
 	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
 	[postQuery orderByDescending:@"createdAt"];
