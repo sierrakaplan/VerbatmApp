@@ -51,6 +51,7 @@
 #define LIKERS_TEXT @"Likes"
 #define FOLLOWING_TEXT @"Following"
 #define FOLLOWERS_TEXT @"Followers"
+#define LIST_BAR_Y_OFFSET -15.f
 @end
 
 
@@ -70,7 +71,7 @@
     [self setNeedsStatusBarAppearanceUpdate];
 
     //avoid covering last item in uitableview
-    UIEdgeInsets inset = UIEdgeInsetsMake((15.f + STATUS_BAR_HEIGHT), 0, CUSTOM_CHANNEL_LIST_BAR_HEIGHT, 0);
+    UIEdgeInsets inset = UIEdgeInsetsMake(((-1 * LIST_BAR_Y_OFFSET) + STATUS_BAR_HEIGHT), 0, CUSTOM_CHANNEL_LIST_BAR_HEIGHT, 0);
     self.tableView.contentInset = inset;
     self.tableView.scrollIndicatorInsets = inset;
 }
@@ -270,10 +271,9 @@
 }
 
 -(void)setTableViewHeader{
-    //temporary list view and should be removable
-    CGRect navBarFrame = CGRectMake(0.f, -(15.f + STATUS_BAR_HEIGHT) , self.view.frame.size.width, CUSTOM_CHANNEL_LIST_BAR_HEIGHT);
+    CGRect navBarFrame = CGRectMake(0.f, -(LIST_BAR_Y_OFFSET + STATUS_BAR_HEIGHT) , self.view.frame.size.width, (LIST_BAR_Y_OFFSET * -1) + STATUS_BAR_HEIGHT+ CUSTOM_CHANNEL_LIST_BAR_HEIGHT);
     
-    CGRect customBarFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width, CUSTOM_CHANNEL_LIST_BAR_HEIGHT);
+    CGRect customBarFrame = CGRectMake(0.f, STATUS_BAR_HEIGHT, self.view.frame.size.width, CUSTOM_CHANNEL_LIST_BAR_HEIGHT);
     
     self.navBar = [[UIView alloc]initWithFrame:navBarFrame];
     self.navBar.backgroundColor = CHANNEL_LIST_HEADER_BACKGROUND_COLOR;
@@ -283,7 +283,6 @@
     
 
     [customNavBar createLeftButtonWithTitle:nil orImage:[UIImage imageNamed:BACK_BUTTON_ICON]];
-    //[self.navBar createMiddleButtonWithTitle:@"FOLLOWERS" orImage:nil];
     
     NSString * navBarMiddleText = FOLLOWERS_TEXT;
     

@@ -427,6 +427,13 @@ ProfileVCDelegate>
 
 }
 
+
+- (UIInterfaceOrientationMask) supportedInterfaceOrientations {
+    //return supported orientation masks
+    return UIInterfaceOrientationMaskPortrait;
+}
+
+
 #pragma mark - Memory Warning -
 
 - (void)didReceiveMemoryWarning{
