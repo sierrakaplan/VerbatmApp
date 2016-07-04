@@ -178,7 +178,7 @@
 
 -(void) createEditButton {
 	[self createFollowOrEditButton];
-	[self changeFollowButtonTitle:@"Edit" toColor:[UIColor whiteColor]];
+	[self changeFollowButtonTitle:@"edit" toColor:[UIColor whiteColor]];
 }
 
 -(void) createFollowOrEditButton {
