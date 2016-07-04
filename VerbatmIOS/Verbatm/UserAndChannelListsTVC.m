@@ -273,7 +273,7 @@
     //temporary list view and should be removable
     CGRect navBarFrame = CGRectMake(0.f, -(15.f + STATUS_BAR_HEIGHT) , self.view.frame.size.width, CUSTOM_CHANNEL_LIST_BAR_HEIGHT);
     
-    CGRect customBarFrame = CGRectMake(0.f, STATUS_BAR_HEIGHT, self.view.frame.size.width, CUSTOM_CHANNEL_LIST_BAR_HEIGHT);
+    CGRect customBarFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width, CUSTOM_CHANNEL_LIST_BAR_HEIGHT);
     
     self.navBar = [[UIView alloc]initWithFrame:navBarFrame];
     self.navBar.backgroundColor = CHANNEL_LIST_HEADER_BACKGROUND_COLOR;
