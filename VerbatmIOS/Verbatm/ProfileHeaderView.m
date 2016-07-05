@@ -112,8 +112,10 @@
 	[self addSubview:self.userNameLabel];
 	[self addSubview:self.blogTitle];
 	[self addSubview:self.blogDescription];
-	if(self.isCurrentUser)[self addChangeCoverPhotoButton];
-	if (!self.blogTitle.text.length) {
+	if(self.isCurrentUser) {
+		[self addChangeCoverPhotoButton];
+	}
+	if (!self.blogTitle.text.length && self.isCurrentUser) {
 		[self editButtonSelected];
 	}
 }
