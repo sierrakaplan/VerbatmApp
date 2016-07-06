@@ -32,11 +32,13 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
+	// Initialize the cache
 	int cacheSizeMemory = 15*1024*1024; // 4MB
 	int cacheSizeDisk = 32*1024*1024; // 32MB
 	NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:cacheSizeMemory diskCapacity:cacheSizeDisk diskPath:@"nsurlcache"];
 	[NSURLCache setSharedURLCache:sharedCache];
 
+	// Load the pinch views that were in the user's adk
 	[[PostInProgress sharedInstance] loadPostFromUserDefaults];
 	[self setUpParseWithLaunchOptions: launchOptions];
 	PMKSetUnhandledExceptionHandler(^NSError * _Nullable(id exception) {
@@ -49,7 +51,7 @@
 	[Fabric with:@[[Crashlytics class]]];
 	//    	[Optimizely startOptimizelyWithAPIToken: @"AANIfyUBGNNvR9jy_iEWX8c97ahEroKr~3788260592" launchOptions:launchOptions];
 
-    
+	// Branch.io (for external share links)
     Branch *branch = [Branch getInstance];
     [branch initSessionWithLaunchOptions:launchOptions andRegisterDeepLinkHandler:^(NSDictionary *params, NSError *error) {
         // params are the deep linked params associated with the link that the user clicked before showing up.
@@ -63,6 +65,13 @@
 		[branch setRetryInterval:5];
 		[branch setMaxRetries:1];
     }];
+
+	//Register to allow app to make sound notification
+	UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeSound categories:nil];
+	[application registerUserNotificationSettings:notificationSettings];
+
+	//Register for push (remote) notifications
+	[application registerForRemoteNotifications];
 
 	return [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
 
@@ -84,12 +93,6 @@
 	[PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
 
 	[PFFacebookUtils initializeFacebookWithApplicationLaunchOptions:launchOptions];
-}
-
-// NOT IN USE
--(void) customizeTabBarAppearance {
-	UIImage *whiteBackground = [UIImage imageNamed:@"blackBackground"];
-	[[UITabBar appearance] setSelectionIndicatorImage:whiteBackground];
 }
 
 //logs that the app was just opened

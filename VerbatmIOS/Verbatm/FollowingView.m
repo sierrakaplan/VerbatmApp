@@ -33,23 +33,14 @@
     return self;
 }
 
--(void) setHeader{
-    
-}
-
--(void) currentFollowingBlogs{
+-(void) currentFollowingBlogs {
     [Follow_BackendManager channelsUserFollowing:[PFUser currentUser] withCompletionBlock:^(NSArray *followingChannels){
         for(PFObject *obj in followingChannels){
             [obj fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error){
                 Channel *c = (Channel *) object;
-  //              Channel *c = [object valueForKey:FOLLOW_CHANNEL_FOLLOWED_KEY];
-  //              [self.blogsFollowing addObject:object];
- //               NSString *blogName = [c valueForKey:CHANNEL_NAME_KEY];
                 NSString *blogCreatorName = [c valueForKey:CHANNEL_CREATOR_KEY];
-                NSLog(@"%@", c.name);
                 [self createFollowingViewsWithUser:blogCreatorName andBlog:@"Hi"];
             }];
-            
         }
     }];
 }

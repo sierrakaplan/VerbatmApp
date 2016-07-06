@@ -7,7 +7,6 @@
 //
 
 #import "SharePostView.h"
-#import "SelectChannel.h"
 #import "Styles.h"
 #import "UIImage+ImageEffectsAndTransforms.h"
 #define SHARE_BUTTON_HEIGHT (CANCEL_BUTTON_HEIGHT - 10.f)

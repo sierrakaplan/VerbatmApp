@@ -127,7 +127,6 @@
     }
     UIImage *screenShotImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    NSLog(@"Just got screenshotfor view");
     return screenShotImage;
 }
 

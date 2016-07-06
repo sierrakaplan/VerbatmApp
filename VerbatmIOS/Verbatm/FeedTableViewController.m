@@ -94,7 +94,6 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    NSLog(@"self.FollowingProfileList.count = %lu", (unsigned long)self.FollowingProfileList.count);
     return self.FollowingProfileList.count;
 }
 
