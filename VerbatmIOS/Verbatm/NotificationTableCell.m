@@ -20,23 +20,45 @@
 @property (nonatomic) BOOL currentUserFollowingChannelUser;
 @property (nonatomic) UIView * seperatorView;
 
-
 #define NEW_FOLLOWER_APPEND_TEXT @" is Following you"
 #define LIKE_APPEND_TEXT @" likes your post!"
 #define FRIEND_JOINED_V_APPEND_TEXT @" just joined Verbatm"
 #define FRIENDS_FIRST_POST @" just created their first post"
 #define POST_SHARED_APPEND_TEXT @" shared your post!"
 #define FOLLOW_TEXT_BUTTON_GAP (3.f)
+#define FOLLOW_BUTTON_X_POS (self.frame.size.width - PROFILE_HEADER_XOFFSET - LARGE_FOLLOW_BUTTON_WIDTH)
+
+
+
 @end
 
 @implementation NotificationTableCell
 
 
+-(void)clearViews{
+    if(self.followButton){
+        [self.followButton removeFromSuperview];
+        self.followButton = nil;
+    }
+    
+    if(self.notificationTextLabel){
+        [self.notificationTextLabel removeFromSuperview];
+        self.notificationTextLabel = nil;
+    }
+    
+    if(self.likeImage){
+        [self.likeImage removeFromSuperview];
+        self.likeImage = nil;
+    }
+}
+
 
 -(void)presentNotification:(NotificationType) notificationType withChannel:(Channel *) channel andObjectId:(id)objectId{
+    [self clearViews];
     
     self.objectId = objectId;
     self.notificationType = notificationType;
+    self.channel = channel;
     if(notificationType & (NewFollower|FriendJoinedVerbatm|FriendsFirstPost|Share)){
         [self createFollowButton];
     }else if (notificationType & Like){
@@ -49,7 +71,10 @@
 }
 
 
+
+
 -(void)layoutSubviews {
+    self.backgroundColor = [UIColor clearColor];
     [self addCellSeperator];
 }
 
@@ -118,7 +143,7 @@
 }
 
 -(void)createNotificationLabelWithAttributedString:(NSAttributedString *) notification{
-    CGFloat labelWidth = self.followButton.frame.origin.x - PROFILE_HEADER_XOFFSET - FOLLOW_TEXT_BUTTON_GAP;
+    CGFloat labelWidth = FOLLOW_BUTTON_X_POS - PROFILE_HEADER_XOFFSET - FOLLOW_TEXT_BUTTON_GAP;
     CGFloat yposition = (self.frame.size.height - LARGE_FOLLOW_BUTTON_HEIGHT)/2.f;
     CGRect frame = CGRectMake(PROFILE_HEADER_XOFFSET,yposition, labelWidth, LARGE_FOLLOW_BUTTON_HEIGHT);
     self.notificationTextLabel = [[UILabel alloc] initWithFrame:frame];
@@ -134,6 +159,7 @@
     self.likeImage = [[UIImageView alloc] initWithFrame:frame];
     [self.likeImage setImage:[UIImage imageNamed:LIKE_NOTIFICATION_IMAGE_ICON]];
     self.likeImage.contentMode = UIViewContentModeScaleAspectFit;
+    [self addSubview:self.likeImage];
 }
 
 -(void)getFollowInformation{
@@ -142,9 +168,7 @@
             self.currentUserFollowingChannelUser = isFollowing;
             if(self.followButton)[self updateUserFollowingChannel];
         }];
-        
     }else{
-        
         self.currentUserFollowingChannelUser = [self.channel.usersFollowingChannel containsObject:[PFUser currentUser]];
         if(self.followButton)[self updateUserFollowingChannel];
     }
@@ -152,13 +176,12 @@
 
 
 -(void) createFollowButton {
-    
     if(self.followButton){
         [self.followButton removeFromSuperview];
         self.followButton = nil;
     }
     
-    CGFloat frame_x = self.frame.size.width - PROFILE_HEADER_XOFFSET - LARGE_FOLLOW_BUTTON_WIDTH;
+    CGFloat frame_x = FOLLOW_BUTTON_X_POS;
     CGFloat frame_y = (self.frame.size.height -  LARGE_FOLLOW_BUTTON_HEIGHT)/2.f;
     CGRect followButtonFrame = CGRectMake(frame_x, frame_y, LARGE_FOLLOW_BUTTON_WIDTH, LARGE_FOLLOW_BUTTON_HEIGHT);
     

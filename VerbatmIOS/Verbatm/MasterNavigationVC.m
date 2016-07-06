@@ -39,7 +39,7 @@
 #import "UserSetupParameters.h"
 
 #import <Crashlytics/Crashlytics.h>
-
+#import "NotificationsListTVC.h"
 
 @interface MasterNavigationVC () <UITabBarControllerDelegate, FeedTableViewDelegate,
 ProfileVCDelegate>
@@ -59,7 +59,7 @@ ProfileVCDelegate>
 @property (strong,nonatomic) ProfileVC *profileVC;
 @property (strong,nonatomic) FeedTableViewController *feedVC;
 @property (strong,nonatomic) DiscoverVC *discoverVC;
-
+@property (strong, nonatomic) NotificationsListTVC * notificationVC;
 
 #define ANIMATION_NOTIFICATION_DURATION 0.5
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
@@ -259,7 +259,7 @@ ProfileVCDelegate>
 	deadView.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:deadViewTabImage selectedImage:deadViewTabImage];
 	deadView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 
-	self.tabBarController.viewControllers = @[self.feedVC, self.discoverVC, deadView, self.profileVC];
+	self.tabBarController.viewControllers = @[self.feedVC, self.discoverVC, deadView,self.notificationVC, self.profileVC];
 	//add adk button to tab bar
 	[self addTabBarCenterButtonOverDeadView];
 	[self formatTabBar];
@@ -277,7 +277,6 @@ ProfileVCDelegate>
 	NSInteger numTabs = self.tabBarController.viewControllers.count;
 	CGSize tabBarItemSize = CGSizeMake(self.tabBarController.tabBar.frame.size.width/numTabs,
 									   self.tabBarController.tabBarHeight);
-	//[self.tabBarController.tabBar setTintColor:SELECTED_TAB_ICON_COLOR];
 	// Sets background of unselected UITabBarItem
 	[self.tabBarController.tabBar setBackgroundImage: [self getUnselectedTabBarItemImageWithSize: tabBarItemSize]];
 	[self.tabBarController.tabBar setBackgroundColor:[UIColor blackColor]];
@@ -316,6 +315,9 @@ ProfileVCDelegate>
     self.feedVC = [[FeedTableViewController alloc] init];
     self.feedVC.view.frame = self.view.bounds;
 	self.feedVC.delegate = self;
+    
+    self.notificationVC = [[NotificationsListTVC alloc] init];
+    self.notificationVC.view.frame = self.view.bounds;
 
 	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															  image:[UIImage imageNamed:PROFILE_NAV_ICON]
@@ -326,12 +328,15 @@ ProfileVCDelegate>
 	self.discoverVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															   image:[UIImage imageNamed:DISCOVER_NAV_ICON]
 													   selectedImage:[UIImage imageNamed:DISCOVER_NAV_ICON]];
-
+    self.notificationVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
+                                                               image:[UIImage imageNamed:NOTIFICATION_ICON_UNSELECTED]
+                                                       selectedImage:[UIImage imageNamed:NOTIFICATION_ICON_SELECTED]];
+    
+    self.notificationVC.tabBarItem.imageInsets = UIEdgeInsetsMake(20.f, 0.f, -20.f, 0.f);
+    
 	// images need to be centered this way for some reason
-	self.profileVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
-	//    self.channelListView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
-	self.discoverVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
-	self.feedVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+	self.profileVC.tabBarItem.imageInsets = self.discoverVC.tabBarItem.imageInsets =
+    self.feedVC.tabBarItem.imageInsets =  UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 }
 
 -(void)createTabBarViewController {

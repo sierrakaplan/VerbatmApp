@@ -178,4 +178,6 @@
 
 #define LIKE_NOTIFICATION_IMAGE_ICON @"HeartIcon"
 
+#define NOTIFICATIONS_LIST_BACKGROUND @"Notifications background"
+
 #endif /* Styles_h */

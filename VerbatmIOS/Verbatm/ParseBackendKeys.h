@@ -93,4 +93,16 @@
 #define CHANNEL_FEATURED_BOOL @"Featured"
 #define CHANNEL_COVER_PHOTO_URL @"CoverPhotoURL"
 
+
+
+
+
+#define NOTIFICATION_PFCLASS_KEY @"NotificationClass"
+#define NOTIFICATION_IS_NEW @"IsNewNotification"
+#define NOTIFICATION_SENDER @"NotificationSender"
+#define NOTIFICATION_RECEIVER @"NotificationReceiver"
+#define NOTIFICATION_TYPE @"NotificationType"
+#define NOTIFICATION_POST @"NotificationPost"
+
+
 #endif /* ParseBackendKeys_h */

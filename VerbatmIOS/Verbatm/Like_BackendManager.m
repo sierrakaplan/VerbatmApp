@@ -11,7 +11,7 @@
 #import <Parse/PFUser.h>
 #import <Parse/PFQuery.h>
 #import <PromiseKit/PromiseKit.h>
-
+#import "Notification_BackendManager.h"
 @implementation Like_BackendManager
 
 + (void)currentUserLikePost:(PFObject *) postParseObject {
@@ -20,7 +20,11 @@
 	PFObject *newLikeObject = [PFObject objectWithClassName:LIKE_PFCLASS_KEY];
 	[newLikeObject setObject:[PFUser currentUser]forKey:LIKE_USER_KEY];
 	[newLikeObject setObject:postParseObject forKey:LIKE_POST_LIKED_KEY];
-	[newLikeObject saveInBackground];
+	[newLikeObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if(succeeded){
+            [Notification_BackendManager createNotificationWithType:Like receivingUser:[postParseObject valueForKey:POST_ORIGINAL_CREATOR_KEY] relevantPostObject:postParseObject];
+        }
+    }];
 }
 
 + (void)currentUserStopLikingPost:(PFObject *) postParseObject {

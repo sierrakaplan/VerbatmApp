@@ -14,7 +14,7 @@
 #import <Parse/PFObject.h>
 #import <Parse/PFRelation.h>
 #import <PromiseKit/PromiseKit.h>
-
+#import "Notification_BackendManager.h"
 #import "Notifications.h"
 
 @implementation Follow_BackendManager
@@ -30,6 +30,7 @@
 		if(succeeded){
             NSNotification * not = [[NSNotification alloc]initWithName:NOTIFICATION_NOW_FOLLOWING_USER object:nil userInfo:nil];
             [[NSNotificationCenter defaultCenter] postNotification:not];
+            [Notification_BackendManager createNotificationWithType:NewFollower receivingUser:channelToFollow.channelCreator relevantPostObject:nil];
 		}
 	}];
 }

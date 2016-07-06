@@ -8,16 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "Channel.h"
+#import "Notification_BackendManager.h"
 
-typedef enum {
-    
-    NewFollower = 1 << 0,
-    Like = 1 << 1, //someone liked your content
-    FriendJoinedVerbatm = 1 << 2,
-    Share = 1 << 3, //someone shared your content
-    FriendsFirstPost = 1 << 4
-    
-}NotificationType;
 
 @interface NotificationTableCell : UITableViewCell
 @property (nonatomic) id objectId;
