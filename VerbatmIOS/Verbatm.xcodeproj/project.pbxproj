@@ -166,6 +166,8 @@
 		C7178E081D21101900B90643 /* FeedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7178E071D21101900B90643 /* FeedTableViewController.m */; };
 		C7178E0B1D21A12000B90643 /* FeedTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C7178E0A1D21A12000B90643 /* FeedTableCell.m */; };
 		C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4091BA615B50075CA80 /* UserSetupParameters.m */; };
+		C723C9861D2B3DAA00E87D58 /* NotificationsListTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C723C9851D2B3DAA00E87D58 /* NotificationsListTVC.m */; };
+		C723C9891D2B4E9400E87D58 /* NotificationTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C723C9881D2B4E9400E87D58 /* NotificationTableCell.m */; };
 		C734FD9519B13D5F00B2C370 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9419B13D5F00B2C370 /* ImageIO.framework */; };
 		C734FD9719B13D7700B2C370 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9619B13D7700B2C370 /* CoreVideo.framework */; };
 		C734FD9919B13D8600B2C370 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9819B13D8600B2C370 /* CoreMedia.framework */; };
@@ -514,6 +516,10 @@
 		C7178E0A1D21A12000B90643 /* FeedTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedTableCell.m; sourceTree = "<group>"; };
 		C719A4081BA615B50075CA80 /* UserSetupParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserSetupParameters.h; sourceTree = "<group>"; };
 		C719A4091BA615B50075CA80 /* UserSetupParameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserSetupParameters.m; sourceTree = "<group>"; };
+		C723C9841D2B3DAA00E87D58 /* NotificationsListTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsListTVC.h; sourceTree = "<group>"; };
+		C723C9851D2B3DAA00E87D58 /* NotificationsListTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsListTVC.m; sourceTree = "<group>"; };
+		C723C9871D2B4E9400E87D58 /* NotificationTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationTableCell.h; sourceTree = "<group>"; };
+		C723C9881D2B4E9400E87D58 /* NotificationTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationTableCell.m; sourceTree = "<group>"; };
 		C734FD9419B13D5F00B2C370 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		C734FD9619B13D7700B2C370 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		C734FD9819B13D8600B2C370 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -995,6 +1001,8 @@
 				A5C38ACC1CC1D4120067D077 /* FeaturedContentChannelView.m */,
 				C7178E091D21A12000B90643 /* FeedTableCell.h */,
 				C7178E0A1D21A12000B90643 /* FeedTableCell.m */,
+				C723C9871D2B4E9400E87D58 /* NotificationTableCell.h */,
+				C723C9881D2B4E9400E87D58 /* NotificationTableCell.m */,
 			);
 			name = "Table Cell Views";
 			sourceTree = "<group>";
@@ -1282,6 +1290,8 @@
 				A560EFAF1BB09AF8003FB041 /* Login */,
 				A5076D051BE999E900303746 /* Profile */,
 				A58EE8831BA876FA00B7B396 /* Segues */,
+				C723C9841D2B3DAA00E87D58 /* NotificationsListTVC.h */,
+				C723C9851D2B3DAA00E87D58 /* NotificationsListTVC.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -1780,6 +1790,7 @@
 				C7E093EC1BF98BE200A3276A /* OpenCollectionView.m in Sources */,
 				A57A93051B55E835006C2597 /* VerbatmCameraView.m in Sources */,
 				C7BF1AAE1C57F61F00CEDE4B /* Page_BackendObject.m in Sources */,
+				C723C9891D2B4E9400E87D58 /* NotificationTableCell.m in Sources */,
 				A5934B9B1C10E2A3007C7830 /* CustomScrollingTabBar.m in Sources */,
 				A5446C961BBA3C33002177F4 /* CustomNavigationBar.m in Sources */,
 				C75690A81D0891FF002C9402 /* OnboardingBlogSelectionViewController.m in Sources */,
@@ -1886,6 +1897,7 @@
 				A5E860011B96249900E148D0 /* PostPublisher.m in Sources */,
 				C7178E0B1D21A12000B90643 /* FeedTableCell.m in Sources */,
 				C7F22B381C3841AD00E56EA7 /* SelectSharingOption.m in Sources */,
+				C723C9861D2B3DAA00E87D58 /* NotificationsListTVC.m in Sources */,
 				A51BB2A81D2657D00020D529 /* SearchResultsVC.m in Sources */,
 				A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */,
 				A535E4FD1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m in Sources */,

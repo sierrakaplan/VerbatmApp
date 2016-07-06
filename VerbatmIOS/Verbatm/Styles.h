@@ -176,5 +176,6 @@
 
 #define CHANNEL_LIST_HEADER_BACKGROUND_COLOR [UIColor colorWithWhite:0.95 alpha:1.f]
 
+#define LIKE_NOTIFICATION_IMAGE_ICON @"HeartIcon"
 
 #endif /* Styles_h */

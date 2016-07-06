@@ -97,6 +97,9 @@ ProfileVCDelegate>
 - (UIStatusBarAnimation) preferredStatusBarUpdateAnimation {
 	return UIStatusBarAnimationSlide;
 }
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
 
 -(void) registerForNotifications {
 	[[NSNotificationCenter defaultCenter] addObserver:self

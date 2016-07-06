@@ -186,6 +186,15 @@
 
 #define PAGE_UP_ICON_SIZE 45.f
 
+
+#pragma mark -Follow Icon-
+#define LARGE_FOLLOW_BUTTON_WIDTH 100.f
+#define LARGE_FOLLOW_BUTTON_HEIGHT (LARGE_FOLLOW_BUTTON_WIDTH/3.f)
+
+#pragma mark -User and Channel List-
+
+#define CHANNEL_LIST_CELL_SEPERATOR_HEIGHT 0.6
+
 #endif
 
 
