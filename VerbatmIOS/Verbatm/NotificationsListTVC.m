@@ -15,7 +15,7 @@
 #import "Channel.h"
 #import "Styles.h"
 #import "CustomNavigationBar.h"
-
+#import "ProfileVC.h"
 @interface NotificationsListTVC () <NotificationTableCellProtocol>
 @property (nonatomic) BOOL shouldAnimateViews;
 @property (nonatomic) NSMutableArray * parseNotificationObjects;
@@ -123,8 +123,36 @@
 }
 
 -(void)presentUserBlogSentFromCell:(NotificationTableCell *)cell{
+    Channel * channel = cell.channel;
+    PFUser * user = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
+    
+    if(![[user objectId]isEqualToString:[[PFUser currentUser] objectId]]){
+        [user fetchIfNeededInBackgroundWithBlock:^
+         (PFObject * _Nullable object, NSError * _Nullable error) {
+             if(object){
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     [self presentProfileForUser:(PFUser *)object withStartChannel:channel];
+                 });
+             }
+         }];
+    }
     
 }
+
+
+-(void)presentProfileForUser:(PFUser *) user
+            withStartChannel:(Channel *) startChannel{
+    if(![[user objectId] isEqualToString:[[PFUser currentUser] objectId]]){
+        ProfileVC *  userProfile = [[ProfileVC alloc] init];
+        userProfile.isCurrentUserProfile = NO;
+        userProfile.isProfileTab = NO;
+        userProfile.ownerOfProfile = user;
+        userProfile.channel = startChannel;
+        [self presentViewController:userProfile animated:YES completion:nil];
+    }
+    
+}
+
 
 #pragma mark - Table view data source
 
