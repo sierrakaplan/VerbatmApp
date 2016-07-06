@@ -108,9 +108,6 @@
     }
 }
 
--(BOOL) prefersStatusBarHidden {
-    return YES;
-}
 
 - (UIStatusBarAnimation) preferredStatusBarUpdateAnimation {
     return UIStatusBarAnimationSlide;

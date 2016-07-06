@@ -11,10 +11,22 @@
 #import "Notification_BackendManager.h"
 
 
+
+@protocol NotificationTableCellProtocol;
+
 @interface NotificationTableCell : UITableViewCell
 @property (nonatomic) id objectId;
 @property (nonatomic) Channel * channel;
 @property (nonatomic) NotificationType notificationType;
+@property (nonatomic) id<NotificationTableCellProtocol> delegate;
 
 -(void)presentNotification:(NotificationType) notificationType withChannel:(Channel *) channel andObjectId:(id)objectId;
+@end
+
+
+@protocol NotificationTableCellProtocol <NSObject>
+
+-(void)presentPostSentFromCell:(NotificationTableCell *)cell;
+-(void)presentUserBlogSentFromCell:(NotificationTableCell *)cell;
+
 @end

@@ -75,8 +75,17 @@
 			if (!self.isCurrentUser) {
 				// This allows a user to block another user
 				[self createSettingsButton];
-				self.currentUserFollowsUser = [channel.usersFollowingChannel containsObject:[PFUser currentUser]];
-				[self createFollowButton];
+                
+                if(channel.usersFollowingChannel.count){
+                    self.currentUserFollowsUser = [channel checkIfList:channel.usersFollowingChannel ContainsObject:[PFUser currentUser]];
+                }else{
+                    [channel getFollowersAndFollowingWithCompletionBlock:^{
+                        self.currentUserFollowsUser = [channel checkIfList:channel.usersFollowingChannel ContainsObject:[PFUser currentUser]];
+                        [self updateUserFollowingChannel];
+                        
+                    }];
+                    [self createFollowButton];
+                }
 			}
 		}
 		[self createFollowersAndFollowingLabels];
@@ -167,11 +176,11 @@
 -(void) updateUserFollowingChannel {
 	//todo: images
 	if (self.currentUserFollowsUser) {
-		[self changeFollowButtonTitle:@"Following" toColor:[UIColor whiteColor]];
-		self.followOrEditButton.backgroundColor = [UIColor blackColor];
-	} else {
-		[self changeFollowButtonTitle:@"Follow" toColor:[UIColor blackColor]];
+		[self changeFollowButtonTitle:@"Following" toColor:[UIColor blackColor]];
 		self.followOrEditButton.backgroundColor = [UIColor whiteColor];
+	} else {
+		[self changeFollowButtonTitle:@"Follow" toColor:[UIColor whiteColor]];
+		self.followOrEditButton.backgroundColor = [UIColor clearColor];
 	}
 	[self updateNumFollowersAndFollowing];
 }

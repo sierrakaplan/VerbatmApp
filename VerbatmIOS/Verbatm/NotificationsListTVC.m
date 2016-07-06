@@ -16,7 +16,7 @@
 #import "Styles.h"
 #import "CustomNavigationBar.h"
 
-@interface NotificationsListTVC ()
+@interface NotificationsListTVC () <NotificationTableCellProtocol>
 @property (nonatomic) BOOL shouldAnimateViews;
 @property (nonatomic) NSMutableArray * parseNotificationObjects;
 @property (nonatomic) BOOL refreshing;
@@ -26,7 +26,7 @@
 
 
 
-#define CUSTOM_BAR_HEIGHT 50.f
+#define CUSTOM_BAR_HEIGHT 40.f
 #define LIST_BAR_Y_OFFSET -15.f
 @end
 
@@ -114,6 +114,18 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+
+
+#pragma mark -Notifications Cell protocol-
+-(void)presentPostSentFromCell:(NotificationTableCell *)cell{
+    
+}
+
+-(void)presentUserBlogSentFromCell:(NotificationTableCell *)cell{
+    
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -148,6 +160,7 @@
     if(cell){
     }else{
         cell = [[NotificationTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+        cell.delegate = self;
     }
     [self setNotificationOnCell:cell notificationObject:self.parseNotificationObjects[indexPath.row]];
     

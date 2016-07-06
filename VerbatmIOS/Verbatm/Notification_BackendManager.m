@@ -20,18 +20,17 @@
 
 +(void)createNotificationWithType:(NotificationType) notType receivingUser:(PFUser *) receivingUser relevantPostObject:(PFObject *) post {
     
-    
-    if([[receivingUser objectId] isEqualToString:[[PFUser currentUser] objectId]]) return;
-    
-    NSNumber * notificationType = [NSNumber numberWithInteger:notType];
-    PFObject * notificationObject = [PFObject objectWithClassName:NOTIFICATION_PFCLASS_KEY];
-    
-    [notificationObject setValue:[NSNumber numberWithBool:YES] forKey:NOTIFICATION_IS_NEW];
-    [notificationObject setValue:[PFUser currentUser] forKey:NOTIFICATION_SENDER];
-    [notificationObject setValue:receivingUser forKey:NOTIFICATION_RECEIVER];
-    if(post)[notificationObject setValue:post forKey:NOTIFICATION_POST];
-    [notificationObject setValue:notificationType forKey:NOTIFICATION_TYPE];
-    [notificationObject saveInBackground];
+    if(![[receivingUser objectId] isEqualToString:[[PFUser currentUser] objectId]]){
+        NSNumber * notificationType = [NSNumber numberWithInteger:notType];
+        PFObject * notificationObject = [PFObject objectWithClassName:NOTIFICATION_PFCLASS_KEY];
+        
+        [notificationObject setValue:[NSNumber numberWithBool:YES] forKey:NOTIFICATION_IS_NEW];
+        [notificationObject setValue:[PFUser currentUser] forKey:NOTIFICATION_SENDER];
+        [notificationObject setValue:receivingUser forKey:NOTIFICATION_RECEIVER];
+        if(post)[notificationObject setValue:post forKey:NOTIFICATION_POST];
+        [notificationObject setValue:notificationType forKey:NOTIFICATION_TYPE];
+        [notificationObject saveInBackground];
+    }
 }
 
 +(void)getNotificationsForUserAfterDate:(NSData *) afterDate withCompletionBlock:(void(^)(NSArray*)) block {

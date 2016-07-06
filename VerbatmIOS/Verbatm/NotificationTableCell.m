@@ -20,14 +20,17 @@
 @property (nonatomic) BOOL currentUserFollowingChannelUser;
 @property (nonatomic) UIView * seperatorView;
 
+@property (nonatomic) UILabel * postLine;//text saying "post!" so that post is seletable
+
 #define NEW_FOLLOWER_APPEND_TEXT @" is Following you"
-#define LIKE_APPEND_TEXT @" likes your post!"
+#define LIKE_APPEND_TEXT @" likes your "
 #define FRIEND_JOINED_V_APPEND_TEXT @" just joined Verbatm"
-#define FRIENDS_FIRST_POST @" just created their first post"
-#define POST_SHARED_APPEND_TEXT @" shared your post!"
+#define FRIENDS_FIRST_POST @" just created their first "
+#define POST_SHARED_APPEND_TEXT @" shared your "
 #define FOLLOW_TEXT_BUTTON_GAP (3.f)
 #define FOLLOW_BUTTON_X_POS (self.frame.size.width - PROFILE_HEADER_XOFFSET - LARGE_FOLLOW_BUTTON_WIDTH)
 
+#define POST_TEXT_WIDTH 10.f
 
 
 @end
@@ -66,11 +69,34 @@
     }
     
     NSString * notifcation = [self getNotificationStringWithNotifcationType:notificationType andChannel:channel];
-    [self createNotificationLabelWithAttributedString:[self getAttributedStringFromString:notifcation andNotificationType:notificationType]];
+    [self createNotificationLabelWithAttributedString:[self getAttributedStringFromString:notifcation andNotificationType:notificationType andChannel:channel]];
+    
+    if(notificationType & (FriendsFirstPost|Like|Share)){
+        [self createPostTextLabel];
+    }
     
 }
 
 
+-(void)addTapGestureToPostText{
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(postTextTapped:)];
+    [self.postLine addGestureRecognizer:tap];
+    [self.postLine setUserInteractionEnabled:YES];
+}
+
+-(void)postTextTapped:(UITapGestureRecognizer *) tap{
+    [self.delegate presentPostSentFromCell:self];
+}
+
+-(void)addTapGestureToNameText{
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(nameTextTapped:)];
+    [self.notificationTextLabel addGestureRecognizer:tap];
+    [self.notificationTextLabel setUserInteractionEnabled:YES];
+}
+
+-(void)nameTextTapped:(UITapGestureRecognizer *) tap{
+    [self.delegate presentUserBlogSentFromCell:self];
+}
 
 
 -(void)layoutSubviews {
@@ -116,7 +142,31 @@
 }
 
 
--(NSAttributedString *)getAttributedStringFromString:(NSString *) notificaitonText andNotificationType:(NotificationType)notificationType{
+
+
+-(void)createPostTextLabel{
+    
+    CGRect frame = CGRectMake(self.notificationTextLabel.frame.origin.x + self.notificationTextLabel.frame.size.width, self.notificationTextLabel.frame.origin.y -1.f, POST_TEXT_WIDTH, self.notificationTextLabel.frame.size.height);
+    
+    self.postLine = [[UILabel alloc] initWithFrame:frame];
+    NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
+    paragraphStyle.alignment = NSTextAlignmentLeft;
+    
+    NSDictionary * textAttributes=@{NSForegroundColorAttributeName: [UIColor colorWithRed:0 green:255 blue:255 alpha:1.f],
+                                        NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT size:CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE],
+                                        NSParagraphStyleAttributeName:paragraphStyle};
+    
+
+    NSAttributedString * attrString = [[NSAttributedString alloc] initWithString:@"post!" attributes:textAttributes];
+    
+    [self.postLine setAttributedText:attrString];
+    [self.postLine sizeToFit];
+    [self addSubview:self.postLine];
+    [self addTapGestureToPostText];
+    
+}
+
+-(NSAttributedString *)getAttributedStringFromString:(NSString *) notificaitonText andNotificationType:(NotificationType)notificationType andChannel:(Channel *) channel{
     
     
     NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
@@ -128,27 +178,30 @@
     NSMutableAttributedString * finalString = [[NSMutableAttributedString alloc] initWithString:notificaitonText attributes:baseTextAttributes];
     
     
-    if(notificationType & (FriendsFirstPost|Like|Share)){
-        
-        NSRange rangeOfPostText = [notificaitonText rangeOfString:@"post"];
-        //change text color
-        [finalString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:0 green:255 blue:255 alpha:1.f] range:rangeOfPostText];
-        //change text font
-         [finalString addAttribute:NSFontAttributeName value:[UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT size:CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE] range:rangeOfPostText];
-    }
-    
+    //make creator name bold
+    NSString * creatorName = [channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY];
+    NSRange rangeOfPostText = [notificaitonText rangeOfString:creatorName];
+     [finalString addAttribute:NSFontAttributeName value:[UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT size:NOTIFICATION_LIST_FONT_SIZE] range:rangeOfPostText];
     
     return finalString;
 }
 
 -(void)createNotificationLabelWithAttributedString:(NSAttributedString *) notification{
-    CGFloat labelWidth = FOLLOW_BUTTON_X_POS - PROFILE_HEADER_XOFFSET - FOLLOW_TEXT_BUTTON_GAP;
+    CGFloat labelWidth = FOLLOW_BUTTON_X_POS - PROFILE_HEADER_XOFFSET - FOLLOW_TEXT_BUTTON_GAP - POST_TEXT_WIDTH;
     CGFloat yposition = (self.frame.size.height - LARGE_FOLLOW_BUTTON_HEIGHT)/2.f;
     CGRect frame = CGRectMake(PROFILE_HEADER_XOFFSET,yposition, labelWidth, LARGE_FOLLOW_BUTTON_HEIGHT);
     self.notificationTextLabel = [[UILabel alloc] initWithFrame:frame];
-    [self.notificationTextLabel setAdjustsFontSizeToFitWidth:YES];
     [self.notificationTextLabel setAttributedText:notification];
+    [self.notificationTextLabel setNumberOfLines:1];
+    [self.notificationTextLabel sizeToFit];
+    
+    if(labelWidth < self.notificationTextLabel.frame.size.width){
+        self.notificationTextLabel.frame = frame;
+        [self.notificationTextLabel setAdjustsFontSizeToFitWidth:YES];
+    }
+    
     [self addSubview:self.notificationTextLabel];
+    [self addTapGestureToNameText];
 }
 
 -(void)createHeartIcon{
@@ -208,11 +261,11 @@
 -(void) updateUserFollowingChannel {
     //todo: images
     if (self.currentUserFollowingChannelUser) {
-        [self changeFollowButtonTitle:@"Following" toColor:[UIColor whiteColor]];
-        self.followButton.backgroundColor = [UIColor blackColor];
-    } else {
-        [self changeFollowButtonTitle:@"Follow" toColor:[UIColor blackColor]];
+        [self changeFollowButtonTitle:@"Following" toColor:[UIColor blackColor]];
         self.followButton.backgroundColor = [UIColor whiteColor];
+    } else {
+        [self changeFollowButtonTitle:@"Follow" toColor:[UIColor whiteColor]];
+        self.followButton.backgroundColor = [UIColor clearColor];
     }
 }
 

@@ -47,4 +47,6 @@
 
 -(void)loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*))block;
 
+-(BOOL)checkIfList:(NSArray *) list ContainsObject:(PFObject *) object;
+
 @end
