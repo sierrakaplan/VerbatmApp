@@ -7,8 +7,10 @@
 //
 
 #import "NotificationsListTVC.h"
-
+#import "SizesAndPositions.h"
+#import "NotificationTableCell.h"
 @interface NotificationsListTVC ()
+@property (nonatomic) BOOL shouldAnimateViews;
 
 @end
 
@@ -16,7 +18,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.shouldAnimateViews = YES;
     self.view.backgroundColor = [UIColor whiteColor];
     self.tableView.backgroundColor = [UIColor whiteColor];
     
@@ -33,6 +35,10 @@
     [self.tableView addSubview:refreshControl];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return CHANNEL_USER_LIST_CELL_HEIGHT;
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -42,24 +48,39 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-#warning Incomplete implementation, return the number of sections
-    return 0;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 #warning Incomplete implementation, return the number of rows
+    //Sierra to do
     return 0;
 }
 
-/*
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
-    
-    // Configure the cell...
-    
-    return cell;
+
+//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
+//    
+//    // Configure the cell...
+//    //Sierra to do
+//    return cell;
+//}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.shouldAnimateViews) {
+        CGFloat direction = (YES) ? 1 : -1;
+        cell.transform = CGAffineTransformMakeTranslation(0, cell.bounds.size.height * direction);
+        [UIView animateWithDuration:0.4f animations:^{
+            cell.transform = CGAffineTransformIdentity;
+        }];
+        
+        
+        if(cell.bounds.size.height * indexPath.row >= self.view.frame.size.height){
+            self.shouldAnimateViews = NO;
+        }
+    }
 }
-*/
 
 /*
 // Override to support conditional editing of the table view.
