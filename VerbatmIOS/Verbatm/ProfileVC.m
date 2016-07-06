@@ -602,7 +602,7 @@
         _postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
         _postListVC.postListDelegate = self;
         _postListVC.inSmallMode = YES;
-        self.postListSmallFrame = CGRectMake(0.f,(self.profileInFeed) ?(postHeight + TAB_BAR_HEIGHT):
+        self.postListSmallFrame = CGRectMake(0.f,(self.profileInFeed || self.isCurrentUserProfile) ?(postHeight + TAB_BAR_HEIGHT):
                                              (self.view.frame.size.height - postHeight),
                                              self.view.frame.size.width, postHeight);
         self.postListLargeFrame = self.view.bounds;

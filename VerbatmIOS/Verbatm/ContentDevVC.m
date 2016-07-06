@@ -527,9 +527,6 @@ rowHeightForComponent:(NSInteger)component{
 												 name:UIKeyboardWillChangeFrameNotification
 											   object:nil];
 
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged)
-												 name:UIDeviceOrientationDidChangeNotification
-											   object: [UIDevice currentDevice]];
 }
 
 // Loads pinch views from user defaults
@@ -851,15 +848,6 @@ andSaveInUserDefaults:(BOOL)save {
 
 
 #pragma  mark - Handling the KeyBoard -
-
--(void) orientationChanged {
-	//make sure the device is landscape
-	if(UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
-		[self removeKeyboardFromScreen];
-	} else {
-		[self showKeyboard];
-	}
-}
 
 
 #pragma Remove Keyboard From Screen
