@@ -175,11 +175,13 @@
 -(void) createHeader {
     if(self.channel.channelsUserFollowing == nil || !self.channel.channelsUserFollowing.count){
         [self.channel getFollowersAndFollowingWithCompletionBlock:^{
-            [self buildHeaderView];
+            //[self buildHeaderView];
         }];
-    }else{
-        [self buildHeaderView];
     }
+//    }else{
+//        
+//    }
+    [self buildHeaderView];
     
 }
 

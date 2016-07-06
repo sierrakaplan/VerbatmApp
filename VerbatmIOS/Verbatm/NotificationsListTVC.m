@@ -63,7 +63,7 @@
     CGRect navBarFrame = CGRectMake(0.f, -(LIST_BAR_Y_OFFSET + STATUS_BAR_HEIGHT + CUSTOM_BAR_HEIGHT), self.view.frame.size.width, STATUS_BAR_HEIGHT+ CUSTOM_BAR_HEIGHT);
     
     self.headerBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:CHANNEL_LIST_HEADER_BACKGROUND_COLOR];
-    [self.headerBar createMiddleButtonWithTitle:@"Navigation" blackText:YES largeSize:YES];
+    [self.headerBar createMiddleButtonWithTitle:@"Notifications" blackText:YES largeSize:YES];
     [self.tableView addSubview:self.headerBar];
     
 }
