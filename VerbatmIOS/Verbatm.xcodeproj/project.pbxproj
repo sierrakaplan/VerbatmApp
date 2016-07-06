@@ -1244,6 +1244,8 @@
 		C78B681119CA6914003D0AC5 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				C763C1BA1CE4430B00929248 /* onBoardingViewController.h */,
+				C763C1BB1CE4430B00929248 /* onBoardingViewController.m */,
 				C7178E051D210FA700B90643 /* POV List */,
 				C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */,
 				C7EF5BB41B0CD5E500E7915B /* MasterNavigationVC.h */,
@@ -1385,8 +1387,6 @@
 				C78B681119CA6914003D0AC5 /* View Controllers */,
 				A560EF9A1BA89552003FB041 /* Model */,
 				C7BC437C199D97F5004B91A1 /* Supporting Files */,
-				C763C1BA1CE4430B00929248 /* onBoardingViewController.h */,
-				C763C1BB1CE4430B00929248 /* onBoardingViewController.m */,
 			);
 			path = Verbatm;
 			sourceTree = "<group>";

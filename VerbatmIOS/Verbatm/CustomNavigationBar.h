@@ -29,5 +29,4 @@
 -(void) createMiddleButtonWithTitle: (NSString*) title orImage: (UIImage*) image;
 -(void) createRightButtonWithTitle: (NSString*) title orImage: (UIImage*) image;
 -(void) createMiddleButtonWithTitle: (NSString*) title blackText:(BOOL) isBlack largeSize:(BOOL) largeSize;
-//called instead of the middle button  -- don't call both
 @end

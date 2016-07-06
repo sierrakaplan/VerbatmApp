@@ -211,9 +211,8 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 
 -(void)checkAdkSlideShowOnboarding {
 	if(![[UserSetupParameters sharedInstance] checkAdkOnboardingShown]) {
-
-		NSArray * images = @[@"ADK onboarding slide 1B",@"ADK onboarding slide 2B",@"ADK onboarding slide 3B",@"ADK onboarding slide 4B",@"ADK onboarding slide 5B"];
-
+		NSArray * images = @[@"ADK onboarding slide 1B",@"ADK onboarding slide 2B",@"ADK onboarding slide 3B",
+							 @"ADK onboarding slide 4B",@"ADK onboarding slide 5B"];
 		self.adkOnboarding = [[UIScrollView alloc] initWithFrame:self.view.bounds];
 		self.adkOnboarding.contentSize = CGSizeMake(self.view.frame.size.width * (NUM_ADK_SLIDESHOW_SLIDES + 1), 0);
 		self.adkOnboarding.showsVerticalScrollIndicator = NO;
@@ -239,7 +238,7 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 		[self.view addSubview:self.adkOnboarding];
 		[self.view bringSubviewToFront:self.adkOnboarding];
 		[self.view bringSubviewToFront:self.onBoardingPageIndicator];
-	}else{
+	} else {
 		[self.onBoardingPageIndicator removeFromSuperview];
 	}
 
@@ -308,6 +307,7 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 -(void) formatNavBar {
 	[self.navBar createLeftButtonWithTitle:@"CLOSE" orImage:nil];
 	[self.navBar createRightButtonWithTitle:@"PUBLISH" orImage:nil];
+	[self.navBar createMiddleButtonWithTitle:@"UPDATE BLOG" blackText:YES largeSize:YES];
 	self.navBar.delegate = self;
 	[self.view addSubview: self.navBar];
 }

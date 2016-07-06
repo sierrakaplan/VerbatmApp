@@ -128,14 +128,13 @@ ProfileVCDelegate>
                                              selector:@selector(followingSuccessfulNotification:)
                                                  name:NOTIFICATION_NOW_FOLLOWING_USER
                                                object:nil];
-
-
 }
-
 
 -(void)successfullyPublishedNotification:(NSNotification *) notification {
     
-    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Sucessfully Published!                                        " message:@"Remember to share your post! :D" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Sucessfully Published!"
+																	   message:@"Remember to share your post! :D"
+																preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction* action = [UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault
                                                    handler:^(UIAlertAction * action) {}];
     [newAlert addAction:action];
@@ -151,7 +150,6 @@ ProfileVCDelegate>
     //		self.publishSuccessful = nil;
     //	}];
 }
-
 
 -(void)publishingFailedNotification:(NSNotification *) notification{
 	NSError *error = notification.object;
@@ -390,8 +388,6 @@ ProfileVCDelegate>
 		[[Analytics getSharedInstance] endOfADKSession];
 	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_USER_SETTINGS_TO_LOGIN] ||
                [segue.identifier isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]) {
-
-
 	}
 }
 

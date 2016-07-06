@@ -91,11 +91,6 @@
     [middleButton addTarget:self action:@selector(middleButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 }
 
-
-
-
-
-
 -(void) createRightButtonWithTitle: (NSString*) title orImage: (UIImage*) image {
 	UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[rightButton setFrame: CGRectMake(BUTTON_WIDTH*2, 0.f, BUTTON_WIDTH, BUTTON_HEIGHT)];
