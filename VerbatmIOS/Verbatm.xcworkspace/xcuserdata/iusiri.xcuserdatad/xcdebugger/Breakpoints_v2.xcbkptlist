@@ -2555,11 +2555,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PublishingProgressManager.m"
-            timestampString = "489283541.076899"
+            timestampString = "489526936.593926"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "170"
-            endingLineNumber = "170"
+            startingLineNumber = "177"
+            endingLineNumber = "177"
             landmarkName = "-postPublishedSuccessfully"
             landmarkType = "5">
          </BreakpointContent>
@@ -2571,11 +2571,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PublishingProgressManager.m"
-            timestampString = "489283541.076899"
+            timestampString = "489526936.593926"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "164"
-            endingLineNumber = "164"
+            startingLineNumber = "171"
+            endingLineNumber = "171"
             landmarkName = "-mediaSavingProgressed:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2587,11 +2587,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PublishingProgressManager.m"
-            timestampString = "489176153.935845"
+            timestampString = "489526936.593926"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "141"
-            endingLineNumber = "141"
+            startingLineNumber = "148"
+            endingLineNumber = "148"
             landmarkName = "-countMediaContentFromPinchViews:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2635,11 +2635,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PublishingProgressManager.m"
-            timestampString = "489283541.076899"
+            timestampString = "489526936.593926"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "190"
-            endingLineNumber = "190"
+            startingLineNumber = "197"
+            endingLineNumber = "197"
             landmarkName = "-postPublishedSuccessfully"
             landmarkType = "5">
          </BreakpointContent>
@@ -3016,11 +3016,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PublishingProgressManager.m"
-            timestampString = "489283541.076899"
+            timestampString = "489526936.593926"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "155"
-            endingLineNumber = "155"
+            startingLineNumber = "162"
+            endingLineNumber = "162"
             landmarkName = "-onePieceOfMediaSaved"
             landmarkType = "5">
          </BreakpointContent>
@@ -3396,15 +3396,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PublishingProgressManager.m"
-            timestampString = "489283541.076899"
+            timestampString = "489526936.593926"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "154"
-            endingLineNumber = "154"
+            startingLineNumber = "161"
+            endingLineNumber = "161"
             landmarkName = "-onePieceOfMediaSaved"
             landmarkType = "5">
          </BreakpointContent>
