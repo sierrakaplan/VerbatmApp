@@ -61,6 +61,8 @@ ProfileVCDelegate>
 @property (strong,nonatomic) DiscoverVC *discoverVC;
 @property (strong, nonatomic) NotificationsListTVC * notificationVC;
 
+@property(strong,nonatomic) UIImageView * notificationIndicator;
+
 #define ANIMATION_NOTIFICATION_DURATION 0.5
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
 #define DARK_GRAY 0.6f
@@ -328,15 +330,33 @@ ProfileVCDelegate>
 	self.discoverVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															   image:[UIImage imageNamed:DISCOVER_NAV_ICON]
 													   selectedImage:[UIImage imageNamed:DISCOVER_NAV_ICON]];
-    self.notificationVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
-                                                               image:[UIImage imageNamed:NOTIFICATION_ICON_UNSELECTED]
-                                                       selectedImage:[UIImage imageNamed:NOTIFICATION_ICON_SELECTED]];
     
-    self.notificationVC.tabBarItem.imageInsets = UIEdgeInsetsMake(20.f, 0.f, -20.f, 0.f);
+    UIImage * unselectedNotification = [self imageWithImage:[[UIImage imageNamed:NOTIFICATION_ICON_UNSELECTED]
+                                                             imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
+                                               scaledToSize:CGSizeMake(30.f, 30.f)];
+    
+    UIImage * selectedNotification = [self imageWithImage:[[UIImage imageNamed:NOTIFICATION_ICON_SELECTED]
+                                                             imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
+                                               scaledToSize:CGSizeMake(30.f, 30.f)];
+    
+    self.notificationVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
+                                                               image:unselectedNotification
+                                                       selectedImage:selectedNotification];
+    
+    self.notificationVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
     
 	// images need to be centered this way for some reason
 	self.profileVC.tabBarItem.imageInsets = self.discoverVC.tabBarItem.imageInsets =
     self.feedVC.tabBarItem.imageInsets =  UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+   // [self showIndicator];
+}
+
+-(void)showIndicator{
+    CGFloat xpos = self.view.frame.size.width - (self.view.frame.size.width/5.f *2);
+    CGRect frame = CGRectMake(xpos, self.view.frame.size.height - (TAB_BAR_HEIGHT + 50.f), 50.f, 50.f);
+    [self.notificationIndicator setFrame:frame];
+    [self.view addSubview:self.notificationIndicator];
+    [self.view bringSubviewToFront:self.notificationIndicator];
 }
 
 -(void)createTabBarViewController {
@@ -439,6 +459,11 @@ ProfileVCDelegate>
 - (UIInterfaceOrientationMask) supportedInterfaceOrientations {
     //return supported orientation masks
     return UIInterfaceOrientationMaskPortrait;
+}
+
+-(UIImageView *)notificationIndicator{
+    if(!_notificationIndicator)_notificationIndicator = [[UIImageView alloc] initWithImage:[UIImage imageNamed:NOTIFICATION_POPUP_ICON]];
+    return _notificationIndicator;
 }
 
 

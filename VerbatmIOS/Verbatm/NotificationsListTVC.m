@@ -44,7 +44,10 @@
     self.tableView.showsVerticalScrollIndicator = NO;
     [self addRefreshFeature];
     [self refreshNotifications];
+    
     self.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:NOTIFICATIONS_LIST_BACKGROUND]];
+    self.backgroundView.contentMode = UIViewContentModeScaleAspectFill;
+    self.backgroundView.frame = self.view.bounds;
     
      UIEdgeInsets inset = UIEdgeInsetsMake((LIST_BAR_Y_OFFSET+ STATUS_BAR_HEIGHT + CUSTOM_BAR_HEIGHT), 0, CUSTOM_BAR_HEIGHT, 0);
     self.tableView.contentInset = inset;

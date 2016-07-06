@@ -79,6 +79,8 @@
 #define CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE 20.f
 #define CHANNEL_USER_LIST_USER_NAME_FONT_SIZE 15.f
 
+#define NOTIFICATION_LIST_FONT_SIZE 17.f
+
 #define LIKE_SHARE_BAR_BACKGROUND_COLOR [UIColor colorWithWhite:0.f alpha:0.3]
 
 #pragma mark - Page Views -
@@ -179,5 +181,7 @@
 #define LIKE_NOTIFICATION_IMAGE_ICON @"HeartIcon"
 
 #define NOTIFICATIONS_LIST_BACKGROUND @"Notifications background"
+
+#define NOTIFICATION_POPUP_ICON @"Notifications alert"
 
 #endif /* Styles_h */

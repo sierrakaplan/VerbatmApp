@@ -122,7 +122,7 @@
     NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
     paragraphStyle.alignment                = NSTextAlignmentLeft;
    NSDictionary * baseTextAttributes=@{NSForegroundColorAttributeName: [UIColor whiteColor],
-                                       NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE],
+                                       NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:NOTIFICATION_LIST_FONT_SIZE],
                                        NSParagraphStyleAttributeName:paragraphStyle};
     
     NSMutableAttributedString * finalString = [[NSMutableAttributedString alloc] initWithString:notificaitonText attributes:baseTextAttributes];
@@ -132,11 +132,10 @@
         
         NSRange rangeOfPostText = [notificaitonText rangeOfString:@"post"];
         //change text color
-        [finalString addAttribute:NSForegroundColorAttributeName value:[UIColor blueColor] range:rangeOfPostText];
+        [finalString addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:0 green:255 blue:255 alpha:1.f] range:rangeOfPostText];
         //change text font
          [finalString addAttribute:NSFontAttributeName value:[UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT size:CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE] range:rangeOfPostText];
     }
-    
     
     
     return finalString;
@@ -153,7 +152,7 @@
 }
 
 -(void)createHeartIcon{
-    CGFloat x_pos = self.frame.size.width - LARGE_FOLLOW_BUTTON_HEIGHT - PROFILE_HEADER_XOFFSET;
+    CGFloat x_pos = (FOLLOW_BUTTON_X_POS) + ((LARGE_FOLLOW_BUTTON_WIDTH -LARGE_FOLLOW_BUTTON_HEIGHT) /2.f);
     CGFloat y_pos = (self.frame.size.height - LARGE_FOLLOW_BUTTON_HEIGHT)/2.f;
     CGRect frame = CGRectMake(x_pos, y_pos, LARGE_FOLLOW_BUTTON_HEIGHT, LARGE_FOLLOW_BUTTON_HEIGHT);
     self.likeImage = [[UIImageView alloc] initWithFrame:frame];
