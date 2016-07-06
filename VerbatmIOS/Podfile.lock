@@ -62,10 +62,10 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (3.1.1):
     - PromiseKit/CorePromise
-  - TwitterCore (2.2.0):
+  - TwitterCore (2.3.0):
     - Fabric
-  - TwitterKit (2.2.0):
-    - TwitterCore (= 2.2.0)
+  - TwitterKit (2.3.0):
+    - TwitterCore (= 2.3.0)
 
 DEPENDENCIES:
   - AFNetworking (~> 3.0)
@@ -105,8 +105,8 @@ SPEC CHECKSUMS:
   Parse: f51c24d2feb412e4b2d6cc73d37cb24e8d0089bc
   ParseFacebookUtilsV4: 2f30c2b7021c8005d3042781da7ef87d06589421
   PromiseKit: 4e8127c22a9b29d1b44958ab2ec762ea6115cbfb
-  TwitterCore: 115527630bb2986954adc928b8c895a92bcd57e5
-  TwitterKit: 2c64ec342a6261ae6bab565bad85dcbbfd3888b7
+  TwitterCore: 817eae3e291fa4125b47789e26a4f6f024115c1f
+  TwitterKit: 8a383da8d9c21b0423716381ea8bbfce20622d91
 
 PODFILE CHECKSUM: 184db4bfade3438b16c262f384b5312c93c014ab
 

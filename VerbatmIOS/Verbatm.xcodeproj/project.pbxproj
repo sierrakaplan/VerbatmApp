@@ -969,13 +969,8 @@
 				A5C38AC91CC1D1B80067D077 /* ExploreChannelCellView.m */,
 				A5C38ACB1CC1D4120067D077 /* FeaturedContentChannelView.h */,
 				A5C38ACC1CC1D4120067D077 /* FeaturedContentChannelView.m */,
-<<<<<<< HEAD
-				A5F51F531CD968CC00EB0A7B /* NotificationCellView.h */,
-				A5F51F541CD968CC00EB0A7B /* NotificationCellView.m */,
-=======
 				C7178E091D21A12000B90643 /* FeedTableCell.h */,
 				C7178E0A1D21A12000B90643 /* FeedTableCell.m */,
->>>>>>> master
 			);
 			name = "Table Cell Views";
 			sourceTree = "<group>";
@@ -1766,11 +1761,6 @@
 			files = (
 				A57A92FF1B55A551006C2597 /* CameraFocusSquare.m in Sources */,
 				C7E65F5C1B911A470042AD99 /* FeedVC.m in Sources */,
-<<<<<<< HEAD
-				A5F51F551CD968CC00EB0A7B /* NotificationCellView.m in Sources */,
-				A5C9DA381BA551DF0055DCB2 /* GTLVerbatmAppUploadURI.m in Sources */,
-=======
->>>>>>> master
 				A5076D0E1BED6EF000303746 /* SingleMediaAndTextPinchView.m in Sources */,
 				A5E73BF81D1770B400527ECF /* GTLVerbatmAppPOVInfo.m in Sources */,
 				A535E5031BC44B6900A087D1 /* UITextView+Utilities.m in Sources */,
@@ -1808,14 +1798,9 @@
 				A5934C171C11EFBD007C7830 /* CustomTabBarController.m in Sources */,
 				A5E73BF61D1770B400527ECF /* GTLVerbatmAppPageListWrapper.m in Sources */,
 				C7F3D46B1A4F84C000B43238 /* SignInVC.m in Sources */,
-<<<<<<< HEAD
-				A5F51F521CD95DF400EB0A7B /* NotificationsVC.m in Sources */,
-				A5E85FAA1B911DA900E148D0 /* GTMGatherInputStream.m in Sources */,
-=======
 				12A06D9A1CD37B1A001800C9 /* Followers.m in Sources */,
 				A5E73BA31D1697AE00527ECF /* GTLBatchQuery.m in Sources */,
 				A52B960A1CFE193800EFA7EB /* ProfileHeaderView.m in Sources */,
->>>>>>> master
 				C7BF1AB21C59D6BF00CEDE4B /* Channel_BackendObject.m in Sources */,
 				A535E5091BC45CC600A087D1 /* AVAsset+Utilities.m in Sources */,
 				A5076D141BF2B25100303746 /* TextOverMediaView.m in Sources */,
