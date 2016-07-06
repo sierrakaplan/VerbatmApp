@@ -162,15 +162,14 @@
 
 -(void)presentProfileForUser:(PFUser *) user
             withStartChannel:(Channel *) startChannel{
-    
-    ProfileVC *  userProfile = [[ProfileVC alloc] init];
-    userProfile.isCurrentUserProfile = NO;
-	userProfile.isProfileTab = NO;
-    userProfile.ownerOfProfile = user;
-    userProfile.channel = startChannel;
-    
-    [self presentViewController:userProfile animated:YES completion:^{
-    }];
+    if(![[user objectId] isEqualToString:[[PFUser currentUser] objectId]]){
+        ProfileVC *  userProfile = [[ProfileVC alloc] init];
+        userProfile.isCurrentUserProfile = NO;
+        userProfile.isProfileTab = NO;
+        userProfile.ownerOfProfile = user;
+        userProfile.channel = startChannel;
+        [self presentViewController:userProfile animated:YES completion:nil];
+    }
     
 }
 

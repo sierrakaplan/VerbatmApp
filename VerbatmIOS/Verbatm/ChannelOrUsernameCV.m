@@ -74,13 +74,16 @@
 
 -(void)presentChannel:(Channel *) channel{
     self.channel = channel;
-	PFObject *creator = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
+	PFUser *creator = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
     
     if(!(self.channel.usersFollowingChannel && self.channel.usersFollowingChannel.count)){
-        [Follow_BackendManager currentUserFollowsChannel:self.channel withCompletionBlock:^(bool isFollowing) {
-            self.currentUserFollowingChannelUser = isFollowing;
-            if(self.followButton)[self updateUserFollowingChannel];
-        }];
+        
+        if(![[creator objectId] isEqualToString:[[PFUser currentUser] objectId]]){
+            [Follow_BackendManager currentUserFollowsChannel:self.channel withCompletionBlock:^(bool isFollowing) {
+                self.currentUserFollowingChannelUser = isFollowing;
+                if(self.followButton)[self updateUserFollowingChannel];
+            }];
+        }
         
     }else{
         self.currentUserFollowingChannelUser = [self.channel.usersFollowingChannel containsObject:[PFUser currentUser]];
@@ -93,7 +96,9 @@
 			NSString *userName = [creator valueForKey:VERBATM_USER_NAME_KEY];
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[self setChannelName:channel.name andUserName: userName];
-                [self createFollowButton];
+                
+                if(![[creator objectId] isEqualToString:[[PFUser currentUser] objectId]])[self createFollowButton];
+                
 				[self setLabelsForChannel];
                 [self updateUserFollowingChannel];
 			});
@@ -132,13 +137,14 @@
     [self updateUserFollowingChannel];
 }
 -(void) updateUserFollowingChannel {
-    //todo: images
-    if (self.currentUserFollowingChannelUser) {
-        [self changeFollowButtonTitle:@"Following" toColor:[UIColor whiteColor]];
-        self.followButton.backgroundColor = [UIColor blackColor];
-    } else {
-        [self changeFollowButtonTitle:@"Follow" toColor:[UIColor blackColor]];
-        self.followButton.backgroundColor = [UIColor whiteColor];
+    if(self.followButton){
+        if (self.currentUserFollowingChannelUser) {
+            [self changeFollowButtonTitle:@"Following" toColor:[UIColor whiteColor]];
+            self.followButton.backgroundColor = [UIColor blackColor];
+        } else {
+            [self changeFollowButtonTitle:@"Follow" toColor:[UIColor blackColor]];
+            self.followButton.backgroundColor = [UIColor whiteColor];
+        }
     }
 }
 

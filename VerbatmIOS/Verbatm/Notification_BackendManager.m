@@ -21,7 +21,7 @@
 +(void)createNotificationWithType:(NotificationType) notType receivingUser:(PFUser *) receivingUser relevantPostObject:(PFObject *) post {
     
     
-    if(receivingUser == [PFUser currentUser]) return;
+    if([[receivingUser objectId] isEqualToString:[[PFUser currentUser] objectId]]) return;
     
     NSNumber * notificationType = [NSNumber numberWithInteger:notType];
     PFObject * notificationObject = [PFObject objectWithClassName:NOTIFICATION_PFCLASS_KEY];
