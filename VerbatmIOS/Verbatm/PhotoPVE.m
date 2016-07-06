@@ -59,35 +59,41 @@
 #define TEXT_VIEW_HEIGHT 70.f
 #define SLIDESHOW_ANIMATION_DURATION 1.5f
 #define OPEN_COLLECTION_FRAME_HEIGHT 70.f
-
-//this view manages the tapping gesture of the set circles
-@property (nonatomic, strong) UIView * circleTapView;
+#define IMAGE_FADE_OUT_ANIMATION_DURATION 1.5f
 @property (nonatomic) BOOL animating;
-
 @property (nonatomic) BOOL slideShowPlaying;
 @end
 
 @implementation PhotoPVE
 
--(instancetype) initWithFrame:(CGRect)frame andPhotoArray:(NSArray *)photos
-						small:(BOOL) small isPhotoVideoSubview:(BOOL)halfScreen {
+-(instancetype) initWithFrame:(CGRect)frame small:(BOOL) small isPhotoVideoSubview:(BOOL)halfScreen {
 	self = [super initWithFrame:frame];
 	if (self) {
 		self.small = small;
 		self.photoVideoSubview = halfScreen;
 		self.inPreviewMode = NO;
-		if ([photos count]) {
-			[self addPhotos:photos];
-		}
 		[self initialFormatting];
 	}
 	return self;
+}
+
+-(void) displayPhotos:(NSArray *)photos {
+	self.hasLoadedMedia = YES;
+	[self.customActivityIndicator stopCustomActivityIndicator];
+	[self.customActivityIndicator removeFromSuperview];
+	if ([photos count]) {
+		[self addPhotos:photos];
+	}
+	if (self.currentlyOnScreen) {
+		[self onScreen];
+	}
 }
 
 -(instancetype) initWithFrame:(CGRect)frame andPinchView:(PinchView *)pinchView
 				inPreviewMode: (BOOL) inPreviewMode isPhotoVideoSubview:(BOOL)halfScreen {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.hasLoadedMedia = YES;
 		self.small = NO;
 		self.inPreviewMode = inPreviewMode;
 		self.photoVideoSubview = halfScreen;
@@ -218,7 +224,6 @@
 	if(!self.rearrangeView){
 		[self offScreen];
 		CGFloat y_pos = (self.photoVideoSubview) ? 0.f : CUSTOM_NAV_BAR_HEIGHT;
-
 		CGRect frame = CGRectMake(0.f,y_pos, self.frame.size.width, OPEN_COLLECTION_FRAME_HEIGHT);
 		OpenCollectionView *rearrangeView = [[OpenCollectionView alloc] initWithFrame:frame
 																	andPinchViewArray:((CollectionPinchView*)self.pinchView).imagePinchViews];
@@ -240,7 +245,7 @@
 
 //new pinchview tapped in rearange view so we need to change what's presented
 -(void)pinchViewSelected:(PinchView *) pv{
-	NSInteger imageIndex;
+	NSInteger imageIndex = 0;
 	for(NSInteger index = 0; index < self.imageContainerViews.count; index++){
 		EditMediaContentView *eview = self.imageContainerViews[index];
 		if(eview.pinchView == pv){
@@ -277,7 +282,7 @@
 	self.slideShowPlaying = YES;
 }
 
--(void)stopSlideshow{
+-(void)stopSlideshow {
 	self.slideShowPlaying = NO;
 	if(self.inPreviewMode){
 		[self.panGestureSensingViewHorizontal removeFromSuperview];
@@ -289,13 +294,22 @@
 
 -(void)animateNextView{
 	if(self.slideShowPlaying && !self.animating){
-		[UIView animateWithDuration:1.5f animations:^{
+		[UIView animateWithDuration:IMAGE_FADE_OUT_ANIMATION_DURATION animations:^{
 			self.animating = YES;
 			[self setImageViewsToLocation:(self.currentPhotoIndex + 1)];
 		} completion:^(BOOL finished) {
 			self.animating = NO;
 			[NSTimer scheduledTimerWithTimeInterval:SLIDESHOW_ANIMATION_DURATION target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
 		}];
+        
+//        [UIView animateKeyframesWithDuration:1.5f delay:0.f options: (UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionAllowAnimatedContent) animations:^{
+//            self.animating = YES;
+//            [self setImageViewsToLocation:(self.currentPhotoIndex + 1)];
+//        } completion:^(BOOL finished) {
+//            self.animating = NO;
+//            [NSTimer scheduledTimerWithTimeInterval:SLIDESHOW_ANIMATION_DURATION target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
+//        }];
+
 	}
 }
 
@@ -308,9 +322,6 @@
 		self.rearrangeView = nil;
 	}
 	self.imageContainerViews = nil;
-	for (UIView * view in self.subviews) {
-		[view removeFromSuperview];
-	}
 	((CollectionPinchView*)self.pinchView).imagePinchViews = pinchViews;
 	[[PostInProgress sharedInstance] removePinchViewAtIndex:self.indexInPost andReplaceWithPinchView:self.pinchView];
 	[self.pinchView renderMedia];
@@ -350,26 +361,25 @@
 #pragma mark - Overriding ArticleViewingExperience methods -
 
 -(void) onScreen {
+	self.currentlyOnScreen = YES;
+	if (!self.hasLoadedMedia && !self.photoVideoSubview) {
+		[self.customActivityIndicator startCustomActivityIndicator];
+		return;
+	}
 	if(self.imageContainerViews.count > 1){
 		if(!self.slideShowPlaying){
 			[self playWithSpeed:2.f];
 		}
-	} else {
-		//todo: delete
-		//		if (self.imageContainerViews.count > 0 && [self.imageContainerViews[0] isKindOfClass:[TextOverMediaView class]]) {
-		//			[(TextOverMediaView*)self.imageContainerViews[0] displayLargeImage:YES];
-		//		}
 	}
 }
 
 - (void)offScreen {
+	[self.customActivityIndicator stopCustomActivityIndicator];
+	self.currentlyOnScreen = NO;
 	[self stopSlideshow];
 	for (UIView * view in self.imageContainerViews) {
 		if([view isKindOfClass:[EditMediaContentView class]]){
 			[((EditMediaContentView *)view) exiting];
-		} else {
-			//todo: delete
-			//			[(TextOverMediaView*)view displayLargeImage:NO];
 		}
 	}
 	if(self.rearrangeView)[self.rearrangeView exitView];

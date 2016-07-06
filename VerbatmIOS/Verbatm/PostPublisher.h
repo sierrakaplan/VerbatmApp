@@ -7,8 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GTLVerbatmAppImage.h"
-#import "GTLVerbatmAppVideo.h"
 #import <PromiseKit/PromiseKit.h>
 
 @interface PostPublisher : NSObject
@@ -19,6 +17,6 @@
 -(AnyPromise*) storeVideoFromURL: (NSURL*) url;
 
 //Resolves to either NSString *blobstoreurl or an NSError
--(AnyPromise*) storeImage: (NSData*) imageData;
+-(AnyPromise*) storeImageWithName:(NSString*)fileName andData:(NSData*) imageData;
 
 @end

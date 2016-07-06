@@ -124,7 +124,7 @@
     
     
     [channelNameHolderView addSubview:self.followImage];
-    [channelNameHolderView addSubview:self.channelNameLabel];
+	[channelNameHolderView addSubview:self.channelNameLabel];
     self.channelNameLabelHolder = channelNameHolderView;
     [self addSubview:channelNameHolderView];
 }

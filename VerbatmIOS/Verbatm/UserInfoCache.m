@@ -7,6 +7,7 @@
 //
 
 #import "UserInfoCache.h"
+#import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
 #import "Channel_BackendObject.h"
 #import "Notifications.h"
@@ -18,9 +19,9 @@
  */
 
 @interface UserInfoCache ()
-@property (nonatomic) NSMutableArray * userChannels;
-@property (nonatomic) NSUInteger currentChannelIndex;
-@property (nonatomic) NSInteger attemptedIndex; //if user sets index before channels are reloaded
+
+@property (nonatomic) Channel *userChannel;
+
 @end
 
 @implementation UserInfoCache
@@ -30,8 +31,6 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [[UserInfoCache alloc] init];
-        [sharedInstance setCurrentChannelIndex:0];
-		sharedInstance.attemptedIndex = -1;
         [[NSNotificationCenter defaultCenter] addObserver:sharedInstance
                                                  selector:@selector(reloadUserChannels)
                                                      name:NOTIFICATION_POST_PUBLISHED
@@ -42,37 +41,29 @@
 
 -(void)loadUserChannelsWithCompletionBlock:(void(^)())block {
     [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray * channels) {
-        self.userChannels = channels;
-		if (self.attemptedIndex < self.userChannels.count && self.attemptedIndex >= 0) {
-			self.currentChannelIndex = self.attemptedIndex;
-			self.attemptedIndex = -1;
+        if (channels.count > 0) {
+			self.userChannel = channels[0];
+			[self.userChannel.parseChannelObject setObject:[PFUser currentUser][VERBATM_USER_NAME_KEY] forKey:CHANNEL_CREATOR_NAME_KEY];
+			[self.userChannel.parseChannelObject saveInBackground];
+			block();
+		} else {
+			// First time logging in - create a new channel
+			[Channel_BackendObject createChannelWithName:@"" andCompletionBlock:^(PFObject *channelObj) {
+				self.userChannel = [[Channel alloc] initWithChannelName:@"" andParseChannelObject:channelObj
+																					   andChannelCreator:[PFUser currentUser]];
+				block();
+			}];
 		}
-        block();
     }];
 }
 
--(void)storeUserChannels:(NSMutableArray *) channels{
-    self.userChannels = channels;
-}
-
--(NSMutableArray *) getUserChannels{
-    return self.userChannels;
-}
-
--(NSUInteger) currentChannelViewedIndex{
-    return self.currentChannelIndex;
-}
--(void) setCurrentChannelIndex:(NSUInteger)index{
-    if(index < self.userChannels.count){
-        _currentChannelIndex = index;
-    } else {
-		self.attemptedIndex = index;
-	}
+-(Channel *) getUserChannel {
+    return self.userChannel;
 }
 
 -(void)reloadUserChannels{
     [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray * channels) {
-        self.userChannels = channels;
+        if (channels.count > 0) self.userChannel = channels[0];
     }];
 
 }

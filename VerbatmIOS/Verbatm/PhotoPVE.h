@@ -11,10 +11,6 @@
 #import "PageViewingExperience.h"
 #import "PinchView.h"
 
-@protocol PhotoPVEDelegate <NSObject>
-
-@end
-
 @protocol PhotoPVETextEntryDelegate <NSObject>
 
 -(void) editContentViewTextIsEditing;
@@ -24,15 +20,15 @@
 
 @interface PhotoPVE : PageViewingExperience
 
-@property (weak, nonatomic) id<PhotoPVEDelegate> delegate;
-
 @property (weak, nonatomic) id<PhotoPVETextEntryDelegate> textEntryDelegate;
 
 @property (weak, nonatomic) UIScrollView * postScrollView;
 
+// Will start loading icon until displayPhotos is called if halfScreen is false
+-(instancetype) initWithFrame:(CGRect)frame small:(BOOL) small isPhotoVideoSubview:(BOOL)halfScreen;
+
 //Photos is array of UIImage
--(instancetype) initWithFrame:(CGRect)frame andPhotoArray:(NSArray *)photos
-						small:(BOOL) small isPhotoVideoSubview:(BOOL)halfScreen;
+-(void) displayPhotos:(NSArray*) photos;
 
 // initializer for preview mode
 // PinchView can be either ImagePinchView or CollectionPinchView

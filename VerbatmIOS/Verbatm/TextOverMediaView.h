@@ -13,11 +13,12 @@
 @interface TextOverMediaView : UIView
 
 @property (nonatomic, readonly) BOOL textShowing;
-@property (nonatomic, readonly, weak) UITextView * textView;
+@property (nonatomic) UITextView * textView;
 @property (nonatomic, readonly) CGFloat textYPosition;
 @property (nonatomic, readonly) CGFloat textSize;
 @property (nonatomic, readonly) NSTextAlignment textAlignment;
 @property (nonatomic, readonly) BOOL blackTextColor;
+@property (nonatomic) UIImageView* imageView;
 
 -(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image;
 

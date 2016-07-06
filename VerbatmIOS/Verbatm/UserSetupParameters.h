@@ -21,28 +21,24 @@
 //initializes everything
 -(void)setUpParameters;
 
-/*check if these conditions have been met*/
--(BOOL) isFilter_InstructionShown;
--(BOOL) isPinchCircles_InstructionShown;
--(BOOL) isSwipeUpDown_InstructionShown;
+/*check if these conditions have been met and set them otherwise*/
+-(BOOL) checkTermsShown;
+-(void) setTermsShown;
+-(BOOL) checkOnboardingShown;
+-(void) setOnboardingShown;
 
--(BOOL) isFeed_InstructionShown;
--(BOOL) isProfile_InstructionShown;
--(BOOL) isAdk_InstructionShown;
+-(BOOL) checkAndSetFeedInstructionShown;
+-(BOOL) checkAndSetProfileInstructionShown;
+-(BOOL) checkAndSetADKInstructionShown;
 
--(BOOL) isTermsAccept_InstructionShown;
+-(BOOL) checkAndSetPinchInstructionShown;
+-(BOOL) checkAndSetEditPinchViewInstructionShown;
+-(BOOL) checkAndSetFilterInstructionShown;
+-(BOOL) checkAndSetSwipeInstructionShown;
+-(BOOL) checkAndSetAddTextInstructionShown;
 
-/*Stores that the notifications have been shown*/
--(void) set_filter_InstructionAsShown;
--(void) set_pinchCircles_InstructionAsShown;
+-(BOOL) checkAdkOnboardingShown;
+-(BOOL) checkFirstTimeFollowBlogShown;
 
--(void) set_profileNotification_InstructionAsShown;
--(void) set_feedNotification_InstructionAsShown;
--(void) set_ADKNotification_InstructionAsShown;
--(void) set_SwipeUpDownNotification_InstructionAsShown;
-
--(void) set_TermsAccept_InstructionAsShown;
-
--(void)saveAllChanges;
 
 @end

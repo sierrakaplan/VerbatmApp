@@ -43,7 +43,14 @@
 				andPostObject: (PFObject *)post andPages: (NSArray *) pages {
 	self = [super initWithFrame:frame];
 	if (self) {
-		self.backgroundColor = [UIColor darkGrayColor];
+		self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.2f];
+		self.layer.borderColor = [UIColor whiteColor].CGColor;
+		self.layer.borderWidth = 1.f;
+		self.layer.cornerRadius = 5.f;
+		self.layer.shadowColor = [UIColor blackColor].CGColor;
+		self.layer.shadowRadius = 3.f;
+		self.layer.shadowOffset = CGSizeMake(3.f, 3.f);
+		self.layer.shadowOpacity = 1.f;
 		self.channel = channel;
 
 		if (self.channel.channelCreator != [PFUser currentUser]) {
@@ -81,8 +88,7 @@
 -(void) loadPostView {
 	CGRect postViewFrame = CGRectMake(OFFSET, POST_VIEW_Y_OFFSET, self.bounds.size.width - (OFFSET * 2),
 									  self.bounds.size.height - (OFFSET + POST_VIEW_Y_OFFSET));
-	self.postView = [[PostView alloc] initWithFrame:postViewFrame andPostChannelActivityObject: self.post small:YES];
-	[self.postView renderPostFromPageObjects: self.pages];
+	self.postView = [[PostView alloc] initWithFrame:postViewFrame andPostChannelActivityObject: self.post small:YES andPageObjects: self.pages];
 	[self.postView postOffScreen];
 	[self.postView showPageUpIndicator];
 	[self.postView muteAllVideos:YES];
@@ -124,18 +130,20 @@
 
 -(UILabel *) userNameLabel {
 	if (!_userNameLabel) {
-		CGRect labelFrame = CGRectMake(OFFSET, OFFSET, DISCOVER_USERNAME_LABEL_WIDTH, DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
+		CGRect labelFrame = CGRectMake(self.frame.size.width - DISCOVER_USERNAME_LABEL_WIDTH - OFFSET, OFFSET,
+									   DISCOVER_USERNAME_LABEL_WIDTH, DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
 		_userNameLabel = [[UILabel alloc] initWithFrame:labelFrame];
 		[_userNameLabel setAdjustsFontSizeToFitWidth:YES];
-		[_userNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:DISCOVER_USER_NAME_FONT_SIZE]];
+		[_userNameLabel setFont:[UIFont fontWithName:REGULAR_FONT size:DISCOVER_USER_NAME_FONT_SIZE]];
 		[_userNameLabel setTextColor:VERBATM_GOLD_COLOR];
+		[_userNameLabel setTextAlignment:NSTextAlignmentRight];
 	}
 	return _userNameLabel;
 }
 
 -(UIButton *) followButton {
 	if (!_followButton) {
-		CGRect followFrame = CGRectMake(self.frame.size.width - FOLLOW_BUTTON_WIDTH - OFFSET, OFFSET,
+		CGRect followFrame = CGRectMake(OFFSET, OFFSET,
 										FOLLOW_BUTTON_WIDTH, DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
 		_followButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		_followButton.frame = followFrame;

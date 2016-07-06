@@ -14,18 +14,37 @@
 
 @interface Channel : NSObject
 
-@property (nonatomic, readonly) NSString * name;
-@property (nonatomic, readonly) PFObject * parseChannelObject;
+@property (nonatomic, readonly) NSString *name;
+@property (nonatomic, readonly) NSString *blogDescription;
+@property (nonatomic, readonly) PFObject *parseChannelObject;
 @property (nonatomic, readonly) PFUser *channelCreator;
+@property (nonatomic, readonly) NSMutableArray *usersFollowingChannel;
+@property (nonatomic, readonly) NSMutableArray *channelsUserFollowing;
 
 
 -(instancetype) initWithChannelName:(NSString *) channelName
 			  andParseChannelObject:(PFObject *) parseChannelObject
 				  andChannelCreator:(PFUser *) channelCreator;
 
--(void)getChannelOwnerNameWithCompletionBlock:(void(^)(NSString *))block;
+-(void) changeTitle:(NSString*)title andDescription:(NSString*)description;
+
+-(void) currentUserFollowsChannel:(BOOL) follows;
+
+-(void) getChannelOwnerNameWithCompletionBlock:(void(^)(NSString *))block;
+
+// Returns when both usersFollowingChannel and channelsUserFollowing are filled in
+-(void) getFollowersAndFollowingWithCompletionBlock:(void(^)(void))block;
 
 -(BOOL)channelBelongsToCurrentUser;
 
 -(void)addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator;
+
+
++(void)getChannelsForUserList:(NSMutableArray *) userList andCompletionBlock:(void(^)(NSMutableArray *))block;
+
+
+-(void)storeCoverPhoto:(UIImage *) coverPhoto;
+
+-(void)loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*))block;
+
 @end

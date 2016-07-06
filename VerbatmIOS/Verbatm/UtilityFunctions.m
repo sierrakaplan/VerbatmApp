@@ -74,7 +74,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 + (AnyPromise*) loadCachedPhotoDataFromURL: (NSURL*) url {
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		NSURLRequest* request = [NSURLRequest requestWithURL:url
-												 cachePolicy: NSURLRequestReloadIgnoringCacheData
+												 cachePolicy: NSURLRequestReturnCacheDataElseLoad
 											 timeoutInterval:300];
 		NSURLSessionDataTask *task = [[NSURLSession sharedSession]
 									  dataTaskWithRequest:request
@@ -84,7 +84,6 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 											  resolve(nil);
 										  } else {
 											  resolve(data);
-											  [[NSURLCache sharedURLCache] removeAllCachedResponses];
 										  }
 		}];
 		[task resume];
@@ -117,7 +116,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
     NSString* cachesDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
     
-    NSString * uniqueVideoURL = [[videoUrl.absoluteString stringByReplacingOccurrencesOfString:@"/" withString:@""] stringByAppendingString:@".mp4"];
+    NSString * uniqueVideoURL = [[videoUrl.absoluteString stringByReplacingOccurrencesOfString:@"/" withString:@""] stringByAppendingString:@".mov"];
     
     NSString *finalFile = [cachesDirectory stringByAppendingPathComponent:uniqueVideoURL];
     NSURL * finalUrl = [NSURL fileURLWithPath:finalFile];

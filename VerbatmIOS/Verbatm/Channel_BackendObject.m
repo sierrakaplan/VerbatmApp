@@ -12,11 +12,12 @@
 
 #import "Channel_BackendObject.h"
 #import "Channel.h"
+
+#import "PostPublisher.h"
 #import "Post_BackendObject.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFQuery.h>
 
-#import "UserManager.h"
 #import "UserInfoCache.h"
 
 @interface Channel_BackendObject ()
@@ -40,6 +41,7 @@
 		[newChannelObject setObject:channelName forKey:CHANNEL_NAME_KEY];
 		[newChannelObject setObject:[NSNumber numberWithInteger:0] forKey:CHANNEL_NUM_FOLLOWS];
 		[newChannelObject setObject:[PFUser currentUser] forKey:CHANNEL_CREATOR_KEY];
+		[newChannelObject setObject:[PFUser currentUser][VERBATM_USER_NAME_KEY] forKey:CHANNEL_CREATOR_NAME_KEY];
 		[newChannelObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 			if(succeeded){
 				block(newChannelObject);
@@ -87,8 +89,8 @@
         [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                              NSError * _Nullable error) {
             NSMutableArray * finalChannelObjects = [[NSMutableArray alloc] init];
-            if(objects && !error){
-                for(PFObject * parseChannelObject in objects){
+            if(objects && !error) {
+                for(PFObject *parseChannelObject in objects){
                     NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
                     // get number of follows from follow objects
                     Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
@@ -99,6 +101,51 @@
             }
             completionBlock(finalChannelObjects);
         }];
+    }];
+}
+
++ (void)storeCoverPhoto:(UIImage *) coverPhoto withParseChannelObject:(PFObject *) channel{
+    PostPublisher * __block mediaPublisher = [[PostPublisher alloc] init];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [self getImageDataFromImage:coverPhoto withCompletionBlock:^(NSData * imageData) {
+			//todo: get actual file name for cover photo?
+            [mediaPublisher storeImageWithName:@"CoverPhoto.png" andData:imageData].then(^(id result) {
+                if(result){
+                    NSString *blobstoreUrl = (NSString*) result;
+                    if (![blobstoreUrl hasSuffix:@"=s0"]) {
+                        blobstoreUrl = [blobstoreUrl stringByAppendingString:@"=s0"];
+                    }
+                    [channel setValue:blobstoreUrl forKey:CHANNEL_COVER_PHOTO_URL];
+                    [channel saveInBackground];
+                }
+            });
+        }];
+    });
+}
+
++(void)getImageDataFromImage:(UIImage *) profileImage withCompletionBlock:(void(^)(NSData*))block{
+    NSData* imageData = UIImagePNGRepresentation(profileImage);
+    block(imageData);
+}
+
+
++ (void) getAllChannelsWithCompletionBlock:(void(^)(NSMutableArray *))completionBlock {
+    
+    PFQuery * userChannelQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
+    [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+                                                         NSError * _Nullable error) {
+        NSMutableArray * finalChannelObjects = [[NSMutableArray alloc] init];
+        if(objects && !error) {
+            for(PFObject * parseChannelObject in objects){
+                NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
+                // get number of follows from follow objects
+                    Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
+                                                                    andParseChannelObject:parseChannelObject
+                                                                        andChannelCreator:[PFUser currentUser]];
+                    [finalChannelObjects addObject:verbatmChannelObject];
+            }
+        }
+        completionBlock(finalChannelObjects);
     }];
 }
 

@@ -16,8 +16,8 @@
 -(void) channelSelected:(Channel *) channel;
 -(void) deleteButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post andPostChannelActivityObj:(PFObject*)pfActivityObj
 							 reblogged:(BOOL)reblogged;
--(void) flagButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post;
-
+-(void) flagOrBlockButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post;
+-(void) showWhoLikesThePost:(PFObject *) post;
 @end
 
 @interface PostCollectionViewCell : UICollectionViewCell
@@ -26,16 +26,16 @@
 @property (nonatomic, readonly) PostView *currentPostView;
 @property (nonatomic, readonly) PFObject *currentPostActivityObject;
 
--(void) presentPostFromPCActivityObj: (PFObject *) pfActivityObj andChannel:(Channel*) channelForList
-					withDeleteButton: (BOOL) withDelete;
+@property (nonatomic) BOOL cellHasTapGesture;
+@property (nonatomic) BOOL inSmallMode;
 
--(void) shiftLikeShareBarDown:(BOOL) down;
+-(void) presentPostFromPCActivityObj: (PFObject *) pfActivityObj andChannel:(Channel*) channelForList
+					withDeleteButton: (BOOL) withDelete andLikeShareBarUp:(BOOL) up;
 
 -(void) almostOnScreen;
 -(void) onScreen;
 -(void) offScreen;
 
 -(void) clearViews;
-
-
+-(void)presentPublishingView;
 @end

@@ -10,13 +10,16 @@
 #import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
 #import <Parse/PFQuery.h>
+<<<<<<< HEAD
 #import <Parse/PFCloud.h>
 #import <Crashlytics/Crashlytics.h>
+=======
+#import <PromiseKit/PromiseKit.h>
+>>>>>>> master
 
 @implementation Like_BackendManager
 
-+(void)currentUserLikePost:(PFObject *) postParseObject{
-
++ (void)currentUserLikePost:(PFObject *) postParseObject {
 	[postParseObject incrementKey:POST_NUM_LIKES];
 	[postParseObject saveInBackground];
 	PFObject *newLikeObject = [PFObject objectWithClassName:LIKE_PFCLASS_KEY];
@@ -36,8 +39,7 @@
 								}];
 }
 
-+ (void)currentUserStopLikingPost:(PFObject *) postParseObject{
-
++ (void)currentUserStopLikingPost:(PFObject *) postParseObject {
 	[postParseObject incrementKey:POST_NUM_LIKES byAmount:[NSNumber numberWithInteger:-1]];
 	[postParseObject saveInBackground];
 	PFQuery * userChannelQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
@@ -54,8 +56,50 @@
 	}];
 }
 
+
++ (void)getUsersWhoLikePost:(PFObject *) postParseObject withCompletionBlock:(void(^)(NSArray *))block{
+    if(!postParseObject)return;
+    //we just delete the Follow Object
+    PFQuery * userChannelQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
+    [userChannelQuery whereKey:LIKE_POST_LIKED_KEY equalTo:postParseObject];
+    [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+                                                         NSError * _Nullable error) {
+        if(objects && !error) {
+            block(objects);
+            NSMutableArray * userPromises = [[NSMutableArray alloc] init];
+            NSMutableArray * userList = [[NSMutableArray alloc] init];
+            for(PFObject * likeObject in objects){
+                [userPromises addObject:
+                    [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+                        [[likeObject valueForKey:LIKE_USER_KEY] fetchInBackgroundWithBlock:^(PFObject * _Nullable user, NSError * _Nullable error) {
+                            
+                            if(user){
+                                [userList addObject:user];
+                            }
+                            resolve(nil);
+                        }];
+                        
+                    }]
+                 ];
+            }
+        
+            PMKWhen(userPromises).then(^(id nothing) {
+                block(userList);
+            });
+        
+        
+        }else{
+            block(nil);
+        }
+    }];
+}
+
 //tests to see if the logged in user likes this post
+<<<<<<< HEAD
 +(void)doesCurrentUserLikesPost:(PFObject *) postParseObject withCompletionBlock:(void(^)(bool))block {
+=======
++ (void)currentUserLikesPost:(PFObject *) postParseObject withCompletionBlock:(void(^)(bool))block {
+>>>>>>> master
     if(!postParseObject)return;
     //we just delete the Follow Object
     PFQuery * userChannelQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];

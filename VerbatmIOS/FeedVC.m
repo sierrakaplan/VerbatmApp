@@ -26,8 +26,8 @@
 
 #import "UserSetupParameters.h"
 
-@interface FeedVC () <UIScrollViewDelegate, SharePostViewDelegate, PostListVCProtocol,
-Intro_Notification_Delegate, UIGestureRecognizerDelegate>
+@interface FeedVC () <UIScrollViewDelegate, PostListVCProtocol,
+Intro_Notification_Delegate, UIGestureRecognizerDelegate, SharePostViewDelegate>
 
 @property (nonatomic) BOOL contentCoveringScreen;
 
@@ -47,15 +47,16 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 
 -(void)viewDidLoad {
 	[super viewDidLoad];
-	[self addPostListVC];
 	[self addClearScreenGesture];
 	self.didJustLoadForTheFirstTime = YES;
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
+    
 	self.didJustLoadForTheFirstTime = NO;
-	[self.postListVC display:nil asPostListType:listFeed withListOwner:[PFUser currentUser] isCurrentUserProfile:NO];
+	[self.postListVC display:nil asPostListType:listFeed withListOwner:[PFUser currentUser]
+		isCurrentUserProfile:NO andStartingDate:nil];
 	if(self.postListVC && !self.didJustLoadForTheFirstTime){
         [self.postListVC refreshPosts];
 	}
@@ -68,16 +69,20 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
-	[self.postListVC clearViews];
+    
+    [self.postListVC offScreen];
+    [self.postListVC clearViews];
+    @autoreleasepool {
+        self.postListVC = nil;
+    }
 }
 
 -(void)checkIntroNotification{
-	if(![[UserSetupParameters sharedInstance] isFeed_InstructionShown]){
+	if(![[UserSetupParameters sharedInstance] checkAndSetFeedInstructionShown]){
 		self.introInstruction = [[Intro_Instruction_Notification_View alloc] initWithCenter:self.view.center andType:Feed];
 		self.introInstruction.custom_delegate = self;
 		[self.view addSubview:self.introInstruction];
 		[self.view bringSubviewToFront:self.introInstruction];
-		[[UserSetupParameters sharedInstance] set_feedNotification_InstructionAsShown];
 	}
 }
 
@@ -86,6 +91,17 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 		[self.introInstruction removeFromSuperview];
 		self.introInstruction = nil;
 	}
+}
+
+//not implemented because we are not using this feed anymore
+-(void)noPostFound{
+    
+}
+-(void)postsFound{
+    
+}
+-(void)cellSelectedAtPostIndex:(NSIndexPath *) cellPath{
+    
 }
 
 -(void) addPostListVC {
@@ -104,7 +120,7 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 #pragma mark - POVListSVController -
 
 -(void) shareOptionSelectedForParsePostObject: (PFObject* ) post{
-	[self presentShareSelectionViewStartOnChannels:YES];
+	[self presentSharePostView];
 }
 
 #pragma mark -POVListSVController-
@@ -117,8 +133,8 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 	ProfileVC * userProfile = [[ProfileVC alloc] init];
 	userProfile.isCurrentUserProfile = NO;
 	userProfile.isProfileTab = NO;
-	userProfile.userOfProfile = channel.channelCreator;
-	userProfile.startChannel = channel;
+	userProfile.ownerOfProfile = channel.channelCreator;
+	userProfile.channel = channel;
 	[self presentViewController:userProfile animated:YES completion:^{
 	}];
 }
@@ -147,14 +163,6 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 }
 
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
-	// Tap interferes with photo fade circle
-	CGFloat circleRadiusWithPadding = (CIRCLE_RADIUS + 20.f);
-	CGPoint tapPoint = [tapGesture locationInView:self.view];
-	if ((tapPoint.y > (self.view.frame.size.height - CIRCLE_OFFSET - circleRadiusWithPadding*2)
-		 && tapPoint.y < (self.view.frame.size.height - CIRCLE_OFFSET))
-		&& (tapPoint.x > (self.view.frame.size.width/2.f - circleRadiusWithPadding)
-			&& tapPoint.x < (self.view.frame.size.width/2.f + circleRadiusWithPadding)))
-		return;
 	if(self.contentCoveringScreen) {
 		[self removeContentFromScreen];
 	} else {
@@ -174,16 +182,14 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 	[self.postListVC footerShowing:NO];
 }
 
--(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels{
+-(void)presentSharePostView {
 	if(self.sharePostView){
 		[self.sharePostView removeFromSuperview];
 		self.sharePostView = nil;
 	}
-
 	CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
 	CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-	self.sharePostView = [[SharePostView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
-	self.sharePostView.delegate = self;
+	self.sharePostView = [[SharePostView alloc] initWithFrame:offScreenFrame];
 	[self.view addSubview:self.sharePostView];
 	[self.view bringSubviewToFront:self.sharePostView];
 	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
@@ -194,13 +200,6 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 	}];
 }
 
--(void) cancelButtonSelected{
-	[self removeSharePostView];
-}
-
--(void) postPostToChannels:(NSMutableArray *)channels {
-	[self removeSharePostView];
-}
 
 -(void)removeSharePostView{
 	if(self.sharePostView){
@@ -237,6 +236,23 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 
 -(void) dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+-(PostListVC *) postListVC{
+    if(!_postListVC){
+        UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
+        flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+        [flowLayout setMinimumInteritemSpacing:0.3];
+        [flowLayout setMinimumLineSpacing:0.0f];
+        [flowLayout setItemSize:self.view.frame.size];
+        _postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
+        _postListVC.postListDelegate = self;
+        [self.postListContainerView setFrame:self.view.bounds];
+        [self.postListContainerView addSubview:_postListVC.view];
+        [self.view addSubview:self.postListContainerView];
+        
+    }
+    return _postListVC;
 }
 
 @end

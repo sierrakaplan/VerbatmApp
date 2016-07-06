@@ -7,15 +7,19 @@
 //
 
 #import "ChannelOrUsernameCV.h"
+
+#import "Follow_BackendManager.h"
+
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import <Parse/PFObject.h>
 #import "ParseBackendKeys.h"
-
+#import <Parse/PFUser.h>
 
 @import UIKit;
 
 @interface ChannelOrUsernameCV ()
+@property (nonatomic) Channel *channel;
 
 @property (nonatomic) BOOL isAChannel;
 @property (nonatomic) BOOL isAChannelIFollow;
@@ -33,6 +37,13 @@
 
 @property (nonatomic) UILabel * headerTitle;//makes the cell a header for the table view
 @property (nonatomic) BOOL isHeaderTile;
+@property (nonatomic) UIButton * followButton;
+@property (nonatomic) BOOL currentUserFollowingChannelUser;
+
+#define CHANNEL_LIST_CELL_SEPERATOR_HEIGHT 0.6
+#define FOLLOW_BUTTON_SIZE 100.f
+
+
 @end
 
 @implementation ChannelOrUsernameCV
@@ -46,8 +57,9 @@
 
 	if (self) {
 
-		self.backgroundColor = CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED;
+        self.backgroundColor = [UIColor whiteColor];
 		self.isAChannel = isChannel;
+        self.clipsToBounds = YES;
 		self.isAChannelIFollow = channelThatIFollow;
 		if(!self.channelNameLabelAttributes)[self createSelectedTextAttributes];
 	}
@@ -63,16 +75,83 @@
 }
 
 -(void)presentChannel:(Channel *) channel{
+    self.channel = channel;
 	PFObject *creator = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
+    
+    if(!(self.channel.usersFollowingChannel && self.channel.usersFollowingChannel.count)){
+        
+        
+        
+        [Follow_BackendManager currentUserFollowsChannel:self.channel withCompletionBlock:^(bool isFollowing) {
+            self.currentUserFollowingChannelUser = isFollowing;
+            if(self.followButton)[self updateUserFollowingChannel];
+        }];
+        
+    }else{
+        self.currentUserFollowingChannelUser = [self.channel.usersFollowingChannel containsObject:[PFUser currentUser]];
+        if(self.followButton)[self updateUserFollowingChannel];
+    }
+    
+    
 	[creator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
 		if(object) {
 			NSString *userName = [creator valueForKey:VERBATM_USER_NAME_KEY];
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[self setChannelName:channel.name andUserName: userName];
+                [self createFollowButton];
 				[self setLabelsForChannel];
+                [self updateUserFollowingChannel];
 			});
 		}
 	}];
+    
+}
+
+-(void) createFollowButton {
+    
+    if(self.followButton){
+        [self.followButton removeFromSuperview];
+        self.followButton = nil;
+    }
+    
+    CGFloat frame_x = self.frame.size.width - PROFILE_HEADER_XOFFSET - FOLLOW_BUTTON_SIZE;
+    CGRect followButtonFrame = CGRectMake(frame_x, TAB_BUTTON_PADDING_Y, FOLLOW_BUTTON_SIZE, FOLLOW_BUTTON_SIZE/3.f);
+    self.followButton = [[UIButton alloc] initWithFrame: followButtonFrame];
+    self.followButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.followButton.clipsToBounds = YES;
+    self.followButton.layer.borderColor = [UIColor blackColor].CGColor;
+    self.followButton.layer.borderWidth = 2.f;
+    self.followButton.layer.cornerRadius = 10.f;
+    [self.followButton addTarget:self action:@selector(followButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview: self.followButton];
+}
+
+-(void) followButtonSelected {
+    self.currentUserFollowingChannelUser = !self.currentUserFollowingChannelUser;
+    if (self.currentUserFollowingChannelUser) {
+        [Follow_BackendManager currentUserFollowChannel: self.channel];
+    } else {
+        [Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel: self.channel];
+    }
+    [self.channel currentUserFollowsChannel: self.currentUserFollowingChannelUser];
+    [self updateUserFollowingChannel];
+}
+-(void) updateUserFollowingChannel {
+    //todo: images
+    if (self.currentUserFollowingChannelUser) {
+        [self changeFollowButtonTitle:@"Following" toColor:[UIColor whiteColor]];
+        self.followButton.backgroundColor = [UIColor blackColor];
+    } else {
+        [self changeFollowButtonTitle:@"Follow" toColor:[UIColor blackColor]];
+        self.followButton.backgroundColor = [UIColor whiteColor];
+    }
+}
+
+-(void) changeFollowButtonTitle:(NSString*)title toColor:(UIColor*) color{
+    NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: color,
+                                      NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size:FOLLOW_TEXT_FONT_SIZE]};
+    NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:titleAttributes];
+    [self.followButton setAttributedTitle:attributedTitle forState:UIControlStateNormal];
 }
 
 -(void)setChannelName:(NSString *)channelName andUserName:(NSString *) userName {
@@ -90,41 +169,63 @@
 	} else {
 		if(self.headerTitle)[self.headerTitle removeFromSuperview];
 		self.headerTitle = nil;
-
 	}
+    [self addCellSeperator];
+}
+-(void)addCellSeperator{
+    if(!self.seperatorView){
+        self.seperatorView = [[UIView alloc] initWithFrame:CGRectMake(0.f, self.frame.size.height - CHANNEL_LIST_CELL_SEPERATOR_HEIGHT, self.frame.size.width,CHANNEL_LIST_CELL_SEPERATOR_HEIGHT)];
+        self.seperatorView.backgroundColor = [UIColor lightGrayColor];
+        [self addSubview:self.seperatorView];
+    }
 }
 
 -(void) setLabelsForChannel{
 
-	CGPoint channelNameLabelOrigin = CGPointMake(TAB_BUTTON_PADDING,2.f);
-	CGPoint nameLabelOrigin = CGPointMake(TAB_BUTTON_PADDING,self.frame.size.height/2.f);
+    if(self.channelNameLabel){
+        [self.channelNameLabel removeFromSuperview];
+        
+        self.channelNameLabel = nil;
+    }
+    if(self.usernameLabel){
+        [self.usernameLabel removeFromSuperview];
+        self.usernameLabel = nil;
+    }
 
-	self.channelNameLabel = [self getLabel:self.channelName withOrigin:channelNameLabelOrigin andAttributes:self.channelNameLabelAttributes];
-	self.usernameLabel = [self getLabel:self.userName withOrigin:nameLabelOrigin andAttributes:self.userNameLabelAttributes];
-
+    CGPoint nameLabelOrigin = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y);
+	CGPoint channelNameLabelOrigin  = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y + self.frame.size.height/3.f);
+    
+    CGFloat maxWidth=self.followButton.frame.origin.x - (TAB_BUTTON_PADDING_X * 2);
+    
+	self.channelNameLabel = [self getLabel:self.channelName withOrigin:channelNameLabelOrigin andAttributes:self.channelNameLabelAttributes withMaxWidth:maxWidth];
+	self.usernameLabel = [self getLabel:self.userName withOrigin:nameLabelOrigin andAttributes:self.userNameLabelAttributes withMaxWidth:maxWidth];
+    
 	[self addSubview: self.channelNameLabel];
 	[self addSubview: self.usernameLabel];
-
-	if(!self.seperatorView){
-		self.seperatorView = [[UIView alloc] initWithFrame:CGRectMake(0.f, self.frame.size.height, self.frame.size.width,CHANNEL_LIST_CELL_SEPERATOR_HEIGHT)];
-		self.seperatorView.backgroundColor = CHANNEL_LIST_CELL_SEPERATOR_COLOR;
-		[self addSubview:self.seperatorView];
-	}
+    
+    
 }
 
--(UILabel *) getLabel:(NSString *) title withOrigin:(CGPoint) origin andAttributes:(NSDictionary *) nameLabelAttribute {
+-(UILabel *) getLabel:(NSString *) title withOrigin:(CGPoint) origin andAttributes:(NSDictionary *) nameLabelAttribute withMaxWidth:(CGFloat) maxWidth {
+    UILabel * nameLabel = [[UILabel alloc] init];
+    
+    if(title && nameLabelAttribute){
+        NSAttributedString* tabAttributedTitle = [[NSAttributedString alloc] initWithString:title attributes:nameLabelAttribute];
+        CGSize textSize = [title sizeWithAttributes:nameLabelAttribute];
 
-	NSAttributedString* tabAttributedTitle = [[NSAttributedString alloc] initWithString:title attributes:nameLabelAttribute];
-	CGSize textSize = [title sizeWithAttributes:nameLabelAttribute];
-
-	CGFloat height = (textSize.height <= (self.frame.size.height/2.f) - 2.f) ?
-	textSize.height : self.frame.size.height/2.f;
-
-	CGRect labelFrame = CGRectMake(origin.x, origin.y, textSize.width, height);
-
-	UILabel * nameLabel = [[UILabel alloc] initWithFrame:labelFrame];
-
-	[nameLabel setAttributedText:tabAttributedTitle];
+        CGFloat height = (textSize.height <= (self.frame.size.height/2.f) - 2.f) ?
+        textSize.height : self.frame.size.height/2.f;
+        
+        CGFloat width = (maxWidth > 0 && textSize.width > maxWidth) ? maxWidth : textSize.width;
+        
+        CGRect labelFrame = CGRectMake(origin.x, origin.y, width, height +7.f);
+        
+        nameLabel.frame = labelFrame;
+        nameLabel.adjustsFontSizeToFitWidth = YES;
+        nameLabel.numberOfLines = 1.f;
+        nameLabel.backgroundColor = [UIColor clearColor];
+        [nameLabel setAttributedText:tabAttributedTitle];
+    }
 	return nameLabel;
 }
 
@@ -133,12 +234,12 @@
 -(void)createSelectedTextAttributes{
 	NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
 	paragraphStyle.alignment                = NSTextAlignmentCenter;
-	self.channelNameLabelAttributes =@{NSForegroundColorAttributeName: VERBATM_GOLD_COLOR,
+	self.channelNameLabelAttributes =@{NSForegroundColorAttributeName: [UIColor blackColor],
 									   NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT size:CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE],
 									   NSParagraphStyleAttributeName:paragraphStyle};
 
 	//create "followers" text
-	self.userNameLabelAttributes =@{NSForegroundColorAttributeName: [UIColor grayColor],
+	self.userNameLabelAttributes =@{NSForegroundColorAttributeName: [UIColor blackColor],
 									NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:CHANNEL_USER_LIST_USER_NAME_FONT_SIZE]};
 }
 
@@ -154,7 +255,7 @@
 	paragraphStyle.alignment = NSTextAlignmentCenter;
 
 	NSDictionary * informationAttribute = @{NSForegroundColorAttributeName:
-												[UIColor blackColor],
+												[UIColor clearColor],
 											NSFontAttributeName:
 												[UIFont fontWithName:INFO_LIST_HEADER_FONT size:INFO_LIST_HEADER_FONT_SIZE],
 											NSParagraphStyleAttributeName:paragraphStyle};

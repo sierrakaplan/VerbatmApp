@@ -21,4 +21,6 @@
 
 +(void)unblockUser:(PFUser *)user;
 
++ (void) migrateUserToOneChannelWithCompletionBlock:(void(^)(BOOL))block;
+
 @end

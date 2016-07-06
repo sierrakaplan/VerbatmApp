@@ -25,6 +25,7 @@
 #import <PromiseKit/PromiseKit.h>
 
 #import <Crashlytics/Crashlytics.h>
+#import <Branch/Branch.h>
 #import <Fabric/Fabric.h>
 
 @implementation VerbatmAppDelegate
@@ -46,7 +47,6 @@
 		return [NSError errorWithDomain:PMKErrorDomain code:PMKUnexpectedError
 							   userInfo:nil];
 	});
-	[[UserSetupParameters sharedInstance] setUpParameters];
 	[[Analytics getSharedInstance] newUserSession];
 
 	// Fabric (and Optimizely, if needed can bring back)
@@ -54,17 +54,36 @@
 	//    	[Optimizely startOptimizelyWithAPIToken: @"AANIfyUBGNNvR9jy_iEWX8c97ahEroKr~3788260592" launchOptions:launchOptions];
 
 
-	//Push notifications
+	// Register for Push notifications
 	UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert |
 													UIUserNotificationTypeBadge |
 													UIUserNotificationTypeSound);
 	UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes
 																			 categories:nil];
 	[application registerUserNotificationSettings:settings];
-	[application registerForRemoteNotifications];
+
+	// Branch.io (for external share links)
+    Branch *branch = [Branch getInstance];
+    [branch initSessionWithLaunchOptions:launchOptions andRegisterDeepLinkHandler:^(NSDictionary *params, NSError *error) {
+        // params are the deep linked params associated with the link that the user clicked before showing up.
+        NSLog(@"deep link data: %@", [params description]);
+		if (error) {
+			[[Crashlytics sharedInstance] recordError:error];
+			NSLog(@"Error setting up branch: %@", error.description);
+		}
+
+		[branch setNetworkTimeout:5]; //timeout after 5 seconds
+		[branch setRetryInterval:5];
+		[branch setMaxRetries:1];
+    }];
 
 	// Call fb sdk method
 	return [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
+}
+
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
+	//register to receive notifications
+	[application registerForRemoteNotifications];
 }
 
 // Call back method for registering for push notifications. Save device token in parse.
@@ -96,7 +115,7 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
 -(void) setUpParseWithLaunchOptions: (NSDictionary*)launchOptions {
 	// [Optional] Power your app with Local Datastore. For more info, go to
 	// https://parse.com/docs/ios_guide#localdatastore/iOS
-	[Parse enableLocalDatastore];
+	//[Parse enableLocalDatastore];
 	// Initialize Parse.
 	[Parse setApplicationId:@"rzSvJWHhiN8KUnhDVXTlapJkJ4eCe3xAlmEscSK3"
 				  clientKey:@"qmXzBTKKMNqm5A3eogopkL2ZY6SeKGcWah0zP9kk"];
@@ -105,12 +124,6 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
 	[PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
 
 	[PFFacebookUtils initializeFacebookWithApplicationLaunchOptions:launchOptions];
-}
-
-// NOT IN USE
--(void) customizeTabBarAppearance {
-	UIImage *whiteBackground = [UIImage imageNamed:@"blackBackground"];
-	[[UITabBar appearance] setSelectionIndicatorImage:whiteBackground];
 }
 
 //logs that the app was just opened
@@ -140,16 +153,13 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
 	[FBSDKAppEvents activateApp];
 }
 
-- (void)applicationWillTerminate:(UIApplication *)application {
-	// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-	[[UserSetupParameters sharedInstance] saveAllChanges];
-}
-
 // Facebook login code
 - (BOOL)application:(UIApplication *)application
 			openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication
 		 annotation:(id)annotation {
+    
+    [[Branch getInstance] handleDeepLink:url];
 	return [[FBSDKApplicationDelegate sharedInstance] application:application
 														  openURL:url
 												sourceApplication:sourceApplication

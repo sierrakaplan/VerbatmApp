@@ -39,4 +39,10 @@
 @property(strong, nonatomic) NSURL* outputurl;
 @property (nonatomic, weak) id <MediaSessionManagerDelegate> delegate;
 @property (strong, nonatomic) AVCaptureVideoPreviewLayer* videoPreview;
+
+
 @end
+
+
+
+

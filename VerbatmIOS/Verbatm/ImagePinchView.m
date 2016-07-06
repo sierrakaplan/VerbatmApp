@@ -7,8 +7,15 @@
 //
 
 #import "ImagePinchView.h"
-#import "UIImage+ImageEffectsAndTransforms.h"
 #import "SizesAndPositions.h"
+
+#import "TextOverMediaView.h"
+
+#import "UIView+Effects.h"
+#import "UIImage+ImageEffectsAndTransforms.h"
+#import "MediaSessionManager.h"
+@import AVFoundation;
+@import Photos;
 
 @interface ImagePinchView()
 
@@ -107,13 +114,23 @@
 	options.synchronous = YES;
 	PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[self.phAssetLocalIdentifier] options:nil];
 	PHAsset* imageAsset = fetchResult.firstObject;
+	self.imageName = [imageAsset valueForKey:@"filename"];
 	CGSize size = half ? HALF_SCREEN_SIZE : FULL_SCREEN_SIZE;
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
-		[[PHImageManager defaultManager] requestImageForAsset:imageAsset targetSize:size contentMode:PHImageContentModeAspectFill
-													  options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
-														  image = [image imageByScalingAndCroppingForSize: CGSizeMake(size.width, size.height)];
-														  resolve(image);
-													  }];
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            [[PHImageManager defaultManager] requestImageForAsset:imageAsset targetSize:size contentMode:PHImageContentModeAspectFill
+                  options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
+                      image = [image imageByScalingAndCroppingForSize: CGSizeMake(size.width, size.height)];
+                      
+                      if(self.beingPublished){
+                          dispatch_async(dispatch_get_main_queue(), ^{
+                              resolve([self getImageScreenshotWithText:image]);
+                          });
+                      }else{
+                          resolve(image);
+                      }  
+            }];
+        });
 	}];
 	return promise;
 }
@@ -124,8 +141,37 @@
 
 /* media, text, textYPosition, textColor, textAlignment, textSize */
 -(NSArray*) getPhotosWithText {
-	return @[@[[self getImage], self.text, self.textYPosition,
-			   self.textColor, self.textAlignment, self.textSize]];
+   return @[@[[self getImage], @"", @(0),
+                   self.textColor, @(0), @(0)]];
+}
+
+
+
+
+
+
+-(UIImage *)getImageScreenshotWithText:(UIImage *)image{
+    
+    TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:[[UIScreen mainScreen] bounds] andImage:image];
+    BOOL textColorBlack = [self.textColor isEqual:[UIColor blackColor]];
+    NSString * textToCapture = self.text;
+    
+    [textAndImageView setText: textToCapture
+             andTextYPosition: [self.textYPosition floatValue]
+            andTextColorBlack: textColorBlack
+             andTextAlignment: (NSTextAlignment) ([self.textAlignment integerValue])
+                  andTextSize: [self.textSize floatValue]];
+    [textAndImageView showText:YES];
+    [textAndImageView.textView setHidden:NO];
+    [textAndImageView bringSubviewToFront:textAndImageView.textView];
+    
+    UIImage * screenShot = [textAndImageView.imageView getViewscreenshotWithTextView:textAndImageView.textView];
+    
+    @autoreleasepool {
+        textAndImageView = nil;
+    }
+    
+    return screenShot;
 }
 
 -(void)changeImageToFilterIndex:(NSInteger)filterIndex {

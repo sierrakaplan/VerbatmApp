@@ -23,8 +23,8 @@
 
 typedef NS_ENUM(NSInteger, PinchingMode) {
 	PinchingModeNone,
-	PinchingModeVertical,
-    PinchingModeVerticalUndo,
+	PinchingModeVerticalTogether,
+    PinchingModeVerticalApart,
 	PinchingModeHorizontal
 };
 

@@ -23,11 +23,9 @@ typedef enum PageTypes{
 
 @interface PageTypeAnalyzer : NSObject
 
--(NSMutableArray*) getPageViewsFromPinchViews:(NSArray*) pinchViews withFrame:(CGRect)frame inPreviewMode: (BOOL) inPreviewMode ;
++(NSMutableArray*) getPageViewsFromPinchViews:(NSArray*) pinchViews withFrame:(CGRect)frame inPreviewMode: (BOOL) inPreviewMode ;
 
--(void) getPageViewFromPage: (PFObject *)page withFrame: (CGRect)frame andCompletionBlock:(void(^)(NSArray *))block;
++(void) getPageMediaFromPage: (PFObject *)page withCompletionBlock:(void(^)(NSArray *))block;
 
-//Small tells whether should display media in small format
-+(PageViewingExperience *)getPageViewFromPageMedia:(NSArray *)pageMedia withFrame:(CGRect)frame small:(BOOL)small;
 
 @end

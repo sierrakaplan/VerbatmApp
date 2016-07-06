@@ -6,8 +6,8 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+#import <Crashlytics/Crashlytics.h>
 
-#import "GTLVerbatmAppImage.h"
 
 #import "Notifications.h"
 
@@ -18,6 +18,7 @@
 #import "PostPublisher.h"
 #import "PublishingProgressManager.h"
 #import <PromiseKit/AnyPromise.h>
+#import <Parse/PFRelation.h>
 
 @interface Photo_BackendObject ()
 
@@ -27,7 +28,8 @@
 
 @implementation Photo_BackendObject
 
--(AnyPromise*) saveImageData:(NSData *) imageData
+-(AnyPromise*) saveImageWithName:(NSString*)fileName
+						 andData:(NSData *) imageData
 		withText:(NSString *) text
 andTextYPosition:(NSNumber *) textYPosition
 	andTextColor:(UIColor *) textColor
@@ -36,7 +38,7 @@ andTextAlignment:(NSNumber *) textAlignment
 	atPhotoIndex:(NSInteger) photoIndex
    andPageObject:(PFObject *) pageObject {
     self.mediaPublisher = [[PostPublisher alloc] init];
-    return [self.mediaPublisher storeImage:imageData].then(^(id result) {
+    return [self.mediaPublisher storeImageWithName:fileName andData:imageData].then(^(id result) {
 		if ([result isKindOfClass:[NSError class]]) {
 			return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 				resolve(result);
@@ -84,8 +86,7 @@ andTextAlignment:(NSNumber *) textAlignment
 	return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 		[newPhotoObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 			if(succeeded && !error){
-				[[PublishingProgressManager sharedInstance] mediaSavingProgressed:1];
-				resolve(nil);
+                resolve(nil);
 			} else {
 				resolve(error);
 			}
@@ -93,13 +94,33 @@ andTextAlignment:(NSNumber *) textAlignment
 	}];
 }
 
+
++(void)savePhotosToPFRelation:(PFObject *) photo andPage:(PFObject *) page{
+    PFRelation * pageRelation = [page relationForKey:PAGE_PHOTOS_PFRELATION];
+    [pageRelation addObject:photo];
+    [page saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if(succeeded){
+            NSLog(@"saved new photo relation");
+        }else NSLog(@"Failed to save new photo relation");
+    }];
+    
+}
+
 +(void)getPhotosForPage:(PFObject *) page andCompletionBlock:(void(^)(NSArray *))block {
     
+    //no pfrelation yet so check for the old style
     PFQuery *imagesQuery = [PFQuery queryWithClassName:PHOTO_PFCLASS_KEY];
     [imagesQuery whereKey:PHOTO_PAGE_OBJECT_KEY equalTo:page];
+    imagesQuery.cachePolicy = kPFCachePolicyCacheThenNetwork;
+    BOOL __block isCacheResponse = YES;
+    BOOL __block cacheResponsePassed = NO;
     [imagesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-                                                         NSError * _Nullable error) {
+                                                    NSError * _Nullable error) {
         if(objects && !error){
+            
+            //the result may have been cached and so we don't need to load this page again.
+            if(!isCacheResponse && cacheResponsePassed) return;
+            
             objects = [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
                 PFObject * photoA = obj1;
                 PFObject * photoB = obj2;
@@ -115,25 +136,36 @@ andTextAlignment:(NSNumber *) textAlignment
                 return NSOrderedSame;
             }];
             
+            if(isCacheResponse){
+                NSLog(@"Just used cache for photo");
+            }else{
+                NSLog(@"Missed cache using network for photo");
+            }
+            cacheResponsePassed = !cacheResponsePassed;
+            isCacheResponse = !isCacheResponse;
             block(objects);
+        }else{
+            if(!cacheResponsePassed && !isCacheResponse){
+                [[Crashlytics sharedInstance] recordError:error];
+                block(nil);
+            }
+            isCacheResponse = NO;
         }
     }];
+
 }
 
 +(void)deletePhotosInPage:(PFObject *)page withCompeletionBlock:(void(^)(BOOL))block {
-	PFQuery *imagesQuery = [PFQuery queryWithClassName:PHOTO_PFCLASS_KEY];
-	[imagesQuery whereKey:PHOTO_PAGE_OBJECT_KEY equalTo:page];
-	[imagesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-													NSError * _Nullable error) {
-		if(objects && !error){
-			for (PFObject *photoObj in objects) {
-				[photoObj deleteInBackground];
-			}
-			block(YES);
-			return;
-		}
-		block (NO);
-	}];
+	[Photo_BackendObject getPhotosForPage:page andCompletionBlock:^(NSArray * photos) {
+        if(photos){
+            for (PFObject *photoObj in photos) {
+                [photoObj deleteInBackground];
+            }
+            block(YES);
+            return;
+        }
+        block (NO);
+    }];
 }
 
 @end

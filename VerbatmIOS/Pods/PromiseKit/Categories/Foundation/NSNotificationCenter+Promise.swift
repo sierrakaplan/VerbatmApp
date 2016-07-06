@@ -18,6 +18,7 @@ import PromiseKit
 
     import PromiseKit
 */
+/* Sorry I have to comment al of you, but you're breaking my build on xCode 7.3.1
 extension NSNotificationCenter {
     public class func once(name: String) -> NotificationPromise {
         return NSNotificationCenter.defaultCenter().once(name)
@@ -49,3 +50,5 @@ public class NotificationPromise: Promise<[NSObject: AnyObject]> {
         super.init(resolvers: resolvers)
     }
 }
+
+*/

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
@@ -68,6 +68,7 @@
                         <outlet property="tabBarControllerContainerView" destination="JF8-rw-Rfn" id="dFp-bX-Lgt"/>
                         <segue destination="waF-h7-lpu" kind="modal" identifier="segue_id_sign_in" id="O0U-1G-Oy1"/>
                         <segue destination="0lh-hP-Opv" kind="modal" identifier="segue_id_adk" id="2tt-Z0-lcH"/>
+                        <segue destination="E1b-bX-QIV" kind="modal" identifier="presentBlogSelect" id="9QN-78-OSZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AxA-gZ-qvU" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -94,29 +95,6 @@
             </objects>
             <point key="canvasLocation" x="-3776" y="-478"/>
         </scene>
-        <!--Feed-->
-        <scene sceneID="LSe-v6-SsT">
-            <objects>
-                <viewController storyboardIdentifier="feed_vc" title="Feed" id="lY0-w6-fRI" customClass="FeedVC" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Clv-OZ-JXA">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <containerView opaque="NO" contentMode="scaleToFill" id="f57-j5-SlW">
-                                <rect key="frame" x="28" y="92" width="240" height="128"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                            </containerView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <connections>
-                        <outlet property="postListContainerView" destination="f57-j5-SlW" id="JHp-ye-sdD"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="V0g-tI-HpL" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-3428" y="-471"/>
-        </scene>
         <!--Login-->
         <scene sceneID="gIN-uk-7gC">
             <objects>
@@ -125,10 +103,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background_sign_in" id="GKm-Mk-qgk">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="86e-CU-3ZO">
                                 <rect key="frame" x="40" y="94" width="240" height="34"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -160,6 +134,14 @@
                                 <rect key="frame" x="118" y="0.0" width="85" height="95"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Window Pane" id="GKm-Mk-qgk">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" id="Mqy-hA-tGQ">
+                                <rect key="frame" x="141" y="511" width="39" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </pageControl>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
@@ -167,6 +149,7 @@
                         <outlet property="backgroundImageView" destination="GKm-Mk-qgk" id="Nlf-Rk-NnE"/>
                         <outlet property="mobileBloggingLabel" destination="ZaS-l4-AcK" id="3e8-SA-sjk"/>
                         <outlet property="orLabel" destination="7dv-hM-JUO" id="UNB-Sk-sdk"/>
+                        <outlet property="pageControlView" destination="Mqy-hA-tGQ" id="xdE-Ij-b3s"/>
                         <outlet property="phoneLoginField" destination="EfJ-sF-ht6" id="Qlf-hp-WDd"/>
                         <outlet property="verbatmLogoImageView" destination="Iqv-b5-e4e" id="Cgi-Cr-ost"/>
                         <outlet property="welcomeLabel" destination="86e-CU-3ZO" id="iD1-Hf-dBS"/>
@@ -188,7 +171,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background_sign_in" id="88C-9H-sIB">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Window Pane" id="88C-9H-sIB">
                                 <rect key="frame" x="-1" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
@@ -360,12 +343,17 @@
                                     <outletCollection property="gestureRecognizers" destination="vkp-cu-SCl" appends="YES" id="01E-4x-04M"/>
                                 </connections>
                             </scrollView>
+                            <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" id="wYB-i9-JTz">
+                                <rect key="frame" x="10" y="10" width="39" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </pageControl>
                         </subviews>
                         <gestureRecognizers/>
                     </view>
                     <navigationItem key="navigationItem" id="sqn-EE-Emp"/>
                     <connections>
                         <outlet property="mainScrollView" destination="ChT-rO-Rpn" id="yN6-Fp-Fpp"/>
+                        <outlet property="onBoardingPageIndicator" destination="wYB-i9-JTz" id="TvV-rf-idi"/>
                         <segue destination="C4V-vK-ZzO" kind="unwind" identifier="unwind_to_master_vc_from_adk" unwindAction="unwindToMasterNavVC:" id="fcv-AG-35S"/>
                     </connections>
                 </viewController>
@@ -381,68 +369,32 @@
                         <action selector="longPressSensed:" destination="0lh-hP-Opv" id="cAV-T5-CEW"/>
                     </connections>
                 </pongPressGestureRecognizer>
-                <tapGestureRecognizer id="vkp-cu-SCl">
-                    <connections>
-                        <action selector="tapToClearKeyboard:" destination="0lh-hP-Opv" id="owt-Pd-Tn9"/>
-                    </connections>
-                </tapGestureRecognizer>
+                <tapGestureRecognizer id="vkp-cu-SCl"/>
             </objects>
-            <point key="canvasLocation" x="-3989" y="-1321"/>
+            <point key="canvasLocation" x="-4205" y="-153"/>
         </scene>
-        <!--DiscoverVC-->
-        <scene sceneID="hNI-n8-7Cf">
+        <!--Onboarding Blog Selection View Controller-->
+        <scene sceneID="8qh-Xk-TQn">
             <objects>
-                <viewController storyboardIdentifier="discover_vc" id="Hhc-hu-zb3" customClass="DiscoverVC" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="FMo-lH-YSb">
+                <viewController id="E1b-bX-QIV" customClass="OnboardingBlogSelectionViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="y2J-6s-kaD">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <containerView opaque="NO" contentMode="scaleToFill" id="eqy-rr-7Zi">
-                                <rect key="frame" x="0.0" y="44" width="320" height="524"/>
+                            <containerView opaque="NO" contentMode="scaleToFill" id="xiB-J4-YuY">
+                                <rect key="frame" x="40" y="113" width="240" height="128"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <connections>
-                                    <segue destination="i9B-d6-FOW" kind="embed" id="vVU-fA-YAA"/>
-                                </connections>
                             </containerView>
-                            <view contentMode="scaleToFill" id="ymp-df-Ltq">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </view>
-                            <searchBar contentMode="redraw" id="7gN-KE-qzP">
-                                <rect key="frame" x="0.0" y="44" width="320" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </searchBar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <outlet property="headerView" destination="ymp-df-Ltq" id="UHq-vI-Qij"/>
-                        <outlet property="searchBar" destination="7gN-KE-qzP" id="aTf-ip-feN"/>
-                        <outlet property="searchDisplayController" destination="N54-Ic-Hel" id="DKj-dN-Kna"/>
-                        <outlet property="tableContainerView" destination="eqy-rr-7Zi" id="f0Z-AK-ewr"/>
+                        <outlet property="tableContainerView" destination="xiB-J4-YuY" id="MII-D3-E9U"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="jmU-sY-VEf" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <searchDisplayController id="07b-bQ-TLh">
-                    <connections>
-                        <outlet property="delegate" destination="Hhc-hu-zb3" id="d7U-s4-DcD"/>
-                        <outlet property="searchContentsController" destination="Hhc-hu-zb3" id="bmg-92-AHV"/>
-                        <outlet property="searchResultsDataSource" destination="Hhc-hu-zb3" id="ebS-3s-xii"/>
-                        <outlet property="searchResultsDelegate" destination="Hhc-hu-zb3" id="WfM-C2-yd0"/>
-                    </connections>
-                </searchDisplayController>
-                <searchDisplayController id="N54-Ic-Hel">
-                    <connections>
-                        <outlet property="delegate" destination="Hhc-hu-zb3" id="GOc-Po-t38"/>
-                        <outlet property="searchContentsController" destination="Hhc-hu-zb3" id="Zlq-8i-3e7"/>
-                        <outlet property="searchResultsDataSource" destination="Hhc-hu-zb3" id="Bv3-PY-7EI"/>
-                        <outlet property="searchResultsDelegate" destination="Hhc-hu-zb3" id="I1l-qG-lG7"/>
-                    </connections>
-                </searchDisplayController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="PWC-al-Zj7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3369" y="-1230"/>
+            <point key="canvasLocation" x="-3681" y="-1350"/>
         </scene>
         <!--Profile-->
         <scene sceneID="Apv-cW-9iI">
@@ -453,6 +405,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <nil key="simulatedStatusBarMetrics"/>
                     <connections>
                         <segue destination="bK1-Rd-hCA" kind="modal" identifier="presentSettingsPage" id="Iif-HD-h1B"/>
                     </connections>
@@ -461,24 +414,24 @@
             </objects>
             <point key="canvasLocation" x="-5333" y="-2673"/>
         </scene>
-        <!--Featured ContentVC-->
+        <!--DiscoverVC-->
         <scene sceneID="Ztj-7g-WJd">
             <objects>
-                <viewController storyboardIdentifier="featured_content_vc" id="i9B-d6-FOW" customClass="FeaturedContentVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="featured_content_vc" id="i9B-d6-FOW" customClass="DiscoverVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Cf5-tW-Arb" customClass="UITableView">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="524"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QaT-Ao-b0g" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2938" y="-991"/>
+            <point key="canvasLocation" x="-3230" y="-1177"/>
         </scene>
     </scenes>
     <resources>
         <image name="Privacy_Policy" width="750" height="1334"/>
-        <image name="background_sign_in" width="750" height="1334"/>
+        <image name="Window Pane" width="750" height="1334"/>
         <image name="profile_icon_2" width="35" height="47"/>
         <image name="verbatm_logo" width="1395" height="1142"/>
     </resources>

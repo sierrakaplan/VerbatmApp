@@ -10,17 +10,24 @@
 
 #import <UIKit/UIKit.h>
 #import "Channel.h"
+#import "SelectSharingOption.h"
+
+
+/*
+ Reblog screen. Selected on a post and slides up to prompt a user to share.
+ */
 
 @protocol SharePostViewDelegate <NSObject>
 
--(void) cancelButtonSelected;//tells the superview to remove the current presented view
--(void) postPostToChannels:(NSMutableArray *) channels;
+@optional
+-(void) cancelButtonSelected;
+-(void) shareToShareOption:(ShareOptions) shareOption;
 
 @end
 
 @interface SharePostView : UIView
 
--(instancetype) initWithFrame:(CGRect)frame shouldStartOnChannels:(BOOL) showChannels;//this tells us if we should show
+-(instancetype) initWithFrame:(CGRect)frame;
 
 @property (nonatomic, weak) id <SharePostViewDelegate> delegate;
 

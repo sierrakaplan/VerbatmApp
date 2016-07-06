@@ -85,10 +85,10 @@
 		return;
 	}
 
-	PageTypeAnalyzer * analyzer = [[PageTypeAnalyzer alloc]init];
-	NSMutableArray* pages = [analyzer getPageViewsFromPinchViews: pinchViews withFrame: self.viewingFrame inPreviewMode:YES];
-	self.postView = [[PostView alloc] initWithFrame: self.bounds andPostChannelActivityObject:nil small:NO];
-	[self.postView renderPageViews: pages];
+	NSMutableArray* pages = [PageTypeAnalyzer getPageViewsFromPinchViews: pinchViews withFrame: self.viewingFrame inPreviewMode:YES];
+	self.postView = [[PostView alloc] initWithFrame: self.bounds andPostChannelActivityObject:nil
+											  small:NO andPageObjects:nil];
+	[self.postView displayPageViews: pages];
 	[self addSubview: self.postView];
 	[self addNavigationBar];
     [self.postView scrollToPageAtIndex:index];
@@ -136,6 +136,10 @@
 	}
 }
 
+-(void)prepareToRemovePreviewView{
+    [self revealPreview:NO];
+}
+
 #pragma mark - Navigation Bar Delegate methods -
 
 #pragma mark Publish Button
@@ -147,7 +151,7 @@
 #pragma mark Back Button
 
 -(void) leftButtonPressed {
-	[self revealPreview:NO];
+	[self prepareToRemovePreviewView];
 }
 
 @end

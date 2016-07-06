@@ -39,7 +39,7 @@
 	self = [super initWithFrame:frame];
 	if(self) {
 		self.frame = frame;
-		self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.8];
+		self.backgroundColor = [UIColor whiteColor];
 		self.textColorBlack = textColorBlack;
 		[self addButtons];
 	}
@@ -102,8 +102,8 @@
 											TEXT_TOOLBAR_DONE_WIDTH, self.frame.size.height - TEXT_TOOLBAR_BUTTON_OFFSET);
 		_doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		_doneButton.frame = doneButtonFrame;
-		UIFont* labelFont = [UIFont fontWithName:DEFAULT_FONT size:KEYBOARD_TOOLBAR_FONT_SIZE];
-		NSAttributedString* title = [[NSAttributedString alloc] initWithString:@"DONE" attributes:@{NSForegroundColorAttributeName: VERBATM_GOLD_COLOR, NSFontAttributeName : labelFont}];
+		UIFont* labelFont = [UIFont fontWithName:REGULAR_FONT size:KEYBOARD_TOOLBAR_FONT_SIZE];
+		NSAttributedString* title = [[NSAttributedString alloc] initWithString:@"DONE" attributes:@{NSForegroundColorAttributeName: [UIColor blackColor], NSFontAttributeName : labelFont}];
 		[_doneButton setAttributedTitle:title forState:UIControlStateNormal];
 		[_doneButton addTarget:self action:@selector(doneButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 	}

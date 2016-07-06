@@ -12,6 +12,7 @@
 
 @interface ImagePinchView : SingleMediaAndTextPinchView
 
+@property (strong, nonatomic) NSString *imageName;
 @property (strong, nonatomic) NSMutableArray* filteredImages;
 @property (nonatomic) NSInteger filterImageIndex;
 @property (strong, nonatomic) NSString* phAssetLocalIdentifier;

@@ -9,6 +9,7 @@
 
 #import "Channel.h"
 #import "ChannelButton.h"
+#import "BlogPopupView.h"
 
 #import "Icons.h"
 
@@ -42,6 +43,8 @@
 @property (nonatomic) BOOL isFollowingProfileUser;
 @property (nonatomic) BOOL isLoggedInUser;
 @property (nonatomic) BOOL buttonSelected;
+@property (nonatomic) UIViewController *topVC;
+@property (nonatomic) BlogPopupView *blogPopupView;
 @end
 
 @implementation ChannelButton
@@ -54,12 +57,43 @@
         self.channelName = channel.name;
         self.currentChannel = channel;
         self.isLoggedInUser = isLoggedInUser;
+        [self setTopViewController];
         [self createNonSelectedTextAttributes];
         [self createSelectedTextAttributes];
         [self setLabelsFromChannel:channel];
         [self formatButtonUnSelected];
+        UILongPressGestureRecognizer *btn_LongPress_gesture = [[UILongPressGestureRecognizer alloc]
+                                                               initWithTarget:self action:@selector(handleBtnLongPressGesture:)];
+        [self addGestureRecognizer:btn_LongPress_gesture];
     }
     return self;
+}
+
+-(void) setTopViewController {
+    UIViewController *top = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+    while (top.presentedViewController){
+        top = top.presentedViewController;
+    }
+    self.topVC = top;
+}
+
+- (void)handleBtnLongPressGesture:(UILongPressGestureRecognizer *)recognizer {
+    if (recognizer.state == UIGestureRecognizerStateBegan) {
+        CGRect screenRect = [[UIScreen mainScreen] bounds];
+        CGFloat screenWidth = screenRect.size.width;
+        CGFloat screenHeight = screenRect.size.height;
+        
+        self.blogPopupView = [[BlogPopupView alloc] initWithFrame:CGRectMake(screenWidth/8.f, screenHeight/8.f, (screenWidth * 0.75), (screenHeight * 0.75)) forBlog:self.currentChannel];
+       
+        [UIView animateWithDuration:0.5 animations:^{
+            [self.topVC.view addSubview:self.blogPopupView];
+            [self.topVC.view bringSubviewToFront:self.blogPopupView];
+        }];
+    }
+    
+    if (recognizer.state == UIGestureRecognizerStateEnded) {
+        
+    }
 }
 
 -(void) setLabelsFromChannel:(Channel *) channel{
@@ -70,17 +104,17 @@
     CGPoint numFollowersOrigin = CGPointMake(0.f,self.frame.size.height/2.f);
     self.numberOfFollowersLabel = [self getChannelFollowersLabel:channel origin:numFollowersOrigin followersTextAttribute:self.unSelectedFollowersTabTitleAttributes andNumberOfFollowersAttribute:self.unSelectedNumberOfFollowersTitleAttributes];
     
-    CGFloat buttonWidth = (TAB_BUTTON_PADDING * 3.f) + FOLLOW_BUTTON_WIDTH + ((self.numberOfFollowersLabel.frame.size.width > self.channelNameLabel.frame.size.width) ? self.numberOfFollowersLabel.frame.size.width :  self.channelNameLabel.frame.size.width);
+    CGFloat buttonWidth = (TAB_BUTTON_PADDING_X * 3.f) + FOLLOW_BUTTON_WIDTH + ((self.numberOfFollowersLabel.frame.size.width > self.channelNameLabel.frame.size.width) ? self.numberOfFollowersLabel.frame.size.width :  self.channelNameLabel.frame.size.width);
     
     //adjust label frame sizes to be the same with some padding
-     self.channelNameLabel.frame = CGRectMake(TAB_BUTTON_PADDING,
+     self.channelNameLabel.frame = CGRectMake(TAB_BUTTON_PADDING_X,
                                               self.channelNameLabel.frame.origin.y,
                                               self.channelNameLabel.frame.size.width,
                                               self.channelNameLabel.frame.size.height);
 
     CGFloat numFollowersLabelX;
     if(self.numberOfFollowersLabel.frame.size.width > self.channelNameLabel.frame.size.width){
-        numFollowersLabelX = TAB_BUTTON_PADDING;
+        numFollowersLabelX = TAB_BUTTON_PADDING_X;
     } else {
         numFollowersLabelX = self.channelNameLabel.center.x - (self.numberOfFollowersLabel.frame.size.width/2.f);
     }
@@ -120,7 +154,7 @@
     
     CGFloat height = FOLLOW_BUTTON_HEIGHT;
     CGFloat width = FOLLOW_BUTTON_WIDTH;
-    CGFloat frame_x = self.suggestedWidth - width - (TAB_BUTTON_PADDING);
+    CGFloat frame_x = self.suggestedWidth - width - (TAB_BUTTON_PADDING_X);
     CGFloat frame_y = self.center.y - (height/2.f);
     
     CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height);

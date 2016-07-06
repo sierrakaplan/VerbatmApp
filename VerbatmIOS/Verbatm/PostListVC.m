@@ -7,10 +7,15 @@
 //
 
 #import "Channel_BackendObject.h"
+#import <Branch/BranchUniversalObject.h>
+#import <Branch/BranchLinkProperties.h>
 
 #import "Durations.h"
+#import "ExternalShare.h"
 
 #import "FeedQueryManager.h"
+#import <FBSDKShareKit/FBSDKShareLinkContent.h>
+#import <FBSDKShareKit/FBSDKShareDialog.h>
 
 #import "Icons.h"
 
@@ -21,52 +26,87 @@
 
 #import "Page_BackendObject.h"
 #import "PostListVC.h"
-#import "PostsQueryManager.h"
 #import "PostCollectionViewCell.h"
 #import "Post_BackendObject.h"
 #import "Post_Channel_RelationshipManager.h"
+#import "Page_BackendObject.h"
+#import "Photo_BackendObject.h"
+#import "PublishingProgressManager.h"
+
+#import "Video_BackendObject.h"
+#import "Channel_BackendObject.h"
 #import "ParseBackendKeys.h"
 #import "PostView.h"
 #import <PromiseKit/PromiseKit.h>
+#import "PageTypeAnalyzer.h"
+#import <Parse/PFQuery.h>
 
 #import "Share_BackendManager.h"
 #import "SharePostView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
-@interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource, SharePostViewDelegate,
-UIScrollViewDelegate, PostCollectionViewCellDelegate>
+
+#import "UserAndChannelListsTVC.h"
+#import "User_BackendObject.h"
+#import "UserInfoCache.h"
+#import <TwitterKit/TwitterKit.h>
+
+#import <MessageUI/MFMessageComposeViewController.h>
+
+@interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource,
+                            SharePostViewDelegate,
+                            UIScrollViewDelegate, PostCollectionViewCellDelegate, MFMessageComposeViewControllerDelegate>
+
 
 @property (nonatomic) PostListType listType;
 @property (nonatomic) BOOL isCurrentUserProfile;
-@property (nonatomic) PFUser * listOwner;
-@property (nonatomic) Channel * channelForList;
+@property (nonatomic) PFUser *listOwner;
+@property (nonatomic) Channel *channelForList;
+@property (nonatomic) NSDate *latestDate;
 
-@property (nonatomic) NSMutableArray *parsePostObjects;
+@property (nonatomic, readwrite) NSMutableArray * parsePostObjects;
 @property (strong, nonatomic) FeedQueryManager *feedQueryManager;
-@property (strong, nonatomic) PostsQueryManager *postsQueryManager;
+@property (nonatomic) BOOL performingUpdate;
 @property (nonatomic) NSInteger nextIndexToPresent;
+@property (nonatomic) NSInteger nextNextIndex;
+@property (nonatomic) PostCollectionViewCell *currentDisplayCell;
 @property (strong, nonatomic) PostCollectionViewCell *nextCellToPresent;
+@property (strong, nonatomic) PostCollectionViewCell *nextNextCell;
 @property (nonatomic, strong) UILabel * noContentLabel;
 
 @property (nonatomic) LoadingIndicator *customActivityIndicator;
 @property (nonatomic) SharePostView *sharePostView;
 @property (nonatomic) BOOL shouldPlayVideos;
-@property (nonatomic) BOOL isRefreshing;
-@property (nonatomic) BOOL isLoadingMore;
+
 @property (nonatomic) BOOL footerBarIsUp;//like share bar
+@property (nonatomic) BOOL fbShare;
+@property (nonatomic) NSString *postImageText;
 @property (nonatomic) PFObject *postToShare;
+
+@property (nonatomic) NSNumber * publishingProgressViewPositionHolder;
+@property (nonatomic) ExternalShare * externalShare;
 
 @property (nonatomic) UIImageView *reblogSucessful;
 @property (nonatomic) UIImageView *following;
 @property (nonatomic) UIImageView *publishSuccessful;
 @property (nonatomic) UIImageView *publishFailed;
 
-@property (nonatomic) void(^refreshPostsCompletionFeed)(NSArray * posts);
-@property (nonatomic) void(^refreshPostsCompletionChannel)(NSArray * posts);
-@property (nonatomic) void(^loadMorePostsCompletion)(NSArray * posts);
+@property (nonatomic) BOOL exitedView;
 
-#define LOAD_MORE_POSTS_COUNT 3 //number of posts left to see before we start loading more content
+@property (nonatomic) BOOL isRefreshing;
+@property (nonatomic) BOOL isLoadingMore;
+@property (nonatomic) BOOL isLoadingOlder;
+
+@property (nonatomic) NSInteger scrollDirection; // -1 if scrolling backwards, +1 if forwards
+
+@property (nonatomic) void(^refreshPostsCompletion)(NSArray * posts);
+@property (nonatomic) void(^loadMorePostsCompletion)(NSArray * posts);
+@property (nonatomic) void(^loadOlderPostsCompletion)(NSArray * posts);
+
+
+#define LOAD_MORE_POSTS_COUNT (self.inSmallMode ? 6 : 3)
+
 #define POST_CELL_ID @"postCellId"
 #define NUM_POVS_TO_PREPARE_EARLY 2 //we prepare this number of POVVs after the current one for viewing
 
@@ -77,51 +117,163 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 
 @implementation PostListVC
 
+
 -(void) viewDidLoad {
+    [super viewDidLoad];
 	[self setDateSourceAndDelegate];
-	[self defineRefreshPostsCompletion];
+	[self defineLoadPostsCompletions];
 	[self registerClassForCustomCells];
 	[self registerForNotifications];
+	[self clearViews];
+    self.collectionView.backgroundColor = (self.inSmallMode) ? [UIColor clearColor] : [UIColor blackColor];
+    self.collectionView.bounces = YES;
 }
 
+-(void) registerForNotifications {
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(userPublishing:)
+												 name:NOTIFICATION_POST_CURRENTLY_PUBLISHING
+											   object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(publishingFailed:)
+												 name:NOTIFICATION_POST_FAILED_TO_PUBLISH
+											   object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(publishingSucceeded:)
+												 name:NOTIFICATION_POST_PUBLISHED
+											   object:nil];
+}
+
+-(void)clearPublishingView{
+    if(self.currentlyPublishing){
+        self.currentlyPublishing = NO;
+        if(self.parsePostObjects.count){
+            [self removePostAtIndex:[self.parsePostObjects indexOfObject:self.publishingProgressViewPositionHolder] withCompletionBlock:^() {
+                [self refreshPosts];
+            }];
+        }
+    }
+}
+
+-(void)startMonitoringPublishing{
+    //don't run the script when publishing isn't happening and
+    if(self.currentlyPublishing) return;
+    if(!self.isCurrentUserProfile) return;
+    if (!([PublishingProgressManager sharedInstance].currentlyPublishing)) return;
+
+    self.currentlyPublishing = YES;
+    self.nextIndexToPresent = -1;
+    self.nextNextIndex = -1;
+    
+    
+    [CATransaction begin];
+    [CATransaction setDisableActions:YES];
+    self.performingUpdate = YES;
+    //add progress view to parseObjects
+    NSInteger index = self.parsePostObjects.count;
+    [self.collectionView performBatchUpdates:^{
+        //Insert the new data
+        [self.parsePostObjects addObject:self.publishingProgressViewPositionHolder];
+        //Insert the new cells
+        [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:index inSection:0]]];
+        
+    } completion:^(BOOL finished) {
+        
+        if(finished){
+            self.performingUpdate = NO;
+            [CATransaction commit];
+            [self.postListDelegate postsFound];
+        }
+    }];
+}
+
+-(void) userPublishing:(NSNotification *) notification {
+    [self startMonitoringPublishing];
+}
+
+-(void) publishingSucceeded:(NSNotification *) notification {
+    NSLog(@"publishing done");
+    if(!self.isCurrentUserProfile) return;
+    [self clearPublishingView];
+}
+-(void) publishingFailed:(NSNotification *) notification {
+    if(!self.isCurrentUserProfile) return;
+    NSLog(@"publishing failed");
+	self.currentlyPublishing = NO;
+    [PFQuery clearAllCachedResults];
+    [self clearPublishingView];
+}
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+	self.exitedView = NO;
+}
 -(void) viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
 	[self offScreen];
 }
 
 -(void) clearViews {
-	for (PostCollectionViewCell *cellView in [self.collectionView visibleCells]) {
-		[cellView offScreen];
-		[cellView clearViews];
-	}
-	self.parsePostObjects = nil;
-	[self.collectionView reloadData];
-	self.feedQueryManager = nil;
-	self.nextIndexToPresent = 0;
-	self.nextCellToPresent = nil;
-	self.postToShare = nil;
-	self.isRefreshing = NO;
-	self.isLoadingMore = NO;
-	self.shouldPlayVideos = YES;
+	
+    @autoreleasepool {
+        self.exitedView = YES;
+        for (PostCollectionViewCell *cellView in [self.collectionView visibleCells]) {
+            [cellView offScreen];
+            [cellView clearViews];
+        }
+        self.parsePostObjects = nil;
+        [self.collectionView reloadData];
+        self.feedQueryManager = nil;
+		// Start off assuming scrolling backwards
+		self.scrollDirection = -1;
+        self.nextIndexToPresent = -1;
+        self.nextNextIndex = -1;
+        self.nextCellToPresent = nil;
+        self.nextNextCell = nil;
+        self.postToShare = nil;
+        self.isRefreshing = NO;
+        self.isLoadingMore = NO;
+        self.isLoadingOlder = NO;
+        self.performingUpdate = NO;
+        self.shouldPlayVideos = YES;
+    }
 }
 
+-(void) loadPostListFromOlPostListWithDisplay:(Channel*)channelForList postListType:(PostListType)listType
+  listOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile startingDate:(NSDate*)date andParseObjects:(NSMutableArray *)newParseObjects {
+    [self clearViews];
+    self.latestDate = date;
+    self.channelForList = channelForList;
+    self.listType = listType;
+    self.listOwner = listOwner;
+    self.isCurrentUserProfile = isCurrentUserProfile;
+    self.parsePostObjects = newParseObjects;
+    self.footerBarIsUp = (self.listType == listFeed || self.isCurrentUserProfile);
+    [self.collectionView reloadData];
+    self.isInitiated = YES;
+}
+
+
 -(void) display:(Channel*)channelForList asPostListType:(PostListType)listType
-  withListOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile {
+  withListOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	[self clearViews];
+	self.latestDate = date;
 	self.channelForList = channelForList;
 	self.listType = listType;
 	self.listOwner = listOwner;
 	self.isCurrentUserProfile = isCurrentUserProfile;
 	[self refreshPosts];
 	self.footerBarIsUp = (self.listType == listFeed || self.isCurrentUserProfile);
+    self.isInitiated = YES;
 }
 
 -(void) offScreen {
+	self.exitedView = YES;
 	for (PostCollectionViewCell *cellView in [self.collectionView visibleCells]) {
 		[cellView offScreen];
 	}
 }
 
+//todo: change refresh
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	if (scrollView == self.collectionView) {
 		CGPoint offset = scrollView.contentOffset;
@@ -145,17 +297,6 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	}
 }
 
--(void)registerForNotifications{
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(successfullyPublishedNotification:)
-												 name:NOTIFICATION_POST_PUBLISHED
-											   object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(followingSuccessfulNotification:)
-												 name:NOTIFICATION_NOW_FOLLOWING_USER
-											   object:nil];
-}
-
 //register our custom cell class
 -(void)registerClassForCustomCells{
 	[self.collectionView registerClass:[PostCollectionViewCell class] forCellWithReuseIdentifier:POST_CELL_ID];
@@ -165,26 +306,29 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 -(void)setDateSourceAndDelegate{
 	self.collectionView.dataSource = self;
 	self.collectionView.delegate = self;
-	self.collectionView.pagingEnabled = YES;
+	self.collectionView.pagingEnabled = NO;
 	self.collectionView.scrollEnabled = YES;
 	self.collectionView.showsHorizontalScrollIndicator = NO;
 	self.collectionView.bounces = YES;
+    
 }
 
 -(void)nothingToPresentHere {
-	if (self.noContentLabel || self.parsePostObjects.count > 0){
+    if(self.parsePostObjects.count == 0)[self.postListDelegate noPostFound];
+	
+    if (self.noContentLabel || self.parsePostObjects.count > 0){
 		return;
 	}
 
 	self.noContentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.f - NO_POSTS_LABEL_WIDTH/2.f, 0.f,
 																	NO_POSTS_LABEL_WIDTH, self.view.frame.size.height)];
 	self.noContentLabel.text = @"There are no posts to present :(";
-	self.noContentLabel.font = [UIFont fontWithName:DEFAULT_FONT size:20.f];
+	self.noContentLabel.font = [UIFont fontWithName:REGULAR_FONT size:20.f];
 	self.noContentLabel.textColor = [UIColor whiteColor];
 	self.noContentLabel.textAlignment = NSTextAlignmentCenter;
 	self.noContentLabel.lineBreakMode = NSLineBreakByWordWrapping;
 	self.noContentLabel.numberOfLines = 3;
-	self.view.backgroundColor = [UIColor blackColor];
+	self.view.backgroundColor = [UIColor clearColor];
 	[self.view addSubview:self.noContentLabel];
 }
 
@@ -195,64 +339,170 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate>
 	}
 }
 
--(void) defineRefreshPostsCompletion {
+-(void) defineLoadPostsCompletions {
 	__weak typeof(self) weakSelf = self;
-	self.refreshPostsCompletionFeed = ^void(NSArray *posts) {
-		[weakSelf.customActivityIndicator stopCustomActivityIndicator];
+	self.refreshPostsCompletion = ^void(NSArray *posts) {
+        [weakSelf.customActivityIndicator stopCustomActivityIndicator];
+		if(weakSelf.exitedView) return; // Already left page
+        [weakSelf.postListDelegate postsFound];
 		if(posts.count) {
-			NSIndexSet *indices = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0,[posts count])];
-			[weakSelf.parsePostObjects insertObjects:posts atIndexes:indices];
+			if (weakSelf.listType == listFeed) {
+				//Insert new posts into beginning
+                @autoreleasepool {
+                    
+                    
+                    NSMutableArray *indices = [NSMutableArray array];
+                    for (NSInteger i = 0; i < posts.count; i++) {
+                        [indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+                    }
+                    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0,[posts count])];
+                    // Perform the updates
+                    [weakSelf.collectionView performBatchUpdates:^{
+                      
+                        [weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
+                        
+                        //Insert the new cells
+                        [weakSelf.collectionView insertItemsAtIndexPaths:indices];
+
+                    } completion:^(BOOL finished) {
+                        if(finished){
+                        }
+                    }];
+                }
+            } else {
+                [weakSelf.parsePostObjects removeAllObjects];
+                [weakSelf.parsePostObjects addObjectsFromArray:posts];
+              if(weakSelf.currentlyPublishing){
+                        [weakSelf.parsePostObjects addObject:weakSelf.publishingProgressViewPositionHolder];
+                }
+				[weakSelf.collectionView reloadData];
+				[weakSelf scrollToLastElementInList];
+			}
 
 			[weakSelf removePresentLabel];
-			[weakSelf.collectionView reloadData];
 		} else if(!weakSelf.parsePostObjects.count){
 			[weakSelf nothingToPresentHere];
 		}
 		weakSelf.isRefreshing = NO;
 	};
 
-	self.refreshPostsCompletionChannel = ^void(NSArray *posts) {
-		[weakSelf.customActivityIndicator stopCustomActivityIndicator];
-		if(posts.count) {
-			weakSelf.parsePostObjects = nil;
-			[weakSelf.parsePostObjects addObjectsFromArray:posts];
-
-			[weakSelf removePresentLabel];
-			[weakSelf.collectionView reloadData];
-		} else if(!weakSelf.parsePostObjects.count){
-			[weakSelf nothingToPresentHere];
-		}
-		weakSelf.isRefreshing = NO;
-	};
-
+    
+    
+    
+    
 	self.loadMorePostsCompletion = ^void(NSArray *posts) {
-		if (posts.count) {
-			[weakSelf.parsePostObjects addObjectsFromArray:posts];
-			[weakSelf.collectionView reloadData];
-			weakSelf.isLoadingMore = NO;
+		if (!posts.count || weakSelf.exitedView) return;
+		weakSelf.isLoadingMore = NO;
+        [weakSelf.postListDelegate postsFound];
+        @autoreleasepool {
+            NSMutableArray *indices = [NSMutableArray array];
+            NSInteger index = weakSelf.parsePostObjects.count;
+            for (NSInteger i = index; i < index + posts.count; i++) {
+                [indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+            }
+            // Perform the updates
+            [weakSelf.collectionView performBatchUpdates:^{
+                //Insert the new data
+                [weakSelf.parsePostObjects addObjectsFromArray:posts];
+                //Insert the new cells
+                [weakSelf.collectionView insertItemsAtIndexPaths:indices];
+                
+            } completion:nil];
+        }
+	};
+
+    
+    
+    
+    
+    
+	self.loadOlderPostsCompletion = ^void(NSArray *posts) {
+        if (!posts.count || weakSelf.exitedView){
+            weakSelf.isLoadingOlder = NO;
+            return;
+        }
+        [weakSelf.postListDelegate postsFound];
+		NSMutableArray *indices = [NSMutableArray array];
+		for (NSInteger i = 0; i < posts.count; i++) {
+			[indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
 		}
+		NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0,[posts count])];
+
+		[CATransaction begin];
+		[CATransaction setDisableActions:YES];
+		weakSelf.performingUpdate = YES;
+		// Perform the updates
+		[weakSelf.collectionView performBatchUpdates:^{
+			//Insert the new data
+			[weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
+			//Insert the new cells
+			[weakSelf.collectionView insertItemsAtIndexPaths:indices];
+
+		} completion: ^(BOOL finished) {
+			if (finished) {
+				// Scroll to previously selected cell so nothing looks different
+				NSArray* visiblePaths = [weakSelf.collectionView indexPathsForVisibleItems];
+				NSInteger oldRow = visiblePaths && visiblePaths.count ? [(NSIndexPath*)visiblePaths[0] row] : 0;
+				NSInteger newRow = oldRow + posts.count;
+
+				NSIndexPath *selectedPostPath = [NSIndexPath indexPathForRow:newRow inSection:0];
+				[weakSelf.collectionView scrollToItemAtIndexPath:selectedPostPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+				weakSelf.nextIndexToPresent += posts.count;
+				weakSelf.nextNextIndex += posts.count;
+				weakSelf.isLoadingOlder = NO;
+				weakSelf.performingUpdate = NO;
+				[CATransaction commit];
+			}
+		}];
 	};
 }
 
--(void) refreshPosts {
-	if (self.isRefreshing) return;
-	self.isRefreshing = YES;
-	self.isLoadingMore = NO;
-	[self.customActivityIndicator startCustomActivityIndicator];
-	if(self.listType == listFeed){
-		[self.feedQueryManager refreshFeedWithCompletionHandler:self.refreshPostsCompletionFeed];
-	} else if (self.listType == listChannel) {
-		[self.postsQueryManager refreshPostsInChannel:self.channelForList withCompletionBlock:self.refreshPostsCompletionChannel];
+-(void)scrollToLastElementInList{
+	NSInteger section = 0;
+	NSInteger item = [self.collectionView numberOfItemsInSection:section] - 1;
+	if(item > 0){
+		NSIndexPath *indexPath = [NSIndexPath indexPathForItem:item inSection:section];
+		[self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:(UICollectionViewScrollPositionRight) animated:NO];
 	}
 }
 
+//todo: change to refresh newest and just load posts
+-(void) refreshPosts {
+	if (!self.isRefreshing){
+		self.exitedView = NO;
+		self.isRefreshing = YES;
+		self.isLoadingMore = NO;
+		[self.customActivityIndicator startCustomActivityIndicator];
+		if(self.listType == listFeed) {
+			[self.feedQueryManager refreshFeedWithCompletionHandler:self.refreshPostsCompletion];
+		} else if (self.listType == listChannel) {
+			[self.postsQueryManager loadPostsInChannel: self.channelForList withLatestDate:self.latestDate withCompletionBlock:self.refreshPostsCompletion];
+//			[self.postsQueryManager refreshPostsInChannel: self.channelForList startingAt:self.latestDate
+//									  withCompletionBlock: self.refreshPostsCompletion];
+		}
+	}
+}
+
+//todo: delete
 -(void) loadMorePosts {
-	if (self.isLoadingMore) return;
-	self.isLoadingMore = YES;
+	if (!self.isLoadingMore){
+		self.isLoadingMore = YES;
+		self.exitedView = NO;
+		if (self.listType == listFeed) {
+			[self.feedQueryManager loadMorePostsWithCompletionHandler:self.loadMorePostsCompletion];
+		} else if (self.listType == listChannel) {
+//			[self.postsQueryManager loadMorePostsInChannel:self.channelForList withCompletionBlock:self.loadMorePostsCompletion];
+		}
+	}
+}
+
+-(void) loadOlderPosts {
+	if (self.isLoadingOlder) return;
+	self.isLoadingOlder = YES;
 	if (self.listType == listFeed) {
-		[self.feedQueryManager loadMorePostsWithCompletionHandler:self.loadMorePostsCompletion];
-	} else if (self.listType == listChannel) {
-		[self.postsQueryManager loadMorePostsInChannel:self.channelForList withCompletionBlock:self.loadMorePostsCompletion];
+		return; // Not logical to load older posts in feed
+	} else {
+		[self.postsQueryManager loadOlderPostsInChannel:self.channelForList withCompletionBlock:self.loadOlderPostsCompletion];
 	}
 }
 
@@ -274,8 +524,62 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	return NO;
 }
 
+-(PostCollectionViewCell *)handleCellsForLargeModeForIndexPath:(NSIndexPath *)indexPath{
+    
+    PostCollectionViewCell *currentCell;
+    
+    if (indexPath.row == self.nextIndexToPresent) {
+        currentCell = self.nextCellToPresent;
+    } else if (indexPath.row == self.nextNextIndex) {
+        currentCell = self.nextNextCell;
+    }
+    if (currentCell == nil) {
+        currentCell = [self postCellAtIndexPath:indexPath];
+    }
+    [currentCell onScreen];
+    
+    //Prepare next cell (after first time will just be nextNextCell)
+    self.nextIndexToPresent = indexPath.row+1;
+    if (self.nextIndexToPresent == self.nextNextIndex) self.nextCellToPresent = self.nextNextCell;
+    if (!self.nextCellToPresent || self.nextIndexToPresent != self.nextNextIndex) {
+        self.nextCellToPresent = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextIndexToPresent inSection:indexPath.section]];
+    }
+    if (self.nextCellToPresent) [self.nextCellToPresent almostOnScreen];
+    
+    //Prepare next next cell
+    self.nextNextIndex = indexPath.row+2;
+    self.nextNextCell = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextNextIndex inSection:indexPath.section]];
+    if (self.nextNextCell) [self.nextNextCell almostOnScreen];
+    
+    
+    // Load more posts
+    if(indexPath.row >= (self.parsePostObjects.count - LOAD_MORE_POSTS_COUNT)
+       && !self.isLoadingMore && !self.isRefreshing) {
+        [self loadMorePosts];
+    }
+    
+    //Load older posts
+    if ( (self.inSmallMode && self.currentlyPublishing) ||( indexPath.row <= LOAD_MORE_POSTS_COUNT && !self.isRefreshing)) {
+        [self loadOlderPosts];
+    }
+
+    return currentCell;
+}
+
+
+//-(PostCollectionViewCell *)handleCellsForSmallModeForIndexPath:(NSIndexPath *)indexPath{
+//    PostCollectionViewCell *currentCell;
+//    return currentCell;
+//}
+
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
 				  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+	[self checkShouldReverseScrollDirectionFromIndexPath: indexPath];
+    
+	if (self.performingUpdate && self.currentDisplayCell){
+		return self.currentDisplayCell;
+	}
 
 	PostCollectionViewCell *currentCell;
 	if (indexPath.row == self.nextIndexToPresent) {
@@ -285,32 +589,90 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		currentCell = [self postCellAtIndexPath:indexPath];
 	}
 	[currentCell onScreen];
-
-	//Prepare next cell
-	self.nextIndexToPresent = indexPath.row+1;
-	self.nextCellToPresent = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextIndexToPresent inSection:indexPath.section]];
-	if (self.nextCellToPresent) [self.nextCellToPresent almostOnScreen];
+	[self prepareNextPostsFromIndexPath:indexPath];
 
 	// Load more posts
+	//todo: remove
 	if(indexPath.row >= (self.parsePostObjects.count - LOAD_MORE_POSTS_COUNT)
 	   && !self.isLoadingMore && !self.isRefreshing) {
 		[self loadMorePosts];
 	}
 
+	//Load older posts
+	if (indexPath.row <= LOAD_MORE_POSTS_COUNT && !self.isLoadingOlder && !self.isRefreshing) {
+		[self loadOlderPosts];
+	}
+
+	self.currentDisplayCell = currentCell;
 	return currentCell;
 }
 
--(PostCollectionViewCell*) postCellAtIndexPath:(NSIndexPath *)indexPath {
-	if (indexPath.row >= self.parsePostObjects.count) return nil;
-	PostCollectionViewCell *cell = (PostCollectionViewCell *) [self.collectionView dequeueReusableCellWithReuseIdentifier:POST_CELL_ID forIndexPath:indexPath];
-	cell.cellDelegate = self;
-	PFObject *postObject = self.parsePostObjects[indexPath.row];
-	if (cell.currentPostActivityObject != postObject) {
-		[cell clearViews];
-		[cell presentPostFromPCActivityObj:postObject andChannel:self.channelForList
-						  withDeleteButton:self.isCurrentUserProfile];
+-(void) checkShouldReverseScrollDirectionFromIndexPath:(NSIndexPath*)indexPath  {
+	// Check if should reverse scroll direction (only if this isn't the first time getting a cell)
+	if (self.nextIndexToPresent != -1) {
+		self.scrollDirection = (indexPath.row == self.nextIndexToPresent) ? self.scrollDirection : self.scrollDirection*-1;
 	}
+}
+
+-(void) prepareNextPostsFromIndexPath:(NSIndexPath*)indexPath {
+	self.nextIndexToPresent = indexPath.row + self.scrollDirection;
+	// If next cell is previously prepared next next cell, just set it equal
+	if (self.nextIndexToPresent == self.nextNextIndex) {
+		self.nextCellToPresent = self.nextNextCell;
+		// Otherwise, reset it
+	} else {
+		self.nextCellToPresent = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextIndexToPresent inSection:indexPath.section]];
+	}
+	if (self.nextCellToPresent) [self.nextCellToPresent almostOnScreen];
+
+	//Prepare next next cell
+	self.nextNextIndex = indexPath.row + self.scrollDirection*2;
+	self.nextNextCell = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextNextIndex inSection:indexPath.section]];
+	if (self.nextNextCell) [self.nextNextCell almostOnScreen];
+}
+
+-(PostCollectionViewCell*) postCellAtIndexPath:(NSIndexPath *)indexPath {
+	if (indexPath.row >= self.parsePostObjects.count){
+		return nil;
+	}
+    
+	PostCollectionViewCell *cell = (PostCollectionViewCell *) [self.collectionView dequeueReusableCellWithReuseIdentifier:POST_CELL_ID forIndexPath:indexPath];
+    
+	cell.cellDelegate = self;
+	if(indexPath.row < self.parsePostObjects.count){
+		id postObject = self.parsePostObjects[indexPath.row];
+		if (cell.currentPostActivityObject != postObject) {
+			[cell clearViews];
+            if(self.currentlyPublishing && [postObject isKindOfClass:[NSNumber class]]){
+                [cell presentPublishingView];
+            }else if(![postObject isKindOfClass:[NSNumber class]]){
+            
+                [cell presentPostFromPCActivityObj:postObject andChannel:self.channelForList
+							  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:NO];
+            }
+		}
+	}
+    [self addTapGestureToCell:cell];
+    cell.inSmallMode = self.inSmallMode;
 	return cell;
+}
+
+
+-(void)addTapGestureToCell:(PostCollectionViewCell *) cell{
+    
+    if(cell && !cell.cellHasTapGesture){
+        [cell addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cellTapped:)]];
+        cell.cellHasTapGesture = YES;
+        
+    }
+}
+
+-(void)cellTapped:(UIGestureRecognizer *) tap{
+    
+    PostCollectionViewCell * cellTapped = (PostCollectionViewCell *) tap.view;
+    
+    [self.postListDelegate cellSelectedAtPostIndex:[self.collectionView indexPathForCell:cellTapped]];
+    
 }
 
 - (void) collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -320,15 +682,19 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}
 }
 
+- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+    if ([collectionView.indexPathsForVisibleItems indexOfObject:indexPath] == NSNotFound) {
+        [(PostCollectionViewCell*)cell onScreen];
+    }
+}
+
+
 -(void) footerShowing: (BOOL) showing {
 	self.footerBarIsUp = showing;
 	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 		[self setNeedsStatusBarAppearanceUpdate];
 	} completion:^(BOOL finished) {
 	}];
-	for (NSInteger i = 0; i < [self.collectionView numberOfItemsInSection:0]; ++i) {
-		[(PostCollectionViewCell*)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]] shiftLikeShareBarDown:!showing];
-	}
 }
 
 #pragma mark - PostCollectionViewCell delegate -
@@ -341,7 +707,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		[self deleteReblog:post onPostView:postView withPostChannelActivityObj:pfActivityObj];
 		return;
 	}
-	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
+	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Delete post"
 																   message:@"Entire post will be deleted."
 															preferredStyle:UIAlertControllerStyleAlert];
 
@@ -349,7 +715,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 														 handler:^(UIAlertAction * action) {}];
 	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
 		NSInteger postIndex = [self.parsePostObjects indexOfObject: pfActivityObj];
-		[self removePostAtIndex: postIndex];
+		[self removePostAtIndex: postIndex withCompletionBlock:nil];
 		[postView clearPost];
 		[Post_BackendObject deletePost:post];
 	}];
@@ -360,15 +726,15 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void) deleteReblog:(PFObject *)post onPostView:(PostView *)postView withPostChannelActivityObj:(PFObject *)pfActivityObj {
-	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
-																   message:@"Are you sure you want to delete this reblogged post from your channel?"
+	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Delete reblogged post"
+																   message:@"Are you sure?"
 															preferredStyle:UIAlertControllerStyleAlert];
 
 	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
 														 handler:^(UIAlertAction * action) {}];
 	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
 		NSInteger postIndex = [self.parsePostObjects indexOfObject: pfActivityObj];
-		[self removePostAtIndex: postIndex];
+		[self removePostAtIndex: postIndex withCompletionBlock:nil];
 		[postView clearPost];
 		[postView.parsePostChannelActivityObject deleteInBackground];
 	}];
@@ -378,37 +744,67 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	[self presentViewController:alert animated:YES completion:nil];
 }
 
--(void)removePostAtIndex:(NSInteger)i {
+-(void)removePostAtIndex:(NSInteger)i withCompletionBlock:(void(^)(void)) block; {
+    [CATransaction begin];
+    [CATransaction setDisableActions:YES];
+    self.performingUpdate = YES;
 	[self.collectionView performBatchUpdates: ^ {
 		[self.parsePostObjects removeObjectAtIndex:i];
 		NSIndexPath *indexPath =[NSIndexPath indexPathForRow:i inSection:0];
 		[self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
-		if (self.parsePostObjects.count < 1) {
-			[self nothingToPresentHere];
-		}
 	} completion:^(BOOL finished) {
-
+        if(finished){
+            if (self.parsePostObjects.count < 1) {
+                [self nothingToPresentHere];
+            }
+            self.performingUpdate = NO;
+            [CATransaction commit];
+            if(block)block();
+        }
 	}];
 }
 
-#pragma mark Flagging
+#pragma mark Flagging & Blocking
 
--(void)flagButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post{
+-(void) flagOrBlockButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post{
 
-	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Flag Post"
-																   message:@"Are you sure you want to flag the content of this post? We will review it ASAP."
-															preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertController* alert = [UIAlertController alertControllerWithTitle:nil
+																   message:nil
+															preferredStyle:UIAlertControllerStyleActionSheet];
 
 	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
 														 handler:^(UIAlertAction * action) {}];
-	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-		[Post_BackendObject markPostAsFlagged:post];
+	UIAlertAction* flagAction = [UIAlertAction actionWithTitle:@"Report Post" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+		[self confirmFlagOrBlock:YES onPostView:postView withPostObject:post];
+	}];
+	UIAlertAction* blockAction = [UIAlertAction actionWithTitle:@"Block User" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+		[self confirmFlagOrBlock:NO onPostView:postView withPostObject:post];
 	}];
 
 	[alert addAction: cancelAction];
-	[alert addAction: deleteAction];
+	[alert addAction: flagAction];
+	[alert addAction: blockAction];
 	[self presentViewController:alert animated:YES completion:nil];
+}
 
+-(void) confirmFlagOrBlock:(BOOL)flagging onPostView:(PostView *)postView withPostObject:(PFObject *)post{
+	UIAlertController *confirmAlert = [UIAlertController alertControllerWithTitle:@"Are you sure?" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
+														 handler:^(UIAlertAction * action) {}];
+	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+		if (flagging) {
+			[Post_BackendObject markPostAsFlagged:post];
+			//todo: send us an email
+		} else {
+			PFObject *postChannelObject = [postView parsePostChannelActivityObject];
+			PFObject *channel = [postChannelObject objectForKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO];
+			PFUser *user = [channel objectForKey:CHANNEL_CREATOR_KEY];
+			[User_BackendObject blockUser:user];
+		}
+	}];
+	[confirmAlert addAction: cancelAction];
+	[confirmAlert addAction: deleteAction];
+	[self presentViewController:confirmAlert animated:YES completion:nil];
 }
 
 #pragma mark Sharing
@@ -427,10 +823,14 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 	CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
 	CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-	self.sharePostView = [[SharePostView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
+	self.sharePostView = [[SharePostView alloc] initWithFrame:offScreenFrame];
 	self.sharePostView.delegate = self;
-	[self.view addSubview:self.sharePostView];
-	[self.view bringSubviewToFront:self.sharePostView];
+	self.view.userInteractionEnabled = NO;
+	[[UIApplication sharedApplication].keyWindow addSubview:self.sharePostView];
+
+	//[self.view addSubview:self.sharePostView];
+	[[UIApplication sharedApplication].keyWindow bringSubviewToFront:self.sharePostView];
+	//[self.view bringSubviewToFront:self.sharePostView];
 	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^ {
 		self.sharePostView.frame = onScreenFrame;
 	}];
@@ -454,69 +854,246 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void)cancelButtonSelected{
 	[self removeSharePOVView];
+	self.view.userInteractionEnabled = YES;
 }
 
+
+-(void) ShareToVerbatmSelected{
+    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Repost to Verbatm Account" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {}];
+    
+    UIAlertAction* action2 = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                   
+                                                       NSMutableArray *channels = [[NSMutableArray alloc] init];
+                                                       [channels addObject:[[UserInfoCache sharedInstance] getUserChannel]];
+                                                       [Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
+                                                           dispatch_async(dispatch_get_main_queue(), ^{
+                                                               [self successfullyReblogged];
+                                                           });
+                                                       }];
+                                                   
+                                                   }];
+    [newAlert addAction:action1];
+    [newAlert addAction:action2];
+    [self presentViewController:newAlert animated:YES completion:nil];
+}
+
+
+-(void)reportLinkError{
+    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Oops something went wrong" message:@"Generating link - Please try again in a minute" preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+                                                    handler:^(UIAlertAction * action) {}];
+    [newAlert addAction:action1];
+    [self presentViewController:newAlert animated:YES completion:nil];
+}
+
+-(void)ShareToTwitterSelected{
+    
+    NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
+    if(url){
+        
+        TWTRComposer *composer = [[TWTRComposer alloc] init];
+        NSString * message = @"Hey - checkout this post on Verbatm! ";
+        [composer setText:[message stringByAppendingString:url]];
+        [composer setImage:[UIImage imageNamed:@"fabric"]];
+        
+        // Called from a UIViewController
+        [composer showFromViewController:self completion:^(TWTRComposerResult result) {
+            if (result == TWTRComposerResultCancelled) {
+                NSLog(@"Tweet composition cancelled");
+            }
+            else {
+                NSLog(@"Sending Tweet!");
+            }
+        }];
+
+    }else{
+        [self.externalShare storeShareLinkToPost:self.postToShare withCaption:nil withCompletionBlock:nil];
+        [self reportLinkError];
+    }
+    
+    
+    
+}
+
+-(void)ShareToFacebookSelected{
+    NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
+    if(url){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"got my Branch invite link to share to Facebook. Link : %@", url);
+            NSURL *link = [NSURL URLWithString:url];
+            FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
+            content.contentURL = link;
+            [FBSDKShareDialog showFromViewController:self
+                                         withContent:content
+                                            delegate:nil];
+        });
+    }else{
+        [self.externalShare storeShareLinkToPost:self.postToShare withCaption:nil withCompletionBlock:nil];
+        [self reportLinkError];
+    }
+}
+
+
+-(void)ShareToSmsSelected{
+    NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
+    if(url){
+        MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
+        NSString * message = @"Hey - checkout this post on Verbatm!   ";
+        controller.body = [message stringByAppendingString:url];
+        
+        controller.messageComposeDelegate = self;
+        [self presentViewController:controller animated:YES completion:nil];
+    
+        
+    }else{
+        [self.externalShare storeShareLinkToPost:self.postToShare withCaption:nil withCompletionBlock:nil];
+        
+        [self reportLinkError];
+    }
+}
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result{
+    [controller.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)CopyLinkSelected{
+    NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
+    if(url){
+        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+        pasteboard.string = url;
+        
+        UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Link Copied to Clipboard" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * action) {}];
+        [newAlert addAction:action1];
+        [self presentViewController:newAlert animated:YES completion:nil];
+        
+    }else{
+        [self.externalShare storeShareLinkToPost:self.postToShare withCaption:nil withCompletionBlock:nil];
+        [self reportLinkError];
+    }
+}
+
+
+
+
 //todo: save share object
--(void)postPostToChannels:(NSMutableArray *) channels{
-	if(channels.count) {
-		[Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
-			dispatch_async(dispatch_get_main_queue(), ^{
-				[self successfullyReblogged];
-			});
-		}];
-	}
+-(void) shareToShareOption:(ShareOptions) shareOption{
+
+    
+    switch (shareOption) {
+        case Verbatm:
+            [self ShareToVerbatmSelected];
+            break;
+        case TwitterShare:
+            [self ShareToTwitterSelected];
+            break;
+        case Facebook:
+            [self ShareToFacebookSelected];
+            break;
+        case Sms:
+            [self ShareToSmsSelected];
+            break;
+        case CopyLink:
+            [self CopyLinkSelected];
+            break;
+        
+        default:
+            break;
+    }
+
 	[self removeSharePOVView];
+	self.view.userInteractionEnabled = YES;
+}
+
+-(void)postPostExternal {
+	[Page_BackendObject getPagesFromPost:self.postToShare andCompletionBlock:^(NSArray *pages){
+		PFObject *po = pages[0];
+		PageTypes type = [((NSNumber *)[po valueForKey:PAGE_VIEW_TYPE]) intValue];
+
+		if(type == PageTypePhoto || type == PageTypePhotoVideo){
+			[Photo_BackendObject getPhotosForPage:po andCompletionBlock:^(NSArray * photoObjects) {
+				PFObject *photo = photoObjects[0];
+				NSString *photoLink = [photo valueForKey:PHOTO_IMAGEURL_KEY];
+				[self postToFacebookWithShareLink:photoLink];
+			}];
+		} else if(type == PageTypeVideo){
+			[Video_BackendObject getVideoForPage:po andCompletionBlock:^(PFObject * videoObject) {
+				NSString * thumbNailUrl = [videoObject valueForKey:VIDEO_THUMBNAIL_KEY];
+				[self postToFacebookWithShareLink:thumbNailUrl];
+			}];
+		}
+	}];
+}
+
+-(void) postToFacebookWithShareLink:(NSString*)shareLink {
+	NSString *postId = self.postToShare.objectId;
+	PFUser *user = [PFUser currentUser];
+	NSString *name = [user valueForKey:VERBATM_USER_NAME_KEY];
+	Channel_BackendObject *channelObj = [self.postToShare valueForKey:POST_CHANNEL_KEY];
+	NSString *channelName = [channelObj valueForKey:CHANNEL_NAME_KEY];
+
+	BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:postId];
+	branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName];
+	branchUniversalObject.contentDescription = @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!";
+	branchUniversalObject.imageUrl = shareLink;
+
+	BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
+	linkProperties.feature = @"share";
+	linkProperties.channel = @"facebook";
+
+	NSLog(@"Getting link for fb for user %@ reblogging from channel %@ for post %@...", name, channelName, postId);
+	[branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
+		NSLog(@"callback from external share called");
+		if (!error) {
+			dispatch_async(dispatch_get_main_queue(), ^{
+				NSLog(@"Got my Branch invite link to share: %@", url);
+				NSURL *link = [NSURL URLWithString:url];
+				FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
+				content.contentURL = link;
+				[FBSDKShareDialog showFromViewController:self
+											 withContent:content
+												delegate:nil];
+			});
+
+		} else {
+			NSLog(@"An error occured %@", error.description);
+		}
+	}];
+	self.view.userInteractionEnabled = YES;
 }
 
 -(void)successfullyReblogged{
-	[self.view addSubview:self.reblogSucessful];
-	[self.view bringSubviewToFront:self.reblogSucessful];
 
-	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-		self.reblogSucessful.alpha = 0.f;
-	}completion:^(BOOL finished) {
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Sucessfully Reblogged!" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+												   handler:^(UIAlertAction * action) {}];
+	[newAlert addAction:action];
+	[self presentViewController:newAlert animated:YES completion:nil];
 
-		[self.reblogSucessful removeFromSuperview];
-		self.reblogSucessful = nil;
-	}];
+	//todo: delete?
+
+	//	[self.view addSubview:self.reblogSucessful];
+	//	[self.view bringSubviewToFront:self.reblogSucessful];
+	//
+	//	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
+	//		self.reblogSucessful.alpha = 0.f;
+	//	}completion:^(BOOL finished) {
+	//
+	//		[self.reblogSucessful removeFromSuperview];
+	//		self.reblogSucessful = nil;
+	//	}];
 }
 
 
 #pragma mark - Notifications (publishing, following) -
 
--(void)successfullyPublishedNotification:(NSNotification *) notification {
-	[self.view addSubview:self.publishSuccessful];
-	[self.view bringSubviewToFront:self.publishSuccessful];
-	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-		self.publishSuccessful.alpha = 0.f;
-	}completion:^(BOOL finished) {
-		[self.publishSuccessful removeFromSuperview];
-		self.publishSuccessful = nil;
-	}];
-}
-
-
--(void)publishingFailedNotification:(NSNotification *) notification{
-	[self.view addSubview:self.publishFailed];
-	[self.view bringSubviewToFront:self.publishFailed];
-	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-		self.publishFailed.alpha = 0.f;
-	}completion:^(BOOL finished) {
-		[self.publishFailed removeFromSuperview];
-		self.publishFailed = nil;
-	}];
-}
-
--(void)followingSuccessfulNotification:(NSNotification *) notification{
-	[self.view addSubview:self.following];
-	[self.view bringSubviewToFront:self.following];
-	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-		self.following.alpha = 0.f;
-	}completion:^(BOOL finished) {
-		[self.following removeFromSuperview];
-		self.following = nil;
-	}];
-}
 
 
 #pragma mark -POV delegate-
@@ -524,6 +1101,13 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(void)channelSelected:(Channel *) channel{
 	[self.postListDelegate channelSelected:channel];
 }
+
+-(void) showWhoLikesThePost:(PFObject *) post{
+    UserAndChannelListsTVC * vc = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    [vc presentList:likersList forChannel:nil orPost:post];
+    [self presentViewController:vc animated:YES completion:nil];
+}
+
 
 #pragma mark -Lazy instantiation-
 
@@ -592,7 +1176,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(PostsQueryManager*) postsQueryManager {
 	if (!_postsQueryManager) {
-		_postsQueryManager = [[PostsQueryManager alloc] init];
+		_postsQueryManager = [[PostsQueryManager alloc] initInSmallMode: self.inSmallMode];
 	}
 	return _postsQueryManager;
 }
@@ -601,4 +1185,17 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+-(ExternalShare *)externalShare{
+    if(!_externalShare)_externalShare = [[ExternalShare alloc] init];
+    return _externalShare;
+}
+
+-(NSNumber*)publishingProgressViewPositionHolder{
+    if(!_publishingProgressViewPositionHolder)_publishingProgressViewPositionHolder = [NSNumber numberWithBool:YES];
+    return _publishingProgressViewPositionHolder;
+}
+
+-(void) didReceiveMemoryWarning {
+
+}
 @end

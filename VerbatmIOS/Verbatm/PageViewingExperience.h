@@ -8,12 +8,20 @@
 //	This is the base class for all page views.
 //
 
+#import "Icons.h"
+
+#import "LoadingIndicator.h"
+
 #import <UIKit/UIKit.h>
 
 @interface PageViewingExperience : UIView
 
 @property (nonatomic) NSInteger indexInPost;
 @property (nonatomic) BOOL inPreviewMode;
+@property (nonatomic) BOOL currentlyOnScreen;
+@property (nonatomic) BOOL currentlyLoadingMedia;
+@property (nonatomic) BOOL hasLoadedMedia;
+@property (nonatomic) LoadingIndicator *customActivityIndicator;
 
 // to be overriden in subclasses
 -(void)onScreen;
@@ -21,5 +29,5 @@
 -(void)offScreen;
 
 -(void)almostOnScreen;
-
+-(void)prepareForScreenShot;
 @end

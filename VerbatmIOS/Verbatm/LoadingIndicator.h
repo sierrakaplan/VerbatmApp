@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface LoadingIndicator : UIView
+@interface LoadingIndicator : UIImageView
 
 -(instancetype)initWithCenter:(CGPoint ) center andImage: (UIImage *) loadImage;
 

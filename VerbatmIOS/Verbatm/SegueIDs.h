@@ -34,4 +34,6 @@
 
 #define TERMS_CONDITIONS_VC_SEGUE_ID @"Accept_Terms_And_Conditions_Segue"
 
+#define SEGUE_ONBOARDING_BLOG_SELECT @"presentBlogSelect"
+
 #endif /* SegueIDs_h */

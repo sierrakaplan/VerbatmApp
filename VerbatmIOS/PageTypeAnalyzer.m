@@ -11,9 +11,6 @@
 
 #import "CollectionPinchView.h"
 
-#import "GTLVerbatmAppImage.h"
-#import "GTLVerbatmAppVideo.h"
-
 #import "ImagePinchView.h"
 
 #import <Parse/PFObject.h>
@@ -43,7 +40,7 @@
 @implementation PageTypeAnalyzer
 
 
--(NSMutableArray*) getPageViewsFromPinchViews:(NSArray*) pinchViews withFrame:(CGRect)frame inPreviewMode: (BOOL) inPreviewMode {
++(NSMutableArray*) getPageViewsFromPinchViews:(NSArray*) pinchViews withFrame:(CGRect)frame inPreviewMode: (BOOL) inPreviewMode {
 	NSMutableArray* results = [[NSMutableArray alloc] init];
 	for(int i = 0; i < pinchViews.count; i++) {
 		PinchView *pinchView = pinchViews[i];
@@ -54,7 +51,7 @@
 	return results;
 }
 
--(PageViewingExperience *) getPageViewFromPinchView: (PinchView*) pinchView withFrame: (CGRect) frame inPreviewMode: (BOOL) inPreviewMode {
++(PageViewingExperience *) getPageViewFromPinchView: (PinchView*) pinchView withFrame: (CGRect) frame inPreviewMode: (BOOL) inPreviewMode {
 	if (pinchView.containsImage && pinchView.containsVideo) {
 		PhotoVideoPVE *photoVideoPageView = [[PhotoVideoPVE alloc] initWithFrame:frame andPinchView:(CollectionPinchView *)pinchView inPreviewMode:inPreviewMode];
 		return photoVideoPageView;
@@ -64,38 +61,16 @@
 		return photoPageView;
 
 	} else {
-		VideoPVE *videoPageView = [[VideoPVE alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:inPreviewMode];
+		VideoPVE *videoPageView = [[VideoPVE alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:inPreviewMode
+											  isPhotoVideoSubview:NO];
 		return videoPageView;
 	}
 }
 
-+(PageViewingExperience *)getPageViewFromPageMedia:(NSArray *)pageMedia withFrame:(CGRect)frame small:(BOOL)small {
-	PageTypes type = [pageMedia[0] intValue];//convert nsnumber back to our type
-	if(type == PageTypePhoto) {
-		PhotoPVE *photoPageView = [[PhotoPVE alloc] initWithFrame:frame andPhotoArray:pageMedia[1] small:small isPhotoVideoSubview:NO];
-		return photoPageView;
-
-	}else if (type == PageTypeVideo){
-		return [[VideoPVE alloc] initWithFrame:frame andVideo:pageMedia[1][0] andThumbnail:pageMedia[1][1]];
-
-	} else if (type == PageTypePhotoVideo){
-		return [[PhotoVideoPVE alloc] initWithFrame:frame
-										  andPhotos:pageMedia[1]
-										   andVideo:pageMedia[2][0] andVideoThumbnail:pageMedia[2][1]
-											  small:small];
-	}
-
-	//should never reach here
-	return nil;
-}
-
--(void) getPageViewFromPage: (PFObject *)page withFrame: (CGRect) frame andCompletionBlock:(void(^)(NSArray *))block {
-
++(void) getPageMediaFromPage: (PFObject *)page withCompletionBlock:(void(^)(NSArray *))block {
 	PageTypes type = [((NSNumber *)[page valueForKey:PAGE_VIEW_TYPE]) intValue];
-
 	if (type == PageTypePhoto) {
 		[self getUIImagesFromPage:page withCompletionBlock:^(NSMutableArray * imagesAndText) {
-
 			block(@[[NSNumber numberWithInt:type], imagesAndText]);
 		}];
 	} else if (type == PageTypeVideo){
@@ -113,7 +88,7 @@
 
 /* photoTextArray is array containing subarrays of photo and text info
  @[@[url, uiimage, text, textYPosition, textColor, textAlignment, textSize],...] */
--(void) getUIImagesFromPage: (PFObject *) page withCompletionBlock:(void(^)(NSMutableArray *)) block{
++(void) getUIImagesFromPage: (PFObject *) page withCompletionBlock:(void(^)(NSMutableArray *)) block{
 
 	[Photo_BackendObject getPhotosForPage:page andCompletionBlock:^(NSArray * photoObjects) {
 
@@ -153,7 +128,7 @@
 	}];
 }
 
--(void)getThumbnailDatafromUrls:(NSArray *)urls withCompletionBlock:(void(^)(NSArray *)) block {
++(void)getThumbnailDatafromUrls:(NSArray *)urls withCompletionBlock:(void(^)(NSArray *)) block {
 
 	NSMutableArray* loadImageDataPromises = [[NSMutableArray alloc] init];
 	for (NSString *uri in urls) {
@@ -173,7 +148,7 @@
 }
 
 //Video array looks like @[URL, thumbnail]
--(void) getVideoFromPage: (PFObject*) page withCompletionBlock:(void(^)(NSArray *)) block{
++(void) getVideoFromPage: (PFObject*) page withCompletionBlock:(void(^)(NSArray *)) block{
 	[Video_BackendObject getVideoForPage:page andCompletionBlock:^(PFObject *videoObject) {
 		//get thumbnail url for video
 		NSString * thumbNailUrl = [videoObject valueForKey:VIDEO_THUMBNAIL_KEY];
@@ -186,7 +161,8 @@
 			components.queryItems = @[blobKey];
 
 			UIImage * thumbNail = [UIImage imageWithData:videoThumbNails[0]];
-			[[VideoDownloadManager sharedInstance] downloadURL:components.URL];
+			//todo: see if downloading videos can be made better
+//			[[VideoDownloadManager sharedInstance] downloadURL:components.URL];
 			block(@[components.URL, thumbNail]);
 		}];
 		

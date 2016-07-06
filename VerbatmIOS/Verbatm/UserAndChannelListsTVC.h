@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "Channel.h"
 /*
  This VC presents information about:
  1) who has liked a post
@@ -21,7 +21,6 @@
 
 
 @protocol UserAndChannelListsTVCDelegate <NSObject>
-
 -(void)openChannel:(Channel *) channel;
 
 -(void)selectedUser:(id)userId;
@@ -29,7 +28,19 @@
 @end
 
 
+typedef enum{
+    
+    likersList = 0,
+    followersList =1,
+    followingList =2
+    
+}ListLoadType;
+
 @interface UserAndChannelListsTVC : UITableViewController
+
+@property (nonatomic, weak) id<UserAndChannelListsTVCDelegate> listDelegate;
+@property (nonatomic) ListLoadType currentListType;
+
 //show which users like this post
 -(void) presentUserLikeInformationForPost:(id) post;
 
@@ -42,8 +53,6 @@
 //show which users are being followed by userId
 -(void)presentWhoIsFollowedBy:(id)userId;
 
--(void)presentAllVerbatmChannels;
-
-@property (nonatomic, weak) id<UserAndChannelListsTVCDelegate> listDelegate;
+-(void)presentList:(ListLoadType) listType forChannel:(Channel *) channel orPost:(PFObject *) post;
 
 @end

@@ -16,14 +16,19 @@
 @protocol ProfileVCDelegate <NSObject>
 
 -(void) showTabBar: (BOOL) show;
-
+@optional
+-(void) userCreateFirstPost;
 @end
 
 @interface ProfileVC : UIViewController
 
+@property (nonatomic) BOOL profileInFeed;
+
 @property (weak, nonatomic) id<ProfileVCDelegate> delegate;
 
-@property (weak, nonatomic) PFUser* userOfProfile;
+@property (weak, nonatomic) PFUser* ownerOfProfile;
+@property (nonatomic) Channel* channel; 
+@property (nonatomic) NSDate *startingDate;
 
 //let us know if this is the profile of the logged in user
 @property (nonatomic) BOOL isCurrentUserProfile;
@@ -33,11 +38,12 @@
 
 @property (nonatomic) id userIdToPresent;
 
-//channel that should be presented first
-@property (nonatomic) Channel * startChannel;
+-(void) clearOurViews;
 
--(void) showPublishingProgress;
+//instructs the Profile to begin loading postlist content
+-(void) loadContentToPostList;
 
--(void) addPostListVC;
+//to be used sparingly
+-(void) refreshProfile;
 
 @end

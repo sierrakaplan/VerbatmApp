@@ -9,19 +9,10 @@
 
 #import "CollectionPinchView.h"
 
-#import "GTLDateTime.h"
 #import "GTLQueryVerbatmApp.h"
 
 #import "GTLServiceVerbatmApp.h"
-
-#import "GTLVerbatmAppPage.h"
-#import "GTLVerbatmAppImage.h"
-#import "GTLVerbatmAppVideo.h"
-#import "GTLVerbatmAppVerbatmUser.h"
-#import "GTLVerbatmAppPageListWrapper.h"
 #import "GTLVerbatmAppUploadURI.h"
-
-#import "GTMHTTPFetcherLogging.h"
 
 #import "Notifications.h"
 
@@ -58,17 +49,12 @@
 
 -(AnyPromise*) storeVideoFromURL: (NSURL*) url {
 
-	AnyPromise* getVideoDataPromise = [UtilityFunctions loadCachedVideoDataFromURL:url];
-	AnyPromise* getVideoUploadURIPromise = [self getVideoUploadURI];
-
-	return PMKWhen(@[getVideoDataPromise, getVideoUploadURIPromise]).then(^(NSArray * results) {
-		NSData* videoData = results[0];
-		NSString* uri = results[1];
-		self.videoUploader = [[MediaUploader alloc] initWithVideoData:videoData andUri: uri];
+	return [self getVideoUploadURI].then(^(NSString* uri) {
+		self.videoUploader = [[MediaUploader alloc] init];
 		if ([self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
 			[self.publishingProgress addChild:self.videoUploader.mediaUploadProgress withPendingUnitCount: VIDEO_PROGRESS_UNITS - 1];
 		}
-		return [self.videoUploader startUpload];
+		return [self.videoUploader uploadVideoWithUrl:url andUri:uri];
 	});
 }
 
@@ -76,7 +62,7 @@
 // (get image upload uri) then (upload image to blobstore using uri) then (store gtlimage with serving url from blobstore)
 // Resolves to what insertImage resolves to,
 // Which should be the ID of the GTL image just stored
--(AnyPromise*) storeImage: (NSData*) imageData {
+-(AnyPromise*) storeImageWithName:(NSString*)fileName andData:(NSData*) imageData {
 	return [self getImageUploadURI].then(^(id result) {
 		if ([result isKindOfClass:[NSError class]]) {
 			return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
@@ -84,56 +70,12 @@
 			}];
 		}
 		NSString* uri = (NSString*)result;
-		self.imageUploader = [[MediaUploader alloc] initWithImage: imageData andUri:uri];
+		self.imageUploader = [[MediaUploader alloc] init];
 		if ([self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
 			[self.publishingProgress addChild:self.imageUploader.mediaUploadProgress withPendingUnitCount: IMAGE_PROGRESS_UNITS - 1];
 		}
-		return [self.imageUploader startUpload];
+		return [self.imageUploader uploadImageWithName:fileName andData:imageData andUri:uri];
 	});
-}
-
-#pragma mark - Insert entities into the Datastore NOT IN USE -
-
-// Queries insert Image into the datastore.
-// PMKPromise resolves with either error or the id of the image just stored.
--(AnyPromise*) insertImage: (GTLVerbatmAppImage*) image {
-	GTLQuery* insertImageQuery = [GTLQueryVerbatmApp queryForImageInsertImageWithObject:image];
-
-	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
-		[self.service executeQuery:insertImageQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppImage* storedImage, NSError *error) {
-			if (error) {
-				resolve(error);
-			} else {
-				if (![self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
-					[self.publishingProgress setCompletedUnitCount:self.publishingProgress.completedUnitCount + IMAGE_PROGRESS_UNITS];
-				}
-				resolve(storedImage.identifier);
-			}
-		}];
-	}];
-
-	return promise;
-}
-
-// Queries insert Video into the datastore.
-// PMKPromise resolves with either error or the id of the video just stored.
--(AnyPromise*) insertVideo: (GTLVerbatmAppVideo*) video {
-	GTLQuery* insertVideoQuery = [GTLQueryVerbatmApp queryForVideoInsertVideoWithObject:video];
-	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
-		[self.service executeQuery:insertVideoQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppVideo* storedVideo, NSError *error) {
-			if (error) {
-				resolve(error);
-			} else {
-				if (![self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
-					[self.publishingProgress setCompletedUnitCount:self.publishingProgress.completedUnitCount + VIDEO_PROGRESS_UNITS];
-				}
-				NSLog(@"Publishing progress updated to %ld out of %ld", (long)self.publishingProgress.completedUnitCount, (long)self.totalProgressUnits);
-				resolve(storedVideo.identifier);
-			}
-		}];
-	}];
-
-	return promise;
 }
 
 #pragma mark - Get upload URIS -
@@ -181,7 +123,7 @@
 		_service.retryEnabled = YES;
 
 		// Development only
-		[GTMHTTPFetcher setLoggingEnabled:YES];
+//		[GTMHTTPFetcher setLoggingEnabled:YES];
 	}
 
 	return _service;

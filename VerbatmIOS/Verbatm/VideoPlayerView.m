@@ -31,7 +31,7 @@
 
 @property (strong, nonatomic) id playbackLikelyToKeepUpKVOToken;
 
-@property (nonatomic) LoadingIndicator *customActivityIndicator;
+@property (nonatomic) UIActivityIndicatorView *loadingIndicator;
 
 
 #define VIDEO_LOADING_ICON_SIZE 50
@@ -68,34 +68,18 @@
 -(void)prepareVideoFromAsset: (AVAsset*) asset{
 	if (!asset) return;
 
-	if (!self.videoLoading) {
-		self.videoLoading = YES;
-	}
+	self.videoLoading = YES;
+	NSArray *keys = @[@"playable",@"tracks",@"duration"];
 
-//	NSArray *keys = @[@"playable",@"tracks",@"duration"];
-//
-//	[asset loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
-//		[self prepareVideoFromPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
-//	}];
-
-	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
-
-	dispatch_async(queue, ^{
-		AVPlayerItem *item = [AVPlayerItem playerItemWithAsset:asset];
-
-		dispatch_sync(dispatch_get_main_queue(), ^{
-			[self prepareVideoFromPlayerItem:item];
-		});
-	});
+	[asset loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
+		[self prepareVideoFromPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
+	}];
 }
 
 -(void)prepareVideoFromURL: (NSURL*) url{
 	if (!url) return;
 
-	if (!self.videoLoading) {
-		self.videoLoading = YES;
-	}
-
+	self.videoLoading = YES;
 	AVPlayerItem *playerItem;
 	if([[VideoDownloadManager sharedInstance] containsEntryForUrl:url]){
 		playerItem = [[VideoDownloadManager sharedInstance] getVideoForUrl: url.absoluteString];
@@ -108,9 +92,7 @@
 }
 
 -(void) prepareVideoFromPlayerItem:(AVPlayerItem*)playerItem {
-	if (!self.videoLoading) {
-		self.videoLoading = YES;
-	}
+	self.videoLoading = YES;
 	if (self.playerItem) {
 		[self removePlayerItemObservers];
 	}
@@ -123,11 +105,6 @@
 											 selector:@selector(playerItemDidReachEnd:)
 												 name:AVPlayerItemDidPlayToEndTimeNotification
 											   object:self.playerItem];
-
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(playerItemDidStall:)
-//												 name:AVPlayerItemPlaybackStalledNotification
-//											   object:self.playerItem];
 }
 
 //this function should be called on the main thread
@@ -138,7 +115,6 @@
 	if (self.playerItem == NULL) {
 
 	}
-	//todo background thread
 	self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
 	self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
 	// Create an AVPlayerLayer using the player
@@ -150,20 +126,10 @@
 
 	self.player.muted = self.isMuted;
 
-	if(![NSThread isMainThread]){
-		dispatch_async(dispatch_get_main_queue(), ^{
-			[self presentNewLayers];
-		});
-	} else {
-		[self presentNewLayers];
-	}
+	dispatch_async(dispatch_get_main_queue(), ^{
+		if(self.playerLayer) [self.layer addSublayer:self.playerLayer];
+	});
 	if (self.shouldPlayOnLoad) [self playVideo];
-}
-
--(void)presentNewLayers{
-	// Add it to your view's sublayers
-	if(self.playerLayer)[self.layer addSublayer:self.playerLayer];
-	if(self.customActivityIndicator)[self.customActivityIndicator startCustomActivityIndicator];
 }
 
 #pragma mark - Observe player item status -
@@ -172,31 +138,31 @@
 						change:(NSDictionary *)change context:(void *)context {
 	if (object == self.playerItem && [keyPath isEqualToString:@"status"]) {
 		if (self.playerItem.status == AVPlayerItemStatusReadyToPlay) {
-			if (self.videoLoading) {
-				[self.customActivityIndicator stopCustomActivityIndicator];
-				self.videoLoading = NO;
-			}
+			[self.loadingIndicator stopAnimating];
+			self.videoLoading = NO;
 			if (self.shouldPlayOnLoad) [self playVideo];
 		} else if (self.playerItem.status == AVPlayerItemStatusFailed) {
 			[[Crashlytics sharedInstance] recordError:self.playerItem.error];
 			if (self.videoLoading) {
-				[self.customActivityIndicator stopCustomActivityIndicator];
+				[self.loadingIndicator stopAnimating];
 				self.videoLoading = NO;
 			}
 		}
 	}
 	if ([keyPath isEqualToString:@"playbackLikelyToKeepUp"]) {
 		if (self.playerItem.playbackLikelyToKeepUp) {
-			if (self.videoLoading) {
-				[self.customActivityIndicator stopCustomActivityIndicator];
-				self.videoLoading = NO;
+			[self.loadingIndicator stopAnimating];
+			self.videoLoading = NO;
+			if (self.shouldPlayOnLoad) {
+				NSLog(@"play back will keep up");
+				[self playVideo];
+			} else {
+				NSLog(@"Ready but not playing.");
 			}
-			if (self.shouldPlayOnLoad) [self playVideo];
-			self.shouldPlayOnLoad = NO;
-		} else {
-			[self.customActivityIndicator startCustomActivityIndicator];
+		} else if (self.shouldPlayOnLoad) {
+			NSLog(@"play back will not keep up");
+			[self.loadingIndicator startAnimating];
 			self.videoLoading = YES;
-			self.shouldPlayOnLoad = YES;
 		}
 	}
 }
@@ -204,11 +170,11 @@
 #pragma mark - Play video -
 
 -(void)playVideo {
-	if (self.player && (self.player.rate == 0)) {
+	self.shouldPlayOnLoad = YES;
+	if (self.videoLoading) [self.loadingIndicator startAnimating];
+	if (self.player && self.playerLayer) {
 		[self.player play];
 		self.isVideoPlaying = YES;
-	} else {
-		self.shouldPlayOnLoad = YES;
 	}
 }
 
@@ -222,11 +188,11 @@
 
 // Pauses player
 -(void)pauseVideo {
-	[self removePlayerItemObservers];
 	if (self.player) {
 		[self.player pause];
 	}
 	self.isVideoPlaying = NO;
+	self.shouldPlayOnLoad = NO;
 }
 
 #pragma mark - Mute / Unmute -
@@ -256,28 +222,28 @@
 //this is called right before the view is removed from the screen
 -(void) stopVideo {
 	@autoreleasepool {
-		if (self.videoLoading) {
-			self.videoLoading = NO;
-		}
-		[self.customActivityIndicator stopCustomActivityIndicator];
+		if(self.player)[self.player pause];
+		self.shouldPlayOnLoad = NO;
+		self.videoLoading = NO;
+		[self removePlayerItemObservers];
+		if(self.loadingIndicator)[self.loadingIndicator stopAnimating];
 
-		for (UIView* view in self.subviews) {
-			[view removeFromSuperview];
+        for (int i = 0; i < self.subviews.count; i++) {
+			[self.subviews[i] removeFromSuperview];
 		}
-		@autoreleasepool {
-			[self removePlayerItemObservers];
-			for (CALayer *sublayer in self.layer.sublayers) {
-				[sublayer removeFromSuperlayer];
-			}
-			[self.playerLayer removeFromSuperlayer];
-			self.playerItem = nil;
-			self.player = nil;
-			self.playerLayer = nil;
-			self.isVideoPlaying = NO;
-			[self.ourTimer invalidate];
-			self.ourTimer = nil;
-			self.shouldPlayOnLoad = NO;
-		}
+        
+        for(int i =0; i < self.layer.sublayers.count; i++){
+            [self.layer.sublayers[i] removeFromSuperlayer];
+        }
+        
+		if(self.playerLayer)[self.playerLayer removeFromSuperlayer];
+		self.loadingIndicator = nil;
+		self.playerItem = nil;
+		self.player = nil;
+		self.playerLayer = nil;
+		self.isVideoPlaying = NO;
+		if(self.ourTimer)[self.ourTimer invalidate];
+		self.ourTimer = nil;
 	}
 }
 
@@ -285,20 +251,22 @@
 	@try {
 		[self.playerItem removeObserver:self forKeyPath:@"status"];
 		[self.playerItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
-	} @catch(id anException){
+	} @catch(id anException) {
 		//do nothing, obviously they weren't attached because an exception was thrown
 	}
 }
 
 #pragma mark - Lazy Instantation -
 
--(LoadingIndicator *) customActivityIndicator{
-	if(!_customActivityIndicator){
-		_customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:self.center andImage:[UIImage imageNamed:VIDEO_LOADING_ICON]];
-		[self addSubview:_customActivityIndicator];
+-(UIActivityIndicatorView *) loadingIndicator {
+	if(!_loadingIndicator) {
+		_loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhiteLarge];
+		_loadingIndicator.center = self.center;
+		_loadingIndicator.hidesWhenStopped = YES;
+		[self addSubview:_loadingIndicator];
 	}
-	[self bringSubviewToFront:_customActivityIndicator];
-	return _customActivityIndicator;
+	[self bringSubviewToFront:_loadingIndicator];
+	return _loadingIndicator;
 }
 
 - (void)dealloc {

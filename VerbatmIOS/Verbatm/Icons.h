@@ -18,18 +18,21 @@
 
 #pragma mark - Bottom Tab Bar -
 
-#define ADK_NAV_ICON @"plus"
+#define ADK_NAV_ICON @"edit_icon_white"
 #define PROFILE_NAV_ICON @"profile"
 #define HOME_NAV_ICON @"home"
-#define DISCOVER_TAB_BAR_ICON @"search"
+#define DISCOVER_NAV_ICON @"search"
 
 #pragma mark - Profile -
 
-#define BLOCK_USER_ICON @"report_icon"
+#define BLOCK_USER_ICON @"settings_icon"
 
 #define SETTINGS_BUTTON_ICON @"settings_icon"
-#define BACK_BUTTON_ICON @"back_arrow"
+
+#define BACK_BUTTON_ICON @"back_arrow_black"
 #define DOWN_ARROW_ICON @"down_arrow_white"
+#define CREATE_POST_PROMPT_ICON @"Make First Post icon"
+
 
 #pragma mark - Feed -
 
@@ -110,28 +113,39 @@
 #define MUTED_ICON @"sound_muted"
 #define DELETE_POST_ICON @"trash_icon_dark"
 
-#define FLAG_POST_ICON @"Flagging Icon"
-
+#define FLAG_POST_ICON @"etc_icon"
 
 #pragma mark Sharing options
 
 #define FACEBOOK_LOGO @"facebook_logo"
 #define TWITTER_LOGO @"twitter_logo"
 
+#define SMS_ICON @"SMS icon"
+#define COPY_LINK_ICON @"Copy link"
+
 #pragma mark Edit Content View
 
 #define MEDIA_REARRANGE_ICON @"rearrange_icon"
 
-#define SWIPE_UP_DOWN_INSTRUCTION @"Swipe _up_down_to_page"
-#define PINCH_OBJECTS_TOGETHER_INSTRUCTION @"Pinch D1"
-#define FILTER_SWIPE_INSTRUCTION @"filterAndSwipe_Instructions_black"
-
+#define SWIPE_UP_DOWN_INSTRUCTION @"instruction_swipe_up_down"
+#define PINCH_OBJECTS_TOGETHER_INSTRUCTION @"instruction_pinch"
+#define EDIT_PINCHVIEW_INSTRUCTION @"instruction_edit_pinchview"
+#define ADD_TEXT_INSTRUCTION @"instruction_add_text"
 
 #pragma mark -Photo Slideshow icons-
 
 #define PAUSE_SLIDESHOW_ICON @"Pause_slideshow_icon"
 #define PLAY_SLIDESHOW_ICON @"Play_slideshow_icon"
 
+#pragma mark - Discover -
+
+#define DISCOVER_BACKGROUND @"background_discover"
+
+#pragma mark - Profile Information Header -
+#define ADD_COVER_PHOTO_ICON @"Add cover photo"
+
+#define NO_COVER_PHOTO_IMAGE @"Empty_Cover_Photo_Image"
+#define PROFILE_BACK_BUTTON_ICON @"back_arrow_white"
 
 
 #endif /* Icons_h */

@@ -9,15 +9,20 @@
 #ifndef Styles_h
 #define Styles_h
 
+
+#pragma mark -General Style -
+
+#define STANDARD_VIEW_CORNER_RADIUS 10.f
+
 #define VERBATM_GOLD_COLOR [UIColor colorWithRed:1.0 green:0.85 blue:0.20 alpha:1.0]
 #define ORANGE_COLOR [UIColor colorWithRed:0.8 green:0.4 blue:0.01 alpha:1.0]
 
-#define DEFAULT_FONT @"Raleway-Regular"//@"Quicksand-Regular"
-#define BUTTON_FONT @"Raleway-Bold" //@"Quicksand-Bold"
-#define PLACEHOLDER_FONT @"Raleway-Italic" //@"Quicksand-BoldItalic"
-#define TITLE_TEXT_FONT @"Raleway-Regular" //@"Quicksand-Bold"
+#define REGULAR_FONT @"Raleway-Regular"//@"Quicksand-Regular"
+#define BOLD_FONT @"Raleway-Bold" //@"Quicksand-Bold"
+#define ITALIC_FONT @"Raleway-Italic" //@"Quicksand-BoldItalic"
+#define LIGHT_ITALIC_FONT @"Raleway-LightItalic"
 
-#define HEADER_TEXT_FONT @"Raleway-Regular"//@"Quicksand-Regular"
+#define HEADER_TEXT_FONT REGULAR_FONT
 #define HEADER_TEXT_SIZE 20.f
 
 #pragma mark - Sign In -
@@ -27,15 +32,18 @@
 
 #pragma mark - Bottom Tab Bar -
 
-#define TAB_BAR_ALPHA 0.7
+#define TAB_BAR_ALPHA 1.f
 
 #pragma mark - Profile -
 
-#define USER_CHANNEL_LIST_FONT @"Raleway-Regular"//@"Quicksand-Regular"
+#define PROFILE_INFO_BAR_BACKGROUND_COLRO [UIColor colorWithWhite:0.f alpha:0.7]
+
+
+#define USER_CHANNEL_LIST_FONT REGULAR_FONT
 #define USER_CHANNEL_LIST_FONT_SIZE 20.f
 
 //Font of the headers of the user_channel list
-#define INFO_LIST_HEADER_FONT @"Raleway-Bold" //@"Quicksand-Bold"
+#define INFO_LIST_HEADER_FONT BOLD_FONT
 #define INFO_LIST_HEADER_FONT_SIZE 20.f
 
 #pragma mark Channel Tab Bar
@@ -44,21 +52,21 @@
 #define CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED [UIColor colorWithWhite:0.f alpha:0.5]
 #define CHANNEL_TAB_BAR_BACKGROUND_COLOR_SELECTED [UIColor colorWithWhite:1.f alpha:0.8]
 
-#define CHANNEL_TAB_BAR_NAME_FONT @"Raleway-Bold" //@"Quicksand-Bold"
+#define CHANNEL_TAB_BAR_NAME_FONT REGULAR_FONT
 #define CHANNEL_TAB_BAR_NAME_FONT_SIZE 17.f
 #define CHANNEL_TAB_BAR_NAME_FONT_ATTRIBUTE [UIFont fontWithName:CHANNEL_TAB_BAR_NAME_FONT size:CHANNEL_TAB_BAR_NAME_FONT_SIZE]
 
-#define CHANNEL_TAB_BAR_FOLLOWERS_FONT @"Raleway-Regular"//@"Quicksand-Regular"
+#define CHANNEL_TAB_BAR_FOLLOWERS_FONT REGULAR_FONT
 #define CHANNEL_TAB_BAR_FOLLOWERS_FONT_SIZE 15.f
 #define CHANNEL_TAB_BAR_FOLLOWERS_FONT_ATTRIBUTE [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:CHANNEL_TAB_BAR_FOLLOWERS_FONT_SIZE]
 
-#define CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT @"Raleway-Bold" //@"Quicksand-Bold"
+#define CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT BOLD_FONT
 #define CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT_SIZE 17.f
 #define CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT_ATTRIBUTE [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT size:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT_SIZE]
 
-#define CHANNEL_CREATION_USER_TEXT_ENTRY_PLACEHOLDER_FONT @"Raleway-LightItalic" //@"Quicksand-LightItalic"
-#define CHANNEL_CREATION_USER_TEXT_ENTRY_FONT @"Raleway-Bold" //@"Quicksand-Bold"
-#define CHANNEL_CREATION_BUTTON_FONT @"Raleway-Regular"//@"Quicksand-Regular"
+#define CHANNEL_CREATION_USER_TEXT_ENTRY_PLACEHOLDER_FONT LIGHT_ITALIC_FONT
+#define CHANNEL_CREATION_USER_TEXT_ENTRY_FONT BOLD_FONT
+#define CHANNEL_CREATION_BUTTON_FONT REGULAR_FONT
 
 #define CREATE_CHANNEL_BUTTON_FONT_SIZE 19.f
 
@@ -71,7 +79,7 @@
 #define CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE 20.f
 #define CHANNEL_USER_LIST_USER_NAME_FONT_SIZE 15.f
 
-#define LIKE_SHARE_BAR_BACKGROUND_COLOR [UIColor clearColor]//[UIColor colorWithWhite:0.f alpha:0.3]
+#define LIKE_SHARE_BAR_BACKGROUND_COLOR [UIColor colorWithWhite:0.f alpha:0.3]
 
 #pragma mark - Page Views -
 
@@ -79,7 +87,7 @@
 
 #pragma mark Text
 
-#define TEXT_PAGE_VIEW_DEFAULT_FONT @"Raleway-Bold" //@"Quicksand-Bold"
+#define TEXT_PAGE_VIEW_DEFAULT_FONT BOLD_FONT
 #define TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE 40
 #define TEXT_PAGE_VIEW_MIN_FONT_SIZE 25
 #define TEXT_PAGE_VIEW_MAX_FONT_SIZE 70
@@ -101,7 +109,7 @@
 #pragma mark - Navigation Bars -
 
 #define NAVIGATION_BAR_TEXT_COLOR whiteColor
-#define NAVIGATION_BAR_BUTTON_FONT DEFAULT_FONT
+#define NAVIGATION_BAR_BUTTON_FONT REGULAR_FONT
 #define NAVIGATION_BAR_BUTTON_FONT_SIZE 15.f
 
 #define FILTER_LEVEL_BLUR 30
@@ -111,7 +119,8 @@
 
 #pragma mark - ADK -
 
-#define ADK_NAV_BAR_COLOR CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED 
+#define ADK_NAV_BAR_COLOR [UIColor clearColor]
+//CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED
 #define SETTINGS_NAV_BAR_COLOR [UIColor blackColor]
 
 #define CHANNEL_PICKER_TEXT_COLOR whiteColor
@@ -140,7 +149,7 @@
 
 #pragma mark Verbatm Keyboard Toolbar
 
-#define KEYBOARD_TOOLBAR_FONT_SIZE 22.f
+#define KEYBOARD_TOOLBAR_FONT_SIZE 18.f
 
 #pragma mark Preview
 
@@ -153,7 +162,19 @@
 
 #define CHANNEL_LIST_CELL_SEPERATOR_COLOR [UIColor grayColor]
 #define DISCOVER_CHANNEL_NAME_FONT_SIZE 20.f
-#define DISCOVER_USER_NAME_FONT_SIZE 18.f
+#define DISCOVER_USER_NAME_FONT_SIZE 14.f
+
+
+
+#pragma mark -Share Post Link View -
+
+
+#define SPLV_LABEL_TEXT_COLOR [UIColor grayColor]
+
+#define SPLV_BACKGROUND_COLOR [UIColor colorWithWhite:1.f alpha:0.9f]
+
+
+#define CHANNEL_LIST_HEADER_BACKGROUND_COLOR [UIColor colorWithWhite:0.95 alpha:1.f]
 
 
 #endif /* Styles_h */

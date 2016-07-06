@@ -8,7 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import <Parse/PFUser.h>
-#import "Channel.h"
+@class Channel;
+
 @interface Channel_BackendObject : NSObject
 
 +(void)createChannelWithName:(NSString *)channelName andCompletionBlock:(void(^)(PFObject *))block;
@@ -21,5 +22,7 @@
 //takes a completion block that will be called with
 //an nsarray of the channels
 +(void) getChannelsForUser:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock;
++ (void) getAllChannelsWithCompletionBlock:(void(^)(NSMutableArray *))completionBlock;
 
++(void)storeCoverPhoto:(UIImage *) coverPhoto withParseChannelObject:(PFObject *) channel;
 @end

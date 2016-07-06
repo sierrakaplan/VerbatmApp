@@ -16,7 +16,6 @@
 #define PROFILE_VC_ID @"profile_vc"
 #define NOTIFICATIONS_VC_ID @"notifications_vc"
 
-#define DISCOVER_VC_ID @"discover_vc"
 #define TRENDING_VC_ID @"trending_vc"
 #define FEATURED_CONTENT_VC_ID @"featured_content_vc"
 

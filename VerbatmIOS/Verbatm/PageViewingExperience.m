@@ -8,16 +8,23 @@
 
 #import "PageViewingExperience.h"
 
+@interface PageViewingExperience()
+
+
+
+@end
+
 @implementation PageViewingExperience
 
 -(instancetype) initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
-    
-    if(self){
+    if(self) {
+		self.hasLoadedMedia = NO;
+		self.currentlyOnScreen = NO;
+		self.currentlyLoadingMedia = NO;
         self.clipsToBounds = YES;
         [self createBorder];
     }
-    
     return self;
 }
 
@@ -32,5 +39,15 @@
 -(void)offScreen {}
 
 -(void)almostOnScreen {}
+-(void)prepareForScreenShot{}
+
+-(LoadingIndicator *) customActivityIndicator{
+	if(!_customActivityIndicator){
+		CGPoint newCenter = CGPointMake(self.center.x, self.frame.size.height * 1.f/2.f);
+		_customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:newCenter andImage:[UIImage imageNamed:LOAD_ICON_IMAGE]];
+		[self addSubview:_customActivityIndicator];
+	}
+	return _customActivityIndicator;
+}
 
 @end

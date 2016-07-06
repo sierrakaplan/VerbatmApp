@@ -1,15 +1,25 @@
 source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '9.0'
 use_frameworks!
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['ENABLE_BITCODE'] = 'NO'
+    end
+  end
+end
 
-pod 'PromiseKit'
-pod 'Fabric'
-pod 'Crashlytics'
-pod 'Parse'
-pod 'FBSDKCoreKit'
-pod 'FBSDKLoginKit'
-pod 'FBSDKShareKit'
-pod "FBSDKMessengerShareKit"
-pod 'ParseFacebookUtilsV4'
-
-link_with 'Verbatm'
+target "Verbatm" do
+       pod 'AFNetworking', '~> 3.0'
+       pod 'PromiseKit', :git => 'https://github.com/philippeauriach/PromiseKit.git', :commit => '266cfeb5073277b757efc4a37aa049efc96c596f'
+       pod 'TwitterKit'       
+       pod 'Fabric'
+       pod 'Crashlytics'
+       pod 'Parse'
+       pod 'FBSDKCoreKit'
+       pod 'FBSDKLoginKit'
+       pod 'FBSDKShareKit'
+       pod "FBSDKMessengerShareKit"
+       pod 'ParseFacebookUtilsV4'
+       pod 'Branch'
+end

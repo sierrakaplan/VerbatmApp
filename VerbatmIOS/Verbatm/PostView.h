@@ -18,17 +18,17 @@
 @property (strong, nonatomic) Channel *postChannel; /* Original channel posted to */
 @property (strong, nonatomic) PFObject* parsePostChannelActivityObject;
 
-@property (nonatomic, weak) id<PostViewDelegate> delegate;
+@property (nonatomic) BOOL inSmallMode;
+
+@property (nonatomic) id<PostViewDelegate> delegate;
 
 // stores pov info associated with this view
 -(instancetype)initWithFrame:(CGRect)frame andPostChannelActivityObject:(PFObject*) postObject
-					   small:(BOOL) small;
+					   small:(BOOL) small andPageObjects:(NSArray*) pageObjects;
 
 // Displays post from an array of PageViewingExperiences
--(void) renderPageViews: (NSArray *) pages;
+-(void) displayPageViews: (NSArray *) pages;
 
-// Displays post from an array of page PFObjects
--(void) renderPostFromPageObjects: (NSArray *) pages;
 
 -(void) clearPost;
 
@@ -52,14 +52,10 @@
 
 -(void) muteAllVideos:(BOOL) shouldMute;
 
-// presents media only for the page on screen
--(void) presentMediaContent;
-
 //moves the like share bar up and down to be above tab bar when tab bar is showing
--(void) shiftLikeShareBarDown:(BOOL) down;
 
 -(void)showPageUpIndicator;
-
+-(void)prepareForScreenShot;
 @end
 
 @protocol PostViewDelegate <NSObject>
@@ -68,6 +64,6 @@
 -(void) channelSelected:(Channel *) channel;
 -(void) deleteButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post reblogged: (BOOL)reblogged;
 -(void) flagButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post;
-
+-(void) showWhoLikesThePost:(PFObject *) post;
 @end
 

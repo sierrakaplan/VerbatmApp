@@ -16,8 +16,13 @@
 +(void) currentUserStopLikingPost:(PFObject *) postParseObject;
 
 //tests to see if the logged in user likes this post
+<<<<<<< HEAD
 +(void) doesCurrentUserLikesPost:(PFObject *) postParseObject withCompletionBlock:(void(^)(bool))block;
 
+=======
++(void) currentUserLikesPost:(PFObject *) postParseObject withCompletionBlock:(void(^)(bool))block;
++ (void)getUsersWhoLikePost:(PFObject *) postParseObject withCompletionBlock:(void(^)(NSArray *))block;
+>>>>>>> master
 +(AnyPromise *) numberOfLikesForPost:(PFObject*) postParseObject;
 
 +(void) deleteLikesForPost:(PFObject*) postParseObject withCompletionBlock:(void(^)(BOOL)) block;

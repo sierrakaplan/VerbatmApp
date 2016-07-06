@@ -19,8 +19,6 @@
 @interface TextOverMediaView ()
 
 @property (nonatomic, readwrite) BOOL textShowing;
-@property (nonatomic, weak) UIImageView* imageView;
-@property (nonatomic, readwrite, weak) UITextView * textView;
 
 #pragma mark Text properties
 
@@ -138,14 +136,9 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 - (BOOL) changeTextViewYPos: (CGFloat) yDiff {
 	CGRect newFrame = CGRectOffset(self.textView.frame, 0.f, yDiff);
-	if (newFrame.origin.y > 0.f
-		&& ((newFrame.origin.y + newFrame.size.height)
-			< (self.frame.size.height - (CIRCLE_RADIUS * 2)))) {
-			self.textView.frame = newFrame;
-			self.textYPosition = newFrame.origin.y;
-			return YES;
-		}
-	return NO;
+    self.textView.frame = newFrame;
+    self.textYPosition = newFrame.origin.y;
+    return YES;
 }
 
 -(void) animateTextViewToYPos: (CGFloat) yPos {
@@ -192,7 +185,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 /* Adds or removes text view */
 -(void)showText: (BOOL) show {
 	if (show) {
-		if (!self.textShowing){
+		if (self.textView.isHidden){
 			[self.textView setHidden: NO];
 			[self bringSubviewToFront:self.textView];
 		}
@@ -257,7 +250,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 		[self addSubview:textView];
 		_textView = textView;
 		_textView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.0];
-		_textView.keyboardAppearance = UIKeyboardAppearanceDark;
+		_textView.keyboardAppearance = UIKeyboardAppearanceLight;
 		_textView.scrollEnabled = NO;
 		_textView.editable = NO;
 		_textView.selectable = NO;

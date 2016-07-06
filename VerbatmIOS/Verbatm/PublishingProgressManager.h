@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "Channel.h"
+#import "ExternalShare.h"
+
 /*
  Manages the publishing of content (by starting the parse domino effect)
  but is mainly used to track progress and to notify relevant ui. Because you can
@@ -16,7 +18,12 @@
  You track the NSProgress Accountant to see how far we're progressing with media saving.
  */
 
+
+
+
+
 @class Channel_BackendObject;
+
 
 @protocol PublishingProgressProtocol <NSObject>
 
@@ -26,28 +33,35 @@
 
 @end
 
+
+
+
+
 @interface PublishingProgressManager : NSObject
 
 #define INITIAL_PROGRESS_UNITS 3
-#define IMAGE_PROGRESS_UNITS 4
-#define VIDEO_PROGRESS_UNITS 11
+#define IMAGE_PROGRESS_UNITS 3
+#define VIDEO_PROGRESS_UNITS 21
 
 @property (nonatomic, weak) id<PublishingProgressProtocol> delegate;
 @property (nonatomic, readonly) NSProgress * progressAccountant;
 @property (nonatomic, readonly) BOOL currentlyPublishing;
 @property (nonatomic, readonly) Channel* currentPublishingChannel;
-@property (nonatomic) BOOL newChannelCreated;
 
 +(instancetype)sharedInstance;
 
 // Blocks is publishing something else, no network
--(void)publishPostToChannel:(Channel *)channel withPinchViews:(NSArray *)pinchViews
-		withCompletionBlock:(void(^)(BOOL, BOOL))block;
+-(void)publishPostToChannel:(Channel *)channel andFacebook:(BOOL)externalShare withCaption:(NSString *)caption withPinchViews:(NSArray *)pinchViews withCompletionBlock:(void(^)(BOOL, BOOL))block;
 
 -(void)mediaSavingProgressed:(int64_t) newProgress;
 
 -(void)savingMediaFailedWithError:(NSError*)error;
 
+-(void)storeLocationToShare:(SelectedPlatformsToShareLink)locationToShare withCaption:(NSString *) caption;
+//stores a screenshot of the first page to be used during the progress report
+-(void)storeProgressBackgroundImage:(UIImage *) image;
+-(UIImage *) getProgressBackgroundImage;
+-(void)onePieceOfMediaSaved;
 @end
 
 
