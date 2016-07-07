@@ -6,6 +6,9 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
+
+// DEPRECATED: TODO: DELETE
+
 #import <UIKit/UIKit.h>
 #import <Parse/PFObject.h>
 

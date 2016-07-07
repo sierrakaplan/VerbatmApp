@@ -92,7 +92,7 @@
 }
 
 // Returns all of the channels a user is following as array of PFObjects
-+ (void) channelsUserFollowing: (PFUser*) user withCompletionBlock:(void(^)(NSMutableArray*)) block {
++ (void) channelsUserFollowing: (PFUser*) user withCompletionBlock:(void(^)(NSArray*)) block {
 	if (!user) return;
 	PFQuery *followingQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
 	[followingQuery whereKey:FOLLOW_USER_KEY equalTo:user];
@@ -107,7 +107,9 @@
                     {
                         [channelObj fetchInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
                             if(object){
-                                [channels addObject: [[Channel alloc] initWithChannelName:[channelObj valueForKey:CHANNEL_NAME_KEY] andParseChannelObject:channelObj andChannelCreator:[channelObj valueForKey:CHANNEL_CREATOR_KEY]]];
+								Channel *channel = [[Channel alloc] initWithChannelName:[channelObj valueForKey:CHANNEL_NAME_KEY] andParseChannelObject:channelObj andChannelCreator:[channelObj valueForKey:CHANNEL_CREATOR_KEY]];
+								channel.latestPostDate = channelObj[CHANNEL_LATEST_POST_DATE];
+                                [channels addObject: channel];
                             }
                             resolve(nil);
                     }];
@@ -115,7 +117,9 @@
 			}
             
             PMKWhen(channelPromises).then(^(id nothing) {
-                block(channels);
+				NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"latestPostDate" ascending:NO];
+				NSArray *sortedChannels = [channels sortedArrayUsingDescriptors:@[sort]];
+                block(sortedChannels);
             });
             
 		} else {
@@ -124,6 +128,8 @@
 		}
 	}];
 }
+
+
 
 // Returns all of the users following a given channel as an array of PFUsers
 + (void) usersFollowingChannel: (Channel*) channel withCompletionBlock:(void(^)(NSMutableArray*)) block {

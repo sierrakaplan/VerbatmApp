@@ -34,6 +34,7 @@
 				if (error) {
 					[[Crashlytics sharedInstance] recordError:error];
 				}
+				[channel updateLatestPostDate:postParseObject.createdAt];
 				resolve(nil);
 			}];
 		}];

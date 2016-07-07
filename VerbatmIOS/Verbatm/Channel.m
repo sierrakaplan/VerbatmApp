@@ -105,6 +105,11 @@
     }
 }
 
+-(void) updateLatestPostDate:(NSDate*)date {
+	self.parseChannelObject[CHANNEL_LATEST_POST_DATE] = date;
+	[self.parseChannelObject saveInBackground];
+}
+
 -(void)getChannelOwnerNameWithCompletionBlock:(void(^)(NSString *))block {
     if (!self.parseChannelObject) {
         block(@"");

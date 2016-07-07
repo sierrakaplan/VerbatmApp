@@ -159,8 +159,6 @@
     }
 }
 
-
-
 -(void)mediaSavingProgressed:(int64_t) newProgress {
 	self.progressAccountant.completedUnitCount += newProgress;
 	NSLog(@"Media saving progressed %lld new units to completed %lld units of total %lld units", newProgress,
