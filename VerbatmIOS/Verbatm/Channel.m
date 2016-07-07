@@ -79,8 +79,8 @@
     });
 }
 
-
 -(void) changeTitle:(NSString*)title andDescription:(NSString*)description {
+	self.defaultBlogName = NO;
     self.name = title;
     self.blogDescription = description;
     self.parseChannelObject[CHANNEL_NAME_KEY] = title;

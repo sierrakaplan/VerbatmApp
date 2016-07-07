@@ -48,9 +48,12 @@
 			block();
 		} else {
 			// First time logging in - create a new channel
-			[Channel_BackendObject createChannelWithName:@"" andCompletionBlock:^(PFObject *channelObj) {
-				self.userChannel = [[Channel alloc] initWithChannelName:@"" andParseChannelObject:channelObj
+			NSString *userName = [PFUser currentUser][VERBATM_USER_NAME_KEY];
+			NSString *defaultBlogName = [userName stringByAppendingString:@"'s Blog"];
+			[Channel_BackendObject createChannelWithName:defaultBlogName andCompletionBlock:^(PFObject *channelObj) {
+				self.userChannel = [[Channel alloc] initWithChannelName:defaultBlogName andParseChannelObject:channelObj
 																					   andChannelCreator:[PFUser currentUser]];
+				self.userChannel.defaultBlogName = YES;
 				block();
 			}];
 		}

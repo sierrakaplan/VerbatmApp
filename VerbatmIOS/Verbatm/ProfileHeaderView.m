@@ -114,9 +114,9 @@
 	[self addSubview:self.blogDescription];
 	if(self.isCurrentUser) {
 		[self addChangeCoverPhotoButton];
-	}
-	if (!self.blogTitle.text.length && self.isCurrentUser) {
-		[self editButtonSelected];
+		if (self.channel.defaultBlogName) {
+			[self editButtonSelected];
+		}
 	}
 }
 
