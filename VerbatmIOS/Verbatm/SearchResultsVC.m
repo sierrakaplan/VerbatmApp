@@ -43,6 +43,11 @@
 		if (error) {
 			[[Crashlytics sharedInstance] recordError:error];
 		} else {
+			if (objects.count) {
+				[self.view setBackgroundColor:[UIColor blueColor]];
+			} else {
+				[self.view setBackgroundColor:[UIColor blackColor]];
+			}
 			self.searchResults = objects;
 			[self.tableView reloadData];
 		}
