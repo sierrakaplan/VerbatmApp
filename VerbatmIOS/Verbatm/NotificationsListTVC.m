@@ -31,7 +31,9 @@
 
 @property (nonatomic) BOOL isFirstLoad;
 @property (nonatomic) BOOL currentlyBeingViewed;
-#define CUSTOM_BAR_HEIGHT 40.f
+@property (nonatomic) BOOL cellSelected;
+
+#define CUSTOM_BAR_HEIGHT 35.f
 #define LIST_BAR_Y_OFFSET -15.f
 @end
 
@@ -46,7 +48,7 @@
     
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     self.tableView.allowsMultipleSelection = NO;
-    self.tableView.allowsSelection = NO;
+    self.tableView.allowsSelection = YES;
     self.tableView.showsHorizontalScrollIndicator = NO;
     self.tableView.showsVerticalScrollIndicator = NO;
     [self addRefreshFeature];
@@ -77,6 +79,7 @@
     }
     [self.delegate removeNotificationIndicator];
     self.currentlyBeingViewed = YES;
+    self.cellSelected = NO;
 }
 -(void)viewWillDisappear:(BOOL)animated{
     self.currentlyBeingViewed = NO;
@@ -192,14 +195,13 @@
     
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            
             if(!self.postPreview){
                 self.postPreview = [[NotificationPostPreview alloc] initWithFrame:CGRectMake(self.view.frame.size.width,self.tableView.contentOffset.y, self.view.frame.size.width, self.view.frame.size.height)];
                 self.postPreview.delegate = self;
                 [self.postPreview presentPost:[objects firstObject] andChannel:channel];
                 [self.view addSubview:self.postPreview];
                 self.tableView.scrollEnabled = NO;
-                [UIView animateWithDuration:PINCHVIEW_DROP_ANIMATION_DURATION animations:^{
+                [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
                     self.postPreview.frame = self.view.bounds;
                 }];
                 [self.delegate notificationListHideTabBar:YES];
@@ -210,6 +212,7 @@
 }
 
 -(void)removePreview{
+    self.cellSelected = NO;
     if(self.postPreview){
         [UIView animateWithDuration:PINCHVIEW_DROP_ANIMATION_DURATION animations:^{
             self.postPreview.frame = CGRectMake(self.view.frame.size.width,self.tableView.contentOffset.y, self.view.frame.size.width, self.view.frame.size.height);
@@ -231,7 +234,8 @@
 
 }
 
--(void)presentUserBlogSentFromCell:(NotificationTableCell *)cell{
+
+-(void)presentBlogFromCell:(NotificationTableCell *)cell{
     Channel * channel = cell.channel;
     PFUser * user = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
     
@@ -245,7 +249,10 @@
              }
          }];
     }
+}
+-(void)presentUserBlogSentFromCell:(NotificationTableCell *)cell{
     
+    [self presentBlogFromCell: cell];
 }
 
 
@@ -262,6 +269,20 @@
     
 }
 
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NotificationTableCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    if(!self.cellSelected){
+        self.cellSelected = YES;
+        if(cell.notificationType == Like){
+             [self presentPost:[cell objectId] andChannel:cell.channel];
+        }else{
+            [self presentBlogFromCell: cell];
+        }
+    }
+    
+}
 
 #pragma mark - Table view data source
 
@@ -300,6 +321,7 @@
     if(!cell){
         cell = [[NotificationTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
         cell.delegate = self;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
     if(indexPath.row >= (self.parseNotificationObjects.count - 5.f)){

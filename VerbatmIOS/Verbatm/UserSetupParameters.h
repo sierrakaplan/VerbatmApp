@@ -40,5 +40,6 @@
 -(BOOL) checkAdkOnboardingShown;
 -(BOOL) checkFirstTimeFollowBlogShown;
 
+-(BOOL) checkEditButtonNotification;
 
 @end

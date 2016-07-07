@@ -400,12 +400,12 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
 }
 
-#pragma mark Save Draft Button
 -(void) middleButtonPressed {
 
 }
 
-#pragma mark Preview Button
+#pragma mark Publish Button
+
 -(void) rightButtonPressed {
 	NSMutableArray * pinchViews = [[NSMutableArray alloc] init];
 
@@ -1817,29 +1817,7 @@ andSaveInUserDefaults:(BOOL)save {
 
 //todo: save share object
 -(void)postPostToChannels:(NSMutableArray *) channels andFacebook:(BOOL)externalSharing{
-
-	//    if ([FBSDKAccessToken currentAccessToken]) {
-	//        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-	//                                       @"Damas", @"name",
-	//                                       @"Yoooo! FB Graph API test", @"caption",
-	//                                       @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content.", @"description",
-	//                                       @"http://verbatm.io", @"link",
-	//                                       //       @"http://i.imgur.com/g3Qc1HN.png", @"picture",
-	//                                       nil];
-	//        FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:params HTTPMethod:@"POST"];
-	//
-	//
-	//
-	//        [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
-	//             if (!error) {
-	//                 NSLog(@"fetched user:%@", result);
-	//             } else {
-	//                 NSLog(@"An error has occured %@", error);
-	//             }
-	//         }];
-	//    }
-
-	[self removeSharePOVView];
+    [self removeSharePOVView];
 }
 
 -(void)removeSharePOVView{
@@ -1932,6 +1910,7 @@ andSaveInUserDefaults:(BOOL)save {
 												 }];
 
 }
+
 -(void) cancelPublishing{
 	self.pinchViewsToPublish = nil;
 	[self removeSLView];

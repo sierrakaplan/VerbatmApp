@@ -70,14 +70,10 @@
     [self addSubview:titleLabel];
 }
 
-
 -(void) createMiddleButtonWithTitle: (NSString*) title blackText:(BOOL) isBlack largeSize:(BOOL) largeSize {
     
     UIButton* middleButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    
-    CGFloat curButtonWidth = BUTTON_WIDTH + ((largeSize) ? BUTTON_WIDTH : 0.f);
-    
-    [middleButton setFrame: CGRectMake(BUTTON_WIDTH, 0.f, curButtonWidth, BUTTON_HEIGHT)];
+    [middleButton setFrame: CGRectMake(BUTTON_WIDTH, 0.f, BUTTON_WIDTH, BUTTON_HEIGHT)];
     if (title) {
         UILabel* titleLabel = [self getLabelWithText:title andAlignment:NSTextAlignmentCenter];
         titleLabel.adjustsFontSizeToFitWidth = YES;
@@ -86,7 +82,6 @@
         
         [middleButton addSubview:titleLabel];
     }
-    
     [self addSubview: middleButton];
     [middleButton addTarget:self action:@selector(middleButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 }

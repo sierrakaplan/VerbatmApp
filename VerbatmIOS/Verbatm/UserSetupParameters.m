@@ -27,6 +27,7 @@
 #define EDIT_INSTRUCTION_KEY @"EDIT_INSTRUCTION_KEY"
 #define ON_BOARDING_EXPERIENCE_KEY @"ON_BOARDING_EXPRIENCE_KEY"
 #define ADK_ONBOARDING_EXPERIENCE_KEY @"ADK_ONBOARDING_EXPERIENCE_KEY"
+#define EDIT_PROFILE_PROMPT @"EDIT_PROFILE_PROMPT"
 #define FIRST_TIME_BLOG_FOLLOW_KEY @"FIRST_TIME_BLOG_FOLLOW_KEY" //Has the user followed any blogs for the first time?
 
 @end
@@ -61,7 +62,7 @@
 			[defaults setBool:NO forKey:ON_BOARDING_EXPERIENCE_KEY];
             [defaults setBool:NO forKey:ADK_ONBOARDING_EXPERIENCE_KEY];
             [defaults setBool:NO forKey:FIRST_TIME_BLOG_FOLLOW_KEY];
-
+            [defaults setBool:NO forKey:EDIT_PROFILE_PROMPT];
 			[defaults synchronize];
 		}
 	}
@@ -93,6 +94,17 @@
 	[[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:YES] forKey:ON_BOARDING_EXPERIENCE_KEY];
 }
 
+
+-(BOOL) checkEditButtonNotification {
+    if (self.ftue) return YES;
+    @synchronized(self) {
+        BOOL shown = [(NSNumber*)[[NSUserDefaults standardUserDefaults] valueForKey:EDIT_PROFILE_PROMPT] boolValue];
+        if (!shown) {
+            [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:YES] forKey:EDIT_PROFILE_PROMPT];
+        }
+        return shown;
+    }
+}
 
 
 -(BOOL) checkAdkOnboardingShown {

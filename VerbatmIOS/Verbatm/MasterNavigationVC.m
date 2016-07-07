@@ -48,6 +48,9 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 
 @property (nonatomic) BOOL migrated;
 
+@property (nonatomic) BOOL indicatorPresent;
+
+
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
 @property (strong, nonatomic) CustomTabBarController* tabBarController;
 @property (nonatomic) BOOL tabBarHidden;
@@ -362,11 +365,12 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 }
 
 -(void)removeIndicator{
+    self.indicatorPresent = NO;
     [self.notificationIndicator removeFromSuperview];
 }
 
 -(void)showIndicator{
-    
+    self.indicatorPresent = YES;
     CGFloat tabBarItemWidth = self.view.frame.size.width/5.f;
     
     
@@ -450,6 +454,10 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 
 -(void) showTabBar:(BOOL)show {
 	if (show) {
+        if(self.indicatorPresent){
+            [self showIndicator];
+        }
+        
 		self.tabBarHidden = NO;
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			[self setNeedsStatusBarAppearanceUpdate];
@@ -457,6 +465,12 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 		}];
 	} else {
 		self.tabBarHidden = YES;
+        if(self.indicatorPresent){
+            [self removeIndicator];
+            self.indicatorPresent = YES;
+        }else{
+            [self removeIndicator];
+        }
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			[self setNeedsStatusBarAppearanceUpdate];
 			self.tabBarController.tabBar.frame = self.tabBarFrameOffScreen;

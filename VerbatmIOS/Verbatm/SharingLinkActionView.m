@@ -34,7 +34,7 @@
 @property (nonatomic) UILabel * captionPrompt;
 
 
-#define LABEL_TEXT @"Share your post with friends!"
+#define LABEL_TEXT @"Share this post on:"
 #define WALL_OFFSET_X 20.f
 #define WALL_OFFSET_Y 5.f
 
