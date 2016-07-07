@@ -884,7 +884,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 
 -(void)reportLinkError{
-    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Oops something went wrong" message:@"Generating link - Please try again in a minute" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Your link is being generated" message:@"Come back and try again in a few seconds" preferredStyle:UIAlertControllerStyleAlert];
     
     UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
                                                     handler:^(UIAlertAction * action) {}];
