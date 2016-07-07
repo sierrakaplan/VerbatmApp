@@ -42,7 +42,7 @@
 #import "NotificationsListTVC.h"
 
 @interface MasterNavigationVC () <UITabBarControllerDelegate, FeedTableViewDelegate,
-ProfileVCDelegate>
+ProfileVCDelegate, NotificationsListTVCProtocol>
 
 #pragma mark - Tab Bar Controller -
 
@@ -320,7 +320,7 @@ ProfileVCDelegate>
     
     self.notificationVC = [[NotificationsListTVC alloc] init];
     self.notificationVC.view.frame = self.view.bounds;
-
+    self.notificationVC.delegate = self;
 	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															  image:[UIImage imageNamed:PROFILE_NAV_ICON]
 													  selectedImage:[UIImage imageNamed:PROFILE_NAV_ICON]];
@@ -349,6 +349,10 @@ ProfileVCDelegate>
 	self.profileVC.tabBarItem.imageInsets = self.discoverVC.tabBarItem.imageInsets =
     self.feedVC.tabBarItem.imageInsets =  UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
    // [self showIndicator];
+}
+
+-(void)notificationListHideTabBar:(BOOL) shouldHide{
+    [self showTabBar:!shouldHide];
 }
 
 -(void)showIndicator{

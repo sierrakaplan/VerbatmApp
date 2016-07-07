@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface NotificationsListTVC : UITableViewController
+@protocol NotificationsListTVCProtocol <NSObject>
 
+-(void)notificationListHideTabBar:(BOOL) shouldHide;
+
+@end
+
+@interface NotificationsListTVC : UITableViewController
+@property (nonatomic) id<NotificationsListTVCProtocol> delegate;
 @end

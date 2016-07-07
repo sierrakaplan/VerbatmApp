@@ -16,14 +16,18 @@
 #import "Styles.h"
 #import "CustomNavigationBar.h"
 #import "ProfileVC.h"
-@interface NotificationsListTVC () <NotificationTableCellProtocol>
+#import <Parse/PFQuery.h>
+#import "NotificationPostPreview.h"
+#import "Durations.h"
+
+@interface NotificationsListTVC () <NotificationTableCellProtocol,NotificationPostPreviewProtocol>
 @property (nonatomic) BOOL shouldAnimateViews;
 @property (nonatomic) NSMutableArray * parseNotificationObjects;
 @property (nonatomic) BOOL refreshing;
 @property (nonatomic) UIImageView * backgroundView;
 @property (nonatomic)  CustomNavigationBar * headerBar;
 
-
+@property (nonatomic)NotificationPostPreview * postPreview;
 
 
 #define CUSTOM_BAR_HEIGHT 40.f
@@ -114,12 +118,43 @@
     // Dispose of any resources that can be recreated.
 }
 
+-(void)exitPreview{
+    [self removePreview];
+}
 
 
+-(void)presentPost:(PFObject *)parsePostActivityObject andChannel:(Channel *) channel{
+    self.postPreview = [[NotificationPostPreview alloc] initWithFrame:CGRectMake(self.view.frame.size.width, 0.f, self.view.frame.size.width, self.view.frame.size.height)];
+    self.postPreview.delegate = self;
+    [self.postPreview presentPost:parsePostActivityObject andChannel:channel];
+    [self.view addSubview:self.postPreview];
+    self.tableView.scrollEnabled = NO;
+    [UIView animateWithDuration:PINCHVIEW_DROP_ANIMATION_DURATION animations:^{
+        self.postPreview.frame = self.view.bounds;
+    }];
+    [self.delegate notificationListHideTabBar:YES];
+
+}
+
+-(void)removePreview{
+    if(self.postPreview){
+        [UIView animateWithDuration:PINCHVIEW_DROP_ANIMATION_DURATION animations:^{
+            self.postPreview.frame = CGRectMake(self.view.frame.size.width, 0.f, self.view.frame.size.width, self.view.frame.size.height);
+        }completion:^(BOOL finished) {
+            if(finished){
+                [self.postPreview clearViews];
+                self.postPreview = nil;
+                self.tableView.scrollEnabled = YES;
+                [self.delegate notificationListHideTabBar:NO];
+            }
+        }];
+    }
+}
 
 #pragma mark -Notifications Cell protocol-
 -(void)presentPostSentFromCell:(NotificationTableCell *)cell{
-    
+    [self presentPost:[cell objectId] andChannel:cell.channel];
+
 }
 
 -(void)presentUserBlogSentFromCell:(NotificationTableCell *)cell{

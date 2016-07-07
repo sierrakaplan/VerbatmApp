@@ -244,6 +244,7 @@
 		C7F79E7A1C39C44A00319330 /* SelectChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F79E791C39C44A00319330 /* SelectChannel.m */; };
 		C7F79E7D1C39E13900319330 /* SelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F79E7C1C39E13900319330 /* SelectionView.m */; };
 		C7F79E801C3AACC600319330 /* CreateNewChannelView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F79E7F1C3AACC600319330 /* CreateNewChannelView.m */; };
+		C7FB919B1D2DC624005B25A1 /* NotificationPostPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = C7FB919A1D2DC624005B25A1 /* NotificationPostPreview.m */; };
 		F266F3F11A4A6AE200EA0327 /* PageTypeAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = F266F3F01A4A6AE200EA0327 /* PageTypeAnalyzer.m */; };
 /* End PBXBuildFile section */
 
@@ -652,6 +653,8 @@
 		C7F79E7C1C39E13900319330 /* SelectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectionView.m; sourceTree = "<group>"; };
 		C7F79E7E1C3AACC600319330 /* CreateNewChannelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateNewChannelView.h; sourceTree = "<group>"; };
 		C7F79E7F1C3AACC600319330 /* CreateNewChannelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateNewChannelView.m; sourceTree = "<group>"; };
+		C7FB91991D2DC624005B25A1 /* NotificationPostPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationPostPreview.h; sourceTree = "<group>"; };
+		C7FB919A1D2DC624005B25A1 /* NotificationPostPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationPostPreview.m; sourceTree = "<group>"; };
 		F266F3EF1A4A6AE200EA0327 /* PageTypeAnalyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PageTypeAnalyzer.h; path = ../PageTypeAnalyzer.h; sourceTree = "<group>"; };
 		F266F3F01A4A6AE200EA0327 /* PageTypeAnalyzer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PageTypeAnalyzer.m; path = ../PageTypeAnalyzer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1138,6 +1141,8 @@
 				A5E860061B97CC3C00E148D0 /* PreviewDisplayView.m */,
 				C78204EC1C32EAC500F56A63 /* CreatorAndChannelBar.h */,
 				C78204ED1C32EAC500F56A63 /* CreatorAndChannelBar.m */,
+				C7FB91991D2DC624005B25A1 /* NotificationPostPreview.h */,
+				C7FB919A1D2DC624005B25A1 /* NotificationPostPreview.m */,
 			);
 			name = "Viewing Posts";
 			sourceTree = "<group>";
@@ -1849,6 +1854,7 @@
 				A5E73BF51D1770B400527ECF /* GTLVerbatmAppPage.m in Sources */,
 				A51E74641C898C4E00CF8DEA /* PostInProgress.m in Sources */,
 				C734FD9C19B14B8D00B2C370 /* ContentDevVC.m in Sources */,
+				C7FB919B1D2DC624005B25A1 /* NotificationPostPreview.m in Sources */,
 				C7E6C1461A4E394600863893 /* VideoPVE.m in Sources */,
 				C7BF1AA81C57F5F500CEDE4B /* Photo_BackendObject.m in Sources */,
 				A5E73B761D1634D300527ECF /* UserManager.m in Sources */,
