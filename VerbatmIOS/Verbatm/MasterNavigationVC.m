@@ -68,7 +68,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 #define DARK_GRAY 0.6f
 #define ADK_BUTTON_SIZE 40.f
 #define SELECTED_TAB_ICON_COLOR [UIColor colorWithRed:0.5 green:0.1 blue:0.1 alpha:1.f]
-
+#define NOTIFICATION_INDICATOR_SIZE 40.f
 @end
 
 @implementation MasterNavigationVC
@@ -348,16 +348,34 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	// images need to be centered this way for some reason
 	self.profileVC.tabBarItem.imageInsets = self.discoverVC.tabBarItem.imageInsets =
     self.feedVC.tabBarItem.imageInsets =  UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
-   // [self showIndicator];
 }
 
 -(void)notificationListHideTabBar:(BOOL) shouldHide{
     [self showTabBar:!shouldHide];
 }
 
+
+
+-(void)showNotificationIndicator{
+    [self showIndicator];
+}
+-(void)removeNotificationIndicator{
+    [self removeIndicator];
+}
+
+-(void)removeIndicator{
+    [self.notificationIndicator removeFromSuperview];
+}
+
 -(void)showIndicator{
-    CGFloat xpos = self.view.frame.size.width - (self.view.frame.size.width/5.f *2);
-    CGRect frame = CGRectMake(xpos, self.view.frame.size.height - (TAB_BAR_HEIGHT + 50.f), 50.f, 50.f);
+    
+    CGFloat tabBarItemWidth = self.view.frame.size.width/5.f;
+    
+    
+    CGFloat xpos = 1.f + (self.view.frame.size.width - (tabBarItemWidth *2)) + tabBarItemWidth/2.f;
+    
+    
+    CGRect frame = CGRectMake(xpos, self.view.frame.size.height - (TAB_BAR_HEIGHT + NOTIFICATION_INDICATOR_SIZE), NOTIFICATION_INDICATOR_SIZE, NOTIFICATION_INDICATOR_SIZE);
     [self.notificationIndicator setFrame:frame];
     [self.view addSubview:self.notificationIndicator];
     [self.view bringSubviewToFront:self.notificationIndicator];

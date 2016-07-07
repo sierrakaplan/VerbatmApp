@@ -265,7 +265,7 @@
         [self changeFollowButtonTitle:@"Following" toColor:[UIColor blackColor]];
         self.followButton.backgroundColor = [UIColor whiteColor];
     } else {
-        [self changeFollowButtonTitle:@"Follow" toColor:[UIColor whiteColor]];
+        [self changeFollowButtonTitle:@"+ Follow" toColor:[UIColor whiteColor]];
         self.followButton.backgroundColor = [UIColor clearColor];
     }
 }

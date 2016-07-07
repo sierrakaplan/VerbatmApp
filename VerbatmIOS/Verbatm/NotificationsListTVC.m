@@ -30,7 +30,7 @@
 @property (nonatomic)NotificationPostPreview * postPreview;
 
 @property (nonatomic) BOOL isFirstLoad;
-
+@property (nonatomic) BOOL currentlyBeingViewed;
 #define CUSTOM_BAR_HEIGHT 40.f
 #define LIST_BAR_Y_OFFSET -15.f
 @end
@@ -75,6 +75,11 @@
     }else{
         [self refreshNotifications];
     }
+    [self.delegate removeNotificationIndicator];
+    self.currentlyBeingViewed = YES;
+}
+-(void)viewWillDisappear:(BOOL)animated{
+    self.currentlyBeingViewed = NO;
 }
 
 -(void)createHeader{
@@ -109,9 +114,29 @@
             [self.parseNotificationObjects addObjectsFromArray:notificationObjects];
             self.refreshing = NO;
             [self.tableView reloadData];
+            if (!self.currentlyBeingViewed ) {
+                [self findNewNotifications];
+            }
         }];
     }
 }
+
+
+-(void)findNewNotifications{
+    BOOL foundNewNotification = NO;
+    for(PFObject * notification in self.parseNotificationObjects){
+        NSNumber * isNew = [notification valueForKey:NOTIFICATION_IS_NEW];
+        if([isNew boolValue]){
+            if(!foundNewNotification){
+                foundNewNotification = NO;
+                [self.delegate showNotificationIndicator];
+            }
+            [notification setValue:[NSNumber numberWithBool:NO] forKey:NOTIFICATION_IS_NEW];
+            [notification saveInBackground];
+        }
+    }
+}
+
 
 -(void)addRefreshFeature{
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];

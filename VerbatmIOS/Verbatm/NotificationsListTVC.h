@@ -11,7 +11,8 @@
 @protocol NotificationsListTVCProtocol <NSObject>
 
 -(void)notificationListHideTabBar:(BOOL) shouldHide;
-
+-(void)showNotificationIndicator;//tells the master nav to put up notification that there's a notificatioin
+-(void)removeNotificationIndicator;
 @end
 
 @interface NotificationsListTVC : UITableViewController
