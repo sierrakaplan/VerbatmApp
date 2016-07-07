@@ -181,7 +181,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
     }
     [self buildHeaderView];
     
->>>>>>> NOTIFICATION_UI
 }
 
 #pragma mark - Profile Photo -
