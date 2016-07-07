@@ -38,6 +38,7 @@
     
     
     PFQuery * query = [PFQuery queryWithClassName:NOTIFICATION_PFCLASS_KEY];
+    [query whereKey:NOTIFICATION_RECEIVER equalTo:[PFUser currentUser]];
     [query orderByDescending:@"createdAt"];
     [query setLimit:LOAD_MAX_AMOUNT];
     if(afterDate)[query whereKey:@"createdAt" lessThan:afterDate];
