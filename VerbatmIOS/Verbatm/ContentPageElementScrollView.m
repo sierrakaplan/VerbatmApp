@@ -364,7 +364,6 @@
 	if(self.subviews.count){
 		float firstXCoordinate = ELEMENT_Y_OFFSET_DISTANCE;
 
-
 		for(NSInteger i = index; i < [self.collectionPinchViews count]; i++) {
 			PinchView* pinchView = self.collectionPinchViews[i];
 			float yPosition = (self.frame.size.height/2.f) - (pinchView.frame.size.height/2.f);
