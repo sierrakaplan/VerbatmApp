@@ -142,11 +142,7 @@
 			NSMutableArray *users = [[NSMutableArray alloc] initWithCapacity:objects.count];
 			for (PFObject *followObject in objects) {
 				PFUser *userFollowing = followObject[FOLLOW_USER_KEY];
-				if ([users containsObject: userFollowing]) {
-					//somehow a duplicate
-					[followObject deleteInBackground];
-					continue;
-				}
+				[userFollowing fetchIfNeededInBackground];
 				[users addObject:userFollowing];
 			}
 			block (users);

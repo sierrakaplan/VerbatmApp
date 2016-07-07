@@ -75,7 +75,12 @@
 			if (!self.isCurrentUser) {
 				// This allows a user to block another user
 				[self createSettingsButton];
-				self.currentUserFollowsUser = [channel.usersFollowingChannel containsObject:[PFUser currentUser]];
+				self.currentUserFollowsUser = NO;
+				for (PFUser *user in channel.usersFollowingChannel) {
+					NSString *userId = user.objectId;
+					NSString *currentUserId = [PFUser currentUser].objectId;
+					if ([userId isEqualToString:currentUserId]) self.currentUserFollowsUser = YES;
+				}
 				[self createFollowButton];
 			}
 		}
