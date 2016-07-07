@@ -19,11 +19,15 @@
 @interface SearchResultsVC ()
 
 @property (strong, nonatomic) NSArray *searchResults;
-@property (weak, nonatomic) PFQuery *currentQuery;
+@property (strong, nonatomic) PFQuery *currentQuery;
 
 @end
 
 @implementation SearchResultsVC
+
+- (UIStatusBarStyle)preferredStatusBarStyle {
+	return UIStatusBarStyleDefault;
+}
 
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
 	NSString *searchText = searchController.searchBar.text;
@@ -31,23 +35,18 @@
 }
 
 -(void)filterResults:(NSString *)searchTerm {
-	PFQuery *channelNameQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
+	PFQuery *channelNameQuery = [[PFQuery alloc] initWithClassName:CHANNEL_PFCLASS_KEY];
 	[channelNameQuery whereKey:CHANNEL_NAME_KEY matchesRegex:searchTerm modifiers:@"i"];
 	PFQuery *channelCreatorQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
 	[channelCreatorQuery whereKey:CHANNEL_CREATOR_NAME_KEY matchesRegex:searchTerm modifiers:@"i"];
 	if (self.currentQuery) [self.currentQuery cancel];
-	self.currentQuery = [PFQuery orQueryWithSubqueries:@[channelNameQuery, channelCreatorQuery]];
+	self.currentQuery = [PFQuery orQueryWithSubqueries:[NSArray arrayWithObjects: channelNameQuery, channelCreatorQuery, nil]];
 	[self.currentQuery orderByDescending:CHANNEL_NUM_FOLLOWS];
 	self.currentQuery.limit = SEARCH_RESULTS_LIMIT;
 	[self.currentQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
 		if (error) {
 			[[Crashlytics sharedInstance] recordError:error];
 		} else {
-			if (objects.count) {
-				[self.view setBackgroundColor:[UIColor blueColor]];
-			} else {
-				[self.view setBackgroundColor:[UIColor blackColor]];
-			}
 			self.searchResults = objects;
 			[self.tableView reloadData];
 		}
