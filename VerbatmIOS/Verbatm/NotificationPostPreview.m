@@ -15,6 +15,7 @@
 #import "Styles.h"
 #import "SizesAndPositions.h"
 #import "ParseBackendKeys.h"
+
 @interface NotificationPostPreview () <CustomNavigationBarDelegate>
 @property (nonatomic, readwrite) PFObject *currentPostActivityObject;
 @property (nonatomic, readwrite) PostView *currentPostView;
@@ -22,6 +23,9 @@
 @property (nonatomic) PFObject *postBeingPresented;
 
 @property (nonatomic) UIView * customNavBar;
+
+#define HEADER_HEIGHT 40.f
+
 @end
 
 
@@ -29,7 +33,7 @@
 
 
 -(void)createNavBar{
-    CGRect customBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, NAV_BAR_HEIGHT +STATUS_BAR_HEIGHT);
+    CGRect customBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, HEADER_HEIGHT +STATUS_BAR_HEIGHT);
     self.customNavBar = [[UIView alloc] initWithFrame:customBarFrame];
     [self.customNavBar setBackgroundColor:PROFILE_INFO_BAR_BACKGROUND_COLRO];
     
@@ -55,7 +59,6 @@
 
 -(void)presentPost:(PFObject *) pfActivityObj andChannel:(Channel *) channel{
     self.postBeingPresented = pfActivityObj;
-    
     PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
     
     [Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
@@ -79,17 +82,11 @@
                                                         withDeleteButton:NO];
             [self.currentPostView addCreatorInfo];
         });
+        
         [self.currentPostView postOnScreen];
         [self createNavBar];
+    
     }];
 }
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 
 @end

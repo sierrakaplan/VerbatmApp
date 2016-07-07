@@ -163,7 +163,7 @@
     [self.postLine setAttributedText:attrString];
     [self.postLine sizeToFit];
     [self addSubview:self.postLine];
-    [self addTapGestureToPostText];
+   // [self addTapGestureToPostText];
     
 }
 
@@ -202,7 +202,7 @@
     }
     
     [self addSubview:self.notificationTextLabel];
-    [self addTapGestureToNameText];
+   // [self addTapGestureToNameText];
 }
 
 -(void)createHeartIcon{

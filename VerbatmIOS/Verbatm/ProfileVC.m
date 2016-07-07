@@ -180,7 +180,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
         }];
     }
     [self buildHeaderView];
-    
 }
 
 #pragma mark - Profile Photo -
@@ -234,6 +233,16 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 									}];
 }
 
+
+-(void)checkEditProfileNotification{
+        if(![[UserSetupParameters sharedInstance] checkEditButtonNotification] &&
+           self.isCurrentUserProfile) {
+            self.introInstruction = [[Intro_Instruction_Notification_View alloc] initWithCenter:self.view.center andType:Profile];
+            self.introInstruction.custom_delegate = self;
+            [self.view addSubview:self.introInstruction];
+            [self.view bringSubviewToFront:self.introInstruction];
+        }
+}
 
 -(void)checkIntroNotification{
 	if(![[UserSetupParameters sharedInstance] checkAndSetProfileInstructionShown] &&
@@ -406,7 +415,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	[self.postPrompt setBackgroundImage:[UIImage imageNamed:CREATE_POST_PROMPT_ICON] forState:UIControlStateNormal];
 	[self.view addSubview:self.postPrompt];
 	[self.postPrompt addTarget:self action:@selector(createFirstPost) forControlEvents:UIControlEventTouchDown];
-	CGFloat frameHeight = self.postListVC.view.frame.size.height;
+	CGFloat frameHeight = self.postListVC.view.frame.size.height -2.f;
 	CGFloat frameWidth = 3.f +  (self.view.frame.size.width/ self.view.frame.size.height) * frameHeight;
 	self.postPrompt.frame = CGRectMake(self.postListVC.view.frame.origin.x, self.postListVC.view.frame.origin.y, frameWidth, frameHeight);
 	self.postListVC.view.hidden = YES;
