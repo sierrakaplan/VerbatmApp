@@ -73,7 +73,6 @@
 -(void) createMiddleButtonWithTitle: (NSString*) title blackText:(BOOL) isBlack largeSize:(BOOL) largeSize {
     
     UIButton* middleButton = [UIButton buttonWithType:UIButtonTypeCustom];
-
     [middleButton setFrame: CGRectMake(BUTTON_WIDTH, 0.f, BUTTON_WIDTH, BUTTON_HEIGHT)];
     if (title) {
         UILabel* titleLabel = [self getLabelWithText:title andAlignment:NSTextAlignmentCenter];
