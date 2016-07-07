@@ -23,6 +23,8 @@
 #define HOME_NAV_ICON @"home"
 #define DISCOVER_NAV_ICON @"search"
 
+#define NOTIFICATION_ICON_SELECTED @"Notification_Icon_Selected"
+#define NOTIFICATION_ICON_UNSELECTED @"Notification_Icon_UnSelected"
 #pragma mark - Profile -
 
 #define BLOCK_USER_ICON @"settings_icon"

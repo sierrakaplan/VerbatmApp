@@ -175,13 +175,13 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 }
 
 -(void) createHeader {
-	if(self.channel.channelsUserFollowing == nil || !self.channel.channelsUserFollowing.count){
-		[self.channel getFollowersAndFollowingWithCompletionBlock:^{
-			[self buildHeaderView];
-		}];
-	} else {
-		[self buildHeaderView];
-	}
+    if(self.channel.channelsUserFollowing == nil || !self.channel.channelsUserFollowing.count){
+        [self.channel getFollowersAndFollowingWithCompletionBlock:^{
+        }];
+    }
+    [self buildHeaderView];
+    
+>>>>>>> NOTIFICATION_UI
 }
 
 #pragma mark - Profile Photo -

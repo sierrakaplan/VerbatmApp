@@ -71,7 +71,7 @@
     [self setNeedsStatusBarAppearanceUpdate];
 
     //avoid covering last item in uitableview
-    UIEdgeInsets inset = UIEdgeInsetsMake(((-1 * LIST_BAR_Y_OFFSET) + STATUS_BAR_HEIGHT), 0, CUSTOM_CHANNEL_LIST_BAR_HEIGHT, 0);
+    UIEdgeInsets inset = UIEdgeInsetsMake((LIST_BAR_Y_OFFSET+ STATUS_BAR_HEIGHT + CUSTOM_CHANNEL_LIST_BAR_HEIGHT), 0, CUSTOM_CHANNEL_LIST_BAR_HEIGHT, 0);
     self.tableView.contentInset = inset;
     self.tableView.scrollIndicatorInsets = inset;
 }
@@ -108,9 +108,6 @@
     }
 }
 
--(BOOL) prefersStatusBarHidden {
-    return YES;
-}
 
 - (UIStatusBarAnimation) preferredStatusBarUpdateAnimation {
     return UIStatusBarAnimationSlide;
@@ -162,15 +159,14 @@
 
 -(void)presentProfileForUser:(PFUser *) user
             withStartChannel:(Channel *) startChannel{
-    
-    ProfileVC *  userProfile = [[ProfileVC alloc] init];
-    userProfile.isCurrentUserProfile = NO;
-	userProfile.isProfileTab = NO;
-    userProfile.ownerOfProfile = user;
-    userProfile.channel = startChannel;
-    
-    [self presentViewController:userProfile animated:YES completion:^{
-    }];
+    if(![[user objectId] isEqualToString:[[PFUser currentUser] objectId]]){
+        ProfileVC *  userProfile = [[ProfileVC alloc] init];
+        userProfile.isCurrentUserProfile = NO;
+        userProfile.isProfileTab = NO;
+        userProfile.ownerOfProfile = user;
+        userProfile.channel = startChannel;
+        [self presentViewController:userProfile animated:YES completion:nil];
+    }
     
 }
 
@@ -271,7 +267,7 @@
 }
 
 -(void)setTableViewHeader{
-    CGRect navBarFrame = CGRectMake(0.f, -(LIST_BAR_Y_OFFSET + STATUS_BAR_HEIGHT) , self.view.frame.size.width, (LIST_BAR_Y_OFFSET * -1) + STATUS_BAR_HEIGHT+ CUSTOM_CHANNEL_LIST_BAR_HEIGHT);
+    CGRect navBarFrame = CGRectMake(0.f, -(LIST_BAR_Y_OFFSET + STATUS_BAR_HEIGHT + CUSTOM_CHANNEL_LIST_BAR_HEIGHT), self.view.frame.size.width, STATUS_BAR_HEIGHT+ CUSTOM_CHANNEL_LIST_BAR_HEIGHT);
     
     CGRect customBarFrame = CGRectMake(0.f, STATUS_BAR_HEIGHT, self.view.frame.size.width, CUSTOM_CHANNEL_LIST_BAR_HEIGHT);
     

@@ -40,8 +40,6 @@
 @property (nonatomic) UIButton * followButton;
 @property (nonatomic) BOOL currentUserFollowingChannelUser;
 
-#define CHANNEL_LIST_CELL_SEPERATOR_HEIGHT 0.6
-#define FOLLOW_BUTTON_SIZE 100.f
 
 
 @end
@@ -76,16 +74,16 @@
 
 -(void)presentChannel:(Channel *) channel{
     self.channel = channel;
-	PFObject *creator = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
+	PFUser *creator = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
     
     if(!(self.channel.usersFollowingChannel && self.channel.usersFollowingChannel.count)){
         
-        
-        
-        [Follow_BackendManager currentUserFollowsChannel:self.channel withCompletionBlock:^(bool isFollowing) {
-            self.currentUserFollowingChannelUser = isFollowing;
-            if(self.followButton)[self updateUserFollowingChannel];
-        }];
+        if(![[creator objectId] isEqualToString:[[PFUser currentUser] objectId]]){
+            [Follow_BackendManager currentUserFollowsChannel:self.channel withCompletionBlock:^(bool isFollowing) {
+                self.currentUserFollowingChannelUser = isFollowing;
+                if(self.followButton)[self updateUserFollowingChannel];
+            }];
+        }
         
     }else{
         self.currentUserFollowingChannelUser = [self.channel.usersFollowingChannel containsObject:[PFUser currentUser]];
@@ -98,7 +96,9 @@
 			NSString *userName = [creator valueForKey:VERBATM_USER_NAME_KEY];
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[self setChannelName:channel.name andUserName: userName];
-                [self createFollowButton];
+                
+                if(![[creator objectId] isEqualToString:[[PFUser currentUser] objectId]])[self createFollowButton];
+                
 				[self setLabelsForChannel];
                 [self updateUserFollowingChannel];
 			});
@@ -114,8 +114,8 @@
         self.followButton = nil;
     }
     
-    CGFloat frame_x = self.frame.size.width - PROFILE_HEADER_XOFFSET - FOLLOW_BUTTON_SIZE;
-    CGRect followButtonFrame = CGRectMake(frame_x, TAB_BUTTON_PADDING_Y, FOLLOW_BUTTON_SIZE, FOLLOW_BUTTON_SIZE/3.f);
+    CGFloat frame_x = self.frame.size.width - PROFILE_HEADER_XOFFSET - LARGE_FOLLOW_BUTTON_WIDTH;
+    CGRect followButtonFrame = CGRectMake(frame_x, TAB_BUTTON_PADDING_Y, LARGE_FOLLOW_BUTTON_WIDTH, LARGE_FOLLOW_BUTTON_HEIGHT);
     self.followButton = [[UIButton alloc] initWithFrame: followButtonFrame];
     self.followButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
     self.followButton.clipsToBounds = YES;
@@ -137,13 +137,14 @@
     [self updateUserFollowingChannel];
 }
 -(void) updateUserFollowingChannel {
-    //todo: images
-    if (self.currentUserFollowingChannelUser) {
-        [self changeFollowButtonTitle:@"Following" toColor:[UIColor whiteColor]];
-        self.followButton.backgroundColor = [UIColor blackColor];
-    } else {
-        [self changeFollowButtonTitle:@"Follow" toColor:[UIColor blackColor]];
-        self.followButton.backgroundColor = [UIColor whiteColor];
+    if(self.followButton){
+        if (self.currentUserFollowingChannelUser) {
+            [self changeFollowButtonTitle:@"\u2713 Following" toColor:[UIColor whiteColor]];
+            self.followButton.backgroundColor = [UIColor blackColor];
+        } else {
+            [self changeFollowButtonTitle:@"+ Follow" toColor:[UIColor blackColor]];
+            self.followButton.backgroundColor = [UIColor whiteColor];
+        }
     }
 }
 
@@ -172,6 +173,7 @@
 	}
     [self addCellSeperator];
 }
+
 -(void)addCellSeperator{
     if(!self.seperatorView){
         self.seperatorView = [[UIView alloc] initWithFrame:CGRectMake(0.f, self.frame.size.height - CHANNEL_LIST_CELL_SEPERATOR_HEIGHT, self.frame.size.width,CHANNEL_LIST_CELL_SEPERATOR_HEIGHT)];

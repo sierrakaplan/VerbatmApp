@@ -143,6 +143,18 @@
     });
 }
 
+
+-(BOOL)checkIfList:(NSArray *) list ContainsObject:(PFObject *) object{
+    
+    for(PFObject * entry in list){
+        if([[entry objectId] isEqualToString:[object objectId]]){
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
 -(void) getFollowersAndFollowingWithCompletionBlock:(void(^)(void))block {
     self.usersFollowingChannel = nil;
     self.channelsUserFollowing = nil;

@@ -124,7 +124,14 @@
 			totalProgressUnits+=  numVideoPinchViews> 0 ? (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS) : 0;
             
             
-            self.totalMediaCount = self.totalMediaCount + (numVideoPinchViews + numImagePinchViews);
+            if(numVideoPinchViews > 0){
+                self.totalMediaCount = self.totalMediaCount + 2.f;//2.f because of thumbnail and videos fused into 1 video
+            }
+            
+            
+            if(numImagePinchViews > 0){
+                self.totalMediaCount = self.totalMediaCount + numImagePinchViews;
+            }
             
 		} else {//only one piece of media
             
