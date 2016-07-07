@@ -400,12 +400,12 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
 }
 
-#pragma mark Save Draft Button
 -(void) middleButtonPressed {
 
 }
 
-#pragma mark Preview Button
+#pragma mark Publish Button
+
 -(void) rightButtonPressed {
 	NSMutableArray * pinchViews = [[NSMutableArray alloc] init];
 
@@ -1910,6 +1910,7 @@ andSaveInUserDefaults:(BOOL)save {
 												 }];
 
 }
+
 -(void) cancelPublishing{
 	self.pinchViewsToPublish = nil;
 	[self removeSLView];
