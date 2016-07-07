@@ -14,6 +14,7 @@
 #import "CustomNavigationBar.h"
 #import "Styles.h"
 #import "SizesAndPositions.h"
+#import "ParseBackendKeys.h"
 @interface NotificationPostPreview () <CustomNavigationBarDelegate>
 @property (nonatomic, readwrite) PFObject *currentPostActivityObject;
 @property (nonatomic, readwrite) PostView *currentPostView;
@@ -54,30 +55,33 @@
 }
 
 
--(void)presentPost:(PFObject *) post andChannel:(Channel *) channel{
-    self.postBeingPresented = post;
+-(void)presentPost:(PFObject *) pfActivityObj andChannel:(Channel *) channel{
+    self.postBeingPresented = pfActivityObj;
+    NSLog([pfActivityObj parseClassName]);
+    
+    PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
     
     [Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
         self.currentPostView = [[PostView alloc] initWithFrame:self.bounds
-                                  andPostChannelActivityObject:post small:NO andPageObjects:pages];
+                                  andPostChannelActivityObject:pfActivityObj small:NO andPageObjects:pages];
         
-        NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
+      //  NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
         self.currentPostView.listChannel = channel;
         [self addSubview: self.currentPostView];
         self.currentPostView.inSmallMode = NO;
         
-        AnyPromise *likesPromise = [Like_BackendManager numberOfLikesForPost:post];
-        AnyPromise *sharesPromise = [Share_BackendManager numberOfSharesForPost:post];
-        PMKWhen(@[likesPromise, sharesPromise]).then(^(NSArray *likesAndShares) {
-            NSNumber *numLikes = likesAndShares[0];
-            NSNumber *numShares = likesAndShares[1];
-            [self.currentPostView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
-                                                           numberOfPages:numberOfPages
-                                                   andStartingPageNumber:@(1)
-                                                                 startUp:NO
-                                                        withDeleteButton:NO];
-            [self.currentPostView addCreatorInfo];
-        });
+//        AnyPromise *likesPromise = [Like_BackendManager numberOfLikesForPost:post];
+//        AnyPromise *sharesPromise = [Share_BackendManager numberOfSharesForPost:post];
+//        PMKWhen(@[likesPromise, sharesPromise]).then(^(NSArray *likesAndShares) {
+//            NSNumber *numLikes = likesAndShares[0];
+//            NSNumber *numShares = likesAndShares[1];
+//            [self.currentPostView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
+//                                                           numberOfPages:numberOfPages
+//                                                   andStartingPageNumber:@(1)
+//                                                                 startUp:NO
+//                                                        withDeleteButton:NO];
+//            [self.currentPostView addCreatorInfo];
+//        });
         [self.currentPostView postOnScreen];
         [self createNavBar];
     }];

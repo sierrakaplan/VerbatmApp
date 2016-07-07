@@ -139,10 +139,10 @@
 -(void) updateUserFollowingChannel {
     if(self.followButton){
         if (self.currentUserFollowingChannelUser) {
-            [self changeFollowButtonTitle:@"Following" toColor:[UIColor whiteColor]];
+            [self changeFollowButtonTitle:@"\u2713 Following" toColor:[UIColor whiteColor]];
             self.followButton.backgroundColor = [UIColor blackColor];
         } else {
-            [self changeFollowButtonTitle:@"Follow" toColor:[UIColor blackColor]];
+            [self changeFollowButtonTitle:@"+ Follow" toColor:[UIColor blackColor]];
             self.followButton.backgroundColor = [UIColor whiteColor];
         }
     }

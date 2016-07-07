@@ -58,8 +58,10 @@
     self.tableView.contentInset = inset;
     self.tableView.scrollIndicatorInsets = inset;
     
-    [self.view addSubview:self.backgroundView];
-    [self.view sendSubviewToBack:self.backgroundView];
+    
+    [self.tableView setBackgroundView:self.backgroundView];
+    self.tableView.backgroundView.layer.zPosition -= 1;
+    
     [self createHeader];
 }
 
@@ -79,8 +81,6 @@
         
          self.headerBar.frame = CGRectMake(0.f, scrollView.contentOffset.y, self.view.frame.size.width, STATUS_BAR_HEIGHT+ CUSTOM_BAR_HEIGHT);
         [self.tableView bringSubviewToFront:self.headerBar];
-        
-        self.backgroundView.frame = CGRectMake(0.f, scrollView.contentOffset.y, self.backgroundView.frame.size.width, self.backgroundView.frame.size.height);
         
     }
 }
@@ -123,23 +123,32 @@
 }
 
 
--(void)presentPost:(PFObject *)parsePostActivityObject andChannel:(Channel *) channel{
-    self.postPreview = [[NotificationPostPreview alloc] initWithFrame:CGRectMake(self.view.frame.size.width, 0.f, self.view.frame.size.width, self.view.frame.size.height)];
-    self.postPreview.delegate = self;
-    [self.postPreview presentPost:parsePostActivityObject andChannel:channel];
-    [self.view addSubview:self.postPreview];
-    self.tableView.scrollEnabled = NO;
-    [UIView animateWithDuration:PINCHVIEW_DROP_ANIMATION_DURATION animations:^{
-        self.postPreview.frame = self.view.bounds;
+-(void)presentPost:(PFObject *)postObject andChannel:(Channel *) channel{
+    
+    
+    PFQuery * query = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
+    [query whereKey:POST_CHANNEL_ACTIVITY_POST equalTo:postObject];
+    
+    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.postPreview = [[NotificationPostPreview alloc] initWithFrame:CGRectMake(self.view.frame.size.width,self.tableView.contentOffset.y, self.view.frame.size.width, self.view.frame.size.height)];
+            self.postPreview.delegate = self;
+            [self.postPreview presentPost:[objects firstObject] andChannel:channel];
+            [self.view addSubview:self.postPreview];
+            self.tableView.scrollEnabled = NO;
+            [UIView animateWithDuration:PINCHVIEW_DROP_ANIMATION_DURATION animations:^{
+                self.postPreview.frame = self.view.bounds;
+            }];
+            [self.delegate notificationListHideTabBar:YES];
+        });
     }];
-    [self.delegate notificationListHideTabBar:YES];
-
+    
 }
 
 -(void)removePreview{
     if(self.postPreview){
         [UIView animateWithDuration:PINCHVIEW_DROP_ANIMATION_DURATION animations:^{
-            self.postPreview.frame = CGRectMake(self.view.frame.size.width, 0.f, self.view.frame.size.width, self.view.frame.size.height);
+            self.postPreview.frame = CGRectMake(self.view.frame.size.width,self.tableView.contentOffset.y, self.view.frame.size.width, self.view.frame.size.height);
         }completion:^(BOOL finished) {
             if(finished){
                 [self.postPreview clearViews];
@@ -202,12 +211,13 @@
 -(void)setNotificationOnCell:( NotificationTableCell *)cell notificationObject:(PFObject *)notification{
     NotificationType notType = [(NSNumber *)[notification valueForKey:NOTIFICATION_TYPE] intValue];
     PFUser * notificationSender = [notification valueForKey:NOTIFICATION_SENDER];
-    id postId = [notification valueForKey:NOTIFICATION_POST];
+    PFObject * postActivityObject = [notification valueForKey:NOTIFICATION_POST];
+    [postActivityObject fetchInBackground];
     [Channel_BackendObject getChannelsForUser:notificationSender withCompletionBlock:^(NSMutableArray * userChannels) {
         if(userChannels){
             dispatch_async(dispatch_get_main_queue(), ^{
                 Channel * channel = [userChannels firstObject];
-                [cell presentNotification:notType withChannel:channel andObjectId:postId];
+                [cell presentNotification:notType withChannel:channel andObjectId:postActivityObject];
             });
         }
     }];

@@ -57,6 +57,7 @@
 
 
 -(void)presentNotification:(NotificationType) notificationType withChannel:(Channel *) channel andObjectId:(id)objectId{
+    
     [self clearViews];
     
     self.objectId = objectId;
