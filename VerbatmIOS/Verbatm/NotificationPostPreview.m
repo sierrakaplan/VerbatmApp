@@ -52,10 +52,10 @@
     [self.customNavBar removeFromSuperview];
     self.customNavBar = nil;
 }
+
 -(void)leftButtonPressed{
     [self.delegate exitPreview];
 }
-
 
 -(void)presentPost:(PFObject *) pfActivityObj andChannel:(Channel *) channel{
     self.postBeingPresented = pfActivityObj;
