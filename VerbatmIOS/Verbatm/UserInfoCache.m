@@ -43,13 +43,18 @@
     [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray * channels) {
         if (channels.count > 0) {
 			self.userChannel = channels[0];
-			[self.userChannel.parseChannelObject setObject:[PFUser currentUser][VERBATM_USER_NAME_KEY] forKey:CHANNEL_CREATOR_NAME_KEY];
-			[self.userChannel.parseChannelObject saveInBackground];
+			if (!self.userChannel.name.length) {
+				[self.userChannel changeTitle:[self getDefaultBlogName]];
+				self.userChannel.defaultBlogName = YES;
+			}
+			if (!self.userChannel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY]) {
+				[self.userChannel.parseChannelObject setObject:[PFUser currentUser][VERBATM_USER_NAME_KEY] forKey:CHANNEL_CREATOR_NAME_KEY];
+				[self.userChannel.parseChannelObject saveInBackground];
+			}
 			block();
 		} else {
 			// First time logging in - create a new channel
-			NSString *userName = [PFUser currentUser][VERBATM_USER_NAME_KEY];
-			NSString *defaultBlogName = [userName stringByAppendingString:@"'s Blog"];
+			NSString *defaultBlogName = [self getDefaultBlogName];
 			[Channel_BackendObject createChannelWithName:defaultBlogName andCompletionBlock:^(PFObject *channelObj) {
 				self.userChannel = [[Channel alloc] initWithChannelName:defaultBlogName andParseChannelObject:channelObj
 																					   andChannelCreator:[PFUser currentUser]];
@@ -58,6 +63,11 @@
 			}];
 		}
     }];
+}
+
+-(NSString*) getDefaultBlogName {
+	NSString *userName = [PFUser currentUser][VERBATM_USER_NAME_KEY];
+	return [userName stringByAppendingString:@"'s Blog"];
 }
 
 -(Channel *) getUserChannel {

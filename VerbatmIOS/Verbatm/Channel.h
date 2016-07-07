@@ -28,6 +28,8 @@
 			  andParseChannelObject:(PFObject *) parseChannelObject
 				  andChannelCreator:(PFUser *) channelCreator;
 
+-(void) changeTitle:(NSString*)title;
+
 -(void) changeTitle:(NSString*)title andDescription:(NSString*)description;
 
 -(void) currentUserFollowsChannel:(BOOL) follows;

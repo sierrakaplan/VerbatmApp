@@ -79,7 +79,15 @@
     });
 }
 
+-(void) changeTitle:(NSString*)title {
+	if (!title.length) return;
+	self.name = title;
+	self.parseChannelObject[CHANNEL_NAME_KEY] = title;
+	[self.parseChannelObject saveInBackground];
+}
+
 -(void) changeTitle:(NSString*)title andDescription:(NSString*)description {
+	if (!title.length) return;
 	self.defaultBlogName = NO;
     self.name = title;
     self.blogDescription = description;
