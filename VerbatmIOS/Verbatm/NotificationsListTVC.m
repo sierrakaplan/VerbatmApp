@@ -29,6 +29,7 @@
 
 @property (nonatomic)NotificationPostPreview * postPreview;
 
+@property (nonatomic) BOOL isFirstLoad;
 
 #define CUSTOM_BAR_HEIGHT 40.f
 #define LIST_BAR_Y_OFFSET -15.f
@@ -39,6 +40,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.shouldAnimateViews = YES;
+    self.isFirstLoad = YES;
     self.view.backgroundColor = [UIColor whiteColor];
     self.tableView.backgroundColor = [UIColor whiteColor];
     
@@ -65,6 +67,15 @@
     [self createHeader];
 }
 
+
+
+-(void)viewWillAppear:(BOOL)animated{
+    if(self.isFirstLoad){
+        self.isFirstLoad = NO;
+    }else{
+        [self refreshNotifications];
+    }
+}
 
 -(void)createHeader{
     CGRect navBarFrame = CGRectMake(0.f, -(LIST_BAR_Y_OFFSET + STATUS_BAR_HEIGHT + CUSTOM_BAR_HEIGHT), self.view.frame.size.width, STATUS_BAR_HEIGHT+ CUSTOM_BAR_HEIGHT);
@@ -120,6 +131,32 @@
 
 -(void)exitPreview{
     [self removePreview];
+}
+
+
+-(void)getMoreNotifications{
+    PFObject * lastObject =[self.parseNotificationObjects lastObject];
+    NSDate * lastDate = [lastObject createdAt];
+    if(!self.refreshing){
+        self.refreshing = YES;
+        [Notification_BackendManager getNotificationsForUserAfterDate:lastDate withCompletionBlock:^(NSArray * notifications) {
+            if(notifications && notifications.count > 1){
+                NSMutableArray * indexPaths = [[NSMutableArray alloc] init];
+                for(int i =0; i < notifications.count; i++){
+                    [indexPaths addObject:[NSIndexPath indexPathForRow: i + self.parseNotificationObjects.count inSection:0]];
+                    
+                }
+                 [self.parseNotificationObjects addObjectsFromArray:notifications];
+                [self.tableView beginUpdates];
+                [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+                [self.tableView endUpdates];
+                self.refreshing = NO;
+            }
+        }];
+    }
+    
+    
+    
 }
 
 
@@ -216,6 +253,8 @@
     PFUser * notificationSender = [notification valueForKey:NOTIFICATION_SENDER];
     PFObject * postActivityObject = [notification valueForKey:NOTIFICATION_POST];
     [postActivityObject fetchInBackground];
+    
+    
     [Channel_BackendObject getChannelsForUser:notificationSender withCompletionBlock:^(NSMutableArray * userChannels) {
         if(userChannels){
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -233,10 +272,13 @@
     NSString *identifier = [NSString stringWithFormat:@"cell,%ld", (long)indexPath.row];
     NotificationTableCell *cell =  (NotificationTableCell *)[tableView dequeueReusableCellWithIdentifier:identifier];
     
-    if(cell){
-    }else{
+    if(!cell){
         cell = [[NotificationTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
         cell.delegate = self;
+    }
+    
+    if(indexPath.row >= (self.parseNotificationObjects.count - 5.f)){
+        [self getMoreNotifications];
     }
     [self setNotificationOnCell:cell notificationObject:self.parseNotificationObjects[indexPath.row]];
     

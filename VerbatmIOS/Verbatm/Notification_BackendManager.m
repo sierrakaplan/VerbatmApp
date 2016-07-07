@@ -34,7 +34,7 @@
     }
 }
 
-+(void)getNotificationsForUserAfterDate:(NSData *) afterDate withCompletionBlock:(void(^)(NSArray*)) block {
++(void)getNotificationsForUserAfterDate:(NSDate *) afterDate withCompletionBlock:(void(^)(NSArray*)) block {
     
     
     PFQuery * query = [PFQuery queryWithClassName:NOTIFICATION_PFCLASS_KEY];
