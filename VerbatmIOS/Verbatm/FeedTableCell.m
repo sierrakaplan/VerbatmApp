@@ -17,6 +17,9 @@
 -(void)clearProfile{
     if(_currentProfile){
         [_currentProfile clearOurViews];
+        @autoreleasepool {
+            _currentProfile = nil;
+        }
     }
 }
 

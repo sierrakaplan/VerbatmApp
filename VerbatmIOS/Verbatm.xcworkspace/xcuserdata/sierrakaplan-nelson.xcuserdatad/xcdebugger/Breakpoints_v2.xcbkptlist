@@ -490,12 +490,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/EditMediaContentView.m"
-            timestampString = "489638095.42506"
+            timestampString = "489640012.295142"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "116"
-            endingLineNumber = "116"
-            landmarkName = "-editText"
+            startingLineNumber = "109"
+            endingLineNumber = "109"
+            landmarkName = "-addLongPress"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -506,11 +506,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/EditMediaContentView.m"
-            timestampString = "489638095.42506"
+            timestampString = "489640012.295142"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "102"
-            endingLineNumber = "102"
+            startingLineNumber = "98"
+            endingLineNumber = "98"
             landmarkName = "-createTextCreationButton"
             landmarkType = "5">
          </BreakpointContent>
@@ -522,12 +522,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/EditMediaContentView.m"
-            timestampString = "489638095.42506"
+            timestampString = "489640012.295142"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "126"
-            endingLineNumber = "126"
-            landmarkName = "-setText:andTextYPosition:andTextColorBlack:andTextAlignment:andTextSize:"
+            startingLineNumber = "119"
+            endingLineNumber = "119"
+            landmarkName = "-editText"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -570,11 +570,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostView.m"
-            timestampString = "489638604.719697"
+            timestampString = "489640012.295142"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "237"
-            endingLineNumber = "237"
+            startingLineNumber = "236"
+            endingLineNumber = "236"
             landmarkName = "-createLikeAndShareBarWithNumberOfLikes:numberOfShares:numberOfPages:andStartingPageNumber:startUp:withDeleteButton:"
             landmarkType = "5">
          </BreakpointContent>
@@ -586,11 +586,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostView.m"
-            timestampString = "489638604.719697"
+            timestampString = "489640012.295142"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "225"
-            endingLineNumber = "225"
+            startingLineNumber = "224"
+            endingLineNumber = "224"
             landmarkName = "-checkIfUserHasLikedThePost"
             landmarkType = "5">
             <Locations>
@@ -634,11 +634,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostView.m"
-            timestampString = "489638604.719697"
+            timestampString = "489640012.295142"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "234"
-            endingLineNumber = "234"
+            startingLineNumber = "233"
+            endingLineNumber = "233"
             landmarkName = "-createLikeAndShareBarWithNumberOfLikes:numberOfShares:numberOfPages:andStartingPageNumber:startUp:withDeleteButton:"
             landmarkType = "5">
          </BreakpointContent>

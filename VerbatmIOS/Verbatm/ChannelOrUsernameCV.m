@@ -10,6 +10,8 @@
 
 #import "Follow_BackendManager.h"
 
+#import "Notifications.h"
+
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import <Parse/PFObject.h>
@@ -54,7 +56,6 @@
 	self = [super initWithStyle: style reuseIdentifier: reuseIdentifier] ;
 
 	if (self) {
-
         self.backgroundColor = [UIColor whiteColor];
 		self.isAChannel = isChannel;
         self.clipsToBounds = YES;
@@ -63,6 +64,23 @@
 	}
 
 	return self;
+}
+
+-(void)registerForFollowNotification{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(userFollowStatusChanged:)
+                                                 name:NOTIFICATION_NOW_FOLLOWING_USER
+                                               object:nil];
+}
+
+//todo: what is this?
+-(void)userFollowStatusChanged:(NSNotification *) notification{
+     NSDictionary *userInfo = [notification userInfo];
+    
+//    if(userInfo){
+//        NSString *userId = userInfo[USER_FOLLOWING_NOTIFICATION_USERINFO_KEY];
+//        if([userId isEqualToString:<#(nonnull NSString *)#>])
+//    }
 }
 
 #pragma mark - Edit Cell formatting -

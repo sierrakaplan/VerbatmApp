@@ -200,7 +200,6 @@
                 self.postPreview.delegate = self;
                 [self.postPreview presentPost:[objects firstObject] andChannel:channel];
                 [self.view addSubview:self.postPreview];
-                self.tableView.scrollEnabled = NO;
                 [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
                     self.postPreview.frame = self.view.bounds;
                 }];
@@ -276,6 +275,7 @@
     if(!self.cellSelected){
         self.cellSelected = YES;
         if(cell.notificationType == Like){
+             self.tableView.scrollEnabled = NO;
              [self presentPost:[cell objectId] andChannel:cell.channel];
         }else{
             [self presentBlogFromCell: cell];

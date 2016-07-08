@@ -121,6 +121,9 @@
     }
 }
 
+-(void)dealloc{
+}
+
 #pragma mark - Overriding offscreen/onscreen methods -
 -(void)prepareForScreenShot{
     [self.videoView prepareForScreenShot];

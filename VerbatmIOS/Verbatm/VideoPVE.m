@@ -256,6 +256,9 @@
     }
 }
 
+-(void)dealloc{
+}
+
 #pragma mark - Lazy Instantiation -
 
 -(VideoPlayerView*) videoPlayer {

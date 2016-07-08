@@ -128,13 +128,14 @@
 	NSArray* pinchViewsData = [[NSUserDefaults standardUserDefaults]
 							   objectForKey:PINCHVIEWS_KEY];
 	@synchronized(self) {
+        __weak PostInProgress * weakSelf = self;
 		self.pinchViewsAsData = [[NSMutableArray alloc] initWithArray:pinchViewsData copyItems:NO];
 		for (int i = 0; i < pinchViewsData.count; i++) {
 			NSData* data = pinchViewsData[i];
-			PinchView* pinchView = [self convertNSDataToPinchView:data];
+			PinchView* pinchView = [weakSelf convertNSDataToPinchView:data];
 			if ([pinchView isKindOfClass:[VideoPinchView class]]) {
 				[(VideoPinchView*)pinchView loadAVURLAssetFromPHAsset].then(^(AVURLAsset* video) {
-					[self.pinchViews insertObject:pinchView atIndex:i];
+					[weakSelf.pinchViews insertObject:pinchView atIndex:i];
 				});
 			} else if([pinchView isKindOfClass:[CollectionPinchView class]] && pinchView.containsVideo) {
 				CollectionPinchView *collectionPinchView = (CollectionPinchView*)pinchView;
@@ -143,10 +144,10 @@
 					[loadVideoPromises addObject:[videoPinchView loadAVURLAssetFromPHAsset]];
 				}
 				PMKWhen(loadVideoPromises).then(^(NSArray *videoAssets) {
-					[self.pinchViews insertObject:collectionPinchView atIndex:i];
+					[weakSelf.pinchViews insertObject:collectionPinchView atIndex:i];
 				});
 			} else {
-				[self.pinchViews addObject:pinchView];
+				[weakSelf.pinchViews addObject:pinchView];
 			}
 		}
 	}

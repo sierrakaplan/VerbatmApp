@@ -91,36 +91,41 @@
     self.footerUp = up;
 	self.currentPostActivityObject = pfActivityObj;
 	PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
+    
+    
+    __weak PostCollectionViewCell *weakSelf = self;
+    
+    
 	[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
-		self.currentPostView = [[PostView alloc] initWithFrame:self.bounds
-								andPostChannelActivityObject:pfActivityObj small:self.inSmallMode andPageObjects:pages];
+		weakSelf.currentPostView = [[PostView alloc] initWithFrame:weakSelf.bounds
+								andPostChannelActivityObject:pfActivityObj small:weakSelf.inSmallMode andPageObjects:pages];
 
-        if(self.inSmallMode)[self.currentPostView muteAllVideos:YES];
+        if(weakSelf.inSmallMode)[weakSelf.currentPostView muteAllVideos:YES];
 		NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
-		if (self.isOnScreen) {
-			[self.currentPostView postOnScreen];
-		} else if (self.isAlmostOnScreen) {
-			[self.currentPostView postAlmostOnScreen];
+		if (weakSelf.isOnScreen) {
+			[weakSelf.currentPostView postOnScreen];
+		} else if (weakSelf.isAlmostOnScreen) {
+			[weakSelf.currentPostView postAlmostOnScreen];
 		} else {
-			[self.currentPostView postOffScreen];
+			[weakSelf.currentPostView postOffScreen];
 		}
-		self.currentPostView.delegate = self;
-		self.currentPostView.listChannel = channelForList;
-		[self addSubview: self.currentPostView];
-        self.currentPostView.inSmallMode = self.inSmallMode;
+		weakSelf.currentPostView.delegate = weakSelf;
+		weakSelf.currentPostView.listChannel = channelForList;
+		[weakSelf addSubview: weakSelf.currentPostView];
+        weakSelf.currentPostView.inSmallMode = weakSelf.inSmallMode;
         
-        if(!self.inSmallMode){
+        if(!weakSelf.inSmallMode){
             AnyPromise *likesPromise = [Like_BackendManager numberOfLikesForPost:post];
             AnyPromise *sharesPromise = [Share_BackendManager numberOfSharesForPost:post];
             PMKWhen(@[likesPromise, sharesPromise]).then(^(NSArray *likesAndShares) {
                 NSNumber *numLikes = likesAndShares[0];
                 NSNumber *numShares = likesAndShares[1];
-                [self.currentPostView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
+                [weakSelf.currentPostView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
                                                    numberOfPages:numberOfPages
                                            andStartingPageNumber:@(1)
                                                          startUp:up
                                                 withDeleteButton:withDelete];
-                [self.currentPostView addCreatorInfo];
+                [weakSelf.currentPostView addCreatorInfo];
             });
         }
 	}];
@@ -157,17 +162,7 @@
 }
 
 -(void) offScreen {
-	self.isOnScreen = NO;
-    if(!self.hasPublishingView){
-        if(self.currentPostView) {
-            [self.currentPostView postOffScreen];
-        }
-    }else{
-        [self.publishingProgressView removeFromSuperview];
-        @autoreleasepool {
-            _publishingProgressView = nil;
-        }
-    }
+    [self clearViews];
 }
 
 #pragma mark - Post view delegate -
@@ -194,6 +189,9 @@
         _publishingProgressView = [[PublishingProgressView alloc] initWithFrame:self.bounds];
     }
     return _publishingProgressView;
+}
+
+-(void)dealloc{
 }
 
 @end

@@ -23,6 +23,7 @@
 @property (nonatomic, weak) id<FeedCellDelegate> delegate;
 
 -(void)presentProfileForChannel:(Channel *) channel;
+
 -(void)setProfileAlreadyLoaded:(ProfileVC *) newProfile;
 -(void)reloadProfile;
 -(void)clearProfile;

@@ -16,7 +16,6 @@
 @end
 
 @interface NotificationsListTVC : UITableViewController
-
 @property (nonatomic, weak) id<NotificationsListTVCProtocol> delegate;
 
 @end

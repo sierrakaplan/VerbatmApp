@@ -221,35 +221,37 @@
 //cleans up video and all other helper objects
 //this is called right before the view is removed from the screen
 -(void) stopVideo {
-	@autoreleasepool {
-		if(self.player)[self.player pause];
-		self.shouldPlayOnLoad = NO;
-		self.videoLoading = NO;
-		[self removePlayerItemObservers];
-		if(self.loadingIndicator)[self.loadingIndicator stopAnimating];
+	[self removePlayerItemObservers];
+	if(self.player)[self.player pause];
+	self.shouldPlayOnLoad = NO;
+	self.videoLoading = NO;
+	if(self.loadingIndicator) [self.loadingIndicator stopAnimating];
 
-        for (int i = 0; i < self.subviews.count; i++) {
-			[self.subviews[i] removeFromSuperview];
-		}
-        
-        for(int i =0; i < self.layer.sublayers.count; i++){
-            [self.layer.sublayers[i] removeFromSuperlayer];
-        }
-        
-		if(self.playerLayer)[self.playerLayer removeFromSuperlayer];
-		self.loadingIndicator = nil;
-		self.playerItem = nil;
-		self.player = nil;
-		self.playerLayer = nil;
-		self.isVideoPlaying = NO;
-		if(self.ourTimer)[self.ourTimer invalidate];
-		self.ourTimer = nil;
+	for (int i = 0; i < self.subviews.count; i++) {
+		[self.subviews[i] removeFromSuperview];
 	}
+
+	for(int i =0; i < self.layer.sublayers.count; i++){
+		[self.layer.sublayers[i] removeFromSuperlayer];
+	}
+
+	if(self.playerLayer)[self.playerLayer removeFromSuperlayer];
+	self.loadingIndicator = nil;
+	self.playerItem = nil;
+	self.player = nil;
+	self.playerLayer = nil;
+	self.isVideoPlaying = NO;
+	if(self.ourTimer) [self.ourTimer invalidate];
+	self.ourTimer = nil;
 }
 
 -(void) removePlayerItemObservers {
 	@try {
 		[self.playerItem removeObserver:self forKeyPath:@"status"];
+	} @catch(id anException) {
+		//do nothing, obviously they weren't attached because an exception was thrown
+	}
+	@try {
 		[self.playerItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
 	} @catch(id anException) {
 		//do nothing, obviously they weren't attached because an exception was thrown

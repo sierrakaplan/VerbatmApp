@@ -28,7 +28,10 @@
 	[newFollowObject setObject:channelToFollow.parseChannelObject forKey:FOLLOW_CHANNEL_FOLLOWED_KEY];
 	[newFollowObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 		if(succeeded){
-            NSNotification * not = [[NSNotification alloc]initWithName:NOTIFICATION_NOW_FOLLOWING_USER object:nil userInfo:nil];
+            NSDictionary * userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[channelToFollow.channelCreator objectId],USER_FOLLOWING_NOTIFICATION_USERINFO_KEY,nil];
+            
+            
+            NSNotification * not = [[NSNotification alloc]initWithName:NOTIFICATION_NOW_FOLLOWING_USER object:nil userInfo:userInfo];
             [[NSNotificationCenter defaultCenter] postNotification:not];
             [Notification_BackendManager createNotificationWithType:NewFollower receivingUser:channelToFollow.channelCreator relevantPostObject:nil];
 		}

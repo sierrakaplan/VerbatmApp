@@ -34,4 +34,8 @@
 
 #define NOTIFICATION_FREE_MEMORY_DISCOVER @"free_memory_discover"
 
+
+#define USER_FOLLOWING_NOTIFICATION_USERINFO_KEY @"UserFollowing"
+
+
 #endif /* Header_h */
