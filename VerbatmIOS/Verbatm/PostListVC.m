@@ -678,7 +678,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 - (void) collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
 	// If the indexpath is not within visible objects then it is offscreen
 	if ([collectionView.indexPathsForVisibleItems indexOfObject:indexPath] == NSNotFound) {
-		[(PostCollectionViewCell*)cell offScreen];
+		[(PostCollectionViewCell*)cell clearViews];
 	}
 }
 
@@ -724,6 +724,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	[alert addAction: deleteAction];
 	[self presentViewController:alert animated:YES completion:nil];
 }
+
 
 -(void) deleteReblog:(PFObject *)post onPostView:(PostView *)postView withPostChannelActivityObj:(PFObject *)pfActivityObj {
 	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Delete reblogged post"
@@ -1182,6 +1183,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)dealloc {
+    NSLog(@"Postlist dealocated");
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -1198,4 +1200,5 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(void) didReceiveMemoryWarning {
 
 }
+
 @end

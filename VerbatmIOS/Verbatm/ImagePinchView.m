@@ -114,7 +114,8 @@
 	options.synchronous = YES;
 	PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[self.phAssetLocalIdentifier] options:nil];
 	PHAsset* imageAsset = fetchResult.firstObject;
-	self.imageName = [imageAsset valueForKey:@"filename"];
+    __weak ImagePinchView * weakSelf = self;
+	weakSelf.imageName = [imageAsset valueForKey:@"filename"];
 	CGSize size = half ? HALF_SCREEN_SIZE : FULL_SCREEN_SIZE;
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -122,9 +123,9 @@
                   options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
                       image = [image imageByScalingAndCroppingForSize: CGSizeMake(size.width, size.height)];
                       
-                      if(self.beingPublished){
+                      if(weakSelf.beingPublished){
                           dispatch_async(dispatch_get_main_queue(), ^{
-                              resolve([self getImageScreenshotWithText:image]);
+                              resolve([weakSelf getImageScreenshotWithText:image]);
                           });
                       }else{
                           resolve(image);

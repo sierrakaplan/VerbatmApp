@@ -222,9 +222,10 @@
 }
 
 -(void) checkIfUserHasLikedThePost {
-	[Like_BackendManager currentUserLikesPost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST] withCompletionBlock:^(bool userLikedPost) {
+    __weak PostView *weakSelf = self;
+	[Like_BackendManager currentUserLikesPost:[weakSelf.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST] withCompletionBlock:^(bool userLikedPost) {
 		dispatch_async(dispatch_get_main_queue(), ^{
-			[self.likeShareBar shouldStartPostAsLiked:userLikedPost];
+			[weakSelf.likeShareBar shouldStartPostAsLiked:userLikedPost];
 		});
 	}];
 }
@@ -268,16 +269,17 @@
 -(void) addCreatorInfo {
 	self.creatorBarFrameUp = CGRectMake(0.f, -STATUS_BAR_HEIGHT, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT + STATUS_BAR_HEIGHT);
 	self.creatorBarFrameDown = CGRectMake(0.f, 0.f, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT + STATUS_BAR_HEIGHT);
-	[Post_Channel_RelationshipManager getChannelObjectFromParsePCRelationship:self.parsePostChannelActivityObject
+    __weak PostView *weakSelf = self;
+	[Post_Channel_RelationshipManager getChannelObjectFromParsePCRelationship:weakSelf.parsePostChannelActivityObject
 														  withCompletionBlock:^(Channel * channel) {
-															  self.postChannel = channel;
+															  weakSelf.postChannel = channel;
 															  //we only add the channel info to posts that don't belong to the current user
-															  if(channel.parseChannelObject != self.listChannel.parseChannelObject
+															  if(channel.parseChannelObject != weakSelf.listChannel.parseChannelObject
 																 && ![channel channelBelongsToCurrentUser]) {
 																  dispatch_async(dispatch_get_main_queue(), ^{
-																	  self.creatorAndChannelBar = [[CreatorAndChannelBar alloc] initWithFrame:self.creatorBarFrameDown andChannel:channel];
-																	  self.creatorAndChannelBar.delegate = self;
-																	  [self addSubview:self.creatorAndChannelBar];
+																	  weakSelf.creatorAndChannelBar = [[CreatorAndChannelBar alloc] initWithFrame:weakSelf.creatorBarFrameDown andChannel:channel];
+																	  weakSelf.creatorAndChannelBar.delegate = weakSelf;
+																	  [weakSelf addSubview:weakSelf.creatorAndChannelBar];
 																  });
 															  }
 														  }];
@@ -395,12 +397,13 @@
 	self.swipeUpAndDownInstruction.contentMode =  UIViewContentModeScaleAspectFit;
 	[self addSubview:self.swipeUpAndDownInstruction];
 	[self bringSubviewToFront:self.swipeUpAndDownInstruction];
+    __weak PostView *weakSelf = self;
 	[UIView animateWithDuration:7.f animations:^{
-		self.swipeUpAndDownInstruction.alpha = 0.f;
+		weakSelf.swipeUpAndDownInstruction.alpha = 0.f;
 	}completion:^(BOOL finished) {
 		if(finished){
-			[self.swipeUpAndDownInstruction removeFromSuperview];
-			self.swipeUpAndDownInstruction = nil;
+			[weakSelf.swipeUpAndDownInstruction removeFromSuperview];
+			weakSelf.swipeUpAndDownInstruction = nil;
 		}
 	}];
 }
@@ -445,10 +448,11 @@
 }
 
 -(void)downArrowClicked {
+    __weak PostView *weakSelf = self;
 	[UIView animateWithDuration:SCROLL_UP_ANIMATION_DURATION animations:^{
-		self.mainScrollView.contentOffset = CGPointMake(0, self.frame.size.height);
+		weakSelf.mainScrollView.contentOffset = CGPointMake(0, self.frame.size.height);
 	} completion:^(BOOL finished) {
-		[self displayMediaOnCurrentPage];
+		[weakSelf displayMediaOnCurrentPage];
 	}];
 }
 
@@ -468,17 +472,18 @@
 	if (pageView.currentlyLoadingMedia) return;
 	pageView.currentlyLoadingMedia = YES;
 	//todo: go through process of loading content and reduce number of steps
+    __weak PostView *weakSelf = self;
 	[PageTypeAnalyzer getPageMediaFromPage:parsePageObject withCompletionBlock:^(NSArray * pageMedia) {
 		if (!_pageViews) return; //If post has been cleared before we get here
 		if ([pageView isKindOfClass:[PhotoPVE class]]) {
 			[(PhotoPVE*)pageView displayPhotos: pageMedia[1]];
 		} else if ([pageView isKindOfClass:[VideoPVE class]] ) {
 			[(VideoPVE*)pageView setThumbnailImage:pageMedia[1][1] andVideo:pageMedia[1][0]];
-			[(VideoPVE *)pageView muteVideo: self.postMuted];
+			[(VideoPVE *)pageView muteVideo: weakSelf.postMuted];
 		} else if([pageView isKindOfClass:[PhotoVideoPVE class]]) {
 			[(PhotoVideoPVE *)pageView displayPhotos:pageMedia[1] andVideo:pageMedia[2][0]
 								   andVideoThumbnail:pageMedia[2][1]];
-			[(PhotoVideoPVE *)pageView muteVideo: self.postMuted];
+			[(PhotoVideoPVE *)pageView muteVideo: weakSelf.postMuted];
 		}
 		if (pageView.currentlyOnScreen) [pageView onScreen];
 		else [pageView almostOnScreen];
@@ -515,15 +520,16 @@
 -(void) clearPost {
 //	We clear these so that the media is released
 	[self stopAllVideos];
-
 	for(UIView *view in self.mainScrollView.subviews) {
 		[view removeFromSuperview];
 	}
 	if (self.likeButton.superview) [self.likeButton removeFromSuperview];
 	[self.likeShareBar removeFromSuperview];
-	self.likeShareBar =  nil;
-	self.currentPageIndex = -1;
-	self.pageViews = nil;
+    @autoreleasepool {
+        self.likeShareBar =  nil;
+        self.currentPageIndex = -1;
+        self.pageViews = nil;
+    }
 	//[self removePageUpIndicatorFromView];
 }
 
@@ -538,12 +544,13 @@
 //removes the little bouncing arrow in the right corner of the screen
 -(void)removePageUpIndicatorFromView{
 	if(self.pageUpIndicator){
+        __weak PostView *weakSelf = self;
 		[UIView animateWithDuration:0.2f animations:^{
-			self.pageUpIndicator.alpha = 0.f;
+			weakSelf.pageUpIndicator.alpha = 0.f;
 		} completion:^(BOOL finished) {
-			[self.pageUpIndicator removeFromSuperview];
-			self.pageUpIndicator = nil;
-            self.pageUpIndicatorDisplayed = NO;
+			[weakSelf.pageUpIndicator removeFromSuperview];
+			weakSelf.pageUpIndicator = nil;
+            weakSelf.pageUpIndicatorDisplayed = NO;
 		}];
 	}
 }
@@ -637,7 +644,7 @@
 }
 
 -(void) dealloc {
-	
+    NSLog(@"PostView Deallocated");
 }
 
 @end

@@ -117,6 +117,12 @@
     });
     
 }
+- (void)tableView:(UITableView *)tableView
+didEndDisplayingCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath{
+    FeedTableCell *feedCell = (FeedTableCell *) cell;
+    [feedCell clearProfile];
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     FeedTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FeedTableCell" forIndexPath:indexPath];

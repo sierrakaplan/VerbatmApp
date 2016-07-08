@@ -19,5 +19,5 @@
 
 
 @interface SharingLinkActionView : UIView
-@property (nonatomic) id <ShareLinkActionViewProtocol> delegate;
+@property (nonatomic, weak) id <ShareLinkActionViewProtocol> delegate;
 @end

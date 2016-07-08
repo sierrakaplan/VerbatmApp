@@ -256,6 +256,11 @@
     }
 }
 
+
+-(void)dealloc{
+    NSLog(@"VideoPVE Dealloc");
+}
+
 #pragma mark - Lazy Instantiation -
 
 -(VideoPlayerView*) videoPlayer {

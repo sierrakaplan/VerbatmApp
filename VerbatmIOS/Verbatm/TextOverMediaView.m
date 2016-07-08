@@ -46,11 +46,12 @@
 		// After larger image loads, crop it and set it in the image
 		// Only load large image if it's been published already cropped (with s0 tag)
 		if (!small && [imageUrl.absoluteString hasSuffix:@"=s0"]) {
+            __weak TextOverMediaView *weakSelf = self;
 			[UtilityFunctions loadCachedPhotoDataFromURL:imageUrl].then(^(NSData* largeImageData) {
 				// Only display larger data if less than 1000 KB
 				if (largeImageData.length / 1024.f < 1000) {
 					UIImage *image = [UIImage imageWithData:largeImageData];
-					[self.imageView setImage: image];
+					[weakSelf.imageView setImage: image];
 				}
 			});
 		}
@@ -259,8 +260,8 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	return _textView;
 }
 
--(void) dealloc {
-
+-(void)dealloc{
+    NSLog(@"TextOverMediaView Dealloc");
 }
 
 @end

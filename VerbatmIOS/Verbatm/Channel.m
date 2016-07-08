@@ -160,25 +160,25 @@
     self.channelsUserFollowing = nil;
     
     NSMutableArray * loadPromises = [[NSMutableArray alloc] init];
-    
+    __weak Channel * weakSelf = self;
     [loadPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve)
                              {
                                  [Follow_BackendManager usersFollowingChannel:self withCompletionBlock:^(NSArray *users) {
-                                     self.usersFollowingChannel = [[NSMutableArray alloc] initWithArray:users];
+                                     weakSelf.usersFollowingChannel = [[NSMutableArray alloc] initWithArray:users];
                                      resolve(nil);
                                  }];
                              }]];
     
     [loadPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve)
                              {
-                                 [Follow_BackendManager channelsUserFollowing:self.channelCreator withCompletionBlock:^(NSArray *channels) {
-                                     self.channelsUserFollowing = [[NSMutableArray alloc] initWithArray: channels];
+                                 [Follow_BackendManager channelsUserFollowing:weakSelf.channelCreator withCompletionBlock:^(NSArray *channels) {
+                                     weakSelf.channelsUserFollowing = [[NSMutableArray alloc] initWithArray: channels];
                                      resolve(nil);
                                  }];
                              }]];
     
     PMKWhen(loadPromises).then(^(id nothing) {
-        block();
+       if(block) block();
     });
 }
 

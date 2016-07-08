@@ -24,5 +24,5 @@
 
 
 @interface SharingLinkView : UIView
-@property (nonatomic) id <ShareLinkViewProtocol> delegate;
+@property (nonatomic, weak) id <ShareLinkViewProtocol> delegate;
 @end

@@ -74,6 +74,7 @@
     UIEdgeInsets inset = UIEdgeInsetsMake((LIST_BAR_Y_OFFSET+ STATUS_BAR_HEIGHT + CUSTOM_CHANNEL_LIST_BAR_HEIGHT), 0, CUSTOM_CHANNEL_LIST_BAR_HEIGHT, 0);
     self.tableView.contentInset = inset;
     self.tableView.scrollIndicatorInsets = inset;
+    
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath

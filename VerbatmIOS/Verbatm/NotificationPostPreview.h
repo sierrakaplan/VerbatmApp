@@ -19,5 +19,5 @@
 @interface NotificationPostPreview : UIView
 -(void)clearViews;
 -(void)presentPost:(PFObject *) post andChannel:(Channel *) channel;
-@property (nonatomic) id<NotificationPostPreviewProtocol> delegate;
+@property (nonatomic, weak) id<NotificationPostPreviewProtocol> delegate;
 @end
