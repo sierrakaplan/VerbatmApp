@@ -109,6 +109,7 @@ ExploreChannelCellViewDelegate>
 	self.tableView.tableHeaderView = self.searchController.searchBar;
 	self.definesPresentationContext = YES;
 	self.searchController.searchBar.barTintColor = [UIColor clearColor];
+	self.searchController.searchBar.tintColor = [UIColor whiteColor];
 	self.searchController.searchBar.backgroundColor = [UIColor clearColor];
 	self.searchController.searchBar.backgroundImage = [UIImage new];
 	//	self.searchController.searchBar.scopeButtonTitles = @[@"Users", @"Blogs"];

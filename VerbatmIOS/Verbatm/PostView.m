@@ -138,7 +138,6 @@
         default:
             break;
     }
-
 }
 
 // Creates empty PageViewingExperiences to show activity icons but doesn't load media
@@ -154,7 +153,6 @@
     }
 	
     [self displayPageViews: self.pageViews];
-
 }
 
 
@@ -234,7 +232,6 @@
 									  startUp:(BOOL)up withDeleteButton: (BOOL)withDelete {
 
 	CGRect startFrame = (up) ? self.lsBarUpFrame : self.lsBarDownFrame;
-	[self.likeShareBar removeFromSuperview];
 	self.likeShareBar = [[PostLikeAndShareBar alloc] initWithFrame: startFrame numberOfLikes:numLikes
 													numberOfShares:numShares numberOfPages:numPages andStartingPageNumber:startPage];
 	self.likeShareBar.delegate = self;
@@ -404,39 +401,6 @@
 		}
 	}];
 }
-
-// Decide if we want to bring back filter swipe
-//-(void)presentFilterSwipeForInstructionWithPageView:(PageViewingExperience *) currentPage {
-//
-//	BOOL isPhotoAve = [currentPage isKindOfClass:[PhotoPVE class]];
-//	BOOL isVideoAve = [currentPage isKindOfClass:[PhotoVideoPVE class]];
-//
-//	BOOL filterInstructionHasNotBeenPresented = ![[UserSetupParameters sharedInstance] isFilter_InstructionShown];
-//
-//	if( (isPhotoAve || isVideoAve)  && filterInstructionHasNotBeenPresented) {
-//		UIImage * instructionImage = [UIImage imageNamed:FILTER_SWIPE_INSTRUCTION];
-//		CGFloat frameWidth = 200.f;
-//		CGFloat frameHeight = (frameWidth * 320.f) /488.f;
-//
-//		UIImageView * filterInstruction = [[UIImageView alloc] initWithImage:instructionImage];
-//		filterInstruction.backgroundColor = [UIColor clearColor];
-//
-//		CGFloat imageOriginX = (self.frame.size.width/2.f) - (frameWidth/2.f);
-//
-//		if (isPhotoAve) {
-//			filterInstruction.frame = CGRectMake(imageOriginX,
-//												 (self.frame.size.height/2.f) + frameHeight,
-//												 frameWidth, frameHeight);
-//		} else {
-//			filterInstruction.frame = CGRectMake(imageOriginX,
-//												 self.frame.size.height - (frameHeight + 50.f), frameWidth, frameHeight);
-//		}
-//
-//		[self addSubview:filterInstruction];
-//		[self bringSubviewToFront:filterInstruction];
-//		[[UserSetupParameters sharedInstance] set_filter_InstructionAsShown];
-//	}
-//}
 
 #pragma mark - Down arrow -
 
@@ -614,15 +578,6 @@
 	}
 	return _mainScrollView;
 }
-
--(PostLikeAndShareBar*) likeShareBar {
-	if (!_likeShareBar) {
-		_likeShareBar = [[PostLikeAndShareBar alloc] initWithFrame:CGRectMake(0.f, self.frame.size.height - LIKE_SHARE_BAR_HEIGHT, self.frame.size.width, LIKE_SHARE_BAR_HEIGHT)];
-		[self addSubview:_likeShareBar];
-	}
-	return _likeShareBar;
-}
-
 
 -(UIButton*) downArrow {
 	if (!_downArrow) {

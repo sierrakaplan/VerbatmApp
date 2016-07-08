@@ -208,9 +208,6 @@
 	return textAndImageView;
 }
 
-#pragma mark - Tap Gesture -
-
-
 #pragma mark - Rearrange content (preview mode) -
 
 -(void)createRearrangeButton {

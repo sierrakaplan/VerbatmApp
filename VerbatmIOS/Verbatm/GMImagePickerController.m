@@ -53,9 +53,12 @@
     return self;
 }
 
-- (void)dealloc{
+-(BOOL) prefersStatusBarHidden {
+	return YES;
 }
 
+- (void)dealloc{
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
