@@ -63,9 +63,8 @@
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         NSString * url = [self.parseChannelObject valueForKey:CHANNEL_COVER_PHOTO_URL];
         if(url){
-            [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString: url]].then(^(NSData* data) {
-                if(data){
-                    UIImage * photo = [UIImage imageWithData:data];
+            [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString: url]].then(^(UIImage* photo) {
+                if(photo){
                     dispatch_async(dispatch_get_main_queue(), ^{
                         block(photo);
                     });

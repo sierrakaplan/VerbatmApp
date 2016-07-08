@@ -99,7 +99,7 @@
 			[imageUrls addObject: photoUrlString];
 		}
 
-		[self getThumbnailDatafromUrls:imageUrls withCompletionBlock:^(NSArray *imageData) {
+		[self getThumbnailDatafromUrls:imageUrls withCompletionBlock:^(NSArray *images) {
 			NSMutableArray* imageTextArrays = [[NSMutableArray alloc] init];
 			for (int i = 0; i < photoObjects.count; i++) {
 				PFObject * imageAndTextObj = photoObjects[i];
@@ -118,7 +118,7 @@
 				NSNumber *textSize = [imageAndTextObj valueForKey:PHOTO_TEXT_SIZE_KEY];
 				if (textSize == nil) textSize = [NSNumber numberWithFloat:TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE];
 
-				[imageTextArrays addObject: @[photoURL, [UIImage imageWithData:imageData[i]], text,
+				[imageTextArrays addObject: @[photoURL, images[i], text,
 											  yOffset, textColor, textAlignment, textSize]];
 			}
 			dispatch_async(dispatch_get_main_queue(), ^{

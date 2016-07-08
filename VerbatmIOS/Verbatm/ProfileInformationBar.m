@@ -89,8 +89,35 @@
 			}
 		}
 		[self createFollowersAndFollowingLabels];
+        [self registerForFollowNotification];
 	}
 	return self;
+}
+
+-(void)registerForFollowNotification{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(userFollowStatusChanged:)
+                                                 name:NOTIFICATION_NOW_FOLLOWING_USER
+                                               object:nil];
+}
+
+-(void)userFollowStatusChanged:(NSNotification *) notification{
+    
+    NSDictionary * userInfo = [notification userInfo];
+    if(userInfo){
+        NSString * userId = userInfo[USER_FOLLOWING_NOTIFICATION_USERINFO_KEY];
+        if([userId isEqualToString:[self.channel.channelCreator objectId]]){
+            [self refreshNotificationList];
+        }
+    }
+    
+}
+
+-(void)refreshNotificationList{
+    [self.channel getFollowersAndFollowingWithCompletionBlock:^{
+        self.currentUserFollowsUser = [self.channel checkIfList:self.channel.usersFollowingChannel ContainsObject:[PFUser currentUser]];
+        [self updateUserFollowingChannel];
+    }];
 }
 
 

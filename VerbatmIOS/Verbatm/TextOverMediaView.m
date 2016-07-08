@@ -47,12 +47,8 @@
 		// Only load large image if it's been published already cropped (with s0 tag)
 		if (!small && [imageUrl.absoluteString hasSuffix:@"=s0"]) {
             __weak TextOverMediaView *weakSelf = self;
-			[UtilityFunctions loadCachedPhotoDataFromURL:imageUrl].then(^(NSData* largeImageData) {
-				// Only display larger data if less than 1000 KB
-				if (largeImageData.length / 1024.f < 1000) {
-					UIImage *image = [UIImage imageWithData:largeImageData];
-					[weakSelf.imageView setImage: image];
-				}
+			[UtilityFunctions loadCachedPhotoDataFromURL:imageUrl].then(^(UIImage* image) {
+                    [weakSelf.imageView setImage: image];
 			});
 		}
 	}
