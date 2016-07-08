@@ -137,7 +137,7 @@ andTextAlignment:(NSNumber *) textAlignment
             }];
             
             if(isCacheResponse){
-                NSLog(@"Just used cache for photo");
+//                NSLog(@"Just used cache for photo");
             }else{
                 NSLog(@"Missed cache using network for photo");
             }

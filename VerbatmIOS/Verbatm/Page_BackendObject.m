@@ -214,7 +214,7 @@
                 
                 objects = [objects sortedArrayUsingComparator:[Page_BackendObject comparatorSortPhotosByIndex]];
                 if(isCacheResponse){
-                    NSLog(@"Just used cache for page");
+//                    NSLog(@"Just used cache for page");
                 }else{
                     NSLog(@"Missed cache using network for page");
                 }
