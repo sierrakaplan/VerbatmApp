@@ -37,20 +37,22 @@
 			   withSmallImage: (UIImage*)smallImage asSmall:(BOOL) small {
 	self = [self initWithFrame:frame];
 	if (self) {
-		UIImage *croppedImage = smallImage;
-		if (small) {
-			croppedImage = [smallImage imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width, self.bounds.size.height)];
-		}
-		[self.imageView setImage: croppedImage];
-
-		// After larger image loads, crop it and set it in the image
-		// Only load large image if it's been published already cropped (with s0 tag)
-		if (!small && [imageUrl.absoluteString hasSuffix:@"=s0"]) {
+        if(![smallImage isKindOfClass:[NSNull class]]){
+            UIImage *croppedImage = smallImage;
+            if (small) {
+                croppedImage = [smallImage imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width, self.bounds.size.height)];
+            }
+            [self.imageView setImage: croppedImage];
+        }
+        // After larger image loads, crop it and set it in the image
+        // Only load large image if it's been published already cropped (with s0 tag)
+        if (!small && [imageUrl.absoluteString hasSuffix:@"=s0"]) {
             __weak TextOverMediaView *weakSelf = self;
-			[UtilityFunctions loadCachedPhotoDataFromURL:imageUrl].then(^(UIImage* image) {
-                    [weakSelf.imageView setImage: image];
-			});
-		}
+            [UtilityFunctions loadCachedPhotoDataFromURL:imageUrl].then(^(UIImage* image) {
+                if(![image isKindOfClass:[NSNull class]])[weakSelf changeImageTo: image];
+            });
+        }
+        
 	}
 	return self;
 }
@@ -142,8 +144,9 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	self.textYPosition = yPos;
 	CGRect tempFrame = CGRectMake(self.textView.frame.origin.x, yPos,
 								  self.textView.frame.size.width, self.textView.frame.size.height);
+    __weak TextOverMediaView * weakSelf = self;
 	[UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
-		self.textView.frame = tempFrame;
+		if(weakSelf)weakSelf.textView.frame = tempFrame;
 	}];
 }
 
@@ -257,6 +260,8 @@ andTextAlignment:(NSTextAlignment) textAlignment
 }
 
 -(void)dealloc{
+    _imageView.image = nil;
+    _imageView = nil;
     NSLog(@"TextOverMediaView Dealloc");
 }
 

@@ -37,7 +37,7 @@
     
     if(visibleCell && visibleCell.count){
         FeedTableCell * cell = [visibleCell firstObject];
-        [cell reloadProfile];
+        [cell presentProfileForChannel:self.currentUserChannel];
     }
 }
 
@@ -46,7 +46,7 @@
     [self reloadCellsOnScreen];
 }
 
--(void)viewDidDisappear:(BOOL)animated{
+-(void)viewWillDisappear:(BOOL)animated{
     NSArray * visibleCell = [self.tableView visibleCells];
     if(visibleCell && visibleCell.count){
         FeedTableCell * cell = [visibleCell firstObject];

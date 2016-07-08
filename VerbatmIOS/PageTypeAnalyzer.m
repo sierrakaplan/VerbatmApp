@@ -42,12 +42,14 @@
 
 +(NSMutableArray*) getPageViewsFromPinchViews:(NSArray*) pinchViews withFrame:(CGRect)frame inPreviewMode: (BOOL) inPreviewMode {
 	NSMutableArray* results = [[NSMutableArray alloc] init];
-	for(int i = 0; i < pinchViews.count; i++) {
+	
+    for(int i = 0; i < pinchViews.count; i++) {
 		PinchView *pinchView = pinchViews[i];
 		PageViewingExperience *pageView = [self getPageViewFromPinchView:pinchView withFrame:frame inPreviewMode:inPreviewMode];
 		pageView.indexInPost = i;
 		[results addObject:pageView];
 	}
+    
 	return results;
 }
 
@@ -133,10 +135,11 @@
 	NSMutableArray* loadImageDataPromises = [[NSMutableArray alloc] init];
 	for (NSString *uri in urls) {
 		NSString *smallImageUri = uri;
-		NSString * suffix = @"=s0";
-		if ([uri hasSuffix:suffix] ) {
-			smallImageUri = [uri substringWithRange:NSMakeRange(0, uri.length-suffix.length)];
-		}
+		//NSString * suffix = @"=s0";
+        //TO DO -- Sierra?
+//		if ([uri hasSuffix:suffix] ) {
+//			smallImageUri = [uri substringWithRange:NSMakeRange(0, uri.length-suffix.length)];
+//		}
 
 		AnyPromise* getImageDataPromise = [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString: smallImageUri]];
 		[loadImageDataPromises addObject: getImageDataPromise];

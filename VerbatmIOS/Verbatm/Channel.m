@@ -60,8 +60,10 @@
 
 -(void)loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*))block{
     
+    __weak Channel * weakSelf = self;
+    
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        NSString * url = [self.parseChannelObject valueForKey:CHANNEL_COVER_PHOTO_URL];
+        NSString * url = [weakSelf.parseChannelObject valueForKey:CHANNEL_COVER_PHOTO_URL];
         if(url){
             [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString: url]].then(^(UIImage* photo) {
                 if(photo){

@@ -114,14 +114,14 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
-
 	[self clearOurViews];
 }
 
 -(void)clearOurViews{
 	if(self.postListVC)[self.postListVC offScreen];
 	if(self.postListVC)[self.postListVC clearViews];
-
+    [self.profileHeaderView removeFromSuperview];
+    self.profileHeaderView = nil;
 }
 
 -(void)viewDidAppear:(BOOL)animated{

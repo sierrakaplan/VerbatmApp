@@ -468,19 +468,22 @@
 
 //todo: change to refresh newest and just load posts
 -(void) refreshPosts {
-	if (!self.isRefreshing){
-		self.exitedView = NO;
-		self.isRefreshing = YES;
-		self.isLoadingMore = NO;
-		[self.customActivityIndicator startCustomActivityIndicator];
-		if(self.listType == listFeed) {
-			[self.feedQueryManager refreshFeedWithCompletionHandler:self.refreshPostsCompletion];
-		} else if (self.listType == listChannel) {
-			[self.postsQueryManager loadPostsInChannel: self.channelForList withLatestDate:self.latestDate withCompletionBlock:self.refreshPostsCompletion];
-//			[self.postsQueryManager refreshPostsInChannel: self.channelForList startingAt:self.latestDate
-//									  withCompletionBlock: self.refreshPostsCompletion];
-		}
-	}
+    
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        if (!self.isRefreshing){
+            self.exitedView = NO;
+            self.isRefreshing = YES;
+            self.isLoadingMore = NO;
+            [self.customActivityIndicator startCustomActivityIndicator];
+            if(self.listType == listFeed) {
+                [self.feedQueryManager refreshFeedWithCompletionHandler:self.refreshPostsCompletion];
+            } else if (self.listType == listChannel) {
+                [self.postsQueryManager loadPostsInChannel: self.channelForList withLatestDate:self.latestDate withCompletionBlock:self.refreshPostsCompletion];
+            }
+        }
+    });
+    
+	
 }
 
 //todo: delete
