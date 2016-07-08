@@ -161,8 +161,6 @@
 			components.queryItems = @[blobKey];
 
 			UIImage * thumbNail = [UIImage imageWithData:videoThumbNails[0]];
-			//todo: see if downloading videos can be made better
-//			[[VideoDownloadManager sharedInstance] downloadURL:components.URL];
 			block(@[components.URL, thumbNail]);
 		}];
 		

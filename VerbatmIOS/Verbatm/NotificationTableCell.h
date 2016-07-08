@@ -15,10 +15,11 @@
 @protocol NotificationTableCellProtocol;
 
 @interface NotificationTableCell : UITableViewCell
+
 @property (nonatomic) id objectId;
 @property (nonatomic) Channel * channel;
 @property (nonatomic) NotificationType notificationType;
-@property (nonatomic) id<NotificationTableCellProtocol> delegate;
+@property (nonatomic, weak) id<NotificationTableCellProtocol> delegate;
 
 -(void)presentNotification:(NotificationType) notificationType withChannel:(Channel *) channel andObjectId:(id)objectId;
 @end

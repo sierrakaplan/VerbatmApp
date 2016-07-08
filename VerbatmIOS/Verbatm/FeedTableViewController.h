@@ -18,6 +18,6 @@
 
 @interface FeedTableViewController : UITableViewController
 
-@property (nonatomic) id<FeedTableViewDelegate> delegate;
+@property (nonatomic, weak) id<FeedTableViewDelegate> delegate;
 
 @end

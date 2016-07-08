@@ -209,7 +209,10 @@
 
 -(void) editButtonSelected {
 	// Don't allow user to exit edit mode if their blog has no title
-	if (self.editMode && !self.blogTitleEditable.text.length) return;
+	if (self.editMode && !self.blogTitleEditable.text.length) {
+		[self.delegate editDoneButtonClickedWithoutName];
+		return;
+	}
 	self.editMode = !self.editMode;
 	[self.userInformationBar changeEditMode: self.editMode];
 	if (self.editMode) {

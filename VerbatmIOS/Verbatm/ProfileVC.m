@@ -134,22 +134,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	[self presentViewController:vc animated:YES completion:nil];
 }
 
--(void)followersButtonSelected{
-	[self showMyFollowers];
-}
-
--(void)followingButtonSelected{
-	[self showWhoIAmFollowing];
-}
-
--(void)showWhoIAmFollowing{
-	[self presentUserList:followingList];
-}
-
--(void)showMyFollowers{
-	[self presentUserList:followersList];
-}
-
 - (UIStatusBarStyle)preferredStatusBarStyle {
 	return UIStatusBarStyleLightContent;
 }
@@ -354,6 +338,31 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 -(void) settingsButtonClicked {
 	[self performSegueWithIdentifier:SETTINGS_PAGE_MODAL_SEGUE sender:self];
+}
+
+-(void) editDoneButtonClickedWithoutName {
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"You've gotta title your blog!" message:nil
+																preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+												   handler:^(UIAlertAction * action) {}];
+	[newAlert addAction:action];
+	[self presentViewController:newAlert animated:YES completion:nil];
+}
+
+-(void)followersButtonSelected{
+	[self showMyFollowers];
+}
+
+-(void)followingButtonSelected{
+	[self showWhoIAmFollowing];
+}
+
+-(void)showWhoIAmFollowing{
+	[self presentUserList:followingList];
+}
+
+-(void)showMyFollowers{
+	[self presentUserList:followersList];
 }
 
 //ProfileNavBarDelegate protocol
