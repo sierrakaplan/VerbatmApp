@@ -18,9 +18,9 @@
 -(void)followersButtonSelected;
 -(void)followingButtonSelected;
 
-
 // If profile tab
 -(void) settingsButtonClicked;
+-(void) editDoneButtonClickedWithoutName;
 
 // If someone else's profile
 -(void) exitCurrentProfile;

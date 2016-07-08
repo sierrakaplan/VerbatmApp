@@ -191,6 +191,8 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 	[self createBaseSelector];
 	[self loadPostFromUserDefaults];
 	//todo: display channel title and cover photo?
+	//todo: delete
+//	[UIView setAnimationsEnabled:YES];
 }
 
 -(BOOL) prefersStatusBarHidden {

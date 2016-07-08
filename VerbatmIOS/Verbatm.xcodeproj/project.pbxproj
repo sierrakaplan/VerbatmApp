@@ -14,6 +14,10 @@
 		9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995719BA7EBD005EBC8A /* MediaSessionManager.m */; };
 		A5076D0E1BED6EF000303746 /* SingleMediaAndTextPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5076D0D1BED6EF000303746 /* SingleMediaAndTextPinchView.m */; };
 		A5076D141BF2B25100303746 /* TextOverMediaView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5076D131BF2B25100303746 /* TextOverMediaView.m */; };
+		A51B851A1D2F39B1006E90CC /* UIView+DTDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = A51B85191D2F39B1006E90CC /* UIView+DTDebug.m */; };
+		A51B851E1D2F3B79006E90CC /* NSObject+DTRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = A51B851D1D2F3B79006E90CC /* NSObject+DTRuntime.m */; };
+		A51B85201D2F3C43006E90CC /* DTLog.m in Sources */ = {isa = PBXBuildFile; fileRef = A51B851F1D2F3C43006E90CC /* DTLog.m */; };
+		A51B85241D2F3CEE006E90CC /* DTObjectBlockExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = A51B85231D2F3CEE006E90CC /* DTObjectBlockExecutor.m */; };
 		A51BB2A81D2657D00020D529 /* SearchResultsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A51BB2A71D2657D00020D529 /* SearchResultsVC.m */; };
 		A51E74641C898C4E00CF8DEA /* PostInProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = A51E74631C898C4E00CF8DEA /* PostInProgress.m */; };
 		A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */ = {isa = PBXBuildFile; fileRef = A52919751B5DD24F00233712 /* UIView+Glow.m */; };
@@ -284,6 +288,14 @@
 		A5076D0D1BED6EF000303746 /* SingleMediaAndTextPinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SingleMediaAndTextPinchView.m; sourceTree = "<group>"; };
 		A5076D121BF2B25100303746 /* TextOverMediaView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextOverMediaView.h; sourceTree = "<group>"; };
 		A5076D131BF2B25100303746 /* TextOverMediaView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextOverMediaView.m; sourceTree = "<group>"; };
+		A51B85181D2F39B1006E90CC /* UIView+DTDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+DTDebug.h"; sourceTree = "<group>"; };
+		A51B85191D2F39B1006E90CC /* UIView+DTDebug.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+DTDebug.m"; sourceTree = "<group>"; };
+		A51B851C1D2F3B79006E90CC /* NSObject+DTRuntime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+DTRuntime.h"; sourceTree = "<group>"; };
+		A51B851D1D2F3B79006E90CC /* NSObject+DTRuntime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+DTRuntime.m"; sourceTree = "<group>"; };
+		A51B851F1D2F3C43006E90CC /* DTLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTLog.m; sourceTree = "<group>"; };
+		A51B85211D2F3C6C006E90CC /* DTLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DTLog.h; sourceTree = "<group>"; };
+		A51B85221D2F3CEE006E90CC /* DTObjectBlockExecutor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTObjectBlockExecutor.h; sourceTree = "<group>"; };
+		A51B85231D2F3CEE006E90CC /* DTObjectBlockExecutor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTObjectBlockExecutor.m; sourceTree = "<group>"; };
 		A51BB2A61D2657D00020D529 /* SearchResultsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchResultsVC.h; sourceTree = "<group>"; };
 		A51BB2A71D2657D00020D529 /* SearchResultsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchResultsVC.m; sourceTree = "<group>"; };
 		A51E74621C898C4E00CF8DEA /* PostInProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostInProgress.h; sourceTree = "<group>"; };
@@ -1036,6 +1048,14 @@
 				A535E5051BC44BF100A087D1 /* UIScrollView+Effects.m */,
 				A535E5071BC45CC600A087D1 /* AVAsset+Utilities.h */,
 				A535E5081BC45CC600A087D1 /* AVAsset+Utilities.m */,
+				A51B85181D2F39B1006E90CC /* UIView+DTDebug.h */,
+				A51B85191D2F39B1006E90CC /* UIView+DTDebug.m */,
+				A51B851C1D2F3B79006E90CC /* NSObject+DTRuntime.h */,
+				A51B851D1D2F3B79006E90CC /* NSObject+DTRuntime.m */,
+				A51B851F1D2F3C43006E90CC /* DTLog.m */,
+				A51B85211D2F3C6C006E90CC /* DTLog.h */,
+				A51B85221D2F3CEE006E90CC /* DTObjectBlockExecutor.h */,
+				A51B85231D2F3CEE006E90CC /* DTObjectBlockExecutor.m */,
 			);
 			name = "Categories and Effects";
 			sourceTree = "<group>";
@@ -1861,12 +1881,15 @@
 				C788745C1C334AE80048B66E /* PostLikeAndShareBar.m in Sources */,
 				A56B5D231CA49D0E00A61D27 /* Like_BackendManager.m in Sources */,
 				A56F68871B66FED900CE5744 /* ContentPageElementScrollView.m in Sources */,
+				A51B851E1D2F3B79006E90CC /* NSObject+DTRuntime.m in Sources */,
 				A586566D1B620E60008E358C /* PointObject.m in Sources */,
 				C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */,
 				C7C69A071BF820FC006B5260 /* EditMediaContentView.m in Sources */,
 				A5C38ACD1CC1D4120067D077 /* FeaturedContentChannelView.m in Sources */,
 				C763C1BC1CE4430B00929248 /* onBoardingViewController.m in Sources */,
 				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,
+				A51B851A1D2F39B1006E90CC /* UIView+DTDebug.m in Sources */,
+				A51B85201D2F3C43006E90CC /* DTLog.m in Sources */,
 				C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */,
 				12A06D971CD3762B001800C9 /* BlogPopupView.m in Sources */,
 				A5E73B7F1D16365400527ECF /* GTLObject.m in Sources */,
@@ -1887,6 +1910,7 @@
 				C7178E0B1D21A12000B90643 /* FeedTableCell.m in Sources */,
 				C7F22B381C3841AD00E56EA7 /* SelectSharingOption.m in Sources */,
 				C723C9861D2B3DAA00E87D58 /* NotificationsListTVC.m in Sources */,
+				A51B85241D2F3CEE006E90CC /* DTObjectBlockExecutor.m in Sources */,
 				A51BB2A81D2657D00020D529 /* SearchResultsVC.m in Sources */,
 				A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */,
 				A535E4FD1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m in Sources */,
@@ -2006,7 +2030,7 @@
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(inherited)";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "98f1c3d3-c353-49e8-9093-2d24fb3bec28";
@@ -2055,7 +2079,7 @@
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(inherited)";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = NO;
 				PROVISIONING_PROFILE = "98f1c3d3-c353-49e8-9093-2d24fb3bec28";
@@ -2075,9 +2099,11 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_BITCODE = NO;
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -2089,12 +2115,13 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				ONLY_ACTIVE_ARCH = "$(inherited)";
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.myVerbatm.Verbatm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				USER_HEADER_SEARCH_PATHS = "\"${PODS_ROOT}/BuildHeaders\"/** $(inherited)";
+				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "armv7 armv7s arm64";
 				VERSIONING_SYSTEM = "apple-generic";
 				WRAPPER_EXTENSION = app;
@@ -2110,13 +2137,16 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_BITCODE = NO;
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
+				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Verbatm/Verbatm-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(inherited)";
@@ -2124,12 +2154,13 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				ONLY_ACTIVE_ARCH = "$(inherited)";
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.myVerbatm.Verbatm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				USER_HEADER_SEARCH_PATHS = "\"${PODS_ROOT}/BuildHeaders\"/** $(inherited)";
+				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "armv7 armv7s arm64";
 				VERSIONING_SYSTEM = "apple-generic";
 				WRAPPER_EXTENSION = app;

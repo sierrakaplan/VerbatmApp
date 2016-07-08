@@ -15,6 +15,7 @@
 @protocol NotificationTableCellProtocol;
 
 @interface NotificationTableCell : UITableViewCell
+
 @property (nonatomic) id objectId;
 @property (nonatomic) Channel * channel;
 @property (nonatomic) NotificationType notificationType;

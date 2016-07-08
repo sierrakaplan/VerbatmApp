@@ -16,6 +16,7 @@
 
 @interface UtilityFunctions : NSObject
 
++ (NSArray*)shuffleArray:(NSArray*)array;
 + (AVMutableComposition*) fuseAssets:(NSArray*)videoList;
 + (NSString *) randomStringWithLength: (NSInteger)length;
 // Promise wrapper for asynchronous request to get image data (or any data) from the url

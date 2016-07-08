@@ -23,6 +23,7 @@
 ExploreChannelCellViewDelegate>
 
 @property (strong, nonatomic) UISearchController *searchController;
+@property (strong, nonatomic) SearchResultsVC *searchResultsController;
 
 @property (strong, nonatomic) NSMutableArray *exploreChannels;
 @property (strong, nonatomic) NSMutableArray *featuredChannels;
@@ -101,9 +102,10 @@ ExploreChannelCellViewDelegate>
 }
 
 -(void) setUpSearchController {
-	SearchResultsVC *searchResultsController = [[SearchResultsVC alloc] init];
-	self.searchController = [[UISearchController alloc] initWithSearchResultsController: searchResultsController];
-	self.searchController.searchResultsUpdater = searchResultsController;
+	self.searchResultsController = [[SearchResultsVC alloc] init];
+	self.searchResultsController.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+	self.searchController = [[UISearchController alloc] initWithSearchResultsController: self.searchResultsController];
+	self.searchController.searchResultsUpdater = self.searchResultsController;
 	self.tableView.tableHeaderView = self.searchController.searchBar;
 	self.definesPresentationContext = YES;
 	self.searchController.searchBar.barTintColor = [UIColor clearColor];

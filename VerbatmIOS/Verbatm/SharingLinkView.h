@@ -19,7 +19,6 @@
 -(void) continueToPublish;
 -(void) cancelPublishing;
 
-
 @end
 
 

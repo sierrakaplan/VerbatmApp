@@ -19,9 +19,13 @@
 
 
 @interface FeedTableCell : UITableViewCell
--(void)presentProfileForChannel:(Channel *) channel;
+
 @property (nonatomic, weak) id<FeedCellDelegate> delegate;
+
+-(void)presentProfileForChannel:(Channel *) channel;
+
 -(void)setProfileAlreadyLoaded:(ProfileVC *) newProfile;
 -(void)reloadProfile;
 -(void)clearProfile;
+
 @end

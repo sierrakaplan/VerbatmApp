@@ -59,6 +59,18 @@
 	return fusedAsset;
 }
 
++ (NSArray*)shuffleArray:(NSArray*)array {
+
+	NSMutableArray *temp = [[NSMutableArray alloc] initWithArray:array];
+
+	for(NSUInteger i = [array count]; i > 1; i--) {
+		NSUInteger j = (NSUInteger)arc4random_uniform((u_int32_t)i);
+		[temp exchangeObjectAtIndex:i-1 withObjectAtIndex:j];
+	}
+
+	return [NSArray arrayWithArray:temp];
+}
+
 NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 + (NSString *) randomStringWithLength: (NSInteger)length {
@@ -68,7 +80,6 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 	}
 	return randomString;
 }
-
 
 // Promise wrapper for asynchronous request to get image data (or any data) from the url
 + (AnyPromise*) loadCachedPhotoDataFromURL: (NSURL*) url {

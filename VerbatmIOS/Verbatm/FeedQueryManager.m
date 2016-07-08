@@ -13,6 +13,7 @@
 #import "ParseBackendKeys.h"
 #import <Parse/PFQuery.h>
 #import <PromiseKit/PromiseKit.h>
+#import "UtilityFunctions.h"
 
 @interface FeedQueryManager ()
 
@@ -182,7 +183,7 @@
 			[exploreChannelsQuery whereKey:CHANNEL_CREATOR_KEY notEqualTo: user];
 			[exploreChannelsQuery whereKey:CHANNEL_CREATOR_KEY notContainedIn: self.usersWhoHaveBlockedUser];
 			[exploreChannelsQuery whereKey:@"objectId" notContainedIn: self.channelsFollowedIds];
-			[exploreChannelsQuery orderByDescending:CHANNEL_NUM_FOLLOWS];
+			[exploreChannelsQuery orderByDescending:@"createdAt"];
 			[exploreChannelsQuery setLimit:CHANNEL_DOWNLOAD_MAX_SIZE];
 			[exploreChannelsQuery setSkip: 0];
 			[exploreChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
@@ -211,7 +212,7 @@
 																		   andChannelCreator:channelCreator];
 						[finalChannels addObject:verbatmChannelObject];
 					}
-					completionBlock(finalChannels);
+					completionBlock([UtilityFunctions shuffleArray: finalChannels]);
 					self.exploreChannelsLoaded = 0;
 					self.exploreChannelsLoaded += results.count;
 				});
@@ -257,7 +258,7 @@
 	[exploreChannelsQuery whereKey:CHANNEL_CREATOR_KEY notEqualTo: user];
 	[exploreChannelsQuery whereKey:CHANNEL_CREATOR_KEY notContainedIn: self.usersWhoHaveBlockedUser];
 	[exploreChannelsQuery whereKey:@"objectId" notContainedIn: self.channelsFollowedIds];
-	[exploreChannelsQuery orderByDescending:CHANNEL_NUM_FOLLOWS];
+	[exploreChannelsQuery orderByDescending:@"createdAt"];
 	[exploreChannelsQuery setLimit:CHANNEL_DOWNLOAD_MAX_SIZE];
 	[exploreChannelsQuery setSkip: self.exploreChannelsLoaded];
 	[exploreChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
@@ -286,7 +287,7 @@
 																   andChannelCreator:channelCreator];
 				[finalChannels addObject:verbatmChannelObject];
 			}
-			completionBlock(finalChannels);
+			completionBlock([UtilityFunctions shuffleArray: finalChannels]);
 			self.exploreChannelsLoaded += results.count;
 		});
 	}];
