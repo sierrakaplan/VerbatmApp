@@ -184,4 +184,8 @@
 
 #define NOTIFICATION_POPUP_ICON @"Notifications alert"
 
+
+
+#define SIGNUP_PHONE_INFO_BACKGROUND_COLOR [UIColor whiteColor]
+
 #endif /* Styles_h */

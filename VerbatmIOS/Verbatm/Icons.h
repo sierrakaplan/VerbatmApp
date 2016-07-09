@@ -149,5 +149,7 @@
 #define NO_COVER_PHOTO_IMAGE @"Empty_Cover_Photo_Image"
 #define PROFILE_BACK_BUTTON_ICON @"back_arrow_white"
 
+#define LOGIN_ICON @"Log In"
+#define CREATE_ACCOUNT @"Create Account"
 
 #endif /* Icons_h */

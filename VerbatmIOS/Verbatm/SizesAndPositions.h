@@ -44,11 +44,17 @@
 
 
 #pragma mark - Sign In -
+#define PHONE_NUMBER_FIELD_HEIGHT 40.f
+#define TEXTFIELDS_CORNER_RADIUS 2.f
 
 #define SIGN_IN_ERROR_VIEW_HEIGHT 100.f
 #define SIGNIN_ERROR_LABEL_PADDING 30.f
 
+#define SIGN_UP_BUTTON_GAP 60.f
 
+#define TOP_BUTTON_YOFFSET 200.f
+
+#define SIGNUP_BACK_BUTTON_SIZE 40.f
 
 #pragma mark - ADK -
 
