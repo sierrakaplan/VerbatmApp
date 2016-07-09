@@ -283,11 +283,13 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 				NSArray* visiblePaths = [weakSelf.collectionView indexPathsForVisibleItems];
 				NSInteger oldRow = visiblePaths && visiblePaths.count ? [(NSIndexPath*)visiblePaths[0] row] : 0;
 				NSInteger newRow = oldRow + posts.count;
+				if (newRow >= 0 && newRow < self.parsePostObjects.count) {
+					NSIndexPath *selectedPostPath = [NSIndexPath indexPathForRow:newRow inSection:0];
+					[weakSelf.collectionView scrollToItemAtIndexPath:selectedPostPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+					weakSelf.nextIndexToPresent += posts.count;
+					weakSelf.nextNextIndex += posts.count;
+				}
 
-				NSIndexPath *selectedPostPath = [NSIndexPath indexPathForRow:newRow inSection:0];
-				[weakSelf.collectionView scrollToItemAtIndexPath:selectedPostPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
-				weakSelf.nextIndexToPresent += posts.count;
-				weakSelf.nextNextIndex += posts.count;
 				weakSelf.isLoadingOlder = NO;
 				weakSelf.performingUpdate = NO;
 				[CATransaction commit];
@@ -862,7 +864,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	self.currentlyPublishing = YES;
 	self.nextIndexToPresent = -1;
 	self.nextNextIndex = -1;
-
 
 	[CATransaction begin];
 	[CATransaction setDisableActions:YES];

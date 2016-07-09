@@ -379,9 +379,6 @@
 		}
 	}
 	if(self.rearrangeView)[self.rearrangeView exitView];
-    @autoreleasepool {
-        self.imageContainerViews= nil;
-    }
 }
 
 #pragma mark - EditContentViewDelegate methods -
