@@ -45,9 +45,6 @@ andTextAlignment:(NSNumber *) textAlignment
 			}];
 		}
 		NSString *blobstoreUrl = (NSString*) result;
-		if (![blobstoreUrl hasSuffix:@"=s0"]) {
-			blobstoreUrl = [blobstoreUrl stringByAppendingString:@"=s0"];
-		}
         //in completion
         return [self createAndSavePhotoObjectwithBlobstoreUrl:blobstoreUrl
 											  withText:text

@@ -98,7 +98,7 @@
 								andPostChannelActivityObject:pfActivityObj small:weakSelf.inSmallMode andPageObjects:pages];
 
 		NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate:timeBeforePages];
-		NSLog(@"%@",[NSString stringWithFormat:@"Time loading pages %f seconds", timeInterval]);
+//		NSLog(@"%@",[NSString stringWithFormat:@"Time loading pages %f seconds", timeInterval]);
 
         if(weakSelf.inSmallMode)[weakSelf.currentPostView muteAllVideos:YES];
 		NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];

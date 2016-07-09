@@ -43,15 +43,18 @@
 		}
 		[self.imageView setImage: croppedImage];
 
-		// After larger image loads, crop it and set it in the image
-		// Only load large image if it's been published already cropped (with s0 tag)
-		if (!small && [imageUrl.absoluteString hasSuffix:@"=s0"]) {
+		// Load large image cropped
+		if (!small) {
+			NSString *imageURI = [UtilityFunctions addSuffixToPhotoUrl:imageUrl.absoluteString forSize:600];
+			imageUrl = [NSURL URLWithString: imageURI];
             __weak TextOverMediaView *weakSelf = self;
 			[UtilityFunctions loadCachedPhotoDataFromURL:imageUrl].then(^(NSData* largeImageData) {
 				// Only display larger data if less than 1000 KB
 				if (largeImageData.length / 1024.f < 1000) {
 					UIImage *image = [UIImage imageWithData:largeImageData];
 					[weakSelf.imageView setImage: image];
+				} else {
+					NSLog(@"Image too big");
 				}
 			});
 		}

@@ -453,17 +453,19 @@
 		if (!_pageViews) return; //If post has been cleared before we get here
 
 		NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate: beforeMedia];
-		NSLog(@"%@",[NSString stringWithFormat:@"Time loading media in page %ld %f seconds", (long)index, timeInterval]);
 		
 		if ([pageView isKindOfClass:[PhotoPVE class]]) {
 			[(PhotoPVE*)pageView displayPhotos: pageMedia[1]];
+			NSLog(@"%@",[NSString stringWithFormat:@"Time loading media in photo page %ld %f seconds", (long)index, timeInterval]);
 		} else if ([pageView isKindOfClass:[VideoPVE class]] ) {
 			[(VideoPVE*)pageView setThumbnailImage:pageMedia[1][1] andVideo:pageMedia[1][0]];
 			[(VideoPVE *)pageView muteVideo: weakSelf.postMuted];
+			NSLog(@"%@",[NSString stringWithFormat:@"Time loading media in video page %ld %f seconds", (long)index, timeInterval]);
 		} else if([pageView isKindOfClass:[PhotoVideoPVE class]]) {
 			[(PhotoVideoPVE *)pageView displayPhotos:pageMedia[1] andVideo:pageMedia[2][0]
 								   andVideoThumbnail:pageMedia[2][1]];
 			[(PhotoVideoPVE *)pageView muteVideo: weakSelf.postMuted];
+			NSLog(@"%@",[NSString stringWithFormat:@"Time loading media in photo video page %ld %f seconds", (long)index, timeInterval]);
 		}
 		if (pageView.currentlyOnScreen) [pageView onScreen];
 		else [pageView almostOnScreen];

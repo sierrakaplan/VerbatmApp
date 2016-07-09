@@ -112,9 +112,6 @@
             [mediaPublisher storeImageWithName:@"CoverPhoto.png" andData:imageData].then(^(id result) {
                 if(result){
                     NSString *blobstoreUrl = (NSString*) result;
-                    if (![blobstoreUrl hasSuffix:@"=s0"]) {
-                        blobstoreUrl = [blobstoreUrl stringByAppendingString:@"=s0"];
-                    }
                     [channel setValue:blobstoreUrl forKey:CHANNEL_COVER_PHOTO_URL];
                     [channel saveInBackground];
                 }

@@ -72,7 +72,6 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate, MFMessageComposeViewContro
 @property (strong, nonatomic) PostCollectionViewCell *nextNextCell;
 @property (nonatomic, strong) UILabel * noContentLabel;
 
-@property (nonatomic) LoadingIndicator *customActivityIndicator;
 @property (nonatomic) SharePostView *sharePostView;
 @property (nonatomic) BOOL shouldPlayVideos;
 
@@ -236,13 +235,12 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 -(void) defineLoadPostsCompletions {
 	__weak typeof(self) weakSelf = self;
 	self.refreshPostsCompletion = ^void(NSArray *posts) {
-		[weakSelf.customActivityIndicator stopCustomActivityIndicator];
 		if(weakSelf.exitedView) return; // Already left page
 		[weakSelf.postListDelegate postsFound];
 		if(posts.count) {
 			[weakSelf.parsePostObjects removeAllObjects];
 			[weakSelf.parsePostObjects addObjectsFromArray:posts];
-			if(weakSelf.currentlyPublishing){
+			if(weakSelf.currentlyPublishing) {
 				[weakSelf.parsePostObjects addObject:weakSelf.publishingProgressViewPositionHolder];
 			}
 			[weakSelf.collectionView reloadData];
@@ -313,7 +311,6 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 		self.exitedView = NO;
 		self.isRefreshing = YES;
 		self.isLoadingMore = NO;
-		[self.customActivityIndicator startCustomActivityIndicator];
 		[self.postsQueryManager loadPostsInChannel: self.channelForList withLatestDate:self.latestDate withCompletionBlock:self.refreshPostsCompletion];
 	}
 }
@@ -374,7 +371,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		currentCell = [self postCellAtIndexPath:indexPath];
 	}
 	[currentCell onScreen];
-	[self prepareNextPostsFromIndexPath:indexPath];
+//	[self prepareNextPostsFromIndexPath:indexPath];
 
 	//Load older posts
 	if (indexPath.row <= LOAD_MORE_POSTS_COUNT && !self.isLoadingOlder && !self.isRefreshing) {
@@ -981,16 +978,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		self.reblogSucessful = nil;
 	}
 	return _following;
-}
-
--(LoadingIndicator *)customActivityIndicator {
-	if(!_customActivityIndicator){
-		CGPoint center = CGPointMake(self.view.frame.size.width/2., self.view.frame.size.height/2.f);
-		_customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:center andImage:[UIImage imageNamed:LOAD_ICON_IMAGE]];
-		[self.view addSubview:_customActivityIndicator];
-		[self.view bringSubviewToFront:_customActivityIndicator];
-	}
-	return _customActivityIndicator;
 }
 
 -(NSMutableArray *) parsePostObjects {

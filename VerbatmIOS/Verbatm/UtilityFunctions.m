@@ -15,12 +15,30 @@
 @import Foundation;
 
 @interface UtilityFunctions ()
-#define COMPRESSING 0
-@end
 
+#define COMPRESSING 0
+
+@end
 
 @implementation UtilityFunctions
 
+
++(NSString*) stripLargePhotoSuffix:(NSString*)photoUrl {
+	NSString * suffix = @"=s0";
+	if ([photoUrl hasSuffix:suffix] ) {
+		return [photoUrl substringWithRange:NSMakeRange(0, photoUrl.length-suffix.length)];
+	}
+	return photoUrl;
+}
+
++(NSString*) addSuffixToPhotoUrl:(NSString*)photoUrl forSize:(NSInteger)size {
+	photoUrl = [UtilityFunctions stripLargePhotoSuffix: photoUrl];
+	NSString *suffix = @"=s";
+	suffix = [suffix stringByAppendingString: [NSString stringWithFormat:@"%ld", size]];
+	NSString *newUrl = [photoUrl stringByAppendingString: suffix];
+	NSLog(@"%@", newUrl);
+	return newUrl;
+}
 
 //This code fuses the video assets into a single video that plays the videos one after the other.
 //It accepts both avassets and urls which it converts into assets
@@ -98,8 +116,8 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 											  resolve(nil);
 										  } else {
 											  NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate: startDownload];
-											  NSLog(@"%@",[NSString stringWithFormat:@"Time loading image for url %@ %f seconds \n", url, timeInterval]);
-											  NSLog(@"Image size for url %@ is : %.2f MB \n", url, (float)data.length/1024.0f/1024.0f);
+											  NSLog(@"url %@ \n", url);
+											  NSLog(@"Image size is : %.2f KB and time %f seconds \n\n", (float)data.length/1024.0f, timeInterval);
 											  resolve(data);
 										  }
 		}];

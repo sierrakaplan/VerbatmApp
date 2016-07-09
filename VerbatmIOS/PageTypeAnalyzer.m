@@ -70,14 +70,17 @@
 +(void) getPageMediaFromPage: (PFObject *)page withCompletionBlock:(void(^)(NSArray *))block {
 	PageTypes type = [((NSNumber *)[page valueForKey:PAGE_VIEW_TYPE]) intValue];
 	if (type == PageTypePhoto) {
+		NSLog (@"Getting images");
 		[self getUIImagesFromPage:page withCompletionBlock:^(NSMutableArray * imagesAndText) {
 			block(@[[NSNumber numberWithInt:type], imagesAndText]);
 		}];
 	} else if (type == PageTypeVideo){
+		NSLog (@"Getting video");
 		[self getVideoFromPage:page withCompletionBlock:^(NSArray *videoAndThumbnail) {
 			block(@[[NSNumber numberWithInt:type], videoAndThumbnail]);
 		}];
 	} else if( type == PageTypePhotoVideo){
+		NSLog (@"Getting images and video");
 		[self getVideoFromPage:page withCompletionBlock:^(NSArray *videoAndThumbnail) {
 			[self getUIImagesFromPage:page withCompletionBlock:^(NSMutableArray* imagesAndText) {
 				block(@[[NSNumber numberWithInt:type], imagesAndText, videoAndThumbnail]);
@@ -90,7 +93,13 @@
  @[@[url, uiimage, text, textYPosition, textColor, textAlignment, textSize],...] */
 +(void) getUIImagesFromPage: (PFObject *) page withCompletionBlock:(void(^)(NSMutableArray *)) block{
 
+
+	NSDate *before = [NSDate date];
 	[Photo_BackendObject getPhotosForPage:page andCompletionBlock:^(NSArray * photoObjects) {
+
+		NSDate *afterParseObjects = [NSDate date];
+		NSTimeInterval timeInterval = [afterParseObjects timeIntervalSinceDate: before];
+//		NSLog(@"%@",[NSString stringWithFormat:@"Time loading parse photo objects %f seconds \n\n", timeInterval]);
 
 		NSMutableArray* imageUrls = [[NSMutableArray alloc] init];
 		for (PFObject * imageAndTextObj in photoObjects) {
@@ -100,6 +109,10 @@
 		}
 
 		[self getThumbnailDatafromUrls:imageUrls withCompletionBlock:^(NSArray *imageData) {
+
+			NSTimeInterval timeIntervalForThumbnails = [[NSDate date] timeIntervalSinceDate: afterParseObjects];
+//			NSLog(@"%@",[NSString stringWithFormat:@"Time loading all thumbnails %f seconds \n\n", timeIntervalForThumbnails]);
+
 			NSMutableArray* imageTextArrays = [[NSMutableArray alloc] init];
 			for (int i = 0; i < photoObjects.count; i++) {
 				PFObject * imageAndTextObj = photoObjects[i];
@@ -132,13 +145,8 @@
 
 	NSMutableArray* loadImageDataPromises = [[NSMutableArray alloc] init];
 	for (NSString *uri in urls) {
-		NSString *smallImageUri = uri;
-		NSString * suffix = @"=s0";
-		if ([uri hasSuffix:suffix] ) {
-			smallImageUri = [uri substringWithRange:NSMakeRange(0, uri.length-suffix.length)];
-		}
-
-		AnyPromise* getImageDataPromise = [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString: smallImageUri]];
+		NSString *smallImageUrl = [UtilityFunctions addSuffixToPhotoUrl:uri forSize:200];
+		AnyPromise* getImageDataPromise = [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString: smallImageUrl]];
 		[loadImageDataPromises addObject: getImageDataPromise];
 	}
 	PMKWhen(loadImageDataPromises).then(^(NSArray* results) {
