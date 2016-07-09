@@ -21,13 +21,16 @@
 
 -(void) clearFeedData;
 
+
+//todo: refactor and rename and delete old methods
+
 /* Reloads the channels that the user follows and then POST_DOWNLOAD_MAX_SIZE of 
    the posts associated with those channels, from newest to oldest. */
--(void) refreshFeedWithCompletionHandler:(void(^)(NSArray *))block;
+//-(void) refreshFeedWithCompletionHandler:(void(^)(NSArray *))block;
 
 /* Loads POST_DOWNLOAD_MAX_SIZE more posts from the place we left off, loading only
    older posts than those returned so far. Refresh must be called first. */
--(void) loadMorePostsWithCompletionHandler:(void(^)(NSArray *))block;
+//-(void) loadMorePostsWithCompletionHandler:(void(^)(NSArray *))block;
 
 /* Reloads channels for current user's explore section, obviously excluding channels owned by the user
    or channels they already follow. Returns up to CHANNEL_DOWNLOAD_MAX_SIZE channels */

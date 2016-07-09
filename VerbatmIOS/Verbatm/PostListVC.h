@@ -20,12 +20,8 @@
 
 -(void)hideNavBarIfPresent;
 -(void)channelSelected:(Channel *) channel;
-@end
 
-typedef enum PostListType {
-	listFeed = 0,
-	listChannel = 1,
-} PostListType;
+@end
 
 @interface PostListVC : UICollectionViewController
 
@@ -41,13 +37,13 @@ typedef enum PostListType {
 @property (nonatomic) BOOL currentlyPublishing;
 
 
--(void) display:(Channel*)channelForList asPostListType:(PostListType)listType
-  withListOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile
+-(void) display:(Channel*)channelForList withListOwner:(PFUser*)listOwner
+isCurrentUserProfile:(BOOL)isCurrentUserProfile
 andStartingDate:(NSDate*)date;
 
 // Used when we already have the posts to display
--(void) display:(Channel*)channelForList asPostListType:(PostListType)listType
-	  listOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date
+-(void) display:(Channel*)channelForList withListOwner:(PFUser*)listOwner
+isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date
 withOldParseObjects:(NSMutableArray *)newParseObjects;
 
 -(void) clearViews;
@@ -56,8 +52,6 @@ withOldParseObjects:(NSMutableArray *)newParseObjects;
 -(void) offScreen;
 
 -(void) refreshPosts;
-
--(void) loadMorePosts;
 
 //moves the tap/share bar up and down over the tab bar
 -(void) footerShowing: (BOOL) showing;

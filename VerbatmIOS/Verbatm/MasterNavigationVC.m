@@ -138,67 +138,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
                                                object:nil];
 }
 
--(void)successfullyPublishedNotification:(NSNotification *) notification {
-    
-    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Sucessfully Published!"
-																	   message:@"Remember to share your post! :D"
-																preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction* action = [UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault
-                                                   handler:^(UIAlertAction * action) {}];
-    [newAlert addAction:action];
-    [self presentViewController:newAlert animated:YES completion:nil];
-    
-	//todo: bring back image later
-    //	[self.view addSubview:self.publishSuccessful];
-    //	[self.view bringSubviewToFront:self.publishSuccessful];
-    //	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-    //		self.publishSuccessful.alpha = 0.f;
-    //	}completion:^(BOOL finished) {
-    //		[self.publishSuccessful removeFromSuperview];
-    //		self.publishSuccessful = nil;
-    //	}];
-}
-
--(void)publishingFailedNotification:(NSNotification *) notification{
-	NSError *error = notification.object;
-	NSString* message = @"Don't worry - we saved all your stuff! Try to publish again later!";
-	if (error.code == -1000 && [error.domain isEqualToString:@"com.alamofire.error.serialization.request"]) {
-		message = @"We couldn't publish one of your pieces of media - the file was unreadable.";
-	}
-    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Ooops...we couldn't publish." message:message preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
-                                                   handler:^(UIAlertAction * action) {}];
-    [newAlert addAction:action];
-    [self presentViewController:newAlert animated:YES completion:nil];
-
-	//todo: bring back image later
-    //	[self.view addSubview:self.publishFailed];
-    //	[self.view bringSubviewToFront:self.publishFailed];
-    //	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-    //		self.publishFailed.alpha = 0.f;
-    //	}completion:^(BOOL finished) {
-    //		[self.publishFailed removeFromSuperview];
-    //		self.publishFailed = nil;
-    //	}];
-}
-
--(void)followingSuccessfulNotification:(NSNotification *) notification{
-    
-    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Following Successful!" message:@"" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
-                                                   handler:^(UIAlertAction * action) {}];
-    [newAlert addAction:action];
-    [self presentViewController:newAlert animated:YES completion:nil];
-    
-//    [self.view addSubview:self.following];
-//    [self.view bringSubviewToFront:self.following];
-//    [UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-//        self.following.alpha = 0.f;
-//    }completion:^(BOOL finished) {
-//        [self.following removeFromSuperview];
-//        self.following = nil;
-//    }];
-}
+#pragma mark - Setting up environment on startup -
 
 /* Migrating to one channel */
 -(void) checkMigrated {
@@ -355,8 +295,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
     [self showTabBar:!shouldHide];
 }
 
-
-
 -(void)showNotificationIndicator{
     [self showIndicator];
 }
@@ -445,7 +383,8 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	}
 }
 
-#pragma mark -Profile VC Delegate-
+#pragma mark - Profile VC Delegate -
+
 -(void) userCreateFirstPost{
     [self revealADK];
 }
@@ -478,15 +417,40 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	}
 }
 
-//show the channels the current user can select to follow
--(void)presentChannelsToFollow{
-	//[self presentShareSelectionViewStartOnChannels:YES];
+#pragma mark - Publishing Alerts -
+
+-(void)successfullyPublishedNotification:(NSNotification *) notification {
+
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Successfully Published!"
+																	   message:@"Remember to share your post! :D"
+																preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* action = [UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault
+												   handler:^(UIAlertAction * action) {}];
+	[newAlert addAction:action];
+	[self presentViewController:newAlert animated:YES completion:nil];
 }
 
-- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController{
-
+-(void)publishingFailedNotification:(NSNotification *) notification{
+	NSError *error = notification.object;
+	NSString* message = @"Don't worry - we saved all your stuff! Try to publish again later!";
+	if (error.code == -1000 && [error.domain isEqualToString:@"com.alamofire.error.serialization.request"]) {
+		message = @"We couldn't publish one of your pieces of media - the file was unreadable.";
+	}
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Publishing Failed" message:message preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+												   handler:^(UIAlertAction * action) {}];
+	[newAlert addAction:action];
+	[self presentViewController:newAlert animated:YES completion:nil];
 }
 
+-(void)followingSuccessfulNotification:(NSNotification *) notification{
+
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Following Successful!" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+												   handler:^(UIAlertAction * action) {}];
+	[newAlert addAction:action];
+	[self presentViewController:newAlert animated:YES completion:nil];
+}
 
 - (UIInterfaceOrientationMask) supportedInterfaceOrientations {
     //return supported orientation masks
@@ -497,7 +461,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
     if(!_notificationIndicator)_notificationIndicator = [[UIImageView alloc] initWithImage:[UIImage imageNamed:NOTIFICATION_POPUP_ICON]];
     return _notificationIndicator;
 }
-
 
 #pragma mark - Memory Warning -
 

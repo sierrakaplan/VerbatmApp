@@ -65,8 +65,6 @@
 	return sharedInstance;
 }
 
-
-
 -(void)storeLocationToShare:(SelectedPlatformsToShareLink)locationToShare withCaption:(NSString *) caption{
     self.locationToShare = locationToShare;
     self.captionToShare = caption;
@@ -190,7 +188,6 @@
 		self.progressAccountant.totalUnitCount = 0;
 		self.currentlyPublishing = NO;
 		[[PostInProgress sharedInstance] clearPostInProgress];
-		[self.delegate publishingComplete];
 		NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_POST_PUBLISHED object:nil userInfo:nil];
 		[[NSNotificationCenter defaultCenter] postNotification: notification];
 		self.currentParsePostObject = nil;

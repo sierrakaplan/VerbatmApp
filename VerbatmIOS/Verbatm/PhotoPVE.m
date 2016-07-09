@@ -424,6 +424,5 @@
 }
 
 -(void) dealloc {
-    NSLog(@"PhotoPVE dealloced");
 }
 @end

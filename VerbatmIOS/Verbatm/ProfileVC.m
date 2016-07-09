@@ -43,8 +43,7 @@
 #import <PromiseKit/PromiseKit.h>
 
 @interface ProfileVC() <ProfileHeaderViewDelegate, Intro_Notification_Delegate,
-UIScrollViewDelegate, CreateNewChannelViewProtocol,
-PublishingProgressProtocol, PostListVCProtocol,
+UIScrollViewDelegate, CreateNewChannelViewProtocol, PostListVCProtocol,
 UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 @property (nonatomic) UIButton * postPrompt;
@@ -93,8 +92,9 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 -(void)loadContentToPostList{
 	if(!self.postListVC.isInitiated){
-		[self.postListVC display:self.channel asPostListType:listChannel withListOwner: self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
-	}else{
+		[self.postListVC display:self.channel withListOwner: self.ownerOfProfile
+			isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
+	} else {
 		[self.postListVC refreshPosts];
 	}
 	[self.postListVC startMonitoringPublishing];
@@ -325,7 +325,9 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	if(self.postListVC.parsePostObjects && self.postListVC.parsePostObjects.count){
 		newVC.postsQueryManager = self.postListVC.postsQueryManager;
 		newVC.currentlyPublishing = self.postListVC.currentlyPublishing;
-		[newVC loadPostListFromOlPostListWithDisplay:self.channel postListType:listChannel listOwner:self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile startingDate:self.startingDate andParseObjects:self.postListVC.parsePostObjects];
+		[newVC display:self.channel withListOwner:self.ownerOfProfile
+								isCurrentUserProfile:self.isCurrentUserProfile
+		  andStartingDate:self.startingDate withOldParseObjects:self.postListVC.parsePostObjects];
 	}
 
 	[self presentViewPostView:newVC inSmallMode:inSmallMode shouldPage:shouldPage fromCellPath:cellPath];
@@ -551,26 +553,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 		//set the username of the currently logged in user
 		vc.userName  = [[PFUser currentUser] valueForKey:VERBATM_USER_NAME_KEY];
 	}
-}
-
-#pragma mark Publishing Progress Manager Delegate methods
-
--(void) publishingComplete {
-	NSLog(@"Publishing Complete!");
-	[self.publishingProgressView removeFromSuperview];
-	self.publishingProgressView = nil;
-	[self.postListVC loadMorePosts];
-}
-
--(void) publishingFailedWithError:(NSError *)error {
-	NSLog(@"PUBLISHING FAILED");
-	NSString *message = @"We were unable to publish your post. One of the videos may be too long or your internet connection may be too weak. Please try again later.";
-	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Publishing Failed" message:message preferredStyle:UIAlertControllerStyleAlert];
-	UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
-														  handler:^(UIAlertAction * action) {}];
-	[newAlert addAction:defaultAction];
-	[self presentViewController:newAlert animated:YES completion:nil];
-	if(self.publishingProgress) [self.publishingProgressView removeFromSuperview];
 }
 
 #pragma mark - Lazy Instantiation -

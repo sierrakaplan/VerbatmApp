@@ -16,8 +16,10 @@
 @protocol ProfileVCDelegate <NSObject>
 
 -(void) showTabBar: (BOOL) show;
+
 @optional
 -(void) userCreateFirstPost;
+
 @end
 
 @interface ProfileVC : UIViewController
