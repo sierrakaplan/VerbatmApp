@@ -95,7 +95,6 @@
 	[self revealPreview:YES];
 }
 
-
 #pragma mark - Buttons -
 
 -(void) addNavigationBar {

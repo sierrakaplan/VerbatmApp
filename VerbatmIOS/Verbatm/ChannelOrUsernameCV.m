@@ -56,7 +56,6 @@
 	self = [super initWithStyle: style reuseIdentifier: reuseIdentifier] ;
 
 	if (self) {
-        
         self.backgroundColor = [UIColor whiteColor];
 		self.isAChannel = isChannel;
         self.clipsToBounds = YES;

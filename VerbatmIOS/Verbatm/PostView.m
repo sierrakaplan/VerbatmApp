@@ -62,7 +62,7 @@
 @property (nonatomic, strong) UIButton * downArrow;
 
 @property (nonatomic) PostLikeAndShareBar * likeShareBar;
-@property (nonatomic) CGRect lsBarDownFrame;// the framw of the like share button with the tab down
+@property (nonatomic) CGRect lsBarDownFrame;// the frame of the like share button with the tab down
 @property (nonatomic) CGRect lsBarUpFrame;//the frame of the like share button with the tab up
 @property (nonatomic) CGRect creatorBarFrameUp;
 @property (nonatomic) CGRect creatorBarFrameDown;
@@ -81,7 +81,6 @@
 //Tells whether should display media in small format
 @property (nonatomic) BOOL small;
 
-
 #define DOWN_ARROW_WIDTH 30.f
 #define DOWN_ARROW_DISTANCE_FROM_BOTTOM 40.f
 #define SCROLL_UP_ANIMATION_DURATION 0.7
@@ -92,6 +91,7 @@
 #define PAGING_LINE_WIDTH 4.f
 #define PAGING_LINE_ANIMATION_DURATION 0.5
 #define PAGING_LINE_COLE [UIColor whiteColor]
+
 @end
 
 @implementation PostView
@@ -138,7 +138,6 @@
         default:
             break;
     }
-
 }
 
 // Creates empty PageViewingExperiences to show activity icons but doesn't load media
@@ -154,9 +153,7 @@
     }
 	
     [self displayPageViews: self.pageViews];
-
 }
-
 
 -(void) displayPageViews: (NSMutableArray *) pageViews {
 	self.pageViews = pageViews;
@@ -235,13 +232,12 @@
 									  startUp:(BOOL)up withDeleteButton: (BOOL)withDelete {
 
 	CGRect startFrame = (up) ? self.lsBarUpFrame : self.lsBarDownFrame;
-	[self.likeShareBar removeFromSuperview];
 	self.likeShareBar = [[PostLikeAndShareBar alloc] initWithFrame: startFrame numberOfLikes:numLikes
 													numberOfShares:numShares numberOfPages:numPages andStartingPageNumber:startPage];
 	self.likeShareBar.delegate = self;
 	if (withDelete) {
 		[self.likeShareBar createDeleteButton];
-	}else{
+	} else {
 		[self.likeShareBar createFlagButton];
 	}
 	[self addSubview:self.likeShareBar];
@@ -260,11 +256,13 @@
 -(void) showwhoHasSharedThePost{
 	//todo:
 }
+
 -(void)prepareForScreenShot{
     for(PageViewingExperience * pageView in self.pageViews){
                 [pageView prepareForScreenShot];
     }
 }
+
 //todo: optimize this
 -(void) addCreatorInfo {
 	self.creatorBarFrameUp = CGRectMake(0.f, -STATUS_BAR_HEIGHT, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT + STATUS_BAR_HEIGHT);
@@ -328,6 +326,14 @@
 -(void) displayMediaOnCurrentPage {
 	NSInteger currentViewableIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
 	NSInteger indexBelow = currentViewableIndex + 1;
+
+	if (self.pageUpIndicatorDisplayed) {
+		if (indexBelow < self.pageViews.count) {
+			[self showPageUpIndicator];
+		} else {
+			[self removePageUpIndicatorFromView];
+		}
+	}
     
     if (!self.postMuted && self.likeShareBar) {
         [self checkForMuteButton:self.currentPage];
@@ -408,39 +414,6 @@
 	}];
 }
 
-// Decide if we want to bring back filter swipe
-//-(void)presentFilterSwipeForInstructionWithPageView:(PageViewingExperience *) currentPage {
-//
-//	BOOL isPhotoAve = [currentPage isKindOfClass:[PhotoPVE class]];
-//	BOOL isVideoAve = [currentPage isKindOfClass:[PhotoVideoPVE class]];
-//
-//	BOOL filterInstructionHasNotBeenPresented = ![[UserSetupParameters sharedInstance] isFilter_InstructionShown];
-//
-//	if( (isPhotoAve || isVideoAve)  && filterInstructionHasNotBeenPresented) {
-//		UIImage * instructionImage = [UIImage imageNamed:FILTER_SWIPE_INSTRUCTION];
-//		CGFloat frameWidth = 200.f;
-//		CGFloat frameHeight = (frameWidth * 320.f) /488.f;
-//
-//		UIImageView * filterInstruction = [[UIImageView alloc] initWithImage:instructionImage];
-//		filterInstruction.backgroundColor = [UIColor clearColor];
-//
-//		CGFloat imageOriginX = (self.frame.size.width/2.f) - (frameWidth/2.f);
-//
-//		if (isPhotoAve) {
-//			filterInstruction.frame = CGRectMake(imageOriginX,
-//												 (self.frame.size.height/2.f) + frameHeight,
-//												 frameWidth, frameHeight);
-//		} else {
-//			filterInstruction.frame = CGRectMake(imageOriginX,
-//												 self.frame.size.height - (frameHeight + 50.f), frameWidth, frameHeight);
-//		}
-//
-//		[self addSubview:filterInstruction];
-//		[self bringSubviewToFront:filterInstruction];
-//		[[UserSetupParameters sharedInstance] set_filter_InstructionAsShown];
-//	}
-//}
-
 #pragma mark - Down arrow -
 
 -(void)addDownArrowButton{
@@ -506,7 +479,7 @@
 -(void) postOffScreen{
 	self.postIsCurrentlyBeingShown = NO;
 	[self stopAllVideos];
-	//[self removePageUpIndicatorFromView];
+	[self removePageUpIndicatorFromView];
 }
 
 -(void) postAlmostOnScreen {
@@ -530,7 +503,7 @@
         self.currentPageIndex = -1;
         self.pageViews = nil;
     }
-	//[self removePageUpIndicatorFromView];
+	[self removePageUpIndicatorFromView];
 }
 
 //make sure to stop all videos
@@ -622,15 +595,6 @@
 	return _mainScrollView;
 }
 
--(PostLikeAndShareBar*) likeShareBar {
-	if (!_likeShareBar) {
-		_likeShareBar = [[PostLikeAndShareBar alloc] initWithFrame:CGRectMake(0.f, self.frame.size.height - LIKE_SHARE_BAR_HEIGHT, self.frame.size.width, LIKE_SHARE_BAR_HEIGHT)];
-		[self addSubview:_likeShareBar];
-	}
-	return _likeShareBar;
-}
-
-
 -(UIButton*) downArrow {
 	if (!_downArrow) {
 		_downArrow = [[UIButton alloc] init];
@@ -644,7 +608,6 @@
 }
 
 -(void) dealloc {
-    NSLog(@"PostView Deallocated");
 }
 
 @end

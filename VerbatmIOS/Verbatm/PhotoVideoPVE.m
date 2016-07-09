@@ -121,9 +121,7 @@
     }
 }
 
-
 -(void)dealloc{
-    NSLog(@"PhotoVideoPVE Dealloc");
 }
 
 #pragma mark - Overriding offscreen/onscreen methods -

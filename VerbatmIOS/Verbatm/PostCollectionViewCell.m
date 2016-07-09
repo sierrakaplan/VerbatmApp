@@ -192,7 +192,6 @@
 }
 
 -(void)dealloc{
-    NSLog(@"PostCell dealloc");
 }
 
 @end

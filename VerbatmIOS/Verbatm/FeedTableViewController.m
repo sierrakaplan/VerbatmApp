@@ -19,6 +19,7 @@
 @property (nonatomic) Channel * currentUserChannel;
 @property (nonatomic) ProfileVC * nextProfileToPresent;
 @property (nonatomic) NSInteger nextProfileIndex;
+@property (nonatomic) BOOL isFirstTime;
 @end
 
 @implementation FeedTableViewController
@@ -26,10 +27,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.tableView registerClass:[FeedTableCell class] forCellReuseIdentifier:@"FeedTableCell"];
-    [self prepareListOfContent];
+    [self refreshListOfContent];
     self.tableView.pagingEnabled = YES;
     self.tableView.allowsSelection = NO;
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    self.isFirstTime = YES;
 }
 
 -(void)reloadCellsOnScreen{
@@ -43,7 +45,8 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self reloadCellsOnScreen];
+    if(!self.isFirstTime)[self.tableView reloadData];
+    
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -52,10 +55,16 @@
         FeedTableCell * cell = [visibleCell firstObject];
         [cell clearProfile];
     }
+    self.isFirstTime = NO;
 }
 
--(void)prepareListOfContent{
+-(void)refreshListOfContent{
     self.currentUserChannel = [[UserInfoCache sharedInstance] getUserChannel] ;
+    
+    if(self.FollowingProfileList){
+        [self.FollowingProfileList removeAllObjects];
+        self.FollowingProfileList = nil;
+    }
     
     [self.currentUserChannel getFollowersAndFollowingWithCompletionBlock:^{
         self.FollowingProfileList = [self.currentUserChannel channelsUserFollowing];
