@@ -106,7 +106,6 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 											 timeoutInterval:300];
 
 		//todo: delete debugging
-		NSDate *startDownload = [NSDate date];
 		NSURLSessionDataTask *task = [[NSURLSession sharedSession]
 									  dataTaskWithRequest:request
 									  completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
@@ -114,9 +113,6 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 											  [[Crashlytics sharedInstance] recordError: error];
 											  resolve(nil);
 										  } else {
-											  NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate: startDownload];
-//											  NSLog(@"url %@ \n", url);
-//											  NSLog(@"Image size is : %.2f KB and time %f seconds \n\n", (float)data.length/1024.0f, timeInterval);
 											  resolve(data);
 										  }
 		}];

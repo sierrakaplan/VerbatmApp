@@ -146,24 +146,26 @@
                    self.textColor, @(0), @(0)]];
 }
 
+//todo: fix half screen problem
 -(UIImage *)getImageScreenshotWithText:(UIImage *)image {
+	@autoreleasepool {
+		TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:[[UIScreen mainScreen] bounds] andImage:image];
+		BOOL textColorBlack = [self.textColor isEqual:[UIColor blackColor]];
+		NSString * textToCapture = self.text;
 
-    TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:[[UIScreen mainScreen] bounds] andImage:image];
-    BOOL textColorBlack = [self.textColor isEqual:[UIColor blackColor]];
-    NSString * textToCapture = self.text;
-    
-    [textAndImageView setText: textToCapture
-             andTextYPosition: [self.textYPosition floatValue]
-            andTextColorBlack: textColorBlack
-             andTextAlignment: (NSTextAlignment) ([self.textAlignment integerValue])
-                  andTextSize: [self.textSize floatValue]];
-    [textAndImageView showText:YES];
-    [textAndImageView.textView setHidden:NO];
-    [textAndImageView bringSubviewToFront:textAndImageView.textView];
-    
-    UIImage * screenShot = [textAndImageView.imageView getViewscreenshotWithTextView:textAndImageView.textView];
-    textAndImageView = nil;
-    return screenShot;
+		[textAndImageView setText: textToCapture
+				 andTextYPosition: [self.textYPosition floatValue]
+				andTextColorBlack: textColorBlack
+				 andTextAlignment: (NSTextAlignment) ([self.textAlignment integerValue])
+					  andTextSize: [self.textSize floatValue]];
+		[textAndImageView showText:YES];
+		[textAndImageView.textView setHidden:NO];
+		[textAndImageView bringSubviewToFront:textAndImageView.textView];
+
+		UIImage * screenShot = [textAndImageView.imageView getViewscreenshotWithTextView:textAndImageView.textView];
+		textAndImageView = nil;
+		return screenShot;
+	}
 }
 
 -(void)changeImageToFilterIndex:(NSInteger)filterIndex {

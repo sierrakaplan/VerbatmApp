@@ -448,12 +448,12 @@
     __weak PostView *weakSelf = self;
 
 	//todo: delete debugging
-	NSDate *beforeMedia = [NSDate date];
+//	NSDate *beforeMedia = [NSDate date];
 	[PageTypeAnalyzer getPageMediaFromPage:parsePageObject withCompletionBlock:^(NSArray * pageMedia) {
 		if (!_pageViews) return; //If post has been cleared before we get here
 
-		NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate: beforeMedia];
-		
+//		NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate: beforeMedia];
+
 		if ([pageView isKindOfClass:[PhotoPVE class]]) {
 			[(PhotoPVE*)pageView displayPhotos: pageMedia[1]];
 //			NSLog(@"%@",[NSString stringWithFormat:@"Time loading media in photo page %ld %f seconds", (long)index, timeInterval]);
