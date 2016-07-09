@@ -59,11 +59,15 @@
 }
 
 -(void)loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*))block{
-    
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
         NSString * url = [self.parseChannelObject valueForKey:CHANNEL_COVER_PHOTO_URL];
-        if(url){
-            [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString: url]].then(^(NSData* data) {
+        if(url) {
+			NSString *smallImageUri = url;
+			NSString * suffix = @"=s0";
+			if ([url hasSuffix:suffix] ) {
+				smallImageUri = [url substringWithRange:NSMakeRange(0, url.length-suffix.length)];
+			}
+            [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString: smallImageUri]].then(^(NSData* data) {
                 if(data){
                     UIImage * photo = [UIImage imageWithData:data];
                     dispatch_async(dispatch_get_main_queue(), ^{

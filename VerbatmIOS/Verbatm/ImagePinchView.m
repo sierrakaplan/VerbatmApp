@@ -146,13 +146,8 @@
                    self.textColor, @(0), @(0)]];
 }
 
+-(UIImage *)getImageScreenshotWithText:(UIImage *)image {
 
-
-
-
-
--(UIImage *)getImageScreenshotWithText:(UIImage *)image{
-    
     TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:[[UIScreen mainScreen] bounds] andImage:image];
     BOOL textColorBlack = [self.textColor isEqual:[UIColor blackColor]];
     NSString * textToCapture = self.text;
@@ -167,11 +162,7 @@
     [textAndImageView bringSubviewToFront:textAndImageView.textView];
     
     UIImage * screenShot = [textAndImageView.imageView getViewscreenshotWithTextView:textAndImageView.textView];
-    
-    @autoreleasepool {
-        textAndImageView = nil;
-    }
-    
+    textAndImageView = nil;
     return screenShot;
 }
 

@@ -446,8 +446,15 @@
 	pageView.currentlyLoadingMedia = YES;
 	//todo: go through process of loading content and reduce number of steps
     __weak PostView *weakSelf = self;
+
+	//todo: delete debugging
+	NSDate *beforeMedia = [NSDate date];
 	[PageTypeAnalyzer getPageMediaFromPage:parsePageObject withCompletionBlock:^(NSArray * pageMedia) {
 		if (!_pageViews) return; //If post has been cleared before we get here
+
+		NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate: beforeMedia];
+		NSLog(@"%@",[NSString stringWithFormat:@"Time loading media in page %ld %f seconds", (long)index, timeInterval]);
+		
 		if ([pageView isKindOfClass:[PhotoPVE class]]) {
 			[(PhotoPVE*)pageView displayPhotos: pageMedia[1]];
 		} else if ([pageView isKindOfClass:[VideoPVE class]] ) {

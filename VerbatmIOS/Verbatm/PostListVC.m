@@ -415,16 +415,15 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}
 
 	PostCollectionViewCell *cell = (PostCollectionViewCell *) [self.collectionView dequeueReusableCellWithReuseIdentifier:POST_CELL_ID forIndexPath:indexPath];
-
 	cell.cellDelegate = self;
 	if(indexPath.row < self.parsePostObjects.count){
 		id postObject = self.parsePostObjects[indexPath.row];
 		if (cell.currentPostActivityObject != postObject) {
 			[cell clearViews];
-			if(self.currentlyPublishing && [postObject isKindOfClass:[NSNumber class]]){
-				[cell presentPublishingView];
-			}else if(![postObject isKindOfClass:[NSNumber class]]){
-
+			if([postObject isKindOfClass:[NSNumber class]]){
+				if (self.currentlyPublishing) [cell presentPublishingView];
+			} else {
+				NSLog(@"Presenting post at index %ld", (long)indexPath.row);
 				[cell presentPostFromPCActivityObj:postObject andChannel:self.channelForList
 								  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:NO];
 			}
@@ -1007,7 +1006,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)dealloc {
-	NSLog(@"Postlist dealocated");
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
