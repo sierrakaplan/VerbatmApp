@@ -9,6 +9,7 @@
 #import "Notification_BackendManager.h"
 #import <Parse/PFQuery.h>
 #import "ParseBackendKeys.h"
+#import <Crashlytics/Crashlytics.h>
 
 @interface Notification_BackendManager ()
 #define LOAD_MAX_AMOUNT 20
@@ -44,8 +45,8 @@
     if(afterDate)[query whereKey:@"createdAt" lessThan:afterDate];
     
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-        if(!objects && error){
-            NSLog(@"Error loading objects");
+		if(error){
+			[[Crashlytics sharedInstance] recordError:error];
         }
         block(objects);
     }];

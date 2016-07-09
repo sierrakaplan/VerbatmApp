@@ -171,9 +171,9 @@
     PFRelation * postRelation = [post relationForKey:POST_PAGES_PFRELATION];
     [postRelation addObject:page];
     [post saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        if(succeeded){
-            NSLog(@"saved new post relation");
-        }else NSLog(@"Failed to save new post relation");
+        if(error) {
+			[[Crashlytics sharedInstance] recordError:error];
+		}
     }];
     
 }

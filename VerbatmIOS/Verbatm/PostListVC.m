@@ -286,6 +286,8 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 					[weakSelf.collectionView scrollToItemAtIndexPath:selectedPostPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
 					weakSelf.nextIndexToPresent += posts.count;
 					weakSelf.nextNextIndex += posts.count;
+				} else {
+					NSLog(@"Bug scrolling when added older posts");
 				}
 
 				weakSelf.isLoadingOlder = NO;
@@ -296,7 +298,7 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	};
 }
 
--(void)scrollToLastElementInList{
+-(void)scrollToLastElementInList {
 	NSInteger section = 0;
 	NSInteger item = [self.collectionView numberOfItemsInSection:section] - 1;
 	if(item > 0) {
@@ -336,7 +338,6 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	self.collectionView.scrollEnabled = YES;
 	self.collectionView.showsHorizontalScrollIndicator = NO;
 	self.collectionView.bounces = YES;
-
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
@@ -359,19 +360,23 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 	[self checkShouldReverseScrollDirectionFromIndexPath: indexPath];
 
-	if (self.performingUpdate && self.currentDisplayCell){
-		return self.currentDisplayCell;
-	}
+//	if (self.performingUpdate && self.currentDisplayCell){
+//		return self.currentDisplayCell;
+//	}
 
 	PostCollectionViewCell *currentCell;
-	if (indexPath.row == self.nextIndexToPresent) {
-		currentCell = self.nextCellToPresent;
+	//todo: load cells to the left when needed in small mode
+	if (!self.inSmallMode) {
+		if (indexPath.row == self.nextIndexToPresent) {
+			currentCell = self.nextCellToPresent;
+		}
+		[self prepareNextPostsFromIndexPath:indexPath];
 	}
+
 	if (currentCell == nil) {
 		currentCell = [self postCellAtIndexPath:indexPath];
 	}
 	[currentCell onScreen];
-//	[self prepareNextPostsFromIndexPath:indexPath];
 
 	//Load older posts
 	if (indexPath.row <= LOAD_MORE_POSTS_COUNT && !self.isLoadingOlder && !self.isRefreshing) {
@@ -420,7 +425,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 			if([postObject isKindOfClass:[NSNumber class]]){
 				if (self.currentlyPublishing) [cell presentPublishingView];
 			} else {
-				NSLog(@"Presenting post at index %ld", (long)indexPath.row);
+//				NSLog(@"Presenting post at index %ld", (long)indexPath.row);
 				[cell presentPostFromPCActivityObj:postObject andChannel:self.channelForList
 								  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:NO];
 			}
@@ -690,7 +695,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
 	if(url){
 		dispatch_async(dispatch_get_main_queue(), ^{
-			NSLog(@"got my Branch invite link to share to Facebook. Link : %@", url);
+//			NSLog(@"got my Branch invite link to share to Facebook. Link : %@", url);
 			NSURL *link = [NSURL URLWithString:url];
 			FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
 			content.contentURL = link;
@@ -810,12 +815,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	linkProperties.feature = @"share";
 	linkProperties.channel = @"facebook";
 
-	NSLog(@"Getting link for fb for user %@ reblogging from channel %@ for post %@...", name, channelName, postId);
 	[branchUniversalObject getShortUrlWithLinkProperties:linkProperties andCallback:^(NSString *url, NSError *error) {
-		NSLog(@"callback from external share called");
 		if (!error) {
 			dispatch_async(dispatch_get_main_queue(), ^{
-				NSLog(@"Got my Branch invite link to share: %@", url);
 				NSURL *link = [NSURL URLWithString:url];
 				FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
 				content.contentURL = link;
@@ -825,7 +827,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 			});
 
 		} else {
-			NSLog(@"An error occured %@", error.description);
 		}
 	}];
 	self.view.userInteractionEnabled = YES;

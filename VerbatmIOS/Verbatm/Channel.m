@@ -14,6 +14,7 @@
 #import <PromiseKit/PromiseKit.h>
 #import "PostPublisher.h"
 #import <PromiseKit/PromiseKit.h>
+#import "SizesAndPositions.h"
 #import "UtilityFunctions.h"
 
 @interface Channel ()
@@ -62,7 +63,7 @@
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
         NSString * url = [self.parseChannelObject valueForKey:CHANNEL_COVER_PHOTO_URL];
         if(url) {
-			NSString *smallImageUrl = [UtilityFunctions addSuffixToPhotoUrl:url forSize:300];
+			NSString *smallImageUrl = [UtilityFunctions addSuffixToPhotoUrl:url forSize: HALFSCREEN_IMAGE_SIZE];
             [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString: smallImageUrl]].then(^(NSData* data) {
                 if(data){
                     UIImage * photo = [UIImage imageWithData:data];

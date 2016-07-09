@@ -296,7 +296,7 @@
 	if(weakSelf.slideShowPlaying && !weakSelf.animating){
 		//todo: This is a hack. Find where animations get disabled
         if(![UIView areAnimationsEnabled]){
-            NSLog(@"Animations are disabled.");
+//            NSLog(@"Animations are disabled.");
             [UIView setAnimationsEnabled:YES];
         }
 		[UIView animateWithDuration:IMAGE_FADE_OUT_ANIMATION_DURATION animations:^{

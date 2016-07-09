@@ -91,14 +91,9 @@
     
     __weak PostCollectionViewCell *weakSelf = self;
 
-	// Debugging:
-	NSDate *timeBeforePages = [NSDate date];
 	[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
 		weakSelf.currentPostView = [[PostView alloc] initWithFrame:weakSelf.bounds
 								andPostChannelActivityObject:pfActivityObj small:weakSelf.inSmallMode andPageObjects:pages];
-
-		NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate:timeBeforePages];
-//		NSLog(@"%@",[NSString stringWithFormat:@"Time loading pages %f seconds", timeInterval]);
 
         if(weakSelf.inSmallMode)[weakSelf.currentPostView muteAllVideos:YES];
 		NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];

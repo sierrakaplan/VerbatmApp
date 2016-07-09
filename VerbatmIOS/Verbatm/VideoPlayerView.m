@@ -145,13 +145,13 @@
 			[self.loadingIndicator stopAnimating];
 			self.videoLoading = NO;
 			if (self.shouldPlayOnLoad) {
-				NSLog(@"play back will keep up");
+//				NSLog(@"play back will keep up");
 				[self playVideo];
 			} else {
-				NSLog(@"Ready but not playing.");
+//				NSLog(@"Ready but not playing.");
 			}
 		} else if (self.shouldPlayOnLoad) {
-			NSLog(@"play back will not keep up");
+//			NSLog(@"play back will not keep up");
 			[self.loadingIndicator startAnimating];
 			self.videoLoading = YES;
 		}
@@ -172,11 +172,13 @@
 // Notifies that video has ended so video can replay
 -(void)playerItemDidReachEnd:(NSNotification *)notification {
 	AVPlayerItem *playerItem = [notification object];
-	if (self.repeatsVideo) {
-		[playerItem seekToTime:kCMTimeZero];
-	} else {
-		NSLog(@"Video not repeating.");
-	}
+	[playerItem seekToTime:kCMTimeZero];
+	//todo: repeatsVideo not set correctly
+//	if (self.repeatsVideo) {
+//
+//	} else {
+//		NSLog(@"Video not repeating.");
+//	}
 }
 
 // Pauses player

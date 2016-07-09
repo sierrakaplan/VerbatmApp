@@ -40,7 +40,6 @@
 		[self.operationManager POST:uri parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull multipartFormData) {
 			NSError *error;
 			if (![multipartFormData appendPartWithFileURL:videoURL name:@"defaultVideo" fileName:videoURL.lastPathComponent mimeType:@"video/quicktime" error:&error]) {
-				NSLog(@"error appending part: %@", error);
 				[self savingMediaFailed:error];
 				resolve(error);
 			}
@@ -50,13 +49,13 @@
 			if (newProgressUnits != self.mediaUploadProgress.completedUnitCount) {
 				[[PublishingProgressManager sharedInstance] mediaSavingProgressed:(newProgressUnits - self.mediaUploadProgress.completedUnitCount)];
 				self.mediaUploadProgress.completedUnitCount = newProgressUnits;
-				NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
+//				NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
 			}
 		} success:^(NSURLSessionDataTask * _Nonnull task, NSData* responseData) {
                 [[PublishingProgressManager sharedInstance] onePieceOfMediaSaved];
                 [[PublishingProgressManager sharedInstance] mediaSavingProgressed:(self.mediaUploadProgress.totalUnitCount - self.mediaUploadProgress.completedUnitCount)];
                 [self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
-                NSLog(@"Video published!");
+//                NSLog(@"Video published!");
                 NSString *response = [[NSString alloc] initWithData:responseData encoding: NSUTF8StringEncoding];
             
                 resolve(response);
@@ -81,14 +80,14 @@
 			if (newProgressUnits != self.mediaUploadProgress.completedUnitCount) {
 				[[PublishingProgressManager sharedInstance] mediaSavingProgressed:(newProgressUnits - self.mediaUploadProgress.completedUnitCount)];
 				self.mediaUploadProgress.completedUnitCount = newProgressUnits;
-				NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
+//				NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
 			}
 		} success:^(NSURLSessionDataTask * _Nonnull task, NSData* responseData) {
 			[[PublishingProgressManager sharedInstance] mediaSavingProgressed:(self.mediaUploadProgress.completedUnitCount)];
             [[PublishingProgressManager sharedInstance] onePieceOfMediaSaved];
             
 			[self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
-			NSLog(@"Image published!");
+//			NSLog(@"Image published!");
 			NSString *response = [[NSString alloc] initWithData:responseData encoding: NSUTF8StringEncoding];
 			resolve(response);
 		} failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

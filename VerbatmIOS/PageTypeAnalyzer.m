@@ -20,6 +20,7 @@
 #import "ParseBackendKeys.h"
 #import "Photo_BackendObject.h"
 
+#import "SizesAndPositions.h"
 #import "Styles.h"
 
 #import "UtilityFunctions.h"
@@ -70,17 +71,14 @@
 +(void) getPageMediaFromPage: (PFObject *)page withCompletionBlock:(void(^)(NSArray *))block {
 	PageTypes type = [((NSNumber *)[page valueForKey:PAGE_VIEW_TYPE]) intValue];
 	if (type == PageTypePhoto) {
-		NSLog (@"Getting images");
 		[self getUIImagesFromPage:page withCompletionBlock:^(NSMutableArray * imagesAndText) {
 			block(@[[NSNumber numberWithInt:type], imagesAndText]);
 		}];
 	} else if (type == PageTypeVideo){
-		NSLog (@"Getting video");
 		[self getVideoFromPage:page withCompletionBlock:^(NSArray *videoAndThumbnail) {
 			block(@[[NSNumber numberWithInt:type], videoAndThumbnail]);
 		}];
 	} else if( type == PageTypePhotoVideo){
-		NSLog (@"Getting images and video");
 		[self getVideoFromPage:page withCompletionBlock:^(NSArray *videoAndThumbnail) {
 			[self getUIImagesFromPage:page withCompletionBlock:^(NSMutableArray* imagesAndText) {
 				block(@[[NSNumber numberWithInt:type], imagesAndText, videoAndThumbnail]);
@@ -93,13 +91,7 @@
  @[@[url, uiimage, text, textYPosition, textColor, textAlignment, textSize],...] */
 +(void) getUIImagesFromPage: (PFObject *) page withCompletionBlock:(void(^)(NSMutableArray *)) block{
 
-
-	NSDate *before = [NSDate date];
 	[Photo_BackendObject getPhotosForPage:page andCompletionBlock:^(NSArray * photoObjects) {
-
-		NSDate *afterParseObjects = [NSDate date];
-		NSTimeInterval timeInterval = [afterParseObjects timeIntervalSinceDate: before];
-//		NSLog(@"%@",[NSString stringWithFormat:@"Time loading parse photo objects %f seconds \n\n", timeInterval]);
 
 		NSMutableArray* imageUrls = [[NSMutableArray alloc] init];
 		for (PFObject * imageAndTextObj in photoObjects) {
@@ -109,9 +101,6 @@
 		}
 
 		[self getThumbnailDatafromUrls:imageUrls withCompletionBlock:^(NSArray *imageData) {
-
-			NSTimeInterval timeIntervalForThumbnails = [[NSDate date] timeIntervalSinceDate: afterParseObjects];
-//			NSLog(@"%@",[NSString stringWithFormat:@"Time loading all thumbnails %f seconds \n\n", timeIntervalForThumbnails]);
 
 			NSMutableArray* imageTextArrays = [[NSMutableArray alloc] init];
 			for (int i = 0; i < photoObjects.count; i++) {
@@ -145,7 +134,7 @@
 
 	NSMutableArray* loadImageDataPromises = [[NSMutableArray alloc] init];
 	for (NSString *uri in urls) {
-		NSString *smallImageUrl = [UtilityFunctions addSuffixToPhotoUrl:uri forSize:200];
+		NSString *smallImageUrl = [UtilityFunctions addSuffixToPhotoUrl:uri forSize: THUMBNAIL_IMAGE_SIZE];
 		AnyPromise* getImageDataPromise = [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString: smallImageUrl]];
 		[loadImageDataPromises addObject: getImageDataPromise];
 	}
@@ -157,12 +146,19 @@
 
 //Video array looks like @[URL, thumbnail]
 +(void) getVideoFromPage: (PFObject*) page withCompletionBlock:(void(^)(NSArray *)) block{
+
+	NSDate *before = [NSDate date];
 	[Video_BackendObject getVideoForPage:page andCompletionBlock:^(PFObject *videoObject) {
+
+		NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate: before];
+//		NSLog(@"%@",[NSString stringWithFormat:@"Time loading parse video objects %f seconds \n\n", timeInterval]);
+
 		//get thumbnail url for video
 		NSString * thumbNailUrl = [videoObject valueForKey:VIDEO_THUMBNAIL_KEY];
 
 		//download all thumbnail urls for videos
 		[self getThumbnailDatafromUrls:@[thumbNailUrl] withCompletionBlock:^(NSArray * videoThumbNails) {
+
 			NSString * videoBlobKey = [videoObject valueForKey:BLOB_STORE_URL];
 			NSURLComponents *components = [NSURLComponents componentsWithString: GET_VIDEO_URI];
 			NSURLQueryItem* blobKey = [NSURLQueryItem queryItemWithName:BLOBKEYSTRING_KEY value: videoBlobKey];

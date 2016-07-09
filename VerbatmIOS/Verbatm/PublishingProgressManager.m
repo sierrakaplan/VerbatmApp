@@ -159,14 +159,13 @@
 -(void)onePieceOfMediaSaved{
     self.totalMediaCount --;
     if(self.totalMediaCount <= 0 && self.currentlyPublishing && self.currentParsePostObject){
-         NSLog(@"Counter worked -- published successfully");
         [self postPublishedSuccessfully];
     }
 }
 
 -(void)mediaSavingProgressed:(int64_t) newProgress {
 	self.progressAccountant.completedUnitCount += newProgress;
-	NSLog(@"Media saving progressed %lld new units to completed %lld units of total %lld units", newProgress,
+//	NSLog(@"Media saving progressed %lld new units to completed %lld units of total %lld units", newProgress,
 		  self.progressAccountant.completedUnitCount, self.progressAccountant.totalUnitCount);
 }
 

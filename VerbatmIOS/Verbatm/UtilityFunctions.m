@@ -36,7 +36,6 @@
 	NSString *suffix = @"=s";
 	suffix = [suffix stringByAppendingString: [NSString stringWithFormat:@"%ld", size]];
 	NSString *newUrl = [photoUrl stringByAppendingString: suffix];
-	NSLog(@"%@", newUrl);
 	return newUrl;
 }
 
@@ -116,8 +115,8 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 											  resolve(nil);
 										  } else {
 											  NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate: startDownload];
-											  NSLog(@"url %@ \n", url);
-											  NSLog(@"Image size is : %.2f KB and time %f seconds \n\n", (float)data.length/1024.0f, timeInterval);
+//											  NSLog(@"url %@ \n", url);
+//											  NSLog(@"Image size is : %.2f KB and time %f seconds \n\n", (float)data.length/1024.0f, timeInterval);
 											  resolve(data);
 										  }
 		}];
@@ -216,9 +215,8 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
     
     [compressed setLength: strm.total_out];
     
-    
     NSData * finalResult = [NSData dataWithData:compressed];
-    NSLog(@"Video File end size: %lu", (unsigned long)[finalResult length]);
+//    NSLog(@"Video File end size: %lu", (unsigned long)[finalResult length]);
     return finalResult;
 }
 

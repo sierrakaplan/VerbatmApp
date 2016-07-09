@@ -55,7 +55,6 @@
     Branch *branch = [Branch getInstance];
     [branch initSessionWithLaunchOptions:launchOptions andRegisterDeepLinkHandler:^(NSDictionary *params, NSError *error) {
         // params are the deep linked params associated with the link that the user clicked before showing up.
-        NSLog(@"deep link data: %@", [params description]);
 		if (error) {
 			[[Crashlytics sharedInstance] recordError:error];
 			NSLog(@"Error setting up branch: %@", error.description);

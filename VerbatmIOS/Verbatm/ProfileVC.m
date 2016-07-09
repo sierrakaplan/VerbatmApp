@@ -613,8 +613,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	return _imageManager;
 }
 
--(void)dealloc{
-    NSLog(@"Profile dealocated");
+-(void)dealloc {
 }
 
 @end
