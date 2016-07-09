@@ -155,15 +155,16 @@
 -(void)checkForCoverPhoto{
 	//set default cover photo
 	[self createTopAndReflectionCoverImageFromImage:[UIImage imageNamed:NO_COVER_PHOTO_IMAGE]];
-
+    
+    __weak ProfileHeaderView * weakSelf = self;
 	//Now look for cloud one
 	[self.channel loadCoverPhotoWithCompletionBlock:^(UIImage * coverPhoto) {
 
 		if([[NSThread currentThread] isMainThread]){
-			if(coverPhoto)[self createTopAndReflectionCoverImageFromImage:coverPhoto];
+			if(coverPhoto)[weakSelf createTopAndReflectionCoverImageFromImage:coverPhoto];
 		}else{
 			dispatch_async(dispatch_get_main_queue(), ^{
-				if(coverPhoto)[self createTopAndReflectionCoverImageFromImage:coverPhoto];
+				if(coverPhoto)[weakSelf createTopAndReflectionCoverImageFromImage:coverPhoto];
 			});
 		}
 	}];
@@ -408,6 +409,12 @@
 	}
 	return _coverView;
 }
+
+-(void)dealloc{
+     NSLog(@"------++++++Cover Photo Dealloc");
+}
+
+
 
 @end
 

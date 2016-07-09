@@ -75,6 +75,8 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 @property (nonatomic) CGSize  cellSmallFrameSize;
 
 @property (nonatomic) PHImageManager* imageManager;
+@property (nonatomic) BOOL isFirstTime;
+
 
 #define CELL_SPACING_SMALL 1.f
 #define CELL_SPACING_LARGE 0.3
@@ -109,19 +111,23 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
+    if(!self.isFirstTime && self.isCurrentUserProfile){
+        [self createHeader];
+    }
 	[self loadContentToPostList];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
-
 	[self clearOurViews];
+    self.isFirstTime = NO;
 }
 
 -(void)clearOurViews {
 	if(self.postListVC)[self.postListVC offScreen];
 	if(self.postListVC)[self.postListVC clearViews];
-
+    [self.profileHeaderView removeFromSuperview];
+    self.profileHeaderView = nil;
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -160,8 +166,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 -(void) createHeader {
     if(self.channel.channelsUserFollowing == nil || !self.channel.channelsUserFollowing.count){
-        [self.channel getFollowersAndFollowingWithCompletionBlock:^{
-        }];
+        [self.channel getFollowersAndFollowingWithCompletionBlock:nil];
     }
     [self buildHeaderView];
 }

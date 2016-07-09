@@ -61,6 +61,7 @@
         self.clipsToBounds = YES;
 		self.isAChannelIFollow = channelThatIFollow;
 		if(!self.channelNameLabelAttributes)[self createSelectedTextAttributes];
+        [self registerForFollowNotification];
 	}
 
 	return self;
@@ -73,14 +74,14 @@
                                                object:nil];
 }
 
-//todo: what is this?
--(void)userFollowStatusChanged:(NSNotification *) notification{
-//     NSDictionary *userInfo = [notification userInfo];
-
-//    if(userInfo){
-//        NSString *userId = userInfo[USER_FOLLOWING_NOTIFICATION_USERINFO_KEY];
-//        if([userId isEqualToString:<#(nonnull NSString *)#>])
-//    }
+-(void)userFollowStatusChanged:(NSNotification *) notification {
+    NSDictionary * userInfo = [notification userInfo];
+    if(userInfo){
+        NSString * userId = userInfo[USER_FOLLOWING_NOTIFICATION_USERINFO_KEY];
+        if([userId isEqualToString:[self.channel.channelCreator objectId]]){
+            [self refreshNotificationList];
+        }
+    }
 }
 
 #pragma mark - Edit Cell formatting -
@@ -90,17 +91,20 @@
 	self.isHeaderTile = YES;
 }
 
+-(void)refreshNotificationList{
+    [Follow_BackendManager currentUserFollowsChannel:self.channel withCompletionBlock:^(bool isFollowing) {
+        self.currentUserFollowingChannelUser = isFollowing;
+        if(self.followButton)[self updateUserFollowingChannel];
+    }];
+}
+
 -(void)presentChannel:(Channel *) channel{
     self.channel = channel;
 	PFUser *creator = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
     
     if(!(self.channel.usersFollowingChannel && self.channel.usersFollowingChannel.count)){
-        
         if(![[creator objectId] isEqualToString:[[PFUser currentUser] objectId]]){
-            [Follow_BackendManager currentUserFollowsChannel:self.channel withCompletionBlock:^(bool isFollowing) {
-                self.currentUserFollowingChannelUser = isFollowing;
-                if(self.followButton)[self updateUserFollowingChannel];
-            }];
+            [self refreshNotificationList];
         }
         
     }else{

@@ -84,22 +84,22 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 // Promise wrapper for asynchronous request to get image data (or any data) from the url
 + (AnyPromise*) loadCachedPhotoDataFromURL: (NSURL*) url {
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
-		NSURLRequest* request = [NSURLRequest requestWithURL:url
-												 cachePolicy: NSURLRequestReturnCacheDataElseLoad
-											 timeoutInterval:300];
-		NSURLSessionDataTask *task = [[NSURLSession sharedSession]
-									  dataTaskWithRequest:request
-									  completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-										  if (error) {
-											  [[Crashlytics sharedInstance] recordError: error];
-											  resolve(nil);
-										  } else {
-											  resolve(data);
-										  }
-		}];
-		[task resume];
-
-	}];
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
+            @autoreleasepool {
+                NSData * data = [NSData dataWithContentsOfURL:url];
+                if(![data isKindOfClass:[NSNull class]]){
+                    @autoreleasepool {
+                        UIImage * image = [UIImage imageWithData:data];
+                        resolve(image);
+                    }
+                    
+                }else{
+                    resolve(nil);
+                }
+            }
+        });
+        
+    }];
 	return promise;
 }
 + (AnyPromise*) loadCachedVideoDataFromURL: (NSURL*) url {
@@ -125,7 +125,6 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 
     //  STORE IN FILESYSTEM
     NSString* cachesDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    
     
     NSString * uniqueVideoURL = [[videoUrl.absoluteString stringByReplacingOccurrencesOfString:@"/" withString:@""] stringByAppendingString:@".mov"];
     
