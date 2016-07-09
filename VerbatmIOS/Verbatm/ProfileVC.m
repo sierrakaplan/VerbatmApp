@@ -142,9 +142,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	if(self.profileHeaderView){
 		[self.profileHeaderView removeFromSuperview];
 		self.headerViewOnScreen = NO;
-		@autoreleasepool {
-			self.profileHeaderView = nil;
-		}
+		self.profileHeaderView = nil;
 	}
 
 	CGRect frame = self.view.bounds;
@@ -554,10 +552,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 		vc.userName  = [[PFUser currentUser] valueForKey:VERBATM_USER_NAME_KEY];
 	}
 }
-
-#pragma mark - Publishing -
-
-
 
 #pragma mark Publishing Progress Manager Delegate methods
 

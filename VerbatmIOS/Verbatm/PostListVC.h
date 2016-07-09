@@ -45,10 +45,11 @@ typedef enum PostListType {
   withListOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile
 andStartingDate:(NSDate*)date;
 
+// Used when we already have the posts to display
+-(void) display:(Channel*)channelForList asPostListType:(PostListType)listType
+	  listOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date
+withOldParseObjects:(NSMutableArray *)newParseObjects;
 
-//used when a cell view is tapped and we need to create a new postlist VC from an older one
--(void) loadPostListFromOlPostListWithDisplay:(Channel*)channelForList postListType:(PostListType)listType
-                                    listOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile startingDate:(NSDate*)date andParseObjects:(NSMutableArray *)newParseObjects;
 -(void) clearViews;
 
 //marks all posts as off screen
@@ -60,5 +61,7 @@ andStartingDate:(NSDate*)date;
 
 //moves the tap/share bar up and down over the tab bar
 -(void) footerShowing: (BOOL) showing;
--(void)startMonitoringPublishing;
+
+-(void) startMonitoringPublishing;
+
 @end
