@@ -75,8 +75,8 @@
 
 //todo: what is this?
 -(void)userFollowStatusChanged:(NSNotification *) notification{
-     NSDictionary *userInfo = [notification userInfo];
-    
+//     NSDictionary *userInfo = [notification userInfo];
+
 //    if(userInfo){
 //        NSString *userId = userInfo[USER_FOLLOWING_NOTIFICATION_USERINFO_KEY];
 //        if([userId isEqualToString:<#(nonnull NSString *)#>])

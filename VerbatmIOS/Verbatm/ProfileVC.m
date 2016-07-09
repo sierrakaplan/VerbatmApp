@@ -118,7 +118,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	[self clearOurViews];
 }
 
--(void)clearOurViews{
+-(void)clearOurViews {
 	if(self.postListVC)[self.postListVC offScreen];
 	if(self.postListVC)[self.postListVC clearViews];
 

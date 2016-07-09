@@ -271,10 +271,14 @@
 #pragma mark - Phone login Delegate -
 
 -(void) nextButtonPressed {
+
+	// They just entered a code
 	if (!self.enteringPhoneNumber) {
 		[self codeEntered];
 		return;
 	}
+
+	// They just entered a phone number
 
 	[self.phoneLoginField resignFirstResponder];
 	NSString *simplePhoneNumber = [self getSimpleNumberFromFormattedPhoneNumber:self.phoneLoginField.text];
@@ -392,6 +396,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	[self unwindToMasterVC];
 }
 
+//DEPRECATED
 -(void) loginFailed: (NSNotification*) notification {
 	NSError* error = notification.object;
 	NSString* errorMessage;

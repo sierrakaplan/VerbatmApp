@@ -44,8 +44,8 @@
 #import "Share_BackendManager.h"
 #import "SharePostView.h"
 #import "SizesAndPositions.h"
+#import "StringsAndAppConstants.h"
 #import "Styles.h"
-
 
 #import "UserAndChannelListsTVC.h"
 #import "User_BackendObject.h"
@@ -252,7 +252,6 @@
     self.isInitiated = YES;
 }
 
-
 -(void) display:(Channel*)channelForList asPostListType:(PostListType)listType
   withListOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	[self clearViews];
@@ -386,10 +385,6 @@
 		weakSelf.isRefreshing = NO;
 	};
 
-    
-    
-    
-    
 	self.loadMorePostsCompletion = ^void(NSArray *posts) {
 		if (!posts.count || weakSelf.exitedView) return;
 		weakSelf.isLoadingMore = NO;
@@ -411,11 +406,6 @@
         }
 	};
 
-    
-    
-    
-    
-    
 	self.loadOlderPostsCompletion = ^void(NSArray *posts) {
         if (!posts.count || weakSelf.exitedView){
             weakSelf.isLoadingOlder = NO;
@@ -566,12 +556,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     return currentCell;
 }
 
-
-//-(PostCollectionViewCell *)handleCellsForSmallModeForIndexPath:(NSIndexPath *)indexPath{
-//    PostCollectionViewCell *currentCell;
-//    return currentCell;
-//}
-
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
 				  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -703,6 +687,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void) deleteButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post
 			 andPostChannelActivityObj:(PFObject *)pfActivityObj reblogged:(BOOL)reblogged {
+
 	if (reblogged) {
 		[self deleteReblog:post onPostView:postView withPostChannelActivityObj:pfActivityObj];
 		return;
@@ -710,7 +695,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Delete post"
 																   message:@"Entire post will be deleted."
 															preferredStyle:UIAlertControllerStyleAlert];
-
 	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
 														 handler:^(UIAlertAction * action) {}];
 	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
@@ -724,7 +708,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	[alert addAction: deleteAction];
 	[self presentViewController:alert animated:YES completion:nil];
 }
-
 
 -(void) deleteReblog:(PFObject *)post onPostView:(PostView *)postView withPostChannelActivityObj:(PFObject *)pfActivityObj {
 	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Delete reblogged post"
@@ -981,13 +964,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     }
 }
 
-
-
-
 //todo: save share object
 -(void) shareToShareOption:(ShareOptions) shareOption{
 
-    
     switch (shareOption) {
         case Verbatm:
             [self ShareToVerbatmSelected];
@@ -1042,7 +1021,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 	BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:postId];
 	branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName];
-	branchUniversalObject.contentDescription = @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!";
+	branchUniversalObject.contentDescription = VERBATM_DESCRIPTION;
 	branchUniversalObject.imageUrl = shareLink;
 
 	BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
@@ -1077,19 +1056,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 												   handler:^(UIAlertAction * action) {}];
 	[newAlert addAction:action];
 	[self presentViewController:newAlert animated:YES completion:nil];
-
-	//todo: delete?
-
-	//	[self.view addSubview:self.reblogSucessful];
-	//	[self.view bringSubviewToFront:self.reblogSucessful];
-	//
-	//	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-	//		self.reblogSucessful.alpha = 0.f;
-	//	}completion:^(BOOL finished) {
-	//
-	//		[self.reblogSucessful removeFromSuperview];
-	//		self.reblogSucessful = nil;
-	//	}];
 }
 
 

@@ -256,7 +256,7 @@
     }
 }
 
--(void)dealloc{
+-(void)dealloc {
 }
 
 #pragma mark - Lazy Instantiation -

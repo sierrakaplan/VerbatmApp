@@ -216,7 +216,7 @@
                 if(isCacheResponse){
 //                    NSLog(@"Just used cache for page");
                 }else{
-                    NSLog(@"Missed cache using network for page");
+//                    NSLog(@"Missed cache using network for page");
                 }
                 cacheResponsePassed = YES;
                 isCacheResponse = NO;
