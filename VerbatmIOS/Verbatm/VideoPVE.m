@@ -237,10 +237,10 @@
 	if(self.editContentView){
 		[self.editContentView almostOnScreen];
 	} else {
-		if(!self.hasBeenSetUp){
-			[self.videoPlayer stopVideo];
-			[self prepareVideo];
-		}
+//		if(!self.hasBeenSetUp) {
+//			[self.videoPlayer stopVideo];
+//			[self prepareVideo];
+//		}
 	}
 }
 

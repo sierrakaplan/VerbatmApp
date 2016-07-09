@@ -104,7 +104,7 @@
                 [self.storeLinkCondition lock];
                 if (!error) {
                     self.aquiredURLSuccesfully = YES;
-                    NSLog(@"Successfully acquired my Branch invite link to share: %@", url);
+//                    NSLog(@"Successfully acquired my Branch invite link to share: %@", url);
                     //we save the link to the PFObject
                     [postObject setObject:url forKey:POST_SHARE_LINK];
                     [postObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
@@ -113,7 +113,7 @@
                 } else {
                     self.aquiredURLSuccesfully = NO;
 					[[Crashlytics sharedInstance] recordError:error];
-                    NSLog(@"An error occured %@", error);
+//                    NSLog(@"An error occured %@", error);
                 }
                 self.waitingForUrlBranchResponse = NO;
                 [self.storeLinkCondition unlock];
@@ -195,7 +195,7 @@
 }
 
 -(void)sharePostToFacebook:(NSString *)url{
-    NSLog(@"got my Branch invite link to share: %@", url);
+//    NSLog(@"got my Branch invite link to share: %@", url);
     NSURL *link = [NSURL URLWithString:url];
     if ([[FBSDKAccessToken currentAccessToken] hasGranted:@"publish_actions"]) {
         NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
@@ -208,9 +208,9 @@
         
         [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
             if (!error) {
-                NSLog(@"fetched user:%@", result);
+//                NSLog(@"fetched user:%@", result);
             } else {
-                NSLog(@"An error has occured %@", error);
+				[[Crashlytics sharedInstance] recordError:error];
             }
         }];
         

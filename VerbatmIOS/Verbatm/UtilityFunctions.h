@@ -16,6 +16,8 @@
 
 @interface UtilityFunctions : NSObject
 
++(NSString*) stripLargePhotoSuffix:(NSString*)photoUrl;
++(NSString*) addSuffixToPhotoUrl:(NSString*)photoUrl forSize:(NSInteger)size;
 + (NSArray*)shuffleArray:(NSArray*)array;
 + (AVMutableComposition*) fuseAssets:(NSArray*)videoList;
 + (NSString *) randomStringWithLength: (NSInteger)length;

@@ -15,12 +15,29 @@
 @import Foundation;
 
 @interface UtilityFunctions ()
-#define COMPRESSING 0
-@end
 
+#define COMPRESSING 0
+
+@end
 
 @implementation UtilityFunctions
 
+
++(NSString*) stripLargePhotoSuffix:(NSString*)photoUrl {
+	NSString * suffix = @"=s0";
+	if ([photoUrl hasSuffix:suffix] ) {
+		return [photoUrl substringWithRange:NSMakeRange(0, photoUrl.length-suffix.length)];
+	}
+	return photoUrl;
+}
+
++(NSString*) addSuffixToPhotoUrl:(NSString*)photoUrl forSize:(NSInteger)size {
+	photoUrl = [UtilityFunctions stripLargePhotoSuffix: photoUrl];
+	NSString *suffix = @"=s";
+	suffix = [suffix stringByAppendingString: [NSString stringWithFormat:@"%ld", (long)size]];
+	NSString *newUrl = [photoUrl stringByAppendingString: suffix];
+	return newUrl;
+}
 
 //This code fuses the video assets into a single video that plays the videos one after the other.
 //It accepts both avassets and urls which it converts into assets
@@ -84,22 +101,24 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 // Promise wrapper for asynchronous request to get image data (or any data) from the url
 + (AnyPromise*) loadCachedPhotoDataFromURL: (NSURL*) url {
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
-            @autoreleasepool {
-                NSData * data = [NSData dataWithContentsOfURL:url];
-                if(![data isKindOfClass:[NSNull class]]){
-                    @autoreleasepool {
-                        UIImage * image = [UIImage imageWithData:data];
-                        resolve(image);
-                    }
-                    
-                }else{
-                    resolve(nil);
-                }
-            }
-        });
-        
-    }];
+		NSURLRequest* request = [NSURLRequest requestWithURL:url
+												 cachePolicy: NSURLRequestReturnCacheDataElseLoad
+											 timeoutInterval:300];
+
+		//todo: delete debugging
+		NSURLSessionDataTask *task = [[NSURLSession sharedSession]
+									  dataTaskWithRequest:request
+									  completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+										  if (error) {
+											  [[Crashlytics sharedInstance] recordError: error];
+											  resolve(nil);
+										  } else {
+											  resolve(data);
+										  }
+		}];
+		[task resume];
+
+	}];
 	return promise;
 }
 + (AnyPromise*) loadCachedVideoDataFromURL: (NSURL*) url {
@@ -191,9 +210,8 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
     
     [compressed setLength: strm.total_out];
     
-    
     NSData * finalResult = [NSData dataWithData:compressed];
-    NSLog(@"Video File end size: %lu", (unsigned long)[finalResult length]);
+//    NSLog(@"Video File end size: %lu", (unsigned long)[finalResult length]);
     return finalResult;
 }
 

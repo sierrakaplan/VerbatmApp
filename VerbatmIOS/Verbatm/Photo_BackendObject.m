@@ -45,9 +45,6 @@ andTextAlignment:(NSNumber *) textAlignment
 			}];
 		}
 		NSString *blobstoreUrl = (NSString*) result;
-		if (![blobstoreUrl hasSuffix:@"=s0"]) {
-			blobstoreUrl = [blobstoreUrl stringByAppendingString:@"=s0"];
-		}
         //in completion
         return [self createAndSavePhotoObjectwithBlobstoreUrl:blobstoreUrl
 											  withText:text
@@ -99,9 +96,9 @@ andTextAlignment:(NSNumber *) textAlignment
     PFRelation * pageRelation = [page relationForKey:PAGE_PHOTOS_PFRELATION];
     [pageRelation addObject:photo];
     [page saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        if(succeeded){
-            NSLog(@"saved new photo relation");
-        }else NSLog(@"Failed to save new photo relation");
+        if(error) {
+			[[Crashlytics sharedInstance] recordError:error];
+		}
     }];
     
 }
@@ -139,7 +136,7 @@ andTextAlignment:(NSNumber *) textAlignment
             if(isCacheResponse){
 //                NSLog(@"Just used cache for photo");
             }else{
-                NSLog(@"Missed cache using network for photo");
+//                NSLog(@"Missed cache using network for photo");
             }
             cacheResponsePassed = !cacheResponsePassed;
             isCacheResponse = !isCacheResponse;

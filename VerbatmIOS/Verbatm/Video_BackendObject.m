@@ -100,12 +100,14 @@
 }
 
 +(void)getVideoForPage:(PFObject *) page andCompletionBlock:(void(^)(PFObject *))block {
-    PFQuery * video = [PFQuery queryWithClassName:VIDEO_PFCLASS_KEY];
-    [video whereKey:VIDEO_PAGE_OBJECT_KEY equalTo:page];
-    
-    [video findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+    PFQuery *videoQuery = [PFQuery queryWithClassName:VIDEO_PFCLASS_KEY];
+    [videoQuery whereKey:VIDEO_PAGE_OBJECT_KEY equalTo:page];
+    [videoQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                          NSError * _Nullable error) {
-        if(objects && objects.count && !error){
+		if (error) {
+			NSLog(@"Error: %@", error);
+			[[Crashlytics sharedInstance] recordError:error];
+		} else if(objects && objects.count){
             block(objects[0]);
         } else {
 			block(nil);

@@ -37,22 +37,27 @@
 			   withSmallImage: (UIImage*)smallImage asSmall:(BOOL) small {
 	self = [self initWithFrame:frame];
 	if (self) {
-        if(![smallImage isKindOfClass:[NSNull class]]){
-            UIImage *croppedImage = smallImage;
-            if (small) {
-                croppedImage = [smallImage imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width, self.bounds.size.height)];
-            }
-            [self.imageView setImage: croppedImage];
-        }
-        // After larger image loads, crop it and set it in the image
-        // Only load large image if it's been published already cropped (with s0 tag)
-        if (!small && [imageUrl.absoluteString hasSuffix:@"=s0"]) {
+		UIImage *croppedImage = smallImage;
+		if (small) {
+			croppedImage = [smallImage imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width, self.bounds.size.height)];
+		}
+		[self.imageView setImage: croppedImage];
+
+		// Load large image cropped
+		if (!small) {
+			NSString *imageURI = [UtilityFunctions addSuffixToPhotoUrl:imageUrl.absoluteString forSize: LARGE_IMAGE_SIZE];
+			imageUrl = [NSURL URLWithString: imageURI];
             __weak TextOverMediaView *weakSelf = self;
-            [UtilityFunctions loadCachedPhotoDataFromURL:imageUrl].then(^(UIImage* image) {
-                if(![image isKindOfClass:[NSNull class]])[weakSelf changeImageTo: image];
-            });
-        }
-        
+			[UtilityFunctions loadCachedPhotoDataFromURL:imageUrl].then(^(NSData* largeImageData) {
+				// Only display larger data if less than 1000 KB
+				if (largeImageData.length / 1024.f < 1000) {
+					UIImage *image = [UIImage imageWithData:largeImageData];
+					[weakSelf.imageView setImage: image];
+				} else {
+					NSLog(@"Image too big");
+				}
+			});
+		}
 	}
 	return self;
 }
@@ -68,7 +73,6 @@
 -(instancetype) initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
-		//		self.displayingLargeImage = NO;
 		[self revertToDefaultTextSettings];
 		[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
 	}

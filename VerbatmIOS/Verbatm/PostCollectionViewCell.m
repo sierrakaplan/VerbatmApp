@@ -77,11 +77,8 @@
         @autoreleasepool {
             _publishingProgressView = nil;
         }
-
     }
 }
-
-
 
 -(void) presentPostFromPCActivityObj: (PFObject *) pfActivityObj andChannel:(Channel*) channelForList
 					withDeleteButton: (BOOL) withDelete andLikeShareBarUp:(BOOL) up {
@@ -92,10 +89,8 @@
 	self.currentPostActivityObject = pfActivityObj;
 	PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
     
-    
     __weak PostCollectionViewCell *weakSelf = self;
-    
-    
+
 	[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
 		weakSelf.currentPostView = [[PostView alloc] initWithFrame:weakSelf.bounds
 								andPostChannelActivityObject:pfActivityObj small:weakSelf.inSmallMode andPageObjects:pages];

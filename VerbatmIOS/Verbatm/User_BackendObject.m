@@ -86,8 +86,6 @@
 + (void) migrateUserToOneChannelWithCompletionBlock:(void(^)(BOOL))block {
 	PFUser *user = [PFUser currentUser];
 
-
-
 	PFQuery *userChannelQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
 	[userChannelQuery whereKey:CHANNEL_CREATOR_KEY equalTo:user];
 	[userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels,
