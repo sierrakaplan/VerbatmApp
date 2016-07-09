@@ -34,7 +34,7 @@
 +(NSString*) addSuffixToPhotoUrl:(NSString*)photoUrl forSize:(NSInteger)size {
 	photoUrl = [UtilityFunctions stripLargePhotoSuffix: photoUrl];
 	NSString *suffix = @"=s";
-	suffix = [suffix stringByAppendingString: [NSString stringWithFormat:@"%ld", size]];
+	suffix = [suffix stringByAppendingString: [NSString stringWithFormat:@"%ld", (long)size]];
 	NSString *newUrl = [photoUrl stringByAppendingString: suffix];
 	return newUrl;
 }
@@ -144,7 +144,6 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 
     //  STORE IN FILESYSTEM
     NSString* cachesDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    
     
     NSString * uniqueVideoURL = [[videoUrl.absoluteString stringByReplacingOccurrencesOfString:@"/" withString:@""] stringByAppendingString:@".mov"];
     

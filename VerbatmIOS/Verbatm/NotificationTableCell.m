@@ -12,6 +12,7 @@
 #import "SizesAndPositions.h"
 #import <Parse/PFUser.h>
 #import "Follow_BackendManager.h"
+#import "Notifications.h"
 @interface NotificationTableCell ()
 
 @property (nonatomic) UILabel * notificationTextLabel;
@@ -65,6 +66,7 @@
     self.channel = channel;
     if(notificationType & (NewFollower|FriendJoinedVerbatm|FriendsFirstPost|Share)){
         [self createFollowButton];
+        [self registerForFollowNotification];
     }else if (notificationType & Like){
         [self createHeartIcon];
     }
@@ -75,7 +77,32 @@
     if(notificationType & (FriendsFirstPost|Like|Share)){
         [self createPostTextLabel];
     }
-    
+}
+
+
+-(void)registerForFollowNotification{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(userFollowStatusChanged:)
+                                                 name:NOTIFICATION_NOW_FOLLOWING_USER
+                                               object:nil];
+}
+
+-(void)userFollowStatusChanged:(NSNotification *) notification{
+    NSDictionary * userInfo = [notification userInfo];
+    if(userInfo){
+        NSString * userId = userInfo[USER_FOLLOWING_NOTIFICATION_USERINFO_KEY];
+        if([userId isEqualToString:[self.channel.channelCreator objectId]]){
+            [self refreshNotificationList];
+        }
+    }
+}
+
+
+-(void)refreshNotificationList{
+    [Follow_BackendManager currentUserFollowsChannel:self.channel withCompletionBlock:^(bool isFollowing) {
+        self.currentUserFollowingChannelUser = isFollowing;
+        if(self.followButton)[self updateUserFollowingChannel];
+    }];
 }
 
 

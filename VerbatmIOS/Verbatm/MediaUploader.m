@@ -17,9 +17,6 @@
 
 @interface MediaUploader()
 
-//@property (nonatomic, strong) ASIFormDataRequest *formData;
-//@property (nonatomic, strong) MediaUploadCompletionBlock completionBlock;
-
 @property (nonatomic, strong) AFHTTPSessionManager *operationManager;
 
 @end

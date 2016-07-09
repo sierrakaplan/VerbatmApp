@@ -313,8 +313,7 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 		self.exitedView = NO;
 		self.isRefreshing = YES;
 		self.isLoadingMore = NO;
-		[self.postsQueryManager loadPostsInChannel: self.channelForList withLatestDate:self.latestDate withCompletionBlock:self.refreshPostsCompletion];
-	}
+		[self.postsQueryManager loadPostsInChannel: self.channelForList withLatestDate:self.latestDate withCompletionBlock:self.refreshPostsCompletion];	}
 }
 
 -(void) loadOlderPosts {

@@ -148,8 +148,9 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	self.textYPosition = yPos;
 	CGRect tempFrame = CGRectMake(self.textView.frame.origin.x, yPos,
 								  self.textView.frame.size.width, self.textView.frame.size.height);
+    __weak TextOverMediaView * weakSelf = self;
 	[UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
-		self.textView.frame = tempFrame;
+		if(weakSelf)weakSelf.textView.frame = tempFrame;
 	}];
 }
 
@@ -263,6 +264,9 @@ andTextAlignment:(NSTextAlignment) textAlignment
 }
 
 -(void)dealloc{
+    _imageView.image = nil;
+    _imageView = nil;
+    NSLog(@"TextOverMediaView Dealloc");
 }
 
 @end
