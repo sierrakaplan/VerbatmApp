@@ -19,8 +19,15 @@
 +(void)currentUserFollowsChannel:(Channel *) channel withCompletionBlock:(void(^)(bool))block;
 
 + (void) usersFollowingChannel: (Channel*) channel withCompletionBlock:(void(^)(NSMutableArray*)) block;
+
+// Returns array of Channel pfobjects but not fetched (so only contain ids)
++ (void) channelIDsUserFollowing: (PFUser*) user withCompletionBlock:(void(^)(NSArray*)) block;
+
+// Returns array of Channel* objects - this loads each Channel and takes longer
 + (void) channelsUserFollowing: (PFUser*) user withCompletionBlock:(void(^)(NSArray*)) block;
+
 + (void) numberChannelsUserFollowing: (PFUser*) user withCompletionBlock:(void(^)(NSNumber*)) block;
+
 + (void) numberUsersFollowingChannel: (Channel*) channel withCompletionBlock:(void(^)(NSNumber*)) block;
 
 @end

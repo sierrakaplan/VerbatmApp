@@ -15,7 +15,7 @@
 @interface FeedQueryManager : NSObject
 
 #define POST_DOWNLOAD_MAX_SIZE 10
-#define CHANNEL_DOWNLOAD_MAX_SIZE 10
+#define CHANNEL_DOWNLOAD_MAX_SIZE 15
 
 +(instancetype) sharedInstance;
 

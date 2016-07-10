@@ -259,42 +259,54 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 			return;
 		}
 		[weakSelf.postListDelegate postsFound];
-		NSMutableArray *indices = [NSMutableArray array];
+		NSMutableArray *indexPaths = [NSMutableArray array];
 		for (NSInteger i = 0; i < posts.count; i++) {
-			[indices addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+			[indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
 		}
 		NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0,[posts count])];
 
+		CGFloat rightOffset = self.collectionView.contentSize.width - self.collectionView.contentOffset.x;
 		[CATransaction begin];
 		[CATransaction setDisableActions:YES];
-		weakSelf.performingUpdate = YES;
-		// Perform the updates
+
 		[weakSelf.collectionView performBatchUpdates:^{
-			//Insert the new data
 			[weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
-			//Insert the new cells
-			[weakSelf.collectionView insertItemsAtIndexPaths:indices];
-
-		} completion: ^(BOOL finished) {
-			if (finished) {
-				// Scroll to previously selected cell so nothing looks different
-				NSArray* visiblePaths = [weakSelf.collectionView indexPathsForVisibleItems];
-				NSInteger oldRow = visiblePaths && visiblePaths.count ? [(NSIndexPath*)visiblePaths[0] row] : 0;
-				NSInteger newRow = oldRow + posts.count;
-				if (newRow >= 0 && newRow < self.parsePostObjects.count) {
-					NSIndexPath *selectedPostPath = [NSIndexPath indexPathForRow:newRow inSection:0];
-					[weakSelf.collectionView scrollToItemAtIndexPath:selectedPostPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
-					weakSelf.nextIndexToPresent += posts.count;
-					weakSelf.nextNextIndex += posts.count;
-				} else {
-					NSLog(@"Bug scrolling when added older posts");
-				}
-
-				weakSelf.isLoadingOlder = NO;
-				weakSelf.performingUpdate = NO;
-				[CATransaction commit];
-			}
+			[weakSelf.collectionView insertItemsAtIndexPaths:indexPaths];
+		} completion:^(BOOL finished) {
+			weakSelf.collectionView.contentOffset = CGPointMake(weakSelf.collectionView.contentSize.width - rightOffset, 0);
+			[CATransaction commit];
 		}];
+
+//		[CATransaction begin];
+//		[CATransaction setDisableActions:YES];
+//		weakSelf.performingUpdate = YES;
+//		// Perform the updates
+//		[weakSelf.collectionView performBatchUpdates:^{
+//			//Insert the new data
+//			[weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
+//			//Insert the new cells
+//			[weakSelf.collectionView insertItemsAtIndexPaths:indices];
+//
+//		} completion: ^(BOOL finished) {
+//			if (finished) {
+//				// Scroll to previously selected cell so nothing looks different
+//				NSArray* visiblePaths = [weakSelf.collectionView indexPathsForVisibleItems];
+//				NSInteger oldRow = visiblePaths && visiblePaths.count ? [(NSIndexPath*)visiblePaths[0] row] : 0;
+//				NSInteger newRow = oldRow + posts.count;
+//				if (newRow >= 0 && newRow < self.parsePostObjects.count) {
+//					NSIndexPath *selectedPostPath = [NSIndexPath indexPathForRow:newRow inSection:0];
+//					[weakSelf.collectionView scrollToItemAtIndexPath:selectedPostPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+//					weakSelf.nextIndexToPresent += posts.count;
+//					weakSelf.nextNextIndex += posts.count;
+//				} else {
+//					NSLog(@"Bug scrolling when added older posts");
+//				}
+//
+//				weakSelf.isLoadingOlder = NO;
+//				weakSelf.performingUpdate = NO;
+//				[CATransaction commit];
+//			}
+//		}];
 	};
 }
 

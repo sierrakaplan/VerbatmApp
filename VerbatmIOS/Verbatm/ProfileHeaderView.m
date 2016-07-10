@@ -411,7 +411,6 @@
 }
 
 -(void)dealloc{
-     NSLog(@"------++++++Cover Photo Dealloc");
 }
 
 
