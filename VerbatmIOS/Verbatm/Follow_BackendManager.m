@@ -95,55 +95,65 @@
 	}];
 }
 
-// Returns all of the channels a user is following as array of PFObjects
++ (void) channelIDsUserFollowing: (PFUser*) user withCompletionBlock:(void(^)(NSArray*)) block {
+	PFQuery *followingQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
+	[followingQuery whereKey:FOLLOW_USER_KEY equalTo:user];
+	[followingQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+														  NSError * _Nullable error) {
+		if (error) {
+			[[Crashlytics sharedInstance] recordError:error];
+			block (@[]);
+		} else {
+			NSMutableArray *channelObjects = [[NSMutableArray alloc] init];
+			for (PFObject *followObject in objects) {
+				PFObject *channelObj = followObject[FOLLOW_CHANNEL_FOLLOWED_KEY];
+				[channelObjects addObject: channelObj];
+			}
+			block(channelObjects);
+		}
+	}];
+}
+
+// Returns all of the channels a user is following as array of Channels
 + (void) channelsUserFollowing: (PFUser*) user withCompletionBlock:(void(^)(NSArray*)) block {
 	if (!user) return;
 	PFQuery *followingQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
 	[followingQuery whereKey:FOLLOW_USER_KEY equalTo:user];
 	[followingQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 														  NSError * _Nullable error) {
-		if(objects && !error) {
-			NSMutableArray *channels = [[NSMutableArray alloc] initWithCapacity: objects.count];
-            NSMutableArray * channelPromises = [[NSMutableArray alloc] init];
-			for (PFObject *followObject in objects) {
-				PFObject *channelObj = followObject[FOLLOW_CHANNEL_FOLLOWED_KEY];                
-                [channelPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve)
-                    {
-                        [channelObj fetchInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-							if (error) {
-								NSLog(@"Channel no longer exists");
-								[followObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-									if (error) {
-										NSLog(@"Error deleting follow");
-									} else if(succeeded) {
-										NSLog(@"follow deleted");
-									}
-								}];
-							}
-                            if(object){
-								Channel *channel = [[Channel alloc] initWithChannelName:[channelObj valueForKey:CHANNEL_NAME_KEY] andParseChannelObject:channelObj andChannelCreator:[channelObj valueForKey:CHANNEL_CREATOR_KEY]];
-								channel.latestPostDate = channelObj[CHANNEL_LATEST_POST_DATE];
-                                [channels addObject: channel];
-                            }
-                            resolve(nil);
-                    }];
-                }]];
-			}
-            
-            PMKWhen(channelPromises).then(^(id nothing) {
-				NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"latestPostDate" ascending:NO];
-				NSArray *sortedChannels = [channels sortedArrayUsingDescriptors:@[sort]];
-                block(sortedChannels);
-            });
-            
-		} else {
+		if(error) {
 			[[Crashlytics sharedInstance] recordError:error];
-            block (nil);
+			block (@[]);
+		} else {
+			NSMutableArray *channelIDs = [[NSMutableArray alloc] init];
+			for (PFObject *followObject in objects) {
+				PFObject *channelObj = followObject[FOLLOW_CHANNEL_FOLLOWED_KEY];
+				[channelIDs addObject: channelObj.objectId];
+			}
+			PFQuery *channelsQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
+			[channelsQuery whereKey:@"objectId" containedIn: channelIDs];
+			[channelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+				if (error) {
+					[[Crashlytics sharedInstance] recordError: error];
+					block (@[]);
+				} else {
+					NSMutableArray *channels = [[NSMutableArray alloc] init];
+					for (PFObject *channelObject in objects) {
+						Channel *channel = [[Channel alloc] initWithChannelName:[channelObject valueForKey:CHANNEL_NAME_KEY]
+														  andParseChannelObject:channelObject
+															  andChannelCreator:[channelObject valueForKey:CHANNEL_CREATOR_KEY]];
+						channel.latestPostDate = channelObject[CHANNEL_LATEST_POST_DATE];
+						[channels addObject: channel];
+					}
+
+					NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"latestPostDate" ascending:NO];
+					NSArray *sortedChannels = [channels sortedArrayUsingDescriptors:@[sort]];
+					block(sortedChannels);
+				}
+			}];
 		}
 	}];
 }
-
-
 
 // Returns all of the users following a given channel as an array of PFUsers
 + (void) usersFollowingChannel: (Channel*) channel withCompletionBlock:(void(^)(NSMutableArray*)) block {
@@ -156,12 +166,6 @@
 			NSMutableArray *users = [[NSMutableArray alloc] initWithCapacity:objects.count];
 			for (PFObject *followObject in objects) {
 				PFUser *userFollowing = followObject[FOLLOW_USER_KEY];
-				[userFollowing fetchInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-					if (error) {
-						NSLog(@"User no longer exists");
-						[followObject deleteInBackground];
-					}
-				}];
 				[users addObject:userFollowing];
 			}
 			block (users);

@@ -164,30 +164,27 @@
 }
 
 -(void) getFollowersAndFollowingWithCompletionBlock:(void(^)(void))block {
-    self.usersFollowingChannel = @[];
-    self.channelsUserFollowing = @[];
+    NSMutableArray * loadPromises = [[NSMutableArray alloc] init];
+    __weak Channel * weakSelf = self;
+    [loadPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve)
+                             {
+                                 [Follow_BackendManager usersFollowingChannel:self withCompletionBlock:^(NSArray *users) {
+                                     weakSelf.usersFollowingChannel = [[NSMutableArray alloc] initWithArray:users];
+                                     resolve(nil);
+                                 }];
+                             }]];
     
-//    NSMutableArray * loadPromises = [[NSMutableArray alloc] init];
-//    __weak Channel * weakSelf = self;
-//    [loadPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve)
-//                             {
-//                                 [Follow_BackendManager usersFollowingChannel:self withCompletionBlock:^(NSArray *users) {
-//                                     weakSelf.usersFollowingChannel = [[NSMutableArray alloc] initWithArray:users];
-//                                     resolve(nil);
-//                                 }];
-//                             }]];
-//    
-//    [loadPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve)
-//                             {
-//                                 [Follow_BackendManager channelsUserFollowing:weakSelf.channelCreator withCompletionBlock:^(NSArray *channels) {
-//                                     weakSelf.channelsUserFollowing = [[NSMutableArray alloc] initWithArray: channels];
-//                                     resolve(nil);
-//                                 }];
-//                             }]];
-//    
-//    PMKWhen(loadPromises).then(^(id nothing) {
-//       if(block) block();
-//    });
+    [loadPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve)
+                             {
+                                 [Follow_BackendManager channelsUserFollowing:weakSelf.channelCreator withCompletionBlock:^(NSArray *channels) {
+                                     weakSelf.channelsUserFollowing = [[NSMutableArray alloc] initWithArray: channels];
+                                     resolve(nil);
+                                 }];
+                             }]];
+    
+    PMKWhen(loadPromises).then(^(id nothing) {
+       if(block) block();
+    });
 	if (block) block();
 }
 

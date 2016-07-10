@@ -21,9 +21,7 @@
 -(void)clearProfile {
 	if(_currentProfile){
 		[_currentProfile clearOurViews];
-		@autoreleasepool {
-			_currentProfile = nil;
-		}
+		_currentProfile = nil;
 	}
 }
 
@@ -37,9 +35,7 @@
 
 	if(oldProfile){
 		[oldProfile clearOurViews];
-		@autoreleasepool {
-			oldProfile = nil;
-		}
+		oldProfile = nil;
 	}
 }
 
