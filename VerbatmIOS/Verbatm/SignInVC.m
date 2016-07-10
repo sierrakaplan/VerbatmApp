@@ -93,13 +93,13 @@
 																		  action:@selector(keyboardDidHide:)];
 
 	[self.view addGestureRecognizer:tap];
-    
+    [self presentLoginSignUpOption];
     if(![[UserSetupParameters sharedInstance] checkOnboardingShown]){
         [self createOnBoarding];
     }else{
       [self.pageControlView removeFromSuperview];
     }
-    [self presentLoginSignUpOption];
+    
     [self.view sendSubviewToBack:self.backgroundImageView];
 }
 

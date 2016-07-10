@@ -30,13 +30,13 @@
 @property (nonatomic) BOOL nextButtonEnabled;
 
 @property (nonatomic) UITextField * firstPassword;
-
+@property (nonatomic) UITextField * createName;
 @property (nonatomic) CGRect originalPhoneTextFrame;
 
 
 #define ENTER_PHONE_NUMBER_PROMT @"Account with Phone Number"
 #define ENTER_PASSWORD_PROMPT @"Create Password"
-
+#define CREATE_USERNAME @"Create a Verbatm name"
 @end
 
 @implementation CreateAccount
@@ -310,6 +310,21 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     }
     return _phoneNumber;
 }
+
+-(UITextField *)createName{
+    if(!_createName){
+        CGRect frame = CGRectMake(self.phoneNumber.frame.origin.x, self.facebookLoginButton.frame.origin.y + self.phoneNumber.frame.size.height + 5.f, self.phoneNumber.frame.size.width, self.phoneNumber.frame.size.height);
+        _createName = [[UITextField alloc] initWithFrame:frame];
+        _createName.backgroundColor = [UIColor whiteColor];
+        _createName.delegate = self;
+        [_createName setPlaceholder:CREATE_USERNAME];
+        _createName.layer.cornerRadius = TEXTFIELDS_CORNER_RADIUS;
+        _createName.textAlignment = NSTextAlignmentCenter;
+        [self addSubview:_createName];
+    }
+    return _createName;
+}
+
 -(UITextField *)firstPassword{
     if(!_firstPassword){
         CGRect frame = CGRectMake(self.phoneNumber.frame.origin.x, self.facebookLoginButton.frame.origin.y + self.phoneNumber.frame.size.height + 5.f, self.phoneNumber.frame.size.width, self.phoneNumber.frame.size.height);
@@ -320,11 +335,10 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
         _firstPassword.layer.cornerRadius = TEXTFIELDS_CORNER_RADIUS;
         _firstPassword.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_firstPassword];
-         [self createNextButton];
+        [self createNextButton];
     }
     return _firstPassword;
 }
-
 
 /*
 // Only override drawRect: if you perform custom drawing.
