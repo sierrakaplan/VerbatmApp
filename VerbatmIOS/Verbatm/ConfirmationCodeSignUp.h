@@ -10,9 +10,9 @@
 
 
 @protocol ConfirmationCodeSignUpDelegate <NSObject>
--(void)resendCodeSelected;
+-(void)resendCodeSelectedConfirmationCode;
 -(void)goBackSelectedConfirmationCode;
--(void)codeSubmitted:(NSString *) enteredCode;
+-(void)codeSubmittedConfirmationCode:(NSString *) enteredCode;
 @end
 
 @interface ConfirmationCodeSignUp : UIView

@@ -32,7 +32,7 @@
         [self addSubview:self.backButton];
         [self addSubview:self.numberDispaly];
         [self addSubview:self.confirmationCodeField];
-        [self addSubview:self.resendCodeButton];
+        //[self addSubview:self.resendCodeButton];
         [self createNextButton];
         [self registerForKeyboardNotifications];
     }
@@ -55,6 +55,8 @@
     
 }
 
+
+
 -(void)createNextButton{
     CGFloat loginToolBarHeight = TEXT_TOOLBAR_HEIGHT*1.5;
     CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - loginToolBarHeight,
@@ -65,7 +67,7 @@
     self.confirmationCodeField.inputAccessoryView = self.toolBar;
 }
 -(void) nextButtonPressed{
-    [self.delagate codeSubmitted:self.confirmationCodeField.text];
+    [self.delagate codeSubmittedConfirmationCode:self.confirmationCodeField.text];
 }
 
 #pragma mark - Keyboard moving up and down -
@@ -96,7 +98,7 @@
 
 
 -(void)resendCodeSelected{
-    [self.delagate resendCodeSelected];
+    [self.delagate resendCodeSelectedConfirmationCode];
 }
 
 -(void)backButtonSelected{

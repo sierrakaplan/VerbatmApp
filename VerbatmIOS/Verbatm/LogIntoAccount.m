@@ -1,12 +1,11 @@
 //
-//  CreateAccount.m
+//  LogIntoAccount.m
 //  Verbatm
 //
-//  Created by Iain Usiri on 7/8/16.
+//  Created by Iain Usiri on 7/9/16.
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
-#import "CreateAccount.h"
 #import <Crashlytics/Crashlytics.h>
 
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
@@ -19,8 +18,9 @@
 
 #import "UserManager.h"
 #import "LoginKeyboardToolBar.h"
+#import "LogIntoAccount.h"
 
-@interface CreateAccount () <FBSDKLoginButtonDelegate, UITextFieldDelegate,LoginKeyboardToolBarDelegate>
+@interface LogIntoAccount ()<FBSDKLoginButtonDelegate, UITextFieldDelegate,LoginKeyboardToolBarDelegate>
 @property (strong, nonatomic) FBSDKLoginButton * facebookLoginButton;
 @property (strong, nonatomic) LoginKeyboardToolBar *toolBar;
 
@@ -34,16 +34,14 @@
 @property (nonatomic) CGRect originalPhoneTextFrame;
 
 
-#define ENTER_PHONE_NUMBER_PROMT @"Account with Phone Number"
-#define ENTER_PASSWORD_PROMPT @"Create Password"
+#define ENTER_PHONE_NUMBER_PROMT @"Enter Phone Number"
+#define ENTER_PASSWORD_PROMPT @"Enter Password"
 
 @end
 
-@implementation CreateAccount
 
 
-
-
+@implementation LogIntoAccount
 -(instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if(self){
@@ -61,7 +59,7 @@
     float buttonWidth = self.facebookLoginButton.frame.size.width*1.5;
     float buttonHeight = self.facebookLoginButton.frame.size.height*1.5;
     self.facebookLoginButton.frame = CGRectMake(self.center.x - buttonWidth/2.f, TOP_BUTTON_YOFFSET,
-                                        buttonWidth, buttonHeight);
+                                                buttonWidth, buttonHeight);
     self.facebookLoginButton.delegate = self;
     self.facebookLoginButton.readPermissions = @[@"public_profile", @"email", @"user_friends"];
     [self addSubview:self.facebookLoginButton];
@@ -79,7 +77,7 @@
                                      self.frame.size.width, loginToolBarHeight);
     self.toolBar = [[LoginKeyboardToolBar alloc] initWithFrame:toolBarFrame];
     self.toolBar.delegate = self;
-    [self.toolBar setNextButtonText:@"Next"];
+    [self.toolBar setNextButtonText:@"Sign In"];
     self.nextButtonEnabled = YES;
     self.firstPassword.inputAccessoryView = self.toolBar;
 }
@@ -88,10 +86,10 @@
 -(void) nextButtonPressed{
     [self removeKeyBoardOnScreen];
     if([self sanityCheckString:self.phoneNumber.text] && [self sanityCheckString:self.firstPassword.text]){
-        [self.delegate signUpWithPhoneNumberSelectedWithNumber:self.phoneNumber.text andPassword:self.firstPassword.text];
+        [self.delegate loginUpWithPhoneNumberSelectedWithNumber:self.phoneNumber.text andPassword:self.firstPassword.text];
         [self removeKeyBoardOnScreen];
     }else{
-        [self.delegate textNotAlphaNumericaCreateAccount];
+        [self.delegate textNotAlphaNumericaLoginAccount];
     }
 }
 
@@ -101,16 +99,30 @@
     [self.phoneNumber resignFirstResponder];
 }
 
+-(NSString*) getSimpleNumberFromFormattedPhoneNumber:(NSString*)formattedPhoneNumber {
+    // use regex to remove non-digits(including spaces) so we are left with just the numbers
+    NSError *error = NULL;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[\\s-\\(\\)]" options:NSRegularExpressionCaseInsensitive error:&error];
+    NSString* simpleNumber = [regex stringByReplacingMatchesInString:formattedPhoneNumber options:0 range:NSMakeRange(0, [formattedPhoneNumber length]) withTemplate:@""];
+    return simpleNumber;
+}
 
 -(BOOL)sanityCheckString:(NSString *)text{
     NSCharacterSet *s = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_"];
     
     s = [s invertedSet];
     NSRange r = [text rangeOfCharacterFromSet:s];
-    if (r.location != NSNotFound || text.length == 0) {
+    if (r.location != NSNotFound || text.length != 10) {
         //string contains illegal characters
         return NO;
     }
+    
+    
+    
+    
+    
+    
+    
     return YES;
 }
 
@@ -122,7 +134,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     
     if (error || result.isCancelled) {
         [[Crashlytics sharedInstance] recordError:error];
-        [self.delegate errorInSignInWithError: @"Facebook login failed."];
+     //   [self.delegate errorInSignInWithError: @"Facebook login failed."];
         return;
     }
     
@@ -134,7 +146,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     if ([FBSDKAccessToken currentAccessToken]) {
         [[UserManager sharedInstance] signUpOrLoginUserFromFacebookToken: [FBSDKAccessToken currentAccessToken]];
     } else {
-        [self.delegate errorInSignInWithError: @"Facebook login failed."];
+      //  [self.delegate errorInSignInWithError: @"Facebook login failed."];
     }
 }
 
@@ -175,7 +187,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
         [self shiftPhoneFieldUp:YES];
     }completion:^(BOOL finished) {
         if(finished){
-             [self.firstPassword setHidden:NO];
+            [self.firstPassword setHidden:NO];
             [self bringSubviewToFront:self.firstPassword];
         }
     }];
@@ -184,10 +196,8 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 -(void)shiftPhoneFieldUp:(BOOL) up{
     if(up){
         self.phoneNumber.frame = CGRectOffset(self.phoneNumber.frame, 0, self.facebookLoginButton.frame.origin.y - self.phoneNumber.frame.origin.y);
-        [self.firstPassword setHidden:NO];
     }else{
         self.phoneNumber.frame = self.originalPhoneTextFrame;
-        [self.firstPassword setHidden:YES];
     }
 }
 -(void) keyboardWillHide:(NSNotification*)notification {
@@ -258,13 +268,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     return simpleNumber;
 }
 
--(NSString*) getSimpleNumberFromFormattedPhoneNumber:(NSString*)formattedPhoneNumber {
-    // use regex to remove non-digits(including spaces) so we are left with just the numbers
-    NSError *error = NULL;
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[\\s-\\(\\)]" options:NSRegularExpressionCaseInsensitive error:&error];
-    NSString* simpleNumber = [regex stringByReplacingMatchesInString:formattedPhoneNumber options:0 range:NSMakeRange(0, [formattedPhoneNumber length]) withTemplate:@""];
-    return simpleNumber;
-}
 
 -(void) setEnteringPhone {
     self.enteringPhoneNumber = YES;
@@ -277,7 +280,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 -(void)backButtonSelected{
     [self removeKeyBoardOnScreen];
     [self shiftPhoneFieldUp:NO];
-    [self.delegate goBackSelectedCreateAccount];
+    [self.delegate goBackSelectedLoginAccount];
 }
 
 -(UIButton *)backButton{
@@ -294,9 +297,9 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 -(UITextField *)phoneNumber{
     
     if(!_phoneNumber){
-    
+        
         CGRect frame = CGRectMake(self.facebookLoginButton.frame.origin.x, self.facebookLoginButton.frame.origin.y + self.facebookLoginButton.frame.size.height + SIGN_UP_BUTTON_GAP,
-                              self.facebookLoginButton.frame.size.width, PHONE_NUMBER_FIELD_HEIGHT);
+                                  self.facebookLoginButton.frame.size.width, PHONE_NUMBER_FIELD_HEIGHT);
         _phoneNumber = [[UITextField alloc] initWithFrame:frame];
         self.originalPhoneTextFrame = frame;
         _phoneNumber.backgroundColor = [UIColor whiteColor];
@@ -306,7 +309,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
         _phoneNumber.keyboardType = UIKeyboardTypePhonePad;
         _phoneNumber.textAlignment = NSTextAlignmentCenter;
 
-
+        
     }
     return _phoneNumber;
 }
@@ -319,12 +322,12 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
         [_firstPassword setPlaceholder:ENTER_PASSWORD_PROMPT];
         _firstPassword.layer.cornerRadius = TEXTFIELDS_CORNER_RADIUS;
         _firstPassword.textAlignment = NSTextAlignmentCenter;
+        _firstPassword.secureTextEntry = YES;
         [self addSubview:_firstPassword];
-         [self createNextButton];
+        [self createNextButton];
     }
     return _firstPassword;
 }
-
 
 /*
 // Only override drawRect: if you perform custom drawing.

@@ -13,6 +13,7 @@
 #import "Notifications.h"
 
 #import "LoginKeyboardToolBar.h"
+#import "LogIntoAccount.h"
 
 #import "SegueIDs.h"
 #import "SignInVC.h"
@@ -39,8 +40,8 @@
 #import "ConfirmationCodeSignUp.h"
 
 
-@interface SignInVC () <UIScrollViewDelegate,
-                        CreateAccountProtocol, ChooseLoginOrSignupProtocol, ConfirmationCodeSignUpDelegate>
+@interface SignInVC () <UIScrollViewDelegate,CreateAccountProtocol,
+                        ChooseLoginOrSignupProtocol, ConfirmationCodeSignUpDelegate, LogIntoAccountProtocol>
 
 @property (nonatomic) BOOL loginFirstTimeDone;
 @property (strong, nonatomic) UIView* animationView;
@@ -63,6 +64,8 @@
 @property (nonatomic) UIScrollView * onBoardingView;
 @property (nonatomic) UIScrollView * contentOnboardingPage;
 
+
+@property (nonatomic) LogIntoAccount * loginToAccountView;
 
 
 @property (nonatomic) ConfirmationCodeSignUp * confirmationCodeEntry;
@@ -275,63 +278,54 @@
 
 #pragma mark - Phone login Delegate -
 
--(void) nextButtonPressed {
-//	if (!self.enteringPhoneNumber) {
-//		[self codeEntered];
-//		return;
-//	}
-//
-//	[self.phoneLoginField resignFirstResponder];
-//	NSString *simplePhoneNumber = [self getSimpleNumberFromFormattedPhoneNumber:self.phoneLoginField.text];
-//	//todo: accept more phone numbers
-//	if (simplePhoneNumber.length != 10) {
-//		[self showAlertWithTitle:@"Phone Login" andMessage:@"You must enter a 10-digit US phone number including area code."];
-//		return;
-//	}
-//
-//	self.nextButtonEnabled = NO;
-//
-//	PFQuery *findUserQuery = [PFUser query];
-//	[findUserQuery whereKey:@"username" equalTo:simplePhoneNumber];
-//	[findUserQuery getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable user, NSError * _Nullable error) {
-//		if (user && !error) {
-//			PFUser *currentUser = (PFUser*)user;
-//			NSString *name = [currentUser objectForKey:VERBATM_USER_NAME_KEY];
-//			if (name == nil) {
-//				//User never finished signing in so delete them
-//				[user deleteInBackground];
-//			} else {
-//				self.firstTimeLoggingIn = NO;
-//				self.phoneNumber = simplePhoneNumber;
-//				[self performSegueWithIdentifier:USER_SETTINGS_SEGUE sender:self];
-//				return;
-//			}
-//		}
-//		self.firstTimeLoggingIn = YES;
-//		self.phoneNumber = simplePhoneNumber;
-//		[self setEnteringCode];
-//
-//		//todo: include more languages
-//		NSDictionary *params = @{@"phoneNumber" : simplePhoneNumber, @"language" : @"en"};
-//		[PFCloud callFunctionInBackground:@"sendCode" withParameters:params block:^(id  _Nullable response, NSError * _Nullable error) {
-//			if (error) {
-//				[[Crashlytics sharedInstance] recordError: error];
-//				[self showAlertWithTitle:@"Error sending code" andMessage:@"Something went wrong. Please verify your phone number is correct."];
-//				[self setEnteringPhone];
-//				self.phoneLoginField.text = [self formatPhoneNumber:self.phoneNumber deleteLastChar:NO];
-//				self.phoneNumber = nil;
-//			} else {
-//				// Parse has now created an account with this phone number and generated a random code,
-//				// user must enter the correct code to be logged in
-//			}
-//		}];
-//
-//	}];
+-(void) sendCodeToUser {
+	[self.phoneLoginField resignFirstResponder];
+	NSString *simplePhoneNumber = self.phoneNumber;
+	//todo: accept more phone numbers
+	if (simplePhoneNumber.length != 10) {
+		[self showAlertWithTitle:@"Phone Login" andMessage:@"You must enter a 10-digit US phone number including area code."];
+		return;
+	}
+
+	self.nextButtonEnabled = NO;
+
+	PFQuery *findUserQuery = [PFUser query];
+	[findUserQuery whereKey:@"username" equalTo:simplePhoneNumber];
+	[findUserQuery getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable user, NSError * _Nullable error) {
+		if (user && !error) {
+			PFUser *currentUser = (PFUser*)user;
+			NSString *name = [currentUser objectForKey:VERBATM_USER_NAME_KEY];
+			if (name == nil) {
+				//User never finished signing in so delete them
+				[user deleteInBackground];
+			} else {
+				self.firstTimeLoggingIn = NO;
+				self.phoneNumber = simplePhoneNumber;
+				[self performSegueWithIdentifier:USER_SETTINGS_SEGUE sender:self];
+				return;
+			}
+		}
+		self.firstTimeLoggingIn = YES;
+		self.phoneNumber = simplePhoneNumber;
+		[self setEnteringCode];
+
+		//todo: include more languages
+		NSDictionary *params = @{@"phoneNumber" : simplePhoneNumber, @"language" : @"en"};
+		[PFCloud callFunctionInBackground:@"sendCode" withParameters:params block:^(id  _Nullable response, NSError * _Nullable error) {
+			if (error) {
+				[[Crashlytics sharedInstance] recordError: error];
+				[self showAlertWithTitle:@"Error sending code" andMessage:@"Something went wrong. Please verify your phone number is correct."];
+			} else {
+				// Parse has now created an account with this phone number and generated a random code,
+				// user must enter the correct code to be logged in
+			}
+		}];
+
+	}];
 }
 
--(void) codeEntered {
+-(void) codeEnteredWithPhoneNumber:(NSString *)number andCode:(NSString *)code{
 	self.nextButtonEnabled = NO;
-	NSString *code = self.phoneLoginField.text;
 	if (code.length != 4) {
 		NSString *message = @"You must enter a 4 digit confirmation code.\
 		It was sent in an SMS message to +1";
@@ -340,22 +334,25 @@
 		return;
 	}
 
-	NSDictionary *params = @{@"phoneNumber": self.phoneNumber, @"codeEntry": code};
+	NSDictionary *params = @{@"phoneNumber": number, @"codeEntry": code};
+    
+    __weak SignInVC * weakSelf = self;
+    
 	[PFCloud callFunctionInBackground:@"logIn" withParameters:params block:^(id  _Nullable object, NSError * _Nullable error) {
 		if (error) {
-			[self showAlertWithTitle:@"Login Error" andMessage: error.localizedDescription];
+			[weakSelf showAlertWithTitle:@"Login Error" andMessage: error.localizedDescription];
 		} else {
 			// This is the session token for the user
 			NSString *token = (NSString*)object;
 
 			[PFUser becomeInBackground:token block:^(PFUser * _Nullable user, NSError * _Nullable error) {
 				if (error) {
-					[self showAlertWithTitle:@"Login Error" andMessage:error.localizedDescription];
-					[self setEnteringCode];
+					[weakSelf showAlertWithTitle:@"Login Error" andMessage:error.localizedDescription];
+					[weakSelf setEnteringCode];
 				} else {
 					//delete so they can be recreated
 					[user deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-						[self performSegueWithIdentifier:USER_SETTINGS_SEGUE sender:self];
+						[weakSelf performSegueWithIdentifier:USER_SETTINGS_SEGUE sender:weakSelf];
 					}];
 				}
 			}];
@@ -406,7 +403,9 @@
 }
 
 -(void)signUpWithPhoneNumberSelectedWithNumber:(NSString *) phoneNumber andPassword:(NSString *)password{
+    self.phoneNumber = phoneNumber;
     self.confirmationCodeEntry.phoneNumberEntered = phoneNumber;
+    [self sendCodeToUser];
     [self replaceView:self.createAccountView withView:self.confirmationCodeEntry goingForward:YES];
 }
 
@@ -415,19 +414,66 @@
     
 }
 
+
 -(void)codeSubmitted:(NSString *) enteredCode{
+    [self codeEnteredWithPhoneNumber:self.phoneNumber andCode:enteredCode];
+}
+
+#pragma mark -LogIntoAccount Protocol-
+-(void)goBackSelectedLoginAccount{
+    [self replaceView:self.loginToAccountView withView:self.chooseLoginOrSignUpView goingForward:NO];
+}
+
+-(void)textNotAlphaNumericaLoginAccount{
     
 }
+
+-(void)loginUpWithPhoneNumberSelectedWithNumber:(NSString *) phoneNumber andPassword:(NSString *)password{
+    [PFUser logInWithUsernameInBackground:phoneNumber password:password block:^(PFUser * _Nullable user, NSError * _Nullable error) {
+        if (error || !user) {
+            [self showAlertWithTitle:@"Incorrect password" andMessage: @"Please try again"];
+        } else {
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
+           // [self unwindToMasterVC];
+        }
+    }];
+
+
+}
+
+-(void)errorInLogInWithError:(NSString *)error{
+    
+}
+
+
+
+
 
 #pragma mark -ConfirmationCodeSignup Protocol-
 -(void)goBackSelectedConfirmationCode{
     [self replaceView:self.confirmationCodeEntry  withView:self.createAccountView goingForward:NO];
 }
+
+-(void)resendCodeSelectedConfirmationCode{
+    
+}
+
+-(void)codeSubmittedConfirmationCode:(NSString *) enteredCode{
+    [self codeEnteredWithPhoneNumber:self.phoneNumber andCode:enteredCode];
+}
+
+
+
+
 #pragma mark -ChooseLoginOrSignUp Protocol-
 
 -(void)signUpChosen{
     [self replaceView:self.chooseLoginOrSignUpView withView:self.createAccountView goingForward:YES];
 }
+-(void)loginChosen{
+    [self replaceView:self.chooseLoginOrSignUpView withView:self.loginToAccountView goingForward:YES];
+}
+
 
 
 #pragma mark - Error message animation -
@@ -531,6 +577,13 @@
 	return _animationLabel;
 }
 
+-(LogIntoAccount *)loginToAccountView{
+    if(!_loginToAccountView){
+        _loginToAccountView = [[LogIntoAccount alloc] initWithFrame:self.view.bounds];
+        _loginToAccountView.delegate = self;
+    }
+    return _loginToAccountView;
+}
 
 -(CreateAccount *)createAccountView{
     if(!_createAccountView){

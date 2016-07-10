@@ -194,6 +194,7 @@
 		C764CD6F1D189A3B00F75760 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C764CD6E1D189A3B00F75760 /* Twitter.framework */; };
 		C764CD711D18A26200F75760 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C764CD701D18A26200F75760 /* MessageUI.framework */; };
 		C772057D1D30DBFA00D626FE /* ConfirmationCodeSignUp.m in Sources */ = {isa = PBXBuildFile; fileRef = C772057C1D30DBFA00D626FE /* ConfirmationCodeSignUp.m */; };
+		C77205801D318BE600D626FE /* LogIntoAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = C772057F1D318BE600D626FE /* LogIntoAccount.m */; };
 		C774040F19BE6538004C50EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C774040E19BE6538004C50EA /* Images.xcassets */; };
 		C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = C77C7D371A22E9FC00694B20 /* PinchView.m */; };
 		C78204EE1C32EAC500F56A63 /* CreatorAndChannelBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C78204ED1C32EAC500F56A63 /* CreatorAndChannelBar.m */; };
@@ -570,6 +571,8 @@
 		C764CD701D18A26200F75760 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		C772057B1D30DBFA00D626FE /* ConfirmationCodeSignUp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfirmationCodeSignUp.h; sourceTree = "<group>"; };
 		C772057C1D30DBFA00D626FE /* ConfirmationCodeSignUp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfirmationCodeSignUp.m; sourceTree = "<group>"; };
+		C772057E1D318BE600D626FE /* LogIntoAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogIntoAccount.h; sourceTree = "<group>"; };
+		C772057F1D318BE600D626FE /* LogIntoAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogIntoAccount.m; sourceTree = "<group>"; };
 		C774040E19BE6538004C50EA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		C77C7D361A22E9FC00694B20 /* PinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinchView.h; sourceTree = "<group>"; };
 		C77C7D371A22E9FC00694B20 /* PinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PinchView.m; sourceTree = "<group>"; };
@@ -894,6 +897,8 @@
 				C75C4FAB1D30A96A009EE3CF /* CreateAccount.m */,
 				C772057B1D30DBFA00D626FE /* ConfirmationCodeSignUp.h */,
 				C772057C1D30DBFA00D626FE /* ConfirmationCodeSignUp.m */,
+				C772057E1D318BE600D626FE /* LogIntoAccount.h */,
+				C772057F1D318BE600D626FE /* LogIntoAccount.m */,
 			);
 			name = Login;
 			sourceTree = "<group>";
@@ -1824,6 +1829,7 @@
 				C7E2C88F1BB7E97600D83668 /* UtilityFunctions.m in Sources */,
 				A5934C171C11EFBD007C7830 /* CustomTabBarController.m in Sources */,
 				A5E73BF61D1770B400527ECF /* GTLVerbatmAppPageListWrapper.m in Sources */,
+				C77205801D318BE600D626FE /* LogIntoAccount.m in Sources */,
 				C7F3D46B1A4F84C000B43238 /* SignInVC.m in Sources */,
 				12A06D9A1CD37B1A001800C9 /* Followers.m in Sources */,
 				A5E73BA31D1697AE00527ECF /* GTLBatchQuery.m in Sources */,
