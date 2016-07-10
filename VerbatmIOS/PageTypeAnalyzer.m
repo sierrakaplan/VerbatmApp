@@ -150,11 +150,11 @@
 //Video array looks like @[URL, thumbnail]
 +(void) getVideoFromPage: (PFObject*) page withCompletionBlock:(void(^)(NSArray *)) block{
 
-	NSDate *before = [NSDate date];
+//	NSDate *before = [NSDate date];
 	[Video_BackendObject getVideoForPage:page andCompletionBlock:^(PFObject *videoObject) {
 
-		NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate: before];
-		NSLog(@"%@",[NSString stringWithFormat:@"Time loading parse video objects %f seconds \n\n", timeInterval]);
+//		NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate: before];
+//		NSLog(@"%@",[NSString stringWithFormat:@"Time loading parse video objects %f seconds \n\n", timeInterval]);
 
 		//get thumbnail url for video
 		NSString * thumbNailUrl = [videoObject valueForKey:VIDEO_THUMBNAIL_KEY];

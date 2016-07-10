@@ -121,7 +121,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 									  dataTaskWithRequest:request
 									  completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
 										  if (error) {
-											  NSLog(@"Error downloading photo from url %@ : %@", url, error.description);
+//											  NSLog(@"Error downloading photo from url %@ : %@", url, error.description);
 											  [[Crashlytics sharedInstance] recordError: error];
 											  resolve(nil);
 										  } else {
