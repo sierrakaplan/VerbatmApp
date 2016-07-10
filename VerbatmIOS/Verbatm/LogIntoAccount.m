@@ -50,6 +50,7 @@
         [self addFacebookLoginButton];
         [self createPhoneNumebrField];
         [self addSubview:self.backButton];
+        [self addSubview:self.orLabel];
         [self registerForKeyboardNotifications];
     }
     return self;

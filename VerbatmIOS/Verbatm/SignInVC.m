@@ -86,6 +86,7 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	[self.backgroundImageView setFrame:self.view.bounds];
+    [self centerViews];
 	[self registerForNotifications];
 	//[self addFacebookLoginButton];
 	self.loginFirstTimeDone = NO;
@@ -104,6 +105,15 @@
     [self.view sendSubviewToBack:self.backgroundImageView];
 }
 
+
+-(void) centerViews {
+    self.verbatmLogoImageView.center = CGPointMake(self.view.center.x, self.verbatmLogoImageView.center.y);
+    self.welcomeLabel.center = CGPointMake(self.view.center.x, self.welcomeLabel.center.y + 4);
+    self.mobileBloggingLabel.center = CGPointMake(self.view.center.x, self.mobileBloggingLabel.center.y);
+    self.orLabel.center = CGPointMake(self.view.center.x, self.orLabel.center.y);
+    self.phoneLoginField.center = CGPointMake(self.view.center.x, self.phoneLoginField.center.y);
+    self.originalPhoneTextFrame = self.phoneLoginField.frame;
+}
 
 //forward == yes means that animation should go right to left (advancing to next screen)
 -(void)replaceView:(UIView *) currentView withView:(UIView *)nextView goingForward:(BOOL) forward{
