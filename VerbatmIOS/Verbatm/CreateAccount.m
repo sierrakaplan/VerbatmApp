@@ -33,10 +33,11 @@
 @property (nonatomic) UITextField * createName;
 @property (nonatomic) CGRect originalPhoneTextFrame;
 
+@property (nonatomic) UILabel * orLabel;
 
-#define ENTER_PHONE_NUMBER_PROMT @"Account with Phone Number"
+#define ENTER_PHONE_NUMBER_PROMT @"Enter Phone Number"
 #define ENTER_PASSWORD_PROMPT @"Create Password"
-#define CREATE_USERNAME @"Create a Verbatm name"
+#define CREATE_USERNAME @"Enter a Name"
 @end
 
 @implementation CreateAccount
@@ -50,6 +51,7 @@
         [self addFacebookLoginButton];
         [self createPhoneNumebrField];
         [self addSubview:self.backButton];
+        [self addSubview:self.orLabel];
         [self registerForKeyboardNotifications];
     }
     return self;
@@ -87,8 +89,11 @@
 #pragma mark -TOOLBAR NEXT BUTTON-
 -(void) nextButtonPressed{
     [self removeKeyBoardOnScreen];
-    if([self sanityCheckString:self.phoneNumber.text] && [self sanityCheckString:self.firstPassword.text]){
-        [self.delegate signUpWithPhoneNumberSelectedWithNumber:self.phoneNumber.text andPassword:self.firstPassword.text];
+    if([self sanityCheckString:self.phoneNumber.text] &&
+       [self sanityCheckString:self.firstPassword.text]
+       && [[self.createName.text stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""]) {
+        
+        [self.delegate signUpWithPhoneNumberSelectedWithNumber:self.phoneNumber.text andPassword:self.firstPassword.text andName:self.createName.text];
         [self removeKeyBoardOnScreen];
     }else{
         [self.delegate textNotAlphaNumericaCreateAccount];
@@ -99,7 +104,10 @@
 -(void)removeKeyBoardOnScreen{
     [self.firstPassword resignFirstResponder];
     [self.phoneNumber resignFirstResponder];
+    [self.createName resignFirstResponder];
 }
+
+
 
 
 -(BOOL)sanityCheckString:(NSString *)text{
@@ -160,7 +168,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 -(void) keyboardWillShow:(NSNotification*)notification {
     [self.facebookLoginButton setHidden:YES];
-    
+    [self.orLabel setHidden:YES];
     CGFloat keyboardOffset = 0.f;
     CGRect keyboardBounds;
     [[notification.userInfo valueForKey:UIKeyboardFrameBeginUserInfoKey] getValue:&keyboardBounds];
@@ -176,7 +184,9 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     }completion:^(BOOL finished) {
         if(finished){
              [self.firstPassword setHidden:NO];
+            [self.createName setHidden:NO];
             [self bringSubviewToFront:self.firstPassword];
+            [self bringSubviewToFront:self.createName];
         }
     }];
 }
@@ -185,9 +195,12 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     if(up){
         self.phoneNumber.frame = CGRectOffset(self.phoneNumber.frame, 0, self.facebookLoginButton.frame.origin.y - self.phoneNumber.frame.origin.y);
         [self.firstPassword setHidden:NO];
+        [self.createName setHidden:NO];
     }else{
         self.phoneNumber.frame = self.originalPhoneTextFrame;
         [self.firstPassword setHidden:YES];
+        [self.createName setHidden:YES];
+        [self.orLabel setHidden:NO];
     }
 }
 -(void) keyboardWillHide:(NSNotification*)notification {
@@ -196,6 +209,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     [UIView animateWithDuration:0.2 animations:^{
         [self shiftPhoneFieldUp:NO];
         [self.firstPassword setHidden:YES];
+        [self.createName setHidden:YES];
     }];
 }
 
@@ -327,7 +341,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 -(UITextField *)firstPassword{
     if(!_firstPassword){
-        CGRect frame = CGRectMake(self.phoneNumber.frame.origin.x, self.facebookLoginButton.frame.origin.y + self.phoneNumber.frame.size.height + 5.f, self.phoneNumber.frame.size.width, self.phoneNumber.frame.size.height);
+        CGRect frame = CGRectMake(self.createName.frame.origin.x, self.createName.frame.origin.y + self.createName.frame.size.height + 5.f, self.createName.frame.size.width, self.createName.frame.size.height);
         _firstPassword = [[UITextField alloc] initWithFrame:frame];
         _firstPassword.backgroundColor = [UIColor whiteColor];
         _firstPassword.delegate = self;
@@ -338,6 +352,17 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
         [self createNextButton];
     }
     return _firstPassword;
+}
+
+
+-(UILabel *)orLabel{
+    if(!_orLabel){
+        _orLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.f, 0.f, 50.f, 50.f)];
+        [_orLabel setText:@"OR"];
+        [_orLabel setBackgroundColor:[UIColor clearColor]];
+        [self addSubview:_orLabel];
+    }
+    return _orLabel;
 }
 
 /*

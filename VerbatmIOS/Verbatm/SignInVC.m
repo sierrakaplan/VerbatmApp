@@ -58,7 +58,9 @@
 @property (weak, nonatomic) IBOutlet UITextField *phoneLoginField;
 @property (nonatomic) CGRect originalPhoneTextFrame;
 @property (nonatomic) BOOL enteringPhoneNumber;
-@property (strong, nonatomic) NSString *phoneNumber;
+@property (strong, nonatomic) NSString * phoneNumber;
+@property (strong, nonatomic) NSString * verbatmName;
+
 @property (nonatomic) BOOL firstTimeLoggingIn;
 
 @property (nonatomic) UIScrollView * onBoardingView;
@@ -402,11 +404,15 @@
     
 }
 
--(void)signUpWithPhoneNumberSelectedWithNumber:(NSString *) phoneNumber andPassword:(NSString *)password{
+-(void)signUpWithPhoneNumberSelectedWithNumber:(NSString *) phoneNumber
+                                   andPassword:(NSString *)password andName:(NSString *) verbatmName{
+    
     self.phoneNumber = phoneNumber;
     self.confirmationCodeEntry.phoneNumberEntered = phoneNumber;
+    self.verbatmName = verbatmName;
     [self sendCodeToUser];
     [self replaceView:self.createAccountView withView:self.confirmationCodeEntry goingForward:YES];
+    
 }
 
 -(void)goBackSelectedCreateAccount{
