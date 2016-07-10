@@ -110,6 +110,16 @@
                 [channelPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve)
                     {
                         [channelObj fetchInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+							if (error) {
+								NSLog(@"Channel no longer exists");
+								[followObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+									if (error) {
+										NSLog(@"Error deleting follow");
+									} else if(succeeded) {
+										NSLog(@"follow deleted");
+									}
+								}];
+							}
                             if(object){
 								Channel *channel = [[Channel alloc] initWithChannelName:[channelObj valueForKey:CHANNEL_NAME_KEY] andParseChannelObject:channelObj andChannelCreator:[channelObj valueForKey:CHANNEL_CREATOR_KEY]];
 								channel.latestPostDate = channelObj[CHANNEL_LATEST_POST_DATE];
@@ -146,7 +156,12 @@
 			NSMutableArray *users = [[NSMutableArray alloc] initWithCapacity:objects.count];
 			for (PFObject *followObject in objects) {
 				PFUser *userFollowing = followObject[FOLLOW_USER_KEY];
-				[userFollowing fetchIfNeededInBackground];
+				[userFollowing fetchInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+					if (error) {
+						NSLog(@"User no longer exists");
+						[followObject deleteInBackground];
+					}
+				}];
 				[users addObject:userFollowing];
 			}
 			block (users);

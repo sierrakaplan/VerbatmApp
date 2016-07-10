@@ -23,8 +23,8 @@
 @property (nonatomic, readwrite) NSString *blogDescription;
 @property (nonatomic, readwrite) PFObject * parseChannelObject;
 @property (nonatomic, readwrite) PFUser *channelCreator;
-@property (nonatomic, readwrite) NSMutableArray *usersFollowingChannel;
-@property (nonatomic, readwrite) NSMutableArray *channelsUserFollowing;
+@property (nonatomic, readwrite) NSArray *usersFollowingChannel;
+@property (nonatomic, readwrite) NSArray *channelsUserFollowing;
 
 @property (nonatomic) PostPublisher * mediaPublisher;
 
@@ -64,13 +64,13 @@
         NSString * url = [self.parseChannelObject valueForKey:CHANNEL_COVER_PHOTO_URL];
         if(url) {
 			NSString *smallImageUrl = [UtilityFunctions addSuffixToPhotoUrl:url forSize: HALFSCREEN_IMAGE_SIZE];
-            [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString: smallImageUrl]].then(^(NSData* data) {
+            [[UtilityFunctions sharedInstance] loadCachedPhotoDataFromURL: [NSURL URLWithString: smallImageUrl]].then(^(NSData* data) {
                 if(data){
                     UIImage * photo = [UIImage imageWithData:data];
                     dispatch_async(dispatch_get_main_queue(), ^{
                         block(photo);
                     });
-                }else{
+                } else {
                     block(nil);
                 }
             });
@@ -100,9 +100,17 @@
 -(void) currentUserFollowsChannel:(BOOL) follows {
     PFUser *currentUser = [PFUser currentUser];
     if (follows) {
-        if (![self.usersFollowingChannel containsObject:currentUser]) [self.usersFollowingChannel addObject:currentUser];
+        if (![self.usersFollowingChannel containsObject:currentUser]) {
+			NSMutableArray *newUsers = [NSMutableArray arrayWithArray: self.usersFollowingChannel];
+			[newUsers addObject:currentUser];
+			self.usersFollowingChannel = newUsers;
+		}
     } else {
-        if ([self.usersFollowingChannel containsObject:currentUser]) [self.usersFollowingChannel removeObject:currentUser];
+        if ([self.usersFollowingChannel containsObject:currentUser]) {
+			NSMutableArray *newUsers = [NSMutableArray arrayWithArray: self.usersFollowingChannel];
+			[newUsers removeObject:currentUser];
+			self.usersFollowingChannel = newUsers;
+		}
     }
 }
 
@@ -126,8 +134,7 @@
     
 }
 
-
-+(void)getChannelsForUserList:(NSMutableArray *) userList andCompletionBlock:(void(^)(NSMutableArray *))block{
++(void)getChannelsForUserList:(NSArray *) userList andCompletionBlock:(void(^)(NSMutableArray *))block{
     
     NSMutableArray * userChannelPromises = [[NSMutableArray alloc] init];
     NSMutableArray * userChannelList = [[NSMutableArray alloc] init];
@@ -157,30 +164,31 @@
 }
 
 -(void) getFollowersAndFollowingWithCompletionBlock:(void(^)(void))block {
-    self.usersFollowingChannel = nil;
-    self.channelsUserFollowing = nil;
+    self.usersFollowingChannel = @[];
+    self.channelsUserFollowing = @[];
     
-    NSMutableArray * loadPromises = [[NSMutableArray alloc] init];
-    __weak Channel * weakSelf = self;
-    [loadPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve)
-                             {
-                                 [Follow_BackendManager usersFollowingChannel:self withCompletionBlock:^(NSArray *users) {
-                                     weakSelf.usersFollowingChannel = [[NSMutableArray alloc] initWithArray:users];
-                                     resolve(nil);
-                                 }];
-                             }]];
-    
-    [loadPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve)
-                             {
-                                 [Follow_BackendManager channelsUserFollowing:weakSelf.channelCreator withCompletionBlock:^(NSArray *channels) {
-                                     weakSelf.channelsUserFollowing = [[NSMutableArray alloc] initWithArray: channels];
-                                     resolve(nil);
-                                 }];
-                             }]];
-    
-    PMKWhen(loadPromises).then(^(id nothing) {
-       if(block) block();
-    });
+//    NSMutableArray * loadPromises = [[NSMutableArray alloc] init];
+//    __weak Channel * weakSelf = self;
+//    [loadPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve)
+//                             {
+//                                 [Follow_BackendManager usersFollowingChannel:self withCompletionBlock:^(NSArray *users) {
+//                                     weakSelf.usersFollowingChannel = [[NSMutableArray alloc] initWithArray:users];
+//                                     resolve(nil);
+//                                 }];
+//                             }]];
+//    
+//    [loadPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve)
+//                             {
+//                                 [Follow_BackendManager channelsUserFollowing:weakSelf.channelCreator withCompletionBlock:^(NSArray *channels) {
+//                                     weakSelf.channelsUserFollowing = [[NSMutableArray alloc] initWithArray: channels];
+//                                     resolve(nil);
+//                                 }];
+//                             }]];
+//    
+//    PMKWhen(loadPromises).then(^(id nothing) {
+//       if(block) block();
+//    });
+	if (block) block();
 }
 
 -(BOOL)channelBelongsToCurrentUser {

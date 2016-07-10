@@ -40,6 +40,7 @@
 #import "UserInfoCache.h"
 #import "UserSetupParameters.h"
 #import "UserAndChannelListsTVC.h"
+#import "UtilityFunctions.h"
 #import <PromiseKit/PromiseKit.h>
 
 @interface ProfileVC() <ProfileHeaderViewDelegate, Intro_Notification_Delegate,
@@ -102,8 +103,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	[self.postListVC startMonitoringPublishing];
 }
 
-//to be used sparingly -- has the postlist refresh content
-//todo: wtf ^
 -(void)refreshProfile {
 	if(self.postListVC)[self.postListVC refreshPosts];
 	[self createHeader];
@@ -154,7 +153,9 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	CGRect frame = self.view.bounds;
 	PFUser* user = self.isCurrentUserProfile ? nil : self.channel.channelCreator;
 
-	self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andUser:user                                                                   andChannel:self.channel inProfileTab:self.isProfileTab inFeed:self.profileInFeed];
+	self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andUser:user
+														   andChannel:self.channel
+														 inProfileTab:self.isProfileTab inFeed:self.profileInFeed];
 
 	self.profileHeaderView.delegate = self;
 	[self.view addSubview: self.profileHeaderView];
@@ -423,7 +424,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	}
 }
 
-
 -(void)createPromptToPost{
 	self.postPrompt =  [[UIButton alloc] init];
 	[self.postPrompt setBackgroundImage:[UIImage imageNamed:CREATE_POST_PROMPT_ICON] forState:UIControlStateNormal];
@@ -611,6 +611,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	}
 	return _postListVC;
 }
+
 -(PHImageManager*) imageManager {
 	if (!_imageManager) {
 		_imageManager = [[PHImageManager alloc] init];

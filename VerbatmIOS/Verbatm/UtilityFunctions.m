@@ -11,10 +11,13 @@
 #import "Notifications.h"
 #import "zlib.h"
 #include <compression.h>
+
 @import AVFoundation;
 @import Foundation;
 
 @interface UtilityFunctions ()
+
+@property (strong, nonatomic) NSMutableArray *sessionTasks;
 
 #define COMPRESSING 0
 
@@ -22,6 +25,15 @@
 
 @implementation UtilityFunctions
 
++ (id)sharedInstance {
+	static UtilityFunctions *sharedInstance = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		sharedInstance = [[UtilityFunctions alloc] init];
+
+	});
+	return sharedInstance;
+}
 
 +(NSString*) stripLargePhotoSuffix:(NSString*)photoUrl {
 	NSString * suffix = @"=s0";
@@ -99,29 +111,41 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 }
 
 // Promise wrapper for asynchronous request to get image data (or any data) from the url
-+ (AnyPromise*) loadCachedPhotoDataFromURL: (NSURL*) url {
+- (AnyPromise*) loadCachedPhotoDataFromURL: (NSURL*) url {
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		NSURLRequest* request = [NSURLRequest requestWithURL:url
 												 cachePolicy: NSURLRequestReturnCacheDataElseLoad
 											 timeoutInterval:300];
-
 		//todo: delete debugging
 		NSURLSessionDataTask *task = [[NSURLSession sharedSession]
 									  dataTaskWithRequest:request
 									  completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
 										  if (error) {
+											  NSLog(@"Error downloading photo from url %@ : %@", url, error.description);
 											  [[Crashlytics sharedInstance] recordError: error];
 											  resolve(nil);
 										  } else {
 											  resolve(data);
 										  }
 		}];
+		[self.sessionTasks addObject: task];
 		[task resume];
 
 	}];
 	return promise;
 }
-+ (AnyPromise*) loadCachedVideoDataFromURL: (NSURL*) url {
+
+- (void) cancelAllSharedSessionDataTasks {
+	for (NSURLSessionTask *_task in self.sessionTasks) {
+		if (_task.state == NSURLSessionTaskStateRunning || _task.state == NSURLSessionTaskStateSuspended) {
+			NSLog(@"Canceling task");
+			[_task cancel];
+		}
+	}
+	self.sessionTasks = nil;
+}
+
+- (AnyPromise*) loadCachedVideoDataFromURL: (NSURL*) url {
     AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
         
         [UtilityFunctions convertVideoToLowQualityWithInputURL:url withCompletion:^(NSURL * url, BOOL deleteUrl) {
@@ -259,6 +283,13 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
         return [NSData dataWithData: decompressed];
     }
     else return nil;
+}
+
+-(NSMutableArray *)sessionTasks {
+	if (!_sessionTasks) {
+		_sessionTasks = [[NSMutableArray alloc] init];
+	}
+	return _sessionTasks;
 }
 
 @end

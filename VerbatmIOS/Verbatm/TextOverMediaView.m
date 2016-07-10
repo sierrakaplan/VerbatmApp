@@ -48,7 +48,7 @@
 			NSString *imageURI = [UtilityFunctions addSuffixToPhotoUrl:imageUrl.absoluteString forSize: LARGE_IMAGE_SIZE];
 			imageUrl = [NSURL URLWithString: imageURI];
             __weak TextOverMediaView *weakSelf = self;
-			[UtilityFunctions loadCachedPhotoDataFromURL:imageUrl].then(^(NSData* largeImageData) {
+			[[UtilityFunctions sharedInstance] loadCachedPhotoDataFromURL:imageUrl].then(^(NSData* largeImageData) {
 				// Only display larger data if less than 1000 KB
 				if (largeImageData.length / 1024.f < 1000) {
 					UIImage *image = [UIImage imageWithData:largeImageData];
@@ -266,7 +266,6 @@ andTextAlignment:(NSTextAlignment) textAlignment
 -(void)dealloc{
     _imageView.image = nil;
     _imageView = nil;
-    NSLog(@"TextOverMediaView Dealloc");
 }
 
 @end

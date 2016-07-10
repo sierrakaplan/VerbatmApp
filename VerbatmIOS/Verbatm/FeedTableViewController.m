@@ -11,13 +11,14 @@
 #import "UserInfoCache.h"
 #import "Channel.h"
 #import "ProfileVC.h"
+#import "UtilityFunctions.h"
 
 @interface FeedTableViewController ()<FeedCellDelegate>
 
 
-@property(nonatomic) NSMutableArray * FollowingProfileList;
-@property (nonatomic) Channel * currentUserChannel;
-@property (nonatomic) ProfileVC * nextProfileToPresent;
+@property(nonatomic) NSArray *followingProfileList;
+@property (nonatomic) Channel *currentUserChannel;
+@property (nonatomic) ProfileVC *nextProfileToPresent;
 @property (nonatomic) NSInteger nextProfileIndex;
 @property (nonatomic) BOOL isFirstTime;
 @end
@@ -49,7 +50,9 @@
     
 }
 
--(void)viewWillDisappear:(BOOL)animated{
+-(void)viewWillDisappear:(BOOL)animated {
+	// Stop downloading any images we were downloadingx
+	[[UtilityFunctions sharedInstance] cancelAllSharedSessionDataTasks];
     NSArray * visibleCell = [self.tableView visibleCells];
     if(visibleCell && visibleCell.count){
         FeedTableCell * cell = [visibleCell firstObject];
@@ -61,13 +64,12 @@
 -(void)refreshListOfContent{
     self.currentUserChannel = [[UserInfoCache sharedInstance] getUserChannel] ;
     
-    if(self.FollowingProfileList){
-        [self.FollowingProfileList removeAllObjects];
-        self.FollowingProfileList = nil;
+    if(self.followingProfileList){
+        self.followingProfileList = nil;
     }
     
     [self.currentUserChannel getFollowersAndFollowingWithCompletionBlock:^{
-        self.FollowingProfileList = [self.currentUserChannel channelsUserFollowing];
+        self.followingProfileList = [self.currentUserChannel channelsUserFollowing];
         [self.tableView reloadData];
     }];
 }
@@ -99,15 +101,15 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.FollowingProfileList.count;
+    return self.followingProfileList.count;
 }
 
 -(void)prepareNextPostFromNextIndex:(NSInteger) nextIndex{
     
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        if(nextIndex < self.FollowingProfileList.count) {
+        if(nextIndex < self.followingProfileList.count) {
             
-            Channel * nextChannel = self.FollowingProfileList[nextIndex];
+            Channel * nextChannel = self.followingProfileList[nextIndex];
             if(self.nextProfileToPresent){
                 @autoreleasepool {
                     self.nextProfileToPresent = nil;
@@ -139,7 +141,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath{
     if(self.nextProfileToPresent && indexPath.row == self.nextProfileIndex){
         [cell setProfileAlreadyLoaded:self.nextProfileToPresent];
     }else{
-        [cell presentProfileForChannel:self.FollowingProfileList[indexPath.row]];
+        [cell presentProfileForChannel:self.followingProfileList[indexPath.row]];
     }
      self.nextProfileIndex = indexPath.row + 1;
     [self prepareNextPostFromNextIndex:self.nextProfileIndex];

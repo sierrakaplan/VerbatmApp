@@ -105,6 +105,9 @@
 		[self getThumbnailDatafromUrls:imageUrls withCompletionBlock:^(NSArray *imageData) {
 			NSMutableArray* imageTextArrays = [[NSMutableArray alloc] init];
 			for (int i = 0; i < photoObjects.count; i++) {
+				if ([imageData[i] isEqual:[NSNull null]]) {
+					continue;
+				}
 				PFObject * imageAndTextObj = photoObjects[i];
 				NSString * photoUrlString = [imageAndTextObj valueForKey:PHOTO_IMAGEURL_KEY];
 
@@ -136,23 +139,22 @@
 	NSMutableArray* loadImageDataPromises = [[NSMutableArray alloc] init];
 	for (NSString *uri in urls) {
 		NSString *smallImageUrl = [UtilityFunctions addSuffixToPhotoUrl:uri forSize: THUMBNAIL_IMAGE_SIZE];
-		AnyPromise* getImageDataPromise = [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString: smallImageUrl]];
+		AnyPromise* getImageDataPromise = [[UtilityFunctions sharedInstance] loadCachedPhotoDataFromURL: [NSURL URLWithString: smallImageUrl]];
 		[loadImageDataPromises addObject: getImageDataPromise];
 	}
 	PMKWhen(loadImageDataPromises).then(^(NSArray* results) {
 		block(results);
 	});
-
 }
 
 //Video array looks like @[URL, thumbnail]
 +(void) getVideoFromPage: (PFObject*) page withCompletionBlock:(void(^)(NSArray *)) block{
 
-//	NSDate *before = [NSDate date];
+	NSDate *before = [NSDate date];
 	[Video_BackendObject getVideoForPage:page andCompletionBlock:^(PFObject *videoObject) {
 
-//		NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate: before];
-//		NSLog(@"%@",[NSString stringWithFormat:@"Time loading parse video objects %f seconds \n\n", timeInterval]);
+		NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate: before];
+		NSLog(@"%@",[NSString stringWithFormat:@"Time loading parse video objects %f seconds \n\n", timeInterval]);
 
 		//get thumbnail url for video
 		NSString * thumbNailUrl = [videoObject valueForKey:VIDEO_THUMBNAIL_KEY];
@@ -165,7 +167,7 @@
 			NSURLQueryItem* blobKey = [NSURLQueryItem queryItemWithName:BLOBKEYSTRING_KEY value: videoBlobKey];
 			components.queryItems = @[blobKey];
 
-			UIImage * thumbNail = [UIImage imageWithData:videoThumbNails[0]];
+			UIImage * thumbNail = (![videoThumbNails[0] isEqual:[NSNull null]]) ? [UIImage imageWithData:videoThumbNails[0]] : nil;
 			block(@[components.URL, thumbNail]);
 		}];
 		

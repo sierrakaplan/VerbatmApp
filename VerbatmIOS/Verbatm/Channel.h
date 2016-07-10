@@ -21,8 +21,8 @@
 @property (nonatomic, readonly) NSString *blogDescription;
 @property (nonatomic, readonly) PFObject *parseChannelObject;
 @property (nonatomic, readonly) PFUser *channelCreator;
-@property (nonatomic, readonly) NSMutableArray *usersFollowingChannel;
-@property (nonatomic, readonly) NSMutableArray *channelsUserFollowing;
+@property (nonatomic, readonly) NSArray *usersFollowingChannel;
+@property (nonatomic, readonly) NSArray *channelsUserFollowing;
 
 
 -(instancetype) initWithChannelName:(NSString *) channelName
@@ -47,7 +47,7 @@
 -(void)addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator;
 
 
-+(void)getChannelsForUserList:(NSMutableArray *) userList andCompletionBlock:(void(^)(NSMutableArray *))block;
++(void)getChannelsForUserList:(NSArray *) userList andCompletionBlock:(void(^)(NSMutableArray *))block;
 
 
 -(void)storeCoverPhoto:(UIImage *) coverPhoto;
