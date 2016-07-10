@@ -133,7 +133,6 @@
 }
 
 -(void) loadMorePostsWithCompletionHandler:(void(^)(NSArray *))block {
-
 	//Needs to call refresh first
 	if (!self.channelsFollowed || !self.channelsFollowed.count || !self.currentFeedStart) {
 		block (@[]);
@@ -167,6 +166,19 @@
 //Gets all the channels on Verbatm except the provided user and channels owned by people who have blocked user.
 //Often this will be the current user
 -(void) refreshExploreChannelsWithCompletionHandler:(void(^)(NSArray *))completionBlock {
+	self.exploreChannelsLoaded = 0;
+	[self loadExploreChannelsWithSkip:0 andCompletionHandler:^(NSArray *channels) {
+		completionBlock(channels);
+	}];
+}
+
+-(void) loadMoreExploreChannelsWithCompletionHandler:(void(^)(NSArray *))completionBlock {
+ 	[self loadExploreChannelsWithSkip:self.exploreChannelsLoaded andCompletionHandler:^(NSArray *channels) {
+		completionBlock(channels);
+	}];
+}
+
+-(void) loadExploreChannelsWithSkip:(NSInteger)skip andCompletionHandler:(void(^)(NSArray *))completionBlock {
 
 	PFUser *user = [PFUser currentUser];
 	[self refreshChannelsWeFollowWithCompletionHandler:^{
@@ -178,14 +190,15 @@
 			for (PFObject *block in blocks) {
 				[self.usersWhoHaveBlockedUser addObject:[block valueForKey:BLOCK_USER_BLOCKING_KEY]];
 			}
+			[self.usersWhoHaveBlockedUser addObject:[PFUser currentUser]];
 
 			PFQuery *exploreChannelsQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
-			[exploreChannelsQuery whereKey:CHANNEL_CREATOR_KEY notEqualTo: user];
 			[exploreChannelsQuery whereKey:CHANNEL_CREATOR_KEY notContainedIn: self.usersWhoHaveBlockedUser];
 			[exploreChannelsQuery whereKey:@"objectId" notContainedIn: self.channelsFollowedIds];
+			[exploreChannelsQuery whereKeyExists:CHANNEL_LATEST_POST_DATE];
 			[exploreChannelsQuery orderByDescending:@"createdAt"];
 			[exploreChannelsQuery setLimit:CHANNEL_DOWNLOAD_MAX_SIZE];
-			[exploreChannelsQuery setSkip: 0];
+			[exploreChannelsQuery setSkip: skip];
 			[exploreChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
 				NSMutableArray *finalChannels = [[NSMutableArray alloc] init];
 				if(error || !channels) {
@@ -194,104 +207,21 @@
 					return;
 				}
 
-				NSMutableArray *loadChannelCreatorPromises = [[NSMutableArray alloc] init];
-				for(PFObject *parseChannelObject in channels) {
-					PFUser *channelCreator = [parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
-					[loadChannelCreatorPromises addObject:[self fetchChannelCreator:channelCreator
-														   andCheckIfPostsInChannel:parseChannelObject]];
+				for (PFObject *channelObj in channels) {
+					PFUser *channelCreator = channelObj[CHANNEL_CREATOR_KEY];
+					NSString *channelName  = [channelObj valueForKey:CHANNEL_NAME_KEY];
+					Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
+																   andParseChannelObject:channelObj
+																	   andChannelCreator:channelCreator];
+					[finalChannels addObject:verbatmChannelObject];
 				}
-				//Make sure all creators have been loaded so their names can be displayed
-				PMKWhen(loadChannelCreatorPromises).then(^(NSArray* results) {
-					for (int i = 0; i < results.count; i++) {
-						PFUser *channelCreator = results[i];
-						if ([channelCreator isEqual:[NSNull null]]) continue;
-						PFObject *channelObj = channels[i];
-						NSString *channelName  = [channelObj valueForKey:CHANNEL_NAME_KEY];
-						Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
-																	   andParseChannelObject:channelObj
-																		   andChannelCreator:channelCreator];
-						[finalChannels addObject:verbatmChannelObject];
-					}
-					completionBlock([UtilityFunctions shuffleArray: finalChannels]);
-					self.exploreChannelsLoaded = 0;
-					self.exploreChannelsLoaded += results.count;
-				});
+				completionBlock([UtilityFunctions shuffleArray: finalChannels]);
+				self.exploreChannelsLoaded += channels.count;
 			}];
 		}];
 	}];
 }
 
--(AnyPromise*) fetchChannelCreator:(PFUser*)channelCreator andCheckIfPostsInChannel:(PFObject*)channel {
-	AnyPromise *promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
-		[channelCreator fetchInBackgroundWithBlock:^(PFObject * _Nullable creator, NSError * _Nullable error) {
-			if (error || !creator) {
-				resolve(nil);
-				return;
-			}
-			//Make sure channel has one post
-			PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
-			[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel];
-			[postQuery setLimit:1];
-			[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-				if (!objects || !objects.count) {
-					resolve(nil);
-					return;
-				} else {
-					resolve(creator);
-				}
-			}];
-		}];
-	}];
-	return promise;
-}
-
--(void) loadMoreExploreChannelsWithCompletionHandler:(void(^)(NSArray *))completionBlock {
-
-	//Needs to call refresh first
-	if (!self.channelsFollowed || !self.usersWhoHaveBlockedUser) {
-		completionBlock (@[]);
-		return;
-	}
-
-	PFUser *user = [PFUser currentUser];
-	PFQuery *exploreChannelsQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
-	[exploreChannelsQuery whereKey:CHANNEL_CREATOR_KEY notEqualTo: user];
-	[exploreChannelsQuery whereKey:CHANNEL_CREATOR_KEY notContainedIn: self.usersWhoHaveBlockedUser];
-	[exploreChannelsQuery whereKey:@"objectId" notContainedIn: self.channelsFollowedIds];
-	[exploreChannelsQuery orderByDescending:@"createdAt"];
-	[exploreChannelsQuery setLimit:CHANNEL_DOWNLOAD_MAX_SIZE];
-	[exploreChannelsQuery setSkip: self.exploreChannelsLoaded];
-	[exploreChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
-		NSMutableArray *finalChannels = [[NSMutableArray alloc] init];
-		if(error || !channels) {
-			[[Crashlytics sharedInstance] recordError:error];
-			completionBlock (finalChannels);
-			return;
-		}
-
-		NSMutableArray *loadChannelCreatorPromises = [[NSMutableArray alloc] init];
-		for(PFObject *parseChannelObject in channels) {
-			PFUser *channelCreator = [parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
-			[loadChannelCreatorPromises addObject:[self fetchChannelCreator:channelCreator
-												   andCheckIfPostsInChannel:parseChannelObject]];
-		}
-		//Make sure all creators have been loaded so their names can be displayed
-		PMKWhen(loadChannelCreatorPromises).then(^(NSArray* results) {
-			for (int i = 0; i < results.count; i++) {
-				PFUser *channelCreator = results[i];
-				if ([channelCreator isEqual:[NSNull null]]) continue;
-				PFObject *channelObj = channels[i];
-				NSString *channelName  = [channelObj valueForKey:CHANNEL_NAME_KEY];
-				Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
-															   andParseChannelObject:channelObj
-																   andChannelCreator:channelCreator];
-				[finalChannels addObject:verbatmChannelObject];
-			}
-			completionBlock([UtilityFunctions shuffleArray: finalChannels]);
-			self.exploreChannelsLoaded += results.count;
-		});
-	}];
-}
 
 -(void) loadFeaturedChannelsWithCompletionHandler:(void(^)(NSArray *))completionBlock {
 	PFUser *user = [PFUser currentUser];
@@ -305,13 +235,8 @@
 		}
 
 		PFQuery *featuredChannelsQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
-		//			[exploreChannelsQuery whereKey:CHANNEL_CREATOR_KEY notEqualTo: user];
 		[featuredChannelsQuery whereKey:CHANNEL_CREATOR_KEY notContainedIn: self.usersWhoHaveBlockedUser];
 		[featuredChannelsQuery whereKey:CHANNEL_FEATURED_BOOL equalTo:[NSNumber numberWithBool:YES]];
-
-		//NOTE: if this is uncommented followed channels needs to be refreshed before all of this code
-		//			[exploreChannelsQuery whereKey:@"objectId" notContainedIn: self.channelsFollowedIds];
-		[featuredChannelsQuery orderByAscending:CHANNEL_NUM_FOLLOWS]; // just to change things up since they're all featured
 		[featuredChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
 			NSMutableArray *finalChannels = [[NSMutableArray alloc] init];
 			if(error || !channels) {
@@ -328,7 +253,7 @@
 																   andChannelCreator:channelCreator];
 				[finalChannels addObject:verbatmChannelObject];
 			}
-			completionBlock(finalChannels);
+			completionBlock([UtilityFunctions shuffleArray: finalChannels]);
 		}];
 	}];
 }
