@@ -9,12 +9,14 @@
 #import "ChooseLoginOrSignup.h"
 #import <Crashlytics/Crashlytics.h>
 #import "Icons.h"
-
+#import "Styles.h"
 #import "SizesAndPositions.h"
 #import "UserManager.h"
 @interface ChooseLoginOrSignup()
 @property (nonatomic) UIButton * loginButton;
 @property (nonatomic) UIButton * signUpButton;
+@property (nonatomic) UILabel * orLabel;
+
 @end
 
 #define BUTTON_HEIGHT (TEXT_TOOLBAR_HEIGHT * 2.f)
@@ -26,6 +28,7 @@
     self = [super initWithFrame:frame];
     if(self){
         [self createActionButtions];
+        [self addSubview:self.orLabel];
     }
     return self;
 }
@@ -58,6 +61,22 @@
 -(void)signUpButtonPressed{
     [self.delegate signUpChosen];
 }
+
+-(UILabel *)orLabel{
+    if(!_orLabel){
+        
+        CGFloat baseYFacebookButton = self.loginButton.frame.origin.y + self.loginButton.frame.size.height;
+        CGFloat yPos = baseYFacebookButton + (self.signUpButton.frame.origin.y - baseYFacebookButton)/2.f;
+        _orLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.center.x - 25.f,  yPos - 25.f, 50.f, 50.f)];
+        [_orLabel setText:@"OR"];
+        [_orLabel setBackgroundColor:[UIColor clearColor]];
+        [_orLabel setTextColor:[UIColor whiteColor]];
+        [_orLabel setFont:[UIFont fontWithName:BOLD_FONT size:HEADER_TEXT_SIZE]];
+    }
+    return _orLabel;
+}
+
+
 
 /*
 // Only override drawRect: if you perform custom drawing.
