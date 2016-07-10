@@ -88,15 +88,17 @@
 
 #pragma mark -TOOLBAR NEXT BUTTON-
 -(void) nextButtonPressed{
-    [self removeKeyBoardOnScreen];
-    if([self sanityCheckString:self.phoneNumber.text] &&
-       [self sanityCheckString:self.firstPassword.text]
-       && [[self.createName.text stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""]) {
-        
-        [self.delegate signUpWithPhoneNumberSelectedWithNumber:self.phoneNumber.text andPassword:self.firstPassword.text andName:self.createName.text];
-        [self removeKeyBoardOnScreen];
+    if(self.phoneNumber.text.length != 10){
+        [self.delegate phoneNumberTooShortCreateAccount];
     }else{
-        [self.delegate textNotAlphaNumericaCreateAccount];
+        if([self sanityCheckString:self.phoneNumber.text] &&
+           [self sanityCheckString:self.firstPassword.text]
+           && ![[self.createName.text stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""]) {
+            [self.delegate signUpWithPhoneNumberSelectedWithNumber:self.phoneNumber.text andPassword:self.firstPassword.text andName:self.createName.text];
+            [self removeKeyBoardOnScreen];
+        }else{
+            [self.delegate textNotAlphaNumericaCreateAccount];
+        }
     }
 }
 
@@ -357,10 +359,14 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 -(UILabel *)orLabel{
     if(!_orLabel){
-        _orLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.f, 0.f, 50.f, 50.f)];
+        
+        CGFloat baseYFacebookButton = self.facebookLoginButton.frame.origin.y + self.facebookLoginButton.frame.size.height;
+        CGFloat yPos = baseYFacebookButton + (self.phoneNumber.frame.origin.y - baseYFacebookButton)/2.f;
+        _orLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.center.x - 25.f,  yPos - 25.f, 50.f, 50.f)];
         [_orLabel setText:@"OR"];
         [_orLabel setBackgroundColor:[UIColor clearColor]];
-        [self addSubview:_orLabel];
+        [_orLabel setTextColor:[UIColor whiteColor]];
+        [_orLabel setFont:[UIFont fontWithName:BOLD_FONT size:HEADER_TEXT_SIZE]];
     }
     return _orLabel;
 }

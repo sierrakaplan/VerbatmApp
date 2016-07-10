@@ -33,6 +33,8 @@
 
 @property (nonatomic) CGRect originalPhoneTextFrame;
 
+@property (nonatomic) UILabel * orLabel;
+
 
 #define ENTER_PHONE_NUMBER_PROMT @"Enter Phone Number"
 #define ENTER_PASSWORD_PROMPT @"Enter Password"
@@ -84,7 +86,6 @@
 
 #pragma mark -TOOLBAR NEXT BUTTON-
 -(void) nextButtonPressed{
-    [self removeKeyBoardOnScreen];
     if([self sanityCheckString:self.phoneNumber.text] && [self sanityCheckString:self.firstPassword.text]){
         [self.delegate loginUpWithPhoneNumberSelectedWithNumber:self.phoneNumber.text andPassword:self.firstPassword.text];
         [self removeKeyBoardOnScreen];
@@ -172,7 +173,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 -(void) keyboardWillShow:(NSNotification*)notification {
     [self.facebookLoginButton setHidden:YES];
-    
+    [self.orLabel setHidden:YES];
     CGFloat keyboardOffset = 0.f;
     CGRect keyboardBounds;
     [[notification.userInfo valueForKey:UIKeyboardFrameBeginUserInfoKey] getValue:&keyboardBounds];
@@ -188,6 +189,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     }completion:^(BOOL finished) {
         if(finished){
             [self.firstPassword setHidden:NO];
+            [self addSubview:self.firstPassword];
             [self bringSubviewToFront:self.firstPassword];
         }
     }];
@@ -202,7 +204,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 }
 -(void) keyboardWillHide:(NSNotification*)notification {
     [self.facebookLoginButton setHidden:NO];
-    
+    [self.orLabel setHidden:NO];
     [UIView animateWithDuration:0.2 animations:^{
         [self shiftPhoneFieldUp:NO];
         [self.firstPassword setHidden:YES];
@@ -323,10 +325,23 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
         _firstPassword.layer.cornerRadius = TEXTFIELDS_CORNER_RADIUS;
         _firstPassword.textAlignment = NSTextAlignmentCenter;
         _firstPassword.secureTextEntry = YES;
-        [self addSubview:_firstPassword];
         [self createNextButton];
     }
     return _firstPassword;
+}
+
+-(UILabel *)orLabel{
+    if(!_orLabel){
+        
+        CGFloat baseYFacebookButton = self.facebookLoginButton.frame.origin.y + self.facebookLoginButton.frame.size.height;
+        CGFloat yPos = baseYFacebookButton + (self.phoneNumber.frame.origin.y - baseYFacebookButton)/2.f;
+        _orLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.center.x - 25.f,  yPos - 25.f, 50.f, 50.f)];
+        [_orLabel setText:@"OR"];
+        [_orLabel setBackgroundColor:[UIColor clearColor]];
+        [_orLabel setTextColor:[UIColor whiteColor]];
+        [_orLabel setFont:[UIFont fontWithName:BOLD_FONT size:HEADER_TEXT_SIZE]];
+    }
+    return _orLabel;
 }
 
 /*

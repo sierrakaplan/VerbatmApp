@@ -148,15 +148,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
     [newAlert addAction:action];
     [self presentViewController:newAlert animated:YES completion:nil];
     
-	//todo: bring back image later
-    //	[self.view addSubview:self.publishSuccessful];
-    //	[self.view bringSubviewToFront:self.publishSuccessful];
-    //	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-    //		self.publishSuccessful.alpha = 0.f;
-    //	}completion:^(BOOL finished) {
-    //		[self.publishSuccessful removeFromSuperview];
-    //		self.publishSuccessful = nil;
-    //	}];
 }
 
 -(void)publishingFailedNotification:(NSNotification *) notification{
@@ -171,15 +162,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
     [newAlert addAction:action];
     [self presentViewController:newAlert animated:YES completion:nil];
 
-	//todo: bring back image later
-    //	[self.view addSubview:self.publishFailed];
-    //	[self.view bringSubviewToFront:self.publishFailed];
-    //	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-    //		self.publishFailed.alpha = 0.f;
-    //	}completion:^(BOOL finished) {
-    //		[self.publishFailed removeFromSuperview];
-    //		self.publishFailed = nil;
-    //	}];
 }
 
 -(void)followingSuccessfulNotification:(NSNotification *) notification{
@@ -190,14 +172,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
     [newAlert addAction:action];
     [self presentViewController:newAlert animated:YES completion:nil];
     
-//    [self.view addSubview:self.following];
-//    [self.view bringSubviewToFront:self.following];
-//    [UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-//        self.following.alpha = 0.f;
-//    }completion:^(BOOL finished) {
-//        [self.following removeFromSuperview];
-//        self.following = nil;
-//    }];
 }
 
 /* Migrating to one channel */
