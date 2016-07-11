@@ -110,23 +110,21 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-    if(!self.isFirstTime && self.isCurrentUserProfile){
-        [self createHeader];
-    }
+	[self createHeader];
 	[self loadContentToPostList];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
 	[self clearOurViews];
-    self.isFirstTime = NO;
+	self.isFirstTime = NO;
 }
 
 -(void)clearOurViews {
 	if(self.postListVC)[self.postListVC offScreen];
 	if(self.postListVC)[self.postListVC clearViews];
-    [self.profileHeaderView removeFromSuperview];
-    self.profileHeaderView = nil;
+	[self.profileHeaderView removeFromSuperview];
+	self.profileHeaderView = nil;
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -134,9 +132,9 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 }
 
 -(void)presentUserList:(ListLoadType) listType{
-	UserAndChannelListsTVC * vc = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
-	[vc presentList:listType forChannel:self.channel orPost:nil];
-	[self presentViewController:vc animated:YES completion:nil];
+	UserAndChannelListsTVC *userList = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+	[userList presentList:listType forChannel:self.channel orPost:nil];
+	[self presentViewController:userList animated:YES completion:nil];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -164,10 +162,10 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 }
 
 -(void) createHeader {
-    if(self.channel.channelsUserFollowing == nil || !self.channel.channelsUserFollowing.count){
-        [self.channel getFollowersAndFollowingWithCompletionBlock:nil];
-    }
-    [self buildHeaderView];
+	if(self.channel.channelsUserFollowing == nil || !self.channel.channelsUserFollowing.count){
+		[self.channel getFollowersAndFollowingWithCompletionBlock:nil];
+	}
+	[self buildHeaderView];
 }
 
 #pragma mark - Profile Photo -
@@ -223,13 +221,13 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 
 -(void)checkEditProfileNotification{
-        if(![[UserSetupParameters sharedInstance] checkEditButtonNotification] &&
-           self.isCurrentUserProfile) {
-            self.introInstruction = [[Intro_Instruction_Notification_View alloc] initWithCenter:self.view.center andType:Profile];
-            self.introInstruction.custom_delegate = self;
-            [self.view addSubview:self.introInstruction];
-            [self.view bringSubviewToFront:self.introInstruction];
-        }
+	if(![[UserSetupParameters sharedInstance] checkEditButtonNotification] &&
+	   self.isCurrentUserProfile) {
+		self.introInstruction = [[Intro_Instruction_Notification_View alloc] initWithCenter:self.view.center andType:Profile];
+		self.introInstruction.custom_delegate = self;
+		[self.view addSubview:self.introInstruction];
+		[self.view bringSubviewToFront:self.introInstruction];
+	}
 }
 
 -(void)checkIntroNotification{
@@ -297,47 +295,37 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 }
 
 -(void)presentViewPostView:(PostListVC *) postList inSmallMode:(BOOL) inSmallMode shouldPage:(BOOL) shouldPage fromCellPath:(NSIndexPath *) cellPath{
-	if(inSmallMode)[self.postListVC.view removeFromSuperview];
 
-	[UIView animateWithDuration:REVEAL_NEW_MEDIA_TILE_ANIMATION_DURATION animations:^{
-		[self.view addSubview:postList.view];
-		[self.view bringSubviewToFront:postList.view];
-		if(cellPath.row < self.postListVC.parsePostObjects.count)[postList.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
-		[self.delegate showTabBar:!shouldPage];
-	}completion:^(BOOL finished) {
-		if(finished){
-			if(!inSmallMode)[self.postListVC.view removeFromSuperview];
-			@autoreleasepool {
-				[self.postListVC clearViews];
-				self.postListVC = nil;
-			}
-			self.postListVC = postList;
-		}
-	}];
+	[self.view addSubview:postList.view];
+	[self.view bringSubviewToFront:postList.view];
+	if(cellPath.row < self.postListVC.parsePostObjects.count)[postList.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
+	[self.delegate showTabBar:!shouldPage];
+	[self.postListVC.view removeFromSuperview];
+	[self.postListVC clearViews];
+	self.postListVC = nil;
+	self.postListVC = postList;
 }
 
+// Switches between large and small post list
 -(void)cellSelectedAtPostIndex:(NSIndexPath *) cellPath{
 	self.inFullScreenMode = !self.inFullScreenMode;
 	BOOL shouldPage = self.inFullScreenMode;
-	BOOL inSmallMode = !self.inFullScreenMode;
-
 
 	PostListVC * newVC = [[PostListVC alloc] initWithCollectionViewLayout:[self getFlowLayout]];
 	newVC.postListDelegate = self;
-	newVC.inSmallMode = inSmallMode;
+	newVC.inSmallMode = !self.inFullScreenMode;
 	newVC.collectionView.pagingEnabled = shouldPage;
-	[newVC.view setFrame: (inSmallMode) ? self.postListSmallFrame : self.postListLargeFrame];
+	[newVC.view setFrame: (self.inFullScreenMode) ? self.postListLargeFrame : self.postListSmallFrame];
 
 	if(self.postListVC.parsePostObjects && self.postListVC.parsePostObjects.count){
 		newVC.postsQueryManager = self.postListVC.postsQueryManager;
 		newVC.currentlyPublishing = self.postListVC.currentlyPublishing;
 		[newVC display:self.channel withListOwner:self.ownerOfProfile
-								isCurrentUserProfile:self.isCurrentUserProfile
+  isCurrentUserProfile:self.isCurrentUserProfile
 		  andStartingDate:self.startingDate withOldParseObjects:self.postListVC.parsePostObjects];
 	}
 
-	[self presentViewPostView:newVC inSmallMode:inSmallMode shouldPage:shouldPage fromCellPath:cellPath];
-
+	[self presentViewPostView:newVC inSmallMode:!self.inFullScreenMode shouldPage:shouldPage fromCellPath:cellPath];
 }
 
 #pragma mark - Profile Nav Bar Delegate Methods -
