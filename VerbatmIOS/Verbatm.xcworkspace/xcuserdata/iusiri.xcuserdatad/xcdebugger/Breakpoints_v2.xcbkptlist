@@ -782,9 +782,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "616"
-            endingLineNumber = "616"
-            landmarkName = "-postListVC"
-            landmarkType = "5">
+            endingLineNumber = "616">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -810,11 +808,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileHeaderView.m"
-            timestampString = "489704753.128955"
+            timestampString = "490216119.908213"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "386"
-            endingLineNumber = "386"
+            startingLineNumber = "435"
+            endingLineNumber = "435"
             landmarkName = "-coverPhotoView"
             landmarkType = "5">
          </BreakpointContent>
@@ -959,7 +957,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "130"
             endingLineNumber = "130"
-            landmarkName = "-clearOurViews"
+            landmarkName = "-viewDidAppear:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1130,11 +1128,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileHeaderView.m"
-            timestampString = "489057461.533946"
+            timestampString = "490214685.698362"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "73"
-            endingLineNumber = "73"
+            startingLineNumber = "76"
+            endingLineNumber = "76"
             landmarkName = "-initWithFrame:andUser:andChannel:inProfileTab:inFeed:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1780,11 +1778,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileHeaderView.m"
-            timestampString = "489704753.128955"
+            timestampString = "490216119.908213"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "214"
-            endingLineNumber = "214"
+            startingLineNumber = "263"
+            endingLineNumber = "263"
             landmarkName = "-editButtonSelected"
             landmarkType = "5">
          </BreakpointContent>
@@ -1817,7 +1815,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "117"
             endingLineNumber = "117"
-            landmarkName = "-viewWillAppear:"
+            landmarkName = "-viewWillDisappear:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1945,7 +1943,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "118"
             endingLineNumber = "118"
-            landmarkName = "-viewWillAppear:"
+            landmarkName = "-viewWillDisappear:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2667,11 +2665,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileHeaderView.m"
-            timestampString = "489057461.533946"
+            timestampString = "490214685.698362"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "124"
-            endingLineNumber = "124"
+            startingLineNumber = "127"
+            endingLineNumber = "127"
             landmarkName = "-userNameChanged"
             landmarkType = "5">
          </BreakpointContent>
@@ -3622,11 +3620,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileHeaderView.m"
-            timestampString = "489535204.550618"
+            timestampString = "490214685.698362"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "76"
-            endingLineNumber = "76"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
             landmarkName = "-initWithFrame:andUser:andChannel:inProfileTab:inFeed:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3762,7 +3760,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/NotificationsListTVC.m"
@@ -3978,9 +3976,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "639"
-            endingLineNumber = "639"
-            landmarkName = "-imageManager"
-            landmarkType = "5">
+            endingLineNumber = "639">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -4026,9 +4022,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "429"
-            endingLineNumber = "429"
-            landmarkName = "@implementation PhotoPVE"
-            landmarkType = "3">
+            endingLineNumber = "429">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -4054,11 +4048,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileHeaderView.m"
-            timestampString = "489705039.533376"
+            timestampString = "490216119.908213"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "421"
-            endingLineNumber = "421">
+            startingLineNumber = "470"
+            endingLineNumber = "470">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -4196,11 +4190,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileHeaderView.m"
-            timestampString = "489705025.318984"
+            timestampString = "490216119.908213"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "413"
-            endingLineNumber = "413"
+            startingLineNumber = "462"
+            endingLineNumber = "462"
             landmarkName = "-dealloc"
             landmarkType = "5">
          </BreakpointContent>
@@ -4512,7 +4506,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PhotoPVE.m"
@@ -4523,6 +4517,38 @@
             endingLineNumber = "377"
             landmarkName = "-offScreen"
             landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[PhotoPVE offScreen]"
+                  moduleName = "Verbatm"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/iusiri/Desktop/IOS%20APP%20PROJECTS/Verbatm%20Project/VerbatmIOS/Verbatm/PhotoPVE.m"
+                  timestampString = "490216004.786433"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "377"
+                  endingLineNumber = "377"
+                  offsetFromSymbolStart = "192">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[PhotoPVE offScreen]"
+                  moduleName = "Verbatm"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/iusiri/Desktop/IOS%20APP%20PROJECTS/Verbatm%20Project/VerbatmIOS/Verbatm/PhotoPVE.m"
+                  timestampString = "490216004.786566"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "377"
+                  endingLineNumber = "377"
+                  offsetFromSymbolStart = "208">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -4596,12 +4622,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/SignInVC.m"
-            timestampString = "489832496.287921"
+            timestampString = "490179152.291387"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "480"
-            endingLineNumber = "480"
-            landmarkName = "-errorInSignInAnimation:"
+            startingLineNumber = "496"
+            endingLineNumber = "496"
+            landmarkName = "-didReceiveMemoryWarning"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4612,12 +4638,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/SignInVC.m"
-            timestampString = "489832496.287921"
+            timestampString = "490179152.291387"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "408"
-            endingLineNumber = "408"
-            landmarkName = "-goBackSelectedCreateAccount"
+            startingLineNumber = "417"
+            endingLineNumber = "417"
+            landmarkName = "-codeSubmitted:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4628,11 +4654,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileHeaderView.m"
-            timestampString = "489741113.184089"
+            timestampString = "490216119.908213"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "286"
-            endingLineNumber = "286"
+            startingLineNumber = "335"
+            endingLineNumber = "335"
             landmarkName = "-backButtonSelected"
             landmarkType = "5">
          </BreakpointContent>
@@ -4676,11 +4702,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/SignInVC.m"
-            timestampString = "489832496.287921"
+            timestampString = "490179152.291387"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "427"
-            endingLineNumber = "427"
+            startingLineNumber = "437"
+            endingLineNumber = "437"
             landmarkName = "-loginUpWithPhoneNumberSelectedWithNumber:andPassword:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4692,12 +4718,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/SignInVC.m"
-            timestampString = "489832496.287921"
+            timestampString = "490179152.291387"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "429"
-            endingLineNumber = "429"
-            landmarkName = "-loginUpWithPhoneNumberSelectedWithNumber:andPassword:"
+            startingLineNumber = "448"
+            endingLineNumber = "448"
+            landmarkName = "-goBackFromEnteringConfirmation"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4714,6 +4740,54 @@
             startingLineNumber = "90"
             endingLineNumber = "90"
             landmarkName = "-nextButtonPressed"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/ProfileHeaderView.m"
+            timestampString = "490214714.008562"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "196"
+            endingLineNumber = "196"
+            landmarkName = "-saveCoverPhotoToCache:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/ProfileHeaderView.m"
+            timestampString = "490214982.872952"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "210"
+            endingLineNumber = "210"
+            landmarkName = "-retrieveCoverPhotoFromCache"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/ProfileHeaderView.m"
+            timestampString = "490216003.83233"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "218"
+            endingLineNumber = "218"
+            landmarkName = "-retrieveCoverPhotoFromCache"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
