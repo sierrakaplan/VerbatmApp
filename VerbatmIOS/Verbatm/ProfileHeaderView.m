@@ -169,7 +169,7 @@
     
     __weak ProfileHeaderView * weakSelf = self;
     
-    if(!self.isCurrentUser || [self newCoverPhotoAvailable]){
+    if(!self.isCurrentUser || ([self newCoverPhotoAvailable] || !coverPhoto)){
         //Now look for cloud one
         [self.channel loadCoverPhotoWithCompletionBlock:^(UIImage * coverPhoto, NSData * coverPhotoData) {
             if(weakSelf.isCurrentUser){
