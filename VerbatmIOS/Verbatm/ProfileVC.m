@@ -89,7 +89,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	self.automaticallyAdjustsScrollViewInsets = NO;
 	[self setNeedsStatusBarAppearanceUpdate];
 	self.view.backgroundColor = [UIColor colorWithWhite:0.90 alpha:1.f];
-	[self createHeader];
+	//[self createHeader];
 	[self checkIntroNotification];
 }
 
@@ -110,7 +110,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-	[self createHeader];
+	if(!self.isFirstTime)[self createHeader];
 	[self loadContentToPostList];
 }
 

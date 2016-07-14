@@ -13,7 +13,7 @@
 #import "UserManager.h"
 
 @interface UserManager()
-
+@property (nonatomic) UIImage * currentCoverPhoto;
 @end
 
 @implementation UserManager
@@ -112,6 +112,13 @@
 			 }
 		 }];
 	[connection start];
+}
+
+-(void)holdCurrentCoverPhoto:(UIImage *)coverPhoto{
+    self.currentCoverPhoto = coverPhoto;
+}
+-(UIImage *)getCurrentCoverPhoto{
+    return self.currentCoverPhoto;
 }
 
 

@@ -28,4 +28,6 @@
 
 -(void) logOutUser;
 
+-(void)holdCurrentCoverPhoto:(UIImage *)coverPhoto;
+-(UIImage *)getCurrentCoverPhoto;
 @end
