@@ -98,7 +98,6 @@
 		return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 				NSData* imageData = UIImagePNGRepresentation(largerImage);
-//				NSLog(@"image data for publishing size %fKB", imageData.length / 1024.f);
 				resolve (imageData);
 			});
 		}];

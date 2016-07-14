@@ -231,7 +231,6 @@
 		C7D596381C66DC3A00161136 /* FeedQueryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C7D596371C66DC3A00161136 /* FeedQueryManager.m */; };
 		C7D5963B1C66E47100161136 /* Follow_BackendManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C7D5963A1C66E47100161136 /* Follow_BackendManager.m */; };
 		C7E2C88F1BB7E97600D83668 /* UtilityFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E2C88E1BB7E97600D83668 /* UtilityFunctions.m */; };
-		C7E65F5C1B911A470042AD99 /* FeedVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F5B1B911A470042AD99 /* FeedVC.m */; };
 		C7E65F691B9245200042AD99 /* ProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F681B9245200042AD99 /* ProfileVC.m */; };
 		C7E65F6F1B92EB650042AD99 /* PostView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F6E1B92EB650042AD99 /* PostView.m */; };
 		C7E6C13F1A4E394600863893 /* PhotoVideoPVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C1301A4E394600863893 /* PhotoVideoPVE.m */; };
@@ -631,8 +630,6 @@
 		C7D5963A1C66E47100161136 /* Follow_BackendManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Follow_BackendManager.m; sourceTree = "<group>"; };
 		C7E2C88D1BB7E97600D83668 /* UtilityFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UtilityFunctions.h; sourceTree = "<group>"; };
 		C7E2C88E1BB7E97600D83668 /* UtilityFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UtilityFunctions.m; sourceTree = "<group>"; };
-		C7E65F5A1B911A470042AD99 /* FeedVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FeedVC.h; path = ../FeedVC.h; sourceTree = "<group>"; };
-		C7E65F5B1B911A470042AD99 /* FeedVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FeedVC.m; path = ../FeedVC.m; sourceTree = "<group>"; };
 		C7E65F671B9245200042AD99 /* ProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileVC.h; sourceTree = "<group>"; };
 		C7E65F681B9245200042AD99 /* ProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileVC.m; sourceTree = "<group>"; };
 		C7E65F6D1B92EB650042AD99 /* PostView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostView.h; sourceTree = "<group>"; };
@@ -880,8 +877,6 @@
 		A560EFB11BB09B36003FB041 /* Feed */ = {
 			isa = PBXGroup;
 			children = (
-				C7E65F5A1B911A470042AD99 /* FeedVC.h */,
-				C7E65F5B1B911A470042AD99 /* FeedVC.m */,
 				C7178E061D21101900B90643 /* FeedTableViewController.h */,
 				C7178E071D21101900B90643 /* FeedTableViewController.m */,
 			);
@@ -1790,7 +1785,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A57A92FF1B55A551006C2597 /* CameraFocusSquare.m in Sources */,
-				C7E65F5C1B911A470042AD99 /* FeedVC.m in Sources */,
 				A5076D0E1BED6EF000303746 /* SingleMediaAndTextPinchView.m in Sources */,
 				A5E73BF81D1770B400527ECF /* GTLVerbatmAppPOVInfo.m in Sources */,
 				A535E5031BC44B6900A087D1 /* UITextView+Utilities.m in Sources */,

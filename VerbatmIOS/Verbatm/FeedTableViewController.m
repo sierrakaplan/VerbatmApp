@@ -66,16 +66,18 @@
 	}
 }
 
--(void)refreshListOfContent{
-	self.currentUserChannel = [[UserInfoCache sharedInstance] getUserChannel] ;
+-(void) refreshListOfContent {
+	self.currentUserChannel = [[UserInfoCache sharedInstance] getUserChannel];
 
 	if(self.followingProfileList){
 		self.followingProfileList = nil;
 	}
 
+	//todo: only insert new rows
 	[self.currentUserChannel getFollowersAndFollowingWithCompletionBlock:^{
 		self.followingProfileList = [self.currentUserChannel channelsUserFollowing];
 		[self.tableView reloadData];
+		[self.tableView setContentOffset:CGPointZero animated:YES];
 	}];
 }
 

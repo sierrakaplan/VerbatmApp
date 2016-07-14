@@ -20,4 +20,6 @@
 
 @property (nonatomic, weak) id<FeedTableViewDelegate> delegate;
 
+-(void) refreshListOfContent;
+
 @end

@@ -14,7 +14,6 @@
 #import "Durations.h"
 
 #import "DiscoverVC.h"
-#import "FeedVC.h"
 #import "FeedTableViewController.h"
 #import "Icons.h"
 
@@ -94,10 +93,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 -(void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
 }
-
-//-(BOOL) prefersStatusBarHidden {
-//	return self.tabBarHidden;
-//}
 
 - (UIStatusBarAnimation) preferredStatusBarUpdateAnimation {
 	return UIStatusBarAnimationSlide;
@@ -353,6 +348,13 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 
 	//[self.tabBarController.tabBar addSubview:tabView];
 	[self.tabBarController.tabBar addSubview:button];
+}
+
+- (void)tabBarController:(UITabBarController *)tabBarController
+ didSelectViewController:(UIViewController *)viewController {
+	if (viewController == self.feedVC) {
+		[self.feedVC refreshListOfContent];
+	}
 }
 
 -(void) revealADK {
