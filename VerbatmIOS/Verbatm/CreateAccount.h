@@ -10,9 +10,10 @@
 
 
 @protocol CreateAccountProtocol <NSObject>
--(void)phoneNumberTooShortCreateAccount;
+-(void)phoneNumberWrongFormatCreateAccount;
+-(void)verbatmNameWrongFormatCreateAccount;
+-(void)noPasswordEnteredCreateAccount;
 
--(void)textNotAlphaNumericaCreateAccount;
 -(void)loginWithFacebookSucceeded;
 -(void)signUpWithPhoneNumberSelectedWithNumber:(NSString *) phoneNumber andPassword:(NSString *)password andName:(NSString *) verbatmName;
 -(void)errorInSignInWithError:(NSString *)error;
