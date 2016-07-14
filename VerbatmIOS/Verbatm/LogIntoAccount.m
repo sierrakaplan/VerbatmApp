@@ -87,11 +87,10 @@
 
 #pragma mark -TOOLBAR NEXT BUTTON-
 -(void) nextButtonPressed{
-    if([self sanityCheckString:self.phoneNumber.text] && [self sanityCheckString:self.firstPassword.text]){
-        [self.delegate loginUpWithPhoneNumberSelectedWithNumber:self.phoneNumber.text andPassword:self.firstPassword.text];
+    if([self sanityCheckPhoneNumberString:self.phoneNumber.text] &&
+       [self sanityCheckPasswordString:self.firstPassword.text]){
+        [self.delegate loginUpWithPhoneNumberSelectedWithNumber:[self removeSpaces:self.phoneNumber.text]  andPassword:self.firstPassword.text];
         [self removeKeyBoardOnScreen];
-    }else{
-        [self.delegate textNotAlphaNumericaLoginAccount];
     }
 }
 
@@ -109,22 +108,31 @@
     return simpleNumber;
 }
 
--(BOOL)sanityCheckString:(NSString *)text{
-    NSCharacterSet *s = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_"];
-    
+-(BOOL)sanityCheckPhoneNumberString:(NSString *)text{
+    NSCharacterSet *s = [NSCharacterSet characterSetWithCharactersInString:@"1234567890"];
     s = [s invertedSet];
-    NSRange r = [text rangeOfCharacterFromSet:s];
+    NSRange r = [[self removeSpaces:text] rangeOfCharacterFromSet:s];
+
     if (r.location != NSNotFound || text.length != 10) {
         //string contains illegal characters
+        //call phone number delegate function
+        [self.delegate phoneNumberNotCorrect];
         return NO;
     }
-    
-    
-    
-    
-    
-    
-    
+    return YES;
+}
+
+
+-(NSString *)removeSpaces:(NSString *)text{
+    return  [text stringByReplacingOccurrencesOfString:@" " withString:@""];
+}
+
+-(BOOL)sanityCheckPasswordString:(NSString *)text{
+    if ([[self removeSpaces:text] isEqualToString:@""]) {
+        //string contains illegal characters
+        [self.delegate passwordIsOnlySpaces];
+        return NO;
+    }
     return YES;
 }
 

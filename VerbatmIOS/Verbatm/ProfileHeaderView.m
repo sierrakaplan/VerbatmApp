@@ -168,7 +168,6 @@
 			});
 		}
 	}];
-
 }
 
 -(void)addChangeCoverPhotoButton {
