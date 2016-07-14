@@ -88,19 +88,40 @@
 
 #pragma mark - TOOLBAR NEXT BUTTON -
 
--(void) nextButtonPressed {
-    if(self.phoneNumber.text.length != 10){
-        [self.delegate phoneNumberTooShortCreateAccount];
-    }else{
-        if([self sanityCheckString:self.phoneNumber.text] &&
-           [self sanityCheckString:self.firstPassword.text]
-           && ![[self.createName.text stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@""]) {
-            [self.delegate signUpWithPhoneNumberSelectedWithNumber:self.phoneNumber.text andPassword:self.firstPassword.text andName:self.createName.text];
-            [self removeKeyBoardOnScreen];
-        }else{
-            [self.delegate textNotAlphaNumericaCreateAccount];
-        }
+-(void) nextButtonPressed{
+    if([self sanityCheckPhoneNumberString:self.phoneNumber.text] &&
+       [self sanityCheckPassword:self.firstPassword.text]
+       && [self sanityCheckName:self.createName.text] ) {
+        [self.delegate signUpWithPhoneNumberSelectedWithNumber:[self removeSpaces:self.phoneNumber.text]andPassword:self.firstPassword.text andName:self.createName.text];
+        [self removeKeyBoardOnScreen];
     }
+}
+
+-(BOOL)sanityCheckName:(NSString *)creatorName{
+    
+    if ([[self removeSpaces:creatorName] isEqualToString:@""]){
+        //string is just space characters
+        [self.delegate verbatmNameWrongFormatCreateAccount];
+        return NO;
+    }
+    return YES;
+}
+
+-(NSString *)removeSpaces:(NSString *)text{
+    return  [text stringByReplacingOccurrencesOfString:@" " withString:@""];
+}
+
+-(BOOL)sanityCheckPhoneNumberString:(NSString *)text{
+    NSCharacterSet *s = [NSCharacterSet characterSetWithCharactersInString:@"1234567890"];
+    s = [s invertedSet];
+    NSRange r = [[self removeSpaces:text] rangeOfCharacterFromSet:s];
+    
+    if (r.location != NSNotFound || text.length != 10) {
+        //string contains illegal characters
+        [self.delegate phoneNumberWrongFormatCreateAccount];
+        return NO;
+    }
+    return YES;
 }
 
 
@@ -113,12 +134,8 @@
 
 
 
--(BOOL)sanityCheckString:(NSString *)text{
-    NSCharacterSet *s = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_"];
-    
-    s = [s invertedSet];
-    NSRange r = [text rangeOfCharacterFromSet:s];
-    if (r.location != NSNotFound || text.length == 0) {
+-(BOOL)sanityCheckPassword:(NSString *)password{
+    if (password.length == 0 || [[self removeSpaces:password] isEqualToString:@""]) {
         //string contains illegal characters
         return NO;
     }

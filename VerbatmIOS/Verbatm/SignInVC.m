@@ -401,8 +401,17 @@
     
 }
 -(void)phoneNumberTooShortCreateAccount{
+    [self showAlertWithTitle:@"Please reformat your phone number" andMessage:@"Make sure it only contains numbers, spaces and is 10 characters long."];
+}
+
+-(void)phoneNumberWrongFormatCreateAccount{
     [self showAlertWithTitle:@"Phone Login" andMessage:@"You must enter a 10-digit US phone number including area code."];
-    
+}
+-(void)verbatmNameWrongFormatCreateAccount{
+    [self showAlertWithTitle:@"Your name can only be letters, numbers and an underscore." andMessage:@""];
+}
+-(void)noPasswordEnteredCreateAccount{
+    [self showAlertWithTitle:@"Please enter characters for your password." andMessage:@""];
 }
 
 -(void)goBackSelectedCreateAccount{
@@ -423,17 +432,24 @@
      [self alertTextNotAcceptable];
 }
 
+
+-(void)phoneNumberNotCorrect{
+    [self showAlertWithTitle:@"Please reformat your phone number." andMessage: @"Make sure it only contains numbers, spaces and is 10 characters long."];
+}
+
+-(void)passwordIsOnlySpaces{
+    [self showAlertWithTitle:@"Please insert characters into the password field." andMessage: @""];
+}
+
+
 -(void)loginUpWithPhoneNumberSelectedWithNumber:(NSString *) phoneNumber andPassword:(NSString *)password{
     [PFUser logInWithUsernameInBackground:phoneNumber password:password block:^(PFUser * _Nullable user, NSError * _Nullable error) {
         if (error || !user) {
             [self showAlertWithTitle:@"Incorrect password" andMessage: @"Please try again"];
         } else {
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
-           // [self unwindToMasterVC];
         }
     }];
-
-
 }
 
 -(void)errorInLogInWithError:(NSString *)error{
