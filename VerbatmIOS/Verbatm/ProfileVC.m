@@ -309,23 +309,25 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 // Switches between large and small post list
 -(void)cellSelectedAtPostIndex:(NSIndexPath *) cellPath{
 	self.inFullScreenMode = !self.inFullScreenMode;
-	BOOL shouldPage = self.inFullScreenMode;
+	//todo: better way then recreating post list vc
+//	[self.postListVC.view setFrame: (self.inFullScreenMode) ? self.postListLargeFrame : self.postListSmallFrame];
+//	[self.postListVC updateInSmallMode: !self.inFullScreenMode];
+//	[self.postListVC.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
 
 	PostListVC * newVC = [[PostListVC alloc] initWithCollectionViewLayout:[self getFlowLayout]];
 	newVC.postListDelegate = self;
 	newVC.inSmallMode = !self.inFullScreenMode;
-	newVC.collectionView.pagingEnabled = shouldPage;
+	newVC.collectionView.pagingEnabled = self.inFullScreenMode;
 	[newVC.view setFrame: (self.inFullScreenMode) ? self.postListLargeFrame : self.postListSmallFrame];
 
 	if(self.postListVC.parsePostObjects && self.postListVC.parsePostObjects.count){
 		newVC.postsQueryManager = self.postListVC.postsQueryManager;
 		newVC.currentlyPublishing = self.postListVC.currentlyPublishing;
-		[newVC display:self.channel withListOwner:self.ownerOfProfile
-  isCurrentUserProfile:self.isCurrentUserProfile
+		[newVC display:self.channel withListOwner:self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile
 		  andStartingDate:self.startingDate withOldParseObjects:self.postListVC.parsePostObjects];
 	}
 
-	[self presentViewPostView:newVC inSmallMode:!self.inFullScreenMode shouldPage:shouldPage fromCellPath:cellPath];
+	[self presentViewPostView:newVC inSmallMode:!self.inFullScreenMode shouldPage:self.inFullScreenMode fromCellPath:cellPath];
 }
 
 #pragma mark - Profile Nav Bar Delegate Methods -
@@ -417,33 +419,36 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	[self.postPrompt setBackgroundImage:[UIImage imageNamed:CREATE_POST_PROMPT_ICON] forState:UIControlStateNormal];
 	[self.view addSubview:self.postPrompt];
 	[self.postPrompt addTarget:self action:@selector(createFirstPost) forControlEvents:UIControlEventTouchDown];
-	CGFloat frameHeight = self.postListVC.view.frame.size.height -2.f;
-	CGFloat frameWidth = 3.f +  (self.view.frame.size.width/ self.view.frame.size.height) * frameHeight;
-	self.postPrompt.frame = CGRectMake(self.postListVC.view.frame.origin.x, self.postListVC.view.frame.origin.y, frameWidth, frameHeight);
+	self.postPrompt.frame = CGRectMake(self.postListSmallFrame.origin.x, self.postListSmallFrame.origin.y,
+									   self.cellSmallFrameSize.width, self.cellSmallFrameSize.height);
 	self.postListVC.view.hidden = YES;
+	[self.delegate showTabBar:YES];
 }
 
--(void)createFirstPost{
+-(void)createFirstPost {
 	if([self.delegate respondsToSelector:@selector(userCreateFirstPost)]){
 		[self.delegate userCreateFirstPost];
 	}
 }
+
 -(void)postsFound{
 	[self removePromptToPost];
-}
--(void)removePromptToPost{
-	if(self.isCurrentUserProfile){
-		if(self.postPrompt)[self.postPrompt removeFromSuperview];
-		self.postPrompt = nil;
-		if(self.postListVC.view.isHidden)self.postListVC.view.hidden = NO;
-	}
 }
 
 -(void)noPostFound{
 	if(self.isCurrentUserProfile)[self createPromptToPost];
 }
 
-#pragma mark -Navigate profile-
+-(void)removePromptToPost{
+	if(self.isCurrentUserProfile){
+		if(self.postPrompt)[self.postPrompt removeFromSuperview];
+		self.postPrompt = nil;
+		self.postListVC.view.hidden = NO;
+	}
+}
+
+#pragma mark - Navigate profile -
+
 //the current user has selected the back button
 -(void)exitCurrentProfile {
 	[self.presentingViewController dismissViewControllerAnimated:YES completion:^{

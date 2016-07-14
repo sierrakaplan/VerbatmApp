@@ -46,6 +46,8 @@ andStartingDate:(NSDate*)date;
 isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date
 withOldParseObjects:(NSMutableArray *)newParseObjects;
 
+-(void) updateInSmallMode: (BOOL) smallMode;
+
 -(void) clearViews;
 
 //marks all posts as off screen

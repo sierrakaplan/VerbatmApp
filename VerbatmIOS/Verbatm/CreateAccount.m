@@ -86,8 +86,9 @@
     self.firstPassword.inputAccessoryView = self.toolBar;
 }
 
-#pragma mark -TOOLBAR NEXT BUTTON-
--(void) nextButtonPressed{
+#pragma mark - TOOLBAR NEXT BUTTON -
+
+-(void) nextButtonPressed {
     if(self.phoneNumber.text.length != 10){
         [self.delegate phoneNumberTooShortCreateAccount];
     }else{
@@ -287,8 +288,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     self.phoneNumber.text = @"";
     self.phoneNumber.placeholder = @"Enter your phone number";
 }
-
-
 
 -(void)backButtonSelected{
     [self removeKeyBoardOnScreen];

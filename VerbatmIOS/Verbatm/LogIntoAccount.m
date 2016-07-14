@@ -42,8 +42,8 @@
 @end
 
 
-
 @implementation LogIntoAccount
+
 -(instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if(self){
@@ -85,8 +85,9 @@
     self.firstPassword.inputAccessoryView = self.toolBar;
 }
 
-#pragma mark -TOOLBAR NEXT BUTTON-
--(void) nextButtonPressed{
+#pragma mark - TOOLBAR NEXT BUTTON -
+
+-(void) nextButtonPressed {
     if([self sanityCheckString:self.phoneNumber.text] && [self sanityCheckString:self.firstPassword.text]){
         [self.delegate loginUpWithPhoneNumberSelectedWithNumber:self.phoneNumber.text andPassword:self.firstPassword.text];
         [self removeKeyBoardOnScreen];

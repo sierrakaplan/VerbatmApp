@@ -119,8 +119,7 @@
 -(void)replaceView:(UIView *) currentView withView:(UIView *)nextView goingForward:(BOOL) forward{
     
     if(currentView && nextView){
-        
-        
+
         if(forward){
             nextView.frame = CGRectMake(self.view.frame.size.width, 0.f, nextView.frame.size.width, nextView.frame.size.height);
             [self.view addSubview:nextView];
@@ -355,7 +354,7 @@
 	[self unwindToMasterVC];
 }
 
-//DEPRECATED
+// Only called for fb login errors now
 -(void) loginFailed: (NSNotification*) notification {
 	NSError* error = notification.object;
 	NSString* errorMessage;
@@ -381,7 +380,7 @@
 	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_LOGIN_TO_MASTER sender:self];
 }
 
-#pragma mark -CreateAccount Protocol-
+#pragma mark - CreateAccount Protocol-
 -(void)errorInSignInWithError:(NSString *)error{
     [self errorInSignInWithError:error];
 }
@@ -391,8 +390,8 @@
 }
 
 -(void)signUpWithPhoneNumberSelectedWithNumber:(NSString *) phoneNumber
-                                   andPassword:(NSString *)password andName:(NSString *) verbatmName{
-    
+                                   andPassword:(NSString *)password andName:(NSString *) verbatmName {
+
     self.phoneNumber = phoneNumber;
     self.verbatmName = verbatmName;
     self.password = password;
@@ -410,7 +409,6 @@
     [self replaceView:self.createAccountView withView:self.chooseLoginOrSignUpView goingForward:NO];
     
 }
-
 
 -(void)codeSubmitted:(NSString *) enteredCode{
     [self codeEnteredWithPhoneNumber:self.phoneNumber andCode:enteredCode];
@@ -460,8 +458,6 @@
 -(void)codeSubmittedConfirmationCode:(NSString *) enteredCode{
     [self codeEnteredWithPhoneNumber:self.phoneNumber andCode:enteredCode];
 }
-
-
 
 
 #pragma mark -ChooseLoginOrSignUp Protocol-

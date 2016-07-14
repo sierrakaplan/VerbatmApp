@@ -191,8 +191,7 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 	[self createBaseSelector];
 	[self loadPostFromUserDefaults];
 	//todo: display channel title and cover photo?
-	//todo: delete
-//	[UIView setAnimationsEnabled:YES];
+	[UIView setAnimationsEnabled:YES];
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -231,7 +230,6 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 	} else {
 		[self.onBoardingPageIndicator removeFromSuperview];
 	}
-
 }
 
 -(void) addBackgroundImage {
@@ -303,13 +301,12 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 }
 
 -(void) createBaseSelector {
-	CGRect scrollViewFrame = CGRectMake(0, ELEMENT_Y_OFFSET_DISTANCE,
+	CGRect scrollViewFrame = CGRectMake(0, NAV_BAR_HEIGHT,
 										self.view.frame.size.width, MEDIA_TILE_SELECTOR_HEIGHT+ELEMENT_Y_OFFSET_DISTANCE);
 
-	ContentPageElementScrollView * baseMediaTileSelectorScrollView = [[ContentPageElementScrollView alloc]
+	ContentPageElementScrollView *baseMediaTileSelectorScrollView = [[ContentPageElementScrollView alloc]
 																	  initWithFrame:scrollViewFrame
 																	  andElement:self.baseMediaTileSelector];
-
 	baseMediaTileSelectorScrollView.scrollEnabled = NO;
 	baseMediaTileSelectorScrollView.delegate = self; // scroll view delegate
 	baseMediaTileSelectorScrollView.contentPageElementScrollViewDelegate = self;
@@ -373,7 +370,6 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 											 selector:@selector(keyBoardWillChangeFrame:)
 												 name:UIKeyboardWillChangeFrameNotification
 											   object:nil];
-
 }
 
 // Loads pinch views from user defaults
@@ -571,7 +567,7 @@ andSaveInUserDefaults:(BOOL)save {
 
 	CGRect newElementScrollViewFrame;
 	if(!upperScrollView) {
-		newElementScrollViewFrame = CGRectMake(0, ELEMENT_Y_OFFSET_DISTANCE,
+		newElementScrollViewFrame = CGRectMake(0, NAV_BAR_HEIGHT,
 											   self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
 		index = 0;
 	} else {
@@ -636,7 +632,7 @@ andSaveInUserDefaults:(BOOL)save {
 			viewIndex = [self.pageElementScrollViews indexOfObject:view]+1;
 		}
 	} else {
-		firstYCoordinate = ELEMENT_Y_OFFSET_DISTANCE;
+		firstYCoordinate = NAV_BAR_HEIGHT;
 	}
 
 	for(NSInteger i = viewIndex; i < [self.pageElementScrollViews count]; i++) {
@@ -692,16 +688,11 @@ andSaveInUserDefaults:(BOOL)save {
 
 
 #pragma Remove Keyboard From Screen
-//Iain
+
 -(void) removeKeyboardFromScreen {
 	[[[UIApplication sharedApplication] keyWindow] endEditing:YES];
 }
 
--(void) showKeyboard {
-	//	if(self.channelPicker.isEditing) {
-	//		[self.channelPicker becomeFirstResponder];
-	//	}
-}
 
 #pragma mark Keyboard Notifications
 
@@ -989,9 +980,11 @@ andSaveInUserDefaults:(BOOL)save {
 	[self.mainScrollView addSubview:newMediaTileScrollView];
 	[self storeView:newMediaTileScrollView inArrayAsBelowView:topView];
 }
+
 -(CGRect) getStartFrameForNewMediaTile {
 	return CGRectMake(self.baseMediaTileSelector.frame.origin.x + (self.baseMediaTileSelector.frame.size.width/2),0, 0, 0);
 }
+
 -(CGRect) getStartFrameForNewMediaTileScrollViewUnderView: (ContentPageElementScrollView *) topView  {
 	return CGRectMake(topView.frame.origin.x, topView.frame.origin.y +topView.frame.size.height, self.view.frame.size.width,0);
 }

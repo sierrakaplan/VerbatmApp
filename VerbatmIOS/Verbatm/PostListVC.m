@@ -180,6 +180,12 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	}
 }
 
+-(void) updateInSmallMode: (BOOL) smallMode {
+	self.inSmallMode = smallMode;
+	self.collectionView.pagingEnabled = !self.inSmallMode;
+
+}
+
 //todo: change refresh to pull from right
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	if (scrollView == self.collectionView) {
@@ -206,38 +212,12 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 
 #pragma mark - Loading content methods -
 
--(void)nothingToPresentHere {
-	if(self.parsePostObjects.count == 0)[self.postListDelegate noPostFound];
-
-	if (self.noContentLabel || self.parsePostObjects.count > 0){
-		return;
-	}
-
-	self.noContentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.f - NO_POSTS_LABEL_WIDTH/2.f, 0.f,
-																	NO_POSTS_LABEL_WIDTH, self.view.frame.size.height)];
-	self.noContentLabel.text = @"There are no posts to present :(";
-	self.noContentLabel.font = [UIFont fontWithName:REGULAR_FONT size:20.f];
-	self.noContentLabel.textColor = [UIColor whiteColor];
-	self.noContentLabel.textAlignment = NSTextAlignmentCenter;
-	self.noContentLabel.lineBreakMode = NSLineBreakByWordWrapping;
-	self.noContentLabel.numberOfLines = 3;
-	self.view.backgroundColor = [UIColor clearColor];
-	[self.view addSubview:self.noContentLabel];
-}
-
--(void)removePresentLabel{
-	if(self.noContentLabel){
-		[self.noContentLabel removeFromSuperview];
-		self.noContentLabel = nil;
-	}
-}
-
 -(void) defineLoadPostsCompletions {
 	__weak typeof(self) weakSelf = self;
 	self.refreshPostsCompletion = ^void(NSArray *posts) {
 		if(weakSelf.exitedView) return; // Already left page
-		[weakSelf.postListDelegate postsFound];
 		if(posts.count) {
+			[weakSelf.postListDelegate postsFound];
 			[weakSelf.parsePostObjects removeAllObjects];
 			[weakSelf.parsePostObjects addObjectsFromArray:posts];
 			if(weakSelf.currentlyPublishing) {
@@ -245,10 +225,8 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 			}
 			[weakSelf.collectionView reloadData];
 			[weakSelf scrollToLastElementInList];
-
-			[weakSelf removePresentLabel];
-		} else if(!weakSelf.parsePostObjects.count){
-			[weakSelf nothingToPresentHere];
+		} else if (!weakSelf.currentlyPublishing) {
+			[weakSelf.postListDelegate noPostFound];
 		}
 		weakSelf.isRefreshing = NO;
 	};
@@ -276,37 +254,6 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 			weakSelf.collectionView.contentOffset = CGPointMake(weakSelf.collectionView.contentSize.width - rightOffset, 0);
 			[CATransaction commit];
 		}];
-
-//		[CATransaction begin];
-//		[CATransaction setDisableActions:YES];
-//		weakSelf.performingUpdate = YES;
-//		// Perform the updates
-//		[weakSelf.collectionView performBatchUpdates:^{
-//			//Insert the new data
-//			[weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
-//			//Insert the new cells
-//			[weakSelf.collectionView insertItemsAtIndexPaths:indices];
-//
-//		} completion: ^(BOOL finished) {
-//			if (finished) {
-//				// Scroll to previously selected cell so nothing looks different
-//				NSArray* visiblePaths = [weakSelf.collectionView indexPathsForVisibleItems];
-//				NSInteger oldRow = visiblePaths && visiblePaths.count ? [(NSIndexPath*)visiblePaths[0] row] : 0;
-//				NSInteger newRow = oldRow + posts.count;
-//				if (newRow >= 0 && newRow < self.parsePostObjects.count) {
-//					NSIndexPath *selectedPostPath = [NSIndexPath indexPathForRow:newRow inSection:0];
-//					[weakSelf.collectionView scrollToItemAtIndexPath:selectedPostPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
-//					weakSelf.nextIndexToPresent += posts.count;
-//					weakSelf.nextNextIndex += posts.count;
-//				} else {
-//					NSLog(@"Bug scrolling when added older posts");
-//				}
-//
-//				weakSelf.isLoadingOlder = NO;
-//				weakSelf.performingUpdate = NO;
-//				[CATransaction commit];
-//			}
-//		}];
 	};
 }
 
@@ -436,7 +383,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 			if([postObject isKindOfClass:[NSNumber class]]){
 				if (self.currentlyPublishing) [cell presentPublishingView];
 			} else {
-//				NSLog(@"Presenting post at index %ld", (long)indexPath.row);
 				[cell presentPostFromPCActivityObj:postObject andChannel:self.channelForList
 								  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:NO];
 			}
@@ -446,7 +392,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	cell.inSmallMode = self.inSmallMode;
 	return cell;
 }
-
 
 -(void)addTapGestureToCell:(PostCollectionViewCell *) cell{
 
@@ -458,7 +403,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void)cellTapped:(UIGestureRecognizer *) tap{
-
 	PostCollectionViewCell * cellTapped = (PostCollectionViewCell *) tap.view;
 	[self.postListDelegate cellSelectedAtPostIndex:[self.collectionView indexPathForCell:cellTapped]];
 }
@@ -530,8 +474,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void)removePostAtIndex:(NSInteger)i withCompletionBlock:(void(^)(void)) block; {
-	[CATransaction begin];
-	[CATransaction setDisableActions:YES];
 	self.performingUpdate = YES;
 	[self.collectionView performBatchUpdates: ^ {
 		[self.parsePostObjects removeObjectAtIndex:i];
@@ -540,10 +482,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	} completion:^(BOOL finished) {
 		if(finished){
 			if (self.parsePostObjects.count < 1) {
-				[self nothingToPresentHere];
+				[self.postListDelegate noPostFound];
 			}
 			self.performingUpdate = NO;
-			[CATransaction commit];
 			if(block)block();
 		}
 	}];
