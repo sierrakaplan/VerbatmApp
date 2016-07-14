@@ -69,8 +69,6 @@
     [self createHeader];
 }
 
-
-
 -(void)viewWillAppear:(BOOL)animated{
     if(self.isFirstLoad){
         self.isFirstLoad = NO;
@@ -81,8 +79,13 @@
     self.currentlyBeingViewed = YES;
     self.cellSelected = NO;
 }
+
 -(void)viewWillDisappear:(BOOL)animated{
     self.currentlyBeingViewed = NO;
+}
+
+-(BOOL) prefersStatusBarHidden {
+	return YES;
 }
 
 -(void)createHeader{

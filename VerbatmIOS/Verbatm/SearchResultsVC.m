@@ -20,17 +20,48 @@
 
 @property (strong, nonatomic) NSArray *searchResults;
 @property (strong, nonatomic) PFQuery *currentQuery;
+@property (strong, nonatomic) UIActivityIndicatorView *spinner;
 
 @end
 
 @implementation SearchResultsVC
 
+-(void) viewDidLoad {
+	self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+}
+
+-(void) viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
+	if ([self.spinner isAnimating]) {
+		[self.spinner stopAnimating];
+		[self.spinner removeFromSuperview];
+	}
+}
+
 - (UIStatusBarStyle)preferredStatusBarStyle {
 	return UIStatusBarStyleDefault;
 }
 
+-(BOOL) prefersStatusBarHidden {
+	return NO;
+}
+
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+	//set frame for activity indicator
 	NSString *searchText = searchController.searchBar.text;
+	if (!searchText.length) {
+		searchController.searchBar.tintColor = [UIColor whiteColor];
+		return;
+	}
+	[self setNeedsStatusBarAppearanceUpdate];
+	searchController.searchBar.tintColor = [UIColor blueColor];
+	if (![self.spinner isAnimating]) {
+		UITextField *searchField = [searchController.searchBar valueForKey:@"_searchField"];
+		self.spinner.center = CGPointMake(searchField.frame.size.width - self.spinner.frame.size.width - 10.f,
+										  searchController.searchBar.center.y);
+		[searchController.searchBar addSubview: self.spinner];
+		[self.spinner startAnimating];
+	}
 	[self filterResults: searchText];
 }
 
@@ -44,6 +75,10 @@
 	[self.currentQuery orderByDescending:CHANNEL_NUM_FOLLOWS];
 	self.currentQuery.limit = SEARCH_RESULTS_LIMIT;
 	[self.currentQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+		if ([self.spinner isAnimating]) {
+			[self.spinner stopAnimating];
+			[self.spinner removeFromSuperview];
+		}
 		if (error) {
 			[[Crashlytics sharedInstance] recordError:error];
 		} else {

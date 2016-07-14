@@ -67,6 +67,7 @@ ExploreChannelCellViewDelegate>
 	[self refreshChannels];
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearViews) name:NOTIFICATION_FREE_MEMORY_DISCOVER object:nil];
+	[self setNeedsStatusBarAppearanceUpdate];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
@@ -81,8 +82,12 @@ ExploreChannelCellViewDelegate>
 	[self offScreen];
 }
 
+-(UIStatusBarStyle) preferredStatusBarStyle {
+	return UIStatusBarStyleLightContent;
+}
+
 -(BOOL) prefersStatusBarHidden {
-	return YES;
+	return NO;
 }
 
 -(void) formatTableView {

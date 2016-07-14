@@ -77,6 +77,27 @@
     
 }
 
+-(void) viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
+	[self setNeedsStatusBarAppearanceUpdate];
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+	[super viewDidAppear:animated];
+	if(self.navBar){
+		[self.view bringSubviewToFront:self.navBar];
+	}else{
+		[self setTableViewHeader];
+	}
+}
+
+-(void)viewDidLayoutSubviews{
+	[super viewDidLayoutSubviews];
+	if(self.navBar){
+		[self.view bringSubviewToFront:self.navBar];
+	}
+}
+
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (self.shouldAnimateViews) {
@@ -92,23 +113,6 @@
         }
     }
 }
-
--(void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
-    if(self.navBar){
-        [self.view bringSubviewToFront:self.navBar];
-    }else{
-        [self setTableViewHeader];
-    }
-}
-
--(void)viewDidLayoutSubviews{
-    [super viewDidLayoutSubviews];
-    if(self.navBar){
-        [self.view bringSubviewToFront:self.navBar];
-    }
-}
-
 
 - (UIStatusBarAnimation) preferredStatusBarUpdateAnimation {
     return UIStatusBarAnimationSlide;

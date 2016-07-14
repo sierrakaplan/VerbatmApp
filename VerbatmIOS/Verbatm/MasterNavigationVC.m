@@ -95,15 +95,20 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	[super viewDidDisappear:animated];
 }
 
--(BOOL) prefersStatusBarHidden {
-	return self.tabBarHidden;
-}
+//-(BOOL) prefersStatusBarHidden {
+//	return self.tabBarHidden;
+//}
 
 - (UIStatusBarAnimation) preferredStatusBarUpdateAnimation {
 	return UIStatusBarAnimationSlide;
 }
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleLightContent;
+
+- (UIViewController *)childViewControllerForStatusBarHidden {
+	return self.tabBarController.selectedViewController;
+}
+
+- (UIViewController *)childViewControllerForStatusBarStyle {
+	return self.tabBarController.selectedViewController;
 }
 
 -(void) registerForNotifications {

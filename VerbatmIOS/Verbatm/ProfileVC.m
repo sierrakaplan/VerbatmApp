@@ -87,7 +87,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 -(void) viewDidLoad {
 	[super viewDidLoad];
 	self.automaticallyAdjustsScrollViewInsets = NO;
-	[self setNeedsStatusBarAppearanceUpdate];
 	self.view.backgroundColor = [UIColor colorWithWhite:0.90 alpha:1.f];
 	[self createHeader];
 	[self checkIntroNotification];
@@ -112,6 +111,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	[super viewWillAppear:animated];
 	[self createHeader];
 	[self loadContentToPostList];
+	[self setNeedsStatusBarAppearanceUpdate];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {

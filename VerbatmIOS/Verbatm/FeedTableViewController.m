@@ -34,15 +34,7 @@
 	self.tableView.allowsSelection = NO;
 	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 	self.isFirstTime = YES;
-}
-
--(void)reloadCellsOnScreen{
-	NSArray * visibleCell = [self.tableView visibleCells];
-
-	if(visibleCell && visibleCell.count){
-		FeedTableCell * cell = [visibleCell firstObject];
-		[cell presentProfileForChannel:self.currentUserChannel];
-	}
+	[self setNeedsStatusBarAppearanceUpdate];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -61,6 +53,19 @@
 	self.isFirstTime = NO;
 }
 
+-(UIStatusBarStyle) preferredStatusBarStyle {
+	return UIStatusBarStyleLightContent;
+}
+
+-(void)reloadCellsOnScreen{
+	NSArray * visibleCell = [self.tableView visibleCells];
+
+	if(visibleCell && visibleCell.count){
+		FeedTableCell * cell = [visibleCell firstObject];
+		[cell presentProfileForChannel:self.currentUserChannel];
+	}
+}
+
 -(void)refreshListOfContent{
 	self.currentUserChannel = [[UserInfoCache sharedInstance] getUserChannel] ;
 
@@ -75,6 +80,7 @@
 }
 
 #pragma mark - Table View Delegate methods (view customization) -
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
 	return self.view.frame.size.height;
 }
