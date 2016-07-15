@@ -19,7 +19,7 @@
 #import <Parse/PFQuery.h>
 #import "NotificationPostPreview.h"
 #import "Durations.h"
-
+#import "Icons.h"
 @interface NotificationsListTVC () <NotificationTableCellProtocol,NotificationPostPreviewProtocol>
 @property (nonatomic) BOOL shouldAnimateViews;
 @property (nonatomic) NSMutableArray * parseNotificationObjects;
@@ -28,6 +28,10 @@
 @property (nonatomic)  CustomNavigationBar * headerBar;
 
 @property (nonatomic)NotificationPostPreview * postPreview;
+
+@property (nonatomic) UIImageView * noNotificationsNotification;
+
+
 
 @property (nonatomic) BOOL isFirstLoad;
 @property (nonatomic) BOOL currentlyBeingViewed;
@@ -85,6 +89,8 @@
     self.currentlyBeingViewed = NO;
 }
 
+
+
 -(void)createHeader{
     CGRect navBarFrame = CGRectMake(0.f, -(LIST_BAR_Y_OFFSET + STATUS_BAR_HEIGHT + CUSTOM_BAR_HEIGHT), self.view.frame.size.width, STATUS_BAR_HEIGHT+ CUSTOM_BAR_HEIGHT);
     
@@ -93,6 +99,24 @@
     [self.tableView addSubview:self.headerBar];
     
 }
+
+
+
+-(void)presentNoNotificationView{
+    if(!self.noNotificationsNotification){
+        self.noNotificationsNotification = [[UIImageView alloc]initWithImage:[UIImage imageNamed:NOTIFICATIONS_EMPTY_ICON]];
+        [self.noNotificationsNotification setFrame:self.view.bounds];
+        [self.view addSubview:self.noNotificationsNotification];
+    }
+}
+
+-(void)removeNoNotificationNotificaction{
+    if(self.noNotificationsNotification){
+        [self.noNotificationsNotification removeFromSuperview];
+        self.noNotificationsNotification = nil;
+    }
+}
+
 
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
@@ -119,6 +143,12 @@
             [self.tableView reloadData];
             if (!self.currentlyBeingViewed ) {
                 [self findNewNotifications];
+            }
+            
+            if(notificationObjects.count == 0){
+                [self presentNoNotificationView];
+            }else{
+                [self removeNoNotificationNotificaction];
             }
         }];
     }
@@ -179,6 +209,11 @@
                 [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
                 [self.tableView endUpdates];
                 self.refreshing = NO;
+                if(self.parseNotificationObjects.count == 0){
+                    [self presentNoNotificationView];
+                }else{
+                    [self removeNoNotificationNotificaction];
+                }
             }
         }];
     }
@@ -328,7 +363,7 @@
         [self getMoreNotifications];
     }
     [self setNotificationOnCell:cell notificationObject:self.parseNotificationObjects[indexPath.row]];
-    
+    [self removeNoNotificationNotificaction];
     return cell;
 }
 

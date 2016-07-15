@@ -151,10 +151,17 @@
 #pragma mark - Profile Information Header -
 #define ADD_COVER_PHOTO_ICON @"Add cover photo"
 
+#define PROFILE_UNDER_CONSTRUCTION_ICON @"ProfileUnderConstruction"
+
 #define NO_COVER_PHOTO_IMAGE @"Empty_Cover_Photo_Image"
 #define PROFILE_BACK_BUTTON_ICON @"back_arrow_white"
 
 #define LOGIN_ICON @"Log In"
 #define CREATE_ACCOUNT @"Create Account"
+
+
+#pragma mark -Notifications View Controller-
+
+#define NOTIFICATIONS_EMPTY_ICON @"NotificationsEmptyIcon"
 
 #endif /* Icons_h */

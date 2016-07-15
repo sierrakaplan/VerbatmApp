@@ -44,6 +44,8 @@
 @property (nonatomic) UIImageView * flippedCoverPhoto;
 @property (nonatomic) UIView * coverView;
 
+@property (nonatomic) UIImageView * profileInConstructionNotification;
+
 #define OFFSET_X 5.f
 #define OFFSET_Y 10.f
 #define USER_NAME_HEIGHT 15.f
@@ -119,6 +121,18 @@
 		}
 	}
 }
+
+
+
+-(void)presentProfileUnderConstructionNotification{
+    if(!self.profileInConstructionNotification && !self.isCurrentUser){
+        self.profileInConstructionNotification = [[UIImageView alloc] initWithImage:[UIImage imageNamed:PROFILE_UNDER_CONSTRUCTION_ICON]];
+        [self.profileInConstructionNotification setFrame:self.bounds];
+        [self insertSubview:self.profileInConstructionNotification aboveSubview:self.coverPhotoView];
+    }
+}
+
+
 
 -(void) userNameChanged {
 	NSString *newUserName = self.channelOwner[VERBATM_USER_NAME_KEY];
