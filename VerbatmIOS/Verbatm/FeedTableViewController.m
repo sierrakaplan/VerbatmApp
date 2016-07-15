@@ -12,6 +12,8 @@
 #import "Channel.h"
 #import "ProfileVC.h"
 #import "UtilityFunctions.h"
+#import "Icons.h"
+
 
 @interface FeedTableViewController ()<FeedCellDelegate>
 
@@ -20,6 +22,8 @@
 @property (nonatomic) ProfileVC *nextProfileToPresent;
 @property (nonatomic) NSInteger nextProfileIndex;
 @property (nonatomic) BOOL isFirstTime;
+
+@property (nonatomic) UIImageView * emptyFeedNotification;
 
 @end
 
@@ -47,7 +51,13 @@
 
 -(void)viewWillAppear:(BOOL)animated{
 	[super viewWillAppear:animated];
-	if(!self.isFirstTime) [self.tableView reloadData];
+    if(!self.isFirstTime){
+        if(!self.followingProfileList || self.followingProfileList.count == 0){
+            [self refreshListOfContent];
+        }else{
+            [self.tableView reloadData];
+        }
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
@@ -67,11 +77,32 @@
 	if(self.followingProfileList){
 		self.followingProfileList = nil;
 	}
-
+    
 	[self.currentUserChannel getFollowersAndFollowingWithCompletionBlock:^{
 		self.followingProfileList = [self.currentUserChannel channelsUserFollowing];
-		[self.tableView reloadData];
+        if(self.followingProfileList && self.followingProfileList.count >1){
+            [self removeEmptyFeedNotification];
+            [self.tableView reloadData];
+        }else{
+            [self notifyNotFollowingAnyone];
+        }
 	}];
+}
+
+
+-(void)notifyNotFollowingAnyone{
+    if(!self.emptyFeedNotification){
+        self.emptyFeedNotification = [[UIImageView alloc] initWithFrame:self.view.bounds];
+        [self.emptyFeedNotification setImage:[UIImage imageNamed:FEED_NOTIFICATION_ICON]];
+        [self.view addSubview:self.emptyFeedNotification];
+    }
+}
+
+-(void)removeEmptyFeedNotification{
+    if(self.emptyFeedNotification){
+        [self.emptyFeedNotification removeFromSuperview];
+        self.emptyFeedNotification = nil;
+    }
 }
 
 #pragma mark - Table View Delegate methods (view customization) -

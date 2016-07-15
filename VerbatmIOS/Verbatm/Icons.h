@@ -47,6 +47,8 @@
 #define FOLLOWING_SUCCESS_IMAGE @"following_succeeded_notification"
 #define REBLOG_IMAGE @"posted_succeeded_notification"
 
+#define FEED_NOTIFICATION_ICON @"FeedEmptyNotification"
+
 #pragma mark - ADK -
 
 #define MINIMIZE_ICON @"minimize_icon"
