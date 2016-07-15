@@ -27,5 +27,6 @@
 -(void) signUpOrLoginUserFromFacebookToken: (FBSDKAccessToken*) accessToken;
 
 -(void) logOutUser;
+-(BOOL)shouldRequestForUserFeedback;
 
 @end

@@ -843,7 +843,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "67"
             endingLineNumber = "67"
-            landmarkName = "-refreshListOfContent"
+            landmarkName = "-viewWillDisappear:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -858,7 +858,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "171"
-            endingLineNumber = "171">
+            endingLineNumber = "171"
+            landmarkName = "-tableView:didEndDisplayingCell:forRowAtIndexPath:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -873,7 +875,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "135"
             endingLineNumber = "135"
-            landmarkName = "-tableView:cellForRowAtIndexPath:"
+            landmarkName = "-numberOfSectionsInTableView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -889,7 +891,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "107"
             endingLineNumber = "107"
-            landmarkName = "-prepareNextPostFromNextIndex:"
+            landmarkName = "-removeEmptyFeedNotification"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -905,7 +907,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "50"
             endingLineNumber = "50"
-            landmarkName = "-viewWillAppear:"
+            landmarkName = "-reloadCellsOnScreen"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1128,7 +1130,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "187"
-            endingLineNumber = "187">
+            endingLineNumber = "187"
+            landmarkName = "@implementation FeedTableViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1158,7 +1162,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "174"
-            endingLineNumber = "174">
+            endingLineNumber = "174"
+            landmarkName = "-tableView:cellForRowAtIndexPath:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1230,7 +1236,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "181"
-            endingLineNumber = "181">
+            endingLineNumber = "181"
+            landmarkName = "-tableView:cellForRowAtIndexPath:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1914,7 +1922,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "175"
-            endingLineNumber = "175">
+            endingLineNumber = "175"
+            landmarkName = "-tableView:cellForRowAtIndexPath:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -3211,7 +3221,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "354"
             endingLineNumber = "354"
-            landmarkName = "-parseNotificationObjects"
+            landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3227,7 +3237,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "137"
             endingLineNumber = "137"
-            landmarkName = "-findNewNotifications"
+            landmarkName = "-refreshNotifications"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3259,7 +3269,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "136"
             endingLineNumber = "136"
-            landmarkName = "-findNewNotifications"
+            landmarkName = "-refreshNotifications"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3275,7 +3285,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "139"
             endingLineNumber = "139"
-            landmarkName = "-findNewNotifications"
+            landmarkName = "-refreshNotifications"
             landmarkType = "5">
             <Locations>
                <Location
@@ -3323,7 +3333,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "331"
             endingLineNumber = "331"
-            landmarkName = "-tableView:cellForRowAtIndexPath:"
+            landmarkName = "-tableView:numberOfRowsInSection:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3339,7 +3349,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "336"
             endingLineNumber = "336"
-            landmarkName = "-tableView:willDisplayCell:forRowAtIndexPath:"
+            landmarkName = "-setNotificationOnCell:notificationObject:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3355,7 +3365,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "341"
             endingLineNumber = "341"
-            landmarkName = "-tableView:willDisplayCell:forRowAtIndexPath:"
+            landmarkName = "-setNotificationOnCell:notificationObject:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3515,7 +3525,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "265"
             endingLineNumber = "265"
-            landmarkName = "-presentProfileForUser:withStartChannel:"
+            landmarkName = "-removePreview"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3531,8 +3541,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "270"
             endingLineNumber = "270"
-            landmarkName = "@implementation NotificationsListTVC"
-            landmarkType = "3">
+            landmarkName = "-presentPostSentFromCell:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -3579,7 +3589,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "290"
             endingLineNumber = "290"
-            landmarkName = "-numberOfSectionsInTableView:"
+            landmarkName = "-presentUserBlogSentFromCell:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3595,7 +3605,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "267"
             endingLineNumber = "267"
-            landmarkName = "-presentProfileForUser:withStartChannel:"
+            landmarkName = "-presentPostSentFromCell:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3659,7 +3669,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "334"
             endingLineNumber = "334"
-            landmarkName = "-tableView:willDisplayCell:forRowAtIndexPath:"
+            landmarkName = "-setNotificationOnCell:notificationObject:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3675,7 +3685,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "201"
             endingLineNumber = "201"
-            landmarkName = "-presentPost:andChannel:"
+            landmarkName = "-getMoreNotifications"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3691,7 +3701,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "201"
             endingLineNumber = "201"
-            landmarkName = "-presentPost:andChannel:"
+            landmarkName = "-getMoreNotifications"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3707,7 +3717,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "200"
             endingLineNumber = "200"
-            landmarkName = "-presentPost:andChannel:"
+            landmarkName = "-getMoreNotifications"
             landmarkType = "5">
             <Locations>
                <Location
@@ -3755,7 +3765,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "199"
             endingLineNumber = "199"
-            landmarkName = "-presentPost:andChannel:"
+            landmarkName = "-getMoreNotifications"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3787,7 +3797,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "312"
             endingLineNumber = "312"
-            landmarkName = "-setNotificationOnCell:notificationObject:"
+            landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3803,7 +3813,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "313"
             endingLineNumber = "313"
-            landmarkName = "-tableView:cellForRowAtIndexPath:"
+            landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3819,7 +3829,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "86"
             endingLineNumber = "86"
-            landmarkName = "-viewWillDisappear:"
+            landmarkName = "-viewWillAppear:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3835,7 +3845,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "251"
             endingLineNumber = "251"
-            landmarkName = "-presentBlogFromCell:"
+            landmarkName = "-removePreview"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3866,7 +3876,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "159"
-            endingLineNumber = "159">
+            endingLineNumber = "159"
+            landmarkName = "-prepareNextPostFromNextIndex:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -4124,7 +4136,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "163"
-            endingLineNumber = "163">
+            endingLineNumber = "163"
+            landmarkName = "-prepareNextPostFromNextIndex:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -4235,7 +4249,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "66"
             endingLineNumber = "66"
-            landmarkName = "-refreshListOfContent"
+            landmarkName = "-viewWillDisappear:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4891,7 +4905,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "99"
             endingLineNumber = "99"
-            landmarkName = "-numberOfSectionsInTableView:"
+            landmarkName = "-goToDiscover"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4907,7 +4921,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "53"
             endingLineNumber = "53"
-            landmarkName = "-viewWillDisappear:"
+            landmarkName = "-viewWillAppear:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4923,7 +4937,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "88"
             endingLineNumber = "88"
-            landmarkName = "-didReceiveMemoryWarning"
+            landmarkName = "-notifyNotFollowingAnyone"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4939,8 +4953,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "76"
             endingLineNumber = "76"
-            landmarkName = "@implementation FeedTableViewController"
-            landmarkType = "3">
+            landmarkName = "-refreshListOfContent"
+            landmarkType = "5">
             <Locations>
                <Location
                   shouldBeEnabled = "No"
@@ -4987,7 +5001,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "52"
             endingLineNumber = "52"
-            landmarkName = "-viewWillDisappear:"
+            landmarkName = "-viewWillAppear:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -5003,7 +5017,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "77"
             endingLineNumber = "77"
-            landmarkName = "-tableView:heightForRowAtIndexPath:"
+            landmarkName = "-refreshListOfContent"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

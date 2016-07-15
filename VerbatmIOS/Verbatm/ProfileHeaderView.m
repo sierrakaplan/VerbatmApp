@@ -21,7 +21,7 @@
 #import "Styles.h"
 
 #import "UIView+Effects.h"
-
+#import "UserManager.h"
 @interface ProfileHeaderView() <ProfileInformationBarDelegate, UITextViewDelegate>
 
 @property (nonatomic) PFUser *channelOwner;
@@ -42,7 +42,11 @@
 @property (nonatomic) UIButton * changeCoverPhoto;
 @property (nonatomic) UIImageView * coverPhotoView;
 @property (nonatomic) UIImageView * flippedCoverPhoto;
-@property (nonatomic) UIView * coverView;
+@property (nonatomic) UIView * transparentTintCoverView;
+
+@property (nonatomic) UIImageView * profileInConstructionNotification;
+
+@property (nonatomic) UIImageView * feedbackRequestNotification;
 
 #define OFFSET_X 5.f
 #define OFFSET_Y 10.f
@@ -84,9 +88,38 @@
 												 selector:@selector(userNameChanged)
 													 name:NOTIFICATION_USERNAME_CHANGED_SUCCESFULLY
 												   object:nil];
+        [self askForFeedback];
 	}
 	return self;
 }
+
+
+-(void)askForFeedback{
+    if(self.isCurrentUser && [[UserManager sharedInstance] shouldRequestForUserFeedback] &&
+       !self.feedbackRequestNotification){
+        self.feedbackRequestNotification = [[UIImageView alloc] initWithImage:[UIImage imageNamed:FEEDBACK_NOTIFICATION_ICON]];
+        
+        
+        CGFloat height = 150.f;
+        CGFloat width = FEEDBACK_NOTIFICATION_WidthHeight_RATIO * height;
+        CGFloat xOffset =self.frame.size.width - (width);
+        CGFloat yOffset = self.userInformationBar.frame.origin.y + 5.f +self.userInformationBar.frame.size.height/2.f;
+           
+        [self.feedbackRequestNotification setFrame:CGRectMake(xOffset, yOffset, width, height)];
+        [self addSubview:self.feedbackRequestNotification];
+        [self.feedbackRequestNotification addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeFeedbackNotification)]];
+        [self.feedbackRequestNotification setUserInteractionEnabled:YES];
+    }
+}
+
+
+-(void)removeFeedbackNotification{
+    if(self.feedbackRequestNotification){
+        [self.feedbackRequestNotification removeFromSuperview];
+        self.feedbackRequestNotification = nil;
+    }
+}
+
 
 -(void) createLabels {
 	CGRect userNameFrame = CGRectMake(OFFSET_X, self.userInformationBar.frame.origin.y +
@@ -119,6 +152,26 @@
 		}
 	}
 }
+
+
+
+-(void)presentProfileUnderConstructionNotification{
+    if(!self.profileInConstructionNotification && !self.isCurrentUser){
+        self.profileInConstructionNotification = [[UIImageView alloc] initWithImage:[UIImage imageNamed:PROFILE_UNDER_CONSTRUCTION_ICON]];
+        [self.profileInConstructionNotification setFrame:self.bounds];
+        [self insertSubview:self.profileInConstructionNotification aboveSubview:self.transparentTintCoverView];
+    }
+}
+
+-(void)removeProfileConstructionNotification{
+    
+    if(self.profileInConstructionNotification)
+    {
+        [self.profileInConstructionNotification removeFromSuperview];
+        self.profileInConstructionNotification = nil;
+    }
+}
+
 
 -(void) userNameChanged {
 	NSString *newUserName = self.channelOwner[VERBATM_USER_NAME_KEY];
@@ -189,7 +242,7 @@
 -(void)createTopAndReflectionCoverImageFromImage:(UIImage *)coverPhotoImage{
 	[self.coverPhotoView setImage:coverPhotoImage];
 	self.coverPhotoView.contentMode = UIViewContentModeScaleAspectFit;
-	[self insertSubview:self.coverView aboveSubview:self.coverPhotoView];
+	[self insertSubview:self.transparentTintCoverView aboveSubview:self.coverPhotoView];
 	[self.flippedCoverPhoto setImage:coverPhotoImage];
 	self.flippedCoverPhoto.transform = CGAffineTransformMakeRotation(M_PI);
 	[self.flippedCoverPhoto createBlurViewOnViewWithStyle:UIBlurEffectStyleDark];
@@ -400,13 +453,13 @@
 	}
 	return _flippedCoverPhoto;
 }
--(UIView *)coverView{
-	if(!_coverView){
-		_coverView = [[UIView alloc] initWithFrame: self.coverPhotoView.frame];
-		_coverView.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.5];
-		[self insertSubview:_coverView aboveSubview:self.coverPhotoView];
+-(UIView *)transparentTintCoverView{
+	if(!_transparentTintCoverView){
+		_transparentTintCoverView = [[UIView alloc] initWithFrame: self.coverPhotoView.frame];
+		_transparentTintCoverView.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.5];
+		[self insertSubview:_transparentTintCoverView aboveSubview:self.coverPhotoView];
 	}
-	return _coverView;
+	return _transparentTintCoverView;
 }
 
 -(void)dealloc{

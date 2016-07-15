@@ -41,4 +41,6 @@
 @property (weak, nonatomic) id<ProfileHeaderViewDelegate> delegate;
 
 -(void)setCoverPhotoImage:(UIImage *) coverPhotoImage;
+-(void)presentProfileUnderConstructionNotification;
+-(void)removeProfileConstructionNotification;
 @end

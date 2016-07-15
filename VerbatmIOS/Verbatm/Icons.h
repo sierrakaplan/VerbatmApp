@@ -47,6 +47,8 @@
 #define FOLLOWING_SUCCESS_IMAGE @"following_succeeded_notification"
 #define REBLOG_IMAGE @"posted_succeeded_notification"
 
+#define FEED_NOTIFICATION_ICON @"FeedEmptyNotification"
+
 #pragma mark - ADK -
 
 #define MINIMIZE_ICON @"minimize_icon"
@@ -143,13 +145,25 @@
 
 #define DISCOVER_BACKGROUND @"background_discover"
 
+#define EMPTY_SEARCH_RESULTS_ICON @"EmptySearchResultsIcon"
+#define EMTPY_SEARCH_ICON_HeightWidth_RATIO (327.f/845.f)
+
 #pragma mark - Profile Information Header -
 #define ADD_COVER_PHOTO_ICON @"Add cover photo"
+#define FEEDBACK_NOTIFICATION_ICON @"FeedbackNotification"
+#define FEEDBACK_NOTIFICATION_WidthHeight_RATIO (184.f/168.f)
+
+#define PROFILE_UNDER_CONSTRUCTION_ICON @"ProfileUnderConstruction"
 
 #define NO_COVER_PHOTO_IMAGE @"Empty_Cover_Photo_Image"
 #define PROFILE_BACK_BUTTON_ICON @"back_arrow_white"
 
 #define LOGIN_ICON @"Log In"
 #define CREATE_ACCOUNT @"Create Account"
+
+
+#pragma mark -Notifications View Controller-
+
+#define NOTIFICATIONS_EMPTY_ICON @"NotificationsEmptyIcon"
 
 #endif /* Icons_h */
