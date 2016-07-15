@@ -607,10 +607,12 @@ andSaveInUserDefaults:(BOOL)save {
 
 	} completion:^(BOOL finished) {
 		// includes default media tile
-		if(finished && self.numPinchViews < 2 && ![[UserSetupParameters sharedInstance]
+		if(finished && !self.currentlyPresentingInstruction && self.numPinchViews < 2
+           && ![[UserSetupParameters sharedInstance]
 												   checkAndSetEditPinchViewInstructionShown]) {
 			[self presentEditPinchViewInstruction];
-		} else if(finished && ![[UserSetupParameters sharedInstance] checkAndSetPinchInstructionShown]) {
+		} else if(finished && !self.currentlyPresentingInstruction &&
+                  ![[UserSetupParameters sharedInstance] checkAndSetPinchInstructionShown]) {
 			[self presentPinchInstruction];
 		}
 	}];
@@ -1682,7 +1684,8 @@ andSaveInUserDefaults:(BOOL)save {
 	[self.cameraView removeFromSuperview];
 	[self removeExcessMediaTiles];
     self.screenInCameraMode = NO;
-    if(self.numPinchViews > 1.f &&![[UserSetupParameters sharedInstance] checkAndSetPinchInstructionShown]){
+    if(self.numPinchViews > 1.f && !self.currentlyPresentingInstruction &&
+       ![[UserSetupParameters sharedInstance] checkAndSetPinchInstructionShown]){
         [self presentPinchInstruction];
     }
 }

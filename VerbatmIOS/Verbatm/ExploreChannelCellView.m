@@ -178,9 +178,22 @@
 }
 
 -(void) updateFollowIcon {
-	UIImage * newbuttonImage = self.isFollowed ? [UIImage imageNamed:FOLLOWING_ICON_LIGHT] : [UIImage imageNamed:FOLLOW_ICON_LIGHT];
-	[self.followButton setImage:newbuttonImage forState:UIControlStateNormal];
+    if (self.isFollowed) {
+        [self changeFollowButtonTitle:@"Following" toColor:[UIColor blackColor]];
+        self.followButton.backgroundColor = [UIColor whiteColor];
+    } else {
+        [self changeFollowButtonTitle:@"Follow" toColor:[UIColor whiteColor]];
+        self.followButton.backgroundColor = [UIColor clearColor];
+    }
 }
+
+-(void) changeFollowButtonTitle:(NSString*)title toColor:(UIColor*) color{
+    NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: color,
+                                      NSFontAttributeName: [UIFont fontWithName:BOLD_FONT size:FOLLOW_TEXT_FONT_SIZE]};
+    NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:titleAttributes];
+    [self.followButton setAttributedTitle:attributedTitle forState:UIControlStateNormal];
+}
+
 
 -(void) changeNumFollowersLabel {
 	[self.numFollowersLabel setText:[self.numFollowers stringValue]];
@@ -290,7 +303,12 @@
 	if (!_followButton) {
 		_followButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		_followButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-		[_followButton addTarget:self action:@selector(followButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+		[_followButton addTarget:self action:@selector(followButtonPressed) forControlEvents:UIControlEventTouchDown];
+        _followButton.clipsToBounds = YES;
+        _followButton.layer.borderColor = [UIColor whiteColor].CGColor;
+        _followButton.layer.borderWidth = 2.f;
+        _followButton.layer.cornerRadius = 7.f;
+
 	}
 	return _followButton;
 }

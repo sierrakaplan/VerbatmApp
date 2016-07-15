@@ -138,11 +138,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ContentDevVC.m"
-            timestampString = "490264628.614725"
+            timestampString = "490265346.004315"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2045"
-            endingLineNumber = "2045"
+            startingLineNumber = "2048"
+            endingLineNumber = "2048"
             landmarkName = "@implementation ContentDevVC"
             landmarkType = "3">
          </BreakpointContent>
@@ -5076,11 +5076,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ContentDevVC.m"
-            timestampString = "490264628.614725"
+            timestampString = "490265346.004315"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1681"
-            endingLineNumber = "1681"
+            startingLineNumber = "1683"
+            endingLineNumber = "1683"
             landmarkName = "-minimizeCameraViewButtonTapped"
             landmarkType = "5">
          </BreakpointContent>
@@ -5092,11 +5092,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ContentDevVC.m"
-            timestampString = "490264628.614725"
+            timestampString = "490265346.004315"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1422"
-            endingLineNumber = "1422"
+            startingLineNumber = "1424"
+            endingLineNumber = "1424"
             landmarkName = "-presentPinchInstruction"
             landmarkType = "5">
          </BreakpointContent>
@@ -5108,11 +5108,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ContentDevVC.m"
-            timestampString = "490264628.614725"
+            timestampString = "490265346.004315"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1223"
-            endingLineNumber = "1223"
+            startingLineNumber = "1225"
+            endingLineNumber = "1225"
             landmarkName = "-cameraButtonPressedOnTile:"
             landmarkType = "5">
          </BreakpointContent>
@@ -5124,11 +5124,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ContentDevVC.m"
-            timestampString = "490264771.716364"
+            timestampString = "490265346.004315"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1456"
-            endingLineNumber = "1456"
+            startingLineNumber = "1458"
+            endingLineNumber = "1458"
             landmarkName = "-displayInstructionView"
             landmarkType = "5">
          </BreakpointContent>
