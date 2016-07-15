@@ -880,6 +880,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void) userPublishing:(NSNotification *) notification {
 	[self startMonitoringPublishing];
+    [self removePresentLabel];
 }
 
 // Alerts to user about publishing handled in Master Navigation VC
