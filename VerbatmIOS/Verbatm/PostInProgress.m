@@ -76,10 +76,9 @@
 
 		[self.pinchViews removeObjectAtIndex:index];
 		[self.pinchViewsAsData removeObjectAtIndex:index];
-
+        [[NSUserDefaults standardUserDefaults]
+         setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
 	}
-	[[NSUserDefaults standardUserDefaults]
-	 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
 }
 
 -(void) removePinchViewAtIndex:(NSInteger)index andReplaceWithPinchView:(PinchView *)newPinchView {

@@ -309,6 +309,7 @@
     if(!self.cellSelected){
         self.cellSelected = YES;
         if((cell.notificationType & Like)){
+            self.cellSelected = NO;//to be removed
 //             self.tableView.scrollEnabled = NO;
 //             [self presentPost:[cell objectId] andChannel:cell.channel];
         }else{

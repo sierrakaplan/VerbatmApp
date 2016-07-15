@@ -46,6 +46,13 @@
 }
 
 -(void) initWithPinchViews:(NSArray*)pinchViews {
+    
+    if([pinchViews containsObject:self]){
+        NSLog(@"Here is the problem");
+    }
+    
+    
+    
 	[self.background addSubview:self.videoView];
 	[self addPlayIcon];
 	[self addCollectionViewBorder];
@@ -189,6 +196,11 @@
 }
 
 -(CollectionPinchView*) pinchAndAdd:(SingleMediaAndTextPinchView*)pinchView {
+    if(pinchView == self){
+        NSLog(@"Here is the problem");
+        //this should not happen
+        return self;
+    }
 	self.videoAsset = nil;
 	[self.pinchedObjects addObject:pinchView];
 	[self addPinchView: pinchView];
