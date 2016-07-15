@@ -78,6 +78,8 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 #define CELL_SPACING_SMALL 1.f
 #define CELL_SPACING_LARGE 0.3
+#define POSTLISTVC_ISNOT_CREATED_YET (!_postListVC)
+
 @end
 
 @implementation ProfileVC

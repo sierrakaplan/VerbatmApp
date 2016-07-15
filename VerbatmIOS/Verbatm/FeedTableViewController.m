@@ -209,8 +209,6 @@
 		self.nextProfileToPresent.isProfileTab = NO;
 		self.nextProfileToPresent.ownerOfProfile = nextChannel.channelCreator;
 		self.nextProfileToPresent.channel = nextChannel;
-		[self.nextProfileToPresent loadContentToPostList];
-
 	}
 }
 - (void)tableView:(UITableView *)tableView

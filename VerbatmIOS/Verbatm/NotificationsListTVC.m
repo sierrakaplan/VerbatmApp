@@ -141,7 +141,6 @@
             if (!self.currentlyBeingViewed ) {
                 [self findNewNotifications];
             }
-            
             if(notificationObjects.count == 0){
                 [self presentNoNotificationView];
             }else{
@@ -233,8 +232,9 @@
                     self.postPreview.delegate = self;
                     [self.postPreview presentPost:[objects firstObject] andChannel:channel];
                     [self.view addSubview:self.postPreview];
+                    [self.view bringSubviewToFront:self.postPreview];
                     [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-                        self.postPreview.frame = self.view.bounds;
+                        self.postPreview.frame = CGRectMake(0.f, self.tableView.contentOffset.y, self.view.frame.size.width, self.view.frame.size.height);
                     }];
                     [self.delegate notificationListHideTabBar:YES];
                 }
@@ -308,9 +308,9 @@
     NotificationTableCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if(!self.cellSelected){
         self.cellSelected = YES;
-        if(cell.notificationType == Like){
-             self.tableView.scrollEnabled = NO;
-             [self presentPost:[cell objectId] andChannel:cell.channel];
+        if((cell.notificationType & Like)){
+//             self.tableView.scrollEnabled = NO;
+//             [self presentPost:[cell objectId] andChannel:cell.channel];
         }else{
             [self presentBlogFromCell: cell];
         }
