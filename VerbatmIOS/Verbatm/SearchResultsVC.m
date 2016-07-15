@@ -13,7 +13,7 @@
 #import <Parse/PFObject.h>
 #import <Parse/PFQuery.h>
 #import "ProfileVC.h"
-
+#import "Icons.h"
 #define SEARCH_RESULTS_LIMIT 50
 
 @interface SearchResultsVC ()
@@ -21,6 +21,10 @@
 @property (strong, nonatomic) NSArray *searchResults;
 @property (strong, nonatomic) PFQuery *currentQuery;
 @property (strong, nonatomic) UIActivityIndicatorView *spinner;
+@property (nonatomic) UIImageView * noSearchResults;
+
+#define NOTIFICATION_XOFFSET 10.f
+#define NOTIFICATION_YOFFSET 30.f
 
 @end
 
@@ -81,11 +85,34 @@
 		}
 		if (error) {
 			[[Crashlytics sharedInstance] recordError:error];
+            [self presentNoSearchResultsIcon];
 		} else {
 			self.searchResults = objects;
-			[self.tableView reloadData];
+            [self.tableView reloadData];
+            if(!objects || objects.count == 0){
+                [self presentNoSearchResultsIcon];
+            }else{
+                [self removeNoSearchResultsIcon];
+            }
 		}
 	}];
+}
+
+-(void)presentNoSearchResultsIcon{
+    if(!self.noSearchResults){
+        CGFloat width = self.view.frame.size.width - (2*NOTIFICATION_XOFFSET);
+        CGFloat height = width * EMTPY_SEARCH_ICON_HeightWidth_RATIO;
+        self.noSearchResults = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EMPTY_SEARCH_RESULTS_ICON]];
+        self.noSearchResults.frame = CGRectMake(NOTIFICATION_XOFFSET, NOTIFICATION_YOFFSET, width, height);
+        [self.view addSubview:self.noSearchResults];
+    }
+}
+
+-(void)removeNoSearchResultsIcon{
+    if(self.noSearchResults){
+        [self.noSearchResults removeFromSuperview];
+        self.noSearchResults = nil;
+    }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -111,6 +138,7 @@
 		blogText = [blogText stringByAppendingString:userName];
 	}
 	[cell.textLabel setText: blogText];
+    [self removeNoSearchResultsIcon];
 	return cell;
 }
 

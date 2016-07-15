@@ -12,6 +12,8 @@
 #import "Channel.h"
 #import "ProfileVC.h"
 #import "UtilityFunctions.h"
+#import "Icons.h"
+
 
 @interface FeedTableViewController ()<FeedCellDelegate>
 
@@ -20,6 +22,8 @@
 @property (nonatomic) ProfileVC *nextProfileToPresent;
 @property (nonatomic) NSInteger nextProfileIndex;
 @property (nonatomic) UIRefreshControl *refreshControl;
+
+@property (nonatomic) UIImageView * emptyFeedNotification;
 
 @end
 
@@ -73,6 +77,12 @@
 	//todo: change how getfollowersandfollowing is used everywhere (also make sure one instance of updating followers is used)
 	[self.currentUserChannel getChannelsFollowingWithCompletionBlock:^{
 		[self.refreshControl endRefreshing];
+		if ([self.currentUserChannel channelsUserFollowing].count > 0) {
+			[self removeEmptyFeedNotification];
+		} else {
+			[self notifyNotFollowingAnyone];
+			return;
+		}
 		//No channels have been previously loaded
 		if (!self.followingProfileList || !self.followingProfileList.count) {
 			self.followingProfileList = [NSMutableArray arrayWithArray: [self.currentUserChannel channelsUserFollowing]];
@@ -135,6 +145,31 @@
 	}
 }
 
+-(void)notifyNotFollowingAnyone{
+	if(!self.emptyFeedNotification){
+		self.emptyFeedNotification = [[UIImageView alloc] initWithFrame:self.view.bounds];
+		[self.emptyFeedNotification setImage:[UIImage imageNamed:FEED_NOTIFICATION_ICON]];
+		[self.view addSubview:self.emptyFeedNotification];
+		[self.tableView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(goToDiscover)]];
+		self.tableView.allowsSelection = YES;
+	}
+}
+
+
+-(void)goToDiscover{
+	if(self.emptyFeedNotification){
+		[self.delegate goToDiscover];
+	}
+}
+
+-(void)removeEmptyFeedNotification{
+	if(self.emptyFeedNotification){
+		[self.emptyFeedNotification removeFromSuperview];
+		self.emptyFeedNotification = nil;
+	}
+	self.tableView.allowsSelection = NO;
+}
+
 #pragma mark - Table View Delegate methods (view customization) -
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -195,6 +230,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath{
 	}
 	self.nextProfileIndex = indexPath.row + 1;
 	[self prepareNextPostFromNextIndex:self.nextProfileIndex];
+	[self removeEmptyFeedNotification];
 	return cell;
 }
 

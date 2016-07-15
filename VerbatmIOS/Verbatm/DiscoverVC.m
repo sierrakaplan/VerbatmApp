@@ -35,7 +35,7 @@ ExploreChannelCellViewDelegate>
 
 
 #define HEADER_HEIGHT 50.f
-#define HEADER_FONT_SIZE 20.f
+#define HEADER_FONT_SIZE 25.f
 #define CELL_HEIGHT 350.f
 
 #define LOAD_MORE_CUTOFF 3
@@ -223,7 +223,7 @@ ExploreChannelCellViewDelegate>
 	// Text Color
 	UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
 	[header.textLabel setTextColor:[UIColor whiteColor]];
-	[header.textLabel setFont:[UIFont fontWithName:REGULAR_FONT size:HEADER_FONT_SIZE]];
+	[header.textLabel setFont:[UIFont fontWithName:BOLD_FONT size:HEADER_FONT_SIZE]];
 	
     if(self.onboardingBlogSelection){
         [header.textLabel setText:ONBOARDING_TEXT];

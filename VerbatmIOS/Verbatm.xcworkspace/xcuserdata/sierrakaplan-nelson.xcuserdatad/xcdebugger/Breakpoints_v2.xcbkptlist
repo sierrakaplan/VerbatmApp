@@ -79,7 +79,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "69"
             endingLineNumber = "69"
-            landmarkName = "-filterResults:"
+            landmarkName = "-updateSearchResultsForSearchController:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -111,7 +111,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "48"
             endingLineNumber = "48"
-            landmarkName = "-updateSearchResultsForSearchController:"
+            landmarkName = "-preferredStatusBarStyle"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -159,7 +159,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "91"
             endingLineNumber = "91"
-            landmarkName = "-tableView:numberOfRowsInSection:"
+            landmarkName = "-filterResults:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -319,7 +319,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "96"
             endingLineNumber = "96"
-            landmarkName = "-tableView:cellForRowAtIndexPath:"
+            landmarkName = "-filterResults:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -367,7 +367,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "72"
             endingLineNumber = "72"
-            landmarkName = "-filterResults:"
+            landmarkName = "-updateSearchResultsForSearchController:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -831,7 +831,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "435"
             endingLineNumber = "435"
-            landmarkName = "-deleteButtonSelectedOnPostView:withPostObject:andPostChannelActivityObj:reblogged:"
+            landmarkName = "-collectionView:willDisplayCell:forItemAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -847,7 +847,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "427"
             endingLineNumber = "427"
-            landmarkName = "-noPostFound"
+            landmarkName = "-createFirstPost"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -863,7 +863,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "423"
             endingLineNumber = "423"
-            landmarkName = "-postsFound"
+            landmarkName = "-createPromptToPost"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -879,7 +879,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "431"
             endingLineNumber = "431"
-            landmarkName = "-removePromptToPost"
+            landmarkName = "-postsFound"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -895,7 +895,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "406"
             endingLineNumber = "406"
-            landmarkName = "-createPromptToPost"
+            landmarkName = "-clearChannelCreationView"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -937,29 +937,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Verbatm/FeedTableViewController.m"
-            timestampString = "490266644.410866"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "54"
-            endingLineNumber = "54"
-            landmarkName = "-preferredStatusBarStyle"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileVC.m"
             timestampString = "490265506.875957"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "136"
             endingLineNumber = "136"
-            landmarkName = "-preferredStatusBarStyle"
+            landmarkName = "-viewDidAppear:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -975,7 +959,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "71"
             endingLineNumber = "71"
-            landmarkName = "-refreshListOfContent"
+            landmarkName = "-reloadCellsOnScreen"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1023,7 +1007,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "127"
             endingLineNumber = "127"
-            landmarkName = "-removeObjectsFromArrayOfChannels:inArray:"
+            landmarkName = "-refreshListOfContent"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1055,7 +1039,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "124"
             endingLineNumber = "124"
-            landmarkName = "-removeObjectsFromArrayOfChannels:inArray:"
+            landmarkName = "-refreshListOfContent"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1071,7 +1055,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "68"
             endingLineNumber = "68"
-            landmarkName = "-refreshListOfContent"
+            landmarkName = "-reloadCellsOnScreen"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1087,7 +1071,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "58"
             endingLineNumber = "58"
-            landmarkName = "-reloadCellsOnScreen"
+            landmarkName = "-viewWillDisappear:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1119,7 +1103,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "69"
             endingLineNumber = "69"
-            landmarkName = "-refreshListOfContent"
+            landmarkName = "-reloadCellsOnScreen"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1135,7 +1119,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "963"
             endingLineNumber = "963"
-            landmarkName = "-dealloc"
+            landmarkName = "-externalShare"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1167,7 +1151,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "105"
             endingLineNumber = "105"
-            landmarkName = "-refreshProfile"
+            landmarkName = "-loadContentToPostList"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1183,7 +1167,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "271"
             endingLineNumber = "271"
-            landmarkName = "-refreshPosts"
+            landmarkName = "-defineLoadPostsCompletions"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1215,7 +1199,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "66"
             endingLineNumber = "66"
-            landmarkName = "-refreshListOfContent"
+            landmarkName = "-reloadCellsOnScreen"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1231,7 +1215,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "185"
             endingLineNumber = "185"
-            landmarkName = "-getChannelsFollowingWithCompletionBlock:"
+            landmarkName = "-getFollowersWithCompletionBlock:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -1279,7 +1263,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "176"
             endingLineNumber = "176"
-            landmarkName = "-getFollowersWithCompletionBlock:"
+            landmarkName = "-checkIfList:ContainsObject:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -1359,7 +1343,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "138"
             endingLineNumber = "138"
-            landmarkName = "-changeUserName"
+            landmarkName = "-createLabels"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1375,7 +1359,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "132"
             endingLineNumber = "132"
-            landmarkName = "-changeUserName"
+            landmarkName = "-createLabels"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1391,7 +1375,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "133"
             endingLineNumber = "133"
-            landmarkName = "-changeUserName"
+            landmarkName = "-createLabels"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1407,7 +1391,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "111"
             endingLineNumber = "111"
-            landmarkName = "-createLabels"
+            landmarkName = "-askForFeedback"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1423,7 +1407,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "140"
             endingLineNumber = "140"
-            landmarkName = "-changeUserName"
+            landmarkName = "-createLabels"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1455,7 +1439,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "136"
             endingLineNumber = "136"
-            landmarkName = "-changeUserName"
+            landmarkName = "-createLabels"
             landmarkType = "5">
             <Locations>
                <Location
@@ -1503,7 +1487,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "137"
             endingLineNumber = "137"
-            landmarkName = "-changeUserName"
+            landmarkName = "-createLabels"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1519,7 +1503,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "140"
             endingLineNumber = "140"
-            landmarkName = "-buildHeaderView"
+            landmarkName = "-presentUserList:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1535,7 +1519,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "141"
             endingLineNumber = "141"
-            landmarkName = "-buildHeaderView"
+            landmarkName = "-presentUserList:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1614,7 +1598,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "113"
             endingLineNumber = "113"
-            landmarkName = "-createLabels"
+            landmarkName = "-askForFeedback"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

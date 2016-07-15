@@ -53,8 +53,9 @@
 
 -(void)storeCoverPhoto:(UIImage *) coverPhoto;
 
--(void)loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*))block;
+-(void)loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*, NSData*))block;
 
 -(BOOL)checkIfList:(NSArray *) list ContainsObject:(PFObject *) object;
 
+-(NSString *)getCoverPhotoUrl;
 @end

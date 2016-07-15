@@ -50,6 +50,12 @@
     return self;
 }
 
+
+-(NSString *)getCoverPhotoUrl{
+    NSString * url = [self.parseChannelObject valueForKey:CHANNEL_COVER_PHOTO_URL];
+    return url;
+}
+
 -(void)storeCoverPhoto:(UIImage *) coverPhoto{
     [Channel_BackendObject storeCoverPhoto:coverPhoto withParseChannelObject:self.parseChannelObject];
 }
@@ -59,24 +65,24 @@
     block(imageData);
 }
 
--(void)loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*))block{
+-(void)loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*, NSData*))block{
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        NSString * url = [self.parseChannelObject valueForKey:CHANNEL_COVER_PHOTO_URL];
-        if(url) {
-			NSString *smallImageUrl = [UtilityFunctions addSuffixToPhotoUrl:url forSize: HALFSCREEN_IMAGE_SIZE];
-            [[UtilityFunctions sharedInstance] loadCachedPhotoDataFromURL: [NSURL URLWithString: smallImageUrl]].then(^(NSData* data) {
-                if(data){
-                    UIImage * photo = [UIImage imageWithData:data];
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        block(photo);
-                    });
-                } else {
-                    block(nil);
-                }
-            });
-        } else {
-            block(nil);
-        }
+            NSString * url = [self.parseChannelObject valueForKey:CHANNEL_COVER_PHOTO_URL];
+            if(url) {
+                NSString *smallImageUrl = [UtilityFunctions addSuffixToPhotoUrl:url forSize: HALFSCREEN_IMAGE_SIZE];
+                [[UtilityFunctions sharedInstance] loadCachedPhotoDataFromURL: [NSURL URLWithString: smallImageUrl]].then(^(NSData* data) {
+                    if(data){
+                        UIImage * photo = [UIImage imageWithData:data];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            block(photo, data);
+                        });
+                    } else {
+                        block(nil, nil);
+                    }
+                });
+            } else {
+                block(nil, nil);
+            }
     });
 }
 

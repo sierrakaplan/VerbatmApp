@@ -212,6 +212,17 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 
 #pragma mark - Loading content methods -
 
+-(void)nothingToPresentHere {
+	if(self.parsePostObjects.count == 0)[self.postListDelegate noPostFound];
+}
+
+-(void)removePresentLabel{
+	if(self.noContentLabel){
+		[self.noContentLabel removeFromSuperview];
+		self.noContentLabel = nil;
+	}
+}
+
 -(void) defineLoadPostsCompletions {
 	__weak typeof(self) weakSelf = self;
 	self.refreshPostsCompletion = ^void(NSArray *posts) {
@@ -836,6 +847,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void) userPublishing:(NSNotification *) notification {
 	[self startMonitoringPublishing];
+    [self removePresentLabel];
 }
 
 // Alerts to user about publishing handled in Master Navigation VC

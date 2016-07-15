@@ -401,6 +401,11 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 
 #pragma mark - Feed VC Delegate -
 
+
+-(void)goToDiscover{
+    [self.tabBarController setSelectedIndex:1];
+}
+
 -(void) showTabBar:(BOOL)show {
 	if (show) {
         if(self.indicatorPresent){

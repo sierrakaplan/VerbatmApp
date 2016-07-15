@@ -421,10 +421,9 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 -(void)postsFound{
 	[self removePromptToPost];
-}
-
--(void)noPostFound{
-	if(self.isCurrentUserProfile)[self createPromptToPost];
+    if(!self.isCurrentUserProfile){
+        [self.profileHeaderView removeProfileConstructionNotification];
+    }
 }
 
 -(void)removePromptToPost{
@@ -435,7 +434,13 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	}
 }
 
-#pragma mark - Navigate profile -
+-(void)noPostFound {
+    if(self.isCurrentUserProfile){
+        [self createPromptToPost];
+    }else{
+        [self.profileHeaderView presentProfileUnderConstructionNotification];
+    }
+}
 
 //the current user has selected the back button
 -(void)exitCurrentProfile {

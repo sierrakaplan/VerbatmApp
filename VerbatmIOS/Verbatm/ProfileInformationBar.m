@@ -124,7 +124,7 @@
 									  NSFontAttributeName: [UIFont fontWithName:BOLD_FONT size:FOLLOW_TEXT_FONT_SIZE]};
 
     CGFloat following_x = (self.frame.size.width - SETTINGS_BUTTON_SIZE - PROFILE_HEADER_XOFFSET*3
-    						   - FOLLOW_OR_EDIT_BUTTON_SIZE - FOLLOWING_LABEL_WIDTH -1.f);
+    						   - FOLLOW_OR_EDIT_BUTTON_SIZE - FOLLOWING_LABEL_WIDTH -5.f);
     CGFloat following_num_x = following_x - NUM_FOLLOWING_WIDTH - 4.f;
     CGFloat followers_x = following_num_x - PROFILE_HEADER_XOFFSET - FOLLOWING_LABEL_WIDTH;
     CGFloat followers_num_x = followers_x - NUM_FOLLOWING_WIDTH - 3.f;
@@ -204,7 +204,7 @@
 }
 
 -(void) createFollowOrEditButton {
-    CGFloat frame_x = self.settingsButton.frame.origin.x - PROFILE_HEADER_XOFFSET - FOLLOW_OR_EDIT_BUTTON_SIZE -2.f;
+    CGFloat frame_x = self.settingsButton.frame.origin.x - PROFILE_HEADER_XOFFSET - FOLLOW_OR_EDIT_BUTTON_SIZE -5.f;
     CGRect followButtonFrame = CGRectMake(frame_x, STATUS_BAR_HEIGHT + EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET, FOLLOW_OR_EDIT_BUTTON_SIZE, PROFILE_INFO_BAR_HEIGHT - (EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET * 2.f));
     self.followOrEditButton = [[UIButton alloc] initWithFrame: followButtonFrame];
     self.followOrEditButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
@@ -231,7 +231,7 @@
 	[self.backButton setImage:backButtonImage forState:UIControlStateNormal];
 	self.backButton.imageEdgeInsets = UIEdgeInsetsMake(2.f, 0.f, 2.f, 0.f);
 	self.backButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-	[self.backButton addTarget:self action:@selector(backButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+	[self.backButton addTarget:self action:@selector(backButtonSelected) forControlEvents:UIControlEventTouchDown];
 	[self addSubview: self.backButton];
 }
 
