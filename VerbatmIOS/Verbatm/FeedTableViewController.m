@@ -51,13 +51,8 @@
 
 -(void)viewWillAppear:(BOOL)animated{
 	[super viewWillAppear:animated];
-    if(!self.isFirstTime){
-        if(!self.followingProfileList || self.followingProfileList.count == 0){
-            [self refreshListOfContent];
-        }else{
-            [self.tableView reloadData];
-        }
-    }
+    [self refreshListOfContent];
+ 
 }
 
 -(void)viewWillDisappear:(BOOL)animated {

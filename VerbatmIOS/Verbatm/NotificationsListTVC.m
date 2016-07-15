@@ -110,7 +110,7 @@
     }
 }
 
--(void)removeNoNotificationNotificaction{
+-(void)removeNoNotificationView{
     if(self.noNotificationsNotification){
         [self.noNotificationsNotification removeFromSuperview];
         self.noNotificationsNotification = nil;
@@ -148,7 +148,7 @@
             if(notificationObjects.count == 0){
                 [self presentNoNotificationView];
             }else{
-                [self removeNoNotificationNotificaction];
+                [self removeNoNotificationView];
             }
         }];
     }
@@ -212,7 +212,7 @@
                 if(self.parseNotificationObjects.count == 0){
                     [self presentNoNotificationView];
                 }else{
-                    [self removeNoNotificationNotificaction];
+                    [self removeNoNotificationView];
                 }
             }
         }];
@@ -365,7 +365,7 @@
         [self getMoreNotifications];
     }
     [self setNotificationOnCell:cell notificationObject:self.parseNotificationObjects[indexPath.row]];
-    [self removeNoNotificationNotificaction];
+    [self removeNoNotificationView];
     return cell;
 }
 
