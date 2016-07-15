@@ -37,7 +37,6 @@
 
 @property (nonatomic) NSDictionary * likeNumberTextAttributes;
 
-#define BUTTON_WALLOFFSET 10.f
 #define NUMBER_FONT_SIZE 10.f
 #define ICON_SPACING_GAP 10.f
 #define NUMBER_TEXT_FONT CHANNEL_TAB_BAR_FOLLOWERS_FONT
@@ -70,7 +69,8 @@
 
 -(void) createCounterLabelStartingAtPage:(NSNumber *) startPage outOf:(NSNumber *) totalPages{
     NSAttributedString * pageCounterText = [self createCounterStringStartingAtPage:startPage outOf:totalPages];
-    CGRect labelFrame = CGRectMake(self.frame.size.width - BUTTON_WALLOFFSET - pageCounterText.size.width, BUTTON_WALLOFFSET, pageCounterText.size.width, self.frame.size.height - (BUTTON_WALLOFFSET*2));
+    CGRect labelFrame = CGRectMake(self.frame.size.width - ICON_SPACING_GAP - pageCounterText.size.width, 0.f,
+								   self.frame.size.height, self.frame.size.height);
     
     self.pageNumberLabel = [[UILabel alloc] initWithFrame:labelFrame];
     [self.pageNumberLabel setAttributedText:pageCounterText];
@@ -105,14 +105,16 @@
 -(void) creatButtonsWithNumLike:(NSNumber *) numLikes andNumShare:(NSNumber *) numShares {
     [self createShareButton];
     [self createLikeButton];
-    [self createLikeButtonNumbers:numLikes];
+	if (numLikes.integerValue >= 1) {
+		[self createLikeButtonNumbers:numLikes];
+	}
 }
 
 
 -(void)createShareButton {
     //create share button
-    CGRect shareButtonFrame = CGRectMake(BUTTON_WALLOFFSET, BUTTON_WALLOFFSET,
-                                         LIKE_SHARE_BAR_BUTTON_SIZE, LIKE_SHARE_BAR_BUTTON_SIZE);
+    CGRect shareButtonFrame = CGRectMake(ICON_SPACING_GAP, 0.f,
+                                         self.frame.size.height, self.frame.size.height);
     
     self.shareButon = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.shareButon setFrame:shareButtonFrame];
@@ -124,8 +126,8 @@
 
 -(void)createLikeButton {
     CGRect likeButtonFrame =  CGRectMake(self.shareButon.frame.origin.x + self.shareButon.frame.size.width + ICON_SPACING_GAP,
-                                         BUTTON_WALLOFFSET,
-                                         LIKE_SHARE_BAR_BUTTON_SIZE, LIKE_SHARE_BAR_BUTTON_SIZE);
+                                         0.f,
+										self.frame.size.height, self.frame.size.height);
     
     self.likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.likeButton setFrame:likeButtonFrame];
@@ -152,12 +154,13 @@
         self.numLikesButton = nil;
     }
     self.numLikesButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    
-    NSAttributedString * followersText = [[NSAttributedString alloc] initWithString:[numLikes.stringValue stringByAppendingString:@" likes"] attributes:self.likeNumberTextAttributes];
+
+	NSString *likesText = numLikes.integerValue > 1 ? @" likes" : @" like";
+    NSAttributedString * followersText = [[NSAttributedString alloc] initWithString:[numLikes.stringValue stringByAppendingString:likesText] attributes:self.likeNumberTextAttributes];
     [self.numLikesButton setAttributedTitle:followersText forState:UIControlStateNormal];
-    CGSize textSize = [[numLikes.stringValue stringByAppendingString:@" likes"] sizeWithAttributes:self.likeNumberTextAttributes];
+    CGSize textSize = [[numLikes.stringValue stringByAppendingString:likesText] sizeWithAttributes:self.likeNumberTextAttributes];
     
-    CGFloat numberHeight = self.frame.size.height - (BUTTON_WALLOFFSET*2);
+    CGFloat numberHeight = self.frame.size.height - (ICON_SPACING_GAP*2);
     
     CGRect likeNumberButtonFrame = CGRectMake(self.likeButton.frame.origin.x +
                                               self.likeButton.frame.size.width +  ICON_SPACING_GAP,
@@ -197,9 +200,9 @@
         buttonImage = [UIImage imageNamed:DELETE_POST_ICON];
     }
 
-    CGRect deleteButtonFrame = CGRectMake(self.frame.size.width - LIKE_SHARE_BAR_BUTTON_SIZE - BUTTON_WALLOFFSET,
-										  self.frame.size.height - BUTTON_WALLOFFSET - LIKE_SHARE_BAR_BUTTON_SIZE,
-                                          LIKE_SHARE_BAR_BUTTON_SIZE, LIKE_SHARE_BAR_BUTTON_SIZE);
+	CGFloat size = self.frame.size.height - (ICON_SPACING_GAP*2);
+    CGRect deleteButtonFrame = CGRectMake(self.frame.size.width - size - ICON_SPACING_GAP, ICON_SPACING_GAP,
+										  size, size);
     self.delete_Or_FlagButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.delete_Or_FlagButton setFrame:deleteButtonFrame];
     [self.delete_Or_FlagButton setImage:buttonImage forState:UIControlStateNormal];
@@ -253,14 +256,18 @@
 
 -(void)changeLikeCount:(BOOL)up{
     NSInteger currentLikes = self.totalNumberOfLikes.integerValue;
-    if(up){
+    if(up) {
         currentLikes= 1+currentLikes;
-    }else{
+    } else {
         currentLikes = currentLikes -1;
         if(currentLikes < 0) currentLikes = 0;
     }
     self.totalNumberOfLikes = [NSNumber numberWithInteger:currentLikes];
-    [self createLikeButtonNumbers: self.totalNumberOfLikes];
+    if (currentLikes >= 1) {
+		[self createLikeButtonNumbers: self.totalNumberOfLikes];
+	} else {
+		[self.numLikesButton removeFromSuperview];
+	}
 }
 
 #pragma mark - Display likes and shares -
@@ -292,7 +299,7 @@
         _muteButton = [[UIButton alloc] init];
         
         CGRect buttonFrame = CGRectMake(self.numLikesButton.frame.origin.x + self.numLikesButton.frame.size.width + ICON_SPACING_GAP,
-										BUTTON_WALLOFFSET, LIKE_SHARE_BAR_BUTTON_SIZE, LIKE_SHARE_BAR_BUTTON_SIZE);
+										0.f, self.frame.size.height, self.frame.size.height);
         _muteButton.frame = buttonFrame;
         
         [_muteButton setImage:[UIImage imageNamed:UNMUTED_ICON] forState:UIControlStateNormal];

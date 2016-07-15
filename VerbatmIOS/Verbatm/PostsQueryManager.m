@@ -10,6 +10,7 @@
 #import "PostsQueryManager.h"
 #import <Parse/PFQuery.h>
 #import "ParseBackendKeys.h"
+#import "UserInfoCache.h"
 
 @interface PostsQueryManager()
 
@@ -51,7 +52,8 @@
 			NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
 			for(PFObject * pc_activity in activities){
 				PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
-				[post fetchIfNeededInBackground];
+				[post fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+				}];
 				[finalPostObjects addObject:pc_activity];
 			}
 			if (activities.count > 0) {
