@@ -58,9 +58,10 @@
 }
 
 -(void)presentPost:(PFObject *) pfActivityObj andChannel:(Channel *) channel{
+    [self createNavBar];
 	self.postBeingPresented = pfActivityObj;
 	PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
-
+    [post fetchIfNeededInBackground];
 	[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
 		self.currentPostView = [[PostView alloc] initWithFrame:self.bounds
 								  andPostChannelActivityObject:pfActivityObj small:NO andPageObjects:pages];
@@ -80,8 +81,7 @@
 		[self.currentPostView addCreatorInfo];
 
 		[self.currentPostView postOnScreen];
-		[self createNavBar];
-
+        [self bringSubviewToFront:self.customNavBar];
 	}];
 }
 
