@@ -304,9 +304,9 @@
     
     if(myFileHandle) {
          coverPhoto = [UIImage imageWithData:[myFileHandle readDataToEndOfFile]];
-        NSLog(@"Cover photo loaded from cache");
+//        NSLog(@"Cover photo loaded from cache");
     }else{
-        NSLog(@"Cover photo failed to load from cache");
+//        NSLog(@"Cover photo failed to load from cache");
     }
     [[UserManager sharedInstance] holdCurrentCoverPhoto:coverPhoto];
     return coverPhoto;
