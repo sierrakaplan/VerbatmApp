@@ -225,23 +225,25 @@
 
 -(void)presentPost:(PFObject *)postObject andChannel:(Channel *) channel{
     
-    PFQuery * query = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
-    [query whereKey:POST_CHANNEL_ACTIVITY_POST equalTo:postObject];
-    
-    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if(!self.postPreview){
-                self.postPreview = [[NotificationPostPreview alloc] initWithFrame:CGRectMake(self.view.frame.size.width,self.tableView.contentOffset.y, self.view.frame.size.width, self.view.frame.size.height)];
-                self.postPreview.delegate = self;
-                [self.postPreview presentPost:[objects firstObject] andChannel:channel];
-                [self.view addSubview:self.postPreview];
-                [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-                    self.postPreview.frame = self.view.bounds;
-                }];
-                [self.delegate notificationListHideTabBar:YES];
-            }
-        });
-    }];
+    if(postObject && channel){
+        PFQuery * query = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
+        [query whereKey:POST_CHANNEL_ACTIVITY_POST equalTo:postObject];
+        
+        [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if(!self.postPreview && objects && objects.count){
+                    self.postPreview = [[NotificationPostPreview alloc] initWithFrame:CGRectMake(self.view.frame.size.width,self.tableView.contentOffset.y, self.view.frame.size.width, self.view.frame.size.height)];
+                    self.postPreview.delegate = self;
+                    [self.postPreview presentPost:[objects firstObject] andChannel:channel];
+                    [self.view addSubview:self.postPreview];
+                    [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
+                        self.postPreview.frame = self.view.bounds;
+                    }];
+                    [self.delegate notificationListHideTabBar:YES];
+                }
+            });
+        }];
+    }
     
 }
 

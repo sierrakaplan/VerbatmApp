@@ -13,6 +13,7 @@
 
 -(void) showTabBar: (BOOL) show;
 
+-(void)goToDiscover;
 
 @end
 

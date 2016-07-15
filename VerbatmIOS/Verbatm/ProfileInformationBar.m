@@ -245,7 +245,7 @@
 	[self.backButton setImage:backButtonImage forState:UIControlStateNormal];
 	self.backButton.imageEdgeInsets = UIEdgeInsetsMake(2.f, 0.f, 2.f, 0.f);
 	self.backButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-	[self.backButton addTarget:self action:@selector(backButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+	[self.backButton addTarget:self action:@selector(backButtonSelected) forControlEvents:UIControlEventTouchDown];
 	[self addSubview: self.backButton];
 }
 

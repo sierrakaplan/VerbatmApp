@@ -95,14 +95,25 @@
         self.emptyFeedNotification = [[UIImageView alloc] initWithFrame:self.view.bounds];
         [self.emptyFeedNotification setImage:[UIImage imageNamed:FEED_NOTIFICATION_ICON]];
         [self.view addSubview:self.emptyFeedNotification];
+        [self.tableView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(goToDiscover)]];
+        self.tableView.allowsSelection = YES;
     }
 }
+
+
+-(void)goToDiscover{
+    if(self.emptyFeedNotification){
+        [self.delegate goToDiscover];
+    }
+}
+
 
 -(void)removeEmptyFeedNotification{
     if(self.emptyFeedNotification){
         [self.emptyFeedNotification removeFromSuperview];
         self.emptyFeedNotification = nil;
     }
+    self.tableView.allowsSelection = NO;
 }
 
 #pragma mark - Table View Delegate methods (view customization) -

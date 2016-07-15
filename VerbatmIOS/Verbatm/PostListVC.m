@@ -208,21 +208,6 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 
 -(void)nothingToPresentHere {
 	if(self.parsePostObjects.count == 0)[self.postListDelegate noPostFound];
-
-	if (self.noContentLabel || self.parsePostObjects.count > 0){
-		return;
-	}
-
-	self.noContentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.f - NO_POSTS_LABEL_WIDTH/2.f, 0.f,
-																	NO_POSTS_LABEL_WIDTH, self.view.frame.size.height)];
-	self.noContentLabel.text = @"There are no posts to present :(";
-	self.noContentLabel.font = [UIFont fontWithName:REGULAR_FONT size:20.f];
-	self.noContentLabel.textColor = [UIColor whiteColor];
-	self.noContentLabel.textAlignment = NSTextAlignmentCenter;
-	self.noContentLabel.lineBreakMode = NSLineBreakByWordWrapping;
-	self.noContentLabel.numberOfLines = 3;
-	self.view.backgroundColor = [UIColor clearColor];
-	[self.view addSubview:self.noContentLabel];
 }
 
 -(void)removePresentLabel{

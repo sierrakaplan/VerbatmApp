@@ -430,6 +430,9 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 }
 -(void)postsFound{
 	[self removePromptToPost];
+    if(!self.isCurrentUserProfile){
+        [self.profileHeaderView removeProfileConstructionNotification];
+    }
 }
 -(void)removePromptToPost{
 	if(self.isCurrentUserProfile){
@@ -440,7 +443,11 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 }
 
 -(void)noPostFound{
-	if(self.isCurrentUserProfile)[self createPromptToPost];
+    if(self.isCurrentUserProfile){
+        [self createPromptToPost];
+    }else{
+        [self.profileHeaderView presentProfileUnderConstructionNotification];
+    }
 }
 
 #pragma mark -Navigate profile-

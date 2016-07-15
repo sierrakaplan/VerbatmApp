@@ -42,7 +42,7 @@
 @property (nonatomic) UIButton * changeCoverPhoto;
 @property (nonatomic) UIImageView * coverPhotoView;
 @property (nonatomic) UIImageView * flippedCoverPhoto;
-@property (nonatomic) UIView * coverView;
+@property (nonatomic) UIView * transparentTintCoverView;
 
 @property (nonatomic) UIImageView * profileInConstructionNotification;
 
@@ -128,10 +128,18 @@
     if(!self.profileInConstructionNotification && !self.isCurrentUser){
         self.profileInConstructionNotification = [[UIImageView alloc] initWithImage:[UIImage imageNamed:PROFILE_UNDER_CONSTRUCTION_ICON]];
         [self.profileInConstructionNotification setFrame:self.bounds];
-        [self insertSubview:self.profileInConstructionNotification aboveSubview:self.coverPhotoView];
+        [self insertSubview:self.profileInConstructionNotification aboveSubview:self.transparentTintCoverView];
     }
 }
 
+-(void)removeProfileConstructionNotification{
+    
+    if(self.profileInConstructionNotification)
+    {
+        [self.profileInConstructionNotification removeFromSuperview];
+        self.profileInConstructionNotification = nil;
+    }
+}
 
 
 -(void) userNameChanged {
@@ -203,7 +211,7 @@
 -(void)createTopAndReflectionCoverImageFromImage:(UIImage *)coverPhotoImage{
 	[self.coverPhotoView setImage:coverPhotoImage];
 	self.coverPhotoView.contentMode = UIViewContentModeScaleAspectFit;
-	[self insertSubview:self.coverView aboveSubview:self.coverPhotoView];
+	[self insertSubview:self.transparentTintCoverView aboveSubview:self.coverPhotoView];
 	[self.flippedCoverPhoto setImage:coverPhotoImage];
 	self.flippedCoverPhoto.transform = CGAffineTransformMakeRotation(M_PI);
 	[self.flippedCoverPhoto createBlurViewOnViewWithStyle:UIBlurEffectStyleDark];
@@ -414,13 +422,13 @@
 	}
 	return _flippedCoverPhoto;
 }
--(UIView *)coverView{
-	if(!_coverView){
-		_coverView = [[UIView alloc] initWithFrame: self.coverPhotoView.frame];
-		_coverView.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.5];
-		[self insertSubview:_coverView aboveSubview:self.coverPhotoView];
+-(UIView *)transparentTintCoverView{
+	if(!_transparentTintCoverView){
+		_transparentTintCoverView = [[UIView alloc] initWithFrame: self.coverPhotoView.frame];
+		_transparentTintCoverView.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.5];
+		[self insertSubview:_transparentTintCoverView aboveSubview:self.coverPhotoView];
 	}
-	return _coverView;
+	return _transparentTintCoverView;
 }
 
 -(void)dealloc{
