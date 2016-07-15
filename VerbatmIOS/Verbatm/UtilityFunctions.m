@@ -122,8 +122,11 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 									  completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                                           
 										  if (!data || error) {
-											  NSLog(@"Error downloading photo from url %@ : %@", url, error.description);
-											  [[Crashlytics sharedInstance] recordError: error];
+											  //error code -999 means request was cancelled
+											  if (error.code != -999) {
+												  NSLog(@"Error downloading photo from url %@ : %@", url, error.description);
+												  [[Crashlytics sharedInstance] recordError: error];
+											  }
 											  resolve(nil);
 										  } else if(data){
 											  resolve(data);

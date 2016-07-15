@@ -124,7 +124,7 @@
                       
                       if(weakSelf.beingPublished){
                           dispatch_async(dispatch_get_main_queue(), ^{
-                              resolve([weakSelf getImageScreenshotWithText:image]);
+                              resolve([weakSelf getImageScreenshotWithText:image inHalf:half]);
                           });
                       }else{
                           resolve(image);
@@ -146,9 +146,11 @@
 }
 
 //todo: fix half screen problem
--(UIImage *)getImageScreenshotWithText:(UIImage *)image {
+-(UIImage *)getImageScreenshotWithText:(UIImage *)image inHalf:(BOOL)half {
 	@autoreleasepool {
-		TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:[[UIScreen mainScreen] bounds] andImage:image];
+		CGSize size = half ? HALF_SCREEN_SIZE : FULL_SCREEN_SIZE;
+		CGRect frame = CGRectMake(0.f, 0.f, size.width, size.height);
+		TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:frame andImage:image];
 		BOOL textColorBlack = [self.textColor isEqual:[UIColor blackColor]];
 		NSString * textToCapture = self.text;
 
