@@ -49,7 +49,7 @@
 #define SETTINGS_BUTTON_SIZE (PROFILE_INFO_BAR_HEIGHT - (EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET * 2))
 #define FOLLOW_OR_EDIT_BUTTON_SIZE 65.f
 #define FOLLOWING_LABEL_WIDTH 60.f
-#define NUM_FOLLOWING_WIDTH 17.f
+#define NUM_FOLLOWING_WIDTH 20.f
 
 #define EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET 2.f // how much buffer between button and top and bottom of self
 
@@ -138,7 +138,7 @@
 									  NSFontAttributeName: [UIFont fontWithName:BOLD_FONT size:FOLLOW_TEXT_FONT_SIZE]};
 
     CGFloat following_x = (self.frame.size.width - SETTINGS_BUTTON_SIZE - PROFILE_HEADER_XOFFSET*3
-    						   - FOLLOW_OR_EDIT_BUTTON_SIZE - FOLLOWING_LABEL_WIDTH -1.f);
+    						   - FOLLOW_OR_EDIT_BUTTON_SIZE - FOLLOWING_LABEL_WIDTH -5.f);
     CGFloat following_num_x = following_x - NUM_FOLLOWING_WIDTH - 4.f;
     CGFloat followers_x = following_num_x - PROFILE_HEADER_XOFFSET - FOLLOWING_LABEL_WIDTH;
     CGFloat followers_num_x = followers_x - NUM_FOLLOWING_WIDTH - 3.f;
@@ -218,7 +218,7 @@
 }
 
 -(void) createFollowOrEditButton {
-    CGFloat frame_x = self.settingsButton.frame.origin.x - PROFILE_HEADER_XOFFSET - FOLLOW_OR_EDIT_BUTTON_SIZE -2.f;
+    CGFloat frame_x = self.settingsButton.frame.origin.x - PROFILE_HEADER_XOFFSET - FOLLOW_OR_EDIT_BUTTON_SIZE -5.f;
     CGRect followButtonFrame = CGRectMake(frame_x, STATUS_BAR_HEIGHT + EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET, FOLLOW_OR_EDIT_BUTTON_SIZE, PROFILE_INFO_BAR_HEIGHT - (EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET * 2.f));
     self.followOrEditButton = [[UIButton alloc] initWithFrame: followButtonFrame];
     self.followOrEditButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
