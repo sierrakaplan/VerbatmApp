@@ -151,10 +151,8 @@
     });
 }
 
-
 -(BOOL)checkIfList:(NSArray *) list ContainsObject:(PFObject *) object{
-    
-    for(PFObject * entry in list){
+    for(PFObject * entry in list) {
         if([[entry objectId] isEqualToString:[object objectId]]){
             return YES;
         }

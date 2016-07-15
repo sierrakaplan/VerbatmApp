@@ -191,7 +191,6 @@
 				[self.usersWhoHaveBlockedUser addObject:[block valueForKey:BLOCK_USER_BLOCKING_KEY]];
 			}
 			[self.usersWhoHaveBlockedUser addObject:[PFUser currentUser]];
-
 			PFQuery *exploreChannelsQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
 			[exploreChannelsQuery whereKey:CHANNEL_CREATOR_KEY notContainedIn: self.usersWhoHaveBlockedUser];
 			[exploreChannelsQuery whereKey:@"objectId" notContainedIn: self.channelsFollowedIds];

@@ -15,7 +15,7 @@
 
 @interface FeedTableViewController ()<FeedCellDelegate>
 
-@property(nonatomic) NSArray *followingProfileList;
+@property(nonatomic) NSMutableArray *followingProfileList;
 @property (nonatomic) Channel *currentUserChannel;
 @property (nonatomic) ProfileVC *nextProfileToPresent;
 @property (nonatomic) NSInteger nextProfileIndex;
@@ -67,18 +67,75 @@
 }
 
 -(void) refreshListOfContent {
+	[self.tableView setContentOffset:CGPointZero animated:YES];
 	self.currentUserChannel = [[UserInfoCache sharedInstance] getUserChannel];
 
 	if(self.followingProfileList){
 		self.followingProfileList = nil;
 	}
 
-	//todo: only insert new rows
+	//todo: change how getfollowersandfollowing is used everywhere (also make sure one instance of updating followers is used)
 	[self.currentUserChannel getFollowersAndFollowingWithCompletionBlock:^{
-		self.followingProfileList = [self.currentUserChannel channelsUserFollowing];
-		[self.tableView reloadData];
-		[self.tableView setContentOffset:CGPointZero animated:YES];
+		//No channels have been previously loaded
+		if (!self.followingProfileList || !self.followingProfileList.count) {
+			self.followingProfileList = [NSMutableArray arrayWithArray: [self.currentUserChannel channelsUserFollowing]];
+			[self.tableView reloadData];
+			return;
+		}
+
+		//Only update indices that have changed (remove channels not followed and add channels user is newly following)
+		NSMutableArray *newChannels = [NSMutableArray arrayWithArray: [self.currentUserChannel channelsUserFollowing]];
+		NSMutableArray *removedChannels = [NSMutableArray arrayWithArray: self.followingProfileList];
+
+		// First remove channels user is no longer following
+		[self removeObjectsFromArrayOfChannels:removedChannels inArray:newChannels];
+		NSMutableArray *removedIndices = [[NSMutableArray alloc] init];
+		NSMutableIndexSet *removedIndexSet = [[NSMutableIndexSet alloc] init];
+		//Note: this is slow but there will probably be few removed indices and alternatives are too complex
+		for (Channel *channel in removedChannels) {
+			NSUInteger removedIndex = [self.followingProfileList indexOfObject: channel];
+			[removedIndices addObject:[NSIndexPath indexPathForRow:removedIndex inSection:0]];
+			[removedIndexSet addIndex: removedIndex];
+		}
+
+		//Load newer channels that user is following
+		[self removeObjectsFromArrayOfChannels:newChannels inArray:self.followingProfileList];
+		NSMutableArray *addedIndices = [[NSMutableArray alloc] init];
+		NSMutableIndexSet *addedIndexSet = [[NSMutableIndexSet alloc] init];
+		//Note: this is slow but there will probably be few removed indices and alternatives are too complex
+		for (Channel *channel in newChannels) {
+			NSUInteger addedIndex = [[self.currentUserChannel channelsUserFollowing] indexOfObject: channel];
+			[addedIndices addObject:[NSIndexPath indexPathForRow:addedIndex inSection:0]];
+			[addedIndexSet addIndex: addedIndex];
+		}
+
+		if ([removedIndices count]) {
+			[self.followingProfileList removeObjectsAtIndexes: removedIndexSet];
+			[self.tableView deleteRowsAtIndexPaths:removedIndices withRowAnimation:UITableViewRowAnimationTop];
+		}
+		if ([addedIndices count]) {
+			[self.followingProfileList insertObjects:newChannels atIndexes: addedIndexSet];
+			[self.tableView insertRowsAtIndexPaths:addedIndices withRowAnimation:UITableViewRowAnimationTop];
+		}
 	}];
+}
+
+//todo: move to utility functions - make work for any pfobject
+//Compares Channel* objects by their PFObject ids
+-(void) removeObjectsFromArrayOfChannels:(NSMutableArray*)receivingArray inArray:(NSArray*)otherArray{
+	if (receivingArray == otherArray) {
+		[receivingArray removeAllObjects];
+		return;
+	}
+	for (Channel *channel in otherArray) {
+		for (int i = 0; i < receivingArray.count; i++) {
+			Channel *otherChannel = receivingArray[i];
+			if ([channel.parseChannelObject.objectId isEqualToString:otherChannel.parseChannelObject.objectId]) {
+				[receivingArray removeObjectAtIndex: i];
+				break;
+			}
+		}
+	}
 }
 
 #pragma mark - Table View Delegate methods (view customization) -
