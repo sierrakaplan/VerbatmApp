@@ -64,13 +64,14 @@
 }
 
 -(void) refreshListOfContent {
+
 	if (self.tableView.contentOffset.y > (self.view.frame.size.height - 20.f)) {
 		[self.tableView setContentOffset:CGPointZero animated:YES];
 	}
 	self.currentUserChannel = [[UserInfoCache sharedInstance] getUserChannel];
 
 	//todo: change how getfollowersandfollowing is used everywhere (also make sure one instance of updating followers is used)
-	[self.currentUserChannel getFollowersAndFollowingWithCompletionBlock:^{
+	[self.currentUserChannel getChannelsFollowingWithCompletionBlock:^{
 		[self.refreshControl endRefreshing];
 		//No channels have been previously loaded
 		if (!self.followingProfileList || !self.followingProfileList.count) {
@@ -164,28 +165,18 @@
 }
 
 -(void)prepareNextPostFromNextIndex:(NSInteger) nextIndex{
+	if(nextIndex < self.followingProfileList.count) {
+		Channel * nextChannel = self.followingProfileList[nextIndex];
+		self.nextProfileToPresent = nil;
+		self.nextProfileToPresent = [[ProfileVC alloc] init];
+		self.nextProfileToPresent.profileInFeed = YES;
+		self.nextProfileToPresent.isCurrentUserProfile = NO;
+		self.nextProfileToPresent.isProfileTab = NO;
+		self.nextProfileToPresent.ownerOfProfile = nextChannel.channelCreator;
+		self.nextProfileToPresent.channel = nextChannel;
+		[self.nextProfileToPresent loadContentToPostList];
 
-	dispatch_async(dispatch_get_global_queue(0, 0), ^{
-		if(nextIndex < self.followingProfileList.count) {
-
-			Channel * nextChannel = self.followingProfileList[nextIndex];
-			if(self.nextProfileToPresent){
-				@autoreleasepool {
-					self.nextProfileToPresent = nil;
-				}
-			}
-
-			self.nextProfileToPresent = [[ProfileVC alloc] init];
-			self.nextProfileToPresent.profileInFeed = YES;
-			self.nextProfileToPresent.isCurrentUserProfile = NO;
-			self.nextProfileToPresent.isProfileTab = NO;
-			self.nextProfileToPresent.ownerOfProfile = nextChannel.channelCreator;
-			self.nextProfileToPresent.channel = nextChannel;
-			[self.nextProfileToPresent loadContentToPostList];
-
-		}
-	});
-
+	}
 }
 - (void)tableView:(UITableView *)tableView
 didEndDisplayingCell:(UITableViewCell *)cell
@@ -199,7 +190,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath{
 	cell.delegate = self;
 	if(self.nextProfileToPresent && indexPath.row == self.nextProfileIndex){
 		[cell setProfileAlreadyLoaded:self.nextProfileToPresent];
-	}else{
+	} else {
 		[cell presentProfileForChannel:self.followingProfileList[indexPath.row]];
 	}
 	self.nextProfileIndex = indexPath.row + 1;

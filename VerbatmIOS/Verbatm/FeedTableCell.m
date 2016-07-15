@@ -33,7 +33,7 @@
 	[self addSubview:self.currentProfile.view];
 	self.clipsToBounds = YES;
 
-	if(oldProfile){
+	if(oldProfile && oldProfile != newProfile){
 		[oldProfile clearOurViews];
 		oldProfile = nil;
 	}
@@ -57,13 +57,12 @@
 
 		dispatch_async(dispatch_get_main_queue(), ^{
 			[self addSubview:self.currentProfile.view];
+			if(oldProfile){
+				[oldProfile clearOurViews];
+				oldProfile = nil;
+			}
 		});
 	});
-
-	if(oldProfile){
-		[oldProfile clearOurViews];
-		oldProfile = nil;
-	}
 }
 
 

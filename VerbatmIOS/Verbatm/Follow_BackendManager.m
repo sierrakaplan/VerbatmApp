@@ -28,12 +28,12 @@
 	[newFollowObject setObject:channelToFollow.parseChannelObject forKey:FOLLOW_CHANNEL_FOLLOWED_KEY];
 	[newFollowObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 		if(succeeded){
-            NSDictionary * userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[channelToFollow.channelCreator objectId],USER_FOLLOWING_NOTIFICATION_USERINFO_KEY,nil];
-            
-            
-            NSNotification * not = [[NSNotification alloc]initWithName:NOTIFICATION_NOW_FOLLOWING_USER object:nil userInfo:userInfo];
-            [[NSNotificationCenter defaultCenter] postNotification:not];
-            [Notification_BackendManager createNotificationWithType:NewFollower receivingUser:channelToFollow.channelCreator relevantPostObject:nil];
+			NSDictionary * userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[channelToFollow.channelCreator objectId],USER_FOLLOWING_NOTIFICATION_USERINFO_KEY,nil];
+
+
+			NSNotification * not = [[NSNotification alloc]initWithName:NOTIFICATION_NOW_FOLLOWING_USER object:nil userInfo:userInfo];
+			[[NSNotificationCenter defaultCenter] postNotification:not];
+			[Notification_BackendManager createNotificationWithType:NewFollower receivingUser:channelToFollow.channelCreator relevantPostObject:nil];
 		}
 	}];
 }
@@ -45,7 +45,7 @@
 	[followQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channelToUnfollow.parseChannelObject];
 	[followQuery whereKey:FOLLOW_USER_KEY equalTo:user];
 	[followQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-														 NSError * _Nullable error) {
+													NSError * _Nullable error) {
 		if(objects && !error && objects.count) {
 			PFObject * followObj = [objects firstObject];
 			[followObj deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
@@ -64,7 +64,7 @@
 	[followQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channel.parseChannelObject];
 	[followQuery whereKey:FOLLOW_USER_KEY equalTo:[PFUser currentUser]];
 	[followQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-														 NSError * _Nullable error) {
+													NSError * _Nullable error) {
 		if(objects && !error && objects.count > 0) {
 			block(YES);
 			return;
@@ -157,11 +157,11 @@
 
 // Returns all of the users following a given channel as an array of PFUsers
 + (void) usersFollowingChannel: (Channel*) channel withCompletionBlock:(void(^)(NSMutableArray*)) block {
-	if (!channel) return;
+
 	PFQuery *followersQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
 	[followersQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channel.parseChannelObject];
 	[followersQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-														  NSError * _Nullable error) {
+													   NSError * _Nullable error) {
 		if(objects && !error) {
 			NSMutableArray *users = [[NSMutableArray alloc] initWithCapacity:objects.count];
 			for (PFObject *followObject in objects) {

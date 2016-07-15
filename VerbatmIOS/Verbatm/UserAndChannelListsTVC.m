@@ -205,7 +205,6 @@
     self.channelOnDisplay = channel;
     self.postObject = post;
     if(listType == likersList){
-
         [Like_BackendManager getUsersWhoLikePost:post withCompletionBlock:^(NSArray * users) {
             [Channel getChannelsForUserList:[NSMutableArray arrayWithArray: users] andCompletionBlock:^(NSMutableArray * channelList) {
                 if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
@@ -215,34 +214,33 @@
                     [self.tableView reloadData];
                     if(self.navBar)[self.view bringSubviewToFront:self.navBar];
                 });
-                
             }];
         }];
 
-    }else{
-        [channel getFollowersAndFollowingWithCompletionBlock:^{
-            if(listType == followersList){
-                [Channel getChannelsForUserList:[channel usersFollowingChannel] andCompletionBlock:^(NSMutableArray * channelList) {
-                    if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
-                    [self.channelsToDisplay addObjectsFromArray:channelList];
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        self.shouldAnimateViews = YES;
-                        [self.tableView reloadData];
-                        if(self.navBar)[self.view bringSubviewToFront:self.navBar];
-                    });
-                    
-                }];
-            }else{
-                if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
-                [self.channelsToDisplay addObjectsFromArray:[channel channelsUserFollowing]];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    self.shouldAnimateViews = YES;
-                    [self.tableView reloadData];
-                    if(self.navBar)[self.view bringSubviewToFront:self.navBar];
-                });
-                
-            }
-        }];
+    } else {
+		if(listType == followersList){
+			[channel getFollowersWithCompletionBlock:^{
+				[Channel getChannelsForUserList:[channel usersFollowingChannel] andCompletionBlock:^(NSMutableArray * channelList) {
+					if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
+					[self.channelsToDisplay addObjectsFromArray:channelList];
+					dispatch_async(dispatch_get_main_queue(), ^{
+						self.shouldAnimateViews = YES;
+						[self.tableView reloadData];
+						if(self.navBar)[self.view bringSubviewToFront:self.navBar];
+					});
+					
+				}];
+			}];
+		} else {
+			[channel getChannelsFollowingWithCompletionBlock:^{
+				self.channelsToDisplay = [NSMutableArray arrayWithArray:[channel channelsUserFollowing]];
+				dispatch_async(dispatch_get_main_queue(), ^{
+					self.shouldAnimateViews = YES;
+					[self.tableView reloadData];
+					if(self.navBar)[self.view bringSubviewToFront:self.navBar];
+				});
+			}];
+		}
     }
 }
 

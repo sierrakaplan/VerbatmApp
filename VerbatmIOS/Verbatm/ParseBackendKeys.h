@@ -59,7 +59,6 @@
 #define PAGE_VIEW_TYPE @"AveType"
 #define PAGE_PHOTOS_PFRELATION @"PhotoObjectsInPageRelation"
 
-
 #define POST_PFCLASS_KEY @"PostClass"
 #define POST_CHANNEL_KEY @"ChannelForPost" //the channel the post lives in
 #define POST_SIZE_KEY @"PostSize" //number of pages on this post
@@ -91,6 +90,7 @@
 #define CHANNEL_CREATOR_KEY @"ChannelCreator" //the user that has created this channel
 #define CHANNEL_CREATOR_NAME_KEY @"ChannelCreatorName"
 #define CHANNEL_NUM_FOLLOWS @"ChannelNumFollows"
+#define CHANNEL_NUM_FOLLOWING @"ChannelNumFollowing"
 #define CHANNEL_FEATURED_BOOL @"Featured"
 #define CHANNEL_COVER_PHOTO_URL @"CoverPhotoURL"
 

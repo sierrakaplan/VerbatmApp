@@ -86,7 +86,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	[super viewDidLoad];
 	self.automaticallyAdjustsScrollViewInsets = NO;
 	self.view.backgroundColor = [UIColor colorWithWhite:0.90 alpha:1.f];
-	[self createHeader];
+	[self buildHeaderView];
 	[self loadContentToPostList];
 	[self checkIntroNotification];
 }
@@ -103,7 +103,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 -(void)refreshProfile {
 	if(self.postListVC)[self.postListVC refreshPosts];
-	[self createHeader];
+	[self buildHeaderView];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
@@ -154,13 +154,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	[self.view addSubview: self.profileHeaderView];
 	[self.view sendSubviewToBack:self.profileHeaderView];
 	self.headerViewOnScreen = YES;
-}
-
--(void) createHeader {
-	if(self.channel.channelsUserFollowing == nil || !self.channel.channelsUserFollowing.count){
-		[self.channel getFollowersAndFollowingWithCompletionBlock:nil];
-	}
-	[self buildHeaderView];
 }
 
 #pragma mark - Profile Photo -

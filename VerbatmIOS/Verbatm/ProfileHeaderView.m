@@ -7,6 +7,7 @@
 //
 
 #import "Channel.h"
+#import <Crashlytics/Crashlytics.h>
 
 #import "Icons.h"
 
@@ -73,7 +74,7 @@
 		self.isCurrentUser = (user == nil);
 		self.editMode = NO;
 		self.backgroundColor = [UIColor clearColor];
-		CGRect userInfoBarFrame = CGRectMake(0.f, 0.f, frame.size.width,STATUS_BAR_HEIGHT + PROFILE_INFO_BAR_HEIGHT);
+		CGRect userInfoBarFrame = CGRectMake(0.f, 0.f, frame.size.width, STATUS_BAR_HEIGHT + PROFILE_INFO_BAR_HEIGHT);
 		self.userInformationBar = [[ProfileInformationBar alloc] initWithFrame:userInfoBarFrame andUser:user
 																	andChannel:channel inProfileTab:profileTab inFeed:inFeed];
 		self.userInformationBar.delegate = self;
@@ -106,12 +107,12 @@
 	self.blogDescription.lineBreakMode = NSLineBreakByWordWrapping;
 	self.blogDescription.numberOfLines = 5;
 
-	[self changeUserName];
-	[self changeBlogTitleToTitle:self.channel.name];
-	[self changeBlogDescription];
 	[self addSubview:self.userNameLabel];
 	[self addSubview:self.blogTitle];
 	[self addSubview:self.blogDescription];
+	[self changeUserName];
+	[self changeBlogTitleToTitle:self.channel.name];
+	[self changeBlogDescription];
 	if(self.isCurrentUser) {
 		[self addChangeCoverPhotoButton];
 		if (self.channel.defaultBlogName) {
@@ -128,11 +129,20 @@
 }
 
 -(void) changeUserName {
-	[self.channel.channelCreator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-		NSString * userName = [self.channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY];
-		self.userNameLabel.text = userName;
+	if (self.channel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY] && ((NSString*)self.channel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY]).length > 0) {
+		self.userNameLabel.text = self.channel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY];
 		[self.userNameLabel setTextColor:[UIColor whiteColor]];
-	}];
+	} else {
+		[self.channel.channelCreator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+			if (error) {
+				[[Crashlytics sharedInstance] recordError:error];
+			} else {
+				NSString * userName = [self.channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY];
+				self.userNameLabel.text = userName;
+				[self.userNameLabel setTextColor:[UIColor whiteColor]];
+			}
+		}];
+	}
 }
 
 -(void) changeBlogTitleToTitle:(NSString *) newTitle {
@@ -400,6 +410,7 @@
 	}
 	return _flippedCoverPhoto;
 }
+
 -(UIView *)coverView{
 	if(!_coverView){
 		_coverView = [[UIView alloc] initWithFrame: self.coverPhotoView.frame];
@@ -411,7 +422,6 @@
 
 -(void)dealloc{
 }
-
 
 
 @end

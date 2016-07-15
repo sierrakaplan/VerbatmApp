@@ -20,6 +20,7 @@
 #import "Styles.h"
 #import "FollowingView.h"
 
+#import "UserInfoCache.h"
 
 @interface ProfileInformationBar ()
 
@@ -75,17 +76,10 @@
 			if (!self.isCurrentUser) {
 				// This allows a user to block another user
 				[self createSettingsButton];
-                
-                if(channel.usersFollowingChannel.count){
-                    self.currentUserFollowsUser = [channel checkIfList:channel.usersFollowingChannel ContainsObject:[PFUser currentUser]];
-                }else{
-                    [channel getFollowersAndFollowingWithCompletionBlock:^{
-                        self.currentUserFollowsUser = [channel checkIfList:channel.usersFollowingChannel ContainsObject:[PFUser currentUser]];
-                        [self updateUserFollowingChannel];
-                        
-                    }];
-                    [self createFollowButton];
-                }
+
+				self.currentUserFollowsUser = [[UserInfoCache sharedInstance] userFollowsChannel:channel];
+				[self updateUserFollowingChannel];
+				[self createFollowButton];
 			}
 		}
 		[self createFollowersAndFollowingLabels];
@@ -107,23 +101,16 @@
     if(userInfo){
         NSString * userId = userInfo[USER_FOLLOWING_NOTIFICATION_USERINFO_KEY];
         if([userId isEqualToString:[self.channel.channelCreator objectId]]){
-            [self refreshNotificationList];
+            self.currentUserFollowsUser = [[UserInfoCache sharedInstance] userFollowsChannel: self.channel];
+			[self updateUserFollowingChannel];
         }
     }
-    
-}
-
--(void)refreshNotificationList{
-    [self.channel getFollowersAndFollowingWithCompletionBlock:^{
-        self.currentUserFollowsUser = [self.channel checkIfList:self.channel.usersFollowingChannel ContainsObject:[PFUser currentUser]];
-        [self updateUserFollowingChannel];
-    }];
 }
 
 
 -(void) updateNumFollowersAndFollowing {
-	NSString *numFollowers = [NSNumber numberWithInteger:self.channel.usersFollowingChannel.count].stringValue;
-	NSString *numFollowing = [NSNumber numberWithInteger:self.channel.channelsUserFollowing.count].stringValue;
+	NSString *numFollowers = ((NSNumber*)self.channel.parseChannelObject[CHANNEL_NUM_FOLLOWS]).stringValue;
+	NSString *numFollowing = ((NSNumber*)self.channel.parseChannelObject[CHANNEL_NUM_FOLLOWING]).stringValue;
     NSDictionary *numAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
                                     NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size:NUMBER_FONT_SIZE]};
     

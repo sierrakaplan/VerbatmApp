@@ -15,6 +15,7 @@
 
 -(void)loadUserChannelsWithCompletionBlock:(void(^)())block;
 -(Channel *) getUserChannel;
+-(BOOL) userFollowsChannel:(Channel*)channel;
 
 @end
 

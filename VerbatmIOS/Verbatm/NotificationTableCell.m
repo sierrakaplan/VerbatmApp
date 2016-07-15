@@ -13,6 +13,8 @@
 #import <Parse/PFUser.h>
 #import "Follow_BackendManager.h"
 #import "Notifications.h"
+#import "UserInfoCache.h"
+
 @interface NotificationTableCell ()
 
 @property (nonatomic) UILabel * notificationTextLabel;
@@ -91,20 +93,12 @@
     NSDictionary * userInfo = [notification userInfo];
     if(userInfo){
         NSString * userId = userInfo[USER_FOLLOWING_NOTIFICATION_USERINFO_KEY];
-        if([userId isEqualToString:[self.channel.channelCreator objectId]]){
-            [self refreshNotificationList];
+        if([userId isEqualToString:[self.channel.channelCreator objectId]]) {
+			self.currentUserFollowingChannelUser = [[UserInfoCache sharedInstance] userFollowsChannel: self.channel];
+            [self updateUserFollowingChannel];
         }
     }
 }
-
-
--(void)refreshNotificationList{
-    [Follow_BackendManager currentUserFollowsChannel:self.channel withCompletionBlock:^(bool isFollowing) {
-        self.currentUserFollowingChannelUser = isFollowing;
-        if(self.followButton)[self updateUserFollowingChannel];
-    }];
-}
-
 
 -(void)addTapGestureToPostText{
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(postTextTapped:)];

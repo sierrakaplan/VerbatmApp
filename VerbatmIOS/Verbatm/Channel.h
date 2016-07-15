@@ -30,7 +30,7 @@
 				  andChannelCreator:(PFUser *) channelCreator;
 
 -(void) changeTitle:(NSString*)title;
-
+ 
 -(void) changeTitle:(NSString*)title andDescription:(NSString*)description;
 
 -(void) currentUserFollowsChannel:(BOOL) follows;
@@ -39,8 +39,9 @@
 
 -(void) getChannelOwnerNameWithCompletionBlock:(void(^)(NSString *))block;
 
-// Returns when both usersFollowingChannel and channelsUserFollowing are filled in
--(void) getFollowersAndFollowingWithCompletionBlock:(void(^)(void))block;
+-(void) getFollowersWithCompletionBlock:(void(^)(void))block;
+
+-(void) getChannelsFollowingWithCompletionBlock:(void(^)(void))block;
 
 -(BOOL)channelBelongsToCurrentUser;
 

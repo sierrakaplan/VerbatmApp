@@ -47,6 +47,7 @@
 				[self.userChannel changeTitle:[self getDefaultBlogName]];
 				self.userChannel.defaultBlogName = YES;
 			}
+			//todo:
 			if (!self.userChannel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY]) {
 				[self.userChannel.parseChannelObject setObject:[PFUser currentUser][VERBATM_USER_NAME_KEY] forKey:CHANNEL_CREATOR_NAME_KEY];
 				[self.userChannel.parseChannelObject saveInBackground];
@@ -59,7 +60,9 @@
 				self.userChannel = [[Channel alloc] initWithChannelName:defaultBlogName andParseChannelObject:channelObj
 																					   andChannelCreator:[PFUser currentUser]];
 				self.userChannel.defaultBlogName = YES;
-				block();
+				[self.userChannel getChannelsFollowingWithCompletionBlock:^{
+					block();
+				}];
 			}];
 		}
     }];
@@ -74,7 +77,11 @@
     return self.userChannel;
 }
 
--(void)reloadUserChannels{
+-(BOOL) userFollowsChannel:(Channel*)channel {
+	return [self.userChannel checkIfList:self.userChannel.channelsUserFollowing ContainsObject:channel.parseChannelObject];
+}
+
+-(void)reloadUserChannels {
     [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray * channels) {
         if (channels.count > 0) self.userChannel = channels[0];
     }];

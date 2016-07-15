@@ -142,6 +142,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 
 /* Migrating to one channel */
 -(void) checkMigrated {
+	
 	self.migrated = NO;
 	NSNumber* migratedObject = [[PFUser currentUser] objectForKey:USER_MIGRATED_ONE_CHANNEL];
 	if (migratedObject && [migratedObject boolValue]) self.migrated = YES;

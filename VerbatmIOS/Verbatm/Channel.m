@@ -131,11 +131,9 @@
             block(userName);
         }];
     }];
-    
 }
 
 +(void)getChannelsForUserList:(NSArray *) userList andCompletionBlock:(void(^)(NSMutableArray *))block{
-    
     NSMutableArray * userChannelPromises = [[NSMutableArray alloc] init];
     NSMutableArray * userChannelList = [[NSMutableArray alloc] init];
     for (PFUser * user in userList) {
@@ -152,37 +150,40 @@
 }
 
 -(BOOL)checkIfList:(NSArray *) list ContainsObject:(PFObject *) object{
-    for(PFObject * entry in list) {
-        if([[entry objectId] isEqualToString:[object objectId]]){
-            return YES;
-        }
+    for(id entry in list) {
+		if ([entry isKindOfClass:[Channel class]]) {
+			Channel *channel = (Channel*) entry;
+			if([channel.parseChannelObject.objectId isEqualToString:[object objectId]]){
+				return YES;
+			}
+		} else {
+			PFObject *objEntry = (PFObject*) entry;
+			if([objEntry.objectId isEqualToString:[object objectId]]){
+				return YES;
+			}
+		}
     }
-    
+
     return NO;
 }
 
--(void) getFollowersAndFollowingWithCompletionBlock:(void(^)(void))block {
-    NSMutableArray * loadPromises = [[NSMutableArray alloc] init];
-    __weak Channel * weakSelf = self;
-    [loadPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve)
-                             {
-                                 [Follow_BackendManager usersFollowingChannel:self withCompletionBlock:^(NSArray *users) {
-                                     weakSelf.usersFollowingChannel = [[NSMutableArray alloc] initWithArray:users];
-                                     resolve(nil);
-                                 }];
-                             }]];
-    
-    [loadPromises addObject:[AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve)
-                             {
-                                 [Follow_BackendManager channelsUserFollowing:weakSelf.channelCreator withCompletionBlock:^(NSArray *channels) {
-                                     weakSelf.channelsUserFollowing = [[NSMutableArray alloc] initWithArray: channels];
-                                     resolve(nil);
-                                 }];
-                             }]];
-    
-    PMKWhen(loadPromises).then(^(id nothing) {
-       if(block) block();
-    });
+-(void) getFollowersWithCompletionBlock:(void(^)(void))block {
+	[Follow_BackendManager usersFollowingChannel:self withCompletionBlock:^(NSArray *users) {
+		self.usersFollowingChannel = [[NSMutableArray alloc] initWithArray:users];
+		self.parseChannelObject[CHANNEL_NUM_FOLLOWS] = [NSNumber numberWithInteger:users.count];
+		[self.parseChannelObject saveInBackground];
+		if(block) block();
+	}];
+}
+
+
+-(void) getChannelsFollowingWithCompletionBlock:(void(^)(void))block {
+	[Follow_BackendManager channelsUserFollowing: self.channelCreator withCompletionBlock:^(NSArray *channels) {
+		self.channelsUserFollowing = [[NSMutableArray alloc] initWithArray: channels];
+		self.parseChannelObject[CHANNEL_NUM_FOLLOWING] = [NSNumber numberWithInteger:channels.count];
+		[self.parseChannelObject saveInBackground];
+		if(block) block();
+	}];
 }
 
 -(BOOL)channelBelongsToCurrentUser {

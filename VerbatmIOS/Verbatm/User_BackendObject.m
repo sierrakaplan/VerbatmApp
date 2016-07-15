@@ -84,6 +84,7 @@
 
 //Move all posts to one channel, move all follow relationships to one channel, and delete all other channels
 + (void) migrateUserToOneChannelWithCompletionBlock:(void(^)(BOOL))block {
+
 	PFUser *user = [PFUser currentUser];
 
 	PFQuery *userChannelQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
