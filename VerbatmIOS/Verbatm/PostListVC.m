@@ -215,6 +215,7 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 -(void) defineLoadPostsCompletions {
 	__weak typeof(self) weakSelf = self;
 	self.refreshPostsCompletion = ^void(NSArray *posts) {
+		weakSelf.isRefreshing = NO;
 		if(weakSelf.exitedView) return; // Already left page
 		if(posts.count) {
 			[weakSelf.postListDelegate postsFound];
@@ -228,12 +229,11 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 		} else if (!weakSelf.currentlyPublishing) {
 			[weakSelf.postListDelegate noPostFound];
 		}
-		weakSelf.isRefreshing = NO;
 	};
 
 	self.loadOlderPostsCompletion = ^void(NSArray *posts) {
+		weakSelf.isLoadingOlder = NO;
 		if (!posts.count || weakSelf.exitedView){
-			weakSelf.isLoadingOlder = NO;
 			return;
 		}
 		[weakSelf.postListDelegate postsFound];

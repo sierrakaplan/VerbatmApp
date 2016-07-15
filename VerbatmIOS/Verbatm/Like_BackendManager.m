@@ -15,21 +15,19 @@
 @implementation Like_BackendManager
 
 + (void)currentUserLikePost:(PFObject *) postParseObject {
-	[postParseObject incrementKey:POST_NUM_LIKES];
-	[postParseObject saveInBackground];
 	PFObject *newLikeObject = [PFObject objectWithClassName:LIKE_PFCLASS_KEY];
 	[newLikeObject setObject:[PFUser currentUser]forKey:LIKE_USER_KEY];
 	[newLikeObject setObject:postParseObject forKey:LIKE_POST_LIKED_KEY];
 	[newLikeObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        if(succeeded){
+        if(succeeded) {
+			[postParseObject incrementKey:POST_NUM_LIKES];
+			[postParseObject saveInBackground];
             [Notification_BackendManager createNotificationWithType:Like receivingUser:[postParseObject valueForKey:POST_ORIGINAL_CREATOR_KEY] relevantPostObject:postParseObject];
         }
     }];
 }
 
 + (void)currentUserStopLikingPost:(PFObject *) postParseObject {
-	[postParseObject incrementKey:POST_NUM_LIKES byAmount:[NSNumber numberWithInteger:-1]];
-	[postParseObject saveInBackground];
 	PFQuery * userChannelQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
 	[userChannelQuery whereKey:LIKE_POST_LIKED_KEY equalTo:postParseObject];
 	[userChannelQuery whereKey:LIKE_USER_KEY equalTo:[PFUser currentUser]];
@@ -38,7 +36,12 @@
 		if(objects && !error) {
 			if(objects.count){
 				PFObject *likeObject = [objects firstObject];
-				[likeObject deleteInBackground];
+				[likeObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+					if(succeeded) {
+						[postParseObject incrementKey:POST_NUM_LIKES byAmount:[NSNumber numberWithInteger:-1]];
+						[postParseObject saveInBackground];
+					}
+				}];
 			}
 		}
 	}];

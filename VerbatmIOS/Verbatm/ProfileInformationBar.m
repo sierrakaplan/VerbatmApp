@@ -50,7 +50,7 @@
 #define SETTINGS_BUTTON_SIZE (PROFILE_INFO_BAR_HEIGHT - (EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET * 2))
 #define FOLLOW_OR_EDIT_BUTTON_SIZE 65.f
 #define FOLLOWING_LABEL_WIDTH 60.f
-#define NUM_FOLLOWING_WIDTH 17.f
+#define NUM_FOLLOWING_WIDTH 25.f
 
 #define EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET 2.f // how much buffer between button and top and bottom of self
 
@@ -107,7 +107,6 @@
     }
 }
 
-
 -(void) updateNumFollowersAndFollowing {
 	NSString *numFollowers = ((NSNumber*)self.channel.parseChannelObject[CHANNEL_NUM_FOLLOWS]).stringValue;
 	NSString *numFollowing = ((NSNumber*)self.channel.parseChannelObject[CHANNEL_NUM_FOLLOWING]).stringValue;
@@ -132,7 +131,7 @@
     CGRect followingFrame = CGRectMake(following_x, STATUS_BAR_HEIGHT, FOLLOWING_LABEL_WIDTH, PROFILE_INFO_BAR_HEIGHT);
     CGRect followersFrame = CGRectMake(followers_x, STATUS_BAR_HEIGHT, FOLLOWING_LABEL_WIDTH, PROFILE_INFO_BAR_HEIGHT);
     CGRect numFollowersFrame = CGRectMake(followers_num_x, STATUS_BAR_HEIGHT, NUM_FOLLOWING_WIDTH, PROFILE_INFO_BAR_HEIGHT);
-    CGRect numFollowingFrame = CGRectMake(following_num_x, STATUS_BAR_HEIGHT , NUM_FOLLOWING_WIDTH, PROFILE_INFO_BAR_HEIGHT);
+    CGRect numFollowingFrame = CGRectMake(following_num_x, STATUS_BAR_HEIGHT, NUM_FOLLOWING_WIDTH, PROFILE_INFO_BAR_HEIGHT);
     
     self.numFollowersLabel = [[UILabel alloc] initWithFrame: numFollowersFrame];
     self.numFollowingLabel = [[UILabel alloc] initWithFrame: numFollowingFrame];

@@ -130,11 +130,8 @@
 		}
 	}];
 
-	[Follow_BackendManager numberUsersFollowingChannel:channel withCompletionBlock:^(NSNumber *numFollowers) {
-		self.numFollowers = numFollowers;
-		[self changeNumFollowersLabel];
-	}];
-
+	self.numFollowers = self.channelBeingPresented.parseChannelObject[CHANNEL_NUM_FOLLOWS];
+	[self changeNumFollowersLabel];
 	//Since this is in explore we know the channel is not followed by user
 	[self updateFollowIcon];
 	[self.mainView addSubview:self.followButton];

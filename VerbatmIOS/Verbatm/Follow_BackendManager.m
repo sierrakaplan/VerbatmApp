@@ -16,18 +16,21 @@
 #import <PromiseKit/PromiseKit.h>
 #import "Notification_BackendManager.h"
 #import "Notifications.h"
+#import "UserInfoCache.h"
 
 @implementation Follow_BackendManager
 
 //this function should not be called for a channel that is already being followed
 +(void)currentUserFollowChannel:(Channel *) channelToFollow {
-	[channelToFollow.parseChannelObject incrementKey:CHANNEL_NUM_FOLLOWS];
-	[channelToFollow.parseChannelObject saveInBackground];
 	PFObject * newFollowObject = [PFObject objectWithClassName:FOLLOW_PFCLASS_KEY];
 	[newFollowObject setObject:[PFUser currentUser]forKey:FOLLOW_USER_KEY];
 	[newFollowObject setObject:channelToFollow.parseChannelObject forKey:FOLLOW_CHANNEL_FOLLOWED_KEY];
 	[newFollowObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 		if(succeeded){
+			[channelToFollow.parseChannelObject incrementKey:CHANNEL_NUM_FOLLOWS];
+			[channelToFollow.parseChannelObject saveInBackground];
+			[[[UserInfoCache sharedInstance] getUserChannel].parseChannelObject incrementKey:CHANNEL_NUM_FOLLOWING];
+			[[[UserInfoCache sharedInstance] getUserChannel].parseChannelObject saveInBackground];
 			NSDictionary * userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[channelToFollow.channelCreator objectId],USER_FOLLOWING_NOTIFICATION_USERINFO_KEY,nil];
 
 
@@ -39,8 +42,6 @@
 }
 
 +(void)user:(PFUser *)user stopFollowingChannel:(Channel *) channelToUnfollow {
-	[channelToUnfollow.parseChannelObject incrementKey:CHANNEL_NUM_FOLLOWS byAmount:[NSNumber numberWithInteger:-1]];
-	[channelToUnfollow.parseChannelObject saveInBackground];
 	PFQuery *followQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
 	[followQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channelToUnfollow.parseChannelObject];
 	[followQuery whereKey:FOLLOW_USER_KEY equalTo:user];
@@ -50,48 +51,14 @@
 			PFObject * followObj = [objects firstObject];
 			[followObj deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 				if(succeeded){
+					[channelToUnfollow.parseChannelObject incrementKey:CHANNEL_NUM_FOLLOWS byAmount:[NSNumber numberWithInteger:-1]];
+					[channelToUnfollow.parseChannelObject saveInBackground];
+					[[[UserInfoCache sharedInstance] getUserChannel].parseChannelObject incrementKey:CHANNEL_NUM_FOLLOWING byAmount:[NSNumber numberWithInteger:-1]];
+					[[[UserInfoCache sharedInstance] getUserChannel].parseChannelObject saveInBackground];
 					[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_STOPPED_FOLLOWING_USER object:nil];
 				}
 			}];
 		}
-	}];
-}
-
-//checks to see if there is a follow relation between the channel and the user
-+ (void)currentUserFollowsChannel:(Channel *) channel withCompletionBlock:(void(^)(bool)) block {
-	if(!channel) return;
-	PFQuery *followQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
-	[followQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channel.parseChannelObject];
-	[followQuery whereKey:FOLLOW_USER_KEY equalTo:[PFUser currentUser]];
-	[followQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-													NSError * _Nullable error) {
-		if(objects && !error && objects.count > 0) {
-			block(YES);
-			return;
-		}
-		block (NO);
-	}];
-}
-
-// Returns the number of users following a given channel
-+ (void) numberUsersFollowingChannel: (Channel*) channel withCompletionBlock:(void(^)(NSNumber*)) block {
-	[Follow_BackendManager usersFollowingChannel:channel withCompletionBlock:^(NSArray *users) {
-		if (users) {
-			block([NSNumber numberWithLong:users.count]);
-			return;
-		}
-		block([NSNumber numberWithInt:0]);
-	}];
-}
-
-// Returns the number of channels a user is following
-+ (void) numberChannelsUserFollowing: (PFUser*) user withCompletionBlock:(void(^)(NSNumber*)) block {
-	[Follow_BackendManager channelsUserFollowing:user withCompletionBlock:^(NSArray *channels) {
-		if (channels) {
-			block([NSNumber numberWithLong:channels.count]);
-			return;
-		}
-		block([NSNumber numberWithInt:0]);
 	}];
 }
 

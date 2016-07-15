@@ -124,6 +124,11 @@
         block(@"");
         return;
     }
+	NSString *name = self.parseChannelObject[CHANNEL_CREATOR_NAME_KEY];
+	if (name && name.length > 0) {
+		block (name);
+		return;
+	}
     [[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
         self.channelCreator = (PFUser*)object;
         [self.channelCreator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
@@ -175,7 +180,6 @@
 		if(block) block();
 	}];
 }
-
 
 -(void) getChannelsFollowingWithCompletionBlock:(void(^)(void))block {
 	[Follow_BackendManager channelsUserFollowing: self.channelCreator withCompletionBlock:^(NSArray *channels) {

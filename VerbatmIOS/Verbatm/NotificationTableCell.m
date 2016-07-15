@@ -237,17 +237,9 @@
 }
 
 -(void)getFollowInformation{
-    if(!(self.channel.usersFollowingChannel && self.channel.usersFollowingChannel.count)){
-        [Follow_BackendManager currentUserFollowsChannel:self.channel withCompletionBlock:^(bool isFollowing) {
-            self.currentUserFollowingChannelUser = isFollowing;
-            if(self.followButton)[self updateUserFollowingChannel];
-        }];
-    }else{
-        self.currentUserFollowingChannelUser = [self.channel.usersFollowingChannel containsObject:[PFUser currentUser]];
-        if(self.followButton)[self updateUserFollowingChannel];
-    }
+	self.currentUserFollowingChannelUser = [[UserInfoCache sharedInstance] userFollowsChannel: self.channel];
+	[self updateUserFollowingChannel];
 }
-
 
 -(void) createFollowButton {
     if(self.followButton){
@@ -280,6 +272,7 @@
     [self.channel currentUserFollowsChannel: self.currentUserFollowingChannelUser];
     [self updateUserFollowingChannel];
 }
+
 -(void) updateUserFollowingChannel {
     //todo: images
     if (self.currentUserFollowingChannelUser) {

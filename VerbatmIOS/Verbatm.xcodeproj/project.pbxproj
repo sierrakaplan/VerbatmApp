@@ -179,7 +179,6 @@
 		C7469BF41B4874A600EA7B10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7469BF21B4874A600EA7B10 /* Main.storyboard */; };
 		C74749911C2B1CB90047C66E /* ProfileInformationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C74749901C2B1CB90047C66E /* ProfileInformationBar.m */; };
 		C74BC2901D2CDD2800C1FD80 /* Notification_BackendManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C74BC28F1D2CDD2800C1FD80 /* Notification_BackendManager.m */; };
-		C7540F741C09A47F00DE1AA6 /* ChannelButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C7540F731C09A47F00DE1AA6 /* ChannelButton.m */; };
 		C755DB0C1C74619200136F6E /* PublishingProgressManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C755DB0B1C74619200136F6E /* PublishingProgressManager.m */; };
 		C75690A81D0891FF002C9402 /* OnboardingBlogSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C75690A71D0891FF002C9402 /* OnboardingBlogSelectionViewController.m */; };
 		C75985F51B8553DF00FE77F7 /* InternetConnectionMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = C75985F41B8553DF00FE77F7 /* InternetConnectionMonitor.m */; };
@@ -541,8 +540,6 @@
 		C74749901C2B1CB90047C66E /* ProfileInformationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileInformationBar.m; sourceTree = "<group>"; };
 		C74BC28E1D2CDD2800C1FD80 /* Notification_BackendManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Notification_BackendManager.h; sourceTree = "<group>"; };
 		C74BC28F1D2CDD2800C1FD80 /* Notification_BackendManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Notification_BackendManager.m; sourceTree = "<group>"; };
-		C7540F721C09A47F00DE1AA6 /* ChannelButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelButton.h; sourceTree = "<group>"; };
-		C7540F731C09A47F00DE1AA6 /* ChannelButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelButton.m; sourceTree = "<group>"; };
 		C755DB0A1C74619200136F6E /* PublishingProgressManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PublishingProgressManager.h; sourceTree = "<group>"; };
 		C755DB0B1C74619200136F6E /* PublishingProgressManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PublishingProgressManager.m; sourceTree = "<group>"; };
 		C75690A61D0891FF002C9402 /* OnboardingBlogSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnboardingBlogSelectionViewController.h; sourceTree = "<group>"; };
@@ -1259,8 +1256,6 @@
 		C7540F751C09A48700DE1AA6 /* Channels */ = {
 			isa = PBXGroup;
 			children = (
-				C7540F721C09A47F00DE1AA6 /* ChannelButton.h */,
-				C7540F731C09A47F00DE1AA6 /* ChannelButton.m */,
 				12A06D951CD3762B001800C9 /* BlogPopupView.h */,
 				12A06D961CD3762B001800C9 /* BlogPopupView.m */,
 				12A06D981CD37B1A001800C9 /* Followers.h */,
@@ -1874,7 +1869,6 @@
 				A5E73BF31D1770B400527ECF /* GTLVerbatmAppIdentifierListWrapper.m in Sources */,
 				A5E73B8B1D16945600527ECF /* GTLJSONParser.m in Sources */,
 				C761727B1C4DFB7700AB0D84 /* PostListVC.m in Sources */,
-				C7540F741C09A47F00DE1AA6 /* ChannelButton.m in Sources */,
 				C7996CC31C8FCF74002E5DA6 /* LoadingIndicator.m in Sources */,
 				C788745C1C334AE80048B66E /* PostLikeAndShareBar.m in Sources */,
 				A56B5D231CA49D0E00A61D27 /* Like_BackendManager.m in Sources */,

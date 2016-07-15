@@ -24,14 +24,17 @@
 @implementation Share_BackendManager
 
 +(void) currentUserReblogPost: (PFObject *) postParseObject toChannel: (PFObject *) channelObject {
-	[postParseObject incrementKey:POST_NUM_REBLOGS];
-	[postParseObject saveInBackground];
 	PFObject *newShareObject = [PFObject objectWithClassName:SHARE_PFCLASS_KEY];
 	[newShareObject setObject:[PFUser currentUser]forKey:SHARE_USER_KEY];
 	[newShareObject setObject:postParseObject forKey:SHARE_POST_SHARED_KEY];
 	[newShareObject setObject:SHARE_TYPE_REBLOG forKey:SHARE_TYPE];
 	[newShareObject setObject:channelObject forKey:SHARE_REBLOG_CHANNEL];
-	[newShareObject saveInBackground];
+	[newShareObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+		if (succeeded) {
+			[postParseObject incrementKey:POST_NUM_REBLOGS];
+			[postParseObject saveInBackground];
+		}
+	}];
 }
 
 +(void) currentUserSharePost: (PFObject *) postParseObject {
@@ -74,15 +77,18 @@
 }
 
 +(void) deleteSharesForPost:(PFObject*) postParseObject withCompletionBlock:(void(^)(BOOL)) block {
-	[postParseObject incrementKey:POST_NUM_REBLOGS byAmount:[NSNumber numberWithInteger:-1]];
-	[postParseObject saveInBackground];
 	PFQuery *sharesQuery = [PFQuery queryWithClassName:SHARE_PFCLASS_KEY];
 	[sharesQuery whereKey:SHARE_POST_SHARED_KEY equalTo:postParseObject];
 	[sharesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 													   NSError * _Nullable error) {
 		if(objects && !error) {
 			for (PFObject *shareObject in objects) {
-				[shareObject deleteInBackground];
+				[shareObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+					if (succeeded) {
+						[postParseObject incrementKey:POST_NUM_REBLOGS byAmount:[NSNumber numberWithInteger:-1]];
+						[postParseObject saveInBackground];
+					}
+				}];
 			}
 			block (YES);
 			return;

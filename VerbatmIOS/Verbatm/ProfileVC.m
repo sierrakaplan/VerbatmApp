@@ -334,18 +334,18 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 }
 
 -(void)followersButtonSelected{
-	[self showMyFollowers];
+	[self showFollowers];
 }
 
 -(void)followingButtonSelected{
-	[self showWhoIAmFollowing];
+	[self showChannelsFollowing];
 }
 
--(void)showWhoIAmFollowing{
+-(void)showChannelsFollowing{
 	[self presentUserList:followingList];
 }
 
--(void)showMyFollowers{
+-(void)showFollowers{
 	[self presentUserList:followersList];
 }
 

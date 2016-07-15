@@ -20,6 +20,8 @@
 #import <Parse/PFObject.h>
 #import <Parse/PFUser.h>
 
+#import "UserInfoCache.h"
+
 @interface FeaturedContentChannelView() <UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UILabel *userNameLabel;
@@ -54,13 +56,11 @@
 		self.channel = channel;
 
 		if (self.channel.channelCreator != [PFUser currentUser]) {
-			[Follow_BackendManager currentUserFollowsChannel:self.channel withCompletionBlock:^(bool isFollowed) {
-				self.isFollowed = isFollowed;
-				dispatch_async(dispatch_get_main_queue(), ^{
-					[self updateFollowIcon];
-					[self addSubview:self.followButton];
-				});
-			}];
+			self.isFollowed = [[UserInfoCache sharedInstance] userFollowsChannel:self.channel];
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[self updateFollowIcon];
+				[self addSubview:self.followButton];
+			});
 		}
 
 		[channel getChannelOwnerNameWithCompletionBlock:^(NSString *name) {

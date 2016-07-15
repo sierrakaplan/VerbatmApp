@@ -18,6 +18,8 @@
 #import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
 
+#import "UserInfoCache.h"
+
 @import UIKit;
 
 @interface ChannelOrUsernameCV ()
@@ -79,7 +81,8 @@
     if(userInfo){
         NSString * userId = userInfo[USER_FOLLOWING_NOTIFICATION_USERINFO_KEY];
         if([userId isEqualToString:[self.channel.channelCreator objectId]]){
-            [self refreshNotificationList];
+			self.currentUserFollowingChannelUser = [[UserInfoCache sharedInstance] userFollowsChannel: self.channel];
+			if(self.followButton)[self updateUserFollowingChannel];
         }
     }
 }
@@ -91,20 +94,14 @@
 	self.isHeaderTile = YES;
 }
 
--(void)refreshNotificationList{
-    [Follow_BackendManager currentUserFollowsChannel:self.channel withCompletionBlock:^(bool isFollowing) {
-        self.currentUserFollowingChannelUser = isFollowing;
-        if(self.followButton)[self updateUserFollowingChannel];
-    }];
-}
-
 -(void)presentChannel:(Channel *) channel{
     self.channel = channel;
 	PFUser *creator = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
     
     if(!(self.channel.usersFollowingChannel && self.channel.usersFollowingChannel.count)){
         if(![[creator objectId] isEqualToString:[[PFUser currentUser] objectId]]){
-            [self refreshNotificationList];
+			self.currentUserFollowingChannelUser = [[UserInfoCache sharedInstance] userFollowsChannel: self.channel];
+			if(self.followButton)[self updateUserFollowingChannel];
         }
         
     }else{

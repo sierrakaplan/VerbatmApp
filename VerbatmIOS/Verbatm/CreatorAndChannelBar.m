@@ -22,6 +22,8 @@
 
 #import "ProfileVC.h"
 
+#import "UserInfoCache.h"
+
 #define LABEL_WALL_OFFSET 8.f
 #define TEXT_FONT_TYPE @"Quicksand-Bold"
 #define CREATOR_NAME_FONT_SIZE 15.f
@@ -167,13 +169,10 @@
 }
 
 -(void)createFollowIcon{
-    [Follow_BackendManager currentUserFollowsChannel:self.currentChannel withCompletionBlock:^
-        (bool isFollowing) {
-         dispatch_async(dispatch_get_main_queue(), ^{
-             self.isFollowingChannel = isFollowing;
-             [self markFollowViewAsFollowing:isFollowing];
-         });
-     }];
+	dispatch_async(dispatch_get_main_queue(), ^{
+		self.isFollowingChannel = [[UserInfoCache sharedInstance] userFollowsChannel: self.currentChannel];
+		[self markFollowViewAsFollowing: self.isFollowingChannel];
+	});
 }
 
 -(void)addFollowChannelGestureToView:(UIView *) view{
