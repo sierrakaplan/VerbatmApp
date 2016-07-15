@@ -174,6 +174,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath{
 	}
 	self.nextProfileIndex = indexPath.row + 1;
 	[self prepareNextPostFromNextIndex:self.nextProfileIndex];
+    [self removeEmptyFeedNotification];
 	return cell;
 }
 
