@@ -101,22 +101,6 @@
     }];
 }
 
-+(AnyPromise *) numberOfLikesForPost:(PFObject*) postParseObject {
-	AnyPromise *promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
-		PFQuery *numLikesQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
-		[numLikesQuery whereKey:LIKE_POST_LIKED_KEY equalTo:postParseObject];
-		[numLikesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-														  NSError * _Nullable error) {
-			if(objects && !error) {
-				resolve ([NSNumber numberWithInteger:objects.count]);
-				return;
-			}
-			resolve ([NSNumber numberWithInt: 0]);
-		}];
-	}];
-	return promise;
-}
-
 +(void) deleteLikesForPost:(PFObject*) postParseObject withCompletionBlock:(void(^)(BOOL)) block {
 	PFQuery *likesQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
 	[likesQuery whereKey:LIKE_POST_LIKED_KEY equalTo:postParseObject];

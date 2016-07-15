@@ -32,12 +32,12 @@
 @implementation PostCollectionViewCell
 
 -(instancetype)initWithFrame:(CGRect)frame{
-    
+
 	self = [super initWithFrame:frame];
 	if (self) {
-        self.backgroundColor = [UIColor clearColor];
+		self.backgroundColor = [UIColor clearColor];
 		[self clearViews];
-        [self setClipsToBounds:YES];
+		[self setClipsToBounds:YES];
 	}
 	return self;
 }
@@ -46,56 +46,56 @@
 	if (self.currentPostView) {
 		[self.currentPostView removeFromSuperview];
 	}
-    
-    [self removePublishingProgress];
-    @autoreleasepool {
-        self.currentPostView = nil;
-        self.currentPostActivityObject = nil;
-        self.postBeingPresented = nil;
-       
-    }
-    self.isOnScreen = NO;
-    self.isAlmostOnScreen = NO;
+
+	[self removePublishingProgress];
+	@autoreleasepool {
+		self.currentPostView = nil;
+		self.currentPostActivityObject = nil;
+		self.postBeingPresented = nil;
+
+	}
+	self.isOnScreen = NO;
+	self.isAlmostOnScreen = NO;
 }
 
 -(void) layoutSubviews {
 	self.currentPostView.frame = self.bounds;
-    if(!self.hasShadow){
-        //[self addShadowToView];
-        self.hasShadow = YES;
-    }
+	if(!self.hasShadow){
+		//[self addShadowToView];
+		self.hasShadow = YES;
+	}
 }
 
 -(void)presentPublishingView{
-    [self addSubview:self.publishingProgressView];
-    self.hasPublishingView = YES;
+	[self addSubview:self.publishingProgressView];
+	self.hasPublishingView = YES;
 }
 
 -(void)removePublishingProgress{
-    if(_publishingProgressView != nil){
-        [self.publishingProgressView removeFromSuperview];
-        @autoreleasepool {
-            _publishingProgressView = nil;
-        }
-    }
+	if(_publishingProgressView != nil){
+		[self.publishingProgressView removeFromSuperview];
+		@autoreleasepool {
+			_publishingProgressView = nil;
+		}
+	}
 }
 
 -(void) presentPostFromPCActivityObj: (PFObject *) pfActivityObj andChannel:(Channel*) channelForList
 					withDeleteButton: (BOOL) withDelete andLikeShareBarUp:(BOOL) up {
-    
-    [self removePublishingProgress];
-    self.hasPublishingView = NO;
-    self.footerUp = up;
+
+	[self removePublishingProgress];
+	self.hasPublishingView = NO;
+	self.footerUp = up;
 	self.currentPostActivityObject = pfActivityObj;
 	PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
-    
-    __weak PostCollectionViewCell *weakSelf = self;
+
+	__weak PostCollectionViewCell *weakSelf = self;
 
 	[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
 		weakSelf.currentPostView = [[PostView alloc] initWithFrame:weakSelf.bounds
-								andPostChannelActivityObject:pfActivityObj small:weakSelf.inSmallMode andPageObjects:pages];
+									  andPostChannelActivityObject:pfActivityObj small:weakSelf.inSmallMode andPageObjects:pages];
 
-        if(weakSelf.inSmallMode)[weakSelf.currentPostView muteAllVideos:YES];
+		if(weakSelf.inSmallMode)[weakSelf.currentPostView muteAllVideos:YES];
 		NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
 		if (weakSelf.isOnScreen) {
 			[weakSelf.currentPostView postOnScreen];
@@ -107,57 +107,54 @@
 		weakSelf.currentPostView.delegate = weakSelf;
 		weakSelf.currentPostView.listChannel = channelForList;
 		[weakSelf addSubview: weakSelf.currentPostView];
-        weakSelf.currentPostView.inSmallMode = weakSelf.inSmallMode;
-        
-        if(!weakSelf.inSmallMode){
-            AnyPromise *likesPromise = [Like_BackendManager numberOfLikesForPost:post];
-            AnyPromise *sharesPromise = [Share_BackendManager numberOfSharesForPost:post];
-            PMKWhen(@[likesPromise, sharesPromise]).then(^(NSArray *likesAndShares) {
-                NSNumber *numLikes = likesAndShares[0];
-                NSNumber *numShares = likesAndShares[1];
-                [weakSelf.currentPostView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
-                                                   numberOfPages:numberOfPages
-                                           andStartingPageNumber:@(1)
-                                                         startUp:up
-                                                withDeleteButton:withDelete];
-                [weakSelf.currentPostView addCreatorInfo];
-            });
-        }
+		weakSelf.currentPostView.inSmallMode = weakSelf.inSmallMode;
+
+		if(!weakSelf.inSmallMode){
+			NSNumber *numLikes = post[POST_NUM_LIKES];
+			NSNumber *numShares = post[POST_NUM_REBLOGS];
+			[weakSelf.currentPostView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
+															   numberOfPages:numberOfPages
+													   andStartingPageNumber:@(1)
+																	 startUp:up
+															withDeleteButton:withDelete];
+			[weakSelf.currentPostView addCreatorInfo];
+		}
 	}];
 }
+
 -(void) showWhoLikesThePost:(PFObject *) post{
-    [self.cellDelegate showWhoLikesThePost:post];
+	[self.cellDelegate showWhoLikesThePost:post];
 }
 
 
 -(void)setInSmallMode:(BOOL)inSmallMode{
-    _inSmallMode = inSmallMode;
-    if(_currentPostView){
-        _currentPostView.inSmallMode = inSmallMode;
-    }
+	_inSmallMode = inSmallMode;
+	if(_currentPostView){
+		_currentPostView.inSmallMode = inSmallMode;
+	}
 }
 
 -(void) almostOnScreen {
 	self.isAlmostOnScreen = YES;
-    if(!self.hasPublishingView){
-        if(self.currentPostView){
-            [self.currentPostView postAlmostOnScreen];
-        }
-    }
+	if(!self.hasPublishingView){
+		if(self.currentPostView){
+			[self.currentPostView postAlmostOnScreen];
+		}
+	}
 }
 
 -(void) onScreen {
 	self.isOnScreen = YES;
 	self.isAlmostOnScreen = NO;
-    if(!self.hasPublishingView){
-        if(self.currentPostView) {
-            [self.currentPostView postOnScreen];
-        }
-    }
+	if(!self.hasPublishingView){
+		if(self.currentPostView) {
+			[self.currentPostView postOnScreen];
+		}
+	}
 }
 
 -(void) offScreen {
-    [self clearViews];
+	[self clearViews];
 }
 
 #pragma mark - Post view delegate -
@@ -180,10 +177,10 @@
 }
 
 -(PublishingProgressView *)publishingProgressView{
-    if(!_publishingProgressView){
-        _publishingProgressView = [[PublishingProgressView alloc] initWithFrame:self.bounds];
-    }
-    return _publishingProgressView;
+	if(!_publishingProgressView){
+		_publishingProgressView = [[PublishingProgressView alloc] initWithFrame:self.bounds];
+	}
+	return _publishingProgressView;
 }
 
 -(void)dealloc{
