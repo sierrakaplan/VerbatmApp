@@ -1126,11 +1126,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedTableViewController.m"
-            timestampString = "490240097.623549"
+            timestampString = "490240242.798425"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "187"
-            endingLineNumber = "187"
+            startingLineNumber = "188"
+            endingLineNumber = "188"
             landmarkName = "@implementation FeedTableViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -1248,11 +1248,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedTableViewController.m"
-            timestampString = "490240097.623549"
+            timestampString = "490240242.798425"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "181"
-            endingLineNumber = "181"
+            startingLineNumber = "182"
+            endingLineNumber = "182"
             landmarkName = "-shouldHideTabBar:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1950,7 +1950,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedTableViewController.m"
-            timestampString = "490240097.623549"
+            timestampString = "490240242.798425"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "176"

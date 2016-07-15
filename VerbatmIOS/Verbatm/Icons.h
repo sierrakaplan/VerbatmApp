@@ -145,6 +145,9 @@
 
 #define DISCOVER_BACKGROUND @"background_discover"
 
+#define EMPTY_SEARCH_RESULTS_ICON @"EmptySearchResultsIcon"
+#define EMTPY_SEARCH_ICON_HeightWidth_RATIO (327.f/845.f)
+
 #pragma mark - Profile Information Header -
 #define ADD_COVER_PHOTO_ICON @"Add cover photo"
 
