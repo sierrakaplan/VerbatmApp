@@ -75,8 +75,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 @property (nonatomic) CGSize  cellSmallFrameSize;
 
 @property (nonatomic) PHImageManager* imageManager;
-@property (nonatomic) BOOL isFirstTime;
-
 
 #define CELL_SPACING_SMALL 1.f
 #define CELL_SPACING_LARGE 0.3
@@ -89,6 +87,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	self.automaticallyAdjustsScrollViewInsets = NO;
 	self.view.backgroundColor = [UIColor colorWithWhite:0.90 alpha:1.f];
 	[self createHeader];
+	[self loadContentToPostList];
 	[self checkIntroNotification];
 }
 
@@ -109,15 +108,11 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-	[self createHeader];
-	[self loadContentToPostList];
 	[self setNeedsStatusBarAppearanceUpdate];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
-	[self clearOurViews];
-	self.isFirstTime = NO;
 }
 
 -(void)clearOurViews {

@@ -350,11 +350,13 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	[self.tabBarController.tabBar addSubview:button];
 }
 
-- (void)tabBarController:(UITabBarController *)tabBarController
- didSelectViewController:(UIViewController *)viewController {
-	if (viewController == self.feedVC) {
+- (BOOL)tabBarController:(UITabBarController *)tabBarController
+ shouldSelectViewController:(UIViewController *)viewController {
+	// Refresh feed if they tap the feed icon while on the feed
+	if (viewController == self.feedVC && self.tabBarController.selectedViewController == self.feedVC) {
 		[self.feedVC refreshListOfContent];
 	}
+	return YES;
 }
 
 -(void) revealADK {

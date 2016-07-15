@@ -19,7 +19,6 @@
 @property (nonatomic) Channel *currentUserChannel;
 @property (nonatomic) ProfileVC *nextProfileToPresent;
 @property (nonatomic) NSInteger nextProfileIndex;
-@property (nonatomic) BOOL isFirstTime;
 
 @end
 
@@ -33,24 +32,16 @@
 	self.tableView.pagingEnabled = YES;
 	self.tableView.allowsSelection = NO;
 	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-	self.isFirstTime = YES;
 	[self setNeedsStatusBarAppearanceUpdate];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
 	[super viewWillAppear:animated];
-	if(!self.isFirstTime) [self.tableView reloadData];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
 	// Stop downloading any images we were downloading
 	[[UtilityFunctions sharedInstance] cancelAllSharedSessionDataTasks];
-	NSArray * visibleCell = [self.tableView visibleCells];
-	if(visibleCell && visibleCell.count){
-		FeedTableCell * cell = [visibleCell firstObject];
-		[cell clearProfile];
-	}
-	self.isFirstTime = NO;
 }
 
 -(UIStatusBarStyle) preferredStatusBarStyle {
@@ -67,12 +58,10 @@
 }
 
 -(void) refreshListOfContent {
-	[self.tableView setContentOffset:CGPointZero animated:YES];
-	self.currentUserChannel = [[UserInfoCache sharedInstance] getUserChannel];
-
-	if(self.followingProfileList){
-		self.followingProfileList = nil;
+	if (self.tableView.contentOffset.y > (self.view.frame.size.height - 20.f)) {
+		[self.tableView setContentOffset:CGPointZero animated:YES];
 	}
+	self.currentUserChannel = [[UserInfoCache sharedInstance] getUserChannel];
 
 	//todo: change how getfollowersandfollowing is used everywhere (also make sure one instance of updating followers is used)
 	[self.currentUserChannel getFollowersAndFollowingWithCompletionBlock:^{

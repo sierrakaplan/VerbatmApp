@@ -183,7 +183,6 @@
     PMKWhen(loadPromises).then(^(id nothing) {
        if(block) block();
     });
-	if (block) block();
 }
 
 -(BOOL)channelBelongsToCurrentUser {

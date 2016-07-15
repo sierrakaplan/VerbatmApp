@@ -129,7 +129,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate, MFMessageComposeViewContro
 
 -(void) viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
-	[self offScreen];
+//	[self offScreen];
 }
 
 -(void) registerForNotifications {
@@ -945,10 +945,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	return _postsQueryManager;
 }
 
-- (void)dealloc {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
 -(ExternalShare *)externalShare{
 	if(!_externalShare)_externalShare = [[ExternalShare alloc] init];
 	return _externalShare;
@@ -960,7 +956,12 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void) didReceiveMemoryWarning {
+//	[self offScreen];
+}
 
+- (void)dealloc {
+	[self offScreen];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end
