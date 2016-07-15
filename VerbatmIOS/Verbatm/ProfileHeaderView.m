@@ -21,7 +21,7 @@
 #import "Styles.h"
 
 #import "UIView+Effects.h"
-
+#import "UserManager.h"
 @interface ProfileHeaderView() <ProfileInformationBarDelegate, UITextViewDelegate>
 
 @property (nonatomic) PFUser *channelOwner;
@@ -45,6 +45,8 @@
 @property (nonatomic) UIView * transparentTintCoverView;
 
 @property (nonatomic) UIImageView * profileInConstructionNotification;
+
+@property (nonatomic) UIImageView * feedbackRequestNotification;
 
 #define OFFSET_X 5.f
 #define OFFSET_Y 10.f
@@ -86,9 +88,38 @@
 												 selector:@selector(userNameChanged)
 													 name:NOTIFICATION_USERNAME_CHANGED_SUCCESFULLY
 												   object:nil];
+        [self askForFeedback];
 	}
 	return self;
 }
+
+
+-(void)askForFeedback{
+    if(self.isCurrentUser && [[UserManager sharedInstance] shouldRequestForUserFeedback] &&
+       !self.feedbackRequestNotification){
+        self.feedbackRequestNotification = [[UIImageView alloc] initWithImage:[UIImage imageNamed:FEEDBACK_NOTIFICATION_ICON]];
+        
+        
+        CGFloat height = 150.f;
+        CGFloat width = FEEDBACK_NOTIFICATION_WidthHeight_RATIO * height;
+        CGFloat xOffset =self.frame.size.width - (width);
+        CGFloat yOffset = self.userInformationBar.frame.origin.y + 5.f +self.userInformationBar.frame.size.height/2.f;
+           
+        [self.feedbackRequestNotification setFrame:CGRectMake(xOffset, yOffset, width, height)];
+        [self addSubview:self.feedbackRequestNotification];
+        [self.feedbackRequestNotification addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeFeedbackNotification)]];
+        [self.feedbackRequestNotification setUserInteractionEnabled:YES];
+    }
+}
+
+
+-(void)removeFeedbackNotification{
+    if(self.feedbackRequestNotification){
+        [self.feedbackRequestNotification removeFromSuperview];
+        self.feedbackRequestNotification = nil;
+    }
+}
+
 
 -(void) createLabels {
 	CGRect userNameFrame = CGRectMake(OFFSET_X, self.userInformationBar.frame.origin.y +

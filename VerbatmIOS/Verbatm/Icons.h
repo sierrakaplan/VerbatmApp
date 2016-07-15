@@ -150,6 +150,8 @@
 
 #pragma mark - Profile Information Header -
 #define ADD_COVER_PHOTO_ICON @"Add cover photo"
+#define FEEDBACK_NOTIFICATION_ICON @"FeedbackNotification"
+#define FEEDBACK_NOTIFICATION_WidthHeight_RATIO (184.f/168.f)
 
 #define PROFILE_UNDER_CONSTRUCTION_ICON @"ProfileUnderConstruction"
 
