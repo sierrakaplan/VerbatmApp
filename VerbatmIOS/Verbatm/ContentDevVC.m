@@ -163,6 +163,9 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 @property (nonatomic) SharingLinkView * shareLinkView;
 @property (nonatomic) NSMutableArray * pinchViewsToPublish;
 
+@property (nonatomic)BOOL screenInCameraMode;
+@property (nonatomic)BOOL currentlyPresentingInstruction;
+
 #define INSTRUCTION_VIEW_ALPHA 0.7f
 #define MAX_MEDIA 8
 
@@ -1222,6 +1225,7 @@ andSaveInUserDefaults:(BOOL)save {
 	[self.view addSubview:self.cameraView];
 	[self.cameraView createAndInstantiateGestures];
 	self.selectedView_PAN = (ContentPageElementScrollView *)tile.superview;//should be a contentpagescrollview
+    self.screenInCameraMode = YES;
 }
 
 #pragma mark - Change position of elements on screen by dragging
@@ -1415,20 +1419,21 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 -(void) presentPinchInstruction {
-	ContentPageElementScrollView * firstInList = self.pageElementScrollViews[0];
-	CGFloat offsetFromPinchViewCenters = 60.f;
-	CGFloat frameHeight = firstInList.frame.size.height - (offsetFromPinchViewCenters);
-	CGFloat frameWidth = frameHeight;
-	CGRect instructionFrame = CGRectMake(firstInList.center.x - 8.f, firstInList.center.y + offsetFromPinchViewCenters,frameWidth,frameHeight);
+   
+        ContentPageElementScrollView * firstInList = self.pageElementScrollViews[0];
+        CGFloat offsetFromPinchViewCenters = 60.f;
+        CGFloat frameHeight = firstInList.frame.size.height - (offsetFromPinchViewCenters);
+        CGFloat frameWidth = frameHeight;
+        CGRect instructionFrame = CGRectMake(firstInList.center.x - 30.f, firstInList.center.y + offsetFromPinchViewCenters,frameWidth,frameHeight);
 
-	UIImage *instructionImage = [UIImage imageNamed:PINCH_OBJECTS_TOGETHER_INSTRUCTION];
-	UIImageView *instructionImageView = [[UIImageView alloc] initWithImage:instructionImage];
-	instructionImageView.frame = instructionFrame;
-	instructionImageView.contentMode = UIViewContentModeScaleAspectFit;
-	instructionImageView.frame =  instructionFrame;
+        UIImage *instructionImage = [UIImage imageNamed:PINCH_OBJECTS_TOGETHER_INSTRUCTION];
+        UIImageView *instructionImageView = [[UIImageView alloc] initWithImage:instructionImage];
+        instructionImageView.frame = instructionFrame;
+        instructionImageView.contentMode = UIViewContentModeScaleAspectFit;
+        instructionImageView.frame =  instructionFrame;
 
-	[self.instructionView addSubview:instructionImageView];
-	[self displayInstructionView];
+        [self.instructionView addSubview:instructionImageView];
+        [self displayInstructionView];
 }
 
 -(void) presentEditPinchViewInstruction {
@@ -1436,7 +1441,7 @@ andSaveInUserDefaults:(BOOL)save {
 	CGFloat offsetFromPinchViewCenters = 60.f;
 	CGFloat frameHeight = firstInList.frame.size.height - (offsetFromPinchViewCenters);
 	CGFloat frameWidth = frameHeight;
-	CGRect instructionFrame = CGRectMake(firstInList.center.x - 8.f, firstInList.center.y + offsetFromPinchViewCenters,frameWidth,frameHeight);
+	CGRect instructionFrame = CGRectMake(firstInList.center.x - 30.f, firstInList.center.y + offsetFromPinchViewCenters,frameWidth,frameHeight);
 
 	UIImage *instructionImage = [UIImage imageNamed:EDIT_PINCHVIEW_INSTRUCTION];
 	UIImageView *instructionImageView = [[UIImageView alloc] initWithImage:instructionImage];
@@ -1449,14 +1454,12 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 -(void) displayInstructionView {
-	self.instructionView.alpha = 1.f;
-	[self.view addSubview: self.instructionView];
-	[self.view bringSubviewToFront:self.instructionView];
-	//	[UIView animateWithDuration:INSTRUCTION_ANIMATION_TIME delay:0.f options:UIViewAnimationOptionAllowUserInteraction animations:^{
-	//		self.instructionView.alpha = 0.1f;
-	//	} completion:^(BOOL finished) {
-	//		if (finished && [self.instructionView superview]) [self.instructionView removeFromSuperview];
-	//	}];
+    if(!self.screenInCameraMode && !self.currentlyPresentingInstruction){
+        self.currentlyPresentingInstruction = YES;
+        self.instructionView.alpha = 1.f;
+        [self.view addSubview: self.instructionView];
+        [self.view bringSubviewToFront:self.instructionView];
+    }
 }
 
 //adjusts offset of main scroll view so selected item is in focus
@@ -1678,6 +1681,10 @@ andSaveInUserDefaults:(BOOL)save {
 -(void) minimizeCameraViewButtonTapped {
 	[self.cameraView removeFromSuperview];
 	[self removeExcessMediaTiles];
+    self.screenInCameraMode = NO;
+    if(self.numPinchViews > 1.f &&![[UserSetupParameters sharedInstance] checkAndSetPinchInstructionShown]){
+        [self presentPinchInstruction];
+    }
 }
 
 #pragma mark - Gallery + Image picker -
@@ -1998,6 +2005,7 @@ andSaveInUserDefaults:(BOOL)save {
 -(void) instructionViewTapped {
 	[self.instructionView.layer removeAllAnimations];
 	[self.instructionView removeFromSuperview];
+    self.currentlyPresentingInstruction = NO;
 }
 
 @synthesize pageElementScrollViews = _pageElementScrollViews;
