@@ -19,10 +19,13 @@
 @property (nonatomic) Channel *currentUserChannel;
 @property (nonatomic) ProfileVC *nextProfileToPresent;
 @property (nonatomic) NSInteger nextProfileIndex;
+@property (nonatomic) UIRefreshControl *refreshControl;
 
 @end
 
 @implementation FeedTableViewController
+
+@dynamic refreshControl;
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
@@ -33,6 +36,9 @@
 	self.tableView.allowsSelection = NO;
 	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 	[self setNeedsStatusBarAppearanceUpdate];
+	self.refreshControl = [[UIRefreshControl alloc] init];
+	[self.refreshControl addTarget:self action:@selector(refreshListOfContent) forControlEvents:UIControlEventValueChanged];
+	[self.tableView addSubview:self.refreshControl];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -65,6 +71,7 @@
 
 	//todo: change how getfollowersandfollowing is used everywhere (also make sure one instance of updating followers is used)
 	[self.currentUserChannel getFollowersAndFollowingWithCompletionBlock:^{
+		[self.refreshControl endRefreshing];
 		//No channels have been previously loaded
 		if (!self.followingProfileList || !self.followingProfileList.count) {
 			self.followingProfileList = [NSMutableArray arrayWithArray: [self.currentUserChannel channelsUserFollowing]];
