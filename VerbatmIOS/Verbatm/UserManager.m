@@ -13,7 +13,7 @@
 #import "UserManager.h"
 
 @interface UserManager()
-
+@property (nonatomic) UIImage * currentCoverPhoto;
 @end
 
 @implementation UserManager
@@ -151,6 +151,12 @@
 }
 
 
+-(void)holdCurrentCoverPhoto:(UIImage *)coverPhoto{
+    self.currentCoverPhoto = coverPhoto;
+}
+-(UIImage *)getCurrentCoverPhoto{
+    return self.currentCoverPhoto;
+}
 
 #pragma mark - Log user out -
 

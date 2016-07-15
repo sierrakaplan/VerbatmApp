@@ -22,6 +22,7 @@
 
 #import "UIView+Effects.h"
 #import "UserManager.h"
+
 @interface ProfileHeaderView() <ProfileInformationBarDelegate, UITextViewDelegate>
 
 @property (nonatomic) PFUser *channelOwner;
@@ -64,6 +65,10 @@
 #define COVER_PHOTO_HEIGHT 25.f
 
 #define COVER_PHOTO_IMAGE_RATIO (351.f/106.f)
+
+
+#define COVER_PHOTO_DIRECTORY_PATH [NSHomeDirectory() stringByAppendingString:@"/Library/Caches/verbatmCoverPhoto.png"]
+#define COVER_PHOTO_URL_KEY @"CoverPhotoUrlKey"
 @end
 
 @implementation ProfileHeaderView
@@ -206,22 +211,97 @@
 }
 
 -(void)checkForCoverPhoto{
+    
 	//set default cover photo
-	[self createTopAndReflectionCoverImageFromImage:[UIImage imageNamed:NO_COVER_PHOTO_IMAGE]];
+    UIImage * coverPhoto = (self.isCurrentUser) ? [self retrieveCoverPhotoFromCache] : nil;
+    if(coverPhoto){
+        [self createTopAndReflectionCoverImageFromImage:coverPhoto];
+    }else{
+        [self createTopAndReflectionCoverImageFromImage:[UIImage imageNamed:NO_COVER_PHOTO_IMAGE]];
+    }
     
     __weak ProfileHeaderView * weakSelf = self;
-	//Now look for cloud one
-	[self.channel loadCoverPhotoWithCompletionBlock:^(UIImage * coverPhoto) {
-
-		if([[NSThread currentThread] isMainThread]){
-			if(coverPhoto)[weakSelf createTopAndReflectionCoverImageFromImage:coverPhoto];
-		}else{
-			dispatch_async(dispatch_get_main_queue(), ^{
-				if(coverPhoto)[weakSelf createTopAndReflectionCoverImageFromImage:coverPhoto];
-			});
-		}
-	}];
+    
+    if(!self.isCurrentUser || ([self newCoverPhotoAvailable] || !coverPhoto)){
+        //Now look for cloud one
+        [self.channel loadCoverPhotoWithCompletionBlock:^(UIImage * coverPhoto, NSData * coverPhotoData) {
+            if(weakSelf.isCurrentUser){
+                [weakSelf saveCoverPhotoDataToCache:coverPhotoData];
+                [[UserManager sharedInstance] holdCurrentCoverPhoto:coverPhoto];
+            }
+            if([[NSThread currentThread] isMainThread]){
+                if(coverPhoto && weakSelf)[weakSelf createTopAndReflectionCoverImageFromImage:coverPhoto];
+            }else{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if(coverPhoto && weakSelf)[weakSelf createTopAndReflectionCoverImageFromImage:coverPhoto];
+                });
+            }
+        }];
+    }
 }
+
+
+-(BOOL)newCoverPhotoAvailable{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString * cachedCoverPhotoUrl = [defaults valueForKey:COVER_PHOTO_URL_KEY];
+    NSString * currentCoverPhotoUrl =[self.channel getCoverPhotoUrl];
+    if(cachedCoverPhotoUrl && currentCoverPhotoUrl &&
+       [cachedCoverPhotoUrl isEqualToString:currentCoverPhotoUrl]){
+        NSLog(@"Loaded Cover photo URL from user defaults");
+        return NO;
+    }
+    return YES;
+}
+
+-(void)storeNewUrl{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString * currentCoverPhotoUrl = [self.channel getCoverPhotoUrl];
+    if(currentCoverPhotoUrl){
+        [defaults setObject:currentCoverPhotoUrl forKey:COVER_PHOTO_URL_KEY];
+        NSLog(@"Stored new Cover photo URL to user defaults");
+    }
+}
+
+
+
+-(BOOL)saveCoverPhotoDataToCache:(NSData *) imageData{
+    
+    NSString* path = COVER_PHOTO_DIRECTORY_PATH;
+    BOOL pathCreated = [[NSFileManager defaultManager] createFileAtPath:path
+                                                      contents:nil attributes:nil];
+    if (pathCreated){
+        NSFileHandle* myFileHandle = [NSFileHandle fileHandleForWritingAtPath:path];
+        [myFileHandle writeData:imageData];
+        [myFileHandle closeFile];
+         NSLog(@"Image saved to file: %@", path);
+        [self storeNewUrl];
+        return YES;
+    
+    }
+    NSLog(@"Error creating file: %@", path);
+    return NO;
+}
+
+
+-(UIImage *)retrieveCoverPhotoFromCache{
+    
+    UIImage* coverPhoto = [[UserManager sharedInstance] getCurrentCoverPhoto];
+    if(coverPhoto){
+        return coverPhoto;
+    }
+    
+    NSFileHandle* myFileHandle = [NSFileHandle fileHandleForReadingAtPath:COVER_PHOTO_DIRECTORY_PATH];
+    
+    if(myFileHandle) {
+         coverPhoto = [UIImage imageWithData:[myFileHandle readDataToEndOfFile]];
+        NSLog(@"Cover photo loaded from cache");
+    }else{
+        NSLog(@"Cover photo failed to load from cache");
+    }
+    [[UserManager sharedInstance] holdCurrentCoverPhoto:coverPhoto];
+    return coverPhoto;
+}
+
 
 -(void)addChangeCoverPhotoButton {
 	self.changeCoverPhoto = [[UIButton alloc] init];
@@ -251,6 +331,7 @@
 -(void)setCoverPhotoImage:(UIImage *) coverPhotoImage{
 	[self createTopAndReflectionCoverImageFromImage:coverPhotoImage];
 	[self.channel storeCoverPhoto:coverPhotoImage];
+    [[UserManager sharedInstance]holdCurrentCoverPhoto:coverPhotoImage];
 }
 
 #pragma mark - Profile Info Bar Delegate methods -

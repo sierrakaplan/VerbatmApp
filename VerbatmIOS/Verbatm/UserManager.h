@@ -29,4 +29,6 @@
 -(void) logOutUser;
 -(BOOL)shouldRequestForUserFeedback;
 
+-(void)holdCurrentCoverPhoto:(UIImage *)coverPhoto;
+-(UIImage *)getCurrentCoverPhoto;
 @end
