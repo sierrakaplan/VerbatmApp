@@ -257,7 +257,7 @@
     NSString * currentCoverPhotoUrl =[self.channel getCoverPhotoUrl];
     if(cachedCoverPhotoUrl && currentCoverPhotoUrl &&
        [cachedCoverPhotoUrl isEqualToString:currentCoverPhotoUrl]){
-        NSLog(@"Loaded Cover photo URL from user defaults");
+//        NSLog(@"Loaded Cover photo URL from user defaults");
         return NO;
     }
     return YES;
@@ -268,7 +268,7 @@
     NSString * currentCoverPhotoUrl = [self.channel getCoverPhotoUrl];
     if(currentCoverPhotoUrl){
         [defaults setObject:currentCoverPhotoUrl forKey:COVER_PHOTO_URL_KEY];
-        NSLog(@"Stored new Cover photo URL to user defaults");
+//        NSLog(@"Stored new Cover photo URL to user defaults");
     }
 }
 
