@@ -16,7 +16,7 @@
 #import "PostView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
-
+#import "Notifications.h"
 #import <Parse/PFUser.h>
 
 @interface ExploreChannelCellView() <UIScrollViewDelegate, UIGestureRecognizerDelegate>
@@ -59,9 +59,35 @@
 		UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cellTapped:)];
 		tap.delegate = self;
 		[self addGestureRecognizer:tap];
+        [self registerForFollowNotification];
 	}
 	return self;
 }
+
+
+-(void)registerForFollowNotification{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(userFollowStatusChanged:)
+                                                 name:NOTIFICATION_NOW_FOLLOWING_USER
+                                               object:nil];
+}
+
+-(void)userFollowStatusChanged:(NSNotification *) notification{
+    
+    NSDictionary * userInfo = [notification userInfo];
+    if(userInfo){
+        NSString * userId = userInfo[USER_FOLLOWING_NOTIFICATION_USERINFO_KEY];
+        NSNumber * isFollowingAction = userInfo[USER_FOLLOWING_NOTIFICATION_ISFOLLOWING_KEY];
+        //only update the follow icon if this is the correct user and also if the action was
+        //no registered on this view
+        if([userId isEqualToString:[self.channelBeingPresented.channelCreator objectId]]&&
+           ([isFollowingAction boolValue] != self.isFollowed)) {
+            self.isFollowed = [isFollowingAction boolValue];
+            [self updateFollowIcon];
+        }
+    }
+}
+
 
 -(void) cellTapped:(UITapGestureRecognizer*)gesture {
 	[self.delegate channelSelected:self.channelBeingPresented];
@@ -171,7 +197,6 @@
 		[Follow_BackendManager currentUserStopFollowingChannel: self.channelBeingPresented];
 	}
 	[self updateFollowIcon];
-	[self changeNumFollowersLabel];
 }
 
 -(void) updateFollowIcon {
@@ -182,6 +207,7 @@
         [self changeFollowButtonTitle:@"Follow" toColor:[UIColor whiteColor]];
         self.followButton.backgroundColor = [UIColor clearColor];
     }
+    [self changeNumFollowersLabel];
 }
 
 -(void) changeFollowButtonTitle:(NSString*)title toColor:(UIColor*) color{
