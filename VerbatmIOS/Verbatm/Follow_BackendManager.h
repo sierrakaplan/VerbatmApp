@@ -1,5 +1,5 @@
 //
-//  Follow_BackendManager.h
+//  fManager.h
 //  Verbatm
 //
 //  Created by Iain Usiri on 2/6/16.
@@ -13,9 +13,11 @@
 
 +(void)currentUserFollowChannel:(Channel *) channelToFollow;
 
-+(void)user:(PFUser *)user stopFollowingChannel:(Channel *) channelToUnfollow;
++(void)currentUserStopFollowingChannel:(Channel *) channelToUnfollow;
 
 + (void) usersFollowingChannel: (Channel*) channel withCompletionBlock:(void(^)(NSMutableArray*)) block;
+
++(void)blockUser:(PFUser *) user fromFollowingChannel:(Channel *) channelToUnfollow;
 
 // Returns array of Channel pfobjects but not fetched (so only contain ids)
 + (void) channelIDsUserFollowing: (PFUser*) user withCompletionBlock:(void(^)(NSArray*)) block;

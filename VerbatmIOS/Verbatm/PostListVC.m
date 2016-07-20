@@ -858,7 +858,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void) publishingFailed:(NSNotification *) notification {
 	if(!self.isCurrentUserProfile) return;
-	self.currentlyPublishing = NO;
 	[PFQuery clearAllCachedResults];
 	[self clearPublishingView];
 }

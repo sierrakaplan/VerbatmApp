@@ -21,8 +21,8 @@
 @property (nonatomic, readonly) NSString *blogDescription;
 @property (nonatomic, readonly) PFObject *parseChannelObject;
 @property (nonatomic, readonly) PFUser *channelCreator;
-@property (nonatomic, readonly) NSArray *usersFollowingChannel;
-@property (nonatomic, readonly) NSArray *channelsUserFollowing;
+@property (nonatomic, readonly) NSMutableArray *usersFollowingChannel;
+@property (nonatomic, readonly) NSMutableArray *channelsUserFollowing;
 
 
 -(instancetype) initWithChannelName:(NSString *) channelName
@@ -55,7 +55,11 @@
 
 -(void)loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*, NSData*))block;
 
--(BOOL)checkIfList:(NSArray *) list ContainsObject:(PFObject *) object;
+-(id)checkIfList:(NSArray *) list ContainsObject:(PFObject *) object;
 
 -(NSString *)getCoverPhotoUrl;
+
+-(void)registerFollowingNewChannel:(Channel *)channel;
+-(void)registerStopedFollowingChannel:(Channel *)channel;
+
 @end

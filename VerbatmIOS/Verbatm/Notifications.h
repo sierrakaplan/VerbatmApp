@@ -28,12 +28,11 @@
 #define NOTIFICATION_USERNAME_CHANGE_FAILED @"user_name_change_failed"
 
 #define NOTIFICATION_NOW_FOLLOWING_USER @"following_user"
-#define NOTIFICATION_STOPPED_FOLLOWING_USER @"stoped_following_user"
 
 #define NOTIFICATION_FREE_MEMORY_DISCOVER @"free_memory_discover"
 
 
 #define USER_FOLLOWING_NOTIFICATION_USERINFO_KEY @"UserFollowing"
-
+#define USER_FOLLOWING_NOTIFICATION_ISFOLLOWING_KEY @"IsFollowing"//is it a follow or unfollow
 
 #endif /* Header_h */

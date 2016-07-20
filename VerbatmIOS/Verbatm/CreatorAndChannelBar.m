@@ -65,10 +65,6 @@
                                              selector:@selector(userFollowStatusChanged:)
                                                  name:NOTIFICATION_NOW_FOLLOWING_USER
                                                object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(userFollowStatusChanged:)
-                                                 name:NOTIFICATION_STOPPED_FOLLOWING_USER
-                                               object:nil];
 }
 
 
@@ -185,7 +181,7 @@
     if(self.isFollowingChannel){
         self.isFollowingChannel = NO;
         [self markFollowViewAsFollowing:NO];
-		[Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel:self.currentChannel];
+		[Follow_BackendManager currentUserStopFollowingChannel:self.currentChannel];
     }else{
         self.isFollowingChannel = YES;
         [self markFollowViewAsFollowing:YES];

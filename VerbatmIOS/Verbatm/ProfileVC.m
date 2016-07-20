@@ -471,15 +471,11 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	UIAlertAction* confirmAction = [UIAlertAction actionWithTitle:@"Yes, I'm sure." style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
 		if(shouldBlock){
 			[User_BackendObject blockUser:self.ownerOfProfile];
-			//todo: update blocked
-			//			[self.profileHeaderView updateUserIsBlocked:YES];
-			[self alertUserBlocked:YES];
+            [self alertUserBlocked:YES];
 
 		} else {
 			[User_BackendObject unblockUser:self.ownerOfProfile];
-			//todo: update unblocked
-			//			[self.profileHeaderView updateUserIsBlocked:NO];
-			[self alertUserBlocked:NO];
+            [self alertUserBlocked:NO];
 		}
 	}];
 
