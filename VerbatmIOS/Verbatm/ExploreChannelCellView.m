@@ -168,7 +168,7 @@
 		[Follow_BackendManager currentUserFollowChannel: self.channelBeingPresented];
 	} else {
 		self.numFollowers = [NSNumber numberWithInteger:[self.numFollowers integerValue]-1];
-		[Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel: self.channelBeingPresented];
+		[Follow_BackendManager currentUserStopFollowingChannel: self.channelBeingPresented];
 	}
 	[self updateFollowIcon];
 	[self changeNumFollowersLabel];

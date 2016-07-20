@@ -459,12 +459,15 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 }
 
 -(void)followingSuccessfulNotification:(NSNotification *) notification{
-
-	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Following Successful!" message:@"" preferredStyle:UIAlertControllerStyleAlert];
-	UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
-												   handler:^(UIAlertAction * action) {}];
-	[newAlert addAction:action];
-	[self presentViewController:newAlert animated:YES completion:nil];
+ NSNumber * isFollowingAction = [notification userInfo][USER_FOLLOWING_NOTIFICATION_ISFOLLOWING_KEY];
+    
+    if([isFollowingAction boolValue]){
+        UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Following Successful!" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * action) {}];
+        [newAlert addAction:action];
+        [self presentViewController:newAlert animated:YES completion:nil];
+    }
 }
 
 - (UIInterfaceOrientationMask) supportedInterfaceOrientations {
