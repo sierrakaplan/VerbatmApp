@@ -899,7 +899,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	[self presentViewController:likersListVC animated:YES completion:nil];
 }
 
-#pragma mark -Lazy instantiation-
+#pragma mark - Lazy instantiation -
 
 -(UIImageView *)reblogSucessful {
 	if(!_reblogSucessful){
@@ -909,7 +909,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}
 	return _reblogSucessful;
 }
-
 
 -(UIImageView *)publishSuccessful {
 	if(!_publishSuccessful){
