@@ -242,6 +242,7 @@
 	}
 	[self addSubview:self.likeShareBar];
 	[self checkIfUserHasLikedThePost];
+	[self checkForMuteButton:self.currentPage];
     
     if(numPages.integerValue > 1){
         [self showPageUpIndicator];
