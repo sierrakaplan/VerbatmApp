@@ -335,14 +335,13 @@
 		}
 	}
     
-    if (!self.postMuted && self.likeShareBar) {
-        [self checkForMuteButton:self.currentPage];
-    }
-    
     if(currentViewableIndex < self.pageViews.count){
         PageViewingExperience *newCurrentPage = self.pageViews[currentViewableIndex];
         [self.currentPage offScreen];
         self.currentPage = newCurrentPage;
+		if (!self.postMuted && self.likeShareBar) {
+			[self checkForMuteButton:self.currentPage];
+		}
         [self.currentPage onScreen];
         
         if(!self.small){
