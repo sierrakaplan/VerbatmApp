@@ -100,7 +100,7 @@
 
 
 -(BOOL) userFollowsChannel:(Channel*)channel {
-	return ([UtilityFunctions checkIfChannelList:self.userChannel.channelsUserFollowing containsChannel:channel]);
+	return ([UtilityFunctions checkIfChannelList:self.userChannel.channelsUserFollowing containsChannel:channel] != nil);
 }
 
 -(void)reloadUserChannels {
