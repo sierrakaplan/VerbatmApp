@@ -91,7 +91,7 @@
 		[self createLabels];
 		[self checkForCoverPhoto];
 		[[NSNotificationCenter defaultCenter] addObserver:self
-												 selector:@selector(userNameChanged)
+                                                 selector:@selector(userNameChanged:)
 													 name:NOTIFICATION_USERNAME_CHANGED_SUCCESFULLY
 												   object:nil];
         [self askForFeedback];
@@ -99,6 +99,10 @@
 	return self;
 }
 
+
+-(void)regiserForNotification{
+    
+}
 
 -(void)askForFeedback{
     if(self.isCurrentUser && [[UserManager sharedInstance] shouldRequestForUserFeedback] &&
@@ -148,7 +152,7 @@
 	[self addSubview:self.userNameLabel];
 	[self addSubview:self.blogTitle];
 	[self addSubview:self.blogDescription];
-	[self changeUserName];
+	[self presentUserNameFromCurrentChannel];
 	[self changeBlogTitleToTitle:self.channel.name];
 	[self changeBlogDescription];
 	if(self.isCurrentUser) {
@@ -179,28 +183,31 @@
 }
 
 
--(void) userNameChanged {
-	NSString *newUserName = self.channelOwner[VERBATM_USER_NAME_KEY];
-	[self.channel.parseChannelObject setObject:newUserName forKey:CHANNEL_CREATOR_NAME_KEY];
-	[self.channel.parseChannelObject saveInBackground];
-	[self changeUserName];
+-(void) userNameChanged: (NSNotification *) notification {
+    if(self.isCurrentUser){
+        [self changeUserNameToString:[notification object]];
+    }
 }
 
--(void) changeUserName {
-	if (self.channel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY] && ((NSString*)self.channel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY]).length > 0) {
-		self.userNameLabel.text = self.channel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY];
-		[self.userNameLabel setTextColor:[UIColor whiteColor]];
-	} else {
-		[self.channel.channelCreator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-			if (error) {
-				[[Crashlytics sharedInstance] recordError:error];
-			} else {
-				NSString * userName = [self.channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY];
-				self.userNameLabel.text = userName;
-				[self.userNameLabel setTextColor:[UIColor whiteColor]];
-			}
-		}];
-	}
+-(void)presentUserNameFromCurrentChannel{
+    if (self.channel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY] && ((NSString*)self.channel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY]).length > 0) {
+        [self changeUserNameToString:self.channel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY]];
+    } else {
+        [self.channel.channelCreator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+            if (error) {
+                [[Crashlytics sharedInstance] recordError:error];
+            } else {
+                [self changeUserNameToString:[self.channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY]];
+            }
+        }];
+    }
+
+}
+
+-(void) changeUserNameToString:(NSString *) userName {
+    self.userNameLabel.text = userName;
+    [self.userNameLabel setTextColor:[UIColor whiteColor]];
+
 }
 
 -(void) changeBlogTitleToTitle:(NSString *) newTitle {

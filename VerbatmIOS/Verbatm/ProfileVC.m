@@ -257,13 +257,18 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 // Something in profile was reblogged so contains a header allowing user to navigate
 // to a different profile
 -(void)channelSelected:(Channel *) channel{
-	ProfileVC *  userProfile = [[ProfileVC alloc] init];
-	userProfile.isCurrentUserProfile = NO;
-	userProfile.isProfileTab = NO;
-	userProfile.ownerOfProfile = channel.channelCreator;
-	userProfile.channel = channel;
-	[self presentViewController:userProfile animated:YES completion:^{
-	}];
+    if([[[channel channelCreator] objectId] isEqualToString:[[self.channel channelCreator] objectId]]){
+        //if the channel belongs to this profile then simply remove the large postlist view
+        [self createNewPostViewFromCellIndexPath:nil];
+    }else{
+        ProfileVC *  userProfile = [[ProfileVC alloc] init];
+        userProfile.isCurrentUserProfile = NO;
+        userProfile.isProfileTab = NO;
+        userProfile.ownerOfProfile = channel.channelCreator;
+        userProfile.channel = channel;
+        [self presentViewController:userProfile animated:YES completion:^{
+        }];
+    }
 }
 
 -(UICollectionViewFlowLayout * )getFlowLayout{
@@ -298,27 +303,39 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 // Switches between large and small post list
 -(void)cellSelectedAtPostIndex:(NSIndexPath *) cellPath{
-	self.inFullScreenMode = !self.inFullScreenMode;
-	//todo: better way then recreating post list vc
-//	[self.postListVC.view setFrame: (self.inFullScreenMode) ? self.postListLargeFrame : self.postListSmallFrame];
-//	[self.postListVC updateInSmallMode: !self.inFullScreenMode];
-//	[self.postListVC.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
-
-	PostListVC * newVC = [[PostListVC alloc] initWithCollectionViewLayout:[self getFlowLayout]];
-	newVC.postListDelegate = self;
-	newVC.inSmallMode = !self.inFullScreenMode;
-	newVC.collectionView.pagingEnabled = self.inFullScreenMode;
-	[newVC.view setFrame: (self.inFullScreenMode) ? self.postListLargeFrame : self.postListSmallFrame];
-
-	if(self.postListVC.parsePostObjects && self.postListVC.parsePostObjects.count){
-		newVC.postsQueryManager = self.postListVC.postsQueryManager;
-		newVC.currentlyPublishing = self.postListVC.currentlyPublishing;
-		[newVC display:self.channel withListOwner:self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile
-		  andStartingDate:self.startingDate withOldParseObjects:self.postListVC.parsePostObjects];
-	}
-
-	[self presentViewPostView:newVC inSmallMode:!self.inFullScreenMode shouldPage:self.inFullScreenMode fromCellPath:cellPath];
+    [self createNewPostViewFromCellIndexPath:cellPath];
 }
+
+-(void)createNewPostViewFromCellIndexPath:(NSIndexPath *) cellPath{
+    self.inFullScreenMode = !self.inFullScreenMode;
+    
+    
+    if(cellPath == nil){
+        UITableViewCell * cell = [[self.postListVC.collectionView visibleCells] firstObject];
+        cellPath = [self.postListVC.collectionView indexPathForCell:cell];
+    }
+    
+    
+    
+    PostListVC * newVC = [[PostListVC alloc] initWithCollectionViewLayout:[self getFlowLayout]];
+    newVC.postListDelegate = self;
+    newVC.inSmallMode = !self.inFullScreenMode;
+    newVC.collectionView.pagingEnabled = self.inFullScreenMode;
+    [newVC.view setFrame: (self.inFullScreenMode) ? self.postListLargeFrame : self.postListSmallFrame];
+    
+    if(self.postListVC.parsePostObjects && self.postListVC.parsePostObjects.count){
+        newVC.postsQueryManager = self.postListVC.postsQueryManager;
+        newVC.currentlyPublishing = self.postListVC.currentlyPublishing;
+        [newVC display:self.channel withListOwner:self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile
+       andStartingDate:self.startingDate withOldParseObjects:self.postListVC.parsePostObjects];
+    }
+    
+    [self presentViewPostView:newVC inSmallMode:!self.inFullScreenMode shouldPage:self.inFullScreenMode fromCellPath:cellPath];
+}
+
+
+
+
 
 #pragma mark - Profile Nav Bar Delegate Methods -
 

@@ -547,7 +547,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark Sharing
 
 -(void) shareOptionSelectedForParsePostObject: (PFObject* )post {
-	[self.postListDelegate hideNavBarIfPresent];
 	self.postToShare = post;
 	[self presentShareSelectionViewStartOnChannels:YES];
 }
@@ -565,9 +564,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	self.view.userInteractionEnabled = NO;
 	[[UIApplication sharedApplication].keyWindow addSubview:self.sharePostView];
 
-	//[self.view addSubview:self.sharePostView];
 	[[UIApplication sharedApplication].keyWindow bringSubviewToFront:self.sharePostView];
-	//[self.view bringSubviewToFront:self.sharePostView];
 	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^ {
 		self.sharePostView.frame = onScreenFrame;
 	}];
@@ -872,6 +869,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 			[cellView offScreen];
 			[cellView clearViews];
 		}
+        
 		self.parsePostObjects = nil;
 		[self.collectionView reloadData];
 		// Start off assuming scrolling backwards

@@ -28,7 +28,13 @@
 		[[PFUser currentUser] setValue:newName forKey:VERBATM_USER_NAME_KEY];
 		[[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 			if(succeeded) {
-				[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USERNAME_CHANGED_SUCCESFULLY object:nil];
+                [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray * userChannels) {
+                    for(Channel * channel in userChannels){
+                        [channel.parseChannelObject setObject:newName forKey:CHANNEL_CREATOR_NAME_KEY];
+                        [channel.parseChannelObject saveInBackground];
+                    }
+                    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USERNAME_CHANGED_SUCCESFULLY object:newName];
+                }];
 			} else {
 				[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USERNAME_CHANGE_FAILED object:nil];
 			}
