@@ -30,7 +30,10 @@
         [notificationObject setValue:receivingUser forKey:NOTIFICATION_RECEIVER];
         if(post)[notificationObject setValue:post forKey:NOTIFICATION_POST];
         [notificationObject setValue:notificationType forKey:NOTIFICATION_TYPE];
-        [notificationObject saveInBackground];
+		// Will return error if notification already existed - ignore
+        [notificationObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+
+		}];
         
     }
 }

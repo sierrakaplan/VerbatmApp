@@ -18,6 +18,7 @@
 	PFObject *newLikeObject = [PFObject objectWithClassName:LIKE_PFCLASS_KEY];
 	[newLikeObject setObject:[PFUser currentUser]forKey:LIKE_USER_KEY];
 	[newLikeObject setObject:postParseObject forKey:LIKE_POST_LIKED_KEY];
+	// Will return error if like already existed - ignore
 	[newLikeObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if(succeeded) {
 			[postParseObject incrementKey:POST_NUM_LIKES];
