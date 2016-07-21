@@ -129,7 +129,10 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate, MFMessageComposeViewContro
 
 -(void) viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
-	//	[self offScreen];
+}
+
+-(BOOL) prefersStatusBarHidden {
+	return YES;
 }
 
 -(void) registerForNotifications {
