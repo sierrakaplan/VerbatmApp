@@ -30,6 +30,7 @@
 #define BLOCK_USER_ICON @"settings_icon"
 
 #define SETTINGS_BUTTON_ICON @"settings_icon"
+#define BLOCK_ICON @"block_icon"
 
 #define BACK_BUTTON_ICON @"back_arrow_black"
 #define DOWN_ARROW_ICON @"down_arrow_white"
