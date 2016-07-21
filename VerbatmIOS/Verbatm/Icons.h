@@ -136,6 +136,8 @@
 #define EDIT_PINCHVIEW_INSTRUCTION @"instruction_edit_pinchview"
 #define ADD_TEXT_INSTRUCTION @"instruction_add_text"
 
+#define TAP_TO_EXIT_FULLSCREENPOV_INSTRUCTION @"TAP_TO_EXIT_ICON"
+
 #pragma mark -Photo Slideshow icons-
 
 #define PAUSE_SLIDESHOW_ICON @"Pause_slideshow_icon"
