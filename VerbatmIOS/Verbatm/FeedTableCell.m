@@ -41,9 +41,6 @@
 
 -(void)presentProfileForChannel:(Channel *) channel{
 
-	// Stop downloading any images we were downloading
-	[[UtilityFunctions sharedInstance] cancelAllSharedSessionDataTasks];
-
 	ProfileVC * __block oldProfile = self.currentProfile;
 
 	dispatch_async(dispatch_get_global_queue(0, 0), ^{
