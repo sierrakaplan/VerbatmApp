@@ -214,8 +214,8 @@
 																	   andChannelCreator:channelCreator];
 					[finalChannels addObject:verbatmChannelObject];
 				}
-				completionBlock([UtilityFunctions shuffleArray: finalChannels]);
 				self.exploreChannelsLoaded += channels.count;
+				completionBlock([UtilityFunctions shuffleArray: finalChannels]);
 			}];
 		}];
 	}];

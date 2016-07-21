@@ -11,6 +11,7 @@
 #import "Notifications.h"
 #import "zlib.h"
 #include <compression.h>
+#import "Channel.h"
 
 @import AVFoundation;
 @import Foundation;
@@ -288,6 +289,27 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
         return [NSData dataWithData: decompressed];
     }
     else return nil;
+}
+
+
+#pragma mark - Parse Functions -
+
++(Channel*)checkIfChannelList:(NSArray*)list containsChannel:(Channel*)channel {
+	for (Channel* listChannel in list) {
+		if([listChannel.parseChannelObject.objectId isEqualToString: channel.parseChannelObject.objectId]){
+			return listChannel;
+		}
+	}
+	return nil;
+}
+
++(PFObject*)checkIfObjectsList:(NSArray*)list containsObject:(PFObject*)object {
+	for (PFObject* obj in list) {
+		if([obj.objectId isEqualToString:object.objectId]){
+			return obj;
+		}
+	}
+	return nil;
 }
 
 

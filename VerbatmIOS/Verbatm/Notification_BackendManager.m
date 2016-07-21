@@ -22,7 +22,6 @@
 +(void)createNotificationWithType:(NotificationType) notType receivingUser:(PFUser *) receivingUser relevantPostObject:(PFObject *) post {
     
     if(![[receivingUser objectId] isEqualToString:[[PFUser currentUser] objectId]]){
-        
         NSNumber * notificationType = [NSNumber numberWithInteger:notType];
         PFObject * notificationObject = [PFObject objectWithClassName:NOTIFICATION_PFCLASS_KEY];
         [notificationObject setValue:[NSNumber numberWithBool:YES] forKey:NOTIFICATION_IS_NEW];
@@ -32,7 +31,6 @@
         [notificationObject setValue:notificationType forKey:NOTIFICATION_TYPE];
 		// Will return error if notification already existed - ignore
         [notificationObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-
 		}];
         
     }

@@ -55,8 +55,6 @@
 
 -(void)loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*, NSData*))block;
 
--(id)checkIfList:(NSArray *) list ContainsObject:(PFObject *) object;
-
 -(NSString *)getCoverPhotoUrl;
 
 -(void)registerFollowingNewChannel:(Channel *)channel;

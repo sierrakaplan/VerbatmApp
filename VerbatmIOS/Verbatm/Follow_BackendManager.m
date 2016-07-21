@@ -31,39 +31,43 @@
 			[channelToFollow.parseChannelObject incrementKey:CHANNEL_NUM_FOLLOWS];
 			[channelToFollow.parseChannelObject saveInBackground];
 			[[UserInfoCache sharedInstance] registerNewFollower];
-            [[UserInfoCache sharedInstance] storeCurrentUserNowFollowingChannel:channelToFollow];
-            [Follow_BackendManager NotifyNewFollowingActionOnChannel:channelToFollow isFollowing:YES];
-            
-            [Notification_BackendManager createNotificationWithType:NewFollower receivingUser:channelToFollow.channelCreator relevantPostObject:nil];
+			[[UserInfoCache sharedInstance] storeCurrentUserNowFollowingChannel:channelToFollow];
+			[Follow_BackendManager NotifyNewFollowingActionOnChannel:channelToFollow isFollowing:YES];
+
+			[Notification_BackendManager createNotificationWithType:NewFollower receivingUser:channelToFollow.channelCreator relevantPostObject:nil];
 		}
 	}];
 }
 
 +(void)NotifyNewFollowingActionOnChannel:(Channel *)channel isFollowing:(BOOL) isFollowing{
-    NSDictionary * userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[channel.channelCreator objectId],USER_FOLLOWING_NOTIFICATION_USERINFO_KEY,[NSNumber numberWithBool:isFollowing],USER_FOLLOWING_NOTIFICATION_ISFOLLOWING_KEY,nil];
-    NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_NOW_FOLLOWING_USER object:nil userInfo:userInfo];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
+	NSDictionary * userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[channel.channelCreator objectId],USER_FOLLOWING_NOTIFICATION_USERINFO_KEY,[NSNumber numberWithBool:isFollowing],USER_FOLLOWING_NOTIFICATION_ISFOLLOWING_KEY,nil];
+	NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_NOW_FOLLOWING_USER object:nil userInfo:userInfo];
+	[[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 
 +(void)blockUser:(PFUser *) user fromFollowingChannel:(Channel *) channelToUnfollow {
-    PFQuery *followQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
-    [followQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channelToUnfollow.parseChannelObject];
-    [followQuery whereKey:FOLLOW_USER_KEY equalTo:user];
-    [followQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-                                                    NSError * _Nullable error) {
-        
-        if(objects && !error && objects.count) {
-            PFObject * followObj = [objects firstObject];
-            [followObj deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-                if(succeeded){
-                    [channelToUnfollow.parseChannelObject incrementKey:CHANNEL_NUM_FOLLOWS byAmount:[NSNumber numberWithInteger:-1]];
-                    [channelToUnfollow.parseChannelObject saveInBackground];
-                }
-            }];
-        }
-        
-    }];
+	PFQuery *followQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
+	[followQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channelToUnfollow.parseChannelObject];
+	[followQuery whereKey:FOLLOW_USER_KEY equalTo:user];
+	[followQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+													NSError * _Nullable error) {
+
+		if(objects && !error && objects.count) {
+			// Should only be 1, but because of bugs might be more
+			for (PFObject * followObj in objects) {
+				BOOL __block duplicate = NO;
+				[followObj deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+					if(succeeded && !duplicate) {
+						duplicate = YES;
+						[channelToUnfollow.parseChannelObject incrementKey:CHANNEL_NUM_FOLLOWS byAmount:[NSNumber numberWithInteger:-1]];
+						[channelToUnfollow.parseChannelObject saveInBackground];
+					}
+				}];
+			}
+		}
+
+	}];
 }
 
 
@@ -73,20 +77,24 @@
 	[followQuery whereKey:FOLLOW_USER_KEY equalTo:[PFUser currentUser]];
 	[followQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 													NSError * _Nullable error) {
-		
-        if(objects && !error && objects.count) {
-			PFObject * followObj = [objects firstObject];
-			[followObj deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-				if(succeeded){
-					[channelToUnfollow.parseChannelObject incrementKey:CHANNEL_NUM_FOLLOWS byAmount:[NSNumber numberWithInteger:-1]];
-					[channelToUnfollow.parseChannelObject saveInBackground];
-					[[UserInfoCache sharedInstance] registerRemovedFollower];
-                    [[UserInfoCache sharedInstance] storeCurrentUserStoppedFollowing:channelToUnfollow];
-                    [Follow_BackendManager NotifyNewFollowingActionOnChannel:channelToUnfollow isFollowing:NO];
-				}
-			}];
+
+		if(objects && !error && objects.count) {
+			// Should only be 1, but because of bugs might be more
+			for (PFObject * followObj in objects) {
+				BOOL __block duplicate = NO;
+				[followObj deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+					if(succeeded && !duplicate) {
+						duplicate = YES;
+						[channelToUnfollow.parseChannelObject incrementKey:CHANNEL_NUM_FOLLOWS byAmount:[NSNumber numberWithInteger:-1]];
+						[channelToUnfollow.parseChannelObject saveInBackground];
+						[[UserInfoCache sharedInstance] registerRemovedFollower];
+						[[UserInfoCache sharedInstance] storeCurrentUserStoppedFollowing:channelToUnfollow];
+						[Follow_BackendManager NotifyNewFollowingActionOnChannel:channelToUnfollow isFollowing:NO];
+					}
+				}];
+			}
 		}
-        
+
 	}];
 }
 

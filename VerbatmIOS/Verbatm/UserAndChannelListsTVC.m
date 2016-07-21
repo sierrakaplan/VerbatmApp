@@ -322,7 +322,7 @@
 	ChannelOrUsernameCV *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
 
 	if(cell == nil) {
-		cell = [[ChannelOrUsernameCV alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier isChannel:YES isAChannelThatIFollow:NO];
+		cell = [[ChannelOrUsernameCV alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier isChannel:YES];
 		[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
 	} else {
 		[cell removeFromSuperview];

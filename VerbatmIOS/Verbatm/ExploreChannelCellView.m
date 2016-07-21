@@ -18,6 +18,7 @@
 #import "Styles.h"
 #import "Notifications.h"
 #import <Parse/PFUser.h>
+#import "UserInfoCache.h"
 
 @interface ExploreChannelCellView() <UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
@@ -38,9 +39,9 @@
 
 
 #define MAIN_VIEW_OFFSET 10.f
-#define POST_VIEW_OFFSET 10.f
-#define POST_VIEW_WIDTH 180.f
-#define OFFSET 5.f
+#define POST_VIEW_OFFSET 5.f
+#define POST_VIEW_WIDTH 150.f
+#define OFFSET 3.f
 #define NUM_FOLLOWERS_WIDTH 40.f
 
 @end
@@ -50,7 +51,6 @@
 -(instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
 	if (self) {
-		self.isFollowed = NO;
 		self.indexOnScreen = 0;
 		self.backgroundColor = [UIColor clearColor];
 		[self addSubview: self.mainView];
@@ -63,7 +63,6 @@
 	}
 	return self;
 }
-
 
 -(void)registerForFollowNotification{
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -87,7 +86,6 @@
         }
     }
 }
-
 
 -(void) cellTapped:(UITapGestureRecognizer*)gesture {
 	[self.delegate channelSelected:self.channelBeingPresented];
@@ -125,6 +123,7 @@
 }
 
 -(void) presentChannel:(Channel *)channel {
+	self.isFollowed = [[UserInfoCache sharedInstance] userFollowsChannel: channel];
 	self.channelBeingPresented = channel;
 
 	[self.channelNameLabel setText: channel.name];
@@ -134,7 +133,8 @@
 
 	__block CGFloat xCoordinate = POST_VIEW_OFFSET;
 	[PostsQueryManager getPostsInChannel:channel withLimit:3 withCompletionBlock:^(NSArray *postChannelActivityObjects) {
-		for (PFObject *postChannelActivityObj in postChannelActivityObjects) {
+		for (int i = 0; i < postChannelActivityObjects.count; i++) {
+			PFObject *postChannelActivityObj = postChannelActivityObjects[i];
 			PFObject *post = [postChannelActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
 			[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
 				CGRect frame = CGRectMake(xCoordinate, POST_VIEW_OFFSET, POST_VIEW_WIDTH,
@@ -151,7 +151,8 @@
 				}
 				[postView showPageUpIndicator];
 				[postView muteAllVideos:YES];
-				[self.postViews addObject: postView];
+				if (i < self.postViews.count) [self.postViews insertObject:postView atIndex:i];
+				else [self.postViews addObject:postView];
 			}];
 		}
 	}];
@@ -171,8 +172,6 @@
 
 	self.channelBeingPresented = nil;
 	self.indexOnScreen = 0;
-	self.isFollowed = NO;
-	self.numFollowers = 0;
 
 	[self.userNameLabel removeFromSuperview];
 	[self.followButton removeFromSuperview];

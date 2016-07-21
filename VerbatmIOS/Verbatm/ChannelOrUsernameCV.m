@@ -54,14 +54,13 @@
 	// Initialization code
 }
 
-- (instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier isChannel:(BOOL) isChannel isAChannelThatIFollow:(BOOL) channelThatIFollow {
+- (instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier isChannel:(BOOL) isChannel {
 	self = [super initWithStyle: style reuseIdentifier: reuseIdentifier] ;
 
 	if (self) {
         self.backgroundColor = [UIColor whiteColor];
 		self.isAChannel = isChannel;
         self.clipsToBounds = YES;
-		self.isAChannelIFollow = channelThatIFollow;
 		if(!self.channelNameLabelAttributes)[self createSelectedTextAttributes];
         [self registerForFollowNotification];
 	}

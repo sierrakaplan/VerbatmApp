@@ -36,10 +36,12 @@
 	[userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 														 NSError * _Nullable error) {
 		if(objects && !error) {
-			if(objects.count){
-				PFObject *likeObject = [objects firstObject];
+			// Should only be 1, but because of bugs might be more
+			for (PFObject *likeObject in objects) {
+				BOOL __block duplicate = NO;
 				[likeObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-					if(succeeded) {
+					if(succeeded && !duplicate) {
+						duplicate = YES;
 						[postParseObject incrementKey:POST_NUM_LIKES byAmount:[NSNumber numberWithInteger:-1]];
 						[postParseObject saveInBackground];
 					}
