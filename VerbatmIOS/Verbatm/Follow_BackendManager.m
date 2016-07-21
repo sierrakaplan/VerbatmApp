@@ -50,13 +50,14 @@
 	PFQuery *followQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
 	[followQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channelToUnfollow.parseChannelObject];
 	[followQuery whereKey:FOLLOW_USER_KEY equalTo:user];
+	followQuery.limit = 1000;
 	[followQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 													NSError * _Nullable error) {
 
 		if(objects && !error && objects.count) {
 			// Should only be 1, but because of bugs might be more
+			BOOL __block duplicate = NO;
 			for (PFObject * followObj in objects) {
-				BOOL __block duplicate = NO;
 				[followObj deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 					if(succeeded && !duplicate) {
 						duplicate = YES;
@@ -80,8 +81,8 @@
 
 		if(objects && !error && objects.count) {
 			// Should only be 1, but because of bugs might be more
+			BOOL __block duplicate = NO;
 			for (PFObject * followObj in objects) {
-				BOOL __block duplicate = NO;
 				[followObj deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 					if(succeeded && !duplicate) {
 						duplicate = YES;
@@ -100,6 +101,7 @@
 
 + (void) channelIDsUserFollowing: (PFUser*) user withCompletionBlock:(void(^)(NSArray*)) block {
 	PFQuery *followingQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
+	followingQuery.limit = 1000;
 	[followingQuery whereKey:FOLLOW_USER_KEY equalTo:user];
 	[followingQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 														  NSError * _Nullable error) {
@@ -121,6 +123,7 @@
 + (void) channelsUserFollowing: (PFUser*) user withCompletionBlock:(void(^)(NSArray*)) block {
 	if (!user) return;
 	PFQuery *followingQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
+	followingQuery.limit = 1000;
 	[followingQuery whereKey:FOLLOW_USER_KEY equalTo:user];
 	[followingQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 														  NSError * _Nullable error) {
@@ -162,6 +165,7 @@
 + (void) usersFollowingChannel: (Channel*) channel withCompletionBlock:(void(^)(NSMutableArray*)) block {
 
 	PFQuery *followersQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
+	followersQuery.limit = 1000;
 	[followersQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channel.parseChannelObject];
 	[followersQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 													   NSError * _Nullable error) {

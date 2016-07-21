@@ -30,15 +30,15 @@
 }
 
 + (void)currentUserStopLikingPost:(PFObject *) postParseObject {
-	PFQuery * userChannelQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
-	[userChannelQuery whereKey:LIKE_POST_LIKED_KEY equalTo:postParseObject];
-	[userChannelQuery whereKey:LIKE_USER_KEY equalTo:[PFUser currentUser]];
-	[userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+	PFQuery * likeQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
+	[likeQuery whereKey:LIKE_POST_LIKED_KEY equalTo:postParseObject];
+	[likeQuery whereKey:LIKE_USER_KEY equalTo:[PFUser currentUser]];
+	[likeQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 														 NSError * _Nullable error) {
 		if(objects && !error) {
 			// Should only be 1, but because of bugs might be more
+			BOOL __block duplicate = NO;
 			for (PFObject *likeObject in objects) {
-				BOOL __block duplicate = NO;
 				[likeObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 					if(succeeded && !duplicate) {
 						duplicate = YES;
@@ -51,13 +51,13 @@
 	}];
 }
 
-
 + (void)getUsersWhoLikePost:(PFObject *) postParseObject withCompletionBlock:(void(^)(NSArray *))block{
     if(!postParseObject)return;
-    //we just delete the Follow Object
-    PFQuery * userChannelQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
-    [userChannelQuery whereKey:LIKE_POST_LIKED_KEY equalTo:postParseObject];
-    [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+	//todo: cloud code
+    PFQuery * likeQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
+	likeQuery.limit = 1000;
+    [likeQuery whereKey:LIKE_POST_LIKED_KEY equalTo:postParseObject];
+    [likeQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                          NSError * _Nullable error) {
         if(objects && !error) {
             block(objects);
@@ -93,10 +93,10 @@
 + (void)currentUserLikesPost:(PFObject *) postParseObject withCompletionBlock:(void(^)(bool))block {
     if(!postParseObject)return;
     //we just delete the Follow Object
-    PFQuery * userChannelQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
-    [userChannelQuery whereKey:LIKE_POST_LIKED_KEY equalTo:postParseObject];
-    [userChannelQuery whereKey:LIKE_USER_KEY equalTo:[PFUser currentUser]];
-    [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+    PFQuery * likeQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
+    [likeQuery whereKey:LIKE_POST_LIKED_KEY equalTo:postParseObject];
+    [likeQuery whereKey:LIKE_USER_KEY equalTo:[PFUser currentUser]];
+    [likeQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                          NSError * _Nullable error) {
         if(objects && !error) {
             if(objects.count >= 1)block(YES);
@@ -107,6 +107,7 @@
 
 +(void) deleteLikesForPost:(PFObject*) postParseObject withCompletionBlock:(void(^)(BOOL)) block {
 	PFQuery *likesQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
+	likesQuery.limit = 1000;
 	[likesQuery whereKey:LIKE_POST_LIKED_KEY equalTo:postParseObject];
 	[likesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 													NSError * _Nullable error) {
