@@ -460,7 +460,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		NSInteger postIndex = [self.parsePostObjects indexOfObject: pfActivityObj];
 		[self removePostAtIndex: postIndex withCompletionBlock:nil];
 		[postView clearPost];
-		[Post_BackendObject deletePost:post];
+		[Post_BackendObject deletePost:post withCompletionBlock:^{
+			[self.channelForList updatePostDeleted:post];
+		}];
 	}];
 
 	[alert addAction: cancelAction];

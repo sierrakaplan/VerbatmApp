@@ -47,7 +47,6 @@
 	});
 }
 
-
 +(void)deleteChannelRelationshipsForPost:(PFObject *) postParseObject withCompletionBlock:(void(^)(bool))block{
 	PFQuery * postChannelRelationshipQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 	[postChannelRelationshipQuery whereKey:POST_CHANNEL_ACTIVITY_POST equalTo:postParseObject];
@@ -57,7 +56,8 @@
 			for (PFObject *obj in objects) {
 				[obj deleteInBackground];
 			}
-		}
+			if (block) block(YES);
+		} else if(block) block(NO);
 	}];
 }
 

@@ -138,6 +138,7 @@
 			}
 			PFQuery *channelsQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
 			[channelsQuery whereKey:@"objectId" containedIn: channelIDs];
+			channelsQuery.limit = 1000;
 			[channelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
 				if (error) {
 					[[Crashlytics sharedInstance] recordError: error];

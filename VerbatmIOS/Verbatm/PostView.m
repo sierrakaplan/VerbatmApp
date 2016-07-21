@@ -573,9 +573,10 @@
 #pragma mark - Delete Post -
 
 -(void)deleteButtonPressed {
-	BOOL reblogged = self.postChannel.parseChannelObject != self.listChannel.parseChannelObject;
+	BOOL reblogged = ![self.postChannel.parseChannelObject.objectId isEqualToString:self.listChannel.parseChannelObject.objectId];
 	[self.delegate deleteButtonSelectedOnPostView:self withPostObject:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST] reblogged: reblogged];
 }
+
 -(void)flagButtonPressed{
 	[self.delegate flagButtonSelectedOnPostView:self withPostObject:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
 }
