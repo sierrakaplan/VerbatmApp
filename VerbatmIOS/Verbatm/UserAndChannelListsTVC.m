@@ -71,7 +71,6 @@
 	self.tableView.allowsMultipleSelection = NO;
 	self.tableView.showsHorizontalScrollIndicator = NO;
 	self.tableView.showsVerticalScrollIndicator = NO;
-	[self addRefreshFeature];
 
 	[self setNeedsStatusBarAppearanceUpdate];
 
@@ -93,6 +92,25 @@
 	}else{
 		[self setTableViewHeader];
 	}
+}
+
+#pragma mark - Present List -
+
+-(void)presentList:(ListType) listType forChannel:(Channel *)channel orPost:(PFObject *)post {
+	[self addRefreshFeature];
+	if (![self.refreshControl isRefreshing]) {
+		[self.loadMoreSpinner startAnimating];
+	}
+	self.currentListType = listType;
+	self.channelOnDisplay = channel;
+	self.postObject = post;
+	[self refreshDataForListType:listType forChannel:channel orPost:post withCompletionBlock:^{
+		self.shouldAnimateViews = YES;
+		[self.loadMoreSpinner stopAnimating];
+		[self.refreshControl endRefreshing];
+		[self.tableView reloadData];
+		if(self.navBar)[self.view bringSubviewToFront:self.navBar];
+	}];
 }
 
 -(void)viewDidLayoutSubviews{
@@ -175,23 +193,6 @@
 		userProfile.channel = startChannel;
 		[self presentViewController:userProfile animated:YES completion:nil];
 	}
-
-}
-
-#pragma mark - Present List -
-
--(void)presentList:(ListType) listType forChannel:(Channel *)channel orPost:(PFObject *)post {
-	if (![self.refreshControl isRefreshing]) [self.loadMoreSpinner startAnimating];
-	self.currentListType = listType;
-	self.channelOnDisplay = channel;
-	self.postObject = post;
-	[self refreshDataForListType:listType forChannel:channel orPost:post withCompletionBlock:^{
-		self.shouldAnimateViews = YES;
-		[self.loadMoreSpinner stopAnimating];
-		[self.refreshControl endRefreshing];
-		[self.tableView reloadData];
-		if(self.navBar)[self.view bringSubviewToFront:self.navBar];
-	}];
 }
 
 -(void) refreshDataForListType:(ListType)listType forChannel:(Channel *)channel orPost:(PFObject *)post

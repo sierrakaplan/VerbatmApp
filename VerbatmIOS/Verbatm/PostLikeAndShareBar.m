@@ -45,7 +45,7 @@
 #define OF_TEXT_FONT CHANNEL_TAB_BAR_FOLLOWERS_FONT
 #define OF_TEXT_FONT_SIZE 18.f
 
-#define BIG_ICON_SPACING 2.f
+#define BIG_ICON_SPACING 3.f
 #define BIG_ICON_SIZE (self.frame.size.height - (BIG_ICON_SPACING*2))
 
 @end

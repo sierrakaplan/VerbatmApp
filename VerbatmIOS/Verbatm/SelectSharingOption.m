@@ -22,6 +22,8 @@
 #define BAR_HEIGHT ((self.frame.size.height/MAX_BAR_NUMBER)-BAR_HEIGHT_TOGGLE)
 #define SELECTION_BUTTON_WIDTH 20.f
 
+#define TEXT_LABEL_SIZE 100.f
+
 #define VERBATM_REBLOG_TEXT @"Verbatm (Reblog)"
 #define TWITTER_SHARE_TEXT @"Twitter"
 #define FACEBOOK_SHARE_TEXT @"Facebook"
@@ -99,14 +101,9 @@
     [verbatmView setImage:logo];
     
     CGRect labelFrame = CGRectMake(viewFrame.origin.x + viewFrame.size.width +
-                                          IMAGE_TEXT_SPACING, 0.f, imageHeight+ 50, imageHeight);
+                                          IMAGE_TEXT_SPACING, 0.f, imageHeight+ TEXT_LABEL_SIZE, imageHeight);
     UILabel * nameLabel = [[UILabel alloc] initWithFrame:labelFrame];
     [nameLabel setAttributedText:[self getButtonAttributeStringWithText:title]];
-    
-//    [nameLabel setText:title];
-//    [nameLabel setTextColor:[UIColor whiteColor]];
-    
-    
     
     CGRect buttonFrame = CGRectMake(frame.size.width - WALL_OFFSET_X *2,
                                     (imageHeight/2.f) - (SELECTION_BUTTON_WIDTH/2.f),
