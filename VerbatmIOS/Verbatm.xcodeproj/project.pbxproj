@@ -189,7 +189,7 @@
 		C76172771C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m in Sources */ = {isa = PBXBuildFile; fileRef = C76172761C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m */; };
 		C761727B1C4DFB7700AB0D84 /* PostListVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C761727A1C4DFB7700AB0D84 /* PostListVC.m */; };
 		C761727F1C4E0EB600AB0D84 /* PostCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C761727E1C4E0EB600AB0D84 /* PostCollectionViewCell.m */; };
-		C763C1BC1CE4430B00929248 /* onBoardingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C763C1BB1CE4430B00929248 /* onBoardingViewController.m */; };
+		C763C1BC1CE4430B00929248 /* OnBoardingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C763C1BB1CE4430B00929248 /* OnBoardingViewController.m */; };
 		C764CD6F1D189A3B00F75760 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C764CD6E1D189A3B00F75760 /* Twitter.framework */; };
 		C764CD711D18A26200F75760 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C764CD701D18A26200F75760 /* MessageUI.framework */; };
 		C772057D1D30DBFA00D626FE /* ConfirmationCodeSignUp.m in Sources */ = {isa = PBXBuildFile; fileRef = C772057C1D30DBFA00D626FE /* ConfirmationCodeSignUp.m */; };
@@ -562,7 +562,7 @@
 		C761727D1C4E0EB600AB0D84 /* PostCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostCollectionViewCell.h; sourceTree = "<group>"; };
 		C761727E1C4E0EB600AB0D84 /* PostCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostCollectionViewCell.m; sourceTree = "<group>"; };
 		C763C1BA1CE4430B00929248 /* onBoardingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = onBoardingViewController.h; sourceTree = "<group>"; };
-		C763C1BB1CE4430B00929248 /* onBoardingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = onBoardingViewController.m; sourceTree = "<group>"; };
+		C763C1BB1CE4430B00929248 /* OnBoardingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnBoardingViewController.m; sourceTree = "<group>"; };
 		C764CD6E1D189A3B00F75760 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		C764CD701D18A26200F75760 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		C772057B1D30DBFA00D626FE /* ConfirmationCodeSignUp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfirmationCodeSignUp.h; sourceTree = "<group>"; };
@@ -1291,7 +1291,7 @@
 			isa = PBXGroup;
 			children = (
 				C763C1BA1CE4430B00929248 /* onBoardingViewController.h */,
-				C763C1BB1CE4430B00929248 /* onBoardingViewController.m */,
+				C763C1BB1CE4430B00929248 /* OnBoardingViewController.m */,
 				C7178E051D210FA700B90643 /* POV List */,
 				C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */,
 				C7EF5BB41B0CD5E500E7915B /* MasterNavigationVC.h */,
@@ -1879,7 +1879,7 @@
 				A51B85271D2F474F006E90CC /* OpenCollectionView.m in Sources */,
 				C7C69A071BF820FC006B5260 /* EditMediaContentView.m in Sources */,
 				A5C38ACD1CC1D4120067D077 /* FeaturedContentChannelView.m in Sources */,
-				C763C1BC1CE4430B00929248 /* onBoardingViewController.m in Sources */,
+				C763C1BC1CE4430B00929248 /* OnBoardingViewController.m in Sources */,
 				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,
 				A51B851A1D2F39B1006E90CC /* UIView+DTDebug.m in Sources */,
 				A51B85201D2F3C43006E90CC /* DTLog.m in Sources */,

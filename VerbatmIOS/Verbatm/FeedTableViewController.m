@@ -50,8 +50,7 @@
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
-	// Stop downloading any images we were downloading
-	[[UtilityFunctions sharedInstance] cancelAllSharedSessionDataTasks];
+
 }
 
 -(UIStatusBarStyle) preferredStatusBarStyle {

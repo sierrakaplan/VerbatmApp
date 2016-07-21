@@ -77,8 +77,30 @@
     return self.userChannel;
 }
 
+
+-(void)registerNewFollower{
+    [[self getUserChannel].parseChannelObject incrementKey:CHANNEL_NUM_FOLLOWING];
+    [[self getUserChannel].parseChannelObject saveInBackground];
+}
+
+
+
+-(void)storeCurrentUserNowFollowingChannel:(Channel *)channel{
+    [self.userChannel registerFollowingNewChannel:channel];
+}
+
+-(void)storeCurrentUserStoppedFollowing:(Channel *)channel{
+    [self.userChannel registerStopedFollowingChannel:channel];
+}
+
+-(void)registerRemovedFollower{
+    [[self getUserChannel].parseChannelObject incrementKey:CHANNEL_NUM_FOLLOWING byAmount:[NSNumber numberWithInteger:-1]];
+    [[self getUserChannel].parseChannelObject saveInBackground];
+}
+
+
 -(BOOL) userFollowsChannel:(Channel*)channel {
-	return [self.userChannel checkIfList:self.userChannel.channelsUserFollowing ContainsObject:channel.parseChannelObject];
+	return ([self.userChannel checkIfList:self.userChannel.channelsUserFollowing ContainsObject:channel.parseChannelObject] != nil);
 }
 
 -(void)reloadUserChannels {

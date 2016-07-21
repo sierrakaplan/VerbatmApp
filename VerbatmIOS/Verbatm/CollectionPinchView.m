@@ -46,6 +46,7 @@
 }
 
 -(void) initWithPinchViews:(NSArray*)pinchViews {
+    
 	[self.background addSubview:self.videoView];
 	[self addPlayIcon];
 	[self addCollectionViewBorder];

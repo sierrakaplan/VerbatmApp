@@ -76,14 +76,13 @@
 			if (!self.isCurrentUser) {
 				// This allows a user to block another user
 				[self createSettingsButton];
-
 				self.currentUserFollowsUser = [[UserInfoCache sharedInstance] userFollowsChannel:channel];
-				[self updateUserFollowingChannel];
 				[self createFollowButton];
+                [self registerForFollowNotification];
 			}
 		}
+        
 		[self createFollowersAndFollowingLabels];
-        [self registerForFollowNotification];
 	}
 	return self;
 }
@@ -100,8 +99,12 @@
     NSDictionary * userInfo = [notification userInfo];
     if(userInfo){
         NSString * userId = userInfo[USER_FOLLOWING_NOTIFICATION_USERINFO_KEY];
-        if([userId isEqualToString:[self.channel.channelCreator objectId]]){
-            self.currentUserFollowsUser = [[UserInfoCache sharedInstance] userFollowsChannel: self.channel];
+        NSNumber * isFollowingAction = userInfo[USER_FOLLOWING_NOTIFICATION_ISFOLLOWING_KEY];
+        //only update the follow icon if this is the correct user and also if the action was
+        //no registered on this view
+        if([userId isEqualToString:[self.channel.channelCreator objectId]]&&
+              ([isFollowingAction boolValue] != self.currentUserFollowsUser)) {
+            self.currentUserFollowsUser = [isFollowingAction boolValue];
 			[self updateUserFollowingChannel];
         }
     }
@@ -252,7 +255,7 @@
 		if (self.currentUserFollowsUser) {
 			[Follow_BackendManager currentUserFollowChannel: self.channel];
 		} else {
-			[Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel: self.channel];
+			[Follow_BackendManager currentUserStopFollowingChannel: self.channel];
 		}
 		[self.channel currentUserFollowsChannel: self.currentUserFollowsUser];
 		[self updateUserFollowingChannel];

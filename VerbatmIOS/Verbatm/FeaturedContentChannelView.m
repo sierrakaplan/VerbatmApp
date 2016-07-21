@@ -100,7 +100,7 @@
 	if (self.isFollowed) {
 		[Follow_BackendManager currentUserFollowChannel: self.channel];
 	} else {
-		[Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel: self.channel];
+		[Follow_BackendManager currentUserStopFollowingChannel: self.channel];
 	}
 	[self updateFollowIcon];
 }

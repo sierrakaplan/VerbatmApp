@@ -23,8 +23,8 @@
 @property (nonatomic, readwrite) NSString *blogDescription;
 @property (nonatomic, readwrite) PFObject * parseChannelObject;
 @property (nonatomic, readwrite) PFUser *channelCreator;
-@property (nonatomic, readwrite) NSArray *usersFollowingChannel;
-@property (nonatomic, readwrite) NSArray *channelsUserFollowing;
+@property (nonatomic, readwrite) NSMutableArray *usersFollowingChannel;
+@property (nonatomic, readwrite) NSMutableArray *channelsUserFollowing;
 
 @property (nonatomic) PostPublisher * mediaPublisher;
 
@@ -160,21 +160,21 @@
     });
 }
 
--(BOOL)checkIfList:(NSArray *) list ContainsObject:(PFObject *) object{
+-(id)checkIfList:(NSArray *) list ContainsObject:(PFObject *) object{
     for(id entry in list) {
 		if ([entry isKindOfClass:[Channel class]]) {
 			Channel *channel = (Channel*) entry;
 			if([channel.parseChannelObject.objectId isEqualToString:[object objectId]]){
-				return YES;
+				return entry;
 			}
 		} else {
 			PFObject *objEntry = (PFObject*) entry;
 			if([objEntry.objectId isEqualToString:[object objectId]]){
-				return YES;
+				return entry;
 			}
 		}
     }
-    return NO;
+    return nil;
 }
 
 -(void) getFollowersWithCompletionBlock:(void(^)(void))block {
@@ -205,5 +205,33 @@
     self.channelCreator = channelCreator;
     self.blogDescription = object[CHANNEL_DESCRIPTION_KEY];
 }
+
+
+-(void)registerFollowingNewChannel:(Channel *)channel{
+    if(channel){
+        id listChannel = [self checkIfList:self.channelsUserFollowing ContainsObject:channel.parseChannelObject];
+        if(!listChannel){
+            [self.channelsUserFollowing addObject:channel];
+        }
+    }
+    
+}
+
+
+-(void)registerStopedFollowingChannel:(Channel *)channel{
+
+    if(channel){
+        id listChannel = [self checkIfList:self.channelsUserFollowing ContainsObject:channel.parseChannelObject];
+        if(listChannel){
+            [self.channelsUserFollowing removeObject:listChannel];
+        }
+        
+    }
+    
+}
+
+
+
+
 
 @end

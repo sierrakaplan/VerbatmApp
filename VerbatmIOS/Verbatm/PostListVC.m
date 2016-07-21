@@ -547,7 +547,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark Sharing
 
 -(void) shareOptionSelectedForParsePostObject: (PFObject* )post {
-	[self.postListDelegate hideNavBarIfPresent];
 	self.postToShare = post;
 	[self presentShareSelectionViewStartOnChannels:YES];
 }
@@ -565,9 +564,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	self.view.userInteractionEnabled = NO;
 	[[UIApplication sharedApplication].keyWindow addSubview:self.sharePostView];
 
-	//[self.view addSubview:self.sharePostView];
 	[[UIApplication sharedApplication].keyWindow bringSubviewToFront:self.sharePostView];
-	//[self.view bringSubviewToFront:self.sharePostView];
 	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^ {
 		self.sharePostView.frame = onScreenFrame;
 	}];
@@ -858,7 +855,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void) publishingFailed:(NSNotification *) notification {
 	if(!self.isCurrentUserProfile) return;
-	self.currentlyPublishing = NO;
 	[PFQuery clearAllCachedResults];
 	[self clearPublishingView];
 }
@@ -873,6 +869,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 			[cellView offScreen];
 			[cellView clearViews];
 		}
+        
 		self.parsePostObjects = nil;
 		[self.collectionView reloadData];
 		// Start off assuming scrolling backwards
@@ -897,11 +894,10 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void) showWhoLikesThePost:(PFObject *) post{
-	UserAndChannelListsTVC * vc = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
-	[vc presentList:likersList forChannel:nil orPost:post];
-	[self presentViewController:vc animated:YES completion:nil];
+	UserAndChannelListsTVC *likersListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+	[likersListVC presentList:LikersList forChannel:nil orPost:post];
+	[self presentViewController:likersListVC animated:YES completion:nil];
 }
-
 
 #pragma mark -Lazy instantiation-
 

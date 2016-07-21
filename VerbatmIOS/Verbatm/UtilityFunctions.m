@@ -18,6 +18,7 @@
 @interface UtilityFunctions ()
 
 @property (strong, nonatomic) NSMutableArray *sessionTasks;
+@property (strong, nonatomic) NSCondition * cancelSessionCondition;
 
 #define COMPRESSING 0
 
@@ -288,6 +289,8 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
     }
     else return nil;
 }
+
+
 
 -(NSMutableArray *)sessionTasks {
 	if (!_sessionTasks) {

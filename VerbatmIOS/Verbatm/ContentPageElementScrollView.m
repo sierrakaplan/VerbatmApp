@@ -110,11 +110,11 @@
 	if (self.isCollection) {
 		collection = (CollectionPinchView*)self.pageElement;
 		other = otherScrollView;
-	}
-	else if(otherScrollView.isCollection) {
+	} else if(otherScrollView.isCollection) {
 		collection = (CollectionPinchView*)otherScrollView.pageElement;
 		other = self;
 	}
+    
 	if(collection) {
 		newPinchView = collection;
 		if (other.isCollection) {
@@ -123,7 +123,7 @@
 				[collection pinchAndAdd:singlePinchView];
 			}
 		} else {
-			[collection pinchAndAdd:(SingleMediaAndTextPinchView*)otherScrollView.pageElement];
+			[collection pinchAndAdd:(SingleMediaAndTextPinchView*)other.pageElement];
 		}
 		[[PostInProgress sharedInstance] removePinchViewAtIndex:index];
 		[[PostInProgress sharedInstance] removePinchViewAtIndex:index andReplaceWithPinchView:newPinchView];
