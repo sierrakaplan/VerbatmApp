@@ -14,6 +14,8 @@
 #import "PostCollectionViewCell.h"
 #import "Share_BackendManager.h"
 #import "UIView+Effects.h"
+#import "Icons.h"
+
 @interface PostCollectionViewCell () <PostViewDelegate>
 
 @property (nonatomic, readwrite) PFObject *currentPostActivityObject;
@@ -27,6 +29,8 @@
 @property (nonatomic) PublishingProgressView * publishingProgressView;
 @property (nonatomic) BOOL hasPublishingView;
 @property (nonatomic) BOOL hasShadow;
+
+@property (nonatomic) UIImageView * tapToExitNotification;
 @end
 
 @implementation PostCollectionViewCell
@@ -67,7 +71,11 @@
 }
 
 -(void)presentPublishingView{
-	[self addSubview:self.publishingProgressView];
+    if(self.presentingTapToExitNotification){
+        [self insertSubview:self.publishingProgressView belowSubview:self.tapToExitNotification];
+    }else{
+        [self addSubview:self.publishingProgressView];
+    }
 	self.hasPublishingView = YES;
 }
 
@@ -106,7 +114,12 @@
 		}
 		weakSelf.currentPostView.delegate = weakSelf;
 		weakSelf.currentPostView.listChannel = channelForList;
-		[weakSelf addSubview: weakSelf.currentPostView];
+		
+        if(self.tapToExitNotification){
+            [weakSelf insertSubview:weakSelf.currentPostView belowSubview:self.tapToExitNotification];
+        }else{
+            [weakSelf addSubview: weakSelf.currentPostView];
+        }
 		weakSelf.currentPostView.inSmallMode = weakSelf.inSmallMode;
 
 		if(!weakSelf.inSmallMode){
@@ -155,6 +168,24 @@
 
 -(void) offScreen {
 	[self clearViews];
+}
+
+
+
+-(void)presentTapToExitNotification{
+    self.tapToExitNotification = [[UIImageView alloc] initWithImage:[UIImage imageNamed:TAP_TO_EXIT_FULLSCREENPOV_INSTRUCTION]];
+    self.tapToExitNotification.frame = self.bounds;
+    [self addSubview:self.tapToExitNotification];
+    self.presentingTapToExitNotification = YES;
+}
+
+-(void)removeTapToExitNotification{
+    if(self.tapToExitNotification){
+        [self.tapToExitNotification removeFromSuperview];
+        self.tapToExitNotification = nil;
+        [self.cellDelegate justRemovedTapToExitNotification];
+        self.presentingTapToExitNotification = NO;
+    }
 }
 
 #pragma mark - Post view delegate -

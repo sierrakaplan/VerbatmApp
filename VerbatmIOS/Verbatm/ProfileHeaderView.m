@@ -23,6 +23,7 @@
 
 #import "UIView+Effects.h"
 #import "UserManager.h"
+#import "UserSetupParameters.h"
 
 @interface ProfileHeaderView() <ProfileInformationBarDelegate, UITextViewDelegate>
 
@@ -49,6 +50,8 @@
 @property (nonatomic) UIImageView * profileInConstructionNotification;
 
 @property (nonatomic) UIImageView * feedbackRequestNotification;
+
+
 
 #define OFFSET_X 5.f
 #define OFFSET_Y 10.f
@@ -106,7 +109,8 @@
 
 -(void)askForFeedback{
     if(self.isCurrentUser && [[UserManager sharedInstance] shouldRequestForUserFeedback] &&
-       !self.feedbackRequestNotification){
+       !self.feedbackRequestNotification &&
+       [[UserSetupParameters sharedInstance] checkAndSetProfileInstructionShown]){
         self.feedbackRequestNotification = [[UIImageView alloc] initWithImage:[UIImage imageNamed:FEEDBACK_NOTIFICATION_ICON]];
         
         

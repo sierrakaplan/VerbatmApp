@@ -59,11 +59,11 @@
 }
 
 
--(void)presentNotification:(NotificationType) notificationType withChannel:(Channel *) channel andObjectId:(id)objectId{
+-(void)presentNotification:(NotificationType) notificationType withChannel:(Channel *) channel andParseObject:(PFObject *)parseObject{
     
     [self clearViews];
     
-    self.objectId = objectId;
+    self.parseObject = parseObject;
     self.notificationType = notificationType;
     self.channel = channel;
     if(notificationType & (NewFollower|FriendJoinedVerbatm|FriendsFirstPost|Share)){

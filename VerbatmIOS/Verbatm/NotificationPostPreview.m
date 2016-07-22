@@ -61,28 +61,31 @@
     [self createNavBar];
 	self.postBeingPresented = pfActivityObj;
 	PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
-    [post fetchIfNeededInBackground];
-	[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
-		self.currentPostView = [[PostView alloc] initWithFrame:self.bounds
-								  andPostChannelActivityObject:pfActivityObj small:NO andPageObjects:pages];
-
-		NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
-		self.currentPostView.listChannel = channel;
-		[self addSubview: self.currentPostView];
-		self.currentPostView.inSmallMode = NO;
-
-		NSNumber *numLikes = post[POST_NUM_LIKES];
-		NSNumber *numShares = post[POST_NUM_REBLOGS];
-		[self.currentPostView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
-													   numberOfPages:numberOfPages
-											   andStartingPageNumber:@(1)
-															 startUp:NO
-													withDeleteButton:NO];
-		[self.currentPostView addCreatorInfo];
-
-		[self.currentPostView postOnScreen];
-        [self bringSubviewToFront:self.customNavBar];
-	}];
+    [post fetchInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+        if(object){
+            [Page_BackendObject getPagesFromPost:object andCompletionBlock:^(NSArray * pages) {
+                self.currentPostView = [[PostView alloc] initWithFrame:self.bounds
+                                          andPostChannelActivityObject:pfActivityObj small:NO andPageObjects:pages];
+                
+                NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
+                self.currentPostView.listChannel = channel;
+                [self addSubview: self.currentPostView];
+                self.currentPostView.inSmallMode = NO;
+                NSNumber *numLikes = object[POST_NUM_LIKES];
+                NSNumber *numShares = object[POST_NUM_REBLOGS];
+                [self.currentPostView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
+                                                               numberOfPages:numberOfPages
+                                                       andStartingPageNumber:@(1)
+                                                                     startUp:NO
+                                                            withDeleteButton:NO];
+                [self.currentPostView addCreatorInfo];
+                
+                [self.currentPostView postOnScreen];
+                [self bringSubviewToFront:self.customNavBar];
+            }];
+        }
+    }];
+	
 }
 
 @end

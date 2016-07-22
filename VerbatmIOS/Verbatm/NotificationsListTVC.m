@@ -223,7 +223,6 @@
 	if(postObject && channel){
 		PFQuery * query = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 		[query whereKey:POST_CHANNEL_ACTIVITY_POST equalTo:postObject];
-
 		[query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
 			dispatch_async(dispatch_get_main_queue(), ^{
 				if(!self.postPreview && objects && objects.count){
@@ -260,9 +259,9 @@
 	}
 }
 
-#pragma mark -Notifications Cell protocol-
+#pragma mark - Notifications Cell protocol -
 -(void)presentPostSentFromCell:(NotificationTableCell *)cell{
-	[self presentPost:[cell objectId] andChannel:cell.channel];
+    [self presentPost:[cell parseObject] andChannel:cell.channel];
 
 }
 
@@ -304,18 +303,16 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	NotificationTableCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-	if(!self.cellSelected){
-		self.cellSelected = YES;
-		if((cell.notificationType & Like)){
-			self.cellSelected = NO;//to be removed
-								   //             self.tableView.scrollEnabled = NO;
-								   //             [self presentPost:[cell objectId] andChannel:cell.channel];
-		}else{
-			[self presentBlogFromCell: cell];
-		}
-	}
-
+    NotificationTableCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    if(!self.cellSelected){
+        self.cellSelected = YES;
+        if((cell.notificationType & Like)){
+             self.tableView.scrollEnabled = NO;
+             [self presentPost:[cell parseObject] andChannel:cell.channel];
+        }else{
+            [self presentBlogFromCell: cell];
+        }
+    }
 }
 
 #pragma mark - Table view data source
@@ -329,20 +326,21 @@
 }
 
 -(void)setNotificationOnCell:( NotificationTableCell *)cell notificationObject:(PFObject *)notification{
-	NotificationType notType = [(NSNumber *)[notification valueForKey:NOTIFICATION_TYPE] intValue];
-	PFUser * notificationSender = [notification valueForKey:NOTIFICATION_SENDER];
-	PFObject * postActivityObject = [notification valueForKey:NOTIFICATION_POST];
-	[postActivityObject fetchInBackground];
 
-
-	[Channel_BackendObject getChannelsForUser:notificationSender withCompletionBlock:^(NSMutableArray * userChannels) {
-		if(userChannels){
-			dispatch_async(dispatch_get_main_queue(), ^{
-				Channel * channel = [userChannels firstObject];
-				[cell presentNotification:notType withChannel:channel andObjectId:postActivityObject];
-			});
-		}
-	}];
+    NotificationType notType = [(NSNumber *)[notification valueForKey:NOTIFICATION_TYPE] intValue];
+    PFUser * notificationSender = [notification valueForKey:NOTIFICATION_SENDER];
+    PFObject * postActivityObject = [notification valueForKey:NOTIFICATION_POST];
+    [postActivityObject fetchInBackground];
+    
+    
+    [Channel_BackendObject getChannelsForUser:notificationSender withCompletionBlock:^(NSMutableArray * userChannels) {
+        if(userChannels){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                Channel * channel = [userChannels firstObject];
+                [cell presentNotification:notType withChannel:channel andParseObject:postActivityObject];
+            });
+        }
+    }];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

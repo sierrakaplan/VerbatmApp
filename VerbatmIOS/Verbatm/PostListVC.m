@@ -22,7 +22,6 @@
 #import "Like_BackendManager.h"
 #import "LoadingIndicator.h"
 
-#import "Notifications.h"
 
 #import "Page_BackendObject.h"
 #import "PostListVC.h"
@@ -46,13 +45,16 @@
 #import "SizesAndPositions.h"
 #import "StringsAndAppConstants.h"
 #import "Styles.h"
+#import <TwitterKit/TwitterKit.h>
+
+#import <MessageUI/MFMessageComposeViewController.h>
+#import "Notifications.h"
 
 #import "UserAndChannelListsTVC.h"
 #import "User_BackendObject.h"
 #import "UserInfoCache.h"
-#import <TwitterKit/TwitterKit.h>
+#import "UserSetupParameters.h"
 
-#import <MessageUI/MFMessageComposeViewController.h>
 
 @interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource,
 SharePostViewDelegate,
@@ -82,6 +84,9 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate, MFMessageComposeViewContro
 
 @property (nonatomic) NSNumber * publishingProgressViewPositionHolder;
 @property (nonatomic) ExternalShare * externalShare;
+
+@property (nonatomic) UIImageView *tapToExitNotification;
+
 
 @property (nonatomic) UIImageView *reblogSucessful;
 @property (nonatomic) UIImageView *following;
@@ -418,7 +423,11 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void)cellTapped:(UIGestureRecognizer *) tap{
 	PostCollectionViewCell * cellTapped = (PostCollectionViewCell *) tap.view;
-	[self.postListDelegate cellSelectedAtPostIndex:[self.collectionView indexPathForCell:cellTapped]];
+    if([cellTapped presentingTapToExitNotification]){
+        [cellTapped removeTapToExitNotification];
+    }else{
+        [self.postListDelegate cellSelectedAtPostIndex:[self.collectionView indexPathForCell:cellTapped]];
+    }
 }
 
 - (void) collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -432,6 +441,13 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	if ([collectionView.indexPathsForVisibleItems indexOfObject:indexPath] == NSNotFound) {
 		[(PostCollectionViewCell*)cell onScreen];
 	}
+    
+    if(![[UserSetupParameters sharedInstance] checkAndSetTapOutOfFullscreenInstructionShown]&&
+       !self.inSmallMode){
+        [self.collectionView setScrollEnabled:NO];
+        PostCollectionViewCell * currentCell = (PostCollectionViewCell *)cell;
+        [currentCell presentTapToExitNotification];
+    }
 }
 
 -(void) footerShowing: (BOOL) showing {
@@ -554,6 +570,13 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(void) shareOptionSelectedForParsePostObject: (PFObject* )post {
 	self.postToShare = post;
 	[self presentShareSelectionViewStartOnChannels:YES];
+}
+
+
+
+#pragma mark -PostCollectionViewCell delegate-
+-(void)justRemovedTapToExitNotification{
+    [self.collectionView setScrollEnabled:YES];
 }
 
 -(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels {
@@ -683,11 +706,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 		controller.messageComposeDelegate = self;
 		[self presentViewController:controller animated:YES completion:nil];
-
-
 	}else{
 		[self.externalShare storeShareLinkToPost:self.postToShare withCaption:nil withCompletionBlock:nil];
-
 		[self reportLinkError];
 	}
 }

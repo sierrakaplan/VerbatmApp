@@ -16,12 +16,12 @@
 
 @interface NotificationTableCell : UITableViewCell
 
-@property (nonatomic) id objectId;
+@property (nonatomic) PFObject * parseObject;
 @property (nonatomic) Channel * channel;
 @property (nonatomic) NotificationType notificationType;
 @property (nonatomic, weak) id<NotificationTableCellProtocol> delegate;
 
--(void)presentNotification:(NotificationType) notificationType withChannel:(Channel *) channel andObjectId:(id)objectId;
+-(void)presentNotification:(NotificationType) notificationType withChannel:(Channel *) channel andParseObject:(PFObject *)objectId;
 @end
 
 
