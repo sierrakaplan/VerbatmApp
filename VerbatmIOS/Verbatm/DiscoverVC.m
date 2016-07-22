@@ -29,6 +29,7 @@ ExploreChannelCellViewDelegate>
 @property (strong, nonatomic) NSMutableArray *featuredChannels;
 
 @property (nonatomic) UIRefreshControl *refreshControl;
+@property (nonatomic) UIActivityIndicatorView *loadMoreSpinner;
 
 @property (nonatomic) BOOL loadingMoreChannels;
 @property (nonatomic) BOOL refreshing;
@@ -144,6 +145,7 @@ ExploreChannelCellViewDelegate>
 	if (self.refreshing) return;
 	self.refreshing = YES;
 	self.loadingMoreChannels = NO;
+	if (![self.refreshControl isRefreshing]) [self.loadMoreSpinner startAnimating];
 	[[FeedQueryManager sharedInstance] loadFeaturedChannelsWithCompletionHandler:^(NSArray *featuredChannels) {
 		self.featuredChannels = nil;
 		[self.featuredChannels addObjectsFromArray:featuredChannels];
@@ -153,6 +155,7 @@ ExploreChannelCellViewDelegate>
 	[[FeedQueryManager sharedInstance] refreshExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
 		self.exploreChannels = nil;
 		[self.refreshControl endRefreshing];
+		[self.loadMoreSpinner stopAnimating];
 		[self.exploreChannels addObjectsFromArray: exploreChannels];
 		[self.tableView reloadData];
 		self.refreshing = NO;
@@ -161,7 +164,9 @@ ExploreChannelCellViewDelegate>
 
 -(void) loadMoreChannels {
 	self.loadingMoreChannels = YES;
+	[self.loadMoreSpinner startAnimating];
 	[[FeedQueryManager sharedInstance] loadMoreExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
+		[self.loadMoreSpinner stopAnimating];
 		if (exploreChannels.count) {
 			[self.exploreChannels addObjectsFromArray: exploreChannels];
 			[self.tableView reloadData];
@@ -174,6 +179,10 @@ ExploreChannelCellViewDelegate>
 	self.refreshControl = [[UIRefreshControl alloc] init];
 	[self.refreshControl addTarget:self action:@selector(refreshChannels) forControlEvents:UIControlEventValueChanged];
 	[self.tableView addSubview:self.refreshControl];
+
+	self.loadMoreSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+	self.loadMoreSpinner.hidesWhenStopped = YES;
+	self.tableView.tableFooterView = self.loadMoreSpinner;
 }
 
 -(void) channelSelected:(Channel *)channel {

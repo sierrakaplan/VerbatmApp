@@ -20,6 +20,7 @@
 -(void)registerNewFollower;
 //decrements followers number in backend
 -(void)registerRemovedFollower;
+
 -(void)storeCurrentUserNowFollowingChannel:(Channel *)channel;
 -(void)storeCurrentUserStoppedFollowing:(Channel *)channel;
 @end

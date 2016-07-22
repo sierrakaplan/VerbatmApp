@@ -73,6 +73,78 @@ Parse.Cloud.define("logIn", function(req, res) {
 	}
 });
 
+// Sets default values to num follows and num following
+Parse.Cloud.beforeSave("ChannelClass", function(request, response) {
+  if (!request.object.get("ChannelNumFollows")) {
+    request.object.set("ChannelNumFollows", 0);
+  }
+  if (!request.object.get("ChannelNumFollowing")) {
+  	request.object.set("ChannelNumFollowing", 0);
+  }
+  if (!request.object.get("Featured")) {
+  	request.object.set("Featured", false);
+  }
+  response.success();
+});
+
+// Do not allow duplicate follows, likes, or notifications
+var NotificationClass = Parse.Object.extend("NotificationClass");
+var LikeClass = Parse.Object.extend("LikeClass");
+var FollowClass = Parse.Object.extend("FollowClass");
+
+Parse.Cloud.beforeSave("NotificationClass", function(request, response) {
+	// Let existing object updates go through
+	if (!request.object.isNew()) {
+      response.success();
+    }
+	var query = new Parse.Query(NotificationClass);
+	query.equalTo("NotificationSender", request.object.get("NotificationSender"));
+	query.equalTo("NotificationReceiver", request.object.get("NotificationReceiver"));
+	query.equalTo("NotificationType", request.object.get("NotificationType"));
+	query.equalTo("NotificationPost", request.object.get("NotificationPost"));
+	query.first().then(function(existingObject) {
+      if (existingObject) {
+        response.error("Existing notification");
+      } else {
+        response.success();
+      }
+    });
+});
+
+Parse.Cloud.beforeSave("LikeClass", function(request, response) {
+	// Let existing object updates go through
+	if (!request.object.isNew()) {
+      response.success();
+    }
+	var query = new Parse.Query(LikeClass);
+	query.equalTo("UserLiking", request.object.get("UserLiking"));
+	query.equalTo("PostLiked", request.object.get("PostLiked"));
+	query.first().then(function(existingObject) {
+      if (existingObject) {
+        response.error("Existing like");
+      } else {
+        response.success();
+      }
+    });
+});
+
+Parse.Cloud.beforeSave("FollowClass", function(request, response) {
+	// Let existing object updates go through
+	if (!request.object.isNew()) {
+      response.success();
+    }
+	var query = new Parse.Query(FollowClass);
+	query.equalTo("ChannelFollowed", request.object.get("ChannelFollowed"));
+	query.equalTo("UserFollowing", request.object.get("UserFollowing"));
+	query.first().then(function(existingObject) {
+      if (existingObject) {
+        response.error("Existing follow object");
+      } else {
+        response.success();
+      }
+    });
+});
+
 function sendCodeSms(phoneNumber, code, language) {
 	var prefix = "+1";
 	if(typeof language !== undefined && language == "ja") {

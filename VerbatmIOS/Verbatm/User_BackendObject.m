@@ -281,6 +281,7 @@
 +(AnyPromise*) getAllFollowRelationshipsFromChannels:(NSArray*)otherChannels {
 	return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 		PFQuery *followRelationshipQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
+		followRelationshipQuery.limit = 1000;
 		[followRelationshipQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY containedIn:otherChannels];
 		[followRelationshipQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable followRelationships, NSError * _Nullable error) {
 			if (error) [[Crashlytics sharedInstance] recordError:error];

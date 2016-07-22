@@ -11,6 +11,7 @@
 #import <Parse/PFUser.h>
 #import "Channel_BackendObject.h"
 #import "Notifications.h"
+#import "UtilityFunctions.h"
 /*
  Shared instance that simplifies fetching ubiquitous user information. 
  For example we use it now to cache the users channels - but can be used 
@@ -83,6 +84,10 @@
     [[self getUserChannel].parseChannelObject saveInBackground];
 }
 
+-(void)registerRemovedFollower{
+	[[self getUserChannel].parseChannelObject incrementKey:CHANNEL_NUM_FOLLOWING byAmount:[NSNumber numberWithInteger:-1]];
+	[[self getUserChannel].parseChannelObject saveInBackground];
+}
 
 
 -(void)storeCurrentUserNowFollowingChannel:(Channel *)channel{
@@ -93,14 +98,9 @@
     [self.userChannel registerStopedFollowingChannel:channel];
 }
 
--(void)registerRemovedFollower{
-    [[self getUserChannel].parseChannelObject incrementKey:CHANNEL_NUM_FOLLOWING byAmount:[NSNumber numberWithInteger:-1]];
-    [[self getUserChannel].parseChannelObject saveInBackground];
-}
-
 
 -(BOOL) userFollowsChannel:(Channel*)channel {
-	return ([self.userChannel checkIfList:self.userChannel.channelsUserFollowing ContainsObject:channel.parseChannelObject] != nil);
+	return ([UtilityFunctions checkIfChannelList:self.userChannel.channelsUserFollowing containsChannel:channel] != nil);
 }
 
 -(void)reloadUserChannels {

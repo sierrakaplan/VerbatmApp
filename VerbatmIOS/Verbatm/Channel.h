@@ -45,21 +45,22 @@
 
 -(BOOL)channelBelongsToCurrentUser;
 
--(void)addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator;
+-(void) addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator;
 
 
-+(void)getChannelsForUserList:(NSArray *) userList andCompletionBlock:(void(^)(NSMutableArray *))block;
++(void) getChannelsForUserList:(NSArray *) userList andCompletionBlock:(void(^)(NSMutableArray *))block;
 
 
--(void)storeCoverPhoto:(UIImage *) coverPhoto;
+-(void) storeCoverPhoto:(UIImage *) coverPhoto;
 
 -(void)loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*, NSData*))block;
-
--(id)checkIfList:(NSArray *) list ContainsObject:(PFObject *) object;
 
 -(NSString *)getCoverPhotoUrl;
 
 -(void)registerFollowingNewChannel:(Channel *)channel;
+
 -(void)registerStopedFollowingChannel:(Channel *)channel;
+
+-(void) updatePostDeleted:(PFObject*)post;
 
 @end

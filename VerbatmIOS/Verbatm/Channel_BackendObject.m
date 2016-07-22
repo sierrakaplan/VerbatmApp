@@ -150,4 +150,18 @@
     }];
 }
 
++ (void) updateLatestPostDateForChannel:(PFObject*)channel {
+	PFQuery *findLatestPostQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
+	[findLatestPostQuery orderByDescending:@"createdAt"];
+	[findLatestPostQuery getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+		if (!object || error) {
+			//No more posts exist
+			channel[CHANNEL_LATEST_POST_DATE] = [NSNull null];
+		} else {
+			channel[CHANNEL_LATEST_POST_DATE] = object.createdAt;
+		}
+		[channel saveInBackground];
+	}];
+}
+
 @end

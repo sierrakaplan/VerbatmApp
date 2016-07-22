@@ -51,6 +51,7 @@
 }
 
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+	searchController.searchBar.placeholder = @"Search for blog names or usernames";
 	//set frame for activity indicator
 	NSString *searchText = searchController.searchBar.text;
 	if (!searchText.length) {

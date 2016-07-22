@@ -128,7 +128,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	[super viewDidAppear:animated];
 }
 
--(void)presentUserList:(ListLoadType) listType{
+-(void)presentUserList:(ListType) listType{
 	UserAndChannelListsTVC *userList = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
 	[userList presentList:listType forChannel:self.channel orPost:nil];
 	[self presentViewController:userList animated:YES completion:nil];
@@ -315,8 +315,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
         cellPath = [self.postListVC.collectionView indexPathForCell:cell];
     }
     
-    
-    
     PostListVC * newVC = [[PostListVC alloc] initWithCollectionViewLayout:[self getFlowLayout]];
     newVC.postListDelegate = self;
     newVC.inSmallMode = !self.inFullScreenMode;
@@ -332,10 +330,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
     
     [self presentViewPostView:newVC inSmallMode:!self.inFullScreenMode shouldPage:self.inFullScreenMode fromCellPath:cellPath];
 }
-
-
-
-
 
 #pragma mark - Profile Nav Bar Delegate Methods -
 
@@ -361,11 +355,11 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 }
 
 -(void)showChannelsFollowing{
-	[self presentUserList:followingList];
+	[self presentUserList: FollowingList];
 }
 
 -(void)showFollowers{
-	[self presentUserList:followersList];
+	[self presentUserList: FollowersList];
 }
 
 //ProfileNavBarDelegate protocol

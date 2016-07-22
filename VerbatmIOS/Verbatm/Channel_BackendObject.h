@@ -21,8 +21,10 @@
 
 //takes a completion block that will be called with
 //an nsarray of the channels
-+(void) getChannelsForUser:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock;
++ (void) getChannelsForUser:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock;
 + (void) getAllChannelsWithCompletionBlock:(void(^)(NSMutableArray *))completionBlock;
 
 +(void)storeCoverPhoto:(UIImage *) coverPhoto withParseChannelObject:(PFObject *) channel;
+
++ (void) updateLatestPostDateForChannel:(PFObject*)channel;
 @end

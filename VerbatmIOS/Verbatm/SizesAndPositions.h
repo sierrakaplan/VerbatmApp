@@ -9,7 +9,6 @@
 #ifndef SizesAndPositions_h
 #define SizesAndPositions_h
 
-
 #define IPHONE_6_PLUS_WIDTH 414
 #define IPHONE_6_PLUS_HEIGHT 736
 
@@ -25,7 +24,7 @@
 
 #define INTRO_NOTIFICATION_SIZE 250.f
 
-#define STATUS_BAR_HEIGHT [UIApplication sharedApplication].statusBarFrame.size.height
+#define STATUS_BAR_HEIGHT 20.f
 
 #pragma mark - Main Tab bar -
 
