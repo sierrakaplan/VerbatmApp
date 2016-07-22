@@ -57,6 +57,10 @@
 	return UIStatusBarStyleLightContent;
 }
 
+//-(BOOL) prefersStatusBarHidden {
+//	return self.contentInFullScreen; todo
+//}
+
 -(void)reloadCellsOnScreen{
 	NSArray * visibleCell = [self.tableView visibleCells];
 

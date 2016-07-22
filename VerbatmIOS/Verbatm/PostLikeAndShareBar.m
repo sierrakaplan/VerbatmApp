@@ -45,6 +45,9 @@
 #define OF_TEXT_FONT CHANNEL_TAB_BAR_FOLLOWERS_FONT
 #define OF_TEXT_FONT_SIZE 18.f
 
+#define BIG_ICON_SPACING 3.f
+#define BIG_ICON_SIZE (self.frame.size.height - (BIG_ICON_SPACING*2))
+
 @end
 
 @implementation PostLikeAndShareBar
@@ -110,13 +113,13 @@
 	}
 }
 
-
 -(void)createShareButton {
     //create share button
-    CGRect shareButtonFrame = CGRectMake(ICON_SPACING_GAP, 0.f,
-                                         self.frame.size.height, self.frame.size.height);
+    CGRect shareButtonFrame = CGRectMake(ICON_SPACING_GAP, BIG_ICON_SPACING,
+                                         BIG_ICON_SIZE, BIG_ICON_SIZE);
     
     self.shareButon = [UIButton buttonWithType:UIButtonTypeCustom];
+	self.shareButon.contentMode = UIViewContentModeScaleAspectFit;
     [self.shareButon setFrame:shareButtonFrame];
     [self.shareButon setImage:[UIImage imageNamed:SHARE_ICON] forState:UIControlStateNormal];
     [self.shareButon addTarget:self action:@selector(shareButtonPressed) forControlEvents:UIControlEventTouchDown];
@@ -126,10 +129,10 @@
 
 -(void)createLikeButton {
     CGRect likeButtonFrame =  CGRectMake(self.shareButon.frame.origin.x + self.shareButon.frame.size.width + ICON_SPACING_GAP,
-                                         0.f,
-										self.frame.size.height, self.frame.size.height);
+										BIG_ICON_SPACING, BIG_ICON_SIZE, BIG_ICON_SIZE);
     
     self.likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	self.likeButton.contentMode = UIViewContentModeScaleAspectFit;
     [self.likeButton setFrame:likeButtonFrame];
     self.likeButtonLikedImage = [UIImage imageNamed:LIKE_ICON_PRESSED];
     self.likeButtonNotLikedImage = [UIImage imageNamed:LIKE_ICON_UNPRESSED];
@@ -277,6 +280,7 @@
     [self.delegate showWhoLikesThePost];
 }
 
+//todo:
 //the actual number view is selected
 -(void) numSharesButtonSelected {
     
@@ -297,9 +301,11 @@
 -(UIButton *)muteButton{
     if(!_muteButton){
         _muteButton = [[UIButton alloc] init];
-        
-        CGRect buttonFrame = CGRectMake(self.numLikesButton.frame.origin.x + self.numLikesButton.frame.size.width + ICON_SPACING_GAP,
-										0.f, self.frame.size.height, self.frame.size.height);
+
+		CGFloat size = self.frame.size.height - (ICON_SPACING_GAP*2);
+		UIView *rightView = self.numLikesButton ? self.numLikesButton : self.likeButton;
+        CGRect buttonFrame = CGRectMake(rightView.frame.origin.x + rightView.frame.size.width + ICON_SPACING_GAP,
+										ICON_SPACING_GAP, size, size);
         _muteButton.frame = buttonFrame;
         
         [_muteButton setImage:[UIImage imageNamed:UNMUTED_ICON] forState:UIControlStateNormal];

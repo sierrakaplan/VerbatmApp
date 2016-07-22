@@ -1,4 +1,4 @@
-
+ 
 //
 //  Post.m
 //  Verbatm
@@ -59,7 +59,7 @@
 					if (result && [result isKindOfClass:[NSError class]]) {
 						[[PublishingProgressManager sharedInstance] savingMediaFailedWithError:error];
 						//Delete all media stored so far
-						[Post_BackendObject deletePost:newPostObject];
+						[Post_BackendObject deletePost:newPostObject withCompletionBlock:nil];
 						return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 							resolve(nil);
 						}];
@@ -75,7 +75,7 @@
 				if (result && [result isKindOfClass:[NSError class]]) {
 					[[PublishingProgressManager sharedInstance] savingMediaFailedWithError:error];
 					//Delete all media stored so far
-					[Post_BackendObject deletePost:newPostObject];
+					[Post_BackendObject deletePost:newPostObject withCompletionBlock:nil];
 				}
 			});
 		} else {
@@ -89,11 +89,12 @@
 //todo: make sure post is not visible while media deleting
 /* Remove pages (which will remove media), then remove post.
    Also delete like and share objects associated with post */
-+(void) deletePost: (PFObject *)post {
++(void) deletePost: (PFObject *)post withCompletionBlock:(void(^)(void))block {
 	[Post_Channel_RelationshipManager deleteChannelRelationshipsForPost:post withCompletionBlock:^(bool success) {
 		if (!success) {
 			NSLog(@"Error deleting channel relationships");
 		}
+		if (block) block();
 	}];
 	[Page_BackendObject deletePagesInPost:post];
 	[Like_BackendManager deleteLikesForPost:post withCompletionBlock:^(BOOL success) {

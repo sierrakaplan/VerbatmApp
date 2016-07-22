@@ -23,7 +23,11 @@
 @property (nonatomic, readwrite) NSString *blogDescription;
 @property (nonatomic, readwrite) PFObject * parseChannelObject;
 @property (nonatomic, readwrite) PFUser *channelCreator;
+
+// Array of PFUsers
 @property (nonatomic, readwrite) NSMutableArray *usersFollowingChannel;
+
+// Array of Channel* objects
 @property (nonatomic, readwrite) NSMutableArray *channelsUserFollowing;
 
 @property (nonatomic) PostPublisher * mediaPublisher;
@@ -160,23 +164,6 @@
     });
 }
 
--(id)checkIfList:(NSArray *) list ContainsObject:(PFObject *) object{
-    for(id entry in list) {
-		if ([entry isKindOfClass:[Channel class]]) {
-			Channel *channel = (Channel*) entry;
-			if([channel.parseChannelObject.objectId isEqualToString:[object objectId]]){
-				return entry;
-			}
-		} else {
-			PFObject *objEntry = (PFObject*) entry;
-			if([objEntry.objectId isEqualToString:[object objectId]]){
-				return entry;
-			}
-		}
-    }
-    return nil;
-}
-
 -(void) getFollowersWithCompletionBlock:(void(^)(void))block {
 	[Follow_BackendManager usersFollowingChannel:self withCompletionBlock:^(NSArray *users) {
 		self.usersFollowingChannel = [[NSMutableArray alloc] initWithArray:users];
@@ -209,29 +196,28 @@
 
 -(void)registerFollowingNewChannel:(Channel *)channel{
     if(channel){
-        id listChannel = [self checkIfList:self.channelsUserFollowing ContainsObject:channel.parseChannelObject];
+		Channel* listChannel = [UtilityFunctions checkIfChannelList:self.channelsUserFollowing containsChannel:channel];
         if(!listChannel){
             [self.channelsUserFollowing addObject:channel];
         }
     }
-    
 }
-
 
 -(void)registerStopedFollowingChannel:(Channel *)channel{
 
     if(channel){
-        id listChannel = [self checkIfList:self.channelsUserFollowing ContainsObject:channel.parseChannelObject];
+        Channel* listChannel = [UtilityFunctions checkIfChannelList:self.channelsUserFollowing containsChannel:channel];
         if(listChannel){
             [self.channelsUserFollowing removeObject:listChannel];
         }
-        
     }
-    
 }
 
-
-
+-(void) updatePostDeleted:(PFObject*)post {
+	if ([(NSDate*)self.parseChannelObject[CHANNEL_LATEST_POST_DATE] compare: post.createdAt] == NSOrderedSame) {
+		[Channel_BackendObject updateLatestPostDateForChannel:self.parseChannelObject];
+	}
+}
 
 
 @end

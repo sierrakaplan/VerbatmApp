@@ -33,6 +33,7 @@
 @property (nonatomic) UIView * navBar;
 
 @property (nonatomic) UIActivityIndicatorView *loadMoreSpinner;
+@property (nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic) NSMutableArray * channelsToDisplay;
 
 @property (nonatomic) NSMutableArray * usersToDisplay;//catch all array -- can be used for any of the usecases to store a list of users
@@ -53,10 +54,13 @@
 #define FOLLOWING_TEXT @"Following"
 #define FOLLOWERS_TEXT @"Followers"
 #define LIST_BAR_Y_OFFSET -15.f
+
 @end
 
 
 @implementation UserAndChannelListsTVC
+
+@synthesize refreshControl;
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
@@ -67,7 +71,6 @@
 	self.tableView.allowsMultipleSelection = NO;
 	self.tableView.showsHorizontalScrollIndicator = NO;
 	self.tableView.showsVerticalScrollIndicator = NO;
-	[self addRefreshFeature];
 
 	[self setNeedsStatusBarAppearanceUpdate];
 
@@ -75,7 +78,6 @@
 	UIEdgeInsets inset = UIEdgeInsetsMake((LIST_BAR_Y_OFFSET+ STATUS_BAR_HEIGHT + CUSTOM_CHANNEL_LIST_BAR_HEIGHT), 0, CUSTOM_CHANNEL_LIST_BAR_HEIGHT, 0);
 	self.tableView.contentInset = inset;
 	self.tableView.scrollIndicatorInsets = inset;
-
 }
 
 -(void) viewWillAppear:(BOOL)animated {
@@ -92,6 +94,25 @@
 	}
 }
 
+#pragma mark - Present List -
+
+-(void)presentList:(ListType) listType forChannel:(Channel *)channel orPost:(PFObject *)post {
+	[self addRefreshFeature];
+	if (![self.refreshControl isRefreshing]) {
+		[self.loadMoreSpinner startAnimating];
+	}
+	self.currentListType = listType;
+	self.channelOnDisplay = channel;
+	self.postObject = post;
+	[self refreshDataForListType:listType forChannel:channel orPost:post withCompletionBlock:^{
+		self.shouldAnimateViews = YES;
+		[self.loadMoreSpinner stopAnimating];
+		[self.refreshControl endRefreshing];
+		[self.tableView reloadData];
+		if(self.navBar)[self.view bringSubviewToFront:self.navBar];
+	}];
+}
+
 -(void)viewDidLayoutSubviews{
 	[super viewDidLayoutSubviews];
 	if(self.navBar){
@@ -99,8 +120,7 @@
 	}
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (self.shouldAnimateViews) {
 		CGFloat direction = (YES) ? 1 : -1;
 		cell.transform = CGAffineTransformMakeTranslation(0, cell.bounds.size.height * direction);
@@ -120,14 +140,12 @@
 }
 
 -(void)addRefreshFeature{
-	UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
-	[self.tableView addSubview:refreshControl];
+	self.refreshControl = [[UIRefreshControl alloc] init];
+	[self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+	[self.tableView addSubview:self.refreshControl];
 
 	self.loadMoreSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
 	self.loadMoreSpinner.hidesWhenStopped = YES;
-	[self.loadMoreSpinner startAnimating];
-//	spinner.frame = CGRectMake(0, 0, 320, 44);
 	self.tableView.tableFooterView = self.loadMoreSpinner;
 }
 
@@ -175,43 +193,6 @@
 		userProfile.channel = startChannel;
 		[self presentViewController:userProfile animated:YES completion:nil];
 	}
-
-}
-
-#pragma mark - Public methods to set -
-
-//show which users like this post
--(void) presentUserLikeInformationForPost:(id) post {
-	self.postInformationToPresent = post;
-	self.isLikeInformation = YES;
-	//download list of users that like this post -- then reload the list
-}
-
-//show which uses shared this post
--(void) presentUserShareInformationForPost:(id) post {
-	self.postInformationToPresent = post;
-	self.isLikeInformation = NO;
-	//todo: load a list of users that have shared this post then reload the list
-}
-
-//show which users are being followed by userId
--(void)presentWhoIsFollowedBy:(id)userId {
-	//todo:
-	//Start to download a list of users who follow this particular user then reload the table
-}
-
--(void)presentList:(ListType) listType forChannel:(Channel *)channel orPost:(PFObject *)post {
-	[self.loadMoreSpinner startAnimating];
-	self.currentListType = listType;
-	self.channelOnDisplay = channel;
-	self.postObject = post;
-	[self refreshDataForListType:listType forChannel:channel orPost:post withCompletionBlock:^{
-		self.shouldAnimateViews = YES;
-		[self.tableView reloadData];
-		if(self.navBar)[self.view bringSubviewToFront:self.navBar];
-		[self.loadMoreSpinner stopAnimating];
-		[self.refreshControl endRefreshing];
-	}];
 }
 
 -(void) refreshDataForListType:(ListType)listType forChannel:(Channel *)channel orPost:(PFObject *)post
@@ -342,7 +323,7 @@
 	ChannelOrUsernameCV *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
 
 	if(cell == nil) {
-		cell = [[ChannelOrUsernameCV alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier isChannel:YES isAChannelThatIFollow:NO];
+		cell = [[ChannelOrUsernameCV alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier isChannel:YES];
 		[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
 	} else {
 		[cell removeFromSuperview];

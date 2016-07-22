@@ -171,9 +171,10 @@
     [self.delegate followingButtonSelected];
 }
 
-
 -(void) createSettingsButton {
-	UIImage *image = [UIImage imageNamed:SETTINGS_BUTTON_ICON];
+	UIImage *image;
+	if (self.isCurrentUser) image = [UIImage imageNamed:SETTINGS_BUTTON_ICON];
+	else image = [UIImage imageNamed:BLOCK_ICON];
 	CGFloat frame_x = self.frame.size.width - SETTINGS_BUTTON_SIZE - PROFILE_HEADER_XOFFSET;
 	CGRect iconFrame = CGRectMake(frame_x, STATUS_BAR_HEIGHT, SETTINGS_BUTTON_SIZE, SETTINGS_BUTTON_SIZE);
 	self.settingsButton =  [[UIButton alloc] initWithFrame:iconFrame];

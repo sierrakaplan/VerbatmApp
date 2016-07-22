@@ -56,7 +56,7 @@
 
 @interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource,
 SharePostViewDelegate,
-UIScrollViewDelegate, PostCollectionViewCellDelegate, MFMessageComposeViewControllerDelegate>
+UIScrollViewDelegate, PostCollectionViewCellDelegate, MFMessageComposeViewControllerDelegate, FBSDKSharingDelegate>
 
 @property (nonatomic) BOOL isCurrentUserProfile;
 @property (nonatomic) PFUser *listOwner;
@@ -129,7 +129,10 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate, MFMessageComposeViewContro
 
 -(void) viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
-//	[self offScreen];
+}
+
+-(BOOL) prefersStatusBarHidden {
+	return YES;
 }
 
 -(void) registerForNotifications {
@@ -329,9 +332,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 	[self checkShouldReverseScrollDirectionFromIndexPath: indexPath];
 
-//	if (self.performingUpdate && self.currentDisplayCell){
-//		return self.currentDisplayCell;
-//	}
+	//	if (self.performingUpdate && self.currentDisplayCell){
+	//		return self.currentDisplayCell;
+	//	}
 
 	PostCollectionViewCell *currentCell;
 	//todo: load cells to the left when needed in small mode
@@ -457,7 +460,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		NSInteger postIndex = [self.parsePostObjects indexOfObject: pfActivityObj];
 		[self removePostAtIndex: postIndex withCompletionBlock:nil];
 		[postView clearPost];
-		[Post_BackendObject deletePost:post];
+		[Post_BackendObject deletePost:post withCompletionBlock:^{
+			[self.channelForList updatePostDeleted:post];
+		}];
 	}];
 
 	[alert addAction: cancelAction];
@@ -655,13 +660,12 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
 	if(url){
 		dispatch_async(dispatch_get_main_queue(), ^{
-//			NSLog(@"got my Branch invite link to share to Facebook. Link : %@", url);
 			NSURL *link = [NSURL URLWithString:url];
 			FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
 			content.contentURL = link;
 			[FBSDKShareDialog showFromViewController:self
 										 withContent:content
-											delegate:nil];
+											delegate:self];
 		});
 	}else{
 		[self.externalShare storeShareLinkToPost:self.postToShare withCaption:nil withCompletionBlock:nil];
@@ -737,6 +741,29 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 	[self removeSharePOVView];
 	self.view.userInteractionEnabled = YES;
+}
+
+#pragma mark FBSDKShareViewDelegate
+
+- (void)sharer:(id<FBSDKSharing>)sharer didCompleteWithResults:(NSDictionary *)results {
+
+}
+
+/*!
+ @abstract Sent to the delegate when the sharer encounters an error.
+ @param sharer The FBSDKSharing that completed.
+ @param error The error.
+ */
+- (void)sharer:(id<FBSDKSharing>)sharer didFailWithError:(NSError *)error {
+
+}
+
+/*!
+ @abstract Sent to the delegate when the sharer is cancelled.
+ @param sharer The FBSDKSharing that completed.
+ */
+- (void)sharerDidCancel:(id<FBSDKSharing>)sharer {
+
 }
 
 -(void)postPostExternal {
@@ -844,7 +871,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void) userPublishing:(NSNotification *) notification {
 	[self startMonitoringPublishing];
-    [self removePresentLabel];
+	[self removePresentLabel];
 }
 
 // Alerts to user about publishing handled in Master Navigation VC
@@ -862,29 +889,26 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark - Clear views -
 
 -(void) clearViews {
-
-	@autoreleasepool {
-		self.exitedView = YES;
-		for (PostCollectionViewCell *cellView in [self.collectionView visibleCells]) {
-			[cellView offScreen];
-			[cellView clearViews];
-		}
-        
-		self.parsePostObjects = nil;
-		[self.collectionView reloadData];
-		// Start off assuming scrolling backwards
-		self.scrollDirection = -1;
-		self.nextIndexToPresent = -1;
-		self.nextNextIndex = -1;
-		self.nextCellToPresent = nil;
-		self.nextNextCell = nil;
-		self.postToShare = nil;
-		self.isRefreshing = NO;
-		self.isLoadingMore = NO;
-		self.isLoadingOlder = NO;
-		self.performingUpdate = NO;
-		self.shouldPlayVideos = YES;
+	self.exitedView = YES;
+	for (PostCollectionViewCell *cellView in [self.collectionView visibleCells]) {
+		[cellView offScreen];
+		[cellView clearViews];
 	}
+
+	self.parsePostObjects = nil;
+	[self.collectionView reloadData];
+	// Start off assuming scrolling backwards
+	self.scrollDirection = -1;
+	self.nextIndexToPresent = -1;
+	self.nextNextIndex = -1;
+	self.nextCellToPresent = nil;
+	self.nextNextCell = nil;
+	self.postToShare = nil;
+	self.isRefreshing = NO;
+	self.isLoadingMore = NO;
+	self.isLoadingOlder = NO;
+	self.performingUpdate = NO;
+	self.shouldPlayVideos = YES;
 }
 
 #pragma mark - POV delegate -
@@ -899,7 +923,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	[self presentViewController:likersListVC animated:YES completion:nil];
 }
 
-#pragma mark -Lazy instantiation-
+#pragma mark - Lazy instantiation -
 
 -(UIImageView *)reblogSucessful {
 	if(!_reblogSucessful){
@@ -909,7 +933,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}
 	return _reblogSucessful;
 }
-
 
 -(UIImageView *)publishSuccessful {
 	if(!_publishSuccessful){
@@ -964,7 +987,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void) didReceiveMemoryWarning {
-//	[self offScreen];
+	//	[self offScreen];
 }
 
 - (void)dealloc {

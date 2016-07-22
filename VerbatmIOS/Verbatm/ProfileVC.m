@@ -315,8 +315,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
         cellPath = [self.postListVC.collectionView indexPathForCell:cell];
     }
     
-    
-    
     PostListVC * newVC = [[PostListVC alloc] initWithCollectionViewLayout:[self getFlowLayout]];
     newVC.postListDelegate = self;
     newVC.inSmallMode = !self.inFullScreenMode;
@@ -332,10 +330,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
     
     [self presentViewPostView:newVC inSmallMode:!self.inFullScreenMode shouldPage:self.inFullScreenMode fromCellPath:cellPath];
 }
-
-
-
-
 
 #pragma mark - Profile Nav Bar Delegate Methods -
 

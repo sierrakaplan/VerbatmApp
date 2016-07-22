@@ -78,8 +78,11 @@
 		self.followedChannelsRefreshing = YES;
 		[self.channelsRefreshingCondition unlock];
 
+		//todo: make this cloud code
 		PFQuery *followObjectsQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
 		[followObjectsQuery whereKey:FOLLOW_USER_KEY equalTo:[PFUser currentUser]];
+		followObjectsQuery.cachePolicy = kPFCachePolicyNetworkOnly;
+		followObjectsQuery.limit = 1000;
 		[followObjectsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable followObjects, NSError * _Nullable error) {
 			self.channelsFollowed = [[NSMutableArray alloc] init];
 			self.channelsFollowedIds = [[NSMutableArray alloc] init];
@@ -181,6 +184,7 @@
 -(void) loadExploreChannelsWithSkip:(NSInteger)skip andCompletionHandler:(void(^)(NSArray *))completionBlock {
 
 	PFUser *user = [PFUser currentUser];
+	// make this better
 	[self refreshChannelsWeFollowWithCompletionHandler:^{
 		//First get all the people who have blocked this user and do not include their channels
 		PFQuery *blockQuery = [PFQuery queryWithClassName:BLOCK_PFCLASS_KEY];
@@ -214,8 +218,8 @@
 																	   andChannelCreator:channelCreator];
 					[finalChannels addObject:verbatmChannelObject];
 				}
-				completionBlock([UtilityFunctions shuffleArray: finalChannels]);
 				self.exploreChannelsLoaded += channels.count;
+				completionBlock([UtilityFunctions shuffleArray: finalChannels]);
 			}];
 		}];
 	}];

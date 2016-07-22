@@ -11,8 +11,7 @@
 @interface ChannelOrUsernameCV : UITableViewCell
 
 
-- (instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier isChannel:(BOOL) isChannel
-		 isAChannelThatIFollow:(BOOL) channelThatIFollow;
+- (instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier isChannel:(BOOL) isChannel;
 
 -(void)setChannelName:(NSString *)channelName andUserName:(NSString *) userName ;
 -(void)setHeaderTitle;

@@ -14,6 +14,9 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <AVKit/AVKit.h>
 
+@class Channel;
+@class PFObject;
+
 @interface UtilityFunctions : NSObject
 
 + (id)sharedInstance;
@@ -38,5 +41,9 @@
 
 //decompress our video file
 + (NSData *)gzipInflate:(NSData*)data;
+
++(Channel*)checkIfChannelList:(NSArray*)list containsChannel:(Channel*)channel;
+
++(PFObject*)checkIfObjectsList:(NSArray*)list containsObject:(PFObject*)object;
 
 @end

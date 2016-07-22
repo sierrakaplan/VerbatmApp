@@ -242,6 +242,7 @@
 	}
 	[self addSubview:self.likeShareBar];
 	[self checkIfUserHasLikedThePost];
+	[self checkForMuteButton:self.currentPage];
     
     if(numPages.integerValue > 1){
         [self showPageUpIndicator];
@@ -335,14 +336,13 @@
 		}
 	}
     
-    if (!self.postMuted && self.likeShareBar) {
-        [self checkForMuteButton:self.currentPage];
-    }
-    
     if(currentViewableIndex < self.pageViews.count){
         PageViewingExperience *newCurrentPage = self.pageViews[currentViewableIndex];
         [self.currentPage offScreen];
         self.currentPage = newCurrentPage;
+		if (!self.postMuted && self.likeShareBar) {
+			[self checkForMuteButton:self.currentPage];
+		}
         [self.currentPage onScreen];
         
         if(!self.small){
@@ -573,9 +573,10 @@
 #pragma mark - Delete Post -
 
 -(void)deleteButtonPressed {
-	BOOL reblogged = self.postChannel.parseChannelObject != self.listChannel.parseChannelObject;
+	BOOL reblogged = ![self.postChannel.parseChannelObject.objectId isEqualToString:self.listChannel.parseChannelObject.objectId];
 	[self.delegate deleteButtonSelectedOnPostView:self withPostObject:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST] reblogged: reblogged];
 }
+
 -(void)flagButtonPressed{
 	[self.delegate flagButtonSelectedOnPostView:self withPostObject:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
 }
