@@ -261,9 +261,9 @@
     }
 }
 
-#pragma mark -Notifications Cell protocol-
+#pragma mark - Notifications Cell protocol -
 -(void)presentPostSentFromCell:(NotificationTableCell *)cell{
-    [self presentPost:[cell objectId] andChannel:cell.channel];
+    [self presentPost:[cell parseObject] andChannel:cell.channel];
 
 }
 
@@ -309,9 +309,8 @@
     if(!self.cellSelected){
         self.cellSelected = YES;
         if((cell.notificationType & Like)){
-            NSLog(@"%@", [[cell objectId] parseClassName]);
              self.tableView.scrollEnabled = NO;
-             [self presentPost:[cell objectId] andChannel:cell.channel];
+             [self presentPost:[cell parseObject] andChannel:cell.channel];
         }else{
             [self presentBlogFromCell: cell];
         }
@@ -340,7 +339,7 @@
         if(userChannels){
             dispatch_async(dispatch_get_main_queue(), ^{
                 Channel * channel = [userChannels firstObject];
-                [cell presentNotification:notType withChannel:channel andObjectId:postActivityObject];
+                [cell presentNotification:notType withChannel:channel andParseObject:postActivityObject];
             });
         }
     }];
