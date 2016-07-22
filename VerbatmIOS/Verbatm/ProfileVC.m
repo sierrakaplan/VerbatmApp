@@ -212,6 +212,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 -(void)checkEditProfileNotification{
 	if(![[UserSetupParameters sharedInstance] checkEditButtonNotification] &&
+       [[UserSetupParameters sharedInstance] checkAndSetProfileInstructionShown] &&
 	   self.isCurrentUserProfile) {
 		self.introInstruction = [[Intro_Instruction_Notification_View alloc] initWithCenter:self.view.center andType:Profile];
 		self.introInstruction.custom_delegate = self;
@@ -607,9 +608,13 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 											 self.view.frame.size.width, postHeight);
 		self.postListLargeFrame = self.view.bounds;
 		[_postListVC.view setFrame:self.postListSmallFrame];
-		[self.view addSubview:_postListVC.view];
-		[self.view bringSubviewToFront:_postListVC.view];
-	}
+        if(self.introInstruction){
+            [self.view insertSubview:_postListVC.view belowSubview:self.introInstruction];
+        }else{
+           [self.view addSubview:_postListVC.view];
+        }
+    }
+    
 	return _postListVC;
 }
 

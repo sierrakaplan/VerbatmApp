@@ -41,5 +41,5 @@
 -(BOOL) checkFirstTimeFollowBlogShown;
 
 -(BOOL) checkEditButtonNotification;
-
+-(BOOL) checkAndSetTapOutOfFullscreenInstructionShown;
 @end
