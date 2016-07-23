@@ -329,8 +329,10 @@
 	[self.changeCoverPhoto setImage:[UIImage imageNamed:ADD_COVER_PHOTO_ICON] forState:UIControlStateNormal];
 
 	CGFloat coverPhotoIconWidth = COVER_PHOTO_IMAGE_RATIO * COVER_PHOTO_HEIGHT;
-
-	self.changeCoverPhoto.frame = CGRectMake(self.frame.size.width - (coverPhotoIconWidth+OFFSET_X), self.frame.size.width - (COVER_PHOTO_HEIGHT + TAB_BAR_HEIGHT + OFFSET_X),coverPhotoIconWidth, COVER_PHOTO_HEIGHT);
+    CGFloat y_position = self.frame.size.height - ;
+    CGFloat x_position = self.frame.size.width - (coverPhotoIconWidth+OFFSET_X);
+    
+	self.changeCoverPhoto.frame = CGRectMake(x_position, y_position,coverPhotoIconWidth, COVER_PHOTO_HEIGHT);
 	[self addSubview:self.changeCoverPhoto];
 	[self.changeCoverPhoto addTarget:self action:@selector(coverPhotoButtonSelected) forControlEvents:UIControlEventTouchUpInside];
 }

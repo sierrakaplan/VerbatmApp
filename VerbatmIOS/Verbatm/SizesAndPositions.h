@@ -165,6 +165,8 @@
 
 #pragma mark - Profile -
 
+#define POSTLIST_HEIGHT_EXTENSION 20.f //adds this as an extra buffer to increase post sizes
+
 #pragma mark Deprecated
 #define CHANNEL_CREATION_VIEW_HEIGHT 120.f
 #define CHANNEL_CREATION_VIEW_WIDTH 300.f

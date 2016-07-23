@@ -14,9 +14,9 @@ typedef enum {
     NewFollower = 1 << 0,
     Like = 1 << 1, //someone liked your content
     FriendJoinedVerbatm = 1 << 2,
-    Share = 1 << 3, //someone shared your content
-    FriendsFirstPost = 1 << 4
-    
+    Share = 1 << 3, //someone shared your content (facebook, twitter, sms)
+    FriendsFirstPost = 1 << 4,
+    Reblog = 1 << 5
 }NotificationType;
 
 @interface Notification_BackendManager : NSObject

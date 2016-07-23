@@ -30,6 +30,7 @@
 #define FRIEND_JOINED_V_APPEND_TEXT @" just joined Verbatm"
 #define FRIENDS_FIRST_POST @" just created their first "
 #define POST_SHARED_APPEND_TEXT @" shared your "
+#define REBLOG_APPEND_TEXT @" rebologed your "
 #define FOLLOW_TEXT_BUTTON_GAP (3.f)
 #define FOLLOW_BUTTON_X_POS (self.frame.size.width - PROFILE_HEADER_XOFFSET - LARGE_FOLLOW_BUTTON_WIDTH)
 
@@ -66,17 +67,17 @@
     self.parseObject = parseObject;
     self.notificationType = notificationType;
     self.channel = channel;
-    if(notificationType & (NewFollower|FriendJoinedVerbatm|FriendsFirstPost|Share)){
+    if(notificationType & Like){
+         [self createHeartIcon];
+    }else if(notificationType & (NewFollower|FriendJoinedVerbatm)) {
         [self createFollowButton];
         [self registerForFollowNotification];
-    }else if (notificationType & Like){
-        [self createHeartIcon];
     }
     
     NSString * notifcation = [self getNotificationStringWithNotifcationType:notificationType andChannel:channel];
     [self createNotificationLabelWithAttributedString:[self getAttributedStringFromString:notifcation andNotificationType:notificationType andChannel:channel]];
     
-    if(notificationType & (FriendsFirstPost|Like|Share)){
+    if(notificationType & (FriendsFirstPost|Like|Share|Reblog)){
         [self createPostTextLabel];
     }
 }
@@ -102,25 +103,9 @@
     }
 }
 
--(void)addTapGestureToPostText{
-    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(postTextTapped:)];
-    [self.postLine addGestureRecognizer:tap];
-    [self.postLine setUserInteractionEnabled:YES];
-}
 
--(void)postTextTapped:(UITapGestureRecognizer *) tap{
-    [self.delegate presentPostSentFromCell:self];
-}
 
--(void)addTapGestureToNameText{
-    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(nameTextTapped:)];
-    [self.notificationTextLabel addGestureRecognizer:tap];
-    [self.notificationTextLabel setUserInteractionEnabled:YES];
-}
 
--(void)nameTextTapped:(UITapGestureRecognizer *) tap{
-    [self.delegate presentUserBlogSentFromCell:self];
-}
 
 
 -(void)layoutSubviews {
@@ -160,6 +145,9 @@
         case Share:
             finalString = [[channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY] stringByAppendingString:POST_SHARED_APPEND_TEXT];
             break;
+        case Reblog:
+            finalString = [[channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY] stringByAppendingString:REBLOG_APPEND_TEXT];
+            break;
     }
 
     return finalString;
@@ -170,7 +158,7 @@
 
 -(void)createPostTextLabel{
     
-    CGRect frame = CGRectMake(self.notificationTextLabel.frame.origin.x + self.notificationTextLabel.frame.size.width, self.notificationTextLabel.frame.origin.y -1.f, POST_TEXT_WIDTH, self.notificationTextLabel.frame.size.height);
+    CGRect frame = CGRectMake(self.notificationTextLabel.frame.origin.x + self.notificationTextLabel.frame.size.width, self.notificationTextLabel.frame.origin.y, POST_TEXT_WIDTH, self.notificationTextLabel.frame.size.height);
     
     self.postLine = [[UILabel alloc] initWithFrame:frame];
     NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
@@ -186,7 +174,6 @@
     [self.postLine setAttributedText:attrString];
     [self.postLine sizeToFit];
     [self addSubview:self.postLine];
-   // [self addTapGestureToPostText];
     
 }
 
@@ -225,7 +212,6 @@
     }
     
     [self addSubview:self.notificationTextLabel];
-   // [self addTapGestureToNameText];
 }
 
 -(void)createHeartIcon{

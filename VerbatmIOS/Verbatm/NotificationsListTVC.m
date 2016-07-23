@@ -20,7 +20,7 @@
 #import "NotificationPostPreview.h"
 #import "Durations.h"
 #import "Icons.h"
-@interface NotificationsListTVC () <NotificationTableCellProtocol,NotificationPostPreviewProtocol>
+@interface NotificationsListTVC () <NotificationPostPreviewProtocol>
 
 @property (nonatomic) BOOL shouldAnimateViews;
 @property (nonatomic) NSMutableArray *parseNotificationObjects;
@@ -224,19 +224,17 @@
 		PFQuery * query = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 		[query whereKey:POST_CHANNEL_ACTIVITY_POST equalTo:postObject];
 		[query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-			dispatch_async(dispatch_get_main_queue(), ^{
-				if(!self.postPreview && objects && objects.count){
-					self.postPreview = [[NotificationPostPreview alloc] initWithFrame:CGRectMake(self.view.frame.size.width,self.tableView.contentOffset.y, self.view.frame.size.width, self.view.frame.size.height)];
-					self.postPreview.delegate = self;
-					[self.postPreview presentPost:[objects firstObject] andChannel:channel];
-					[self.view addSubview:self.postPreview];
-					[self.view bringSubviewToFront:self.postPreview];
-					[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-						self.postPreview.frame = CGRectMake(0.f, self.tableView.contentOffset.y, self.view.frame.size.width, self.view.frame.size.height);
-					}];
-					[self.delegate notificationListHideTabBar:YES];
-				}
-			});
+                if(!self.postPreview && objects && objects.count){
+                    self.postPreview = [[NotificationPostPreview alloc] initWithFrame:CGRectMake(self.view.frame.size.width,self.tableView.contentOffset.y, self.view.frame.size.width, self.view.frame.size.height)];
+                    self.postPreview.delegate = self;
+                    [self.postPreview presentPost:[objects firstObject] andChannel:channel];
+                    [self.view addSubview:self.postPreview];
+                    [self.view bringSubviewToFront:self.postPreview];
+                    [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
+                        self.postPreview.frame = CGRectMake(0.f, self.tableView.contentOffset.y, self.view.frame.size.width, self.view.frame.size.height);
+                    }];
+                    [self.delegate notificationListHideTabBar:YES];
+                }
 		}];
 	}
 
@@ -260,11 +258,6 @@
 }
 
 #pragma mark - Notifications Cell protocol -
--(void)presentPostSentFromCell:(NotificationTableCell *)cell{
-    [self presentPost:[cell parseObject] andChannel:cell.channel];
-
-}
-
 
 -(void)presentBlogFromCell:(NotificationTableCell *)cell{
 	Channel * channel = cell.channel;
@@ -281,10 +274,7 @@
 		 }];
 	}
 }
--(void)presentUserBlogSentFromCell:(NotificationTableCell *)cell{
 
-	[self presentBlogFromCell: cell];
-}
 
 
 -(void)presentProfileForUser:(PFUser *) user
@@ -306,7 +296,7 @@
     NotificationTableCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if(!self.cellSelected){
         self.cellSelected = YES;
-        if((cell.notificationType & Like)){
+        if(cell.notificationType & (Like|Reblog|FriendsFirstPost|Share)){
              self.tableView.scrollEnabled = NO;
              [self presentPost:[cell parseObject] andChannel:cell.channel];
         }else{
@@ -352,7 +342,6 @@
 
 	if(!cell){
 		cell = [[NotificationTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
-		cell.delegate = self;
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	}
 

@@ -586,8 +586,10 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 -(PostListVC *) postListVC{
 	if(!_postListVC){
-		CGFloat postHeight = self.view.frame.size.height - self.view.frame.size.width;
+		CGFloat postHeight = self.view.frame.size.height - (self.view.frame.size.width - POSTLIST_HEIGHT_EXTENSION);
 		CGFloat postWidth = (self.view.frame.size.width / self.view.frame.size.height ) * postHeight;//same ratio as screen
+        CGFloat postListSmallY = self.view.frame.size.height - postHeight - ((self.profileInFeed || self.isCurrentUserProfile) ? (TAB_BAR_HEIGHT + 1.f): 1.f);
+        
 		self.cellSmallFrameSize = CGSizeMake(postWidth, postHeight);
 		UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
 		flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
@@ -597,8 +599,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 		_postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
 		_postListVC.postListDelegate = self;
 		_postListVC.inSmallMode = YES;
-		self.postListSmallFrame = CGRectMake(0.f,(self.profileInFeed || self.isCurrentUserProfile) ?(postHeight + TAB_BAR_HEIGHT):
-											 (self.view.frame.size.height - postHeight),
+		self.postListSmallFrame = CGRectMake(0.f,postListSmallY,
 											 self.view.frame.size.width, postHeight);
 		self.postListLargeFrame = self.view.bounds;
 		[_postListVC.view setFrame:self.postListSmallFrame];
