@@ -245,10 +245,12 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 									  andSize: size];
 }
 
+
+
 //the view controllers that will be tabbed
 -(void)createViewControllers {
 	self.discoverVC = [self.storyboard instantiateViewControllerWithIdentifier:FEATURED_CONTENT_VC_ID];
-
+    
 	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
 	self.profileVC.delegate = self;
 	self.profileVC.ownerOfProfile = [PFUser currentUser];
@@ -372,6 +374,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 -(void)userHasSignedOutNotification:(NSNotification *) notification{
 	[self bringUpLogin];
 }
+
 
 #pragma mark - Handle Login -
 

@@ -186,15 +186,18 @@ ExploreChannelCellViewDelegate>
 }
 
 -(void) channelSelected:(Channel *)channel {
-    if(!self.onboardingBlogSelection){
+    
+    BOOL isCurrentUserChannel = [[channel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
+    if(!self.onboardingBlogSelection &&
+       !isCurrentUserChannel){
         ProfileVC * userProfile = [[ProfileVC alloc] init];
-        userProfile.isCurrentUserProfile = channel.channelCreator == [PFUser currentUser];
+        userProfile.isCurrentUserProfile = NO;
         userProfile.isProfileTab = NO;
         userProfile.ownerOfProfile = channel.channelCreator;
         userProfile.channel = channel;
-        [self presentViewController:userProfile animated:YES completion:^{
-        }];
+        [self presentViewController:userProfile animated:YES completion:nil];
     }
+    
 }
 
 #pragma mark - Table View delegate methods -

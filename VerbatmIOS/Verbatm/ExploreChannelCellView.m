@@ -159,9 +159,14 @@
 
 	self.numFollowers = self.channelBeingPresented.parseChannelObject[CHANNEL_NUM_FOLLOWS];
 	[self changeNumFollowersLabel];
-	//Since this is in explore we know the channel is not followed by user
-	[self updateFollowIcon];
-	[self.mainView addSubview:self.followButton];
+     BOOL isCurrentUserChannel = [[channel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
+    if(!isCurrentUserChannel){
+        [self updateFollowIcon];
+        [self.mainView addSubview:self.followButton];
+    }
+    
+    
+	
 	[self.mainView addSubview:self.userNameLabel];
 	[self.mainView addSubview:self.channelNameLabel];
 	[self.mainView addSubview:self.numFollowersLabel];

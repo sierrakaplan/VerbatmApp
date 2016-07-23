@@ -66,7 +66,7 @@
 #define TITLE_MAX_CHARACTERS 27.f
 #define DESCRIPTION_MAX_CHARACTERS 250
 
-#define COVER_PHOTO_HEIGHT 25.f
+#define CHANGE_COVER_PHOTO_HEIGHT 25.f
 
 #define COVER_PHOTO_IMAGE_RATIO (351.f/106.f)
 
@@ -328,11 +328,11 @@
 	self.changeCoverPhoto = [[UIButton alloc] init];
 	[self.changeCoverPhoto setImage:[UIImage imageNamed:ADD_COVER_PHOTO_ICON] forState:UIControlStateNormal];
 
-	CGFloat coverPhotoIconWidth = COVER_PHOTO_IMAGE_RATIO * COVER_PHOTO_HEIGHT;
-    CGFloat y_position = self.frame.size.height - ;
+	CGFloat coverPhotoIconWidth = COVER_PHOTO_IMAGE_RATIO * CHANGE_COVER_PHOTO_HEIGHT;
+    CGFloat y_position = self.frame.size.height - self.frame.size.width - CHANGE_COVER_PHOTO_HEIGHT;
     CGFloat x_position = self.frame.size.width - (coverPhotoIconWidth+OFFSET_X);
     
-	self.changeCoverPhoto.frame = CGRectMake(x_position, y_position,coverPhotoIconWidth, COVER_PHOTO_HEIGHT);
+	self.changeCoverPhoto.frame = CGRectMake(x_position, y_position,coverPhotoIconWidth, CHANGE_COVER_PHOTO_HEIGHT);
 	[self addSubview:self.changeCoverPhoto];
 	[self.changeCoverPhoto addTarget:self action:@selector(coverPhotoButtonSelected) forControlEvents:UIControlEventTouchUpInside];
 }
