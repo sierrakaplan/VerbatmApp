@@ -63,7 +63,6 @@
 
 @property (nonatomic) PostLikeAndShareBar * likeShareBar;
 @property (nonatomic) CGRect lsBarDownFrame;// the frame of the like share button with the tab down
-@property (nonatomic) CGRect lsBarUpFrame;//the frame of the like share button with the tab up
 @property (nonatomic) CGRect creatorBarFrameUp;
 @property (nonatomic) CGRect creatorBarFrameDown;
 
@@ -180,11 +179,9 @@
 	[self.layer setCornerRadius:0.0];
 	[self.layer setBorderColor:[UIColor blackColor].CGColor];
 
-	self.lsBarUpFrame = CGRectMake(0.f,self.frame.size.height - (LIKE_SHARE_BAR_HEIGHT + TAB_BAR_HEIGHT),
-								   self.frame.size.width, LIKE_SHARE_BAR_HEIGHT);
-
-	self.lsBarDownFrame = CGRectMake(0.f,self.frame.size.height - LIKE_SHARE_BAR_HEIGHT,
-									 self.frame.size.width, LIKE_SHARE_BAR_HEIGHT);
+	self.lsBarDownFrame = CGRectMake(self.frame.size.width - LIKE_SHARE_BAR_WIDTH,
+                                     self.frame.size.height - LIKE_SHARE_BAR_HEIGHT,
+                                     LIKE_SHARE_BAR_WIDTH, LIKE_SHARE_BAR_HEIGHT);
 }
 
 -(void)addPagingLine{
@@ -231,8 +228,7 @@
 								numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage
 									  startUp:(BOOL)up withDeleteButton: (BOOL)withDelete {
 
-	CGRect startFrame = (up) ? self.lsBarUpFrame : self.lsBarDownFrame;
-	self.likeShareBar = [[PostLikeAndShareBar alloc] initWithFrame: startFrame numberOfLikes:numLikes
+	self.likeShareBar = [[PostLikeAndShareBar alloc] initWithFrame: self.lsBarDownFrame numberOfLikes:numLikes
 													numberOfShares:numShares numberOfPages:numPages andStartingPageNumber:startPage];
 	self.likeShareBar.delegate = self;
 	if (withDelete) {

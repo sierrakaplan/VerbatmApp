@@ -38,16 +38,19 @@
 @property (nonatomic) NSDictionary * likeNumberTextAttributes;
 
 #define NUMBER_FONT_SIZE 10.f
-#define ICON_SPACING_GAP 10.f
+#define ICON_SPACING_GAP 5.f
 #define NUMBER_TEXT_FONT CHANNEL_TAB_BAR_FOLLOWERS_FONT
 #define NUMBER_TEXT_FONT_SIZE 25.f
 
 #define OF_TEXT_FONT CHANNEL_TAB_BAR_FOLLOWERS_FONT
 #define OF_TEXT_FONT_SIZE 18.f
 
-#define BIG_ICON_SPACING 3.f
-#define BIG_ICON_SIZE (self.frame.size.height - (BIG_ICON_SPACING*2))
+#define BIG_ICON_SPACING 8.f
+#define BIG_ICON_SIZE (self.frame.size.width - (BIG_ICON_SPACING*2))
 
+
+#define DELET_FLAG_BUTTON_HEIGHT (self.frame.size.width - (ICON_SPACING_GAP*2))
+#define DELETE_FLAG_BUTTON_Y  (self.frame.size.height - DELET_FLAG_BUTTON_HEIGHT - ICON_SPACING_GAP)
 @end
 
 @implementation PostLikeAndShareBar
@@ -106,17 +109,23 @@
 }
 
 -(void) creatButtonsWithNumLike:(NSNumber *) numLikes andNumShare:(NSNumber *) numShares {
-    [self createShareButton];
+    if (numLikes && numLikes.integerValue >= 0) {
+        [self createLikeButtonNumbers:numLikes];
+    }
     [self createLikeButton];
-	if (numLikes.integerValue >= 1) {
-		[self createLikeButtonNumbers:numLikes];
-	}
+    if (numShares && numShares.integerValue >= 0) {
+        [self createShareButtonNumbers:numShares];
+    }
+    [self createShareButton];
+   
+	
 }
 
 -(void)createShareButton {
     //create share button
-    CGRect shareButtonFrame = CGRectMake(ICON_SPACING_GAP, BIG_ICON_SPACING,
-                                         BIG_ICON_SIZE, BIG_ICON_SIZE);
+    CGRect shareButtonFrame = CGRectMake(ICON_SPACING_GAP,
+                                         self.numSharesButton.frame.origin.y - (DELET_FLAG_BUTTON_HEIGHT + BIG_ICON_SPACING),
+                                         DELET_FLAG_BUTTON_HEIGHT, DELET_FLAG_BUTTON_HEIGHT);
     
     self.shareButon = [UIButton buttonWithType:UIButtonTypeCustom];
 	self.shareButon.contentMode = UIViewContentModeScaleAspectFit;
@@ -128,8 +137,9 @@
 }
 
 -(void)createLikeButton {
-    CGRect likeButtonFrame =  CGRectMake(self.shareButon.frame.origin.x + self.shareButon.frame.size.width + ICON_SPACING_GAP,
-										BIG_ICON_SPACING, BIG_ICON_SIZE, BIG_ICON_SIZE);
+    CGRect likeButtonFrame =  CGRectMake(ICON_SPACING_GAP,
+										self.numLikesButton.frame.origin.y - (DELET_FLAG_BUTTON_HEIGHT + BIG_ICON_SPACING),
+                                         DELET_FLAG_BUTTON_HEIGHT, DELET_FLAG_BUTTON_HEIGHT);
     
     self.likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	self.likeButton.contentMode = UIViewContentModeScaleAspectFit;
@@ -163,17 +173,36 @@
     [self.numLikesButton setAttributedTitle:followersText forState:UIControlStateNormal];
     CGSize textSize = [[numLikes.stringValue stringByAppendingString:likesText] sizeWithAttributes:self.likeNumberTextAttributes];
     
-    CGFloat numberHeight = self.frame.size.height - (ICON_SPACING_GAP*2);
-    
-    CGRect likeNumberButtonFrame = CGRectMake(self.likeButton.frame.origin.x +
-                                              self.likeButton.frame.size.width +  ICON_SPACING_GAP,
-											  self.likeButton.center.y - (numberHeight/2.f),
-                                              textSize.width, numberHeight);
+    CGRect likeNumberButtonFrame = CGRectMake((self.frame.size.width - textSize.width)/2.f,DELETE_FLAG_BUTTON_Y - (BIG_ICON_SPACING + textSize.height),
+                                              textSize.width, textSize.height);
     [self.numLikesButton setFrame:likeNumberButtonFrame];
+    
     
     [self.numLikesButton addTarget:self action:@selector(numLikesButtonSelected) forControlEvents:UIControlEventTouchDown];
     
     [self addSubview:self.numLikesButton];
+}
+
+
+-(void)createShareButtonNumbers:(NSNumber *) numShares {
+    if(self.numSharesButton){
+        [self.numSharesButton removeFromSuperview];
+        self.numSharesButton = nil;
+    }
+    self.numSharesButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    
+    NSString *likesText = numShares.integerValue > 1 ? @" shares" : @" share";
+    NSAttributedString * followersText = [[NSAttributedString alloc] initWithString:[numShares.stringValue stringByAppendingString:likesText] attributes:self.likeNumberTextAttributes];
+    [self.numSharesButton setAttributedTitle:followersText forState:UIControlStateNormal];
+    CGSize textSize = [[numShares.stringValue stringByAppendingString:likesText] sizeWithAttributes:self.likeNumberTextAttributes];
+    
+    CGRect likeNumberButtonFrame = CGRectMake((self.frame.size.width - textSize.width)/2.f,self.likeButton.frame.origin.y - (BIG_ICON_SPACING + textSize.height),
+                                              textSize.width, textSize.height);
+    [self.numSharesButton setFrame:likeNumberButtonFrame];
+
+    [self.numSharesButton addTarget:self action:@selector(numSharesButtonSelected) forControlEvents:UIControlEventTouchDown];
+    
+    [self addSubview:self.numSharesButton];
 }
 
 -(void)shouldStartPostAsLiked:(BOOL) postLiked{
@@ -203,9 +232,8 @@
         buttonImage = [UIImage imageNamed:DELETE_POST_ICON];
     }
 
-	CGFloat size = self.frame.size.height - (ICON_SPACING_GAP*2);
-    CGRect deleteButtonFrame = CGRectMake(self.frame.size.width - size - ICON_SPACING_GAP, ICON_SPACING_GAP,
-										  size, size);
+    CGRect deleteButtonFrame = CGRectMake(ICON_SPACING_GAP,DELETE_FLAG_BUTTON_Y,
+										  DELET_FLAG_BUTTON_HEIGHT, DELET_FLAG_BUTTON_HEIGHT);
     self.delete_Or_FlagButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.delete_Or_FlagButton setFrame:deleteButtonFrame];
     [self.delete_Or_FlagButton setImage:buttonImage forState:UIControlStateNormal];
@@ -290,8 +318,11 @@
 
 -(NSDictionary *)likeNumberTextAttributes{
     if(!_likeNumberTextAttributes){
+        NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
+        paragraphStyle.alignment = NSTextAlignmentCenter;
         _likeNumberTextAttributes =@{
                            NSForegroundColorAttributeName: [UIColor whiteColor],
+                           NSParagraphStyleAttributeName:paragraphStyle,
                            NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:NUMBER_FONT_SIZE]};
     }
     
