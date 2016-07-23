@@ -148,7 +148,7 @@
     CGRect continueButtonFrame = CGRectMake(self.frame.size.width/2 + SHARE_BUTTON_GAP, cancelButtonFrame.origin.y,
                                             self.frame.size.width/2  - (WALL_OFFSET_X + SHARE_BUTTON_GAP), CONTINUE_BUTTON_HEIGHT);
     
-    self.continueButton = [self getButtonWithFrame:continueButtonFrame andTitleText:@"Continue"];
+    self.continueButton = [self getButtonWithFrame:continueButtonFrame andTitleText:@"Publish without Sharing"];
     [self addSubview:self.continueButton];
     [self bringSubviewToFront:self.continueButton];
    [self.continueButton addTarget:self action:@selector(continueButtonSelected) forControlEvents:UIControlEventTouchUpInside];
