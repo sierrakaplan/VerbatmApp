@@ -8,6 +8,8 @@
 
 #import "Durations.h"
 
+#import "Icons.h"
+
 #import "PublishingProgressManager.h"
 
 #import "SharingLinkActionView.h"
@@ -21,6 +23,8 @@
 @property (nonatomic) CGFloat ourOriginalHeight;
 
 @property (nonatomic) UILabel * instructionsView;
+@property (nonatomic) UILabel * subtextView;
+
 @property (nonatomic) NSMutableArray * buttonList;
 @property (nonatomic) NSMutableArray * selectedButtonImageList;
 @property (nonatomic) NSMutableArray * unselectedButtonImageList;
@@ -38,7 +42,10 @@
 @property (nonatomic) UILabel * captionPrompt;
 
 
-#define LABEL_TEXT @"Share this post on:"
+#define PUBLISH_WITHOUT_SHARING_MESSAGE @"Publish without sharing"
+#define PUBLISH_AND_SHARE_MESSAGE @"Publish and share"
+#define LABEL_TEXT @"Share"
+#define SHARE_SUBTEXT_TEXT @"(you can share your post to Twitter)"
 #define WALL_OFFSET_X 20.f
 #define WALL_OFFSET_Y 5.f
 
@@ -88,7 +95,7 @@
 -(void) shiftViewDown:(BOOL) down{
     
     CGFloat newHeight = (down) ? TEXT_VIEW_HEIGHT : (-1 * TEXT_VIEW_HEIGHT);
-    
+    NSString * publishButtonTitle = (down) ?  PUBLISH_AND_SHARE_MESSAGE : PUBLISH_WITHOUT_SHARING_MESSAGE;
     [UIView animateWithDuration:SNAP_ANIMATION_DURATION animations:^{
         
         self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height + newHeight);
@@ -96,6 +103,9 @@
         self.captionTextView.frame = CGRectMake(self.captionTextView.frame.origin.x, self.captionTextView.frame.origin.y, self.captionTextView.frame.size.width, self.captionTextView.frame.size.height + newHeight);
         
         self.continueButton.frame = CGRectMake(self.continueButton.frame.origin.x, self.continueButton.frame.origin.y + newHeight, self.continueButton.frame.size.width, self.continueButton.frame.size.height);
+        
+        [self.continueButton  setAttributedTitle:[self getAttributeStringWithText:publishButtonTitle  andColor:[UIColor grayColor]] forState:UIControlStateNormal];
+        
     }completion:^(BOOL finished) {
         if(finished){
             if([self.captionTextView.text isEqualToString:@""] && down) {
@@ -138,16 +148,17 @@
 
 -(void)setButtons{
     
-    
-    CGRect cancelButtonFrame = CGRectMake(WALL_OFFSET_X, WALL_OFFSET_Y, STATUS_BAR_HEIGHT, STATUS_BAR_HEIGHT);
-    
-    [self.cancelButton ];
-    
-    
+    CGRect cancelButtonFrame = CGRectMake(WALL_OFFSET_X -5.f, WALL_OFFSET_Y, STATUS_BAR_HEIGHT - 5.f, STATUS_BAR_HEIGHT + 5.f);
+    self.cancelButton = [[UIButton alloc] initWithFrame:cancelButtonFrame];
+    [self.cancelButton setImage:[UIImage imageNamed:BACK_BUTTON_ICON] forState:UIControlStateNormal];
+    [self.cancelButton addTarget:self action:@selector(cancelButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:self.cancelButton];
+    [self bringSubviewToFront:self.cancelButton];
     
     CGRect continueButtonFrame = CGRectMake(WALL_OFFSET_X, self.frame.size.height - (CONTINUE_BUTTON_HEIGHT  + CONTINUE_BUTTON_FLOOR_OFFSET), self.frame.size.width - (WALL_OFFSET_X *2), CONTINUE_BUTTON_HEIGHT);
     
-    self.continueButton = [self getButtonWithFrame:continueButtonFrame andTitleText:@"Continue"];
+    self.continueButton = [self getButtonWithFrame:continueButtonFrame andTitleText:PUBLISH_WITHOUT_SHARING_MESSAGE];
+    
     [self addSubview:self.continueButton];
     [self bringSubviewToFront:self.continueButton];
    [self.continueButton addTarget:self action:@selector(continueButtonSelected) forControlEvents:UIControlEventTouchUpInside];
@@ -174,14 +185,23 @@
 
 -(void)presentCommandText{
     
-    CGRect frame = CGRectMake(WALL_OFFSET_X, WALL_OFFSET_Y, self.frame.size.width - (WALL_OFFSET_X*2), TEXT_LABEL_HEIGHT);
+    CGRect instructionFrame = CGRectMake(WALL_OFFSET_X, WALL_OFFSET_Y, self.frame.size.width - (WALL_OFFSET_X*2), TEXT_LABEL_HEIGHT);
     
-    self.instructionsView = [[UILabel alloc] initWithFrame:frame];
+    self.instructionsView = [[UILabel alloc] initWithFrame:instructionFrame];
     self.instructionsView.textAlignment = NSTextAlignmentCenter;
-    [self.instructionsView setAttributedText:[self getAttributeStringWithText:LABEL_TEXT andColor:SPLV_LABEL_TEXT_COLOR]];
+    [self.instructionsView setAttributedText:[self getTitleAttributeStringWithText:LABEL_TEXT andColor:[UIColor blackColor]]];
     [self addSubview:self.instructionsView];
+    
+    CGRect subtextFrame = CGRectMake(WALL_OFFSET_X, instructionFrame.origin.y + instructionFrame.size.height, self.frame.size.width - (WALL_OFFSET_X*2), TEXT_LABEL_HEIGHT);
+    self.subtextView = [[UILabel alloc] initWithFrame:subtextFrame];
+    self.subtextView.textAlignment = NSTextAlignmentCenter;
+    [self.subtextView setAttributedText:[self getAttributeStringWithText:SHARE_SUBTEXT_TEXT andColor:SPLV_LABEL_TEXT_COLOR]];
+    [self addSubview:self.subtextView];
 }
 
+-(NSAttributedString *)getTitleAttributeStringWithText:(NSString *)text andColor:(UIColor *)color{
+    return [[NSAttributedString alloc] initWithString:text attributes:@{NSForegroundColorAttributeName:color,NSFontAttributeName: [UIFont fontWithName:BOLD_FONT size:INFO_LIST_HEADER_FONT_SIZE]}];
+}
 
 -(NSAttributedString *)getAttributeStringWithText:(NSString *)text andColor:(UIColor *)color{
     return [[NSAttributedString alloc] initWithString:text attributes:@{NSForegroundColorAttributeName:color,NSFontAttributeName: [UIFont fontWithName:BOLD_FONT size:REPOST_BUTTON_TEXT_FONT_SIZE]}];
@@ -191,7 +211,7 @@
 -(void)layoutButtonsToSelect{
     
     
-    CGFloat totalHeightToLayoutButton = self.continueButton.frame.origin.y - (self.instructionsView.frame.origin.y + self.instructionsView.frame.size.height);
+    CGFloat totalHeightToLayoutButton = self.continueButton.frame.origin.y - (self.subtextView.frame.origin.y + self.subtextView.frame.size.height);
     CGFloat buttonWidthHeight = (self.frame.size.width - (WALL_OFFSET_X*2) - ((NUM_SHARE_BUTTONS -1) * SHARE_BUTTON_GAP))/NUM_SHARE_BUTTONS;
     
     if(buttonWidthHeight > totalHeightToLayoutButton){
