@@ -148,6 +148,7 @@
 
 -(void)setButtons{
     
+    
     CGRect cancelButtonFrame = CGRectMake(WALL_OFFSET_X -5.f, WALL_OFFSET_Y, STATUS_BAR_HEIGHT - 5.f, STATUS_BAR_HEIGHT + 5.f);
     self.cancelButton = [[UIButton alloc] initWithFrame:cancelButtonFrame];
     [self.cancelButton setImage:[UIImage imageNamed:BACK_BUTTON_ICON] forState:UIControlStateNormal];
@@ -161,7 +162,8 @@
     
     [self addSubview:self.continueButton];
     [self bringSubviewToFront:self.continueButton];
-   [self.continueButton addTarget:self action:@selector(continueButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+    [self.continueButton addTarget:self action:@selector(continueButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+    
 
 }
 
