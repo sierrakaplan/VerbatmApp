@@ -326,7 +326,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	if (self.channel.followObject && newVC.inSmallMode && self.postListVC) {
 		NSDate *latestDate = self.postListVC.latestPostSeen;
 		NSTimeInterval timeSince = [latestDate timeIntervalSinceDate:self.channel.followObject[FOLLOW_LATEST_POST_DATE]];
-		if (latestDate && timeSince > 0) {
+		if (!self.channel.followObject[FOLLOW_LATEST_POST_DATE] || (latestDate && timeSince > 0)) {
 			self.channel.followObject[FOLLOW_LATEST_POST_DATE] = latestDate;
 			[self.channel.followObject saveInBackground];
 		}
