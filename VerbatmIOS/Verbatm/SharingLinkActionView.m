@@ -7,9 +7,13 @@
 //
 
 #import "Durations.h"
+
 #import "PublishingProgressManager.h"
+
 #import "SharingLinkActionView.h"
 #import "Styles.h"
+#import "SizesAndPositions.h"
+
 #import "verbatmButton.h"
 #import "UIImage+ImageEffectsAndTransforms.h"
 @interface SharingLinkActionView ()<UITextViewDelegate>
@@ -91,9 +95,7 @@
         
         self.captionTextView.frame = CGRectMake(self.captionTextView.frame.origin.x, self.captionTextView.frame.origin.y, self.captionTextView.frame.size.width, self.captionTextView.frame.size.height + newHeight);
         
-        self.cancelButton.frame = CGRectMake(self.cancelButton.frame.origin.x, self.cancelButton.frame.origin.y + newHeight, self.cancelButton.frame.size.width, self.cancelButton.frame.size.height );
-        
-        self.continueButton.frame = CGRectMake(self.continueButton.frame.origin.x, self.cancelButton.frame.origin.y, self.continueButton.frame.size.width, self.continueButton.frame.size.height);
+        self.continueButton.frame = CGRectMake(self.continueButton.frame.origin.x, self.continueButton.frame.origin.y + newHeight, self.continueButton.frame.size.width, self.continueButton.frame.size.height);
     }completion:^(BOOL finished) {
         if(finished){
             if([self.captionTextView.text isEqualToString:@""] && down) {
@@ -136,17 +138,14 @@
 
 -(void)setButtons{
     
-    CGRect cancelButtonFrame = CGRectMake(WALL_OFFSET_X, self.frame.size.height - (CONTINUE_BUTTON_HEIGHT  + CONTINUE_BUTTON_FLOOR_OFFSET),
-                                            self.frame.size.width/2 - (SHARE_BUTTON_GAP + WALL_OFFSET_X), CONTINUE_BUTTON_HEIGHT);
     
-    self.cancelButton = [self getButtonWithFrame:cancelButtonFrame andTitleText:@"Cancel"];
-    [self addSubview:self.cancelButton];
-    [self bringSubviewToFront:self.cancelButton];
-    [self.cancelButton addTarget:self action:@selector(cancelButtonSelected) forControlEvents:UIControlEventTouchUpInside];
-
+    CGRect cancelButtonFrame = CGRectMake(WALL_OFFSET_X, WALL_OFFSET_Y, STATUS_BAR_HEIGHT, STATUS_BAR_HEIGHT);
     
-    CGRect continueButtonFrame = CGRectMake(self.frame.size.width/2 + SHARE_BUTTON_GAP, cancelButtonFrame.origin.y,
-                                            self.frame.size.width/2  - (WALL_OFFSET_X + SHARE_BUTTON_GAP), CONTINUE_BUTTON_HEIGHT);
+    [self.cancelButton ];
+    
+    
+    
+    CGRect continueButtonFrame = CGRectMake(WALL_OFFSET_X, self.frame.size.height - (CONTINUE_BUTTON_HEIGHT  + CONTINUE_BUTTON_FLOOR_OFFSET), self.frame.size.width - (WALL_OFFSET_X *2), CONTINUE_BUTTON_HEIGHT);
     
     self.continueButton = [self getButtonWithFrame:continueButtonFrame andTitleText:@"Continue"];
     [self addSubview:self.continueButton];
