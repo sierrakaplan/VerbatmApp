@@ -23,6 +23,7 @@
 @property (nonatomic, readwrite) NSString *blogDescription;
 @property (nonatomic, readwrite) PFObject * parseChannelObject;
 @property (nonatomic, readwrite) PFUser *channelCreator;
+@property (nonatomic, readwrite) PFObject *followObject;
 
 // Array of PFUsers
 @property (nonatomic, readwrite) NSMutableArray *usersFollowingChannel;
@@ -37,12 +38,14 @@
 @implementation Channel
 
 -(instancetype) initWithChannelName:(NSString *) channelName
-              andParseChannelObject:(PFObject *) parseChannelObject
-                  andChannelCreator:(PFUser *) channelCreator {
+			  andParseChannelObject:(PFObject *) parseChannelObject
+				  andChannelCreator:(PFUser *) channelCreator
+					andFollowObject:(PFObject*)followObject {
     
     self = [super init];
     if(self){
         self.name = channelName;
+		self.followObject = followObject;
         if (parseChannelObject) {
             [self addParseChannelObject:parseChannelObject andChannelCreator:channelCreator];
             self.blogDescription = parseChannelObject[CHANNEL_DESCRIPTION_KEY];

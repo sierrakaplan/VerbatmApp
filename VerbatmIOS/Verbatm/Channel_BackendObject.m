@@ -95,7 +95,7 @@
                     // get number of follows from follow objects
                     Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
                                                                     andParseChannelObject:parseChannelObject
-                                                                        andChannelCreator:user];
+                                                                        andChannelCreator:user andFollowObject:nil];
                     [finalChannelObjects addObject:verbatmChannelObject];
                 }
             }
@@ -130,10 +130,11 @@
 }
 
 
+// NOT IN USE
 + (void) getAllChannelsWithCompletionBlock:(void(^)(NSMutableArray *))completionBlock {
     
-    PFQuery * userChannelQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
-    [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+    PFQuery *allChannelsQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
+    [allChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                          NSError * _Nullable error) {
         NSMutableArray * finalChannelObjects = [[NSMutableArray alloc] init];
         if(objects && !error) {
@@ -142,7 +143,7 @@
                 // get number of follows from follow objects
                     Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
                                                                     andParseChannelObject:parseChannelObject
-                                                                        andChannelCreator:[PFUser currentUser]];
+                                                                        andChannelCreator:[PFUser currentUser] andFollowObject:nil];
                     [finalChannelObjects addObject:verbatmChannelObject];
             }
         }

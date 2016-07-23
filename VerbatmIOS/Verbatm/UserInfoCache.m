@@ -59,7 +59,7 @@
 			NSString *defaultBlogName = [self getDefaultBlogName];
 			[Channel_BackendObject createChannelWithName:defaultBlogName andCompletionBlock:^(PFObject *channelObj) {
 				self.userChannel = [[Channel alloc] initWithChannelName:defaultBlogName andParseChannelObject:channelObj
-																					   andChannelCreator:[PFUser currentUser]];
+													  andChannelCreator:[PFUser currentUser] andFollowObject:nil];
 				self.userChannel.defaultBlogName = YES;
 				[self.userChannel getChannelsFollowingWithCompletionBlock:^{
 					block();

@@ -21,13 +21,17 @@
 @property (nonatomic, readonly) NSString *blogDescription;
 @property (nonatomic, readonly) PFObject *parseChannelObject;
 @property (nonatomic, readonly) PFUser *channelCreator;
+@property (nonatomic, readonly) PFObject *followObject;
 @property (nonatomic, readonly) NSMutableArray *usersFollowingChannel;
 @property (nonatomic, readonly) NSMutableArray *channelsUserFollowing;
 
 
+// The follow object represents the current user's follow relationship with this channel
+// Pass nil if current user's channel or if none exists (not following)
 -(instancetype) initWithChannelName:(NSString *) channelName
 			  andParseChannelObject:(PFObject *) parseChannelObject
-				  andChannelCreator:(PFUser *) channelCreator;
+				  andChannelCreator:(PFUser *) channelCreator
+					andFollowObject:(PFObject*) followObject;
 
 -(void) changeTitle:(NSString*)title;
  
@@ -43,7 +47,7 @@
 
 -(void) getChannelsFollowingWithCompletionBlock:(void(^)(void))block;
 
--(BOOL)channelBelongsToCurrentUser;
+-(BOOL) channelBelongsToCurrentUser;
 
 -(void) addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator;
 
@@ -53,7 +57,7 @@
 
 -(void) storeCoverPhoto:(UIImage *) coverPhoto;
 
--(void)loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*, NSData*))block;
+-(void) loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*, NSData*))block;
 
 -(NSString *)getCoverPhotoUrl;
 
