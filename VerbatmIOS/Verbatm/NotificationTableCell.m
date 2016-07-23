@@ -102,25 +102,9 @@
     }
 }
 
--(void)addTapGestureToPostText{
-    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(postTextTapped:)];
-    [self.postLine addGestureRecognizer:tap];
-    [self.postLine setUserInteractionEnabled:YES];
-}
 
--(void)postTextTapped:(UITapGestureRecognizer *) tap{
-    [self.delegate presentPostSentFromCell:self];
-}
 
--(void)addTapGestureToNameText{
-    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(nameTextTapped:)];
-    [self.notificationTextLabel addGestureRecognizer:tap];
-    [self.notificationTextLabel setUserInteractionEnabled:YES];
-}
 
--(void)nameTextTapped:(UITapGestureRecognizer *) tap{
-    [self.delegate presentUserBlogSentFromCell:self];
-}
 
 
 -(void)layoutSubviews {
@@ -186,7 +170,6 @@
     [self.postLine setAttributedText:attrString];
     [self.postLine sizeToFit];
     [self addSubview:self.postLine];
-   // [self addTapGestureToPostText];
     
 }
 
@@ -225,7 +208,6 @@
     }
     
     [self addSubview:self.notificationTextLabel];
-   // [self addTapGestureToNameText];
 }
 
 -(void)createHeartIcon{

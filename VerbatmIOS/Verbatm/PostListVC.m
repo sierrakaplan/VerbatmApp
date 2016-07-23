@@ -49,6 +49,7 @@
 
 #import <MessageUI/MFMessageComposeViewController.h>
 #import "Notifications.h"
+#import "Notification_BackendManager.h"
 
 #import "UserAndChannelListsTVC.h"
 #import "User_BackendObject.h"
@@ -574,7 +575,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 
 
-#pragma mark -PostCollectionViewCell delegate-
+#pragma mark - PostCollectionViewCell delegate -
 -(void)justRemovedTapToExitNotification{
     [self.collectionView setScrollEnabled:YES];
 }
@@ -630,11 +631,17 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 													handler:^(UIAlertAction * action) {
 
 														NSMutableArray *channels = [[NSMutableArray alloc] init];
+                                                        
 														[channels addObject:[[UserInfoCache sharedInstance] getUserChannel]];
-														[Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
+														
+                                                        [Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
+                                                            
+                                                            [Notification_BackendManager createNotificationWithType:NewFollower receivingUser:[self.postToShare valueForKey:POST_ORIGINAL_CREATOR_KEY] relevantPostObject:nil];
+                                                            
 															dispatch_async(dispatch_get_main_queue(), ^{
 																[self successfullyReblogged];
 															});
+                                                            
 														}];
 
 													}];

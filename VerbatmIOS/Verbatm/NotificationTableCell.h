@@ -19,15 +19,8 @@
 @property (nonatomic) PFObject * parseObject;
 @property (nonatomic) Channel * channel;
 @property (nonatomic) NotificationType notificationType;
-@property (nonatomic, weak) id<NotificationTableCellProtocol> delegate;
 
 -(void)presentNotification:(NotificationType) notificationType withChannel:(Channel *) channel andParseObject:(PFObject *)objectId;
 @end
 
 
-@protocol NotificationTableCellProtocol <NSObject>
-
--(void)presentPostSentFromCell:(NotificationTableCell *)cell;
--(void)presentUserBlogSentFromCell:(NotificationTableCell *)cell;
-
-@end

@@ -33,7 +33,7 @@
 
 
 -(void)createNavBar{
-	CGRect customBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, HEADER_HEIGHT +STATUS_BAR_HEIGHT);
+	CGRect customBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, HEADER_HEIGHT);
 	self.customNavBar = [[UIView alloc] initWithFrame:customBarFrame];
 	[self.customNavBar setBackgroundColor:PROFILE_INFO_BAR_BACKGROUND_COLRO];
 
