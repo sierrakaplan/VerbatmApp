@@ -169,11 +169,14 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 -(void) initializeChannel:(Channel*)channelForList withListOwner:(PFUser*)listOwner
 	 isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	[self clearViews];
-	//todo:
+	//todo remove this?:
 //	self.latestDate = date;
 	self.channelForList = channelForList;
 	self.listOwner = listOwner;
 	self.isCurrentUserProfile = isCurrentUserProfile;
+	if (isCurrentUserProfile) {
+		self.latestPostSeen = channelForList.latestPostDate;
+	}
 	self.footerBarIsUp = self.isCurrentUserProfile;
 	self.isInitiated = YES;
 }
@@ -248,10 +251,11 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	};
 
 	self.loadOlderPostsCompletion = ^void(NSArray *posts) {
-		weakSelf.isLoadingOlder = NO;
+		// Don't keep loading older if there are no older posts
 		if (!posts.count || weakSelf.exitedView){
 			return;
 		}
+		weakSelf.isLoadingOlder = NO;
 		[weakSelf.postListDelegate postsFound];
 		NSMutableArray *indexPaths = [NSMutableArray array];
 		for (NSInteger i = 0; i < posts.count; i++) {
@@ -288,7 +292,8 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 		self.exitedView = NO;
 		self.isRefreshing = YES;
 		self.isLoadingMore = NO;
-		[self.postsQueryManager loadPostsInChannel: self.channelForList withLatestDate:nil withCompletionBlock:self.refreshPostsCompletion];	}
+		[self.postsQueryManager loadPostsInChannel: self.channelForList withLatestDate:self.latestPostSeen
+							   withCompletionBlock:self.refreshPostsCompletion];	}
 }
 
 -(void) loadOlderPosts {

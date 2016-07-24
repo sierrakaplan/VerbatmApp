@@ -191,6 +191,7 @@
 
 -(void)addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator{
     self.parseChannelObject = object;
+	self.latestPostDate = self.parseChannelObject[CHANNEL_LATEST_POST_DATE];
     self.channelCreator = channelCreator;
     self.blogDescription = object[CHANNEL_DESCRIPTION_KEY];
 }
