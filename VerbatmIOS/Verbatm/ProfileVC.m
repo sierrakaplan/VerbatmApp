@@ -322,11 +322,11 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
     newVC.collectionView.pagingEnabled = self.inFullScreenMode;
     [newVC.view setFrame: (self.inFullScreenMode) ? self.postListLargeFrame : self.postListSmallFrame];
 
-	// If clicking out of full screen update latest date
+	// If clicking out of full screen update cursor (latest date seen)
 	if (self.channel.followObject && newVC.inSmallMode && self.postListVC) {
 		NSDate *latestDate = self.postListVC.latestPostSeen;
 		NSTimeInterval timeSince = [latestDate timeIntervalSinceDate:self.channel.followObject[FOLLOW_LATEST_POST_DATE]];
-		if (!self.channel.followObject[FOLLOW_LATEST_POST_DATE] || (latestDate && timeSince > 0)) {
+		if (latestDate && timeSince > 0) {
 			self.channel.followObject[FOLLOW_LATEST_POST_DATE] = latestDate;
 			[self.channel.followObject saveInBackground];
 		}

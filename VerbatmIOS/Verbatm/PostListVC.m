@@ -358,10 +358,18 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}
 	self.currentDisplayCell = currentCell;
 
-	//todo: inconsistencies using activity object instead of post? investigate
+	// Only update cursor if there is one
+	if (self.latestPostSeen) {
+		[self updateCursor];
+	}
+
+	return self.currentDisplayCell;
+}
+
+-(void) updateCursor {
 	NSDate *postDate = self.currentDisplayCell.currentPostActivityObject.createdAt;
 	NSTimeInterval timeSinceSeen = [postDate timeIntervalSinceDate:self.latestPostSeen];
-	if (!self.latestPostSeen || timeSinceSeen > 0) {
+	if (timeSinceSeen > 0) {
 		// If in fullscreen mode update latest date
 		if (!self.inSmallMode) {
 			self.latestPostSeen = postDate;
@@ -373,8 +381,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	} else if (self.inSmallMode) {
 		self.currentDisplayCell.layer.borderWidth = 0.f;
 	}
-
-	return self.currentDisplayCell;
 }
 
 -(void) checkShouldReverseScrollDirectionFromIndexPath:(NSIndexPath*)indexPath  {
