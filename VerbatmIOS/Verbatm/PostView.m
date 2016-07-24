@@ -179,7 +179,7 @@
 	[self.layer setCornerRadius:0.0];
 	[self.layer setBorderColor:[UIColor blackColor].CGColor];
 
-	self.lsBarDownFrame = CGRectMake(self.frame.size.width - LIKE_SHARE_BAR_WIDTH,
+	self.lsBarDownFrame = CGRectMake(self.frame.size.width - (LIKE_SHARE_BAR_WIDTH + 3.f),
                                      self.frame.size.height - LIKE_SHARE_BAR_HEIGHT,
                                      LIKE_SHARE_BAR_WIDTH, LIKE_SHARE_BAR_HEIGHT);
 }
@@ -555,11 +555,12 @@
             self.pageUpIndicator.contentMode = UIViewContentModeScaleAspectFit;
         }
         [self.pageUpIndicator removeFromSuperview];
-        [self.likeShareBar addSubview:self.pageUpIndicator];
+        [self addSubview:self.pageUpIndicator];
+        [self bringSubviewToFront:self.pageUpIndicator];
         self.likeShareBar.clipsToBounds = NO;
         CGFloat size = PAGE_UP_ICON_SIZE;
         CGFloat x_cord = self.frame.size.width/2.f - size/2.f;
-        CGFloat y_cord = size * -1;
+        CGFloat y_cord = self.frame.size.height -  (size + 10.f);
         CGRect frame = CGRectMake(x_cord, y_cord, size, size);
         self.pageUpIndicator.frame = frame;
 
