@@ -30,7 +30,7 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
 
 @property (nonatomic) CustomNavigationBar * navigationBar;
 
-#define VIEW_OFFSET_Y 50.f
+#define VIEW_OFFSET_Y 20.f
 #define PROFILE_ICON_WALL_OFFSET 15.f //distance of profile picture from left wall
 #define PROFILE_TEXTFILED_GAP 10.f //distance between the profile icon and the textField
 #define VERBATM_HELP_EMAIL @"feedback@verbatm.io"
