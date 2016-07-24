@@ -366,6 +366,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		if (!self.inSmallMode) {
 			self.latestPostSeen = postDate;
 		} else {
+			//IAIN TODO
 			self.currentDisplayCell.layer.borderColor = [UIColor blueColor].CGColor;
 			self.currentDisplayCell.layer.borderWidth = 3.f;
 		}

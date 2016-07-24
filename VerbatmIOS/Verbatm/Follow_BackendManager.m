@@ -24,6 +24,7 @@
 +(void)currentUserFollowChannel:(Channel *) channelToFollow {
 	PFObject * newFollowObject = [PFObject objectWithClassName:FOLLOW_PFCLASS_KEY];
 	[newFollowObject setObject:[PFUser currentUser]forKey:FOLLOW_USER_KEY];
+	[newFollowObject setObject:channelToFollow.latestPostDate forKey:FOLLOW_LATEST_POST_DATE];
 	[newFollowObject setObject:channelToFollow.parseChannelObject forKey:FOLLOW_CHANNEL_FOLLOWED_KEY];
 	// Will return error if follow already existed - ignore
 	[newFollowObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
@@ -148,11 +149,12 @@
 					for (PFObject *channelObject in channelObjects) {
 						NSInteger followIndex = [channelIDs indexOfObject: channelObject.objectId];
 						PFObject *correspondingFollowObj = followObjects[followIndex];
-						// SANITY CHECK todo: delete:
-						if(![((PFObject*)correspondingFollowObj[FOLLOW_CHANNEL_FOLLOWED_KEY]).objectId isEqualToString: channelObject.objectId]) {
-							NSLog(@"Wrong follow object");
-						}
 
+						// Update all previously created follow objects to store the latest post as the new cursor
+						if (!correspondingFollowObj[FOLLOW_LATEST_POST_DATE] && channelObject[CHANNEL_LATEST_POST_DATE]) {
+							correspondingFollowObj[FOLLOW_LATEST_POST_DATE] = channelObject[CHANNEL_LATEST_POST_DATE];
+							[correspondingFollowObj saveInBackground];
+						}
 						Channel *channel = [[Channel alloc] initWithChannelName:[channelObject valueForKey:CHANNEL_NAME_KEY]
 														  andParseChannelObject:channelObject
 															  andChannelCreator:[channelObject valueForKey:CHANNEL_CREATOR_KEY]
