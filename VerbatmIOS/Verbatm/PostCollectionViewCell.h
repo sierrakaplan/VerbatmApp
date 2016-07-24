@@ -38,4 +38,7 @@
 
 -(void) clearViews;
 -(void)presentPublishingView;
+
+-(void)addDot;
+-(void)removeDot;
 @end

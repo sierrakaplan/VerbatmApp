@@ -23,7 +23,7 @@
 		self.currentlyOnScreen = NO;
 		self.currentlyLoadingMedia = NO;
         self.clipsToBounds = YES;
-        [self createBorder];
+        //[self createBorder];
     }
     return self;
 }

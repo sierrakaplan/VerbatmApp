@@ -141,6 +141,7 @@
 #define VIDEO_LOADING_ICON_SIZE 50
 
 #pragma mark - Post View
+#define POST_VIEW_CORNER_RADIUS 10.f
 
 #define CREATOR_CHANNEL_BAR_HEIGHT 35.f
 #define TITLE_BAR_HEIGHT 60.f

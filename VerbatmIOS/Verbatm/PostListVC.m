@@ -121,6 +121,8 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate, MFMessageComposeViewContro
 	[self clearViews];
 	self.collectionView.backgroundColor = (self.inSmallMode) ? [UIColor clearColor] : [UIColor blackColor];
 	self.collectionView.bounces = YES;
+    [self.collectionView setClipsToBounds:NO];
+    [self.view setClipsToBounds:NO];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -380,11 +382,14 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 			self.latestPostSeen = postDate;
 		} else {
 			//IAIN TODO
-			self.currentDisplayCell.layer.borderColor = [UIColor blueColor].CGColor;
-			self.currentDisplayCell.layer.borderWidth = 3.f;
+//			self.currentDisplayCell.layer.borderColor = [UIColor colorWithRed:255.f green:140.f blue:0.f alpha:1.f].CGColor;
+//			self.currentDisplayCell.layer.borderWidth = 5.f;
+            
+            [self.currentDisplayCell addDot];
 		}
 	} else if (self.inSmallMode) {
-		self.currentDisplayCell.layer.borderWidth = 0.f;
+        [self.currentDisplayCell removeDot];
+		//self.currentDisplayCell.layer.borderWidth = 0.f;
 	}
 }
 

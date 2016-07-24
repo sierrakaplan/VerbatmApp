@@ -176,8 +176,9 @@
 }
 
 -(void)createBorder{
-	[self.layer setBorderWidth:2.0];
-	[self.layer setCornerRadius:0.0];
+    [self setClipsToBounds:YES];
+	[self.layer setBorderWidth:0.2];
+	[self.layer setCornerRadius:POST_VIEW_CORNER_RADIUS];
 	[self.layer setBorderColor:[UIColor blackColor].CGColor];
 
 	self.lsBarUpFrame = CGRectMake(0.f,self.frame.size.height - (LIKE_SHARE_BAR_HEIGHT + TAB_BAR_HEIGHT),
