@@ -20,6 +20,7 @@
 #import "NotificationPostPreview.h"
 #import "Durations.h"
 #import "Icons.h"
+
 @interface NotificationsListTVC () <NotificationPostPreviewProtocol>
 
 @property (nonatomic) BOOL shouldAnimateViews;

@@ -622,7 +622,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 
 -(void) shareToVerbatmSelected{
-	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Repost to Verbatm Account" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Reblog post to your Verbatm blog" message:nil preferredStyle:UIAlertControllerStyleAlert];
 
 	UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
 													handler:^(UIAlertAction * action) {}];
