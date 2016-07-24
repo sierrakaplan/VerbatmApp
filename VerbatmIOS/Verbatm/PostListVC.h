@@ -33,6 +33,8 @@
 
 @property (nonatomic) BOOL inSmallMode;
 
+@property (nonatomic) NSDate *latestPostSeen;
+
 @property (nonatomic, readonly) NSMutableArray * parsePostObjects;
 @property (nonatomic) BOOL currentlyPublishing;
 

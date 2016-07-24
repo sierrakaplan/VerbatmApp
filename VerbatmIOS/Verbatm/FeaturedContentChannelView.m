@@ -54,9 +54,11 @@
 		self.layer.shadowOffset = CGSizeMake(3.f, 3.f);
 		self.layer.shadowOpacity = 1.f;
 		self.channel = channel;
+        
         BOOL isCurrentUser = [[self.channel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
 		if (!isCurrentUser) {
 			self.isFollowed = [[UserInfoCache sharedInstance] userFollowsChannel:self.channel];
+			self.isFollowed = [[UserInfoCache sharedInstance] userFollowsChannel:self.channel] != nil;
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[self updateFollowIcon];
 				[self addSubview:self.followButton];

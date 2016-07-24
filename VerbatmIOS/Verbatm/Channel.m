@@ -37,12 +37,14 @@
 @implementation Channel
 
 -(instancetype) initWithChannelName:(NSString *) channelName
-              andParseChannelObject:(PFObject *) parseChannelObject
-                  andChannelCreator:(PFUser *) channelCreator {
+			  andParseChannelObject:(PFObject *) parseChannelObject
+				  andChannelCreator:(PFUser *) channelCreator
+					andFollowObject:(PFObject*)followObject {
     
     self = [super init];
     if(self){
         self.name = channelName;
+		self.followObject = followObject;
         if (parseChannelObject) {
             [self addParseChannelObject:parseChannelObject andChannelCreator:channelCreator];
             self.blogDescription = parseChannelObject[CHANNEL_DESCRIPTION_KEY];
@@ -107,7 +109,7 @@
     [self.parseChannelObject saveInBackground];
 }
 
--(void) currentUserFollowsChannel:(BOOL) follows {
+-(void) currentUserFollowChannel:(BOOL) follows {
     PFUser *currentUser = [PFUser currentUser];
     if (follows) {
         if (![self.usersFollowingChannel containsObject:currentUser]) {
@@ -189,6 +191,7 @@
 
 -(void)addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator{
     self.parseChannelObject = object;
+	self.latestPostDate = self.parseChannelObject[CHANNEL_LATEST_POST_DATE];
     self.channelCreator = channelCreator;
     self.blogDescription = object[CHANNEL_DESCRIPTION_KEY];
 }

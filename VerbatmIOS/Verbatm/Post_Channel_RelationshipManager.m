@@ -61,6 +61,7 @@
 	}];
 }
 
+//todo: clean this up make faster
 +(void)getChannelObjectFromParsePCRelationship:(PFObject *) pcr withCompletionBlock:(void(^)(Channel * ))block{
 	PFObject * parsePostObject = [pcr valueForKey:POST_CHANNEL_ACTIVITY_POST];
 	[parsePostObject fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
@@ -82,7 +83,8 @@
 				NSString *channelName  = [postChannel valueForKey:CHANNEL_NAME_KEY];
 				Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
 															   andParseChannelObject:postChannel
-																   andChannelCreator:channelCreator];
+																   andChannelCreator:channelCreator
+																	 andFollowObject:nil];
 				block(verbatmChannelObject);
 			}];
 		}];

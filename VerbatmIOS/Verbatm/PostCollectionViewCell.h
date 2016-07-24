@@ -42,4 +42,7 @@
 -(void)presentPublishingView;
 -(void)presentTapToExitNotification;
 -(void)removeTapToExitNotification;
+
+-(void)addDot;
+-(void)removeDot;
 @end

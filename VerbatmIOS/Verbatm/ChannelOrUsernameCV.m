@@ -105,7 +105,7 @@
     
     if(!(self.channel.usersFollowingChannel && self.channel.usersFollowingChannel.count)){
         if(![[creator objectId] isEqualToString:[[PFUser currentUser] objectId]]){
-			self.currentUserFollowingChannelUser = [[UserInfoCache sharedInstance] userFollowsChannel: self.channel];
+			self.currentUserFollowingChannelUser = [[UserInfoCache sharedInstance] userFollowsChannel: self.channel] != nil;
 			if(self.followButton)[self updateUserFollowingChannel];
         }
         
@@ -157,7 +157,7 @@
     } else {
         [Follow_BackendManager currentUserStopFollowingChannel: self.channel];
     }
-    [self.channel currentUserFollowsChannel: self.currentUserFollowingChannelUser];
+    [self.channel currentUserFollowChannel: self.currentUserFollowingChannelUser];
     [self updateUserFollowingChannel];
 }
 -(void) updateUserFollowingChannel {

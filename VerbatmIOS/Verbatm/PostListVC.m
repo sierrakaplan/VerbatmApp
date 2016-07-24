@@ -64,7 +64,8 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate, MFMessageComposeViewContro
 @property (nonatomic) BOOL isCurrentUserProfile;
 @property (nonatomic) PFUser *listOwner;
 @property (nonatomic) Channel *channelForList;
-@property (nonatomic) NSDate *latestDate;
+//todo: figure out scrolling to latest date
+//@property (nonatomic) NSDate *latestDate;
 
 @property (nonatomic, readwrite) NSMutableArray * parsePostObjects;
 @property (nonatomic) BOOL performingUpdate;
@@ -126,6 +127,8 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate, MFMessageComposeViewContro
 	[self clearViews];
 	self.collectionView.backgroundColor = (self.inSmallMode) ? [UIColor clearColor] : [UIColor blackColor];
 	self.collectionView.bounces = YES;
+    [self.collectionView setClipsToBounds:NO];
+    [self.view setClipsToBounds:NO];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -174,10 +177,14 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 -(void) initializeChannel:(Channel*)channelForList withListOwner:(PFUser*)listOwner
 	 isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	[self clearViews];
-	self.latestDate = date;
+	//todo remove this?:
+//	self.latestDate = date;
 	self.channelForList = channelForList;
 	self.listOwner = listOwner;
 	self.isCurrentUserProfile = isCurrentUserProfile;
+	if (isCurrentUserProfile) {
+		self.latestPostSeen = channelForList.latestPostDate;
+	}
 	self.footerBarIsUp = self.isCurrentUserProfile;
 	self.isInitiated = YES;
 }
@@ -252,10 +259,11 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	};
 
 	self.loadOlderPostsCompletion = ^void(NSArray *posts) {
-		weakSelf.isLoadingOlder = NO;
+		// Don't keep loading older if there are no older posts
 		if (!posts.count || weakSelf.exitedView){
 			return;
 		}
+		weakSelf.isLoadingOlder = NO;
 		[weakSelf.postListDelegate postsFound];
 		NSMutableArray *indexPaths = [NSMutableArray array];
 		for (NSInteger i = 0; i < posts.count; i++) {
@@ -292,7 +300,8 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 		self.exitedView = NO;
 		self.isRefreshing = YES;
 		self.isLoadingMore = NO;
-		[self.postsQueryManager loadPostsInChannel: self.channelForList withLatestDate:self.latestDate withCompletionBlock:self.refreshPostsCompletion];	}
+		[self.postsQueryManager loadPostsInChannel: self.channelForList withLatestDate:self.latestPostSeen
+							   withCompletionBlock:self.refreshPostsCompletion];	}
 }
 
 -(void) loadOlderPosts {
@@ -360,9 +369,32 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	if (indexPath.row <= LOAD_MORE_POSTS_COUNT && !self.isLoadingOlder && !self.isRefreshing) {
 		[self loadOlderPosts];
 	}
-
 	self.currentDisplayCell = currentCell;
-	return currentCell;
+
+	// Only update cursor if there is one
+	if (self.latestPostSeen) {
+		[self updateCursor];
+	}
+
+	return self.currentDisplayCell;
+}
+
+-(void) updateCursor {
+    if(!self.isCurrentUserProfile){
+        NSDate *postDate = self.currentDisplayCell.currentPostActivityObject.createdAt;
+        NSTimeInterval timeSinceSeen = [postDate timeIntervalSinceDate:self.latestPostSeen];
+        if (timeSinceSeen > 0) {
+            // If in fullscreen mode update latest date
+            if (!self.inSmallMode) {
+                self.latestPostSeen = postDate;
+            } else {
+                //IAIN TODO
+               [self.currentDisplayCell addDot];
+            }
+        } else if (self.inSmallMode) {
+            [self.currentDisplayCell removeDot];
+        }
+    }
 }
 
 -(void) checkShouldReverseScrollDirectionFromIndexPath:(NSIndexPath*)indexPath  {
@@ -397,13 +429,13 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	PostCollectionViewCell *cell = (PostCollectionViewCell *) [self.collectionView dequeueReusableCellWithReuseIdentifier:POST_CELL_ID forIndexPath:indexPath];
 	cell.cellDelegate = self;
 	if(indexPath.row < self.parsePostObjects.count){
-		id postObject = self.parsePostObjects[indexPath.row];
-		if (cell.currentPostActivityObject != postObject) {
+		PFObject *postActivityObject = self.parsePostObjects[indexPath.row];
+		if (cell.currentPostActivityObject != postActivityObject) {
 			[cell clearViews];
-			if([postObject isKindOfClass:[NSNumber class]]){
+			if([postActivityObject isKindOfClass:[NSNumber class]]){
 				if (self.currentlyPublishing) [cell presentPublishingView];
 			} else {
-				[cell presentPostFromPCActivityObj:postObject andChannel:self.channelForList
+				[cell presentPostFromPCActivityObj:postActivityObject andChannel:self.channelForList
 								  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:NO];
 			}
 		}
@@ -422,7 +454,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}
 }
 
--(void)cellTapped:(UIGestureRecognizer *) tap{
+-(void)cellTapped:(UIGestureRecognizer *) tap {
 	PostCollectionViewCell * cellTapped = (PostCollectionViewCell *) tap.view;
     if([cellTapped presentingTapToExitNotification]){
         [cellTapped removeTapToExitNotification];

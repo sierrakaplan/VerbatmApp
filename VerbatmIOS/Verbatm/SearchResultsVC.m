@@ -145,9 +145,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	PFObject *channelObj = self.searchResults[indexPath.row];
+	//todo: when someone navigates to a channel from search or a list they need the follow object
 	Channel *channel = [[Channel alloc] initWithChannelName:channelObj[CHANNEL_NAME_KEY]
 												   andParseChannelObject:channelObj
-													   andChannelCreator:channelObj[CHANNEL_CREATOR_KEY]];
+													   andChannelCreator:channelObj[CHANNEL_CREATOR_KEY] andFollowObject:nil];
 	ProfileVC * userProfile = [[ProfileVC alloc] init];
 	userProfile.isCurrentUserProfile = channel.channelCreator == [PFUser currentUser];
 	userProfile.isProfileTab = NO;

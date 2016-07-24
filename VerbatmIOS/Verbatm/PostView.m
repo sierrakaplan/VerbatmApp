@@ -176,8 +176,9 @@
 }
 
 -(void)createBorder{
-	[self.layer setBorderWidth:2.0];
-	[self.layer setCornerRadius:0.0];
+    [self setClipsToBounds:YES];
+	[self.layer setBorderWidth:0.2];
+	[self.layer setCornerRadius:POST_VIEW_CORNER_RADIUS];
 	[self.layer setBorderColor:[UIColor blackColor].CGColor];
 
 	self.lsBarUpFrame = CGRectMake(0.f,self.frame.size.height - (LIKE_SHARE_BAR_HEIGHT + TAB_BAR_HEIGHT),
@@ -269,6 +270,7 @@
 	self.creatorBarFrameUp = CGRectMake(0.f, -STATUS_BAR_HEIGHT, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT + STATUS_BAR_HEIGHT);
 	self.creatorBarFrameDown = CGRectMake(0.f, 0.f, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT + STATUS_BAR_HEIGHT);
     __weak PostView *weakSelf = self;
+	//todo: fix creator bar slowness
 	[Post_Channel_RelationshipManager getChannelObjectFromParsePCRelationship:weakSelf.parsePostChannelActivityObject
 														  withCompletionBlock:^(Channel * channel) {
 															  weakSelf.postChannel = channel;

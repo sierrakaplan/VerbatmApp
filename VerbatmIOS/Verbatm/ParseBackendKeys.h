@@ -22,7 +22,7 @@
 #define FOLLOW_PFCLASS_KEY @"FollowClass"//we maintain all the follow relationships in their own table
 #define FOLLOW_USER_KEY @"UserFollowing"//the user doing the following
 #define FOLLOW_CHANNEL_FOLLOWED_KEY @"ChannelFollowed"//channel being followed by above user
-#define FOLLOW_LATEST_POST_SEEN @"LatestPostSeen"
+#define FOLLOW_LATEST_POST_DATE @"LatestPostSeen"
 
 #define LIKE_PFCLASS_KEY @"LikeClass"//we maintain all the like relationships in their own table
 #define LIKE_USER_KEY @"UserLiking"//the user doing the liking
