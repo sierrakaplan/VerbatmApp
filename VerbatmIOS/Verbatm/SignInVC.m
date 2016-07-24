@@ -333,13 +333,11 @@
                     user.password = self.password;
                     [user setObject:self.verbatmName forKey:VERBATM_USER_NAME_KEY];
                     [user setObject:[NSNumber numberWithBool:NO] forKey:USER_FTUE];
-                    [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-                        if (error || !succeeded) {
-                            [self showAlertWithTitle:@"Error signing up" andMessage: error.localizedDescription];
-                        } else {
-                            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
+                    [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+                        if(succeeded){
+                            [self loginUpWithPhoneNumberSelectedWithNumber:number andPassword:self.password];
                         }
-                    }];
+                    }];                    
 				}
 			}];
 		}
