@@ -41,6 +41,7 @@
 #import "UserInfoCache.h"
 #import "UserSetupParameters.h"
 #import "UserAndChannelListsTVC.h"
+#import "UserInfoCache.h"
 #import "UtilityFunctions.h"
 #import <PromiseKit/PromiseKit.h>
 
@@ -94,7 +95,12 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	[self checkIntroNotification];
 }
 
--(void)loadContentToPostList{
+-(void)loadContentToPostList {
+	if (!self.channel.followObject) {
+		PFObject *followObject = [[UserInfoCache sharedInstance] userFollowsChannel:self.channel];
+		self.channel.followObject = followObject;
+	}
+
 	if(!self.postListVC.isInitiated){
 		NSDate *startingDate = self.channel.followObject ? self.channel.followObject[FOLLOW_LATEST_POST_DATE] : nil;
 		[self.postListVC display:self.channel withListOwner: self.ownerOfProfile

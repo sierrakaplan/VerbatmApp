@@ -99,8 +99,12 @@
 }
 
 
--(BOOL) userFollowsChannel:(Channel*)channel {
-	return ([UtilityFunctions checkIfChannelList:self.userChannel.channelsUserFollowing containsChannel:channel] != nil);
+-(PFObject*) userFollowsChannel:(Channel*)channel {
+	Channel *followedChannel = [UtilityFunctions checkIfChannelList:self.userChannel.channelsUserFollowing containsChannel:channel];
+	if (followedChannel) {
+		return followedChannel.followObject;
+	}
+	return nil;
 }
 
 -(void)reloadUserChannels {

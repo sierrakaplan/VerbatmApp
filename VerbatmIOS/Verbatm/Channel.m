@@ -23,7 +23,6 @@
 @property (nonatomic, readwrite) NSString *blogDescription;
 @property (nonatomic, readwrite) PFObject * parseChannelObject;
 @property (nonatomic, readwrite) PFUser *channelCreator;
-@property (nonatomic, readwrite) PFObject *followObject;
 
 // Array of PFUsers
 @property (nonatomic, readwrite) NSMutableArray *usersFollowingChannel;
@@ -110,7 +109,7 @@
     [self.parseChannelObject saveInBackground];
 }
 
--(void) currentUserFollowsChannel:(BOOL) follows {
+-(void) currentUserFollowChannel:(BOOL) follows {
     PFUser *currentUser = [PFUser currentUser];
     if (follows) {
         if (![self.usersFollowingChannel containsObject:currentUser]) {

@@ -24,7 +24,9 @@
 +(void)currentUserFollowChannel:(Channel *) channelToFollow {
 	PFObject * newFollowObject = [PFObject objectWithClassName:FOLLOW_PFCLASS_KEY];
 	[newFollowObject setObject:[PFUser currentUser]forKey:FOLLOW_USER_KEY];
-	[newFollowObject setObject:channelToFollow.latestPostDate forKey:FOLLOW_LATEST_POST_DATE];
+	if (channelToFollow.latestPostDate) {
+		[newFollowObject setObject:channelToFollow.latestPostDate forKey:FOLLOW_LATEST_POST_DATE];
+	}
 	[newFollowObject setObject:channelToFollow.parseChannelObject forKey:FOLLOW_CHANNEL_FOLLOWED_KEY];
 	// Will return error if follow already existed - ignore
 	[newFollowObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {

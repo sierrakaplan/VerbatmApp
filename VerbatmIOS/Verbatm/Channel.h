@@ -21,10 +21,10 @@
 @property (nonatomic, readonly) NSString *blogDescription;
 @property (nonatomic, readonly) PFObject *parseChannelObject;
 @property (nonatomic, readonly) PFUser *channelCreator;
-@property (nonatomic, readonly) PFObject *followObject;
+@property (nonatomic) PFObject *followObject;
 @property (nonatomic, readonly) NSMutableArray *usersFollowingChannel;
 @property (nonatomic, readonly) NSMutableArray *channelsUserFollowing;
-
+// The follow objects corresponding with channelsUserFollowing
 
 // The follow object represents the current user's follow relationship with this channel
 // Pass nil if current user's channel or if none exists (not following)
@@ -37,7 +37,8 @@
  
 -(void) changeTitle:(NSString*)title andDescription:(NSString*)description;
 
--(void) currentUserFollowsChannel:(BOOL) follows;
+// Updates if the current user follows this channel
+-(void) currentUserFollowChannel:(BOOL) follows;
 
 -(void) updateLatestPostDate:(NSDate*)date;
 

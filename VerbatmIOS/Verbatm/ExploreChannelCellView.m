@@ -123,7 +123,7 @@
 }
 
 -(void) presentChannel:(Channel *)channel {
-	self.isFollowed = [[UserInfoCache sharedInstance] userFollowsChannel: channel];
+	self.isFollowed = [[UserInfoCache sharedInstance] userFollowsChannel: channel] != nil;
 	self.channelBeingPresented = channel;
 
 	[self.channelNameLabel setText: channel.name];

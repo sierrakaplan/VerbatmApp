@@ -239,7 +239,7 @@
 }
 
 -(void)getFollowInformation{
-	self.currentUserFollowingChannelUser = [[UserInfoCache sharedInstance] userFollowsChannel: self.channel];
+	self.currentUserFollowingChannelUser = [[UserInfoCache sharedInstance] userFollowsChannel: self.channel] != nil;
 	[self updateUserFollowingChannel];
 }
 
@@ -271,7 +271,7 @@
     } else {
         [Follow_BackendManager currentUserStopFollowingChannel: self.channel];
     }
-    [self.channel currentUserFollowsChannel: self.currentUserFollowingChannelUser];
+    [self.channel currentUserFollowChannel: self.currentUserFollowingChannelUser];
     [self updateUserFollowingChannel];
 }
 

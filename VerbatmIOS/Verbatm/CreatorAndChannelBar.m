@@ -152,7 +152,7 @@
 
 -(void)createFollowIcon{
 	dispatch_async(dispatch_get_main_queue(), ^{
-		self.isFollowingChannel = [[UserInfoCache sharedInstance] userFollowsChannel: self.currentChannel];
+		self.isFollowingChannel = [[UserInfoCache sharedInstance] userFollowsChannel: self.currentChannel] != nil;
 		[self markFollowViewAsFollowing: self.isFollowingChannel];
 	});
 }
