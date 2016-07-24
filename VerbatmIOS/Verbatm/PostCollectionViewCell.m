@@ -13,6 +13,7 @@
 #import "PublishingProgressView.h"
 #import "PostCollectionViewCell.h"
 #import "Share_BackendManager.h"
+#import "SizesAndPositions.h"
 #import "UIView+Effects.h"
 #import "Icons.h"
 
@@ -31,19 +32,26 @@
 @property (nonatomic) BOOL hasShadow;
 
 @property (nonatomic) UIImageView * tapToExitNotification;
+//temp
+@property (nonatomic) UIView * dot;
 @end
 
 @implementation PostCollectionViewCell
 
--(instancetype)initWithFrame:(CGRect)frame{
-
+-(instancetype)initWithFrame:(CGRect)frame {
+    
 	self = [super initWithFrame:frame];
 	if (self) {
+        
 		self.backgroundColor = [UIColor clearColor];
 		[self clearViews];
-		[self setClipsToBounds:YES];
-	}
+		[self setClipsToBounds:NO];
+        [self.layer setCornerRadius:POST_VIEW_CORNER_RADIUS];
+
+    }
+    
 	return self;
+    
 }
 
 -(void) clearViews {
@@ -52,12 +60,13 @@
 	}
 
 	[self removePublishingProgress];
+    
 	@autoreleasepool {
 		self.currentPostView = nil;
 		self.currentPostActivityObject = nil;
 		self.postBeingPresented = nil;
-
 	}
+    
 	self.isOnScreen = NO;
 	self.isAlmostOnScreen = NO;
 }
@@ -132,6 +141,7 @@
 															withDeleteButton:withDelete];
 			[weakSelf.currentPostView addCreatorInfo];
 		}
+        [weakSelf bringSubviewToFront:weakSelf.dot];
 	}];
 }
 
@@ -165,6 +175,26 @@
 		}
 	}
 }
+
+-(void)removeDot{
+    if(self.dot){
+        [self.dot removeFromSuperview];
+        self.dot = nil;
+    }
+}
+
+-(void)addDot{
+    if(self.dot){
+        [self bringSubviewToFront:self.dot];
+    }else{
+        self.dot = [[UIView alloc] initWithFrame:CGRectMake((self.frame.size.width - 15.f)/2.f,  -20.f, 15.f, 15.f)];
+        [self.dot setBackgroundColor:[UIColor colorWithRed:0.f/255.f  green:191.f/255.f blue:255.f/255.f  alpha:1.f]];
+        [self addSubview:self.dot];
+        [self.dot.layer setCornerRadius:7.5];
+    }
+}
+
+
 
 -(void) offScreen {
 	[self clearViews];

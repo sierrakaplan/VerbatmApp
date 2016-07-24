@@ -26,6 +26,7 @@
 #import "ProfileVC.h"
 #import "ProfileHeaderView.h"
 #import "PostListVC.h"
+#import "PostCollectionViewCell.h"
 
 #import "PublishingProgressManager.h"
 
@@ -40,6 +41,7 @@
 #import "UserInfoCache.h"
 #import "UserSetupParameters.h"
 #import "UserAndChannelListsTVC.h"
+#import "UserInfoCache.h"
 #import "UtilityFunctions.h"
 #import <PromiseKit/PromiseKit.h>
 
@@ -76,7 +78,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 @property (nonatomic) PHImageManager* imageManager;
 
-#define CELL_SPACING_SMALL 1.f
+#define CELL_SPACING_SMALL 2.f
 #define CELL_SPACING_LARGE 0.3
 #define POSTLISTVC_ISNOT_CREATED_YET (!_postListVC)
 
@@ -93,10 +95,16 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	[self checkIntroNotification];
 }
 
--(void)loadContentToPostList{
+-(void)loadContentToPostList {
+	if (!self.channel.followObject) {
+		PFObject *followObject = [[UserInfoCache sharedInstance] userFollowsChannel:self.channel];
+		self.channel.followObject = followObject;
+	}
+
 	if(!self.postListVC.isInitiated){
+		NSDate *startingDate = self.channel.followObject ? self.channel.followObject[FOLLOW_LATEST_POST_DATE] : nil;
 		[self.postListVC display:self.channel withListOwner: self.ownerOfProfile
-			isCurrentUserProfile:self.isCurrentUserProfile andStartingDate:self.startingDate];
+			isCurrentUserProfile:self.isCurrentUserProfile andStartingDate: startingDate];
 	} else {
 		[self.postListVC refreshPosts];
 	}
@@ -309,10 +317,9 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 -(void)createNewPostViewFromCellIndexPath:(NSIndexPath *) cellPath{
     self.inFullScreenMode = !self.inFullScreenMode;
-    
-    
-    if(cellPath == nil){
-        UITableViewCell * cell = [[self.postListVC.collectionView visibleCells] firstObject];
+
+	PostCollectionViewCell* cell = (PostCollectionViewCell*)[[self.postListVC.collectionView visibleCells] firstObject];
+    if(cellPath == nil) {
         cellPath = [self.postListVC.collectionView indexPathForCell:cell];
     }
     
@@ -321,12 +328,25 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
     newVC.inSmallMode = !self.inFullScreenMode;
     newVC.collectionView.pagingEnabled = self.inFullScreenMode;
     [newVC.view setFrame: (self.inFullScreenMode) ? self.postListLargeFrame : self.postListSmallFrame];
-    
+
+	// If clicking out of full screen update cursor (latest date seen)
+	if (self.channel.followObject && newVC.inSmallMode && self.postListVC) {
+		NSDate *latestDate = self.postListVC.latestPostSeen;
+		NSTimeInterval timeSince = [latestDate timeIntervalSinceDate:self.channel.followObject[FOLLOW_LATEST_POST_DATE]];
+		if (latestDate && timeSince > 0) {
+			self.channel.followObject[FOLLOW_LATEST_POST_DATE] = latestDate;
+			[self.channel.followObject saveInBackground];
+		}
+	}
+
+	//todo: redundant with passing in constructor right now
+	NSDate *startingDate = self.channel.followObject ? self.channel.followObject[FOLLOW_LATEST_POST_DATE] : nil;
+	newVC.latestPostSeen = startingDate;
     if(self.postListVC.parsePostObjects && self.postListVC.parsePostObjects.count){
         newVC.postsQueryManager = self.postListVC.postsQueryManager;
         newVC.currentlyPublishing = self.postListVC.currentlyPublishing;
         [newVC display:self.channel withListOwner:self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile
-       andStartingDate:self.startingDate withOldParseObjects:self.postListVC.parsePostObjects];
+       andStartingDate:startingDate withOldParseObjects:self.postListVC.parsePostObjects];
     }
     
     [self presentViewPostView:newVC inSmallMode:!self.inFullScreenMode shouldPage:self.inFullScreenMode fromCellPath:cellPath];
@@ -586,7 +606,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 -(PostListVC *) postListVC{
 	if(!_postListVC){
-		CGFloat postHeight = self.view.frame.size.height - (self.view.frame.size.width - POSTLIST_HEIGHT_EXTENSION);
+		CGFloat postHeight = self.view.frame.size.height - (self.view.frame.size.width);
 		CGFloat postWidth = (self.view.frame.size.width / self.view.frame.size.height ) * postHeight;//same ratio as screen
         CGFloat postListSmallY = self.view.frame.size.height - postHeight - ((self.profileInFeed || self.isCurrentUserProfile) ? (TAB_BAR_HEIGHT + 1.f): 1.f);
         
@@ -599,6 +619,10 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 		_postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
 		_postListVC.postListDelegate = self;
 		_postListVC.inSmallMode = YES;
+
+		NSDate *startingDate = self.channel.followObject ? self.channel.followObject[FOLLOW_LATEST_POST_DATE] : nil;
+		_postListVC.latestPostSeen = startingDate;
+        
 		self.postListSmallFrame = CGRectMake(0.f,postListSmallY,
 											 self.view.frame.size.width, postHeight);
 		self.postListLargeFrame = self.view.bounds;

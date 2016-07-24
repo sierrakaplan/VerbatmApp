@@ -141,13 +141,15 @@
 #define VIDEO_LOADING_ICON_SIZE 50
 
 #pragma mark - Post View
+#define POST_VIEW_CORNER_RADIUS 10.f
 
 #define CREATOR_CHANNEL_BAR_HEIGHT 35.f
 #define TITLE_BAR_HEIGHT 60.f
 
 #pragma mark - Like Share Bar
+#define LIKE_SHARE_BAR_WIDTH 50.f
 
-#define LIKE_SHARE_BAR_HEIGHT 50.f
+#define LIKE_SHARE_BAR_HEIGHT 300.f
 #define MUTE_BUTTON_OFFSET 10
 
 #pragma mark - Page Views
@@ -165,7 +167,7 @@
 
 #pragma mark - Profile -
 
-#define POSTLIST_HEIGHT_EXTENSION 20.f //adds this as an extra buffer to increase post sizes
+#define POSTLIST_HEIGHT_EXTENSION 0.f //adds this as an extra buffer to increase post sizes
 
 #pragma mark Deprecated
 #define CHANNEL_CREATION_VIEW_HEIGHT 120.f

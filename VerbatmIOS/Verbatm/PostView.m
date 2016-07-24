@@ -63,7 +63,6 @@
 
 @property (nonatomic) PostLikeAndShareBar * likeShareBar;
 @property (nonatomic) CGRect lsBarDownFrame;// the frame of the like share button with the tab down
-@property (nonatomic) CGRect lsBarUpFrame;//the frame of the like share button with the tab up
 @property (nonatomic) CGRect creatorBarFrameUp;
 @property (nonatomic) CGRect creatorBarFrameDown;
 
@@ -176,15 +175,14 @@
 }
 
 -(void)createBorder{
-	[self.layer setBorderWidth:2.0];
-	[self.layer setCornerRadius:0.0];
+    [self setClipsToBounds:YES];
+	[self.layer setBorderWidth:0.2];
+	[self.layer setCornerRadius:POST_VIEW_CORNER_RADIUS];
 	[self.layer setBorderColor:[UIColor blackColor].CGColor];
 
-	self.lsBarUpFrame = CGRectMake(0.f,self.frame.size.height - (LIKE_SHARE_BAR_HEIGHT + TAB_BAR_HEIGHT),
-								   self.frame.size.width, LIKE_SHARE_BAR_HEIGHT);
-
-	self.lsBarDownFrame = CGRectMake(0.f,self.frame.size.height - LIKE_SHARE_BAR_HEIGHT,
-									 self.frame.size.width, LIKE_SHARE_BAR_HEIGHT);
+	self.lsBarDownFrame = CGRectMake(self.frame.size.width - (LIKE_SHARE_BAR_WIDTH + 3.f),
+                                     self.frame.size.height - LIKE_SHARE_BAR_HEIGHT,
+                                     LIKE_SHARE_BAR_WIDTH, LIKE_SHARE_BAR_HEIGHT);
 }
 
 -(void)addPagingLine{
@@ -231,8 +229,7 @@
 								numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage
 									  startUp:(BOOL)up withDeleteButton: (BOOL)withDelete {
 
-	CGRect startFrame = (up) ? self.lsBarUpFrame : self.lsBarDownFrame;
-	self.likeShareBar = [[PostLikeAndShareBar alloc] initWithFrame: startFrame numberOfLikes:numLikes
+	self.likeShareBar = [[PostLikeAndShareBar alloc] initWithFrame: self.lsBarDownFrame numberOfLikes:numLikes
 													numberOfShares:numShares numberOfPages:numPages andStartingPageNumber:startPage];
 	self.likeShareBar.delegate = self;
 	if (withDelete) {
@@ -269,6 +266,7 @@
 	self.creatorBarFrameUp = CGRectMake(0.f, -STATUS_BAR_HEIGHT, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT + STATUS_BAR_HEIGHT);
 	self.creatorBarFrameDown = CGRectMake(0.f, 0.f, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT + STATUS_BAR_HEIGHT);
     __weak PostView *weakSelf = self;
+	//todo: fix creator bar slowness
 	[Post_Channel_RelationshipManager getChannelObjectFromParsePCRelationship:weakSelf.parsePostChannelActivityObject
 														  withCompletionBlock:^(Channel * channel) {
 															  weakSelf.postChannel = channel;
@@ -559,11 +557,12 @@
             self.pageUpIndicator.contentMode = UIViewContentModeScaleAspectFit;
         }
         [self.pageUpIndicator removeFromSuperview];
-        [self.likeShareBar addSubview:self.pageUpIndicator];
+        [self addSubview:self.pageUpIndicator];
+        [self bringSubviewToFront:self.pageUpIndicator];
         self.likeShareBar.clipsToBounds = NO;
         CGFloat size = PAGE_UP_ICON_SIZE;
         CGFloat x_cord = self.frame.size.width/2.f - size/2.f;
-        CGFloat y_cord = size * -1;
+        CGFloat y_cord = self.frame.size.height -  (size + 10.f);
         CGRect frame = CGRectMake(x_cord, y_cord, size, size);
         self.pageUpIndicator.frame = frame;
 

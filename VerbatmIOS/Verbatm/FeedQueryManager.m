@@ -213,9 +213,10 @@
 				for (PFObject *channelObj in channels) {
 					PFUser *channelCreator = channelObj[CHANNEL_CREATOR_KEY];
 					NSString *channelName  = [channelObj valueForKey:CHANNEL_NAME_KEY];
+					//todo: when someone navigates to a channel from search or a list they need the follow object
 					Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
 																   andParseChannelObject:channelObj
-																	   andChannelCreator:channelCreator];
+																	   andChannelCreator:channelCreator andFollowObject:nil];
 					[finalChannels addObject:verbatmChannelObject];
 				}
 				self.exploreChannelsLoaded += channels.count;
@@ -224,7 +225,6 @@
 		}];
 	}];
 }
-
 
 -(void) loadFeaturedChannelsWithCompletionHandler:(void(^)(NSArray *))completionBlock {
 	PFUser *user = [PFUser currentUser];
@@ -251,9 +251,10 @@
 				PFUser *channelCreator = [parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
 				[channelCreator fetchIfNeededInBackground];
 				NSString *channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
+				//todo: when someone navigates to a channel from search or a list they need the follow object
 				Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
 															   andParseChannelObject:parseChannelObject
-																   andChannelCreator:channelCreator];
+																   andChannelCreator:channelCreator andFollowObject:nil];
 				[finalChannels addObject:verbatmChannelObject];
 			}
 			completionBlock([UtilityFunctions shuffleArray: finalChannels]);

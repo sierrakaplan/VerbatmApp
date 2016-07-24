@@ -59,7 +59,7 @@
 			NSString *defaultBlogName = [self getDefaultBlogName];
 			[Channel_BackendObject createChannelWithName:defaultBlogName andCompletionBlock:^(PFObject *channelObj) {
 				self.userChannel = [[Channel alloc] initWithChannelName:defaultBlogName andParseChannelObject:channelObj
-																					   andChannelCreator:[PFUser currentUser]];
+													  andChannelCreator:[PFUser currentUser] andFollowObject:nil];
 				self.userChannel.defaultBlogName = YES;
 				[self.userChannel getChannelsFollowingWithCompletionBlock:^{
 					block();
@@ -99,8 +99,12 @@
 }
 
 
--(BOOL) userFollowsChannel:(Channel*)channel {
-	return ([UtilityFunctions checkIfChannelList:self.userChannel.channelsUserFollowing containsChannel:channel] != nil);
+-(PFObject*) userFollowsChannel:(Channel*)channel {
+	Channel *followedChannel = [UtilityFunctions checkIfChannelList:self.userChannel.channelsUserFollowing containsChannel:channel];
+	if (followedChannel) {
+		return followedChannel.followObject;
+	}
+	return nil;
 }
 
 -(void)reloadUserChannels {

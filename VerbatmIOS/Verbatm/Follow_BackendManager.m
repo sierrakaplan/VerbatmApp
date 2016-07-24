@@ -24,6 +24,9 @@
 +(void)currentUserFollowChannel:(Channel *) channelToFollow {
 	PFObject * newFollowObject = [PFObject objectWithClassName:FOLLOW_PFCLASS_KEY];
 	[newFollowObject setObject:[PFUser currentUser]forKey:FOLLOW_USER_KEY];
+	if (channelToFollow.latestPostDate) {
+		[newFollowObject setObject:channelToFollow.latestPostDate forKey:FOLLOW_LATEST_POST_DATE];
+	}
 	[newFollowObject setObject:channelToFollow.parseChannelObject forKey:FOLLOW_CHANNEL_FOLLOWED_KEY];
 	// Will return error if follow already existed - ignore
 	[newFollowObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
@@ -125,30 +128,39 @@
 	PFQuery *followingQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
 	followingQuery.limit = 1000;
 	[followingQuery whereKey:FOLLOW_USER_KEY equalTo:user];
-	[followingQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+	[followingQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable followObjects,
 														  NSError * _Nullable error) {
 		if(error) {
 			[[Crashlytics sharedInstance] recordError:error];
 			block (@[]);
 		} else {
 			NSMutableArray *channelIDs = [[NSMutableArray alloc] init];
-			for (PFObject *followObject in objects) {
+			for (PFObject *followObject in followObjects) {
 				PFObject *channelObj = followObject[FOLLOW_CHANNEL_FOLLOWED_KEY];
 				[channelIDs addObject: channelObj.objectId];
 			}
 			PFQuery *channelsQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
 			[channelsQuery whereKey:@"objectId" containedIn: channelIDs];
 			channelsQuery.limit = 1000;
-			[channelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+			[channelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channelObjects, NSError * _Nullable error) {
 				if (error) {
 					[[Crashlytics sharedInstance] recordError: error];
 					block (@[]);
 				} else {
 					NSMutableArray *channels = [[NSMutableArray alloc] init];
-					for (PFObject *channelObject in objects) {
+					for (PFObject *channelObject in channelObjects) {
+						NSInteger followIndex = [channelIDs indexOfObject: channelObject.objectId];
+						PFObject *correspondingFollowObj = followObjects[followIndex];
+
+						// Update all previously created follow objects to store the latest post as the new cursor
+						if (!correspondingFollowObj[FOLLOW_LATEST_POST_DATE] && channelObject[CHANNEL_LATEST_POST_DATE]) {
+							correspondingFollowObj[FOLLOW_LATEST_POST_DATE] = channelObject[CHANNEL_LATEST_POST_DATE];
+							[correspondingFollowObj saveInBackground];
+						}
 						Channel *channel = [[Channel alloc] initWithChannelName:[channelObject valueForKey:CHANNEL_NAME_KEY]
 														  andParseChannelObject:channelObject
-															  andChannelCreator:[channelObject valueForKey:CHANNEL_CREATOR_KEY]];
+															  andChannelCreator:[channelObject valueForKey:CHANNEL_CREATOR_KEY]
+																andFollowObject: correspondingFollowObj];
 						channel.latestPostDate = channelObject[CHANNEL_LATEST_POST_DATE];
 						[channels addObject: channel];
 					}

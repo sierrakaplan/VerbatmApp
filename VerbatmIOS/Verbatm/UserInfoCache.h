@@ -14,14 +14,21 @@
 +(instancetype)sharedInstance;
 
 -(void)loadUserChannelsWithCompletionBlock:(void(^)())block;
+
 -(Channel *) getUserChannel;
--(BOOL) userFollowsChannel:(Channel*)channel;
+
+// Returns the follow object if the user follows the channel
+-(PFObject*) userFollowsChannel:(Channel*)channel;
+
 //increments followers number in backend
 -(void)registerNewFollower;
+
 //decrements followers number in backend
 -(void)registerRemovedFollower;
 
 -(void)storeCurrentUserNowFollowingChannel:(Channel *)channel;
+
 -(void)storeCurrentUserStoppedFollowing:(Channel *)channel;
+
 @end
 
