@@ -109,12 +109,16 @@
 }
 
 -(void) creatButtonsWithNumLike:(NSNumber *) numLikes andNumShare:(NSNumber *) numShares {
-    if (numLikes && numLikes.integerValue > 0) {
+    if (numLikes && numLikes.integerValue >= 0) {
         [self createLikeButtonNumbers:numLikes];
+    }else{
+        [self createLikeButtonNumbers:@(0)];
     }
     [self createLikeButton];
-    if (numShares && numShares.integerValue > 0) {
+    if (numShares && numShares.integerValue >= 0) {
         [self createShareButtonNumbers:numShares];
+    }else{
+        [self createShareButtonNumbers:@(0)];
     }
     [self createShareButton];
    
