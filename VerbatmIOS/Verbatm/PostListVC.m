@@ -374,23 +374,21 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void) updateCursor {
-	NSDate *postDate = self.currentDisplayCell.currentPostActivityObject.createdAt;
-	NSTimeInterval timeSinceSeen = [postDate timeIntervalSinceDate:self.latestPostSeen];
-	if (timeSinceSeen > 0) {
-		// If in fullscreen mode update latest date
-		if (!self.inSmallMode) {
-			self.latestPostSeen = postDate;
-		} else {
-			//IAIN TODO
-//			self.currentDisplayCell.layer.borderColor = [UIColor colorWithRed:255.f green:140.f blue:0.f alpha:1.f].CGColor;
-//			self.currentDisplayCell.layer.borderWidth = 5.f;
-            
-            [self.currentDisplayCell addDot];
-		}
-	} else if (self.inSmallMode) {
-        [self.currentDisplayCell removeDot];
-		//self.currentDisplayCell.layer.borderWidth = 0.f;
-	}
+    if(!self.isCurrentUserProfile){
+        NSDate *postDate = self.currentDisplayCell.currentPostActivityObject.createdAt;
+        NSTimeInterval timeSinceSeen = [postDate timeIntervalSinceDate:self.latestPostSeen];
+        if (timeSinceSeen > 0) {
+            // If in fullscreen mode update latest date
+            if (!self.inSmallMode) {
+                self.latestPostSeen = postDate;
+            } else {
+                //IAIN TODO
+               [self.currentDisplayCell addDot];
+            }
+        } else if (self.inSmallMode) {
+            [self.currentDisplayCell removeDot];
+        }
+    }
 }
 
 -(void) checkShouldReverseScrollDirectionFromIndexPath:(NSIndexPath*)indexPath  {
