@@ -45,12 +45,12 @@
 #define OF_TEXT_FONT CHANNEL_TAB_BAR_FOLLOWERS_FONT
 #define OF_TEXT_FONT_SIZE 18.f
 
-#define BIG_ICON_SPACING 8.f
+#define BIG_ICON_SPACING 10.f
 #define BIG_ICON_SIZE (self.frame.size.width - (BIG_ICON_SPACING*2))
 
 
-#define DELET_FLAG_BUTTON_HEIGHT (self.frame.size.width - (ICON_SPACING_GAP*2))
-#define DELETE_FLAG_BUTTON_Y  (self.frame.size.height - DELET_FLAG_BUTTON_HEIGHT - ICON_SPACING_GAP)
+#define DELETE_FLAG_BUTTON_HEIGHT (self.frame.size.width - (ICON_SPACING_GAP*2))
+#define DELETE_FLAG_BUTTON_Y  (self.frame.size.height - DELETE_FLAG_BUTTON_HEIGHT - ICON_SPACING_GAP)
 @end
 
 @implementation PostLikeAndShareBar
@@ -109,11 +109,11 @@
 }
 
 -(void) creatButtonsWithNumLike:(NSNumber *) numLikes andNumShare:(NSNumber *) numShares {
-    if (numLikes && numLikes.integerValue >= 0) {
+    if (numLikes && numLikes.integerValue > 0) {
         [self createLikeButtonNumbers:numLikes];
     }
     [self createLikeButton];
-    if (numShares && numShares.integerValue >= 0) {
+    if (numShares && numShares.integerValue > 0) {
         [self createShareButtonNumbers:numShares];
     }
     [self createShareButton];
@@ -124,8 +124,8 @@
 -(void)createShareButton {
     //create share button
     CGRect shareButtonFrame = CGRectMake(ICON_SPACING_GAP,
-                                         self.numSharesButton.frame.origin.y - (DELET_FLAG_BUTTON_HEIGHT + BIG_ICON_SPACING),
-                                         DELET_FLAG_BUTTON_HEIGHT, DELET_FLAG_BUTTON_HEIGHT);
+                                         self.numSharesButton.frame.origin.y - (DELETE_FLAG_BUTTON_HEIGHT + BIG_ICON_SPACING),
+                                         DELETE_FLAG_BUTTON_HEIGHT, DELETE_FLAG_BUTTON_HEIGHT);
     
     self.shareButon = [UIButton buttonWithType:UIButtonTypeCustom];
 	self.shareButon.contentMode = UIViewContentModeScaleAspectFit;
@@ -138,8 +138,8 @@
 
 -(void)createLikeButton {
     CGRect likeButtonFrame =  CGRectMake(ICON_SPACING_GAP,
-										self.numLikesButton.frame.origin.y - (DELET_FLAG_BUTTON_HEIGHT + BIG_ICON_SPACING),
-                                         DELET_FLAG_BUTTON_HEIGHT, DELET_FLAG_BUTTON_HEIGHT);
+										self.numLikesButton.frame.origin.y - (DELETE_FLAG_BUTTON_HEIGHT + BIG_ICON_SPACING),
+                                         DELETE_FLAG_BUTTON_HEIGHT, DELETE_FLAG_BUTTON_HEIGHT);
     
     self.likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	self.likeButton.contentMode = UIViewContentModeScaleAspectFit;
@@ -173,7 +173,8 @@
     [self.numLikesButton setAttributedTitle:followersText forState:UIControlStateNormal];
     CGSize textSize = [[numLikes.stringValue stringByAppendingString:likesText] sizeWithAttributes:self.likeNumberTextAttributes];
     
-    CGRect likeNumberButtonFrame = CGRectMake((self.frame.size.width - textSize.width)/2.f,DELETE_FLAG_BUTTON_Y - (BIG_ICON_SPACING + textSize.height),
+    CGRect likeNumberButtonFrame = CGRectMake((self.frame.size.width - textSize.width)/2.f,
+											  DELETE_FLAG_BUTTON_Y - (BIG_ICON_SPACING + textSize.height),
                                               textSize.width, textSize.height);
     [self.numLikesButton setFrame:likeNumberButtonFrame];
     
@@ -196,7 +197,8 @@
     [self.numSharesButton setAttributedTitle:followersText forState:UIControlStateNormal];
     CGSize textSize = [[numShares.stringValue stringByAppendingString:likesText] sizeWithAttributes:self.likeNumberTextAttributes];
     
-    CGRect likeNumberButtonFrame = CGRectMake((self.frame.size.width - textSize.width)/2.f,self.likeButton.frame.origin.y - (BIG_ICON_SPACING + textSize.height),
+    CGRect likeNumberButtonFrame = CGRectMake((self.frame.size.width - textSize.width)/2.f,
+											  self.likeButton.frame.origin.y - (BIG_ICON_SPACING + textSize.height),
                                               textSize.width, textSize.height);
     [self.numSharesButton setFrame:likeNumberButtonFrame];
 
@@ -233,7 +235,7 @@
     }
 
     CGRect deleteButtonFrame = CGRectMake(ICON_SPACING_GAP,DELETE_FLAG_BUTTON_Y,
-										  DELET_FLAG_BUTTON_HEIGHT, DELET_FLAG_BUTTON_HEIGHT);
+										  DELETE_FLAG_BUTTON_HEIGHT, DELETE_FLAG_BUTTON_HEIGHT);
     self.delete_Or_FlagButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.delete_Or_FlagButton setFrame:deleteButtonFrame];
     [self.delete_Or_FlagButton setImage:buttonImage forState:UIControlStateNormal];
