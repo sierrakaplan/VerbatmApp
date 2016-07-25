@@ -1205,6 +1205,9 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 #pragma mark - Media Tile Delegate -
+-(void)textButtonPressedOnTile:(MediaSelectTile*) tile{
+    
+}
 
 -(void) galleryButtonPressedOnTile: (MediaSelectTile *)tile  {
 	NSInteger index = [self.pageElementScrollViews indexOfObject: tile.superview] - 1;
@@ -1968,6 +1971,7 @@ andSaveInUserDefaults:(BOOL)save {
 		[_baseMediaTileSelector createFramesForButtonsWithFrame:frame];
 		[_baseMediaTileSelector buttonGlow];
 	}
+    
 	return _baseMediaTileSelector;
 }
 
