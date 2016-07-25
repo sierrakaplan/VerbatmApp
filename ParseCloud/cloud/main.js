@@ -100,8 +100,12 @@ Parse.Cloud.beforeSave("NotificationClass", function(request, response) {
 	var query = new Parse.Query(NotificationClass);
 	query.equalTo("NotificationSender", request.object.get("NotificationSender"));
 	query.equalTo("NotificationReceiver", request.object.get("NotificationReceiver"));
-	query.equalTo("NotificationType", request.object.get("NotificationType"));
-	query.equalTo("NotificationPost", request.object.get("NotificationPost"));
+	var notificationType = request.object.get("NotificationType");
+	query.equalTo("NotificationType", notificationType);
+	// If this is a like or a share notification
+	if (notificationType == 2 || notificationType == 3 || notificationType == 5) {
+		query.equalTo("NotificationPost", request.object.get("NotificationPost"));
+	}
 	query.first().then(function(existingObject) {
       if (existingObject) {
         response.error("Existing notification");

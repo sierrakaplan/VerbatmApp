@@ -2392,7 +2392,7 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/Channel_BackendObject.m"
-                  timestampString = "491072587.604615"
+                  timestampString = "491168144.835396"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "157"
@@ -2407,7 +2407,7 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/Channel_BackendObject.m"
-                  timestampString = "491072587.604716"
+                  timestampString = "491168144.835585"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "158"
@@ -2558,6 +2558,22 @@
             startingLineNumber = "179"
             endingLineNumber = "179"
             landmarkName = "-getChannelsFollowingWithCompletionBlock:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/Notification_BackendManager.m"
+            timestampString = "491168005.570412"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "35"
+            endingLineNumber = "35"
+            landmarkName = "+createNotificationWithType:receivingUser:relevantPostObject:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

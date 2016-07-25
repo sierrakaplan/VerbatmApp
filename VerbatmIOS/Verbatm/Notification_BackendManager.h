@@ -20,7 +20,9 @@ typedef enum {
 }NotificationType;
 
 @interface Notification_BackendManager : NSObject
+
 +(void)createNotificationWithType:(NotificationType) notType receivingUser:(PFUser *) receivingUser relevantPostObject:(PFObject *) post;
+
 +(void)getNotificationsForUserAfterDate:(NSDate *) afterDate withCompletionBlock:(void(^)(NSArray*)) block;
 
 

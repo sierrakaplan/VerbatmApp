@@ -32,6 +32,7 @@
         [notificationObject setValue:notificationType forKey:NOTIFICATION_TYPE];
 		// Will return error if notification already existed - ignore
         [notificationObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+
 		}];
     }
 }
