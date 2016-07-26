@@ -224,6 +224,9 @@
 
 -(void) pauseToRearrangeButtonPressed {
 	// Pausing slideshow
+    if(![self.pinchView isKindOfClass:[CollectionPinchView class]]) return;
+    
+    
 	if(!self.rearrangeView) {
 		[self offScreen];
 		CGFloat y_pos = (self.photoVideoSubview) ? 0.f : CUSTOM_NAV_BAR_HEIGHT;
