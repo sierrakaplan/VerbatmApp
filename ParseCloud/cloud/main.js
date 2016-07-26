@@ -10,69 +10,6 @@ var languages = ["en", "es", "ja", "kr", "pt-BR"];
 
 var twilio = require('twilio')(twilioAccountSid, twilioAuthToken);
 
-Parse.Cloud.define("sendCode", function(req, res) {
-	var phoneNumber = req.params.phoneNumber;
-	phoneNumber = phoneNumber.replace(/\D/g, '');
-
-	var lang = req.params.language;
-  if(lang !== undefined && languages.indexOf(lang) != -1) {
-		language = lang;
-	}
-
-	if (!phoneNumber || (phoneNumber.length != 10 && phoneNumber.length != 11)) return res.error('Invalid Parameters');
-	Parse.Cloud.useMasterKey();
-	var query = new Parse.Query(Parse.User);
-	query.equalTo('username', phoneNumber + "");
-	query.first().then(function(result) {
-		var min = 1000; var max = 9999;
-		var num = Math.floor(Math.random() * (max - min + 1)) + min;
-
-		if (result) {
-			result.setPassword(secretPasswordToken + num);
-			result.set("language", language);
-			result.save().then(function() {
-				return sendCodeSms(phoneNumber, num, language);
-			}).then(function() {
-				res.success({});
-			}, function(err) {
-				res.error(err);
-			});
-		} else {
-			var user = new Parse.User();
-			user.setUsername(phoneNumber);
-			user.setPassword(secretPasswordToken + num);
-			user.set("language", language);
-			user.setACL({});
-			user.save().then(function(a) {
-				return sendCodeSms(phoneNumber, num, language);
-			}).then(function() {
-				res.success({});
-			}, function(err) {
-				res.error(err);
-			});
-		}
-	}, function (err) {
-		res.error(err);
-	});
-});
-
-Parse.Cloud.define("logIn", function(req, res) {
-	Parse.Cloud.useMasterKey();
-
-	var phoneNumber = req.params.phoneNumber;
-	phoneNumber = phoneNumber.replace(/\D/g, '');
-
-	if (phoneNumber && req.params.codeEntry) {
-		Parse.User.logIn(phoneNumber, secretPasswordToken + req.params.codeEntry).then(function (user) {
-			res.success(user.getSessionToken());
-		}, function (err) {
-			res.error(err);
-		});
-	} else {
-		res.error('Invalid parameters.');
-	}
-});
-
 // Sets default values to num follows and num following
 Parse.Cloud.beforeSave("ChannelClass", function(request, response) {
   if (!request.object.get("ChannelNumFollows")) {
@@ -91,6 +28,9 @@ Parse.Cloud.beforeSave("ChannelClass", function(request, response) {
 var NotificationClass = Parse.Object.extend("NotificationClass");
 var LikeClass = Parse.Object.extend("LikeClass");
 var FollowClass = Parse.Object.extend("FollowClass");
+
+
+// NOTIFICATIONS - PUSH
 
 /*
 NewFollower = 1 << 0, 			// 1
@@ -163,6 +103,8 @@ Parse.Cloud.beforeSave("NotificationClass", function(request, response) {
     });
 });
 
+// DON'T SAVE MULTIPLE LIKE OR FOLLOWS
+
 Parse.Cloud.beforeSave("LikeClass", function(request, response) {
 	// Let existing object updates go through
 	if (!request.object.isNew()) {
@@ -197,12 +139,80 @@ Parse.Cloud.beforeSave("FollowClass", function(request, response) {
     });
 });
 
+// DEFAULT PUBLIC READ FOR USER
+
 Parse.Cloud.beforeSave(Parse.User, function(request, response) {
   var newACL = new Parse.ACL();
 
   newACL.setPublicReadAccess(true);
   request.object.setACL(newACL);
   response.success();
+});
+
+
+// PHONE LOGIN
+
+Parse.Cloud.define("sendCode", function(req, res) {
+	var phoneNumber = req.params.phoneNumber;
+	phoneNumber = phoneNumber.replace(/\D/g, '');
+
+	var lang = req.params.language;
+  if(lang !== undefined && languages.indexOf(lang) != -1) {
+		language = lang;
+	}
+
+	if (!phoneNumber || (phoneNumber.length != 10 && phoneNumber.length != 11)) return res.error('Invalid Parameters');
+	Parse.Cloud.useMasterKey();
+	var query = new Parse.Query(Parse.User);
+	query.equalTo('username', phoneNumber + "");
+	query.first().then(function(result) {
+		var min = 1000; var max = 9999;
+		var num = Math.floor(Math.random() * (max - min + 1)) + min;
+
+		if (result) {
+			result.setPassword(secretPasswordToken + num);
+			result.set("language", language);
+			result.save().then(function() {
+				return sendCodeSms(phoneNumber, num, language);
+			}).then(function() {
+				res.success({});
+			}, function(err) {
+				res.error(err);
+			});
+		} else {
+			var user = new Parse.User();
+			user.setUsername(phoneNumber);
+			user.setPassword(secretPasswordToken + num);
+			user.set("language", language);
+			user.setACL({});
+			user.save().then(function(a) {
+				return sendCodeSms(phoneNumber, num, language);
+			}).then(function() {
+				res.success({});
+			}, function(err) {
+				res.error(err);
+			});
+		}
+	}, function (err) {
+		res.error(err);
+	});
+});
+
+Parse.Cloud.define("logIn", function(req, res) {
+	Parse.Cloud.useMasterKey();
+
+	var phoneNumber = req.params.phoneNumber;
+	phoneNumber = phoneNumber.replace(/\D/g, '');
+
+	if (phoneNumber && req.params.codeEntry) {
+		Parse.User.logIn(phoneNumber, secretPasswordToken + req.params.codeEntry).then(function (user) {
+			res.success(user.getSessionToken());
+		}, function (err) {
+			res.error(err);
+		});
+	} else {
+		res.error('Invalid parameters.');
+	}
 });
 
 function sendCodeSms(phoneNumber, code, language) {

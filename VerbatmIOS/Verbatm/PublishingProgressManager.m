@@ -111,13 +111,15 @@
 							  }];
 }
 
--(void)countMediaContentFromPinchViews:(NSArray *)pinchViews{
+-(void)countMediaContentFromPinchViews:(NSArray *)pinchViews {
+
+	// There's an extra unit for the final upload to parse of the video or image
+	NSInteger imageUnits = (IMAGE_PROGRESS_UNITS + 1);
+	// Video + screenshot
+	NSInteger videoUnits = (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS + 1);
+
 	NSInteger totalProgressUnits = INITIAL_PROGRESS_UNITS;
 	for(PinchView * pinchView in pinchViews) {
-		// There's an extra unit for the final upload to parse of each piece of media
-		NSInteger imageUnits = (IMAGE_PROGRESS_UNITS + 1);
-		// Video + screenshot
-		NSInteger videoUnits = (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS + 2);
 		if([pinchView isKindOfClass:[CollectionPinchView class]]){
             
             CGFloat numImagePinchViews = [(CollectionPinchView *)pinchView imagePinchViews].count;

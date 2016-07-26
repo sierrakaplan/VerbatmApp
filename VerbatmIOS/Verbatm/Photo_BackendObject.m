@@ -83,6 +83,7 @@ andTextAlignment:(NSNumber *) textAlignment
 	return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 		[newPhotoObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 			if(succeeded && !error){
+				[[PublishingProgressManager sharedInstance] mediaSavingProgressed:1];
                 resolve(nil);
 			} else {
 				resolve(error);

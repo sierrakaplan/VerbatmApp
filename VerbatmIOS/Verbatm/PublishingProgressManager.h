@@ -24,7 +24,7 @@
 
 #define INITIAL_PROGRESS_UNITS 3
 #define IMAGE_PROGRESS_UNITS 3
-#define VIDEO_PROGRESS_UNITS 21
+#define VIDEO_PROGRESS_UNITS 20
 
 @property (nonatomic, readonly) NSProgress * progressAccountant;
 @property (nonatomic, readonly) BOOL currentlyPublishing;
