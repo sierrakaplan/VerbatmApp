@@ -121,36 +121,39 @@ Parse.Cloud.beforeSave("NotificationClass", function(request, response) {
         response.error("Existing notification");
       } else { 
       	// Send a push notification
-	  	var pushQuery = new Parse.Query(Parse.Installation);
-	  	pushQuery.equalTo('deviceType', 'ios');
-	    var notificationText = "";
-	    if (notificationType == 1) {
-	    	notificationText =  notificationSender + " is now following you!";
-	    } else if (notificationType == 2) {
-	    	notificationText = notificationSender + " has liked your post!";
-	    } else if (notificationType == 4) {
-	    	notificationText = "Your friend " + notificationSender + " has joined Verbatm";
-	    } else if (notificationType == 8) {
-	    	notificationText = notificationSender + " shared your post on social media!";
-	    } else if (notificationType == 16) {
-	    	notificationText = notificationSender + " just created their first Verbatm post";
-	    } else if (notificationType == 32) {
-	    	notificationText = notificationSender + " reblogged your post!";
-	    }
-		  Parse.Push.send({
-		    where: pushQuery, // Set our Installation query
-		    data: {
-		      alert: notificationText
+      	notificationSender.fetch().then(function(fetchedUser) {
+      		var notificationSenderName = fetchedUser.get("VerbatmName");
+		  	var pushQuery = new Parse.Query(Parse.Installation);
+		  	pushQuery.equalTo('deviceType', 'ios');
+		    var notificationText = "";
+		    if (notificationType == 1) {
+		    	notificationText =  notificationSenderName + " is now following you!";
+		    } else if (notificationType == 2) {
+		    	notificationText = notificationSenderName + " has liked your post!";
+		    } else if (notificationType == 4) {
+		    	notificationText = "Your friend " + notificationSenderName + " has joined Verbatm";
+		    } else if (notificationType == 8) {
+		    	notificationText = notificationSenderName + " shared your post on social media!";
+		    } else if (notificationType == 16) {
+		    	notificationText = notificationSenderName + " just created their first Verbatm post";
+		    } else if (notificationType == 32) {
+		    	notificationText = notificationSenderName + " reblogged your post!";
 		    }
-		  }, {
-		    success: function() {
-		      // Push was successful
-		    },
-		    error: function(error) {
-		      throw "Got an error " + error.code + " : " + error.message;
-		    }
-		  });
-        response.success();
+			  Parse.Push.send({
+			    where: pushQuery, // Set our Installation query
+			    data: {
+			      alert: notificationText
+			    }
+			  }, {
+			    success: function() {
+			      // Push was successful
+			    },
+			    error: function(error) {
+			      throw "Got an error " + error.code + " : " + error.message;
+			    }
+			  });
+	        response.success();
+      	});
       }
     });
 });
