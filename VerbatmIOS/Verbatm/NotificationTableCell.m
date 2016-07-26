@@ -21,7 +21,7 @@
 @property (nonatomic) UIImageView * likeImage;
 @property (nonatomic) UIButton * followButton;
 @property (nonatomic) BOOL currentUserFollowingChannelUser;
-@property (nonatomic) UIView * seperatorView;
+@property (nonatomic) UIView * separatorView;
 
 @property (nonatomic) UILabel * postLine;//text saying "post!" so that post is seletable
 
@@ -42,21 +42,31 @@
 @implementation NotificationTableCell
 
 
--(void)clearViews{
+-(void)clearViews {
+	if(self.notificationTextLabel){
+		[self.notificationTextLabel removeFromSuperview];
+		self.notificationTextLabel = nil;
+	}
+
+	if(self.likeImage){
+		[self.likeImage removeFromSuperview];
+		self.likeImage = nil;
+	}
+
     if(self.followButton){
         [self.followButton removeFromSuperview];
         self.followButton = nil;
     }
-    
-    if(self.notificationTextLabel){
-        [self.notificationTextLabel removeFromSuperview];
-        self.notificationTextLabel = nil;
-    }
-    
-    if(self.likeImage){
-        [self.likeImage removeFromSuperview];
-        self.likeImage = nil;
-    }
+
+	if(self.separatorView){
+		[self.separatorView removeFromSuperview];
+		self.separatorView = nil;
+	}
+
+	if (self.postLine) {
+		[self.postLine removeFromSuperview];
+		self.postLine = nil;
+	}
 }
 
 
@@ -103,21 +113,16 @@
     }
 }
 
-
-
-
-
-
 -(void)layoutSubviews {
     self.backgroundColor = [UIColor clearColor];
     [self addCellSeperator];
 }
 
 -(void)addCellSeperator{
-    if(!self.seperatorView){
-        self.seperatorView = [[UIView alloc] initWithFrame:CGRectMake(0.f, self.frame.size.height - CHANNEL_LIST_CELL_SEPERATOR_HEIGHT, self.frame.size.width,CHANNEL_LIST_CELL_SEPERATOR_HEIGHT)];
-        self.seperatorView.backgroundColor = [UIColor lightGrayColor];
-        [self addSubview:self.seperatorView];
+    if(!self.separatorView){
+        self.separatorView = [[UIView alloc] initWithFrame:CGRectMake(0.f, self.frame.size.height - CHANNEL_LIST_CELL_SEPERATOR_HEIGHT, self.frame.size.width,CHANNEL_LIST_CELL_SEPERATOR_HEIGHT)];
+        self.separatorView.backgroundColor = [UIColor lightGrayColor];
+        [self addSubview:self.separatorView];
     }
 }
 
