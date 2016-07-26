@@ -9,10 +9,11 @@
 #import "AdjustTextAVEBackgroundToolBar.h"
 #import "UtilityFunctions.h"
 #import "Styles.h"
+#import "Icons.h"
 @interface AdjustTextAVEBackgroundToolBar()
 
 @property (nonatomic) NSMutableArray * selectionOptions;
-@property (nonatomic) NSArray * smallBackgrounds;
+@property (nonatomic) NSArray * circleButtonBackgrounds;
 @property (nonatomic) NSArray * fullScreenbackgrounds;
 
 #define IMAGE_GAP 10.f
@@ -29,22 +30,18 @@
     self = [super initWithFrame:frame];
     if(self){
         [self setBackgroundColor:TOP_TOOLBAR_BACKGROUND_COLOR];
-        self.smallBackgrounds = @[@"circle background 3",@"circle background 4",@"circle background 5",@"circle background 6"];
-        self.fullScreenbackgrounds = @[@"Text AVE background 3",@"Text AVE background 4",@"Text AVE background 5",@"Text AVE background 6"];
+        self.circleButtonBackgrounds = TEXTAVE_BACKGROUND_CIRCLE_VIEW_OPTIONS;
+        self.fullScreenbackgrounds = TEXTAVE_BACKGROUND_FULLSCREEN_OPTIONS;
         [self createScrollingViews];
     }
     return self;
 }
 
 -(void)createScrollingViews{
-    
-    
-    
-    
     CGFloat xAdvanced = IMAGE_GAP;
-    for(int i = 0; i < 4; i++) {
+    for(int i = 0; i < self.circleButtonBackgrounds.count; i++) {
         CGRect  buttomFrame = CGRectMake(xAdvanced, 2.f, IMAGE_SIZE, IMAGE_SIZE);
-        UIButton * button = [UtilityFunctions getButtonWithFrame:buttomFrame andIcon:self.smallBackgrounds[i] andSelector:@selector(buttonSelected:) andTarget:self];
+        UIButton * button = [UtilityFunctions getButtonWithFrame:buttomFrame andIcon:self.circleButtonBackgrounds[i] andSelector:@selector(buttonSelected:) andTarget:self];
         [self addSubview:button];
         [self.selectionOptions addObject:button];
         xAdvanced = xAdvanced + IMAGE_SIZE + IMAGE_GAP;

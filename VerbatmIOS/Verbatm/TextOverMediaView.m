@@ -99,19 +99,18 @@ andTextYPosition:(CGFloat) textYPosition
 andTextColorBlack:(BOOL) textColorBlack
 andTextAlignment:(NSTextAlignment) textAlignment
     andTextSize:(CGFloat) textSize andFontName:(NSString *) fontName{
-	if(!text.length) return;
+    UIColor *textColor = textColorBlack ? [UIColor blackColor] : [UIColor whiteColor];
+    [self changeTextColor:textColor];
+    if(!text.length) return;
 
 	self.textYPosition = textYPosition;
 	self.textView.frame = DEFAULT_TEXT_VIEW_FRAME;
-
-	UIColor *textColor = textColorBlack ? [UIColor blackColor] : [UIColor whiteColor];
-	[self changeTextColor:textColor];
-	[self changeTextAlignment: textAlignment];
+		[self changeTextAlignment: textAlignment];
 
 	self.textSize = textSize;
     
     [self.textView setFont:[UIFont fontWithName:fontName size:self.textSize]];
-
+    
 	[self changeText: text];
 }
 
