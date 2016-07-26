@@ -108,8 +108,9 @@ Parse.Cloud.beforeSave("NotificationClass", function(request, response) {
     }
 	var query = new Parse.Query(NotificationClass);
 	var notificationSender = request.object.get("NotificationSender");
+	var notificationReceiver = request.object.get("NotificationReceiver");
 	query.equalTo("NotificationSender", notificationSender);
-	query.equalTo("NotificationReceiver", request.object.get("NotificationReceiver"));
+	query.equalTo("NotificationReceiver", notificationReceiver);
 	var notificationType = request.object.get("NotificationType");
 	query.equalTo("NotificationType", notificationType);
 	// If this is a like or a share notification
@@ -124,7 +125,8 @@ Parse.Cloud.beforeSave("NotificationClass", function(request, response) {
       	notificationSender.fetch().then(function(fetchedUser) {
       		var notificationSenderName = fetchedUser.get("VerbatmName");
 		  	var pushQuery = new Parse.Query(Parse.Installation);
-		  	pushQuery.equalTo('deviceType', 'ios');
+		  	// pushQuery.equalTo('deviceType', 'ios');
+		  	pushQuery.equalTo('user', notificationReceiver);
 		    var notificationText = "";
 		    if (notificationType == 1) {
 		    	notificationText =  notificationSenderName + " is now following you!";
@@ -147,13 +149,12 @@ Parse.Cloud.beforeSave("NotificationClass", function(request, response) {
 			    }
 			  }, {
 			    success: function() {
-			      // Push was successful
+			      response.success();
 			    },
 			    error: function(error) {
 			      throw "Got an error " + error.code + " : " + error.message;
 			    }
 			  });
-	        response.success();
       	});
       }
     });
