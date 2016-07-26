@@ -25,12 +25,12 @@
 
 @property (nonatomic) UILabel * postLine;//text saying "post!" so that post is seletable
 
-#define NEW_FOLLOWER_APPEND_TEXT @" is Following you"
+#define NEW_FOLLOWER_APPEND_TEXT @" is following you"
 #define LIKE_APPEND_TEXT @" likes your "
 #define FRIEND_JOINED_V_APPEND_TEXT @" just joined Verbatm"
 #define FRIENDS_FIRST_POST @" just created their first "
 #define POST_SHARED_APPEND_TEXT @" shared your "
-#define REBLOG_APPEND_TEXT @" rebologed your "
+#define REBLOG_APPEND_TEXT @" reblogged your "
 #define FOLLOW_TEXT_BUTTON_GAP (3.f)
 #define FOLLOW_BUTTON_X_POS (self.frame.size.width - PROFILE_HEADER_XOFFSET - LARGE_FOLLOW_BUTTON_WIDTH)
 
