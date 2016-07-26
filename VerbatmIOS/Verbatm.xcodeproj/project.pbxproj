@@ -200,6 +200,7 @@
 		C788745C1C334AE80048B66E /* PostLikeAndShareBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C788745B1C334AE80048B66E /* PostLikeAndShareBar.m */; };
 		C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */; };
 		C7996CC31C8FCF74002E5DA6 /* LoadingIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = C7996CC21C8FCF74002E5DA6 /* LoadingIndicator.m */; };
+		C7A58ABA1D46AB08006C3607 /* AdjustTextSizeToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A58AB91D46AB08006C3607 /* AdjustTextSizeToolBar.m */; };
 		C7AA49F81D14739A00A031C6 /* SharingLinkView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7AA49F71D14739A00A031C6 /* SharingLinkView.m */; };
 		C7AA49FB1D148A8C00A031C6 /* verbatmButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C7AA49FA1D148A8C00A031C6 /* verbatmButton.m */; };
 		C7AA49FF1D149B8C00A031C6 /* SharingLinkActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7AA49FE1D149B8C00A031C6 /* SharingLinkActionView.m */; };
@@ -581,6 +582,8 @@
 		C79747D91B50B815009077E3 /* Verbatm-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Verbatm-Info.plist"; sourceTree = "<group>"; };
 		C7996CC11C8FCF74002E5DA6 /* LoadingIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingIndicator.h; sourceTree = "<group>"; };
 		C7996CC21C8FCF74002E5DA6 /* LoadingIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingIndicator.m; sourceTree = "<group>"; };
+		C7A58AB81D46AB08006C3607 /* AdjustTextSizeToolBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdjustTextSizeToolBar.h; sourceTree = "<group>"; };
+		C7A58AB91D46AB08006C3607 /* AdjustTextSizeToolBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdjustTextSizeToolBar.m; sourceTree = "<group>"; };
 		C7AA49F61D14739A00A031C6 /* SharingLinkView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharingLinkView.h; sourceTree = "<group>"; };
 		C7AA49F71D14739A00A031C6 /* SharingLinkView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharingLinkView.m; sourceTree = "<group>"; };
 		C7AA49F91D148A8C00A031C6 /* verbatmButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmButton.h; sourceTree = "<group>"; };
@@ -746,6 +749,8 @@
 				A56F68711B643B1400CE5744 /* VerbatmKeyboardToolBar.m */,
 				A5337BB81CCD60CF00551394 /* LoginKeyboardToolBar.h */,
 				A5337BB91CCD60CF00551394 /* LoginKeyboardToolBar.m */,
+				C7A58AB81D46AB08006C3607 /* AdjustTextSizeToolBar.h */,
+				C7A58AB91D46AB08006C3607 /* AdjustTextSizeToolBar.m */,
 			);
 			name = "Keyboard tool bars";
 			sourceTree = "<group>";
@@ -1909,6 +1914,7 @@
 				A5FB5D3A1BCB0B9700634A96 /* GMImagePickerController.m in Sources */,
 				C7D596381C66DC3A00161136 /* FeedQueryManager.m in Sources */,
 				A56F68811B65B43D00CE5744 /* ImagePinchView.m in Sources */,
+				C7A58ABA1D46AB08006C3607 /* AdjustTextSizeToolBar.m in Sources */,
 				C7F79E7D1C39E13900319330 /* SelectionView.m in Sources */,
 				A58EE8861BA8771700B7B396 /* NoAnimationUnwindSegue.m in Sources */,
 				C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */,
