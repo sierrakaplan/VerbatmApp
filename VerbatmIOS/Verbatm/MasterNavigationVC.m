@@ -16,10 +16,12 @@
 #import "DiscoverVC.h"
 #import "FeedTableViewController.h"
 #import "Icons.h"
+#import "InstallationVariables.h"
 
 #import "MasterNavigationVC.h"
 
 #import "Notifications.h"
+#import "NotificationsListTVC.h"
 
 #import "ParseBackendKeys.h"
 #import "ProfileVC.h"
@@ -38,7 +40,7 @@
 #import "UserSetupParameters.h"
 
 #import <Crashlytics/Crashlytics.h>
-#import "NotificationsListTVC.h"
+
 
 @interface MasterNavigationVC () <UITabBarControllerDelegate, FeedTableViewDelegate,
 ProfileVCDelegate, NotificationsListTVCProtocol>
@@ -47,8 +49,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 
 @property (nonatomic) BOOL migrated;
 
-@property (nonatomic) BOOL indicatorPresent;
-
+@property (nonatomic) BOOL notificationIndicatorPresent;
 
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
 @property (strong, nonatomic) CustomTabBarController* tabBarController;
@@ -61,6 +62,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 @property (strong,nonatomic) ProfileVC *profileVC;
 @property (strong,nonatomic) FeedTableViewController *feedVC;
 @property (strong,nonatomic) DiscoverVC *discoverVC;
+
 @property (strong, nonatomic) NotificationsListTVC * notificationVC;
 
 @property(strong,nonatomic) UIImageView * notificationIndicator;
@@ -131,11 +133,15 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
                                                  name:NOTIFICATION_POST_FAILED_TO_PUBLISH
                                                object:nil];
     
-    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(followingSuccessfulNotification:)
                                                  name:NOTIFICATION_NOW_FOLLOWING_USER
                                                object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(newPushNotification:)
+												 name:NOTIFICATION_NEW_PUSH_NOTIFICATION
+											   object:nil];
 }
 
 #pragma mark - Setting up environment on startup -
@@ -204,7 +210,12 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	deadView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 
 	self.tabBarController.viewControllers = @[self.feedVC, self.discoverVC, deadView,self.notificationVC, self.profileVC];
-	//add adk button to tab bar
+	if ([[InstallationVariables sharedInstance] launchedFromNotification]) {
+		self.tabBarController.selectedIndex = 3;
+	} else {
+		self.tabBarController.selectedIndex = 1;
+	}
+
 	[self addTabBarCenterButtonOverDeadView];
 	[self formatTabBar];
 }
@@ -245,12 +256,9 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 									  andSize: size];
 }
 
-
-
 //the view controllers that will be tabbed
 -(void)createViewControllers {
 	self.discoverVC = [self.storyboard instantiateViewControllerWithIdentifier:FEATURED_CONTENT_VC_ID];
-    
 	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
 	self.profileVC.delegate = self;
 	self.profileVC.ownerOfProfile = [PFUser currentUser];
@@ -289,7 +297,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
     
     self.notificationVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
     
-	// images need to be centered this way for some reason
 	self.profileVC.tabBarItem.imageInsets = self.discoverVC.tabBarItem.imageInsets =
     self.feedVC.tabBarItem.imageInsets =  UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 }
@@ -301,23 +308,21 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 -(void)showNotificationIndicator{
     [self showIndicator];
 }
+
 -(void)removeNotificationIndicator{
     [self removeIndicator];
 }
 
--(void)removeIndicator{
-    self.indicatorPresent = NO;
+-(void)removeIndicator {
+    self.notificationIndicatorPresent = NO;
     [self.notificationIndicator removeFromSuperview];
 }
 
 -(void)showIndicator{
-    self.indicatorPresent = YES;
+    self.notificationIndicatorPresent = YES;
     CGFloat tabBarItemWidth = self.view.frame.size.width/5.f;
-    
-    
-    CGFloat xpos = 1.f + (self.view.frame.size.width - (tabBarItemWidth *2)) + tabBarItemWidth/2.f;
-    
-    
+	CGFloat xpos = 1.f + (self.view.frame.size.width - (tabBarItemWidth *2)) + tabBarItemWidth/2.f;
+
     CGRect frame = CGRectMake(xpos, self.view.frame.size.height - (TAB_BAR_HEIGHT + NOTIFICATION_INDICATOR_SIZE), NOTIFICATION_INDICATOR_SIZE, NOTIFICATION_INDICATOR_SIZE);
     [self.notificationIndicator setFrame:frame];
     [self.view addSubview:self.notificationIndicator];
@@ -411,7 +416,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 
 -(void) showTabBar:(BOOL)show {
 	if (show) {
-        if(self.indicatorPresent){
+        if (self.notificationIndicatorPresent) {
             [self showIndicator];
         }
         
@@ -422,9 +427,9 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 		}];
 	} else {
 		self.tabBarHidden = YES;
-        if(self.indicatorPresent){
+        if(self.notificationIndicatorPresent){
             [self removeIndicator];
-            self.indicatorPresent = YES;
+            self.notificationIndicatorPresent = YES;
         }else{
             [self removeIndicator];
         }
@@ -462,6 +467,10 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 }
 
 -(void)followingSuccessfulNotification:(NSNotification *) notification{
+}
+
+-(void) newPushNotification:(NSNotification *) notification {
+	[self showIndicator];
 }
 
 - (UIInterfaceOrientationMask) supportedInterfaceOrientations {

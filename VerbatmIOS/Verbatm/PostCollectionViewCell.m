@@ -194,13 +194,9 @@
     }
 }
 
-
-
 -(void) offScreen {
 	[self clearViews];
 }
-
-
 
 -(void)presentTapToExitNotification{
     self.tapToExitNotification = [[UIImageView alloc] initWithImage:[UIImage imageNamed:TAP_TO_EXIT_FULLSCREENPOV_INSTRUCTION]];

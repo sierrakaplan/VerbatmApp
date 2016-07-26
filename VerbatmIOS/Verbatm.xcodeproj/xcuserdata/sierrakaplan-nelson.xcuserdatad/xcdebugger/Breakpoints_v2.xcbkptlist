@@ -110,7 +110,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "147"
-            endingLineNumber = "147">
+            endingLineNumber = "147"
+            landmarkName = "-shouldRequestForUserFeedback"
+            landmarkType = "5">
             <Locations>
                <Location
                   shouldBeEnabled = "No"

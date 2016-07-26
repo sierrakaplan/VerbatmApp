@@ -473,12 +473,12 @@
 #pragma mark - Post on screen & off screen -
 
 -(void) postOnScreen {
+	self.mainScrollView.scrollEnabled = YES;
 	if (!self.postIsAlmostOnScreen) {
 		[self loadMediaForPageAtIndex: 0];
 	}
-	self.postIsCurrentlyBeingShown = YES;
 	self.postIsAlmostOnScreen = NO;
-
+	self.postIsCurrentlyBeingShown = YES;
 	[self displayMediaOnCurrentPage];
 }
 
@@ -490,6 +490,7 @@
 }
 
 -(void) postAlmostOnScreen {
+	if (self.postIsAlmostOnScreen) return;
 	self.postIsAlmostOnScreen = YES;
 	[self loadMediaForPageAtIndex: 0];
 }

@@ -9,6 +9,11 @@
 #import "VerbatmAppDelegate.h"
 
 #import "Analytics.h"
+
+#import "InstallationVariables.h"
+
+#import "Notifications.h"
+
 #import "UserManager.h"
 #import "UserSetupParameters.h"
 
@@ -32,14 +37,30 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
-	// Initialize the cache
+	// Check if the app is launching from a push notification
+	NSDictionary *pushNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+	if (pushNotification) {
+		//todo: deep link? do something better than a global var
+		[InstallationVariables sharedInstance].launchedFromNotification = YES;
+	} else {
+		[InstallationVariables sharedInstance].launchedFromNotification = NO;
+	}
+
+	// Associate the device with a user
+	PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+	currentInstallation[@"user"] = [PFUser currentUser];
+	[currentInstallation saveInBackground];
+
+	// Limit cache size
 	int cacheSizeMemory = 15*1024*1024; // 4MB
 	int cacheSizeDisk = 32*1024*1024; // 32MB
 	NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:cacheSizeMemory diskCapacity:cacheSizeDisk diskPath:@"nsurlcache"];
 	[NSURLCache setSharedURLCache:sharedCache];
 
-	// Load the pinch views that were in the user's adk
+	// Load post in adk
 	[[PostInProgress sharedInstance] loadPostFromUserDefaults];
+
+	// Set up parse
 	[self setUpParseWithLaunchOptions: launchOptions];
 	PMKSetUnhandledExceptionHandler(^NSError * _Nullable(id exception) {
 		return [NSError errorWithDomain:PMKErrorDomain code:PMKUnexpectedError
@@ -50,6 +71,15 @@
 	// Fabric (and Optimizely, if needed can bring back)
 	[Fabric with:@[[Crashlytics class]]];
 	//    	[Optimizely startOptimizelyWithAPIToken: @"AANIfyUBGNNvR9jy_iEWX8c97ahEroKr~3788260592" launchOptions:launchOptions];
+
+
+	// Register for Push notifications
+	UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert |
+													UIUserNotificationTypeBadge |
+													UIUserNotificationTypeSound);
+	UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes
+																			 categories:nil];
+	[application registerUserNotificationSettings:settings];
 
 	// Branch.io (for external share links)
     Branch *branch = [Branch getInstance];
@@ -65,15 +95,32 @@
 		[branch setMaxRetries:1];
     }];
 
-	//Register to allow app to make sound notification
-	UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeSound categories:nil];
-	[application registerUserNotificationSettings:notificationSettings];
-
-	//Register for push (remote) notifications
-	[application registerForRemoteNotifications];
-
+	// Call fb sdk method
 	return [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
+}
 
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
+	//register to receive notifications
+	[application registerForRemoteNotifications];
+}
+
+// Call back method for registering for push notifications. Save device token in parse.
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+}
+
+- (void)application:(UIApplication *)app
+didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
+	NSLog(@"Error in registration. Error: %@", err);
+	[[Crashlytics sharedInstance] recordError:err];
+	//todo: handle the fact that app will not receive notifications
+}
+
+// Method that handles push notifications when app is active
+//todo: instead of an alert make this custom
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+	[PFPush handlePush:userInfo];
+	NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_NEW_PUSH_NOTIFICATION object:nil userInfo:userInfo];
+	[[NSNotificationCenter defaultCenter] postNotification: notification];
 }
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {

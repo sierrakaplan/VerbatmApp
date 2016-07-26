@@ -220,7 +220,8 @@
 }
 
 -(void) pauseToRearrangeButtonPressed {
-	if(!self.rearrangeView){
+	// Pausing slideshow
+	if(!self.rearrangeView) {
 		[self offScreen];
 		CGFloat y_pos = (self.photoVideoSubview) ? 0.f : CUSTOM_NAV_BAR_HEIGHT;
 		CGRect frame = CGRectMake(0.f,y_pos, self.frame.size.width, OPEN_COLLECTION_FRAME_HEIGHT);
@@ -384,11 +385,15 @@
 
 #pragma mark - EditContentViewDelegate methods -
 
--(void) textIsEditing{
+-(void) textIsEditing {
+	// Pause slideshow
+	if(!self.rearrangeView) {
+	 [self pauseToRearrangeButtonPressed];
+	}
 	if(self.photoVideoSubview) [self.textEntryDelegate editContentViewTextIsEditing];
 }
 
--(void) textDoneEditing{
+-(void) textDoneEditing {
 	if(self.photoVideoSubview) [self.textEntryDelegate editContentViewTextDoneEditing];
 }
 

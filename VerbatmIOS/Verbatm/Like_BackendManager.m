@@ -10,6 +10,8 @@
 #import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
 #import <Parse/PFQuery.h>
+#import <Parse/PFCloud.h>
+#import <Crashlytics/Crashlytics.h>
 #import <PromiseKit/PromiseKit.h>
 #import "Notification_BackendManager.h"
 
@@ -21,12 +23,12 @@
 	[newLikeObject setObject:postParseObject forKey:LIKE_POST_LIKED_KEY];
 	// Will return error if like already existed - ignore
 	[newLikeObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        if(succeeded) {
+		if(succeeded) {
 			[postParseObject incrementKey:POST_NUM_LIKES];
 			[postParseObject saveInBackground];
-            [Notification_BackendManager createNotificationWithType:Like receivingUser:[postParseObject valueForKey:POST_ORIGINAL_CREATOR_KEY] relevantPostObject:postParseObject];
-        }
-    }];
+			[Notification_BackendManager createNotificationWithType:Like receivingUser:[postParseObject valueForKey:POST_ORIGINAL_CREATOR_KEY] relevantPostObject:postParseObject];
+		}
+	}];
 }
 
 + (void)currentUserStopLikingPost:(PFObject *) postParseObject {
@@ -83,7 +85,7 @@
             });
         
         
-        }else{
+        } else {
             block(nil);
         }
     }];

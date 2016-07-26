@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "CreateNewChannelView.h"
 #import "Channel_BackendObject.h"
 
 #import "Durations.h"
@@ -46,7 +45,7 @@
 #import <PromiseKit/PromiseKit.h>
 
 @interface ProfileVC() <ProfileHeaderViewDelegate, Intro_Notification_Delegate,
-UIScrollViewDelegate, CreateNewChannelViewProtocol, PostListVCProtocol,
+UIScrollViewDelegate, PostListVCProtocol,
 UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 @property (nonatomic) UIButton * postPrompt;
@@ -59,7 +58,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 @property (nonatomic, strong) ProfileHeaderView *profileHeaderView;
 @property (nonatomic) BOOL headerViewOnScreen;
 
-@property (strong, nonatomic) CreateNewChannelView * createNewChannelView;
 @property (nonatomic) UIView * darkScreenCover;
 @property (nonatomic) SharePostView * sharePOVView;
 
@@ -269,9 +267,10 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
     if([[[channel channelCreator] objectId] isEqualToString:[[self.channel channelCreator] objectId]]){
         //if the channel belongs to this profile then simply remove the large postlist view
         [self createNewPostViewFromCellIndexPath:nil];
-    }else{
+    } else {
         ProfileVC *  userProfile = [[ProfileVC alloc] init];
-        userProfile.isCurrentUserProfile = NO;
+		BOOL isCurrentUserChannel = [[channel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
+		userProfile.isCurrentUserProfile = isCurrentUserChannel;
         userProfile.isProfileTab = NO;
         userProfile.ownerOfProfile = channel.channelCreator;
         userProfile.channel = channel;
@@ -383,21 +382,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	[self presentUserList: FollowersList];
 }
 
-//ProfileNavBarDelegate protocol
--(void) createNewChannel {
-	if(!self.createNewChannelView){
-		[self darkenScreen];
-
-		CGFloat xOffset = (self.view.frame.size.width - CHANNEL_CREATION_VIEW_WIDTH)/2.f;
-		CGRect newChannelViewFrame = CGRectMake(xOffset, CHANNEL_CREATION_VIEW_Y_OFFSET,
-												CHANNEL_CREATION_VIEW_WIDTH, CHANNEL_CREATION_VIEW_HEIGHT);
-		self.createNewChannelView = [[CreateNewChannelView alloc] initWithFrame:newChannelViewFrame];
-		self.createNewChannelView.delegate = self;
-		[self.view addSubview:self.createNewChannelView];
-		[self.view bringSubviewToFront:self.createNewChannelView];
-	}
-}
-
 -(void)darkenScreen{
 	if(!self.darkScreenCover){
 		self.darkScreenCover = [[UIView alloc] initWithFrame:self.view.bounds];
@@ -410,29 +394,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	if(self.darkScreenCover) {
 		[self.darkScreenCover removeFromSuperview];
 		self.darkScreenCover = nil;
-	}
-}
-
--(void) cancelCreation {
-	[self clearChannelCreationView];
-	[self presentHeadAndFooter:YES];
-}
-
--(void) createChannelWithName:(NSString *) channelName {
-	//save the channel name and create it in the backend
-	//upate the scrollview to present a new channel
-	if(!self.currentlyCreatingNewChannel){
-		self.currentlyCreatingNewChannel = YES;
-		[Channel_BackendObject createChannelWithName:channelName andCompletionBlock:^(PFObject *channelObject) {
-		}];
-	}
-}
-
--(void) clearChannelCreationView{
-	if(self.createNewChannelView){
-		[self removeScreenDarkener];
-		[self.createNewChannelView removeFromSuperview];
-		self.createNewChannelView = nil;
 	}
 }
 

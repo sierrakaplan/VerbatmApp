@@ -12,8 +12,10 @@
 
 
 @protocol EditContentViewDelegate <NSObject>
+
 -(void) textIsEditing;
 -(void) textDoneEditing;
+
 @end
 
 @interface EditMediaContentView : UIView

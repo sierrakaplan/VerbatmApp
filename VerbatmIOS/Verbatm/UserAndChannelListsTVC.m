@@ -187,7 +187,8 @@
 			withStartChannel:(Channel *) startChannel{
 	if(![[user objectId] isEqualToString:[[PFUser currentUser] objectId]]){
 		ProfileVC *  userProfile = [[ProfileVC alloc] init];
-		userProfile.isCurrentUserProfile = NO;
+		BOOL isCurrentUserChannel = [[startChannel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
+		userProfile.isCurrentUserProfile = isCurrentUserChannel;
 		userProfile.isProfileTab = NO;
 		userProfile.ownerOfProfile = user;
 		userProfile.channel = startChannel;

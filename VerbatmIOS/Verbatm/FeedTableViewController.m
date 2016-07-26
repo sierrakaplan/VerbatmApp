@@ -15,7 +15,7 @@
 #import "Icons.h"
 
 
-@interface FeedTableViewController ()<FeedCellDelegate>
+@interface FeedTableViewController () <FeedCellDelegate>
 
 @property(nonatomic) NSMutableArray *followingProfileList;
 @property (nonatomic) Channel *currentUserChannel;
@@ -24,6 +24,8 @@
 @property (nonatomic) UIRefreshControl *refreshControl;
 
 @property (nonatomic) UIImageView * emptyFeedNotification;
+
+@property (nonatomic) BOOL contentInFullScreen;
 
 @end
 
@@ -57,9 +59,9 @@
 	return UIStatusBarStyleLightContent;
 }
 
-//-(BOOL) prefersStatusBarHidden {
-//	return self.contentInFullScreen; todo
-//}
+-(BOOL) prefersStatusBarHidden {
+	return self.contentInFullScreen;
+}
 
 -(void)reloadCellsOnScreen{
 	NSArray * visibleCell = [self.tableView visibleCells];
@@ -86,6 +88,7 @@
 			[self notifyNotFollowingAnyone];
 			return;
 		}
+
 		//No channels have been previously loaded
 		if (!self.followingProfileList || !self.followingProfileList.count) {
 			self.followingProfileList = [NSMutableArray arrayWithArray: [self.currentUserChannel channelsUserFollowing]];
@@ -148,7 +151,7 @@
 	}
 }
 
--(void)notifyNotFollowingAnyone{
+-(void)notifyNotFollowingAnyone {
 	if(!self.emptyFeedNotification){
 		self.emptyFeedNotification = [[UIImageView alloc] initWithFrame:self.view.bounds];
 		[self.emptyFeedNotification setImage:[UIImage imageNamed:FEED_NOTIFICATION_ICON]];
@@ -157,7 +160,6 @@
 		self.tableView.allowsSelection = YES;
 	}
 }
-
 
 -(void)goToDiscover{
 	if(self.emptyFeedNotification){
@@ -205,10 +207,11 @@
 -(void)prepareNextPostFromNextIndex:(NSInteger) nextIndex{
 	if(nextIndex < self.followingProfileList.count) {
 		Channel * nextChannel = self.followingProfileList[nextIndex];
+		BOOL isCurrentUserChannel = [[nextChannel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
 		self.nextProfileToPresent = nil;
 		self.nextProfileToPresent = [[ProfileVC alloc] init];
 		self.nextProfileToPresent.profileInFeed = YES;
-		self.nextProfileToPresent.isCurrentUserProfile = NO;
+		self.nextProfileToPresent.isCurrentUserProfile = isCurrentUserChannel;
 		self.nextProfileToPresent.isProfileTab = NO;
 		self.nextProfileToPresent.ownerOfProfile = nextChannel.channelCreator;
 		self.nextProfileToPresent.channel = nextChannel;
@@ -240,6 +243,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath{
 -(void)shouldHideTabBar:(BOOL) shouldHide{
 	[self.delegate showTabBar:!shouldHide];
 	self.tableView.scrollEnabled = !shouldHide;
+	self.contentInFullScreen = shouldHide;
+	[self setNeedsStatusBarAppearanceUpdate];
 }
 
 @end

@@ -281,7 +281,7 @@
 -(void)presentProfileForUser:(PFUser *) user
 			withStartChannel:(Channel *) startChannel{
 	if(![[user objectId] isEqualToString:[[PFUser currentUser] objectId]]){
-		ProfileVC *  userProfile = [[ProfileVC alloc] init];
+		ProfileVC * userProfile = [[ProfileVC alloc] init];
 		userProfile.isCurrentUserProfile = NO;
 		userProfile.isProfileTab = NO;
 		userProfile.ownerOfProfile = user;

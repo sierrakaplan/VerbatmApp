@@ -282,7 +282,7 @@
 	[findUserQuery whereKey:@"username" equalTo:simplePhoneNumber];
 	[findUserQuery getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable user, NSError * _Nullable error) {
 		if (user && !error) {
-            [self showAlertWithTitle:@"An account with this phone already exists." andMessage:@"User a different number."];
+            [self showAlertWithTitle:@"An account with this phone already exists." andMessage:@"Use a different number."];
              [self goBackFromEnteringConfirmation];
         }else{
             self.firstTimeLoggingIn = YES;

@@ -92,22 +92,74 @@ var NotificationClass = Parse.Object.extend("NotificationClass");
 var LikeClass = Parse.Object.extend("LikeClass");
 var FollowClass = Parse.Object.extend("FollowClass");
 
+/*
+NewFollower = 1 << 0, 			// 1
+Like = 1 << 1, 					// 2
+FriendJoinedVerbatm = 1 << 2, 	// 4
+Share = 1 << 3, 				// 8
+FriendsFirstPost = 1 << 4, 		// 16
+Reblog = 1 << 5 				// 32
+*/
+
 Parse.Cloud.beforeSave("NotificationClass", function(request, response) {
 	// Let existing object updates go through
 	if (!request.object.isNew()) {
       response.success();
     }
 	var query = new Parse.Query(NotificationClass);
-	query.equalTo("NotificationSender", request.object.get("NotificationSender"));
-	query.equalTo("NotificationReceiver", request.object.get("NotificationReceiver"));
-	query.equalTo("NotificationType", request.object.get("NotificationType"));
-	query.equalTo("NotificationPost", request.object.get("NotificationPost"));
+	var notificationSender = request.object.get("NotificationSender");
+	var notificationReceiver = request.object.get("NotificationReceiver");
+	query.equalTo("NotificationSender", notificationSender);
+	query.equalTo("NotificationReceiver", notificationReceiver);
+	var notificationType = request.object.get("NotificationType");
+	query.equalTo("NotificationType", notificationType);
+	// If this is a like or a share notification
+	if (notificationType == 2 || notificationType == 8 || notificationType == 32) {
+		query.equalTo("NotificationPost", request.object.get("NotificationPost"));
+	}
 	query.first().then(function(existingObject) {
-      if (existingObject) {
-        response.error("Existing notification");
-      } else {
-        response.success();
-      }
+	    if (existingObject) {
+	        response.error("Existing notification");
+	    } else { 
+	      	// Send a push notification
+	      	notificationSender.fetch().then(function(fetchedUser) {
+	      		var notificationSenderName = fetchedUser.get("VerbatmName");
+			  	var pushQuery = new Parse.Query(Parse.Installation);
+			  	// pushQuery.equalTo('deviceType', 'ios');
+			  	var targetUser = new Parse.User();
+				targetUser.id = notificationReceiver.id;
+				console.log("RECEIVER ID: " + notificationReceiver.id);
+			  	pushQuery.equalTo('user', targetUser);
+			    var notificationText = "";
+			    if (notificationType == 1) {
+			    	notificationText =  notificationSenderName + " is now following you!";
+			    } else if (notificationType == 2) {
+			    	notificationText = notificationSenderName + " has liked your post!";
+			    } else if (notificationType == 4) {
+			    	notificationText = "Your friend " + notificationSenderName + " has joined Verbatm";
+			    } else if (notificationType == 8) {
+			    	notificationText = notificationSenderName + " shared your post on social media!";
+			    } else if (notificationType == 16) {
+			    	notificationText = notificationSenderName + " just created their first Verbatm post";
+			    } else if (notificationType == 32) {
+			    	notificationText = notificationSenderName + " reblogged your post!";
+			    }
+				Parse.Push.send({
+				    where: pushQuery, // Set our Installation query
+				    data: {
+				      alert: notificationText,
+				      notificationType: notificationType
+				    }
+				}, {
+				    success: function() {
+				      response.success();
+				    },
+				    error: function(error) {
+				      response.error("Got an error " + error.code + " : " + error.message);
+				    }
+				});
+	      	});
+	    }
     });
 });
 
