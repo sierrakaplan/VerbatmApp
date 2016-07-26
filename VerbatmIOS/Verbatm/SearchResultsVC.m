@@ -150,7 +150,7 @@
 												   andParseChannelObject:channelObj
 													   andChannelCreator:channelObj[CHANNEL_CREATOR_KEY] andFollowObject:nil];
 	ProfileVC * userProfile = [[ProfileVC alloc] init];
-	userProfile.isCurrentUserProfile = channel.channelCreator == [PFUser currentUser];
+	userProfile.isCurrentUserProfile = [channel.channelCreator.objectId isEqualToString:[PFUser currentUser].objectId];
 	userProfile.isProfileTab = NO;
 	userProfile.ownerOfProfile = channel.channelCreator;
 	userProfile.channel = channel;

@@ -18,7 +18,7 @@
 @property (strong, nonatomic) NSDate *oldestDate;
 @property (nonatomic) BOOL smallMode;
 
-#define POSTS_DOWNLOAD_SIZE 20
+#define POSTS_DOWNLOAD_SIZE 10
 
 @end
 
@@ -34,7 +34,7 @@
 	return self;
 }
 
-/* Loads newest posts in channel newer or equal to latest date
+/* Loads posts in channel newer or equal to latest date
    If less than 3 posts are found, loads 3 older posts too
   (If latest date is nil, just loads oldest posts)
 */
@@ -64,7 +64,7 @@
 				self.latestDate = [(PFObject*)(activities[activities.count-1]) createdAt];
 			}
 
-			// Load older posts
+			// Load older posts if less than 3 are found
 			if (activities.count < 3) {
 				[self loadOlderPostsInChannel:channel withCompletionBlock:^(NSArray *posts) {
 					NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, posts.count)];
@@ -75,16 +75,14 @@
 				block(finalPostObjects);
 			}
 		} else {
-			[self loadOlderPostsInChannel:channel withCompletionBlock:^(NSArray *posts) {
-				block(posts);
-			}];
+			block(@[]);
 		}
 	}];
 }
 
 // Finds all posts newer than latest date (if there are any) or if latest date is nil
 // just finds newest posts
--(void) refreshNewestPostsInChannel:(Channel *)channel withCompletionBlock:(void(^)(NSArray *))block {
+-(void) loadNewerPostsInChannel:(Channel *)channel withCompletionBlock:(void(^)(NSArray *))block {
 	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
 	[postQuery orderByDescending:@"createdAt"];

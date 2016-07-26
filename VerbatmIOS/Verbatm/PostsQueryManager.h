@@ -13,8 +13,9 @@
 
 -(instancetype) initInSmallMode:(BOOL)smallMode;
 
-/* Loads newest posts in channel older than latest date (if date is nil, just loads newest
- posts).
+/* Loads posts in channel newer or equal to latest date
+ If less than 3 posts are found, loads 3 older posts too
+ (If latest date is nil, just loads oldest posts)
  */
 -(void) loadPostsInChannel:(Channel*)channel withLatestDate:(NSDate*)date
 	   withCompletionBlock:(void(^)(NSArray *))block;
@@ -24,7 +25,7 @@
 
 // Finds all posts newer than latest date (if there are any) or if latest date is nil
 // just finds newest posts
--(void) refreshNewestPostsInChannel:(Channel *)channel withCompletionBlock:(void(^)(NSArray *))block;
+-(void) loadNewerPostsInChannel:(Channel *)channel withCompletionBlock:(void(^)(NSArray *))block;
 
 // Loads newest posts in channel up to the given limit
 +(void) getPostsInChannel:(Channel*)channel withLimit:(NSInteger)limit withCompletionBlock:(void(^)(NSArray *))block;

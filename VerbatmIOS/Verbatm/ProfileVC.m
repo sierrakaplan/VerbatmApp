@@ -269,9 +269,10 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
     if([[[channel channelCreator] objectId] isEqualToString:[[self.channel channelCreator] objectId]]){
         //if the channel belongs to this profile then simply remove the large postlist view
         [self createNewPostViewFromCellIndexPath:nil];
-    }else{
+    } else {
         ProfileVC *  userProfile = [[ProfileVC alloc] init];
-        userProfile.isCurrentUserProfile = NO;
+		BOOL isCurrentUserChannel = [[channel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
+		userProfile.isCurrentUserProfile = isCurrentUserChannel;
         userProfile.isProfileTab = NO;
         userProfile.ownerOfProfile = channel.channelCreator;
         userProfile.channel = channel;

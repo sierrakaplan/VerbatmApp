@@ -1850,20 +1850,11 @@ andSaveInUserDefaults:(BOOL)save {
 	PostView * postView = [[PostView alloc] initWithFrame: self.view.bounds andPostChannelActivityObject:nil small:NO andPageObjects:nil];
 	[postView displayPageViews: pages];
 	[postView prepareForScreenShot];
-	//
-	//
-	//
-	//        UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, NO, [UIScreen mainScreen].scale);
-	//
-	//        [postView drawViewHierarchyInRect:self.view.bounds afterScreenUpdates:YES];
 
 	UIImage *screenShotImage = [postView getViewscreenshotWithTextView:nil];
 
 	//        UIGraphicsEndImageContext();
 	[postView postOffScreen];
-	[postView clearPost];
-
-
 	[[PublishingProgressManager sharedInstance] storeProgressBackgroundImage:screenShotImage];
 }
 

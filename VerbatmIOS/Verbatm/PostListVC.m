@@ -89,7 +89,6 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate, MFMessageComposeViewContro
 
 @property (nonatomic) UIImageView *tapToExitNotification;
 
-
 @property (nonatomic) UIImageView *reblogSucessful;
 @property (nonatomic) UIImageView *following;
 @property (nonatomic) UIImageView *publishSuccessful;
@@ -98,6 +97,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate, MFMessageComposeViewContro
 @property (nonatomic) BOOL exitedView;
 
 @property (nonatomic) BOOL isRefreshing;
+@property (nonatomic) UIActivityIndicatorView *loadingMoreIndicator;
 @property (nonatomic) BOOL isLoadingMore;
 @property (nonatomic) BOOL isLoadingOlder;
 
@@ -105,9 +105,12 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate, MFMessageComposeViewContro
 
 @property (nonatomic) void(^refreshPostsCompletion)(NSArray * posts);
 @property (nonatomic) void(^loadOlderPostsCompletion)(NSArray * posts);
+@property (nonatomic) void(^loadNewerPostsCompletion)(NSArray * posts);
 
+// Number of posts to go when reloading
+#define LOAD_MORE_POSTS_COUNT (self.inSmallMode ? 2 : 3)
 
-#define LOAD_MORE_POSTS_COUNT (self.inSmallMode ? 4 : 3)
+#define REFRESH_DISTANCE 70.f
 
 #define POST_CELL_ID @"postCellId"
 
@@ -120,6 +123,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate, MFMessageComposeViewContro
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
+	self.loadingMoreIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
 	[self setDateSourceAndDelegate];
 	[self defineLoadPostsCompletions];
 	[self registerClassForCustomCells];
@@ -127,12 +131,19 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate, MFMessageComposeViewContro
 	[self clearViews];
 	self.collectionView.backgroundColor = (self.inSmallMode) ? [UIColor clearColor] : [UIColor blackColor];
 	self.collectionView.bounces = YES;
-    [self.collectionView setClipsToBounds:NO];
-    [self.view setClipsToBounds:NO];
+	[self.collectionView setClipsToBounds:NO];
+	[self.view setClipsToBounds:NO];
 }
 
--(void)viewWillAppear:(BOOL)animated{
+-(void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
+	if (!self.isLoadingMore && !self.isRefreshing) {
+		[self loadNewerPosts];
+	}
+}
+
+-(void) viewDidAppear:(BOOL)animated {
+	[super viewDidAppear:animated];
 	self.exitedView = NO;
 }
 
@@ -177,8 +188,9 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 -(void) initializeChannel:(Channel*)channelForList withListOwner:(PFUser*)listOwner
 	 isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	[self clearViews];
+	self.exitedView = NO;
 	//todo remove this?:
-//	self.latestDate = date;
+	//	self.latestDate = date;
 	self.channelForList = channelForList;
 	self.listOwner = listOwner;
 	self.isCurrentUserProfile = isCurrentUserProfile;
@@ -199,29 +211,23 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 -(void) updateInSmallMode: (BOOL) smallMode {
 	self.inSmallMode = smallMode;
 	self.collectionView.pagingEnabled = !self.inSmallMode;
-
 }
 
-//todo: change refresh to pull from right
+// Allows pull from right to refresh
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	if (scrollView == self.collectionView) {
 		CGPoint offset = scrollView.contentOffset;
-		float reload_distance = 120;
-
-		/* Refresh */
-		if(offset.x < (0 - reload_distance)) {
-			[self refreshPosts];
+		CGFloat contentWidth = scrollView.contentSize.width;
+		if (self.isRefreshing && contentWidth > self.view.frame.size.width) {
+			self.collectionView.contentOffset = CGPointMake(contentWidth - self.view.frame.size.width + self.loadingMoreIndicator.frame.size.width + 20.f, 0.f);
 		}
-
-		/* Load more */
-		CGRect bounds = scrollView.bounds;
-		CGSize size = scrollView.contentSize;
-		UIEdgeInsets inset = scrollView.contentInset;
-
-		float y = offset.x + bounds.size.width - inset.right;
-		float h = size.width;
-		if(y > h + reload_distance && !self.isRefreshing && !self.isLoadingMore) {
-			//todo: show indicator
+		if(contentWidth > 0 && (offset.x + scrollView.bounds.size.width > contentWidth + REFRESH_DISTANCE) && !self.isRefreshing) {
+			self.isRefreshing = YES;
+			self.loadingMoreIndicator.center = CGPointMake(contentWidth + self.loadingMoreIndicator.frame.size.width + 10.f,
+										   scrollView.frame.size.height/2.f - self.loadingMoreIndicator.frame.size.height/2.f);
+			[self.loadingMoreIndicator startAnimating];
+			[scrollView addSubview: self.loadingMoreIndicator];
+			[self loadNewerPosts];
 		}
 	}
 }
@@ -260,11 +266,10 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 
 	self.loadOlderPostsCompletion = ^void(NSArray *posts) {
 		// Don't keep loading older if there are no older posts
-		if (!posts.count || weakSelf.exitedView){
+		if (!posts.count || weakSelf.exitedView) {
 			return;
 		}
 		weakSelf.isLoadingOlder = NO;
-		[weakSelf.postListDelegate postsFound];
 		NSMutableArray *indexPaths = [NSMutableArray array];
 		for (NSInteger i = 0; i < posts.count; i++) {
 			[indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
@@ -283,6 +288,36 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 			[CATransaction commit];
 		}];
 	};
+
+	self.loadNewerPostsCompletion = ^void(NSArray *posts) {
+		weakSelf.isRefreshing = NO;
+		if ([weakSelf.loadingMoreIndicator superview]) {
+			[weakSelf.loadingMoreIndicator stopAnimating];
+			[weakSelf.loadingMoreIndicator removeFromSuperview];
+		}
+		if (posts.count < 1 || weakSelf.exitedView){
+			return;
+		}
+
+		weakSelf.isLoadingMore = NO;
+		NSMutableArray *indexPaths = [NSMutableArray array];
+		NSInteger startIndex = weakSelf.parsePostObjects.count;
+		NSInteger endIndex = weakSelf.parsePostObjects.count + posts.count;
+		for (NSInteger i = startIndex; i < endIndex; i++) {
+			[indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+		}
+		NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(startIndex, endIndex)];
+
+		[CATransaction begin];
+		[CATransaction setDisableActions:YES];
+		[weakSelf.collectionView performBatchUpdates:^{
+			[weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
+			[weakSelf.collectionView insertItemsAtIndexPaths:indexPaths];
+		} completion:^(BOOL finished) {
+			weakSelf.collectionView.contentOffset = CGPointMake(weakSelf.collectionView.contentSize.width, 0);
+			[CATransaction commit];
+		}];
+	};
 }
 
 -(void)scrollToLastElementInList {
@@ -294,18 +329,22 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	}
 }
 
-//todo: change to refresh newest and just load posts
+//Reloads posts in channel from last post user has seen
 -(void) refreshPosts {
-	if (!self.isRefreshing){
-		self.exitedView = NO;
-		self.isRefreshing = YES;
-		self.isLoadingMore = NO;
-		[self.postsQueryManager loadPostsInChannel: self.channelForList withLatestDate:self.latestPostSeen
-							   withCompletionBlock:self.refreshPostsCompletion];	}
+	if (self.isRefreshing) return;
+	self.isRefreshing = YES;
+	self.isLoadingMore = NO;
+	[self.postsQueryManager loadPostsInChannel: self.channelForList withLatestDate:self.latestPostSeen
+						   withCompletionBlock:self.refreshPostsCompletion];
+}
+
+-(void) loadNewerPosts {
+	self.isLoadingMore = YES;
+	[self.postsQueryManager loadNewerPostsInChannel: self.channelForList withCompletionBlock: self.loadNewerPostsCompletion];
 }
 
 -(void) loadOlderPosts {
-	if (self.isLoadingOlder) return;
+	if (self.isLoadingOlder || self.isRefreshing) return;
 	self.isLoadingOlder = YES;
 	[self.postsQueryManager loadOlderPostsInChannel:self.channelForList withCompletionBlock:self.loadOlderPostsCompletion];
 }
@@ -325,6 +364,7 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	self.collectionView.scrollEnabled = YES;
 	self.collectionView.showsHorizontalScrollIndicator = NO;
 	self.collectionView.bounces = YES;
+	self.collectionView.alwaysBounceHorizontal = YES;
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
@@ -345,19 +385,12 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
 				  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
 
-	[self checkShouldReverseScrollDirectionFromIndexPath: indexPath];
-
-	//	if (self.performingUpdate && self.currentDisplayCell){
-	//		return self.currentDisplayCell;
-	//	}
-
 	PostCollectionViewCell *currentCell;
-	//todo: load cells to the left when needed in small mode
 	if (!self.inSmallMode) {
 		if (indexPath.row == self.nextIndexToPresent) {
 			currentCell = self.nextCellToPresent;
 		}
-		[self prepareNextPostsFromIndexPath:indexPath];
+		[self checkShouldReverseScrollDirectionFromIndexPath: indexPath];
 	}
 
 	if (currentCell == nil) {
@@ -366,8 +399,10 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	[currentCell onScreen];
 
 	//Load older posts
-	if (indexPath.row <= LOAD_MORE_POSTS_COUNT && !self.isLoadingOlder && !self.isRefreshing) {
+	if (indexPath.row <= LOAD_MORE_POSTS_COUNT && self.parsePostObjects.count > 0) {
 		[self loadOlderPosts];
+	} else if (indexPath.row >= self.parsePostObjects.count - LOAD_MORE_POSTS_COUNT && !self.isLoadingMore) {
+		[self loadNewerPosts];
 	}
 	self.currentDisplayCell = currentCell;
 
@@ -380,32 +415,44 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void) updateCursor {
-    if(!self.isCurrentUserProfile){
-        NSDate *postDate = self.currentDisplayCell.currentPostActivityObject.createdAt;
-        NSTimeInterval timeSinceSeen = [postDate timeIntervalSinceDate:self.latestPostSeen];
-        if (timeSinceSeen > 0) {
-            // If in fullscreen mode update latest date
-            if (!self.inSmallMode) {
-                self.latestPostSeen = postDate;
-            } else {
-                //IAIN TODO
-               [self.currentDisplayCell addDot];
-            }
-        } else if (self.inSmallMode) {
-            [self.currentDisplayCell removeDot];
-        }
-    }
+	if(!self.isCurrentUserProfile){
+		NSDate *postDate = self.currentDisplayCell.currentPostActivityObject.createdAt;
+		NSTimeInterval timeSinceSeen = [postDate timeIntervalSinceDate:self.latestPostSeen];
+		if (timeSinceSeen > 0) {
+			// If in fullscreen mode update latest date
+			if (!self.inSmallMode) {
+				self.latestPostSeen = postDate;
+			} else {
+				//IAIN TODO
+				[self.currentDisplayCell addDot];
+			}
+		} else if (self.inSmallMode) {
+			[self.currentDisplayCell removeDot];
+		}
+	}
 }
 
 -(void) checkShouldReverseScrollDirectionFromIndexPath:(NSIndexPath*)indexPath  {
-	// Check if should reverse scroll direction (only if this isn't the first time getting a cell)
-	if (self.nextIndexToPresent != -1) {
+	NSInteger oldScrollDirection = self.scrollDirection;
+	if (indexPath.row == 0) {
+		self.scrollDirection = 1;
+	} else if (indexPath.row == self.parsePostObjects.count -1) {
+		self.scrollDirection = -1;
+	} else if (self.nextIndexToPresent != -1) {
 		self.scrollDirection = (indexPath.row == self.nextIndexToPresent) ? self.scrollDirection : self.scrollDirection*-1;
+		// If you've just switched scroll directions you don't need to prepare new posts
+		if (oldScrollDirection == self.scrollDirection || self.nextIndexToPresent == -1) {
+			[self prepareNextPostsFromIndexPath: indexPath];
+		}
 	}
 }
 
 -(void) prepareNextPostsFromIndexPath:(NSIndexPath*)indexPath {
-	self.nextIndexToPresent = indexPath.row + self.scrollDirection;
+	NSInteger newIndex = indexPath.row + self.scrollDirection;
+	if (newIndex < 0 || newIndex >= self.parsePostObjects.count) {
+		return;
+	}
+	self.nextIndexToPresent = newIndex;
 	// If next cell is previously prepared next next cell, just set it equal
 	if (self.nextIndexToPresent == self.nextNextIndex) {
 		self.nextCellToPresent = self.nextNextCell;
@@ -422,15 +469,20 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(PostCollectionViewCell*) postCellAtIndexPath:(NSIndexPath *)indexPath {
-	if (indexPath.row >= self.parsePostObjects.count){
+	if (indexPath.row >= self.parsePostObjects.count) {
 		return nil;
 	}
 
-	PostCollectionViewCell *cell = (PostCollectionViewCell *) [self.collectionView dequeueReusableCellWithReuseIdentifier:POST_CELL_ID forIndexPath:indexPath];
+	PostCollectionViewCell *cell = (PostCollectionViewCell *) [self.collectionView cellForItemAtIndexPath: indexPath];
+	if (cell == nil) {
+		cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:POST_CELL_ID forIndexPath:indexPath];
+	}
 	cell.cellDelegate = self;
 	if(indexPath.row < self.parsePostObjects.count){
 		PFObject *postActivityObject = self.parsePostObjects[indexPath.row];
-		if (cell.currentPostActivityObject != postActivityObject) {
+		NSString *currentId = cell.currentPostActivityObject.objectId;
+		NSString *otherId = postActivityObject.objectId;
+		if (![currentId isEqualToString: otherId]) {
 			[cell clearViews];
 			if([postActivityObject isKindOfClass:[NSNumber class]]){
 				if (self.currentlyPublishing) [cell presentPublishingView];
@@ -456,31 +508,27 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void)cellTapped:(UIGestureRecognizer *) tap {
 	PostCollectionViewCell * cellTapped = (PostCollectionViewCell *) tap.view;
-    if([cellTapped presentingTapToExitNotification]){
-        [cellTapped removeTapToExitNotification];
-    }else{
-        [self.postListDelegate cellSelectedAtPostIndex:[self.collectionView indexPathForCell:cellTapped]];
-    }
+	if([cellTapped presentingTapToExitNotification]){
+		[cellTapped removeTapToExitNotification];
+	}else{
+		[self.postListDelegate cellSelectedAtPostIndex:[self.collectionView indexPathForCell:cellTapped]];
+	}
 }
 
 - (void) collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
 	// If the indexpath is not within visible objects then it is offscreen
 	if ([collectionView.indexPathsForVisibleItems indexOfObject:indexPath] == NSNotFound) {
-		[(PostCollectionViewCell*)cell clearViews];
 	}
 }
 
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
-	if ([collectionView.indexPathsForVisibleItems indexOfObject:indexPath] == NSNotFound) {
-		[(PostCollectionViewCell*)cell onScreen];
+
+	if(![[UserSetupParameters sharedInstance] checkAndSetTapOutOfFullscreenInstructionShown]&&
+	   !self.inSmallMode){
+		[self.collectionView setScrollEnabled:NO];
+		PostCollectionViewCell * currentCell = (PostCollectionViewCell *)cell;
+		[currentCell presentTapToExitNotification];
 	}
-    
-    if(![[UserSetupParameters sharedInstance] checkAndSetTapOutOfFullscreenInstructionShown]&&
-       !self.inSmallMode){
-        [self.collectionView setScrollEnabled:NO];
-        PostCollectionViewCell * currentCell = (PostCollectionViewCell *)cell;
-        [currentCell presentTapToExitNotification];
-    }
 }
 
 -(void) footerShowing: (BOOL) showing {
@@ -609,7 +657,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 #pragma mark - PostCollectionViewCell delegate -
 -(void)justRemovedTapToExitNotification{
-    [self.collectionView setScrollEnabled:YES];
+	[self.collectionView setScrollEnabled:YES];
 }
 
 -(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels {
@@ -663,17 +711,17 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 													handler:^(UIAlertAction * action) {
 
 														NSMutableArray *channels = [[NSMutableArray alloc] init];
-                                                        
+
 														[channels addObject:[[UserInfoCache sharedInstance] getUserChannel]];
-														
-                                                        [Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
-                                                            
-                                                            [Notification_BackendManager createNotificationWithType:Reblog receivingUser:[self.postToShare valueForKey:POST_ORIGINAL_CREATOR_KEY] relevantPostObject:self.postToShare];
-                                                            
+
+														[Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
+
+															[Notification_BackendManager createNotificationWithType:Reblog receivingUser:[self.postToShare valueForKey:POST_ORIGINAL_CREATOR_KEY] relevantPostObject:self.postToShare];
+
 															dispatch_async(dispatch_get_main_queue(), ^{
 																[self successfullyReblogged];
 															});
-                                                            
+
 														}];
 
 													}];
@@ -805,7 +853,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark FBSDKShareViewDelegate
 
 - (void)sharer:(id<FBSDKSharing>)sharer didCompleteWithResults:(NSDictionary *)results {
-    [Notification_BackendManager createNotificationWithType:Share receivingUser:self.postToShare[POST_ORIGINAL_CREATOR_KEY] relevantPostObject:self.postToShare];
+	[Notification_BackendManager createNotificationWithType:Share receivingUser:self.postToShare[POST_ORIGINAL_CREATOR_KEY] relevantPostObject:self.postToShare];
 }
 
 /*!
