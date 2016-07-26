@@ -31,24 +31,26 @@
 
 
 @interface PublishingProgressManager()
-//how many media pieces we are trying to publish in total
-@property(nonatomic)CGFloat totalMediaCount;
-//how much has been published so far
-//when done totalMediaSaved == totalMediaCount
-@property (nonatomic) CGFloat totalMediaSavedSoFar;
+
 @property (nonatomic, readwrite) BOOL currentlyPublishing;
 //the first "domino" of parse saving
 //should be made nil when saving is done or when it fails
 @property (nonatomic) Channel_BackendObject * channelManager;
+
 @property (nonatomic, readwrite) Channel* currentPublishingChannel;
+
 @property (nonatomic, readwrite) NSProgress * progressAccountant;
+
 @property (nonatomic) PFObject * currentParsePostObject;
-@property (nonatomic) ExternalShare* es;
+
+@property (nonatomic) ExternalShare* externalShareObject;
+
 @property (nonatomic) BOOL shareToFB;
 
 @property (nonatomic,strong) UIImage * publishingProgressBackgroundImage;
 
 @property (nonatomic) NSString * captionToShare;
+
 @property (nonatomic) SelectedPlatformsToShareLink locationToShare;
 
 @end
@@ -81,8 +83,8 @@
 -(void)publishPostToChannel:(Channel *)channel andFacebook:(BOOL)externalShare withCaption:(NSString *)caption withPinchViews:(NSArray *)pinchViews
 		withCompletionBlock:(void(^)(BOOL, BOOL))publishHasStartedSuccessfully {
     
-    self.es = [[ExternalShare alloc]initWithCaption:caption];
-    self.shareToFB = externalShare;
+    self.externalShareObject = [[ExternalShare alloc] initWithCaption:caption];
+	self.shareToFB = externalShare;
 
 	if (self.currentlyPublishing) {
 		publishHasStartedSuccessfully (YES, NO);
@@ -110,7 +112,6 @@
 }
 
 -(void)countMediaContentFromPinchViews:(NSArray *)pinchViews{
-    self.totalMediaCount = 0;
 	CGFloat totalProgressUnits = INITIAL_PROGRESS_UNITS;
 	for(PinchView * pinchView in pinchViews){
 		if([pinchView isKindOfClass:[CollectionPinchView class]]){
@@ -118,28 +119,15 @@
             CGFloat numImagePinchViews = [(CollectionPinchView *)pinchView imagePinchViews].count;
             CGFloat numVideoPinchViews = [(CollectionPinchView *)pinchView videoPinchViews].count;
             
-			totalProgressUnits+=  numImagePinchViews* IMAGE_PROGRESS_UNITS;
-			totalProgressUnits+=  numVideoPinchViews> 0 ? (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS) : 0;
-            
-            
-            if(numVideoPinchViews > 0){
-                self.totalMediaCount = self.totalMediaCount + 2.f;//2.f because of thumbnail and videos fused into 1 video
-            }
-            
-            
-            if(numImagePinchViews > 0){
-                self.totalMediaCount = self.totalMediaCount + numImagePinchViews;
-            }
-            
+			totalProgressUnits +=  numImagePinchViews* IMAGE_PROGRESS_UNITS;
+			totalProgressUnits +=  numVideoPinchViews > 0 ? (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS) : 0;
+
 		} else {//only one piece of media
-            
 			//Saves thumbnail for every video too so include the progress for that.
             if([pinchView isKindOfClass:[VideoPinchView class]]){
-                self.totalMediaCount = self.totalMediaCount + 2.f;//2 because of the thumbnail
                 totalProgressUnits += (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS);
             }else{
-                 self.totalMediaCount = self.totalMediaCount + 1.f;
-                 totalProgressUnits += IMAGE_PROGRESS_UNITS;
+				totalProgressUnits += IMAGE_PROGRESS_UNITS;
             }
 		}
 	}
@@ -155,17 +143,14 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POST_FAILED_TO_PUBLISH object:error];
 }
 
-
--(void)onePieceOfMediaSaved{
-    self.totalMediaCount --;
-    if(self.totalMediaCount <= 0 && self.currentlyPublishing && self.currentParsePostObject){
-        [self postPublishedSuccessfully];
-    }
-}
-
 -(void)mediaSavingProgressed:(int64_t) newProgress {
 	self.progressAccountant.completedUnitCount += newProgress;
-//	NSLog(@"Media saving progressed %lld new units to completed %lld units of total %lld units", newProgress, self.progressAccountant.completedUnitCount, self.progressAccountant.totalUnitCount;
+	NSLog(@"Media saving progressed %lld new units to completed %lld units of total %lld units", newProgress,
+		  self.progressAccountant.completedUnitCount, self.progressAccountant.totalUnitCount);
+	if (self.progressAccountant.completedUnitCount >= self.progressAccountant.totalUnitCount
+		&& self.currentlyPublishing && self.currentParsePostObject) {
+		[self postPublishedSuccessfully];
+	}
 }
 
 -(void)postPublishedSuccessfully {
@@ -173,9 +158,9 @@
 	[self.currentParsePostObject saveInBackground];
 	//register the relationship
 	[Post_Channel_RelationshipManager savePost:self.currentParsePostObject toChannels:[NSMutableArray arrayWithObject:self.currentPublishingChannel] withCompletionBlock:^{
-        [self.es storeShareLinkToPost:self.currentParsePostObject withCaption:self.captionToShare withCompletionBlock:^(bool savedSuccessfully, PFObject * postObject) {
+        [self.externalShareObject storeShareLinkToPost:self.currentParsePostObject withCaption:self.captionToShare withCompletionBlock:^(bool savedSuccessfully, PFObject * postObject) {
             if(savedSuccessfully){
-                [self.es sharePostLink:[postObject objectForKey:POST_SHARE_LINK] toPlatform:self.locationToShare];
+                [self.externalShareObject sharePostLink:[postObject objectForKey:POST_SHARE_LINK] toPlatform:self.locationToShare];
             }else{
                 NSLog(@"Failed to get and save link to post :/");
             }

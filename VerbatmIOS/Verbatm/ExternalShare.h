@@ -25,7 +25,7 @@ typedef enum
 -(instancetype) initWithCaption:(NSString *) caption;
 -(instancetype) init;
 
--(void)storeShareLinkToPost:(PFObject *)postObject withCaption:(NSString *) caption withCompletionBlock:(void(^)(bool, PFObject *))block ;
+-(void) storeShareLinkToPost:(PFObject *)postObject withCaption:(NSString *) caption withCompletionBlock:(void(^)(bool, PFObject *))block ;
 
 -(void) sharePostLink: (NSString *) url  toPlatform:(SelectedPlatformsToShareLink) platform ;
 @end

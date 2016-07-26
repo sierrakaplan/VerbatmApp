@@ -387,7 +387,7 @@
 
 -(void) textIsEditing {
 	// Pause slideshow
-	if(!self.rearrangeView) {
+	if(!self.rearrangeView && [self.pinchView isKindOfClass:[CollectionPinchView class]]) {
 	 [self pauseToRearrangeButtonPressed];
 	}
 	if(self.photoVideoSubview) [self.textEntryDelegate editContentViewTextIsEditing];
