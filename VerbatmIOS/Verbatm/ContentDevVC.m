@@ -15,8 +15,6 @@
 #import "ContentPageElementScrollView.h"
 #import "Channel_BackendObject.h"
 
-
-
 #import "Post_BackendObject.h"
 #import "Page_BackendObject.h"
 #import "Photo_BackendObject.h"
@@ -50,12 +48,10 @@
 #import "Styles.h"
 #import "SharingLinkView.h"
 
-
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "UserInfoCache.h"
 #import "UserSetupParameters.h"
 #import "UIView+Effects.h"
-
 
 #import "VerbatmCameraView.h"
 #import "VideoPinchView.h"
@@ -64,27 +60,21 @@
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 
 @interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,
-                            Intro_Notification_Delegate, GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate,
-                            CustomNavigationBarDelegate,PreviewDisplayDelegate, VerbatmCameraViewDelegate,UIPickerViewDataSource, UIPickerViewDelegate,
-                            UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
-
-
+Intro_Notification_Delegate, GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate,
+CustomNavigationBarDelegate,PreviewDisplayDelegate, VerbatmCameraViewDelegate,
+UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 
 @property (nonatomic) Intro_Instruction_Notification_View * introInstruction;
 
-@property (nonatomic) UITextField *createNewChannelField;
-@property (nonatomic) NSString *channelNameForNewChannel;
-@property (strong, nonatomic) UIImageView *channelSelectorImageLeft;
-@property (strong, nonatomic) UIImageView *channelSelectorImageRight;
-
 @property (nonatomic) NSInteger totalPiecesOfMedia;
+
+@property (nonatomic) Channel *userChannel;
 
 #pragma mark Image Manager
 
 @property (strong, nonatomic) PHImageManager *imageManager;
 @property (strong, nonatomic) PHVideoRequestOptions *videoRequestOptions;
 @property (nonatomic) BOOL posted;
-@property (nonatomic) Channel *channelToPost;
 @property (nonatomic) BOOL externalPost;
 
 #pragma mark Pinch Views
@@ -139,12 +129,13 @@
 @property (nonatomic) CGPoint rightTouchPointInHorizontalPinch;
 
 #pragma mark Vertical pinching
+
 @property (strong, nonatomic) MediaSelectTile * baseMediaTileSelector;
 @property (nonatomic,weak) MediaSelectTile* newlyCreatedMediaTile;
 @property (nonatomic,weak) ContentPageElementScrollView * upperPinchScrollView;
 @property (nonatomic,weak) ContentPageElementScrollView * lowerPinchScrollView;
 @property (nonatomic) CGPoint upperTouchPointInVerticalPinch;
-@property(nonatomic) CGPoint lowerTouchPointInVerticalPinch;
+@property (nonatomic) CGPoint lowerTouchPointInVerticalPinch;
 // Useful for pinch apart to add media between objects
 @property (nonatomic) ContentPageElementScrollView* addMediaBelowView;
 
@@ -158,7 +149,6 @@
 #pragma mark Previewing
 
 @property (nonatomic) BOOL currentlyPreviewingContent;
-@property (nonatomic) Channel *userChannel;
 @property(nonatomic, strong) NSMutableArray * ourPosts;
 @property (strong, nonatomic) PreviewDisplayView * previewDisplayView;
 
@@ -166,26 +156,17 @@
 @property (nonatomic) NSString* fbCaption;
 @property (nonatomic) BOOL postToFB;
 
-
 @property (strong, nonatomic) UIScrollView * adkOnboarding;
 
 @property (weak, nonatomic) IBOutlet UIPageControl *onBoardingPageIndicator;
 
-
 @property (nonatomic) SharingLinkView * shareLinkView;
 @property (nonatomic) NSMutableArray * pinchViewsToPublish;
 
+@property (nonatomic)BOOL screenInCameraMode;
+@property (nonatomic)BOOL currentlyPresentingInstruction;
 
 #define INSTRUCTION_VIEW_ALPHA 0.7f
-#define CHANNEL_CREATION_PROMPT @"enter channel name"
-
-#define CHANNEL_PICKER_FIELD_Y_OFFSET 10.f
-#define CHANNEL_PICKER_FIELD_X_OFFSET 10.f
-#define CHANNEL_PICKER_FIELD_HEIGHT 150
-#define CHANNEL_PICKER_FIELD_LABEL_TILE_HEIGHT 50
-#define CHANNEL_SELECTOR_IMAGE_SIZE 30.f
-#define CHANNEL_PICKER_COLOR clearColor
-
 #define MAX_MEDIA 8
 
 #define NUM_ADK_SLIDESHOW_SLIDES 5
@@ -207,61 +188,51 @@
 	[self setKeyboardAppearance];
 	[self setCursorColor];
 	[self setUpNotifications];
-	self.channelPicker.delegate = self;
 	self.mainScrollView.delegate = self;
 	[self addBackgroundImage];
-	[self loadChannelsAndCreateTicker];
+	self.userChannel = [[UserInfoCache sharedInstance] getUserChannel];
+	[self createBaseSelector];
+	[self loadPostFromUserDefaults];
+	//todo: display channel title and cover photo?
+	[UIView setAnimationsEnabled:YES];
 }
 
 -(BOOL) prefersStatusBarHidden {
 	return YES;
 }
 
-
 -(void)checkAdkSlideShowOnboarding {
-    if(![[UserSetupParameters sharedInstance] checkAdkOnboardingShown]) {
-    
-        NSArray * images = @[@"ADK onboarding slide 1B",@"ADK onboarding slide 2B",@"ADK onboarding slide 3B",@"ADK onboarding slide 4B",@"ADK onboarding slide 5B"];
-        
-        self.adkOnboarding = [[UIScrollView alloc] initWithFrame:self.view.bounds];
-        self.adkOnboarding.contentSize = CGSizeMake(self.view.frame.size.width * (NUM_ADK_SLIDESHOW_SLIDES + 1), 0);
-        self.adkOnboarding.showsVerticalScrollIndicator = NO;
-        self.adkOnboarding.showsHorizontalScrollIndicator = NO;
-        self.adkOnboarding.delegate = self;
-        self.adkOnboarding.pagingEnabled = YES;
-        self.adkOnboarding.bounces = NO;
-        
-        for(int i = 0; i < images.count; i++){
-            NSString * imageName   = images[i];
-            UIImageView * view = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName]];
-            CGRect viewFrame = CGRectMake(self.view.frame.size.width * i, 0, self.view.frame.size.width, self.view.frame.size.height);
-            [view setFrame:viewFrame];
-            [self.adkOnboarding addSubview:view];
-        }
-        
-        self.onBoardingPageIndicator.frame = CGRectMake(self.view.frame.size.width/2 - self.onBoardingPageIndicator.frame.size.width/2, self.view.frame.size.height - (self.onBoardingPageIndicator.frame.size.height + 5), self.onBoardingPageIndicator.frame.size.width, self.onBoardingPageIndicator.frame.size.height);
-        self.onBoardingPageIndicator.currentPage = 0;
-        self.onBoardingPageIndicator.numberOfPages = NUM_ADK_SLIDESHOW_SLIDES + 1;
-        self.onBoardingPageIndicator.defersCurrentPageDisplay = YES;
-        
-        [self.view addSubview:self.onBoardingPageIndicator];
-        [self.view addSubview:self.adkOnboarding];
-        [self.view bringSubviewToFront:self.adkOnboarding];
-        [self.view bringSubviewToFront:self.onBoardingPageIndicator];
-    }else{
-        [self.onBoardingPageIndicator removeFromSuperview];
-    }
-    
-}
+	if(![[UserSetupParameters sharedInstance] checkAdkOnboardingShown]) {
+		NSArray * images = @[@"ADK onboarding slide 1B",@"ADK onboarding slide 2B",@"ADK onboarding slide 3B",
+							 @"ADK onboarding slide 4B",@"ADK onboarding slide 5B"];
+		self.adkOnboarding = [[UIScrollView alloc] initWithFrame:self.view.bounds];
+		self.adkOnboarding.contentSize = CGSizeMake(self.view.frame.size.width * (NUM_ADK_SLIDESHOW_SLIDES + 1), 0);
+		self.adkOnboarding.showsVerticalScrollIndicator = NO;
+		self.adkOnboarding.showsHorizontalScrollIndicator = NO;
+		self.adkOnboarding.delegate = self;
+		self.adkOnboarding.pagingEnabled = YES;
+		self.adkOnboarding.bounces = NO;
 
+		for(int i = 0; i < images.count; i++){
+			NSString * imageName   = images[i];
+			UIImageView * view = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName]];
+			CGRect viewFrame = CGRectMake(self.view.frame.size.width * i, 0, self.view.frame.size.width, self.view.frame.size.height);
+			[view setFrame:viewFrame];
+			[self.adkOnboarding addSubview:view];
+		}
 
--(void)loadChannelsAndCreateTicker{
-	[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
-		self.userChannel = [[UserInfoCache sharedInstance] getUserChannel];
-		[self formatChannelPicker];
-		[self createBaseSelector];
-		[self loadPostFromUserDefaults];
-	}];
+		self.onBoardingPageIndicator.frame = CGRectMake(self.view.frame.size.width/2 - self.onBoardingPageIndicator.frame.size.width/2, self.view.frame.size.height - (self.onBoardingPageIndicator.frame.size.height + 5), self.onBoardingPageIndicator.frame.size.width, self.onBoardingPageIndicator.frame.size.height);
+		self.onBoardingPageIndicator.currentPage = 0;
+		self.onBoardingPageIndicator.numberOfPages = NUM_ADK_SLIDESHOW_SLIDES + 1;
+		self.onBoardingPageIndicator.defersCurrentPageDisplay = YES;
+
+		[self.view addSubview:self.onBoardingPageIndicator];
+		[self.view addSubview:self.adkOnboarding];
+		[self.view bringSubviewToFront:self.adkOnboarding];
+		[self.view bringSubviewToFront:self.onBoardingPageIndicator];
+	} else {
+		[self.onBoardingPageIndicator removeFromSuperview];
+	}
 }
 
 -(void) addBackgroundImage {
@@ -278,9 +249,9 @@
 }
 
 -(void) viewWillAppear:(BOOL)animated {
-    [super viewWillAppear: animated];
+	[super viewWillAppear: animated];
 	[self checkIntroNotification];
-    [self checkAdkSlideShowOnboarding];
+	[self checkAdkSlideShowOnboarding];
 }
 
 -(void) checkIntroNotification {
@@ -327,19 +298,18 @@
 -(void) formatNavBar {
 	[self.navBar createLeftButtonWithTitle:@"CLOSE" orImage:nil];
 	[self.navBar createRightButtonWithTitle:@"PUBLISH" orImage:nil];
+	[self.navBar createMiddleButtonWithTitle:@"UPDATE BLOG" blackText:YES largeSize:YES];
 	self.navBar.delegate = self;
 	[self.view addSubview: self.navBar];
 }
 
 -(void) createBaseSelector {
-
-	CGRect scrollViewFrame = CGRectMake(0, self.channelPicker.frame.origin.y + self.channelPicker.frame.size.height + ELEMENT_Y_OFFSET_DISTANCE,
+	CGRect scrollViewFrame = CGRectMake(0, NAV_BAR_HEIGHT,
 										self.view.frame.size.width, MEDIA_TILE_SELECTOR_HEIGHT+ELEMENT_Y_OFFSET_DISTANCE);
 
-	ContentPageElementScrollView * baseMediaTileSelectorScrollView = [[ContentPageElementScrollView alloc]
+	ContentPageElementScrollView *baseMediaTileSelectorScrollView = [[ContentPageElementScrollView alloc]
 																	  initWithFrame:scrollViewFrame
 																	  andElement:self.baseMediaTileSelector];
-
 	baseMediaTileSelectorScrollView.scrollEnabled = NO;
 	baseMediaTileSelectorScrollView.delegate = self; // scroll view delegate
 	baseMediaTileSelectorScrollView.contentPageElementScrollViewDelegate = self;
@@ -358,131 +328,8 @@
 	[[UITextField appearance] setTintColor:[UIColor CHANNEL_PICKER_TEXT_COLOR]];
 }
 
-//sets the textview placeholders' color and text
--(void) formatChannelPicker {
-	CGRect channelPickerFrame = CGRectMake(CHANNEL_PICKER_FIELD_X_OFFSET, CHANNEL_PICKER_FIELD_Y_OFFSET,
-										   self.view.bounds.size.width - 2*CHANNEL_PICKER_FIELD_X_OFFSET,
-										   CHANNEL_PICKER_FIELD_HEIGHT);
-	UIPickerView * picker = [[UIPickerView alloc] initWithFrame:channelPickerFrame];
-
-	picker.dataSource = self;
-	picker.delegate = self;
-	picker.showsSelectionIndicator = YES;
-	self.channelPicker = picker;
-	picker.backgroundColor = [UIColor clearColor];
-	picker.clipsToBounds = NO;
-
-	self.currentPresentedPickerRow = 0;
-
-	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(userTappedChannelSelector:)];
-	tap.delegate = self;
-	[picker addGestureRecognizer:tap];
-
-	CGFloat channelPickerOffset = 20.f;
-	self.channelSelectorImageLeft.frame = CGRectMake(channelPickerOffset, 0.f,
-													 CHANNEL_SELECTOR_IMAGE_SIZE, CHANNEL_SELECTOR_IMAGE_SIZE);
-	self.channelSelectorImageRight.frame = CGRectMake(channelPickerFrame.size.width - CHANNEL_SELECTOR_IMAGE_SIZE - channelPickerOffset, 0.f,
-													  CHANNEL_SELECTOR_IMAGE_SIZE, CHANNEL_SELECTOR_IMAGE_SIZE);
-	self.channelSelectorImageLeft.center = CGPointMake(self.channelSelectorImageLeft.center.x, picker.center.y - 10.f);
-	self.channelSelectorImageRight.center = CGPointMake(self.channelSelectorImageRight.center.x, picker.center.y - 10.f);
-	[picker addSubview:self.channelSelectorImageLeft];
-	[picker addSubview:self.channelSelectorImageRight];
-
-	[self.mainScrollView addSubview:picker];
-}
-
-// returns the number of 'columns' to display.
-- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView{
-	return 1;
-}
-
-// returns the # of rows in each component..
-- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
-	return 1;
-}
-
-- (CGFloat)pickerView:(UIPickerView *)pickerView
-rowHeightForComponent:(NSInteger)component{
-	return CHANNEL_PICKER_FIELD_LABEL_TILE_HEIGHT;
-}
-
-- (UIView *)pickerView:(UIPickerView *)pickerView
-			viewForRow:(NSInteger)row
-		  forComponent:(NSInteger)component
-		   reusingView:(UIView *)view{
-
-	CGRect labelFrame = CGRectMake(0.f, 0.f, pickerView.frame.size.width, CHANNEL_PICKER_FIELD_LABEL_TILE_HEIGHT);
-	if(view){
-		return view;
-	}else {
-		// Create new channel row should only exist if they haven't created any channels yet
-		if(!self.userChannel) {
-			return [self getCreateNewChannelTextFieldWithFrame:labelFrame];
-
-		} else{
-			return [self formatChannelPickerFieldFromFrame:labelFrame andChannel:self.userChannel];
-		}
-	}
-}
-
--(UILabel *) formatChannelPickerFieldFromFrame: (CGRect) frame andChannel:(Channel *) channel {
-	UILabel * channelTitle = [[UILabel alloc] initWithFrame: frame];
-	channelTitle.textAlignment = NSTextAlignmentCenter;
-	channelTitle.font = [UIFont fontWithName:BOLD_FONT size: CHANNEL_PICKER_TEXT_SIZE];
-	[channelTitle setTextColor:[UIColor CHANNEL_PICKER_TEXT_COLOR]];
-	channelTitle.tintColor = [UIColor CHANNEL_PICKER_TEXT_COLOR];
-	channelTitle.backgroundColor = [UIColor CHANNEL_PICKER_COLOR];
-	[channelTitle setText:channel.name];
-	return channelTitle;
-}
-
-- (void)pickerView:(UIPickerView *)pickerView
-	  didSelectRow:(NSInteger)row
-	   inComponent:(NSInteger)component{
-
-	UIView *selectedView = [pickerView viewForRow:row forComponent:component];
-	if(!self.userChannel) {
-		UITextField * textField = (UITextField *) selectedView;
-		[textField becomeFirstResponder];
-	} else {
-		[self removeKeyboardFromScreen];
-	}
-	self.currentPresentedPickerRow = row;
-}
-
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
 	return YES;
-}
-
--(void)userTappedChannelSelector:(UITapGestureRecognizer *) tap{
-	if(!self.userChannel) {
-		UITextField * textField = (UITextField *) [self.channelPicker viewForRow:1 forComponent:0];
-		if(textField)[textField becomeFirstResponder];
-	}else{
-		[self removeKeyboardFromScreen];
-	}
-}
-
--(UITextField *)getCreateNewChannelTextFieldWithFrame:(CGRect) frame{
-	UITextField * field = [[UITextField alloc] initWithFrame:frame];
-	UIFont* titleFont = [UIFont fontWithName:ITALIC_FONT size: CHANNEL_PICKER_TEXT_SIZE];
-	field.textAlignment = NSTextAlignmentCenter;
-	field.font = [UIFont fontWithName:BOLD_FONT size: CHANNEL_PICKER_TEXT_SIZE];
-	[field setTextColor:[UIColor whiteColor]];
-	field.tintColor = [UIColor whiteColor];
-	field.attributedPlaceholder = [[NSAttributedString alloc]
-								   initWithString: @"New Blog Name"
-								   attributes:@{NSForegroundColorAttributeName: [UIColor whiteColor],
-												NSFontAttributeName : titleFont}];
-
-	field.backgroundColor = [UIColor CHANNEL_PICKER_COLOR];
-	[field resignFirstResponder];
-	field.enabled = YES;
-	field.autocorrectionType = UITextAutocorrectionTypeYes;
-	[field setReturnKeyType:UIReturnKeyDone];
-	field.delegate = self;
-	self.createNewChannelField = field;
-	return field;
 }
 
 #pragma mark - Text field delegate methods -
@@ -526,7 +373,6 @@ rowHeightForComponent:(NSInteger)component{
 											 selector:@selector(keyBoardWillChangeFrame:)
 												 name:UIKeyboardWillChangeFrameNotification
 											   object:nil];
-
 }
 
 // Loads pinch views from user defaults
@@ -555,12 +401,12 @@ rowHeightForComponent:(NSInteger)component{
 	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
 }
 
-#pragma mark Save Draft Button
 -(void) middleButtonPressed {
 
 }
 
-#pragma mark Preview Button
+#pragma mark Publish Button
+
 -(void) rightButtonPressed {
 	NSMutableArray * pinchViews = [[NSMutableArray alloc] init];
 
@@ -596,17 +442,17 @@ rowHeightForComponent:(NSInteger)component{
 #pragma mark Scroll View actions
 
 - (void) scrollViewDidScroll:(UIScrollView *)scrollView {
-	
-    if(scrollView == self.adkOnboarding){
-        self.onBoardingPageIndicator.currentPage = scrollView.contentOffset.x/self.view.bounds.size.width;
-        
-        if((self.adkOnboarding.contentOffset.x/self.view.frame.size.width) == NUM_ADK_SLIDESHOW_SLIDES){
-            [self.adkOnboarding removeFromSuperview];
-            self.adkOnboarding = nil;
-            [self.onBoardingPageIndicator removeFromSuperview];
-        }
-        
-    }else if([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
+
+	if(scrollView == self.adkOnboarding){
+		self.onBoardingPageIndicator.currentPage = scrollView.contentOffset.x/self.view.bounds.size.width;
+
+		if((self.adkOnboarding.contentOffset.x/self.view.frame.size.width) == NUM_ADK_SLIDESHOW_SLIDES){
+			[self.adkOnboarding removeFromSuperview];
+			self.adkOnboarding = nil;
+			[self.onBoardingPageIndicator removeFromSuperview];
+		}
+
+	}else if([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
 		ContentPageElementScrollView* pageElementScrollView = (ContentPageElementScrollView*)scrollView;
 		if(pageElementScrollView.collectionIsOpen) {
 			return;
@@ -622,7 +468,7 @@ rowHeightForComponent:(NSInteger)component{
 //make sure the object is in the right position
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
 				  willDecelerate:(BOOL)decelerate {
-     if ([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
+	if ([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
 		[self animateScrollViewBackOrToDeleteMode:(ContentPageElementScrollView*)scrollView];
 	}
 }
@@ -694,7 +540,7 @@ rowHeightForComponent:(NSInteger)component{
 		if(finished){
 			[pageElementScrollView cleanUp];
 			[pageElementScrollView removeFromSuperview];
-			[self shiftElementsBelowView: self.channelPicker];
+			[self shiftElementsBelowView: nil];
 		}
 	}];
 }
@@ -724,7 +570,7 @@ andSaveInUserDefaults:(BOOL)save {
 
 	CGRect newElementScrollViewFrame;
 	if(!upperScrollView) {
-		newElementScrollViewFrame = CGRectMake(0,self.channelPicker.frame.origin.y + self.channelPicker.frame.size.height + ELEMENT_Y_OFFSET_DISTANCE,
+		newElementScrollViewFrame = CGRectMake(0, NAV_BAR_HEIGHT,
 											   self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
 		index = 0;
 	} else {
@@ -753,22 +599,24 @@ andSaveInUserDefaults:(BOOL)save {
 		[self.mainScrollView addSubview: newElementScrollView];
 		newElementScrollView.frame = newElementScrollViewFrame;
 		self.addMediaBelowView = newElementScrollView;
-		[self shiftElementsBelowView: self.channelPicker];
+		[self shiftElementsBelowView: nil];
 
 	} completion:^(BOOL finished) {
 		// includes default media tile
-		if(finished && self.numPinchViews < 2 && ![[UserSetupParameters sharedInstance]
+		if(finished && !self.currentlyPresentingInstruction && self.numPinchViews < 2
+           && ![[UserSetupParameters sharedInstance]
 												   checkAndSetEditPinchViewInstructionShown]) {
 			[self presentEditPinchViewInstruction];
-		} else if(finished && ![[UserSetupParameters sharedInstance] checkAndSetPinchInstructionShown]) {
+		} else if(finished && !self.currentlyPresentingInstruction &&
+                  ![[UserSetupParameters sharedInstance] checkAndSetPinchInstructionShown]) {
 			[self presentPinchInstruction];
 		}
 	}];
 }
 
 -(ContentPageElementScrollView *) createNewContentScrollViewWithPinchView:(PinchView *) view andFrame:(CGRect) frame {
-
-	ContentPageElementScrollView *newElementScrollView = [[ContentPageElementScrollView alloc]initWithFrame:frame andElement:view];
+	ContentPageElementScrollView *newElementScrollView = [[ContentPageElementScrollView alloc]initWithFrame:frame
+																								 andElement:view];
 	newElementScrollView.delegate = self; //scroll view delegate
 	newElementScrollView.contentPageElementScrollViewDelegate = self;
 
@@ -779,32 +627,28 @@ andSaveInUserDefaults:(BOOL)save {
 
 //Once view is added- we make sure the views below it are appropriately adjusted in position
 -(void)shiftElementsBelowView: (UIView *) view {
-	if (!view ||
-		(![view isKindOfClass:[ContentPageElementScrollView class]]
-		 && ![view isKindOfClass:[UIPickerView class]])) {
-			return;
-		}
 	NSInteger viewIndex = 0;
-	NSInteger firstYCoordinate = view.frame.origin.y + view.frame.size.height;
 
-	//if we are shifting things from somewhere in the middle of the scroll view
-	if([self.pageElementScrollViews containsObject:view]) {
-		viewIndex = [self.pageElementScrollViews indexOfObject:view]+1;
+	NSInteger firstYCoordinate;
+	if (view) {
+		firstYCoordinate = view.frame.origin.y + view.frame.size.height;
+		//if we are shifting things from somewhere in the middle of the scroll view
+		if([self.pageElementScrollViews containsObject:view]) {
+			viewIndex = [self.pageElementScrollViews indexOfObject:view]+1;
+		}
+	} else {
+		firstYCoordinate = NAV_BAR_HEIGHT;
 	}
-	//If we must shift everything from the top
-	else if ([view isKindOfClass:[UITextField class]]) {
-		firstYCoordinate = firstYCoordinate + ELEMENT_Y_OFFSET_DISTANCE;
-	}
+
 	for(NSInteger i = viewIndex; i < [self.pageElementScrollViews count]; i++) {
 		ContentPageElementScrollView * currentView = self.pageElementScrollViews[i];
 		CGRect frame = CGRectMake(currentView.frame.origin.x, firstYCoordinate,
 								  currentView.frame.size.width, currentView.frame.size.height);
 		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
 			currentView.frame = frame;
-			//make sure everything is centered
-			[currentView centerView];
+		} completion:^(BOOL finished) {
 		}];
-		firstYCoordinate+= frame.size.height;
+		firstYCoordinate += frame.size.height;
 	}
 	//make sure the main scroll view can show everything
 	[self adjustMainScrollViewContentSize];
@@ -834,12 +678,10 @@ andSaveInUserDefaults:(BOOL)save {
 	}
 
 	if(![self.pageElementScrollViews containsObject:view]) {
-		if(topView && topView != self.channelPicker) {
+		if(topView) {
 			NSInteger index = [self.pageElementScrollViews indexOfObject:topView];
 			[self.pageElementScrollViews insertObject:view atIndex:(index+1)];
-		}else if(topView == self.channelPicker) {
-			[self.pageElementScrollViews insertObject:view atIndex:0];
-		}else {
+		} else {
 			[self.pageElementScrollViews addObject:view];
 		}
 	}
@@ -851,16 +693,11 @@ andSaveInUserDefaults:(BOOL)save {
 
 
 #pragma Remove Keyboard From Screen
-//Iain
+
 -(void) removeKeyboardFromScreen {
 	[[[UIApplication sharedApplication] keyWindow] endEditing:YES];
 }
 
--(void) showKeyboard {
-	//	if(self.channelPicker.isEditing) {
-	//		[self.channelPicker becomeFirstResponder];
-	//	}
-}
 
 #pragma mark Keyboard Notifications
 
@@ -931,7 +768,7 @@ andSaveInUserDefaults:(BOOL)save {
 		self.newlyCreatedMediaTile = Nil;
 	}
 
-	[self shiftElementsBelowView: self.channelPicker];
+	[self shiftElementsBelowView: nil];
 	self.pinchingMode = PinchingModeNone;
 }
 
@@ -944,7 +781,7 @@ andSaveInUserDefaults:(BOOL)save {
 		self.newlyCreatedMediaTile.superview.frame = CGRectMake(0,self.newlyCreatedMediaTile.superview.frame.origin.y + originalHeight/2.f,
 																self.newlyCreatedMediaTile.superview.frame.size.width, 0);
 		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
-		[self shiftElementsBelowView: self.channelPicker];
+		[self shiftElementsBelowView: nil];
 
 	} completion:^(BOOL finished) {
 		[self.newlyCreatedMediaTile.superview removeFromSuperview];
@@ -1148,9 +985,11 @@ andSaveInUserDefaults:(BOOL)save {
 	[self.mainScrollView addSubview:newMediaTileScrollView];
 	[self storeView:newMediaTileScrollView inArrayAsBelowView:topView];
 }
+
 -(CGRect) getStartFrameForNewMediaTile {
 	return CGRectMake(self.baseMediaTileSelector.frame.origin.x + (self.baseMediaTileSelector.frame.size.width/2),0, 0, 0);
 }
+
 -(CGRect) getStartFrameForNewMediaTileScrollViewUnderView: (ContentPageElementScrollView *) topView  {
 	return CGRectMake(topView.frame.origin.x, topView.frame.origin.y +topView.frame.size.height, self.view.frame.size.width,0);
 }
@@ -1198,9 +1037,9 @@ andSaveInUserDefaults:(BOOL)save {
 																self.baseMediaTileSelector.superview.frame.size.width,
 																self.baseMediaTileSelector.superview.frame.size.height);
 		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
-		[self shiftElementsBelowView: self.channelPicker];
+		[self shiftElementsBelowView: nil];
 	} completion:^(BOOL finished) {
-		[self shiftElementsBelowView: self.channelPicker];
+		[self shiftElementsBelowView: nil];
 		gesture.enabled = NO;
 		gesture.enabled = YES;
 		self.pinchingMode = PinchingModeNone;
@@ -1215,10 +1054,8 @@ andSaveInUserDefaults:(BOOL)save {
 -(void) clearMediaTile:(MediaSelectTile*)mediaTile {
 	[self.pageElementScrollViews removeObject:mediaTile.superview];
 	[mediaTile.superview removeFromSuperview];
-	[self shiftElementsBelowView: self.channelPicker];
+	[self shiftElementsBelowView: nil];
 }
-
-
 
 #pragma mark Pinching Views together
 
@@ -1237,9 +1074,7 @@ andSaveInUserDefaults:(BOOL)save {
 	[self.pageElementScrollViews removeObject:self.lowerPinchScrollView];
 	self.lowerPinchScrollView = self.upperPinchScrollView = nil;
 	self.pinchingMode = PinchingModeNone;
-	[self shiftElementsBelowView: self.channelPicker];
-
-	//present swipe to delete notification
+	[self shiftElementsBelowView: nil];
 }
 
 #pragma mark - Identify views involved in pinch
@@ -1385,6 +1220,7 @@ andSaveInUserDefaults:(BOOL)save {
 	[self.view addSubview:self.cameraView];
 	[self.cameraView createAndInstantiateGestures];
 	self.selectedView_PAN = (ContentPageElementScrollView *)tile.superview;//should be a contentpagescrollview
+    self.screenInCameraMode = YES;
 }
 
 #pragma mark - Change position of elements on screen by dragging
@@ -1578,20 +1414,21 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 -(void) presentPinchInstruction {
-	ContentPageElementScrollView * firstInList = self.pageElementScrollViews[0];
-	CGFloat offsetFromPinchViewCenters = 60.f;
-	CGFloat frameHeight = firstInList.frame.size.height - (offsetFromPinchViewCenters);
-	CGFloat frameWidth = frameHeight;
-	CGRect instructionFrame = CGRectMake(firstInList.center.x - 8.f, firstInList.center.y + offsetFromPinchViewCenters,frameWidth,frameHeight);
+   
+        ContentPageElementScrollView * firstInList = self.pageElementScrollViews[0];
+        CGFloat offsetFromPinchViewCenters = 60.f;
+        CGFloat frameHeight = firstInList.frame.size.height - (offsetFromPinchViewCenters);
+        CGFloat frameWidth = frameHeight;
+        CGRect instructionFrame = CGRectMake(firstInList.center.x - 30.f, firstInList.center.y + offsetFromPinchViewCenters,frameWidth,frameHeight);
 
-	UIImage *instructionImage = [UIImage imageNamed:PINCH_OBJECTS_TOGETHER_INSTRUCTION];
-	UIImageView *instructionImageView = [[UIImageView alloc] initWithImage:instructionImage];
-	instructionImageView.frame = instructionFrame;
-	instructionImageView.contentMode = UIViewContentModeScaleAspectFit;
-	instructionImageView.frame =  instructionFrame;
+        UIImage *instructionImage = [UIImage imageNamed:PINCH_OBJECTS_TOGETHER_INSTRUCTION];
+        UIImageView *instructionImageView = [[UIImageView alloc] initWithImage:instructionImage];
+        instructionImageView.frame = instructionFrame;
+        instructionImageView.contentMode = UIViewContentModeScaleAspectFit;
+        instructionImageView.frame =  instructionFrame;
 
-	[self.instructionView addSubview:instructionImageView];
-	[self displayInstructionView];
+        [self.instructionView addSubview:instructionImageView];
+        [self displayInstructionView];
 }
 
 -(void) presentEditPinchViewInstruction {
@@ -1599,7 +1436,7 @@ andSaveInUserDefaults:(BOOL)save {
 	CGFloat offsetFromPinchViewCenters = 60.f;
 	CGFloat frameHeight = firstInList.frame.size.height - (offsetFromPinchViewCenters);
 	CGFloat frameWidth = frameHeight;
-	CGRect instructionFrame = CGRectMake(firstInList.center.x - 8.f, firstInList.center.y + offsetFromPinchViewCenters,frameWidth,frameHeight);
+	CGRect instructionFrame = CGRectMake(firstInList.center.x - 30.f, firstInList.center.y + offsetFromPinchViewCenters,frameWidth,frameHeight);
 
 	UIImage *instructionImage = [UIImage imageNamed:EDIT_PINCHVIEW_INSTRUCTION];
 	UIImageView *instructionImageView = [[UIImageView alloc] initWithImage:instructionImage];
@@ -1612,14 +1449,12 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 -(void) displayInstructionView {
-	self.instructionView.alpha = 1.f;
-	[self.view addSubview: self.instructionView];
-	[self.view bringSubviewToFront:self.instructionView];
-//	[UIView animateWithDuration:INSTRUCTION_ANIMATION_TIME delay:0.f options:UIViewAnimationOptionAllowUserInteraction animations:^{
-//		self.instructionView.alpha = 0.1f;
-//	} completion:^(BOOL finished) {
-//		if (finished && [self.instructionView superview]) [self.instructionView removeFromSuperview];
-//	}];
+    if(!self.screenInCameraMode && !self.currentlyPresentingInstruction){
+        self.currentlyPresentingInstruction = YES;
+        self.instructionView.alpha = 1.f;
+        [self.view addSubview: self.instructionView];
+        [self.view bringSubviewToFront:self.instructionView];
+    }
 }
 
 //adjusts offset of main scroll view so selected item is in focus
@@ -1688,7 +1523,7 @@ andSaveInUserDefaults:(BOOL)save {
 	}
 	//sanitize for next run
 	self.selectedView_PAN = nil;
-	[self shiftElementsBelowView:self.channelPicker];
+	[self shiftElementsBelowView: nil];
 }
 
 //swaps scroll views in the pageElementScrollView array
@@ -1727,7 +1562,7 @@ andSaveInUserDefaults:(BOOL)save {
 		scrollView.frame = CGRectMake(upperScrollView.frame.origin.x, upperScrollView.frame.origin.y + upperScrollView.frame.size.height,
 									  upperScrollView.frame.size.width, upperScrollView.frame.size.height);
 	} else {
-		scrollView.frame = CGRectMake(0,self.channelPicker.frame.origin.y + self.channelPicker.frame.size.height, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
+		scrollView.frame = CGRectMake(0, 0, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
 	}
 
 	[self.pageElementScrollViews insertObject:scrollView atIndex:index];
@@ -1736,7 +1571,7 @@ andSaveInUserDefaults:(BOOL)save {
 		[self addTapGestureToPinchView:(PinchView *)[scrollView pageElement]];
 	}
 	[self.mainScrollView addSubview:scrollView];
-	[self shiftElementsBelowView: self.channelPicker];
+	[self shiftElementsBelowView: nil];
 }
 
 
@@ -1747,11 +1582,6 @@ andSaveInUserDefaults:(BOOL)save {
 	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pinchObjectTapped:)];
 	tap.delegate = self;
 	[pinchView addGestureRecognizer:tap];
-	if ([pinchView isKindOfClass:[CollectionPinchView class]]) {
-		for (PinchView* childPinchView in [(CollectionPinchView*)pinchView pinchedObjects]) {
-			[self addTapGestureToPinchView:childPinchView];
-		}
-	}
 }
 
 -(void) pinchObjectTapped:(UITapGestureRecognizer *) sender {
@@ -1846,6 +1676,11 @@ andSaveInUserDefaults:(BOOL)save {
 -(void) minimizeCameraViewButtonTapped {
 	[self.cameraView removeFromSuperview];
 	[self removeExcessMediaTiles];
+    self.screenInCameraMode = NO;
+    if(self.numPinchViews > 1.f && !self.currentlyPresentingInstruction &&
+       ![[UserSetupParameters sharedInstance] checkAndSetPinchInstructionShown]){
+        [self presentPinchInstruction];
+    }
 }
 
 #pragma mark - Gallery + Image picker -
@@ -1987,29 +1822,7 @@ andSaveInUserDefaults:(BOOL)save {
 
 //todo: save share object
 -(void)postPostToChannels:(NSMutableArray *) channels andFacebook:(BOOL)externalSharing{
-
-	//    if ([FBSDKAccessToken currentAccessToken]) {
-	//        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-	//                                       @"Damas", @"name",
-	//                                       @"Yoooo! FB Graph API test", @"caption",
-	//                                       @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content.", @"description",
-	//                                       @"http://verbatm.io", @"link",
-	//                                       //       @"http://i.imgur.com/g3Qc1HN.png", @"picture",
-	//                                       nil];
-	//        FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:params HTTPMethod:@"POST"];
-	//
-	//
-	//
-	//        [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
-	//             if (!error) {
-	//                 NSLog(@"fetched user:%@", result);
-	//             } else {
-	//                 NSLog(@"An error has occured %@", error);
-	//             }
-	//         }];
-	//    }
-
-	[self removeSharePOVView];
+    [self removeSharePOVView];
 }
 
 -(void)removeSharePOVView{
@@ -2030,28 +1843,19 @@ andSaveInUserDefaults:(BOOL)save {
 
 -(void)capturePublishingProgressImageWithPinchViews:(NSMutableArray *) pinchViews{
 
-    
-        NSMutableArray* pages = [PageTypeAnalyzer getPageViewsFromPinchViews: @[[pinchViews firstObject]] withFrame: self.view.bounds inPreviewMode:YES];
-    
-        //temporarily create POV to screenshot
-        PostView * postView = [[PostView alloc] initWithFrame: self.view.bounds andPostChannelActivityObject:nil small:NO andPageObjects:nil];
-        [postView displayPageViews: pages];
-        [postView prepareForScreenShot];
-//    
-//    
-//    
-//        UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, NO, [UIScreen mainScreen].scale);
-//    
-//        [postView drawViewHierarchyInRect:self.view.bounds afterScreenUpdates:YES];
-    
-        UIImage *screenShotImage = [postView getViewscreenshotWithTextView:nil];
-    
-//        UIGraphicsEndImageContext();
-        [postView postOffScreen];
-        [postView clearPost];
-    
-    
-        [[PublishingProgressManager sharedInstance] storeProgressBackgroundImage:screenShotImage];
+
+	NSMutableArray* pages = [PageTypeAnalyzer getPageViewsFromPinchViews: @[[pinchViews firstObject]] withFrame: self.view.bounds inPreviewMode:YES];
+
+	//temporarily create POV to screenshot
+	PostView * postView = [[PostView alloc] initWithFrame: self.view.bounds andPostChannelActivityObject:nil small:NO andPageObjects:nil];
+	[postView displayPageViews: pages];
+	[postView prepareForScreenShot];
+
+	UIImage *screenShotImage = [postView getViewscreenshotWithTextView:nil];
+
+	//        UIGraphicsEndImageContext();
+	[postView postOffScreen];
+	[[PublishingProgressManager sharedInstance] storeProgressBackgroundImage:screenShotImage];
 }
 
 
@@ -2061,67 +1865,51 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 -(void) publishOurStoryWithPinchViews:(NSMutableArray *)pinchViews{
-    self.pinchViewsToPublish = pinchViews;
-    [self capturePublishingProgressImageWithPinchViews:pinchViews];
-    [self presentShareLinkView];
-    
+	self.pinchViewsToPublish = pinchViews;
+	[self capturePublishingProgressImageWithPinchViews:pinchViews];
+	[self presentShareLinkView];
+
 }
 
 -(void)presentShareLinkView{
-    self.shareLinkView = [[SharingLinkView alloc] initWithFrame:self.view.bounds];
-    self.shareLinkView.delegate = self;
-    [self.view addSubview:self.shareLinkView];
+	self.shareLinkView = [[SharingLinkView alloc] initWithFrame:self.view.bounds];
+	self.shareLinkView.delegate = self;
+	[self.view addSubview:self.shareLinkView];
 }
 
 -(void)removeSLView{
-    [self.shareLinkView removeFromSuperview];
-    self.shareLinkView = nil;
+	[self.shareLinkView removeFromSuperview];
+	self.shareLinkView = nil;
 }
 
 
 -(void) continueToPublish{
-    Channel * channelToPostIn = nil;
-    if (self.userChannel) {
-        channelToPostIn = self.userChannel;
-    } else {
-        UITextField * textField = (UITextField *) [self.channelPicker viewForRow:self.currentPresentedPickerRow forComponent:0];
-        if ([textField.text isEqualToString:@""]) {
-            UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"You must publish to a blog" message:@"Please enter a name for your new blog." preferredStyle:UIAlertControllerStyleAlert];
-            UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
-                                                                  handler:^(UIAlertAction * action) {}];
-            [newAlert addAction:defaultAction];
-            [self presentViewController:newAlert animated:YES completion:nil];
-        } else {
-            channelToPostIn = [[Channel alloc] initWithChannelName:textField.text andParseChannelObject:nil andChannelCreator:nil];
-            self.channelToPost = channelToPostIn;
-        }
-    }
-    if (channelToPostIn) {
-        [[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn andFacebook:TRUE withCaption:self.fbCaption withPinchViews:self.pinchViewsToPublish
-                                                     withCompletionBlock:^(BOOL isAlreadyPublishing, BOOL noNetwork) {
-                                                         NSString *errorMessage;
-                                                         if(isAlreadyPublishing) {
-                                                             errorMessage = @"Please wait until the previous post has finished publishing.";
-                                                         } else if (noNetwork) {
-                                                             errorMessage = @"Something went wrong - please check your network connection and try again.";
-                                                         } else {
-                                                             //Everything went ok
-                                                             [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
-                                                             [self cleanUp];
-                                                             return;
-                                                         }
-                                                         UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Couldn't Publish" message:errorMessage preferredStyle:UIAlertControllerStyleAlert];
-                                                         UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
-                                                                                                               handler:^(UIAlertAction * action) {}];
-                                                         [newAlert addAction:defaultAction];
-                                                         [self presentViewController:newAlert animated:YES completion:nil];
-                                                     }];
-    }
+
+	[[PublishingProgressManager sharedInstance] publishPostToChannel:self.userChannel andFacebook:TRUE withCaption:self.fbCaption withPinchViews:self.pinchViewsToPublish
+												 withCompletionBlock:^(BOOL isAlreadyPublishing, BOOL noNetwork) {
+													 NSString *errorMessage;
+													 if(isAlreadyPublishing) {
+														 errorMessage = @"Please wait until the previous post has finished publishing.";
+													 } else if (noNetwork) {
+														 errorMessage = @"Something went wrong - please check your network connection and try again.";
+													 } else {
+														 //Everything went ok
+														 [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
+														 [self cleanUp];
+														 return;
+													 }
+													 UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Couldn't Publish" message:errorMessage preferredStyle:UIAlertControllerStyleAlert];
+													 UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+																										   handler:^(UIAlertAction * action) {}];
+													 [newAlert addAction:defaultAction];
+													 [self presentViewController:newAlert animated:YES completion:nil];
+												 }];
 
 }
+
 -(void) cancelPublishing{
-    self.pinchViewsToPublish = nil;
-    [self removeSLView];
+	self.pinchViewsToPublish = nil;
+	[self removeSLView];
 }
 
 #pragma mark - Lazy Instantiation
@@ -2204,6 +1992,7 @@ andSaveInUserDefaults:(BOOL)save {
 -(void) instructionViewTapped {
 	[self.instructionView.layer removeAllAnimations];
 	[self.instructionView removeFromSuperview];
+    self.currentlyPresentingInstruction = NO;
 }
 
 @synthesize pageElementScrollViews = _pageElementScrollViews;
@@ -2228,22 +2017,6 @@ andSaveInUserDefaults:(BOOL)save {
 
 - (void) setTileSwipeViewUndoManager:(NSUndoManager *)tileSwipeViewUndoManager {
 	_tileSwipeViewUndoManager = tileSwipeViewUndoManager;
-}
-
--(UIImageView *) channelSelectorImageLeft {
-	if (!_channelSelectorImageLeft) {
-		_channelSelectorImageLeft = [[UIImageView alloc] initWithImage:[UIImage imageNamed:CHANNEL_SELECTOR_ARROW_LEFT]];
-		_channelSelectorImageLeft.contentMode = UIViewContentModeScaleAspectFit;
-	}
-	return _channelSelectorImageLeft;
-}
-
--(UIImageView *) channelSelectorImageRight {
-	if (!_channelSelectorImageRight) {
-		_channelSelectorImageRight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:CHANNEL_SELECTOR_ARROW_RIGHT]];
-		_channelSelectorImageRight.contentMode = UIViewContentModeScaleAspectFit;
-	}
-	return _channelSelectorImageRight;
 }
 
 @end

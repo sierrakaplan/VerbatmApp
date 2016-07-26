@@ -18,24 +18,7 @@
  You track the NSProgress Accountant to see how far we're progressing with media saving.
  */
 
-
-
-
-
 @class Channel_BackendObject;
-
-
-@protocol PublishingProgressProtocol <NSObject>
-
--(void)publishingComplete;
-
--(void)publishingFailedWithError:(NSError*)error;
-
-@end
-
-
-
-
 
 @interface PublishingProgressManager : NSObject
 
@@ -43,7 +26,6 @@
 #define IMAGE_PROGRESS_UNITS 3
 #define VIDEO_PROGRESS_UNITS 21
 
-@property (nonatomic, weak) id<PublishingProgressProtocol> delegate;
 @property (nonatomic, readonly) NSProgress * progressAccountant;
 @property (nonatomic, readonly) BOOL currentlyPublishing;
 @property (nonatomic, readonly) Channel* currentPublishingChannel;
@@ -62,6 +44,8 @@
 -(void)storeProgressBackgroundImage:(UIImage *) image;
 -(UIImage *) getProgressBackgroundImage;
 -(void)onePieceOfMediaSaved;
+
+
 @end
 
 

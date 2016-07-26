@@ -30,10 +30,10 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
 
 @property (nonatomic) CustomNavigationBar * navigationBar;
 
-#define VIEW_OFFSET_Y 50.f
+#define VIEW_OFFSET_Y 20.f
 #define PROFILE_ICON_WALL_OFFSET 15.f //distance of profile picture from left wall
 #define PROFILE_TEXTFILED_GAP 10.f //distance between the profile icon and the textField
-#define VERBATM_HELP_EMAIL @"founders@verbatm.io"
+#define VERBATM_HELP_EMAIL @"feedback@verbatm.io"
 #define HELP_EMAIL_SUBJECT @"Feedback to Verbatm team"
 @end
 
@@ -89,18 +89,16 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
     
     self.profileIconImage.frame = profileIconFrame;
 
-	CGRect signOutButtonFrame = CGRectMake(0.f, profileIconFrame.origin.y +
-										   profileIconFrame.size.height + VIEW_OFFSET_Y , self.view.frame.size.width, self.contactUsButton.frame.size.height);
+	CGRect contactUsButtonFrame = CGRectMake(0.f, profileIconFrame.origin.y +
+											 profileIconFrame.size.height + VIEW_OFFSET_Y, self.view.frame.size.width, self.signOutButton.frame.size.height);
 
-    CGRect termsAndCondButtonFrame = CGRectMake(0.f, signOutButtonFrame.origin.y +
-                                             signOutButtonFrame.size.height + VIEW_OFFSET_Y , self.view.frame.size.width, self.termsAndConditionsButton.frame.size.height);
+	CGRect termsAndCondButtonFrame = CGRectMake(0.f, contactUsButtonFrame.origin.y +
+												contactUsButtonFrame.size.height + VIEW_OFFSET_Y , self.view.frame.size.width, self.termsAndConditionsButton.frame.size.height);
 
-	CGRect contactUsButtonFrame = CGRectMake(0.f, termsAndCondButtonFrame.origin.y +
-											 termsAndCondButtonFrame.size.height + VIEW_OFFSET_Y , self.view.frame.size.width, self.signOutButton.frame.size.height);
+	CGRect signOutButtonFrame = CGRectMake(0.f, termsAndCondButtonFrame.origin.y +
+										   termsAndCondButtonFrame.size.height + VIEW_OFFSET_Y, self.view.frame.size.width, self.contactUsButton.frame.size.height);
 
 
-    
-    
     self.contactUsButton.frame= contactUsButtonFrame;
     self.termsAndConditionsButton.frame = termsAndCondButtonFrame;
     self.signOutButton.frame = signOutButtonFrame;

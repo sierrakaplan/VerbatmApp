@@ -22,6 +22,14 @@
 #define BAR_HEIGHT ((self.frame.size.height/MAX_BAR_NUMBER)-BAR_HEIGHT_TOGGLE)
 #define SELECTION_BUTTON_WIDTH 20.f
 
+#define TEXT_LABEL_SIZE 100.f
+
+#define VERBATM_REBLOG_TEXT @"Verbatm (Reblog)"
+#define TWITTER_SHARE_TEXT @"Twitter"
+#define FACEBOOK_SHARE_TEXT @"Facebook"
+#define SMS_SHARE_TEXT @"Sms Link"
+#define COPY_LINK_TEXT @"Copy Link"
+
 @interface SelectSharingOption ()
 @property (nonatomic) SelectOptionButton * selectedButton;
 @end
@@ -42,39 +50,37 @@
     //Facebook BAR -- center
     CGRect fb_barFrame = CGRectMake(0.f, self.frame.size.height/2.f -
                                     (BAR_HEIGHT/2.f), self.frame.size.width, BAR_HEIGHT/2);
-    UIView * facebookBar = [self createBarWithFrame:fb_barFrame logo:[UIImage imageNamed:FACEBOOK_LOGO] andTitle:@"Facebook"];
+    UIView * facebookBar = [self createBarWithFrame:fb_barFrame logo:[UIImage imageNamed:FACEBOOK_LOGO] andTitle:FACEBOOK_SHARE_TEXT];
     [self addSubview:facebookBar];
 
 	//VERBATM BAR -- top
 	CGFloat  remainingTopHeight = fb_barFrame.origin.y;
 	CGRect barFrame = CGRectMake(0.f, (remainingTopHeight/2.f) -
 								 (BAR_HEIGHT/6), self.frame.size.width, BAR_HEIGHT/2);
-	UIView * verbatmBar = [self createBarWithFrame:barFrame logo:[UIImage imageNamed:VERBATM_LOGO] andTitle:@"Verbatm"];
+	UIView * verbatmBar = [self createBarWithFrame:barFrame logo:[UIImage imageNamed:VERBATM_LOGO] andTitle:VERBATM_REBLOG_TEXT];
 	[self addSubview:verbatmBar];
     
-//    //Twitter BAR
+	//Twitter BAR
     CGRect tw_barFrame = CGRectMake(0.f, facebookBar.frame.origin.y +
                                     facebookBar.frame.size.height +
                                     (remainingTopHeight/2.f) - (BAR_HEIGHT/2.f), self.frame.size.width, BAR_HEIGHT/2);
-    UIView * twitterBar = [self createBarWithFrame:tw_barFrame logo:[UIImage imageNamed:TWITTER_LOGO] andTitle:@"Twitter"];
+    UIView * twitterBar = [self createBarWithFrame:tw_barFrame logo:[UIImage imageNamed:TWITTER_LOGO] andTitle:TWITTER_SHARE_TEXT];
     [self addSubview:twitterBar];
     
     
-    
+	//SMS BAR
     CGRect sms_barFrame = CGRectMake(0.f, twitterBar.frame.origin.y +
                                     twitterBar.frame.size.height +
                                     (remainingTopHeight/2.f) - (BAR_HEIGHT/2.f), self.frame.size.width, BAR_HEIGHT/2);
-    UIView * smsBar = [self createBarWithFrame:sms_barFrame logo:[UIImage imageNamed:SMS_ICON] andTitle:@"Sms Link"];
+    UIView * smsBar = [self createBarWithFrame:sms_barFrame logo:[UIImage imageNamed:SMS_ICON] andTitle:SMS_SHARE_TEXT];
     [self addSubview:smsBar];
     
     
-    
-    
-    
+	// COPY LINK BAR
     CGRect copyLink_barFrame = CGRectMake(0.f, smsBar.frame.origin.y +
                                     smsBar.frame.size.height +
                                     (remainingTopHeight/2.f) - (BAR_HEIGHT/2.f), self.frame.size.width, BAR_HEIGHT/2);
-    UIView * copyLinkBar = [self createBarWithFrame:copyLink_barFrame logo:[UIImage imageNamed:COPY_LINK_ICON] andTitle:@"Copy Link"];
+    UIView * copyLinkBar = [self createBarWithFrame:copyLink_barFrame logo:[UIImage imageNamed:COPY_LINK_ICON] andTitle:COPY_LINK_TEXT];
     [self addSubview:copyLinkBar];
     
     
@@ -95,14 +101,9 @@
     [verbatmView setImage:logo];
     
     CGRect labelFrame = CGRectMake(viewFrame.origin.x + viewFrame.size.width +
-                                          IMAGE_TEXT_SPACING, 0.f, imageHeight+ 50, imageHeight);
+                                          IMAGE_TEXT_SPACING, 0.f, imageHeight+ TEXT_LABEL_SIZE, imageHeight);
     UILabel * nameLabel = [[UILabel alloc] initWithFrame:labelFrame];
     [nameLabel setAttributedText:[self getButtonAttributeStringWithText:title]];
-    
-//    [nameLabel setText:title];
-//    [nameLabel setTextColor:[UIColor whiteColor]];
-    
-    
     
     CGRect buttonFrame = CGRectMake(frame.size.width - WALL_OFFSET_X *2,
                                     (imageHeight/2.f) - (SELECTION_BUTTON_WIDTH/2.f),
@@ -110,19 +111,19 @@
     
     SelectOptionButton * selectionButton = [[SelectOptionButton alloc] initWithFrame:buttonFrame];
     
-    if([title isEqualToString:@"Verbatm"]){
+    if([title isEqualToString:VERBATM_REBLOG_TEXT]){
         selectionButton.buttonSharingOption = Verbatm;
         
-    }else if ([title isEqualToString:@"Facebook"]){
+    }else if ([title isEqualToString:FACEBOOK_SHARE_TEXT]){
         selectionButton.buttonSharingOption = Facebook;
     }
-    else if ([title isEqualToString:@"Twitter"]){
+    else if ([title isEqualToString:TWITTER_SHARE_TEXT]){
         selectionButton.buttonSharingOption = TwitterShare;
     }
-    else if ([title isEqualToString:@"Sms Link"]){
+    else if ([title isEqualToString:SMS_SHARE_TEXT]){
         selectionButton.buttonSharingOption = Sms;
     }
-    else if ([title isEqualToString:@"Copy Link"]){
+    else if ([title isEqualToString:COPY_LINK_TEXT]){
         selectionButton.buttonSharingOption = CopyLink;
     }
     
@@ -138,7 +139,6 @@
     
     return ourBar;
 }
-
 
 -(NSAttributedString *)getButtonAttributeStringWithText:(NSString *)text{
     return [[NSAttributedString alloc] initWithString:text attributes:@{NSForegroundColorAttributeName:[UIColor whiteColor],
@@ -166,12 +166,8 @@
         [selectionButton setButtonSelected:NO];
         [self.sharingDelegate shareOptionDeselected:selectionButton.buttonSharingOption];
         self.selectedButton = nil;
-    }else{
-//        if(self.selectedButton){//only one button can be selected at once
-//            [self.sharingDelegate shareOptionDeselected:self.selectedButton.buttonSharingOption];
-//        }
-        
-        [selectionButton setButtonSelected:YES];
+    } else {
+		[selectionButton setButtonSelected:YES];
         [self.sharingDelegate shareOptionSelected:selectionButton.buttonSharingOption];
         
         self.selectedButton = selectionButton;

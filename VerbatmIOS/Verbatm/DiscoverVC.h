@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+
 @interface DiscoverVC : UITableViewController
 @property (nonatomic) BOOL onboardingBlogSelection;
-
 @end

@@ -13,6 +13,7 @@
 #import "Notifications.h"
 
 #import "LoginKeyboardToolBar.h"
+#import "LogIntoAccount.h"
 
 #import "SegueIDs.h"
 #import "SignInVC.h"
@@ -34,7 +35,13 @@
 #import "UserSetupParameters.h"
 #import "UserManager.h"
 
-@interface SignInVC () <UITextFieldDelegate, FBSDKLoginButtonDelegate, LoginKeyboardToolBarDelegate, UIScrollViewDelegate>
+#import "ChooseLoginOrSignup.h"
+#import "CreateAccount.h"
+#import "ConfirmationCodeSignUp.h"
+
+
+@interface SignInVC () <UIScrollViewDelegate,CreateAccountProtocol,
+                        ChooseLoginOrSignupProtocol, ConfirmationCodeSignUpDelegate, LogIntoAccountProtocol>
 
 @property (nonatomic) BOOL loginFirstTimeDone;
 @property (strong, nonatomic) UIView* animationView;
@@ -47,16 +54,26 @@
 @property (strong, nonatomic) FBSDKLoginButton *loginButton;
 
 @property (weak, nonatomic) IBOutlet UILabel *orLabel;
-@property (strong, nonatomic) LoginKeyboardToolBar *toolBar;
 @property (nonatomic) BOOL nextButtonEnabled;
 @property (weak, nonatomic) IBOutlet UITextField *phoneLoginField;
 @property (nonatomic) CGRect originalPhoneTextFrame;
 @property (nonatomic) BOOL enteringPhoneNumber;
-@property (strong, nonatomic) NSString *phoneNumber;
+@property (strong, nonatomic) NSString * phoneNumber;
+@property (strong, nonatomic) NSString * verbatmName;
+@property (strong, nonatomic) NSString * password;
 @property (nonatomic) BOOL firstTimeLoggingIn;
 
 @property (nonatomic) UIScrollView * onBoardingView;
 @property (nonatomic) UIScrollView * contentOnboardingPage;
+
+
+@property (nonatomic) LogIntoAccount * loginToAccountView;
+
+
+@property (nonatomic) ConfirmationCodeSignUp * confirmationCodeEntry;
+
+@property (nonatomic) ChooseLoginOrSignup * chooseLoginOrSignUpView;
+@property (nonatomic) CreateAccount * createAccountView;
 
 #define BRING_UP_CREATE_ACCOUNT_SEGUE @"create_account_segue"
 
@@ -69,24 +86,69 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	[self.backgroundImageView setFrame:self.view.bounds];
-	[self centerViews];
+    [self centerViews];
 	[self registerForNotifications];
-	[self registerForKeyboardNotifications];
-	[self addFacebookLoginButton];
+	//[self addFacebookLoginButton];
 	self.loginFirstTimeDone = NO;
 	self.enteringPhoneNumber = YES;
 	UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
 																		  action:@selector(keyboardDidHide:)];
 
 	[self.view addGestureRecognizer:tap];
-    
+    [self presentLoginSignUpOption];
     if(![[UserSetupParameters sharedInstance] checkOnboardingShown]){
         [self createOnBoarding];
     }else{
       [self.pageControlView removeFromSuperview];
     }
+    
     [self.view sendSubviewToBack:self.backgroundImageView];
 }
+
+
+-(void) centerViews {
+    self.verbatmLogoImageView.center = CGPointMake(self.view.center.x, self.verbatmLogoImageView.center.y);
+    self.welcomeLabel.center = CGPointMake(self.view.center.x, self.welcomeLabel.center.y + 4);
+    self.mobileBloggingLabel.center = CGPointMake(self.view.center.x, self.mobileBloggingLabel.center.y);
+    self.orLabel.center = CGPointMake(self.view.center.x, self.orLabel.center.y);
+    self.phoneLoginField.center = CGPointMake(self.view.center.x, self.phoneLoginField.center.y);
+    self.originalPhoneTextFrame = self.phoneLoginField.frame;
+}
+
+//forward == yes means that animation should go right to left (advancing to next screen)
+-(void)replaceView:(UIView *) currentView withView:(UIView *)nextView goingForward:(BOOL) forward{
+    
+    if(currentView && nextView){
+
+        if(forward){
+            nextView.frame = CGRectMake(self.view.frame.size.width, 0.f, nextView.frame.size.width, nextView.frame.size.height);
+            [self.view addSubview:nextView];
+        }else{
+            nextView.frame = CGRectMake(-self.view.frame.size.width, 0.f, nextView.frame.size.width, nextView.frame.size.height);
+            [self.view addSubview:nextView];
+        }
+        
+        [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
+            
+            if(forward){
+                currentView.frame = CGRectMake(- self.view.frame.size.width, 0.f, currentView.frame.size.width, currentView.frame.size.height);
+                nextView.frame = self.view.bounds;
+            }else{
+                currentView.frame = CGRectMake(self.view.frame.size.width, 0.f, currentView.frame.size.width, currentView.frame.size.height);
+                
+                nextView.frame = self.view.bounds;
+            }
+            
+        }];
+    }
+}
+
+-(void)presentLoginSignUpOption{
+    self.chooseLoginOrSignUpView = [[ChooseLoginOrSignup alloc] initWithFrame:self.view.bounds];
+    self.chooseLoginOrSignUpView.delegate = self;
+    [self.view addSubview:self.chooseLoginOrSignUpView];
+}
+
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     
@@ -162,41 +224,20 @@
 	return YES;
 }
 
--(void) centerViews {
-	self.verbatmLogoImageView.center = CGPointMake(self.view.center.x, self.verbatmLogoImageView.center.y);
-	self.welcomeLabel.center = CGPointMake(self.view.center.x, self.welcomeLabel.center.y + 4);
-	self.mobileBloggingLabel.center = CGPointMake(self.view.center.x, self.mobileBloggingLabel.center.y);
-	self.orLabel.center = CGPointMake(self.view.center.x, self.orLabel.center.y);
-	self.phoneLoginField.center = CGPointMake(self.view.center.x, self.phoneLoginField.center.y);
-	self.originalPhoneTextFrame = self.phoneLoginField.frame;
 
-	CGFloat loginToolBarHeight = TEXT_TOOLBAR_HEIGHT*1.5;
-	CGRect toolBarFrame = CGRectMake(0, self.view.frame.size.height - loginToolBarHeight,
-									 self.view.frame.size.width, loginToolBarHeight);
-	self.toolBar = [[LoginKeyboardToolBar alloc] initWithFrame:toolBarFrame];
-	self.toolBar.delegate = self;
-	[self.toolBar setNextButtonText:@"Next"];
-	self.nextButtonEnabled = YES;
-	self.phoneLoginField.inputAccessoryView = self.toolBar;
-	self.phoneLoginField.keyboardType = UIKeyboardTypePhonePad;
-	self.phoneLoginField.delegate = self;
+-(void)textNotAlphaNumericaCreateAccount{
+    [self alertTextNotAcceptable];
 }
 
--(void) setEnteringPhone {
-	self.enteringPhoneNumber = YES;
-	self.phoneLoginField.text = @"";
-	self.phoneLoginField.placeholder = @"Enter your phone number";
-	[self.toolBar setNextButtonText:@"Next"];
-	self.nextButtonEnabled = YES;
+-(void)alertTextNotAcceptable{
+    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Text Must Be Alphanumeric and you must create a name" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+                                                    handler:^(UIAlertAction * action) {}];
+    [newAlert addAction:action1];
+    [self presentViewController:newAlert animated:YES completion:nil];
 }
 
--(void) setEnteringCode {
-	self.enteringPhoneNumber = NO;
-	self.phoneLoginField.text = @"";
-	self.phoneLoginField.placeholder = @"Enter the 4-digit confirmation code:";
-	[self.toolBar setNextButtonText:@"Next"];
-	self.nextButtonEnabled = YES;
-}
 
 -(void) registerForNotifications {
 	[[NSNotificationCenter defaultCenter] addObserver:self
@@ -209,19 +250,7 @@
 											   object:nil];
 }
 
-- (void)registerForKeyboardNotifications {
 
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(keyboardWillShow:)
-												 name:UIKeyboardWillShowNotification
-											   object:nil];
-
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(keyboardWillHide:)
-												 name:UIKeyboardWillHideNotification
-											   object:nil];
-
-}
 
 
 # pragma mark - Format views -
@@ -232,57 +261,20 @@
 	float buttonHeight = self.loginButton.frame.size.height*1.5;
 	self.loginButton.frame = CGRectMake(self.view.center.x - buttonWidth/2.f, (self.view.frame.size.height/3.f) + 20.f,
 										buttonWidth, buttonHeight);
-	self.loginButton.delegate = self;
+	//self.loginButton.delegate = self;
 	self.loginButton.readPermissions = @[@"public_profile", @"email", @"user_friends"];
 	[self.view addSubview:self.loginButton];
 	[self.view bringSubviewToFront:self.loginButton];
 }
 
-#pragma mark - Keyboard moving up and down -
 
--(void) keyboardWillShow:(NSNotification*)notification {
-	[self.loginButton setHidden:YES];
-	[self.orLabel setHidden:YES];
-
-	CGFloat keyboardOffset = 0.f;
-	CGRect keyboardBounds;
-	[[notification.userInfo valueForKey:UIKeyboardFrameBeginUserInfoKey] getValue:&keyboardBounds];
-
-	CGFloat newYOrigin = (self.view.frame.size.height - keyboardBounds.size.height -
-						  self.phoneLoginField.frame.size.height - TEXT_TOOLBAR_HEIGHT - 50.f);
-	if (newYOrigin < self.phoneLoginField.frame.origin.y) {
-		keyboardOffset = self.phoneLoginField.frame.origin.y - newYOrigin;
-	}
-
-	[UIView animateWithDuration:0.2 animations:^{
-		self.phoneLoginField.frame = CGRectOffset(self.phoneLoginField.frame, 0, -keyboardOffset);
-	}];
-}
-
--(void) keyboardWillHide:(NSNotification*)notification {
-	[self.loginButton setHidden:NO];
-	[self.orLabel setHidden:NO];
-
-	[UIView animateWithDuration:0.2 animations:^{
-		self.phoneLoginField.frame = self.originalPhoneTextFrame;
-	}];
-}
 
 #pragma mark - Phone login Delegate -
 
--(void) nextButtonPressed {
-	if (!self.enteringPhoneNumber) {
-		[self codeEntered];
-		return;
-	}
-
+-(void) sendCodeToUser {
 	[self.phoneLoginField resignFirstResponder];
-	NSString *simplePhoneNumber = [self getSimpleNumberFromFormattedPhoneNumber:self.phoneLoginField.text];
-	//todo: accept more phone numbers
-	if (simplePhoneNumber.length != 10) {
-		[self showAlertWithTitle:@"Phone Login" andMessage:@"You must enter a 10-digit US phone number including area code."];
-		return;
-	}
+	NSString *simplePhoneNumber = self.phoneNumber;
+	
 
 	self.nextButtonEnabled = NO;
 
@@ -290,43 +282,30 @@
 	[findUserQuery whereKey:@"username" equalTo:simplePhoneNumber];
 	[findUserQuery getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable user, NSError * _Nullable error) {
 		if (user && !error) {
-			PFUser *currentUser = (PFUser*)user;
-			NSString *name = [currentUser objectForKey:VERBATM_USER_NAME_KEY];
-			if (name == nil) {
-				//User never finished signing in so delete them
-				[user deleteInBackground];
-			} else {
-				self.firstTimeLoggingIn = NO;
-				self.phoneNumber = simplePhoneNumber;
-				[self performSegueWithIdentifier:USER_SETTINGS_SEGUE sender:self];
-				return;
-			}
-		}
-		self.firstTimeLoggingIn = YES;
-		self.phoneNumber = simplePhoneNumber;
-		[self setEnteringCode];
+            [self showAlertWithTitle:@"An account with this phone already exists." andMessage:@"Use a different number."];
+             [self goBackFromEnteringConfirmation];
+        }else{
+            self.firstTimeLoggingIn = YES;
+            self.phoneNumber = simplePhoneNumber;
 
-		//todo: include more languages
-		NSDictionary *params = @{@"phoneNumber" : simplePhoneNumber, @"language" : @"en"};
-		[PFCloud callFunctionInBackground:@"sendCode" withParameters:params block:^(id  _Nullable response, NSError * _Nullable error) {
-			if (error) {
-				[[Crashlytics sharedInstance] recordError: error];
-				[self showAlertWithTitle:@"Error sending code" andMessage:@"Something went wrong. Please verify your phone number is correct."];
-				[self setEnteringPhone];
-				self.phoneLoginField.text = [self formatPhoneNumber:self.phoneNumber deleteLastChar:NO];
-				self.phoneNumber = nil;
-			} else {
-				// Parse has now created an account with this phone number and generated a random code,
-				// user must enter the correct code to be logged in
-			}
-		}];
+            //todo: include more languages
+            NSDictionary *params = @{@"phoneNumber" : simplePhoneNumber, @"language" : @"en"};
+            [PFCloud callFunctionInBackground:@"sendCode" withParameters:params block:^(id  _Nullable response, NSError * _Nullable error) {
+                if (error) {
+                    [[Crashlytics sharedInstance] recordError: error];
+                    [self showAlertWithTitle:@"Error sending code" andMessage:@"Something went wrong. Please verify your phone number is correct."];
+                } else {
+                    // Parse has now created an account with this phone number and generated a random code,
+                    // user must enter the correct code to be logged in
+                }
+            }];
+        }
 
 	}];
 }
 
--(void) codeEntered {
+-(void) codeEnteredWithPhoneNumber:(NSString *)number andCode:(NSString *)code{
 	self.nextButtonEnabled = NO;
-	NSString *code = self.phoneLoginField.text;
 	if (code.length != 4) {
 		NSString *message = @"You must enter a 4 digit confirmation code.\
 		It was sent in an SMS message to +1";
@@ -335,56 +314,39 @@
 		return;
 	}
 
-	NSDictionary *params = @{@"phoneNumber": self.phoneNumber, @"codeEntry": code};
+	NSDictionary *params = @{@"phoneNumber": number, @"codeEntry": code};
+    
+    __weak SignInVC * weakSelf = self;
+    
 	[PFCloud callFunctionInBackground:@"logIn" withParameters:params block:^(id  _Nullable object, NSError * _Nullable error) {
 		if (error) {
-			[self showAlertWithTitle:@"Login Error" andMessage: error.localizedDescription];
+			[weakSelf showAlertWithTitle:@"Login Error" andMessage: error.localizedDescription];
 		} else {
 			// This is the session token for the user
 			NSString *token = (NSString*)object;
 
 			[PFUser becomeInBackground:token block:^(PFUser * _Nullable user, NSError * _Nullable error) {
 				if (error) {
-					[self showAlertWithTitle:@"Login Error" andMessage:error.localizedDescription];
-					[self setEnteringCode];
+					[weakSelf showAlertWithTitle:@"Login Error" andMessage:error.localizedDescription];
 				} else {
-					//delete so they can be recreated
-					[user deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-						[self performSegueWithIdentifier:USER_SETTINGS_SEGUE sender:self];
-					}];
+                    user.username = number;
+                    user.password = self.password;
+                    [user setObject:self.verbatmName forKey:VERBATM_USER_NAME_KEY];
+                    [user setObject:[NSNumber numberWithBool:NO] forKey:USER_FTUE];
+                    [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+                        if (error || !succeeded) {
+                            [self showAlertWithTitle:@"Error signing up" andMessage: error.localizedDescription];
+                        } else {
+                            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
+                        }
+                    }];
 				}
 			}];
 		}
 	}];
 }
 
-#pragma mark - Facebook Button Delegate  -
 
-- (void)  loginButton:(FBSDKLoginButton *)loginButton
-didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
-				error:(NSError *)error {
-
-	if (error || result.isCancelled) {
-		[[Crashlytics sharedInstance] recordError:error];
-		[self errorInSignInAnimation: @"Facebook login failed."];
-		return;
-	}
-
-	//TODO(sierrakn): If any declined permissions are essential
-	//explain to user why and ask them to agree to each individually
-	//	NSSet* declinedPermissions = result.declinedPermissions;
-
-	//batch request for user info as well as friends
-	if ([FBSDKAccessToken currentAccessToken]) {
-		[[UserManager sharedInstance] signUpOrLoginUserFromFacebookToken: [FBSDKAccessToken currentAccessToken]];
-	} else {
-		[self errorInSignInAnimation: @"Facebook login failed."];
-	}
-}
-
-- (void)loginButtonDidLogOut:(FBSDKLoginButton *)loginButton {
-	[[UserManager sharedInstance] logOutUser];
-}
 
 #pragma mark - Notification methods -
 
@@ -392,6 +354,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	[self unwindToMasterVC];
 }
 
+// Only called for fb login errors now
 -(void) loginFailed: (NSNotification*) notification {
 	NSError* error = notification.object;
 	NSString* errorMessage;
@@ -416,6 +379,113 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 -(void) unwindToMasterVC {
 	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_LOGIN_TO_MASTER sender:self];
 }
+
+#pragma mark - CreateAccount Protocol-
+-(void)errorInSignInWithError:(NSString *)error{
+    [self errorInSignInWithError:error];
+}
+
+-(void)loginWithFacebookSucceeded{
+    
+}
+
+-(void)signUpWithPhoneNumberSelectedWithNumber:(NSString *) phoneNumber
+                                   andPassword:(NSString *)password andName:(NSString *) verbatmName {
+
+    self.phoneNumber = phoneNumber;
+    self.verbatmName = verbatmName;
+    self.password = password;
+    self.confirmationCodeEntry.phoneNumberEntered = phoneNumber;
+    [self sendCodeToUser];
+    [self replaceView:self.createAccountView withView:self.confirmationCodeEntry goingForward:YES];
+    
+}
+-(void)phoneNumberTooShortCreateAccount{
+    [self showAlertWithTitle:@"Please reformat your phone number" andMessage:@"Make sure it only contains numbers, spaces and is 10 characters long."];
+}
+
+-(void)phoneNumberWrongFormatCreateAccount{
+    [self showAlertWithTitle:@"Phone Login" andMessage:@"You must enter a 10-digit US phone number including area code."];
+}
+-(void)verbatmNameWrongFormatCreateAccount{
+    [self showAlertWithTitle:@"Your name can only be letters, numbers and an underscore." andMessage:@""];
+}
+-(void)noPasswordEnteredCreateAccount{
+    [self showAlertWithTitle:@"Please enter characters for your password." andMessage:@""];
+}
+
+-(void)goBackSelectedCreateAccount{
+    [self replaceView:self.createAccountView withView:self.chooseLoginOrSignUpView goingForward:NO];
+    
+}
+
+-(void)codeSubmitted:(NSString *) enteredCode{
+    [self codeEnteredWithPhoneNumber:self.phoneNumber andCode:enteredCode];
+}
+
+#pragma mark -LogIntoAccount Protocol-
+-(void)goBackSelectedLoginAccount{
+    [self replaceView:self.loginToAccountView withView:self.chooseLoginOrSignUpView goingForward:NO];
+}
+
+-(void)textNotAlphaNumericaLoginAccount{
+     [self alertTextNotAcceptable];
+}
+
+
+-(void)phoneNumberNotCorrect{
+    [self showAlertWithTitle:@"Please reformat your phone number." andMessage: @"Make sure it only contains numbers, spaces and is 10 characters long."];
+}
+
+-(void)passwordIsOnlySpaces{
+    [self showAlertWithTitle:@"Please insert characters into the password field." andMessage: @""];
+}
+
+
+-(void)loginUpWithPhoneNumberSelectedWithNumber:(NSString *) phoneNumber andPassword:(NSString *)password{
+    [PFUser logInWithUsernameInBackground:phoneNumber password:password block:^(PFUser * _Nullable user, NSError * _Nullable error) {
+        if (error || !user) {
+            [self showAlertWithTitle:@"Incorrect password" andMessage: @"Please try again"];
+        } else {
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
+        }
+    }];
+}
+
+-(void)errorInLogInWithError:(NSString *)error{
+    
+}
+
+
+
+-(void)goBackFromEnteringConfirmation{
+    [self replaceView:self.confirmationCodeEntry  withView:self.createAccountView goingForward:NO];
+}
+
+#pragma mark -ConfirmationCodeSignup Protocol-
+-(void)goBackSelectedConfirmationCode{
+    [self goBackFromEnteringConfirmation];
+}
+
+-(void)resendCodeSelectedConfirmationCode{
+    
+}
+
+-(void)codeSubmittedConfirmationCode:(NSString *) enteredCode{
+    [self codeEnteredWithPhoneNumber:self.phoneNumber andCode:enteredCode];
+}
+
+
+#pragma mark -ChooseLoginOrSignUp Protocol-
+
+-(void)signUpChosen{
+    [self replaceView:self.chooseLoginOrSignUpView withView:self.createAccountView goingForward:YES];
+}
+-(void)loginChosen{
+    [self replaceView:self.chooseLoginOrSignUpView withView:self.loginToAccountView goingForward:YES];
+}
+
+
 
 #pragma mark - Error message animation -
 
@@ -465,70 +535,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	}
 }
 
-#pragma mark - Formatting phone number -
-
-- (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
-	if (self.enteringPhoneNumber) {
-		[self setEnteringPhone];
-	}
-	return YES;
-}
-
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-	NSString* totalString = [NSString stringWithFormat:@"%@%@",textField.text,string];
-
-	// if it's the phone number textfield format it.
-	if(textField == self.phoneLoginField && self.enteringPhoneNumber) {
-		if (range.length == 1) {
-			// Delete button was hit.. so tell the method to delete the last char.
-			textField.text = [self formatPhoneNumber:totalString deleteLastChar:YES];
-		} else {
-			textField.text = [self formatPhoneNumber:totalString deleteLastChar:NO];
-		}
-		return NO;
-	}
-	return YES;
-}
-
--(NSString*) formatPhoneNumber:(NSString*) number deleteLastChar:(BOOL)deleteLastChar {
-
-	if(number.length==0) return @"";
-	NSString *simpleNumber = [self getSimpleNumberFromFormattedPhoneNumber:number];
-
-	// check if the number is too long
-	if(simpleNumber.length > 10) {
-		simpleNumber = [simpleNumber substringToIndex:10];
-	}
-
-	// should we delete the last digit?
-	if(deleteLastChar) {
-		simpleNumber = [simpleNumber substringToIndex:[simpleNumber length] - 1];
-	}
-
-	// 123 456 7890
-	// format the number.. if it's less then 7 digits.. then use this regex.
-	if(simpleNumber.length < 7) {
-		simpleNumber = [simpleNumber stringByReplacingOccurrencesOfString:@"(\\d{3})(\\d+)"
-															   withString:@"($1) $2"
-																  options:NSRegularExpressionSearch
-																	range:NSMakeRange(0, [simpleNumber length])];
-
-	} else {  // else do this one..
-		simpleNumber = [simpleNumber stringByReplacingOccurrencesOfString:@"(\\d{3})(\\d{3})(\\d+)"
-															   withString:@"($1) $2-$3"
-																  options:NSRegularExpressionSearch
-																	range:NSMakeRange(0, [simpleNumber length])];
-	}
-	return simpleNumber;
-}
-
--(NSString*) getSimpleNumberFromFormattedPhoneNumber:(NSString*)formattedPhoneNumber {
-	// use regex to remove non-digits(including spaces) so we are left with just the numbers
-	NSError *error = NULL;
-	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[\\s-\\(\\)]" options:NSRegularExpressionCaseInsensitive error:&error];
-	NSString* simpleNumber = [regex stringByReplacingMatchesInString:formattedPhoneNumber options:0 range:NSMakeRange(0, [formattedPhoneNumber length]) withTemplate:@""];
-	return simpleNumber;
-}
 
 #pragma mark - Lazy Instantiation -
 
@@ -567,18 +573,49 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 //lazy instantiation
 -(UILabel *)animationLabel {
-	if(!_animationLabel)_animationLabel = [[UILabel alloc] init];
+    if(!_animationLabel){
+            _animationLabel = [[UILabel alloc] init];
 
-	_animationLabel.frame = CGRectMake(0, self.view.bounds.size.height/2.f - SIGN_IN_ERROR_VIEW_HEIGHT/2.f,
-									   self.view.bounds.size.width, SIGN_IN_ERROR_VIEW_HEIGHT);
-	_animationLabel.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
-	_animationLabel.font = [UIFont fontWithName:REGULAR_FONT size:ERROR_ANIMATION_FONT_SIZE];
-	_animationLabel.textColor = [UIColor ERROR_ANIMATION_TEXT_COLOR];
-	_animationLabel.numberOfLines = 0;
-	_animationLabel.lineBreakMode = NSLineBreakByWordWrapping;
-	[_animationLabel setTextAlignment:NSTextAlignmentCenter];
+        _animationLabel.frame = CGRectMake(0, self.view.bounds.size.height/2.f - SIGN_IN_ERROR_VIEW_HEIGHT/2.f,
+                                           self.view.bounds.size.width, SIGN_IN_ERROR_VIEW_HEIGHT);
+        _animationLabel.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+        _animationLabel.font = [UIFont fontWithName:REGULAR_FONT size:ERROR_ANIMATION_FONT_SIZE];
+        _animationLabel.textColor = [UIColor ERROR_ANIMATION_TEXT_COLOR];
+        _animationLabel.numberOfLines = 0;
+        _animationLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        [_animationLabel setTextAlignment:NSTextAlignmentCenter];
+    }
 	return _animationLabel;
 }
+
+-(LogIntoAccount *)loginToAccountView{
+    if(!_loginToAccountView){
+        _loginToAccountView = [[LogIntoAccount alloc] initWithFrame:self.view.bounds];
+        _loginToAccountView.delegate = self;
+    }
+    return _loginToAccountView;
+}
+
+-(CreateAccount *)createAccountView{
+    if(!_createAccountView){
+        _createAccountView = [[CreateAccount alloc] initWithFrame:self.view.bounds];
+        _createAccountView.delegate = self;
+    }
+    return _createAccountView;
+}
+
+
+
+-(ConfirmationCodeSignUp *)confirmationCodeEntry{
+    if(!_confirmationCodeEntry){
+        _confirmationCodeEntry = [[ConfirmationCodeSignUp alloc] initWithFrame:self.view.bounds];
+        _confirmationCodeEntry.delagate = self;
+    }
+    return _confirmationCodeEntry;
+}
+
+
+
 
 -(void)keyboardDidHide:(UITapGestureRecognizer *)gesture
 {
@@ -594,6 +631,11 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
         [self.phoneLoginField resignFirstResponder];
     }
 
+}
+
+- (UIInterfaceOrientationMask) supportedInterfaceOrientations {
+    //return supported orientation masks
+    return UIInterfaceOrientationMaskPortrait;
 }
 
 - (void)dealloc {

@@ -73,6 +73,122 @@ Parse.Cloud.define("logIn", function(req, res) {
 	}
 });
 
+// Sets default values to num follows and num following
+Parse.Cloud.beforeSave("ChannelClass", function(request, response) {
+  if (!request.object.get("ChannelNumFollows")) {
+    request.object.set("ChannelNumFollows", 0);
+  }
+  if (!request.object.get("ChannelNumFollowing")) {
+  	request.object.set("ChannelNumFollowing", 0);
+  }
+  if (!request.object.get("Featured")) {
+  	request.object.set("Featured", false);
+  }
+  response.success();
+});
+
+// Do not allow duplicate follows, likes, or notifications
+var NotificationClass = Parse.Object.extend("NotificationClass");
+var LikeClass = Parse.Object.extend("LikeClass");
+var FollowClass = Parse.Object.extend("FollowClass");
+
+/*
+NewFollower = 1 << 0, 			// 1
+Like = 1 << 1, 					// 2
+FriendJoinedVerbatm = 1 << 2, 	// 4
+Share = 1 << 3, 				// 8
+FriendsFirstPost = 1 << 4, 		// 16
+Reblog = 1 << 5 				// 32
+*/
+
+Parse.Cloud.beforeSave("NotificationClass", function(request, response) {
+	// Let existing object updates go through
+	if (!request.object.isNew()) {
+      response.success();
+    }
+	var query = new Parse.Query(NotificationClass);
+	var notificationSender = request.object.get("NotificationSender");
+	query.equalTo("NotificationSender", notificationSender);
+	query.equalTo("NotificationReceiver", request.object.get("NotificationReceiver"));
+	var notificationType = request.object.get("NotificationType");
+	query.equalTo("NotificationType", notificationType);
+	// If this is a like or a share notification
+	if (notificationType == 2 || notificationType == 8 || notificationType == 32) {
+		query.equalTo("NotificationPost", request.object.get("NotificationPost"));
+	}
+	query.first().then(function(existingObject) {
+      if (existingObject) {
+        response.error("Existing notification");
+      } else { 
+      	// Send a push notification
+	  	var pushQuery = new Parse.Query(Parse.Installation);
+	  	pushQuery.equalTo('deviceType', 'ios');
+	    var notificationText = "";
+	    if (notificationType == 1) {
+	    	notificationText =  notificationSender + " is now following you!";
+	    } else if (notificationType == 2) {
+	    	notificationText = notificationSender + " has liked your post!";
+	    } else if (notificationType == 4) {
+	    	notificationText = "Your friend " + notificationSender + " has joined Verbatm";
+	    } else if (notificationType == 8) {
+	    	notificationText = notificationSender + " shared your post on social media!";
+	    } else if (notificationType == 16) {
+	    	notificationText = notificationSender + " just created their first Verbatm post";
+	    } else if (notificationType == 32) {
+	    	notificationText = notificationSender + " reblogged your post!";
+	    }
+		  Parse.Push.send({
+		    where: pushQuery, // Set our Installation query
+		    data: {
+		      alert: notificationText
+		    }
+		  }, {
+		    success: function() {
+		      // Push was successful
+		    },
+		    error: function(error) {
+		      throw "Got an error " + error.code + " : " + error.message;
+		    }
+		  });
+        response.success();
+      }
+    });
+});
+
+Parse.Cloud.beforeSave("LikeClass", function(request, response) {
+	// Let existing object updates go through
+	if (!request.object.isNew()) {
+      response.success();
+    }
+	var query = new Parse.Query(LikeClass);
+	query.equalTo("UserLiking", request.object.get("UserLiking"));
+	query.equalTo("PostLiked", request.object.get("PostLiked"));
+	query.first().then(function(existingObject) {
+      if (existingObject) {
+        response.error("Existing like");
+      } else {
+        response.success();
+      }
+    });
+});
+
+Parse.Cloud.beforeSave("FollowClass", function(request, response) {
+	// Let existing object updates go through
+	if (!request.object.isNew()) {
+      response.success();
+    }
+	var query = new Parse.Query(FollowClass);
+	query.equalTo("ChannelFollowed", request.object.get("ChannelFollowed"));
+	query.equalTo("UserFollowing", request.object.get("UserFollowing"));
+	query.first().then(function(existingObject) {
+      if (existingObject) {
+        response.error("Existing follow object");
+      } else {
+        response.success();
+      }
+    });
+});
+
 function sendCodeSms(phoneNumber, code, language) {
 	var prefix = "+1";
 	if(typeof language !== undefined && language == "ja") {

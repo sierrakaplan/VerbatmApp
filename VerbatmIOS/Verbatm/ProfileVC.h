@@ -16,8 +16,10 @@
 @protocol ProfileVCDelegate <NSObject>
 
 -(void) showTabBar: (BOOL) show;
+
 @optional
 -(void) userCreateFirstPost;
+
 @end
 
 @interface ProfileVC : UIViewController
@@ -28,7 +30,6 @@
 
 @property (weak, nonatomic) PFUser* ownerOfProfile;
 @property (nonatomic) Channel* channel; 
-@property (nonatomic) NSDate *startingDate;
 
 //let us know if this is the profile of the logged in user
 @property (nonatomic) BOOL isCurrentUserProfile;

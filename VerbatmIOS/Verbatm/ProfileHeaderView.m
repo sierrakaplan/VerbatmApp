@@ -7,6 +7,7 @@
 //
 
 #import "Channel.h"
+#import <Crashlytics/Crashlytics.h>
 
 #import "Icons.h"
 
@@ -21,6 +22,8 @@
 #import "Styles.h"
 
 #import "UIView+Effects.h"
+#import "UserManager.h"
+#import "UserSetupParameters.h"
 
 @interface ProfileHeaderView() <ProfileInformationBarDelegate, UITextViewDelegate>
 
@@ -42,7 +45,13 @@
 @property (nonatomic) UIButton * changeCoverPhoto;
 @property (nonatomic) UIImageView * coverPhotoView;
 @property (nonatomic) UIImageView * flippedCoverPhoto;
-@property (nonatomic) UIView * coverView;
+@property (nonatomic) UIView * transparentTintCoverView;
+
+@property (nonatomic) UIImageView * profileInConstructionNotification;
+
+@property (nonatomic) UIImageView * feedbackRequestNotification;
+
+
 
 #define OFFSET_X 5.f
 #define OFFSET_Y 10.f
@@ -57,9 +66,13 @@
 #define TITLE_MAX_CHARACTERS 27.f
 #define DESCRIPTION_MAX_CHARACTERS 250
 
-#define COVER_PHOTO_HEIGHT 25.f
+#define CHANGE_COVER_PHOTO_HEIGHT 25.f
 
 #define COVER_PHOTO_IMAGE_RATIO (351.f/106.f)
+
+
+#define COVER_PHOTO_DIRECTORY_PATH [NSHomeDirectory() stringByAppendingString:@"/Library/Caches/verbatmCoverPhoto.png"]
+#define COVER_PHOTO_URL_KEY @"CoverPhotoUrlKey"
 @end
 
 @implementation ProfileHeaderView
@@ -73,7 +86,7 @@
 		self.isCurrentUser = (user == nil);
 		self.editMode = NO;
 		self.backgroundColor = [UIColor clearColor];
-		CGRect userInfoBarFrame = CGRectMake(0.f, 0.f, frame.size.width,STATUS_BAR_HEIGHT + PROFILE_INFO_BAR_HEIGHT);
+		CGRect userInfoBarFrame = CGRectMake(0.f, 0.f, frame.size.width, STATUS_BAR_HEIGHT + PROFILE_INFO_BAR_HEIGHT);
 		self.userInformationBar = [[ProfileInformationBar alloc] initWithFrame:userInfoBarFrame andUser:user
 																	andChannel:channel inProfileTab:profileTab inFeed:inFeed];
 		self.userInformationBar.delegate = self;
@@ -81,12 +94,46 @@
 		[self createLabels];
 		[self checkForCoverPhoto];
 		[[NSNotificationCenter defaultCenter] addObserver:self
-												 selector:@selector(userNameChanged)
+                                                 selector:@selector(userNameChanged:)
 													 name:NOTIFICATION_USERNAME_CHANGED_SUCCESFULLY
 												   object:nil];
+        [self askForFeedback];
 	}
 	return self;
 }
+
+
+-(void)regiserForNotification{
+    
+}
+
+-(void)askForFeedback{
+    if(self.isCurrentUser && [[UserManager sharedInstance] shouldRequestForUserFeedback] &&
+       !self.feedbackRequestNotification &&
+       [[UserSetupParameters sharedInstance] checkAndSetProfileInstructionShown]){
+        self.feedbackRequestNotification = [[UIImageView alloc] initWithImage:[UIImage imageNamed:FEEDBACK_NOTIFICATION_ICON]];
+        
+        
+        CGFloat height = 150.f;
+        CGFloat width = FEEDBACK_NOTIFICATION_WidthHeight_RATIO * height;
+        CGFloat xOffset =self.frame.size.width - (width);
+        CGFloat yOffset = self.userInformationBar.frame.origin.y + 5.f +self.userInformationBar.frame.size.height/2.f;
+           
+        [self.feedbackRequestNotification setFrame:CGRectMake(xOffset, yOffset, width, height)];
+        [self addSubview:self.feedbackRequestNotification];
+        [self.feedbackRequestNotification addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeFeedbackNotification)]];
+        [self.feedbackRequestNotification setUserInteractionEnabled:YES];
+    }
+}
+
+
+-(void)removeFeedbackNotification{
+    if(self.feedbackRequestNotification){
+        [self.feedbackRequestNotification removeFromSuperview];
+        self.feedbackRequestNotification = nil;
+    }
+}
+
 
 -(void) createLabels {
 	CGRect userNameFrame = CGRectMake(OFFSET_X, self.userInformationBar.frame.origin.y +
@@ -106,33 +153,65 @@
 	self.blogDescription.lineBreakMode = NSLineBreakByWordWrapping;
 	self.blogDescription.numberOfLines = 5;
 
-	[self changeUserName];
-	[self changeBlogTitleToTitle:self.channel.name];
-	[self changeBlogDescription];
 	[self addSubview:self.userNameLabel];
 	[self addSubview:self.blogTitle];
 	[self addSubview:self.blogDescription];
+	[self presentUserNameFromCurrentChannel];
+	[self changeBlogTitleToTitle:self.channel.name];
+	[self changeBlogDescription];
 	if(self.isCurrentUser) {
 		[self addChangeCoverPhotoButton];
-	}
-	if (!self.blogTitle.text.length && self.isCurrentUser) {
-		[self editButtonSelected];
+		if (self.channel.defaultBlogName) {
+			[self editButtonSelected];
+		}
 	}
 }
 
--(void) userNameChanged {
-	NSString *newUserName = self.channelOwner[VERBATM_USER_NAME_KEY];
-	[self.channel.parseChannelObject setObject:newUserName forKey:CHANNEL_CREATOR_NAME_KEY];
-	[self.channel.parseChannelObject saveInBackground];
-	[self changeUserName];
+
+
+-(void)presentProfileUnderConstructionNotification{
+    if(!self.profileInConstructionNotification && !self.isCurrentUser){
+        self.profileInConstructionNotification = [[UIImageView alloc] initWithImage:[UIImage imageNamed:PROFILE_UNDER_CONSTRUCTION_ICON]];
+        [self.profileInConstructionNotification setFrame:self.bounds];
+        [self insertSubview:self.profileInConstructionNotification aboveSubview:self.transparentTintCoverView];
+    }
 }
 
--(void) changeUserName {
-	[self.channel.channelCreator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-		NSString * userName = [self.channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY];
-		self.userNameLabel.text = userName;
-		[self.userNameLabel setTextColor:[UIColor whiteColor]];
-	}];
+-(void)removeProfileConstructionNotification{
+    
+    if(self.profileInConstructionNotification)
+    {
+        [self.profileInConstructionNotification removeFromSuperview];
+        self.profileInConstructionNotification = nil;
+    }
+}
+
+
+-(void) userNameChanged: (NSNotification *) notification {
+    if(self.isCurrentUser){
+        [self changeUserNameToString:[notification object]];
+    }
+}
+
+-(void)presentUserNameFromCurrentChannel{
+    if (self.channel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY] && ((NSString*)self.channel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY]).length > 0) {
+        [self changeUserNameToString:self.channel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY]];
+    } else {
+        [self.channel.channelCreator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+            if (error) {
+                [[Crashlytics sharedInstance] recordError:error];
+            } else {
+                [self changeUserNameToString:[self.channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY]];
+            }
+        }];
+    }
+
+}
+
+-(void) changeUserNameToString:(NSString *) userName {
+    self.userNameLabel.text = userName;
+    [self.userNameLabel setTextColor:[UIColor whiteColor]];
+
 }
 
 -(void) changeBlogTitleToTitle:(NSString *) newTitle {
@@ -153,30 +232,107 @@
 }
 
 -(void)checkForCoverPhoto{
+    
 	//set default cover photo
-	[self createTopAndReflectionCoverImageFromImage:[UIImage imageNamed:NO_COVER_PHOTO_IMAGE]];
-
-	//Now look for cloud one
-	[self.channel loadCoverPhotoWithCompletionBlock:^(UIImage * coverPhoto) {
-
-		if([[NSThread currentThread] isMainThread]){
-			if(coverPhoto)[self createTopAndReflectionCoverImageFromImage:coverPhoto];
-		}else{
-			dispatch_async(dispatch_get_main_queue(), ^{
-				if(coverPhoto)[self createTopAndReflectionCoverImageFromImage:coverPhoto];
-			});
-		}
-	}];
-
+    UIImage * coverPhoto = (self.isCurrentUser) ? [self retrieveCoverPhotoFromCache] : nil;
+    if(coverPhoto){
+        [self createTopAndReflectionCoverImageFromImage:coverPhoto];
+    }else{
+        [self createTopAndReflectionCoverImageFromImage:[UIImage imageNamed:NO_COVER_PHOTO_IMAGE]];
+    }
+    
+    __weak ProfileHeaderView * weakSelf = self;
+    
+    if(!self.isCurrentUser || ([self newCoverPhotoAvailable] || !coverPhoto)){
+        //Now look for cloud one
+        [self.channel loadCoverPhotoWithCompletionBlock:^(UIImage * coverPhoto, NSData * coverPhotoData) {
+            if(weakSelf.isCurrentUser){
+                [weakSelf saveCoverPhotoDataToCache:coverPhotoData];
+                [[UserManager sharedInstance] holdCurrentCoverPhoto:coverPhoto];
+            }
+            if([[NSThread currentThread] isMainThread]){
+                if(coverPhoto && weakSelf)[weakSelf createTopAndReflectionCoverImageFromImage:coverPhoto];
+            }else{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if(coverPhoto && weakSelf)[weakSelf createTopAndReflectionCoverImageFromImage:coverPhoto];
+                });
+            }
+        }];
+    }
 }
+
+
+-(BOOL)newCoverPhotoAvailable{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString * cachedCoverPhotoUrl = [defaults valueForKey:COVER_PHOTO_URL_KEY];
+    NSString * currentCoverPhotoUrl =[self.channel getCoverPhotoUrl];
+    if(cachedCoverPhotoUrl && currentCoverPhotoUrl &&
+       [cachedCoverPhotoUrl isEqualToString:currentCoverPhotoUrl]){
+//        NSLog(@"Loaded Cover photo URL from user defaults");
+        return NO;
+    }
+    return YES;
+}
+
+-(void)storeNewUrl{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString * currentCoverPhotoUrl = [self.channel getCoverPhotoUrl];
+    if(currentCoverPhotoUrl){
+        [defaults setObject:currentCoverPhotoUrl forKey:COVER_PHOTO_URL_KEY];
+//        NSLog(@"Stored new Cover photo URL to user defaults");
+    }
+}
+
+
+
+-(BOOL)saveCoverPhotoDataToCache:(NSData *) imageData{
+    
+    NSString* path = COVER_PHOTO_DIRECTORY_PATH;
+    BOOL pathCreated = [[NSFileManager defaultManager] createFileAtPath:path
+                                                      contents:nil attributes:nil];
+    if (pathCreated){
+        NSFileHandle* myFileHandle = [NSFileHandle fileHandleForWritingAtPath:path];
+        [myFileHandle writeData:imageData];
+        [myFileHandle closeFile];
+         NSLog(@"Image saved to file: %@", path);
+        [self storeNewUrl];
+        return YES;
+    
+    }
+    NSLog(@"Error creating file: %@", path);
+    return NO;
+}
+
+
+-(UIImage *)retrieveCoverPhotoFromCache{
+    
+    UIImage* coverPhoto = [[UserManager sharedInstance] getCurrentCoverPhoto];
+    if(coverPhoto){
+        return coverPhoto;
+    }
+    
+    NSFileHandle* myFileHandle = [NSFileHandle fileHandleForReadingAtPath:COVER_PHOTO_DIRECTORY_PATH];
+    
+    if(myFileHandle) {
+         coverPhoto = [UIImage imageWithData:[myFileHandle readDataToEndOfFile]];
+//        NSLog(@"Cover photo loaded from cache");
+    }else{
+//        NSLog(@"Cover photo failed to load from cache");
+    }
+    [[UserManager sharedInstance] holdCurrentCoverPhoto:coverPhoto];
+    return coverPhoto;
+}
+
 
 -(void)addChangeCoverPhotoButton {
 	self.changeCoverPhoto = [[UIButton alloc] init];
 	[self.changeCoverPhoto setImage:[UIImage imageNamed:ADD_COVER_PHOTO_ICON] forState:UIControlStateNormal];
 
-	CGFloat coverPhotoIconWidth = COVER_PHOTO_IMAGE_RATIO * COVER_PHOTO_HEIGHT;
-
-	self.changeCoverPhoto.frame = CGRectMake(self.frame.size.width - (coverPhotoIconWidth+OFFSET_X), self.frame.size.width - (COVER_PHOTO_HEIGHT + TAB_BAR_HEIGHT + OFFSET_X),coverPhotoIconWidth, COVER_PHOTO_HEIGHT);
+	CGFloat coverPhotoIconWidth = COVER_PHOTO_IMAGE_RATIO * CHANGE_COVER_PHOTO_HEIGHT;
+    CGFloat y_position = self.frame.size.height - self.frame.size.width - CHANGE_COVER_PHOTO_HEIGHT;
+    CGFloat x_position = self.frame.size.width - (coverPhotoIconWidth+OFFSET_X);
+    
+	self.changeCoverPhoto.frame = CGRectMake(x_position, y_position,coverPhotoIconWidth, CHANGE_COVER_PHOTO_HEIGHT);
 	[self addSubview:self.changeCoverPhoto];
 	[self.changeCoverPhoto addTarget:self action:@selector(coverPhotoButtonSelected) forControlEvents:UIControlEventTouchUpInside];
 }
@@ -189,7 +345,7 @@
 -(void)createTopAndReflectionCoverImageFromImage:(UIImage *)coverPhotoImage{
 	[self.coverPhotoView setImage:coverPhotoImage];
 	self.coverPhotoView.contentMode = UIViewContentModeScaleAspectFit;
-	[self insertSubview:self.coverView aboveSubview:self.coverPhotoView];
+	[self insertSubview:self.transparentTintCoverView aboveSubview:self.coverPhotoView];
 	[self.flippedCoverPhoto setImage:coverPhotoImage];
 	self.flippedCoverPhoto.transform = CGAffineTransformMakeRotation(M_PI);
 	[self.flippedCoverPhoto createBlurViewOnViewWithStyle:UIBlurEffectStyleDark];
@@ -198,6 +354,7 @@
 -(void)setCoverPhotoImage:(UIImage *) coverPhotoImage{
 	[self createTopAndReflectionCoverImageFromImage:coverPhotoImage];
 	[self.channel storeCoverPhoto:coverPhotoImage];
+    [[UserManager sharedInstance]holdCurrentCoverPhoto:coverPhotoImage];
 }
 
 #pragma mark - Profile Info Bar Delegate methods -
@@ -209,7 +366,10 @@
 
 -(void) editButtonSelected {
 	// Don't allow user to exit edit mode if their blog has no title
-	if (self.editMode && !self.blogTitleEditable.text.length) return;
+	if (self.editMode && !self.blogTitleEditable.text.length) {
+		[self.delegate editDoneButtonClickedWithoutName];
+		return;
+	}
 	self.editMode = !self.editMode;
 	[self.userInformationBar changeEditMode: self.editMode];
 	if (self.editMode) {
@@ -397,14 +557,19 @@
 	}
 	return _flippedCoverPhoto;
 }
--(UIView *)coverView{
-	if(!_coverView){
-		_coverView = [[UIView alloc] initWithFrame: self.coverPhotoView.frame];
-		_coverView.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.5];
-		[self insertSubview:_coverView aboveSubview:self.coverPhotoView];
+
+-(UIView *)transparentTintCoverView{
+	if(!_transparentTintCoverView){
+		_transparentTintCoverView = [[UIView alloc] initWithFrame: self.coverPhotoView.frame];
+		_transparentTintCoverView.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.5];
+		[self insertSubview:_transparentTintCoverView aboveSubview:self.coverPhotoView];
 	}
-	return _coverView;
+	return _transparentTintCoverView;
 }
+
+-(void)dealloc{
+}
+
 
 @end
 

@@ -13,7 +13,10 @@
 #import "PublishingProgressView.h"
 #import "PostCollectionViewCell.h"
 #import "Share_BackendManager.h"
+#import "SizesAndPositions.h"
 #import "UIView+Effects.h"
+#import "Icons.h"
+
 @interface PostCollectionViewCell () <PostViewDelegate>
 
 @property (nonatomic, readwrite) PFObject *currentPostActivityObject;
@@ -27,146 +30,187 @@
 @property (nonatomic) PublishingProgressView * publishingProgressView;
 @property (nonatomic) BOOL hasPublishingView;
 @property (nonatomic) BOOL hasShadow;
+
+@property (nonatomic) UIImageView * tapToExitNotification;
+//temp
+@property (nonatomic) UIView * dot;
 @end
 
 @implementation PostCollectionViewCell
 
--(instancetype)initWithFrame:(CGRect)frame{
+-(instancetype)initWithFrame:(CGRect)frame {
     
 	self = [super initWithFrame:frame];
 	if (self) {
-        self.backgroundColor = [UIColor clearColor];
+        
+		self.backgroundColor = [UIColor clearColor];
 		[self clearViews];
-        [self setClipsToBounds:YES];
-	}
+		[self setClipsToBounds:NO];
+        [self.layer setCornerRadius:POST_VIEW_CORNER_RADIUS];
+
+    }
+    
 	return self;
+    
 }
 
 -(void) clearViews {
 	if (self.currentPostView) {
 		[self.currentPostView removeFromSuperview];
 	}
+
+	[self removePublishingProgress];
     
-    [self removePublishingProgress];
-    @autoreleasepool {
-        self.currentPostView = nil;
-        self.currentPostActivityObject = nil;
-        self.postBeingPresented = nil;
-       
-    }
-    self.isOnScreen = NO;
-    self.isAlmostOnScreen = NO;
+	@autoreleasepool {
+		self.currentPostView = nil;
+		self.currentPostActivityObject = nil;
+		self.postBeingPresented = nil;
+	}
+    
+	self.isOnScreen = NO;
+	self.isAlmostOnScreen = NO;
 }
 
 -(void) layoutSubviews {
 	self.currentPostView.frame = self.bounds;
-    if(!self.hasShadow){
-        //[self addShadowToView];
-        self.hasShadow = YES;
-    }
+	if(!self.hasShadow){
+		//[self addShadowToView];
+		self.hasShadow = YES;
+	}
 }
 
 -(void)presentPublishingView{
-    [self addSubview:self.publishingProgressView];
-    self.hasPublishingView = YES;
+    if(self.presentingTapToExitNotification){
+        [self insertSubview:self.publishingProgressView belowSubview:self.tapToExitNotification];
+    }else{
+        [self addSubview:self.publishingProgressView];
+    }
+	self.hasPublishingView = YES;
 }
 
 -(void)removePublishingProgress{
-    if(_publishingProgressView != nil){
-        [self.publishingProgressView removeFromSuperview];
-        @autoreleasepool {
-            _publishingProgressView = nil;
-        }
-
-    }
+	if(_publishingProgressView != nil){
+		[self.publishingProgressView removeFromSuperview];
+		@autoreleasepool {
+			_publishingProgressView = nil;
+		}
+	}
 }
-
-
 
 -(void) presentPostFromPCActivityObj: (PFObject *) pfActivityObj andChannel:(Channel*) channelForList
 					withDeleteButton: (BOOL) withDelete andLikeShareBarUp:(BOOL) up {
-    
-    [self removePublishingProgress];
-    self.hasPublishingView = NO;
-    self.footerUp = up;
+
+	[self removePublishingProgress];
+	self.hasPublishingView = NO;
+	self.footerUp = up;
 	self.currentPostActivityObject = pfActivityObj;
 	PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
-	[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
-		self.currentPostView = [[PostView alloc] initWithFrame:self.bounds
-								andPostChannelActivityObject:pfActivityObj small:self.inSmallMode andPageObjects:pages];
 
-        if(self.inSmallMode)[self.currentPostView muteAllVideos:YES];
+	__weak PostCollectionViewCell *weakSelf = self;
+
+	[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
+		weakSelf.currentPostView = [[PostView alloc] initWithFrame:weakSelf.bounds
+									  andPostChannelActivityObject:pfActivityObj small:weakSelf.inSmallMode andPageObjects:pages];
+
+		if(weakSelf.inSmallMode)[weakSelf.currentPostView muteAllVideos:YES];
 		NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
-		if (self.isOnScreen) {
-			[self.currentPostView postOnScreen];
-		} else if (self.isAlmostOnScreen) {
-			[self.currentPostView postAlmostOnScreen];
+		if (weakSelf.isOnScreen) {
+			[weakSelf.currentPostView postOnScreen];
+		} else if (weakSelf.isAlmostOnScreen) {
+			[weakSelf.currentPostView postAlmostOnScreen];
 		} else {
-			[self.currentPostView postOffScreen];
+			[weakSelf.currentPostView postOffScreen];
 		}
-		self.currentPostView.delegate = self;
-		self.currentPostView.listChannel = channelForList;
-		[self addSubview: self.currentPostView];
-        self.currentPostView.inSmallMode = self.inSmallMode;
-        
-        if(!self.inSmallMode){
-            AnyPromise *likesPromise = [Like_BackendManager numberOfLikesForPost:post];
-            AnyPromise *sharesPromise = [Share_BackendManager numberOfSharesForPost:post];
-            PMKWhen(@[likesPromise, sharesPromise]).then(^(NSArray *likesAndShares) {
-                NSNumber *numLikes = likesAndShares[0];
-                NSNumber *numShares = likesAndShares[1];
-                [self.currentPostView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
-                                                   numberOfPages:numberOfPages
-                                           andStartingPageNumber:@(1)
-                                                         startUp:up
-                                                withDeleteButton:withDelete];
-                [self.currentPostView addCreatorInfo];
-            });
+		weakSelf.currentPostView.delegate = weakSelf;
+		weakSelf.currentPostView.listChannel = channelForList;
+		
+        if(self.tapToExitNotification){
+            [weakSelf insertSubview:weakSelf.currentPostView belowSubview:self.tapToExitNotification];
+        }else{
+            [weakSelf addSubview: weakSelf.currentPostView];
         }
+		weakSelf.currentPostView.inSmallMode = weakSelf.inSmallMode;
+
+		if(!weakSelf.inSmallMode){
+			NSNumber *numLikes = post[POST_NUM_LIKES];
+			NSNumber *numShares = post[POST_NUM_REBLOGS];
+			[weakSelf.currentPostView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
+															   numberOfPages:numberOfPages
+													   andStartingPageNumber:@(1)
+																	 startUp:up
+															withDeleteButton:withDelete];
+			[weakSelf.currentPostView addCreatorInfo];
+		}
+        [weakSelf bringSubviewToFront:weakSelf.dot];
 	}];
 }
+
 -(void) showWhoLikesThePost:(PFObject *) post{
-    [self.cellDelegate showWhoLikesThePost:post];
+	[self.cellDelegate showWhoLikesThePost:post];
 }
 
 
 -(void)setInSmallMode:(BOOL)inSmallMode{
-    _inSmallMode = inSmallMode;
-    if(_currentPostView){
-        _currentPostView.inSmallMode = inSmallMode;
-    }
+	_inSmallMode = inSmallMode;
+	if(_currentPostView){
+		_currentPostView.inSmallMode = inSmallMode;
+	}
 }
 
 -(void) almostOnScreen {
 	self.isAlmostOnScreen = YES;
-    if(!self.hasPublishingView){
-        if(self.currentPostView){
-            [self.currentPostView postAlmostOnScreen];
-        }
-    }
+	if(!self.hasPublishingView){
+		if(self.currentPostView){
+			[self.currentPostView postAlmostOnScreen];
+		}
+	}
 }
 
 -(void) onScreen {
 	self.isOnScreen = YES;
 	self.isAlmostOnScreen = NO;
-    if(!self.hasPublishingView){
-        if(self.currentPostView) {
-            [self.currentPostView postOnScreen];
-        }
+	if(!self.hasPublishingView){
+		if(self.currentPostView) {
+			[self.currentPostView postOnScreen];
+		}
+	}
+}
+
+-(void)removeDot{
+    if(self.dot){
+        [self.dot removeFromSuperview];
+        self.dot = nil;
+    }
+}
+
+-(void)addDot{
+    if(self.dot){
+        [self bringSubviewToFront:self.dot];
+    }else{
+        self.dot = [[UIView alloc] initWithFrame:CGRectMake((self.frame.size.width - 15.f)/2.f,  -20.f, 15.f, 15.f)];
+        [self.dot setBackgroundColor:[UIColor colorWithRed:0.f/255.f  green:191.f/255.f blue:255.f/255.f  alpha:1.f]];
+        [self addSubview:self.dot];
+        [self.dot.layer setCornerRadius:7.5];
     }
 }
 
 -(void) offScreen {
-	self.isOnScreen = NO;
-    if(!self.hasPublishingView){
-        if(self.currentPostView) {
-            [self.currentPostView postOffScreen];
-        }
-    }else{
-        [self.publishingProgressView removeFromSuperview];
-        @autoreleasepool {
-            _publishingProgressView = nil;
-        }
+	[self clearViews];
+}
+
+-(void)presentTapToExitNotification{
+    self.tapToExitNotification = [[UIImageView alloc] initWithImage:[UIImage imageNamed:TAP_TO_EXIT_FULLSCREENPOV_INSTRUCTION]];
+    self.tapToExitNotification.frame = self.bounds;
+    [self addSubview:self.tapToExitNotification];
+    self.presentingTapToExitNotification = YES;
+}
+
+-(void)removeTapToExitNotification{
+    if(self.tapToExitNotification){
+        [self.tapToExitNotification removeFromSuperview];
+        self.tapToExitNotification = nil;
+        [self.cellDelegate justRemovedTapToExitNotification];
+        self.presentingTapToExitNotification = NO;
     }
 }
 
@@ -190,10 +234,13 @@
 }
 
 -(PublishingProgressView *)publishingProgressView{
-    if(!_publishingProgressView){
-        _publishingProgressView = [[PublishingProgressView alloc] initWithFrame:self.bounds];
-    }
-    return _publishingProgressView;
+	if(!_publishingProgressView){
+		_publishingProgressView = [[PublishingProgressView alloc] initWithFrame:self.bounds];
+	}
+	return _publishingProgressView;
+}
+
+-(void)dealloc{
 }
 
 @end

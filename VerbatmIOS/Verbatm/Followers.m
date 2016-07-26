@@ -100,7 +100,6 @@
 -(void) goToUserProfile:(PFUser *) user {
     [self.superview removeFromSuperview];
     ProfileVC *  userProfile = [[ProfileVC alloc] init];
-    userProfile.isCurrentUserProfile = NO;
     userProfile.isProfileTab = NO;
     userProfile.ownerOfProfile = user;
     

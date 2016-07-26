@@ -20,12 +20,8 @@
 
 -(void)hideNavBarIfPresent;
 -(void)channelSelected:(Channel *) channel;
-@end
 
-typedef enum PostListType {
-	listFeed = 0,
-	listChannel = 1,
-} PostListType;
+@end
 
 @interface PostListVC : UICollectionViewController
 
@@ -37,18 +33,23 @@ typedef enum PostListType {
 
 @property (nonatomic) BOOL inSmallMode;
 
+@property (nonatomic) NSDate *latestPostSeen;
+
 @property (nonatomic, readonly) NSMutableArray * parsePostObjects;
 @property (nonatomic) BOOL currentlyPublishing;
 
 
--(void) display:(Channel*)channelForList asPostListType:(PostListType)listType
-  withListOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile
+-(void) display:(Channel*)channelForList withListOwner:(PFUser*)listOwner
+isCurrentUserProfile:(BOOL)isCurrentUserProfile
 andStartingDate:(NSDate*)date;
 
+// Used when we already have the posts to display
+-(void) display:(Channel*)channelForList withListOwner:(PFUser*)listOwner
+isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date
+withOldParseObjects:(NSMutableArray *)newParseObjects;
 
-//used when a cell view is tapped and we need to create a new postlist VC from an older one
--(void) loadPostListFromOlPostListWithDisplay:(Channel*)channelForList postListType:(PostListType)listType
-                                    listOwner:(PFUser*)listOwner isCurrentUserProfile:(BOOL)isCurrentUserProfile startingDate:(NSDate*)date andParseObjects:(NSMutableArray *)newParseObjects;
+-(void) updateInSmallMode: (BOOL) smallMode;
+
 -(void) clearViews;
 
 //marks all posts as off screen
@@ -56,9 +57,9 @@ andStartingDate:(NSDate*)date;
 
 -(void) refreshPosts;
 
--(void) loadMorePosts;
-
 //moves the tap/share bar up and down over the tab bar
 -(void) footerShowing: (BOOL) showing;
--(void)startMonitoringPublishing;
+
+-(void) startMonitoringPublishing;
+
 @end

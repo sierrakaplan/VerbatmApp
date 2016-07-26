@@ -11,16 +11,47 @@
 #import "Notifications.h"
 #import "zlib.h"
 #include <compression.h>
+#import "Channel.h"
+
 @import AVFoundation;
 @import Foundation;
 
 @interface UtilityFunctions ()
-#define COMPRESSING 0
-@end
 
+@property (strong, nonatomic) NSMutableArray *sessionTasks;
+@property (strong, nonatomic) NSCondition * cancelSessionCondition;
+
+#define COMPRESSING 0
+
+@end
 
 @implementation UtilityFunctions
 
++ (id)sharedInstance {
+	static UtilityFunctions *sharedInstance = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		sharedInstance = [[UtilityFunctions alloc] init];
+
+	});
+	return sharedInstance;
+}
+
++(NSString*) stripLargePhotoSuffix:(NSString*)photoUrl {
+	NSString * suffix = @"=s0";
+	if ([photoUrl hasSuffix:suffix] ) {
+		return [photoUrl substringWithRange:NSMakeRange(0, photoUrl.length-suffix.length)];
+	}
+	return photoUrl;
+}
+
++(NSString*) addSuffixToPhotoUrl:(NSString*)photoUrl forSize:(NSInteger)size {
+	photoUrl = [UtilityFunctions stripLargePhotoSuffix: photoUrl];
+	NSString *suffix = @"=s";
+	suffix = [suffix stringByAppendingString: [NSString stringWithFormat:@"%ld", (long)size]];
+	NSString *newUrl = [photoUrl stringByAppendingString: suffix];
+	return newUrl;
+}
 
 //This code fuses the video assets into a single video that plays the videos one after the other.
 //It accepts both avassets and urls which it converts into assets
@@ -59,6 +90,18 @@
 	return fusedAsset;
 }
 
++ (NSArray*)shuffleArray:(NSArray*)array {
+
+	NSMutableArray *temp = [[NSMutableArray alloc] initWithArray:array];
+
+	for(NSUInteger i = [array count]; i > 1; i--) {
+		NSUInteger j = (NSUInteger)arc4random_uniform((u_int32_t)i);
+		[temp exchangeObjectAtIndex:i-1 withObjectAtIndex:j];
+	}
+
+	return [NSArray arrayWithArray:temp];
+}
+
 NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 + (NSString *) randomStringWithLength: (NSInteger)length {
@@ -69,29 +112,46 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 	return randomString;
 }
 
-
 // Promise wrapper for asynchronous request to get image data (or any data) from the url
-+ (AnyPromise*) loadCachedPhotoDataFromURL: (NSURL*) url {
+- (AnyPromise*) loadCachedPhotoDataFromURL: (NSURL*) url {
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		NSURLRequest* request = [NSURLRequest requestWithURL:url
 												 cachePolicy: NSURLRequestReturnCacheDataElseLoad
 											 timeoutInterval:300];
+		//todo: delete debugging
 		NSURLSessionDataTask *task = [[NSURLSession sharedSession]
 									  dataTaskWithRequest:request
 									  completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-										  if (error) {
-											  [[Crashlytics sharedInstance] recordError: error];
+                                          
+										  if (!data || error) {
+											  //error code -999 means request was cancelled
+											  if (error.code != -999) {
+												  NSLog(@"Error downloading photo from url %@ : %@", url, error.description);
+												  [[Crashlytics sharedInstance] recordError: error];
+											  }
 											  resolve(nil);
-										  } else {
+										  } else if(data){
 											  resolve(data);
 										  }
 		}];
+		[self.sessionTasks addObject: task];
 		[task resume];
 
 	}];
 	return promise;
 }
-+ (AnyPromise*) loadCachedVideoDataFromURL: (NSURL*) url {
+
+- (void) cancelAllSharedSessionDataTasks {
+	for (NSURLSessionTask *_task in self.sessionTasks) {
+		if (_task.state == NSURLSessionTaskStateRunning || _task.state == NSURLSessionTaskStateSuspended) {
+			NSLog(@"Canceling task");
+			[_task cancel];
+		}
+	}
+	self.sessionTasks = nil;
+}
+
+- (AnyPromise*) loadCachedVideoDataFromURL: (NSURL*) url {
     AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
         
         [UtilityFunctions convertVideoToLowQualityWithInputURL:url withCompletion:^(NSURL * url, BOOL deleteUrl) {
@@ -114,7 +174,6 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 
     //  STORE IN FILESYSTEM
     NSString* cachesDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    
     
     NSString * uniqueVideoURL = [[videoUrl.absoluteString stringByReplacingOccurrencesOfString:@"/" withString:@""] stringByAppendingString:@".mov"];
     
@@ -181,9 +240,8 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
     
     [compressed setLength: strm.total_out];
     
-    
     NSData * finalResult = [NSData dataWithData:compressed];
-    NSLog(@"Video File end size: %lu", (unsigned long)[finalResult length]);
+//    NSLog(@"Video File end size: %lu", (unsigned long)[finalResult length]);
     return finalResult;
 }
 
@@ -231,6 +289,36 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
         return [NSData dataWithData: decompressed];
     }
     else return nil;
+}
+
+
+#pragma mark - Parse Functions -
+
++(Channel*)checkIfChannelList:(NSArray*)list containsChannel:(Channel*)channel {
+	for (Channel* listChannel in list) {
+		if([listChannel.parseChannelObject.objectId isEqualToString: channel.parseChannelObject.objectId]){
+			return listChannel;
+		}
+	}
+	return nil;
+}
+
++(PFObject*)checkIfObjectsList:(NSArray*)list containsObject:(PFObject*)object {
+	for (PFObject* obj in list) {
+		if([obj.objectId isEqualToString:object.objectId]){
+			return obj;
+		}
+	}
+	return nil;
+}
+
+
+
+-(NSMutableArray *)sessionTasks {
+	if (!_sessionTasks) {
+		_sessionTasks = [[NSMutableArray alloc] init];
+	}
+	return _sessionTasks;
 }
 
 @end

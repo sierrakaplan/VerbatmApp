@@ -16,16 +16,16 @@
 @interface VideoPlayerView()
 
 #pragma mark AVPlayer properties
-@property (atomic, strong) AVPlayer* player;
-@property (atomic, strong) AVPlayerItem* playerItem;
-@property (atomic,strong) AVPlayerLayer* playerLayer;
+@property (nonatomic, strong) AVPlayer* player;
+@property (nonatomic, strong) AVPlayerItem* playerItem;
+@property (nonatomic,strong) AVPlayerLayer* playerLayer;
 @property (strong, readwrite) AVMutableComposition* fusedVideoAsset;
 
 #pragma mark Video Playback properties
 @property (nonatomic, readwrite) BOOL videoLoading;
 @property (nonatomic, readwrite) BOOL isMuted;
 @property (nonatomic, readwrite) BOOL isVideoPlaying; //tells you if the video is in a playing state
-@property (strong, atomic) NSTimer *ourTimer;//keeps calling continue
+@property (strong) NSTimer *ourTimer;//keeps calling continue
 
 @property (nonatomic) BOOL shouldPlayOnLoad;
 
@@ -72,7 +72,9 @@
 	NSArray *keys = @[@"playable",@"tracks",@"duration"];
 
 	[asset loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
-		[self prepareVideoFromPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[self prepareVideoFromPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
+		});
 	}];
 }
 
@@ -80,40 +82,25 @@
 	if (!url) return;
 
 	self.videoLoading = YES;
-	AVPlayerItem *playerItem;
-	if([[VideoDownloadManager sharedInstance] containsEntryForUrl:url]){
-		playerItem = [[VideoDownloadManager sharedInstance] getVideoForUrl: url.absoluteString];
-	}else {
-		[self prepareVideoFromAsset:[AVAsset assetWithURL: url]];
-		return;
-	}
-
-	[self prepareVideoFromPlayerItem: playerItem];
+	[self prepareVideoFromAsset:[AVAsset assetWithURL: url]];
 }
 
 -(void) prepareVideoFromPlayerItem:(AVPlayerItem*)playerItem {
 	self.videoLoading = YES;
 	if (self.playerItem) {
 		[self removePlayerItemObservers];
+		self.playerItem = nil;
 	}
 	self.playerItem = playerItem;
-	[self initiateVideo];
 	[self.playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];
 	[self.playerItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:0 context:nil];
-
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(playerItemDidReachEnd:)
-												 name:AVPlayerItemDidPlayToEndTimeNotification
-											   object:self.playerItem];
+	[self initiateVideo];
 }
 
 //this function should be called on the main thread
 -(void) initiateVideo {
 	if (self.isVideoPlaying) {
 		return;
-	}
-	if (self.playerItem == NULL) {
-
 	}
 	self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
 	self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
@@ -123,8 +110,12 @@
 	self.playerLayer.frame = self.bounds;
 	self.playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
 	[self.playerLayer removeAllAnimations];
-
 	self.player.muted = self.isMuted;
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(playerItemDidReachEnd:)
+												 name:AVPlayerItemDidPlayToEndTimeNotification
+											   object:[self.player currentItem]];
 
 	dispatch_async(dispatch_get_main_queue(), ^{
 		if(self.playerLayer) [self.layer addSublayer:self.playerLayer];
@@ -154,13 +145,13 @@
 			[self.loadingIndicator stopAnimating];
 			self.videoLoading = NO;
 			if (self.shouldPlayOnLoad) {
-				NSLog(@"play back will keep up");
+//				NSLog(@"play back will keep up");
 				[self playVideo];
 			} else {
-				NSLog(@"Ready but not playing.");
+//				NSLog(@"Ready but not playing.");
 			}
 		} else if (self.shouldPlayOnLoad) {
-			NSLog(@"play back will not keep up");
+//			NSLog(@"play back will not keep up");
 			[self.loadingIndicator startAnimating];
 			self.videoLoading = YES;
 		}
@@ -181,9 +172,13 @@
 // Notifies that video has ended so video can replay
 -(void)playerItemDidReachEnd:(NSNotification *)notification {
 	AVPlayerItem *playerItem = [notification object];
-	if (self.repeatsVideo) {
-		[playerItem seekToTime:kCMTimeZero];
-	}
+	[playerItem seekToTime:kCMTimeZero];
+	//todo: repeatsVideo not set correctly
+//	if (self.repeatsVideo) {
+//
+//	} else {
+//		NSLog(@"Video not repeating.");
+//	}
 }
 
 // Pauses player
@@ -221,35 +216,37 @@
 //cleans up video and all other helper objects
 //this is called right before the view is removed from the screen
 -(void) stopVideo {
-	@autoreleasepool {
-		if(self.player)[self.player pause];
-		self.shouldPlayOnLoad = NO;
-		self.videoLoading = NO;
-		[self removePlayerItemObservers];
-		if(self.loadingIndicator)[self.loadingIndicator stopAnimating];
+	[self removePlayerItemObservers];
+	if(self.player) [self.player pause];
+	self.shouldPlayOnLoad = NO;
+	self.videoLoading = NO;
+	if(self.loadingIndicator) [self.loadingIndicator stopAnimating];
 
-        for (int i = 0; i < self.subviews.count; i++) {
-			[self.subviews[i] removeFromSuperview];
-		}
-        
-        for(int i =0; i < self.layer.sublayers.count; i++){
-            [self.layer.sublayers[i] removeFromSuperlayer];
-        }
-        
-		if(self.playerLayer)[self.playerLayer removeFromSuperlayer];
-		self.loadingIndicator = nil;
-		self.playerItem = nil;
-		self.player = nil;
-		self.playerLayer = nil;
-		self.isVideoPlaying = NO;
-		if(self.ourTimer)[self.ourTimer invalidate];
-		self.ourTimer = nil;
+	for (int i = 0; i < self.subviews.count; i++) {
+		[self.subviews[i] removeFromSuperview];
 	}
+
+	for(int i =0; i < self.layer.sublayers.count; i++){
+		[self.layer.sublayers[i] removeFromSuperlayer];
+	}
+
+	if(self.playerLayer)[self.playerLayer removeFromSuperlayer];
+	self.loadingIndicator = nil;
+	self.playerItem = nil;
+	self.player = nil;
+	self.playerLayer = nil;
+	self.isVideoPlaying = NO;
+	if(self.ourTimer) [self.ourTimer invalidate];
+	self.ourTimer = nil;
 }
 
 -(void) removePlayerItemObservers {
 	@try {
 		[self.playerItem removeObserver:self forKeyPath:@"status"];
+	} @catch(id anException) {
+		//do nothing, obviously they weren't attached because an exception was thrown
+	}
+	@try {
 		[self.playerItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
 	} @catch(id anException) {
 		//do nothing, obviously they weren't attached because an exception was thrown
@@ -270,8 +267,8 @@
 }
 
 - (void)dealloc {
-	[self stopVideo];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[self stopVideo];
 }
 
 @end

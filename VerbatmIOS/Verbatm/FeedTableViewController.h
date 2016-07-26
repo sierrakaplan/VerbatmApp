@@ -13,11 +13,14 @@
 
 -(void) showTabBar: (BOOL) show;
 
+-(void)goToDiscover;
 
 @end
 
 @interface FeedTableViewController : UITableViewController
 
-@property (nonatomic) id<FeedTableViewDelegate> delegate;
+@property (nonatomic, weak) id<FeedTableViewDelegate> delegate;
+
+-(void) refreshListOfContent;
 
 @end

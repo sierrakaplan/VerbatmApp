@@ -54,16 +54,16 @@
 			[self.pinchViewsAsData insertObject:pinchViewData atIndex:index];
 			[self.pinchViews insertObject:pinchView atIndex:index];
 
+			//todo: delete?
 //			//call on main queu because we are creating and formating uiview
 //			dispatch_async(dispatch_get_main_queue(), ^{
 //				//Insert copy of pinch view not pinch view itself
 //				[self.pinchViews insertObject:[self convertNSDataToPinchView:pinchViewData] atIndex:index];
 //			});
 
-
+			[[NSUserDefaults standardUserDefaults]
+			 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
 		}
-		[[NSUserDefaults standardUserDefaults]
-		 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
 	});
 }
 
@@ -76,10 +76,9 @@
 
 		[self.pinchViews removeObjectAtIndex:index];
 		[self.pinchViewsAsData removeObjectAtIndex:index];
-
+        [[NSUserDefaults standardUserDefaults]
+         setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
 	}
-	[[NSUserDefaults standardUserDefaults]
-	 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
 }
 
 -(void) removePinchViewAtIndex:(NSInteger)index andReplaceWithPinchView:(PinchView *)newPinchView {
@@ -94,10 +93,10 @@
 			NSData* pinchViewData = [self convertPinchViewToNSData: newPinchView];
 			[self.pinchViews replaceObjectAtIndex:index withObject: newPinchView];
 			[self.pinchViewsAsData replaceObjectAtIndex:index withObject: pinchViewData];
+			[[NSUserDefaults standardUserDefaults]
+			 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
 
 		}
-		[[NSUserDefaults standardUserDefaults]
-		 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
 	});
 }
 
@@ -116,9 +115,9 @@
 		NSData* pinchViewData2 = self.pinchViewsAsData[index2];
 		[self.pinchViewsAsData replaceObjectAtIndex: index1 withObject: pinchViewData2];
 		[self.pinchViewsAsData replaceObjectAtIndex: index2 withObject: pinchViewData1];
+		[[NSUserDefaults standardUserDefaults]
+		 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
 	}
-	[[NSUserDefaults standardUserDefaults]
-	 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
 }
 
 //loads pinchviews from user defaults
@@ -128,13 +127,14 @@
 	NSArray* pinchViewsData = [[NSUserDefaults standardUserDefaults]
 							   objectForKey:PINCHVIEWS_KEY];
 	@synchronized(self) {
+        __weak PostInProgress * weakSelf = self;
 		self.pinchViewsAsData = [[NSMutableArray alloc] initWithArray:pinchViewsData copyItems:NO];
 		for (int i = 0; i < pinchViewsData.count; i++) {
 			NSData* data = pinchViewsData[i];
-			PinchView* pinchView = [self convertNSDataToPinchView:data];
+			PinchView* pinchView = [weakSelf convertNSDataToPinchView:data];
 			if ([pinchView isKindOfClass:[VideoPinchView class]]) {
 				[(VideoPinchView*)pinchView loadAVURLAssetFromPHAsset].then(^(AVURLAsset* video) {
-					[self.pinchViews insertObject:pinchView atIndex:i];
+					[weakSelf.pinchViews insertObject:pinchView atIndex:i];
 				});
 			} else if([pinchView isKindOfClass:[CollectionPinchView class]] && pinchView.containsVideo) {
 				CollectionPinchView *collectionPinchView = (CollectionPinchView*)pinchView;
@@ -143,10 +143,10 @@
 					[loadVideoPromises addObject:[videoPinchView loadAVURLAssetFromPHAsset]];
 				}
 				PMKWhen(loadVideoPromises).then(^(NSArray *videoAssets) {
-					[self.pinchViews insertObject:collectionPinchView atIndex:i];
+					[weakSelf.pinchViews insertObject:collectionPinchView atIndex:i];
 				});
 			} else {
-				[self.pinchViews addObject:pinchView];
+				[weakSelf.pinchViews addObject:pinchView];
 			}
 		}
 	}

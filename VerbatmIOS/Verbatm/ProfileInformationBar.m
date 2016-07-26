@@ -20,6 +20,7 @@
 #import "Styles.h"
 #import "FollowingView.h"
 
+#import "UserInfoCache.h"
 
 @interface ProfileInformationBar ()
 
@@ -49,7 +50,7 @@
 #define SETTINGS_BUTTON_SIZE (PROFILE_INFO_BAR_HEIGHT - (EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET * 2))
 #define FOLLOW_OR_EDIT_BUTTON_SIZE 65.f
 #define FOLLOWING_LABEL_WIDTH 60.f
-#define NUM_FOLLOWING_WIDTH 17.f
+#define NUM_FOLLOWING_WIDTH 25.f
 
 #define EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET 2.f // how much buffer between button and top and bottom of self
 
@@ -75,19 +76,43 @@
 			if (!self.isCurrentUser) {
 				// This allows a user to block another user
 				[self createSettingsButton];
-				self.currentUserFollowsUser = [channel.usersFollowingChannel containsObject:[PFUser currentUser]];
+				self.currentUserFollowsUser = [[UserInfoCache sharedInstance] userFollowsChannel:channel] != nil;
 				[self createFollowButton];
+                [self registerForFollowNotification];
 			}
 		}
+        
 		[self createFollowersAndFollowingLabels];
 	}
 	return self;
 }
 
+-(void)registerForFollowNotification{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(userFollowStatusChanged:)
+                                                 name:NOTIFICATION_NOW_FOLLOWING_USER
+                                               object:nil];
+}
+
+-(void)userFollowStatusChanged:(NSNotification *) notification{
+    
+    NSDictionary * userInfo = [notification userInfo];
+    if(userInfo){
+        NSString * userId = userInfo[USER_FOLLOWING_NOTIFICATION_USERINFO_KEY];
+        NSNumber * isFollowingAction = userInfo[USER_FOLLOWING_NOTIFICATION_ISFOLLOWING_KEY];
+        //only update the follow icon if this is the correct user and also if the action was
+        //no registered on this view
+        if([userId isEqualToString:[self.channel.channelCreator objectId]]&&
+              ([isFollowingAction boolValue] != self.currentUserFollowsUser)) {
+            self.currentUserFollowsUser = [isFollowingAction boolValue];
+			[self updateUserFollowingChannel];
+        }
+    }
+}
 
 -(void) updateNumFollowersAndFollowing {
-	NSString *numFollowers = [NSNumber numberWithInteger:self.channel.usersFollowingChannel.count].stringValue;
-	NSString *numFollowing = [NSNumber numberWithInteger:self.channel.channelsUserFollowing.count].stringValue;
+	NSString *numFollowers = ((NSNumber*)self.channel.parseChannelObject[CHANNEL_NUM_FOLLOWS]).stringValue;
+	NSString *numFollowing = ((NSNumber*)self.channel.parseChannelObject[CHANNEL_NUM_FOLLOWING]).stringValue;
     NSDictionary *numAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
                                     NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size:NUMBER_FONT_SIZE]};
     
@@ -102,14 +127,14 @@
 									  NSFontAttributeName: [UIFont fontWithName:BOLD_FONT size:FOLLOW_TEXT_FONT_SIZE]};
 
     CGFloat following_x = (self.frame.size.width - SETTINGS_BUTTON_SIZE - PROFILE_HEADER_XOFFSET*3
-    						   - FOLLOW_OR_EDIT_BUTTON_SIZE - FOLLOWING_LABEL_WIDTH -1.f);
+    						   - FOLLOW_OR_EDIT_BUTTON_SIZE - FOLLOWING_LABEL_WIDTH -5.f);
     CGFloat following_num_x = following_x - NUM_FOLLOWING_WIDTH - 4.f;
     CGFloat followers_x = following_num_x - PROFILE_HEADER_XOFFSET - FOLLOWING_LABEL_WIDTH;
     CGFloat followers_num_x = followers_x - NUM_FOLLOWING_WIDTH - 3.f;
     CGRect followingFrame = CGRectMake(following_x, STATUS_BAR_HEIGHT, FOLLOWING_LABEL_WIDTH, PROFILE_INFO_BAR_HEIGHT);
     CGRect followersFrame = CGRectMake(followers_x, STATUS_BAR_HEIGHT, FOLLOWING_LABEL_WIDTH, PROFILE_INFO_BAR_HEIGHT);
     CGRect numFollowersFrame = CGRectMake(followers_num_x, STATUS_BAR_HEIGHT, NUM_FOLLOWING_WIDTH, PROFILE_INFO_BAR_HEIGHT);
-    CGRect numFollowingFrame = CGRectMake(following_num_x, STATUS_BAR_HEIGHT , NUM_FOLLOWING_WIDTH, PROFILE_INFO_BAR_HEIGHT);
+    CGRect numFollowingFrame = CGRectMake(following_num_x, STATUS_BAR_HEIGHT, NUM_FOLLOWING_WIDTH, PROFILE_INFO_BAR_HEIGHT);
     
     self.numFollowersLabel = [[UILabel alloc] initWithFrame: numFollowersFrame];
     self.numFollowingLabel = [[UILabel alloc] initWithFrame: numFollowingFrame];
@@ -146,9 +171,10 @@
     [self.delegate followingButtonSelected];
 }
 
-
 -(void) createSettingsButton {
-	UIImage *image = [UIImage imageNamed:SETTINGS_BUTTON_ICON];
+	UIImage *image;
+	if (self.isCurrentUser) image = [UIImage imageNamed:SETTINGS_BUTTON_ICON];
+	else image = [UIImage imageNamed:BLOCK_ICON];
 	CGFloat frame_x = self.frame.size.width - SETTINGS_BUTTON_SIZE - PROFILE_HEADER_XOFFSET;
 	CGRect iconFrame = CGRectMake(frame_x, STATUS_BAR_HEIGHT, SETTINGS_BUTTON_SIZE, SETTINGS_BUTTON_SIZE);
 	self.settingsButton =  [[UIButton alloc] initWithFrame:iconFrame];
@@ -167,11 +193,11 @@
 -(void) updateUserFollowingChannel {
 	//todo: images
 	if (self.currentUserFollowsUser) {
-		[self changeFollowButtonTitle:@"Following" toColor:[UIColor whiteColor]];
-		self.followOrEditButton.backgroundColor = [UIColor blackColor];
-	} else {
-		[self changeFollowButtonTitle:@"Follow" toColor:[UIColor blackColor]];
+		[self changeFollowButtonTitle:@"Following" toColor:[UIColor blackColor]];
 		self.followOrEditButton.backgroundColor = [UIColor whiteColor];
+	} else {
+		[self changeFollowButtonTitle:@"Follow" toColor:[UIColor whiteColor]];
+		self.followOrEditButton.backgroundColor = [UIColor clearColor];
 	}
 	[self updateNumFollowersAndFollowing];
 }
@@ -182,7 +208,7 @@
 }
 
 -(void) createFollowOrEditButton {
-    CGFloat frame_x = self.settingsButton.frame.origin.x - PROFILE_HEADER_XOFFSET - FOLLOW_OR_EDIT_BUTTON_SIZE -2.f;
+    CGFloat frame_x = self.settingsButton.frame.origin.x - PROFILE_HEADER_XOFFSET - FOLLOW_OR_EDIT_BUTTON_SIZE -5.f;
     CGRect followButtonFrame = CGRectMake(frame_x, STATUS_BAR_HEIGHT + EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET, FOLLOW_OR_EDIT_BUTTON_SIZE, PROFILE_INFO_BAR_HEIGHT - (EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET * 2.f));
     self.followOrEditButton = [[UIButton alloc] initWithFrame: followButtonFrame];
     self.followOrEditButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
@@ -209,7 +235,7 @@
 	[self.backButton setImage:backButtonImage forState:UIControlStateNormal];
 	self.backButton.imageEdgeInsets = UIEdgeInsetsMake(2.f, 0.f, 2.f, 0.f);
 	self.backButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-	[self.backButton addTarget:self action:@selector(backButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+	[self.backButton addTarget:self action:@selector(backButtonSelected) forControlEvents:UIControlEventTouchDown];
 	[self addSubview: self.backButton];
 }
 
@@ -230,9 +256,9 @@
 		if (self.currentUserFollowsUser) {
 			[Follow_BackendManager currentUserFollowChannel: self.channel];
 		} else {
-			[Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel: self.channel];
+			[Follow_BackendManager currentUserStopFollowingChannel: self.channel];
 		}
-		[self.channel currentUserFollowsChannel: self.currentUserFollowsUser];
+		[self.channel currentUserFollowChannel: self.currentUserFollowsUser];
 		[self updateUserFollowingChannel];
 	}
 }

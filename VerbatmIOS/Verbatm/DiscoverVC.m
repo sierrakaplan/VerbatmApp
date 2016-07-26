@@ -23,18 +23,20 @@
 ExploreChannelCellViewDelegate>
 
 @property (strong, nonatomic) UISearchController *searchController;
+@property (strong, nonatomic) SearchResultsVC *searchResultsController;
 
 @property (strong, nonatomic) NSMutableArray *exploreChannels;
 @property (strong, nonatomic) NSMutableArray *featuredChannels;
 
 @property (nonatomic) UIRefreshControl *refreshControl;
+@property (nonatomic) UIActivityIndicatorView *loadMoreSpinner;
 
 @property (nonatomic) BOOL loadingMoreChannels;
 @property (nonatomic) BOOL refreshing;
 
 
 #define HEADER_HEIGHT 50.f
-#define HEADER_FONT_SIZE 20.f
+#define HEADER_FONT_SIZE 25.f
 #define CELL_HEIGHT 350.f
 
 #define LOAD_MORE_CUTOFF 3
@@ -48,7 +50,7 @@ ExploreChannelCellViewDelegate>
 @dynamic refreshControl;
 
 - (void) awakeFromNib {
-	#pragma clang diagnostic ignored "-Wunused-value"
+#pragma clang diagnostic ignored "-Wunused-value"
 	[self initWithStyle:UITableViewStyleGrouped];
 }
 
@@ -66,6 +68,7 @@ ExploreChannelCellViewDelegate>
 	[self refreshChannels];
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearViews) name:NOTIFICATION_FREE_MEMORY_DISCOVER object:nil];
+	[self setNeedsStatusBarAppearanceUpdate];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
@@ -80,8 +83,12 @@ ExploreChannelCellViewDelegate>
 	[self offScreen];
 }
 
+-(UIStatusBarStyle) preferredStatusBarStyle {
+	return UIStatusBarStyleLightContent;
+}
+
 -(BOOL) prefersStatusBarHidden {
-	return YES;
+	return NO;
 }
 
 -(void) formatTableView {
@@ -101,12 +108,14 @@ ExploreChannelCellViewDelegate>
 }
 
 -(void) setUpSearchController {
-	SearchResultsVC *searchResultsController = [[SearchResultsVC alloc] init];
-	self.searchController = [[UISearchController alloc] initWithSearchResultsController: searchResultsController];
-	self.searchController.searchResultsUpdater = searchResultsController;
+	self.searchResultsController = [[SearchResultsVC alloc] init];
+	self.searchResultsController.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+	self.searchController = [[UISearchController alloc] initWithSearchResultsController: self.searchResultsController];
+	self.searchController.searchResultsUpdater = self.searchResultsController;
 	self.tableView.tableHeaderView = self.searchController.searchBar;
 	self.definesPresentationContext = YES;
 	self.searchController.searchBar.barTintColor = [UIColor clearColor];
+	self.searchController.searchBar.tintColor = [UIColor whiteColor];
 	self.searchController.searchBar.backgroundColor = [UIColor clearColor];
 	self.searchController.searchBar.backgroundImage = [UIImage new];
 	//	self.searchController.searchBar.scopeButtonTitles = @[@"Users", @"Blogs"];
@@ -136,6 +145,7 @@ ExploreChannelCellViewDelegate>
 	if (self.refreshing) return;
 	self.refreshing = YES;
 	self.loadingMoreChannels = NO;
+	if (![self.refreshControl isRefreshing]) [self.loadMoreSpinner startAnimating];
 	[[FeedQueryManager sharedInstance] loadFeaturedChannelsWithCompletionHandler:^(NSArray *featuredChannels) {
 		self.featuredChannels = nil;
 		[self.featuredChannels addObjectsFromArray:featuredChannels];
@@ -145,6 +155,7 @@ ExploreChannelCellViewDelegate>
 	[[FeedQueryManager sharedInstance] refreshExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
 		self.exploreChannels = nil;
 		[self.refreshControl endRefreshing];
+		[self.loadMoreSpinner stopAnimating];
 		[self.exploreChannels addObjectsFromArray: exploreChannels];
 		[self.tableView reloadData];
 		self.refreshing = NO;
@@ -153,7 +164,9 @@ ExploreChannelCellViewDelegate>
 
 -(void) loadMoreChannels {
 	self.loadingMoreChannels = YES;
+	[self.loadMoreSpinner startAnimating];
 	[[FeedQueryManager sharedInstance] loadMoreExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
+		[self.loadMoreSpinner stopAnimating];
 		if (exploreChannels.count) {
 			[self.exploreChannels addObjectsFromArray: exploreChannels];
 			[self.tableView reloadData];
@@ -166,39 +179,45 @@ ExploreChannelCellViewDelegate>
 	self.refreshControl = [[UIRefreshControl alloc] init];
 	[self.refreshControl addTarget:self action:@selector(refreshChannels) forControlEvents:UIControlEventValueChanged];
 	[self.tableView addSubview:self.refreshControl];
+
+	self.loadMoreSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+	self.loadMoreSpinner.hidesWhenStopped = YES;
+	self.tableView.tableFooterView = self.loadMoreSpinner;
 }
 
 -(void) channelSelected:(Channel *)channel {
-    if(!self.onboardingBlogSelection){
-        ProfileVC * userProfile = [[ProfileVC alloc] init];
-        userProfile.isCurrentUserProfile = channel.channelCreator == [PFUser currentUser];
-        userProfile.isProfileTab = NO;
-        userProfile.ownerOfProfile = channel.channelCreator;
-        userProfile.channel = channel;
-        [self presentViewController:userProfile animated:YES completion:^{
-        }];
-    }
+	BOOL isCurrentUserChannel = [[channel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
+	if(!self.onboardingBlogSelection &&
+	   !isCurrentUserChannel){
+		ProfileVC * userProfile = [[ProfileVC alloc] init];
+		userProfile.isCurrentUserProfile = isCurrentUserChannel;
+		userProfile.isProfileTab = NO;
+		userProfile.ownerOfProfile = channel.channelCreator;
+		userProfile.channel = channel;
+		[self presentViewController:userProfile animated:YES completion:nil];
+	}
+
 }
 
 #pragma mark - Table View delegate methods -
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	if(self.onboardingBlogSelection) return 1;
-    return 2;
+	return 2;
 }
 
 -(NSString*) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-	
-    if(self.onboardingBlogSelection){
-        return ONBOARDING_TEXT;
-    } else {
-    
-        if (section == 0) {
-            return @"Featured";
-        } else {
-            return @"Discover";
-        }
-    }
+
+	if(self.onboardingBlogSelection){
+		return ONBOARDING_TEXT;
+	} else {
+
+		if (section == 0) {
+			return @"Featured";
+		} else {
+			return @"Discover";
+		}
+	}
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
@@ -215,17 +234,17 @@ ExploreChannelCellViewDelegate>
 	// Text Color
 	UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
 	[header.textLabel setTextColor:[UIColor whiteColor]];
-	[header.textLabel setFont:[UIFont fontWithName:REGULAR_FONT size:HEADER_FONT_SIZE]];
-	
-    if(self.onboardingBlogSelection){
-        [header.textLabel setText:ONBOARDING_TEXT];
-    }else{
-        if (section == 0) {
-            [header.textLabel setText:@"Featured"];
-        } else {
-            [header.textLabel setText:@"Discover"];
-        }
-    }
+	[header.textLabel setFont:[UIFont fontWithName:BOLD_FONT size:HEADER_FONT_SIZE]];
+
+	if(self.onboardingBlogSelection){
+		[header.textLabel setText:ONBOARDING_TEXT];
+	}else{
+		if (section == 0) {
+			[header.textLabel setText:@"Featured"];
+		} else {
+			[header.textLabel setText:@"Discover"];
+		}
+	}
 	[header.textLabel setTextAlignment:NSTextAlignmentCenter];
 	[header.textLabel setLineBreakMode:NSLineBreakByClipping];
 
@@ -238,19 +257,19 @@ ExploreChannelCellViewDelegate>
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	
-    if(self.onboardingBlogSelection){
-        return self.exploreChannels.count;
-    }else{
-        switch (section) {
-            case 0:
-                return 1;
-            case 1:
-                return self.exploreChannels.count;
-            default:
-                return 0;
-        }
-    }
+
+	if(self.onboardingBlogSelection){
+		return self.exploreChannels.count;
+	}else{
+		switch (section) {
+			case 0:
+				return 1;
+			case 1:
+				return self.exploreChannels.count;
+			default:
+				return 0;
+		}
+	}
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -265,49 +284,47 @@ ExploreChannelCellViewDelegate>
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSString *identifier = [NSString stringWithFormat:@"cell,%ld%ld", (long)indexPath.section, (long)indexPath.row % 10]; // reuse cells every 10
 	if (indexPath.section == 1 || self.onboardingBlogSelection) {
-        ExploreChannelCellView *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-        if(cell == nil) {
-            cell = [[ExploreChannelCellView alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
-            [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-            cell.delegate = self;
-        }
-        if (self.exploreChannels.count > indexPath.row) {
-            Channel *channel = [self.exploreChannels objectAtIndex: indexPath.row];
-            if (cell.channelBeingPresented != channel) {
-                [cell clearViews];
-                [cell presentChannel: channel];
-            }
-        }
-        [cell onScreen];
-        
-        if (self.exploreChannels.count - indexPath.row <= LOAD_MORE_CUTOFF &&
-            !self.loadingMoreChannels && !self.refreshing) {
-            [self loadMoreChannels];
-        }
-        return cell;
+		ExploreChannelCellView *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+		if(cell == nil) {
+			cell = [[ExploreChannelCellView alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+			[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+			cell.delegate = self;
+		}
+		Channel *channel = [self.exploreChannels objectAtIndex: indexPath.row];
+		if (cell.channelBeingPresented != channel) {
+			[cell clearViews];
+			[cell presentChannel: channel];
+		}
+		[cell onScreen];
+
+		if (self.exploreChannels.count - indexPath.row <= LOAD_MORE_CUTOFF &&
+			!self.loadingMoreChannels && !self.refreshing) {
+			[self loadMoreChannels];
+		}
+		return cell;
 	} else {
-        FeaturedContentCellView *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-        if(cell == nil) {
-            cell = [[FeaturedContentCellView alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
-            [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-            cell.delegate = self;
-        }
-        if (!cell.alreadyPresented && self.featuredChannels.count > 0) {
-            //Only one featured content cell
-            [cell presentChannels: self.featuredChannels];
-        }
-        
-        [cell onScreen];
-        return cell;
+		FeaturedContentCellView *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+		if(cell == nil) {
+			cell = [[FeaturedContentCellView alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+			[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+			cell.delegate = self;
+		}
+		if (!cell.alreadyPresented && self.featuredChannels.count > 0) {
+			//Only one featured content cell
+			[cell presentChannels: self.featuredChannels];
+		}
+
+		[cell onScreen];
+		return cell;
 	}
 }
 
-//Pause videos
+//todo: Stop videos
 -(void) scrollViewWillBeginDragging:(UIScrollView *)scrollView {
 
 }
 
-// Play videos
+//todo: Play videos
 - (void) scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
 
 }
@@ -316,11 +333,11 @@ ExploreChannelCellViewDelegate>
 	// If the indexpath is not within visible objects then it is offscreen
 	if ([tableView.indexPathsForVisibleRows indexOfObject:indexPath] == NSNotFound) {
 		if (indexPath.section == 1 || self.onboardingBlogSelection) {
-            [(ExploreChannelCellView*)cell offScreen];
-			
+			[(ExploreChannelCellView*)cell offScreen];
+
 		} else {
 			[(FeaturedContentCellView*)cell offScreen];
-        }
+		}
 	}
 }
 

@@ -28,7 +28,13 @@
 		[[PFUser currentUser] setValue:newName forKey:VERBATM_USER_NAME_KEY];
 		[[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 			if(succeeded) {
-				[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USERNAME_CHANGED_SUCCESFULLY object:nil];
+                [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray * userChannels) {
+                    for(Channel * channel in userChannels){
+                        [channel.parseChannelObject setObject:newName forKey:CHANNEL_CREATOR_NAME_KEY];
+                        [channel.parseChannelObject saveInBackground];
+                    }
+                    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USERNAME_CHANGED_SUCCESFULLY object:newName];
+                }];
 			} else {
 				[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USERNAME_CHANGE_FAILED object:nil];
 			}
@@ -55,14 +61,14 @@
 	//Make sure blocked user unfollows all of current user's channels
 	[Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray *channels) {
 		for (Channel *channel in channels) {
-			[Follow_BackendManager user:user stopFollowingChannel:channel];
+			[Follow_BackendManager blockUser:user fromFollowingChannel:channel];
 		}
 	}];
 
 	//Unfollow all of blocked user's channels
 	[Channel_BackendObject getChannelsForUser:user withCompletionBlock:^(NSMutableArray *channels) {
 		for (Channel *channel in channels) {
-			[Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel:channel];
+			[Follow_BackendManager currentUserStopFollowingChannel:channel];
 		}
 	}];
 }
@@ -84,9 +90,8 @@
 
 //Move all posts to one channel, move all follow relationships to one channel, and delete all other channels
 + (void) migrateUserToOneChannelWithCompletionBlock:(void(^)(BOOL))block {
+
 	PFUser *user = [PFUser currentUser];
-
-
 
 	PFQuery *userChannelQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
 	[userChannelQuery whereKey:CHANNEL_CREATOR_KEY equalTo:user];
@@ -276,6 +281,7 @@
 +(AnyPromise*) getAllFollowRelationshipsFromChannels:(NSArray*)otherChannels {
 	return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 		PFQuery *followRelationshipQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
+		followRelationshipQuery.limit = 1000;
 		[followRelationshipQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY containedIn:otherChannels];
 		[followRelationshipQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable followRelationships, NSError * _Nullable error) {
 			if (error) [[Crashlytics sharedInstance] recordError:error];

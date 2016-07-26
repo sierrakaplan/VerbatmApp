@@ -9,9 +9,12 @@
 #ifndef SizesAndPositions_h
 #define SizesAndPositions_h
 
-
 #define IPHONE_6_PLUS_WIDTH 414
 #define IPHONE_6_PLUS_HEIGHT 736
+
+#define LARGE_IMAGE_SIZE 500
+#define THUMBNAIL_IMAGE_SIZE 200
+#define HALFSCREEN_IMAGE_SIZE 300
 
 //Goes off of largest device the media will be displayed on
 #define FULL_SCREEN_SIZE CGSizeMake(IPHONE_6_PLUS_WIDTH, IPHONE_6_PLUS_HEIGHT)
@@ -21,7 +24,7 @@
 
 #define INTRO_NOTIFICATION_SIZE 250.f
 
-#define STATUS_BAR_HEIGHT [UIApplication sharedApplication].statusBarFrame.size.height
+#define STATUS_BAR_HEIGHT 20.f
 
 #pragma mark - Main Tab bar -
 
@@ -44,11 +47,17 @@
 
 
 #pragma mark - Sign In -
+#define PHONE_NUMBER_FIELD_HEIGHT 40.f
+#define TEXTFIELDS_CORNER_RADIUS 2.f
 
 #define SIGN_IN_ERROR_VIEW_HEIGHT 100.f
 #define SIGNIN_ERROR_LABEL_PADDING 30.f
 
+#define SIGN_UP_BUTTON_GAP 60.f
 
+#define TOP_BUTTON_YOFFSET 200.f
+
+#define SIGNUP_BACK_BUTTON_SIZE 40.f
 
 #pragma mark - ADK -
 
@@ -128,19 +137,19 @@
 
 #define FOLLOW_BUTTON_HEIGHT 25.f
 #define FOLLOW_BUTTON_WIDTH (FOLLOW_BUTTON_HEIGHT * FOLLOW_BUTTON_RATIO_FOR_WIDTH)
-#define FOLLOW_BUTTON_RATIO_FOR_WIDTH (223.f / 234.f)
+#define FOLLOW_BUTTON_RATIO_FOR_WIDTH (3.f/1.f)
 #define VIDEO_LOADING_ICON_SIZE 50
 
 #pragma mark - Post View
+#define POST_VIEW_CORNER_RADIUS 10.f
 
 #define CREATOR_CHANNEL_BAR_HEIGHT 35.f
 #define TITLE_BAR_HEIGHT 60.f
 
 #pragma mark - Like Share Bar
+#define LIKE_SHARE_BAR_WIDTH 50.f
 
-#define LIKE_SHARE_BAR_HEIGHT 50.f
-#define LIKE_SHARE_BAR_BUTTON_SIZE 36.f
-#define LIKE_SHARE_BAR_BUTTON_OFFSET 20.f
+#define LIKE_SHARE_BAR_HEIGHT 300.f
 #define MUTE_BUTTON_OFFSET 10
 
 #pragma mark - Page Views
@@ -157,6 +166,8 @@
 
 
 #pragma mark - Profile -
+
+#define POSTLIST_HEIGHT_EXTENSION 0.f //adds this as an extra buffer to increase post sizes
 
 #pragma mark Deprecated
 #define CHANNEL_CREATION_VIEW_HEIGHT 120.f
@@ -185,6 +196,15 @@
 #define FOLLOW_TEXT_FONT_SIZE 12.f
 
 #define PAGE_UP_ICON_SIZE 45.f
+
+
+#pragma mark -Follow Icon-
+#define LARGE_FOLLOW_BUTTON_WIDTH 100.f
+#define LARGE_FOLLOW_BUTTON_HEIGHT (LARGE_FOLLOW_BUTTON_WIDTH/3.f)
+
+#pragma mark -User and Channel List-
+
+#define CHANNEL_LIST_CELL_SEPERATOR_HEIGHT 0.6
 
 #endif
 

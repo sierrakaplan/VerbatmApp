@@ -10,6 +10,7 @@
 #import "PostsQueryManager.h"
 #import <Parse/PFQuery.h>
 #import "ParseBackendKeys.h"
+#import "UserInfoCache.h"
 
 @interface PostsQueryManager()
 
@@ -17,7 +18,7 @@
 @property (strong, nonatomic) NSDate *oldestDate;
 @property (nonatomic) BOOL smallMode;
 
-#define POSTS_DOWNLOAD_SIZE (self.smallMode ? 10 : 5)
+#define POSTS_DOWNLOAD_SIZE 10
 
 @end
 
@@ -33,17 +34,20 @@
 	return self;
 }
 
-/* Loads newest posts in channel older than latest date (if date is nil, just loads newest
-   posts).
- */
+/* Loads posts in channel newer or equal to latest date
+   If less than 3 posts are found, loads 3 older posts too
+  (If latest date is nil, just loads oldest posts)
+*/
 -(void) loadPostsInChannel:(Channel*)channel withLatestDate:(NSDate*)date
 	 withCompletionBlock:(void(^)(NSArray *))block {
 
 	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
-	[postQuery orderByDescending:@"createdAt"];
-	if (date) [postQuery whereKey:@"createdAt" lessThanOrEqualTo:date];
-	self.latestDate = date;
+	[postQuery orderByAscending:@"createdAt"];
+	if (date) {
+		[postQuery whereKey:@"createdAt" greaterThanOrEqualTo:date];
+		//todo: decide whether to load older posts based on channel's latest post date
+	}
 	[postQuery setLimit: POSTS_DOWNLOAD_SIZE];
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
 												  NSError * _Nullable error) {
@@ -51,22 +55,34 @@
 			NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
 			for(PFObject * pc_activity in activities){
 				PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
-				[post fetchIfNeededInBackground];
+				[post fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+				}];
 				[finalPostObjects addObject:pc_activity];
 			}
 			if (activities.count > 0) {
-				// Posts are in reverse chronological order
-				self.oldestDate = [(PFObject*)(activities[activities.count-1]) createdAt];
-				self.latestDate = [(PFObject*)(activities[0]) createdAt];
+				self.oldestDate = [(PFObject*)(activities[0]) createdAt];
+				self.latestDate = [(PFObject*)(activities[activities.count-1]) createdAt];
 			}
-			block([[[finalPostObjects reverseObjectEnumerator] allObjects] mutableCopy]);
+
+			// Load older posts if less than 3 are found
+			if (activities.count < 3) {
+				[self loadOlderPostsInChannel:channel withCompletionBlock:^(NSArray *posts) {
+					NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, posts.count)];
+					[finalPostObjects insertObjects:posts atIndexes:indexSet];
+					block(finalPostObjects);
+				}];
+			} else {
+				block(finalPostObjects);
+			}
+		} else {
+			block(@[]);
 		}
 	}];
 }
 
 // Finds all posts newer than latest date (if there are any) or if latest date is nil
 // just finds newest posts
--(void) refreshNewestPostsInChannel:(Channel *)channel withCompletionBlock:(void(^)(NSArray *))block {
+-(void) loadNewerPostsInChannel:(Channel *)channel withCompletionBlock:(void(^)(NSArray *))block {
 	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
 	[postQuery orderByDescending:@"createdAt"];
@@ -91,16 +107,10 @@
 
 // Loads posts older than the current oldest date 
 -(void) loadOlderPostsInChannel:(Channel*)channel withCompletionBlock:(void(^)(NSArray *))block {
-	// If oldest date has not been set then no posts have been loaded previously
-	// or there are no posts
-	if (!self.oldestDate) {
-		block (@[]);
-		return;
-	}
 	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
 	[postQuery orderByDescending:@"createdAt"];
-	[postQuery whereKey:@"createdAt" lessThan:self.oldestDate];
+	if (self.oldestDate) [postQuery whereKey:@"createdAt" lessThan:self.oldestDate];
 	[postQuery setLimit: POSTS_DOWNLOAD_SIZE];
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
 												  NSError * _Nullable error) {

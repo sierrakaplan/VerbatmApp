@@ -18,6 +18,7 @@
 							 reblogged:(BOOL)reblogged;
 -(void) flagOrBlockButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post;
 -(void) showWhoLikesThePost:(PFObject *) post;
+-(void)justRemovedTapToExitNotification;
 @end
 
 @interface PostCollectionViewCell : UICollectionViewCell
@@ -28,6 +29,7 @@
 
 @property (nonatomic) BOOL cellHasTapGesture;
 @property (nonatomic) BOOL inSmallMode;
+@property (nonatomic) BOOL presentingTapToExitNotification;
 
 -(void) presentPostFromPCActivityObj: (PFObject *) pfActivityObj andChannel:(Channel*) channelForList
 					withDeleteButton: (BOOL) withDelete andLikeShareBarUp:(BOOL) up;
@@ -38,4 +40,9 @@
 
 -(void) clearViews;
 -(void)presentPublishingView;
+-(void)presentTapToExitNotification;
+-(void)removeTapToExitNotification;
+
+-(void)addDot;
+-(void)removeDot;
 @end

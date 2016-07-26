@@ -237,10 +237,10 @@
 	if(self.editContentView){
 		[self.editContentView almostOnScreen];
 	} else {
-		if(!self.hasBeenSetUp){
-			[self.videoPlayer stopVideo];
-			[self prepareVideo];
-		}
+//		if(!self.hasBeenSetUp) {
+//			[self.videoPlayer stopVideo];
+//			[self prepareVideo];
+//		}
 	}
 }
 
@@ -254,6 +254,9 @@
         [self bringSubviewToFront:self.thumbnailView];
         [self offScreen];
     }
+}
+
+-(void)dealloc {
 }
 
 #pragma mark - Lazy Instantiation -

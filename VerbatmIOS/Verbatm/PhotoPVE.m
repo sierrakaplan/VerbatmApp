@@ -112,6 +112,7 @@
 	[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
 }
 
+
 #pragma mark - Preview mode -
 
 -(void) addContentFromImagePinchViews:(NSMutableArray *)pinchViewArray{
@@ -139,7 +140,8 @@
 
 	PHImageRequestOptions *options = [PHImageRequestOptions new];
 	options.synchronous = YES;
-	[pinchView getLargerImageWithHalfSize:self.photoVideoSubview].then(^(UIImage *image) {
+     __weak PhotoPVE * weakSelf = self;
+	[pinchView getLargerImageWithHalfSize:weakSelf.photoVideoSubview].then(^(UIImage *image) {
 		[editMediaContentView changeImageTo:image];
 	});
 
@@ -208,9 +210,6 @@
 	return textAndImageView;
 }
 
-#pragma mark - Tap Gesture -
-
-
 #pragma mark - Rearrange content (preview mode) -
 
 -(void)createRearrangeButton {
@@ -221,7 +220,8 @@
 }
 
 -(void) pauseToRearrangeButtonPressed {
-	if(!self.rearrangeView){
+	// Pausing slideshow
+	if(!self.rearrangeView) {
 		[self offScreen];
 		CGFloat y_pos = (self.photoVideoSubview) ? 0.f : CUSTOM_NAV_BAR_HEIGHT;
 		CGRect frame = CGRectMake(0.f,y_pos, self.frame.size.width, OPEN_COLLECTION_FRAME_HEIGHT);
@@ -293,23 +293,21 @@
 }
 
 -(void)animateNextView{
-	if(self.slideShowPlaying && !self.animating){
+    __weak PhotoPVE * weakSelf = self;
+	if(weakSelf.slideShowPlaying && !weakSelf.animating){
+		//todo: This is a hack. Find where animations get disabled
+        if(![UIView areAnimationsEnabled]){
+//            NSLog(@"Animations are disabled.");
+            [UIView setAnimationsEnabled:YES];
+        }
 		[UIView animateWithDuration:IMAGE_FADE_OUT_ANIMATION_DURATION animations:^{
-			self.animating = YES;
-			[self setImageViewsToLocation:(self.currentPhotoIndex + 1)];
+			weakSelf.animating = YES;
+			[weakSelf setImageViewsToLocation:(weakSelf.currentPhotoIndex + 1)];
 		} completion:^(BOOL finished) {
-			self.animating = NO;
-			[NSTimer scheduledTimerWithTimeInterval:SLIDESHOW_ANIMATION_DURATION target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
+			weakSelf.animating = NO;
+			[NSTimer scheduledTimerWithTimeInterval:SLIDESHOW_ANIMATION_DURATION target:weakSelf selector:@selector(animateNextView) userInfo:nil repeats:NO];
 		}];
         
-//        [UIView animateKeyframesWithDuration:1.5f delay:0.f options: (UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionAllowAnimatedContent) animations:^{
-//            self.animating = YES;
-//            [self setImageViewsToLocation:(self.currentPhotoIndex + 1)];
-//        } completion:^(BOOL finished) {
-//            self.animating = NO;
-//            [NSTimer scheduledTimerWithTimeInterval:SLIDESHOW_ANIMATION_DURATION target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
-//        }];
-
 	}
 }
 
@@ -387,11 +385,15 @@
 
 #pragma mark - EditContentViewDelegate methods -
 
--(void) textIsEditing{
+-(void) textIsEditing {
+	// Pause slideshow
+	if(!self.rearrangeView) {
+	 [self pauseToRearrangeButtonPressed];
+	}
 	if(self.photoVideoSubview) [self.textEntryDelegate editContentViewTextIsEditing];
 }
 
--(void) textDoneEditing{
+-(void) textDoneEditing {
 	if(self.photoVideoSubview) [self.textEntryDelegate editContentViewTextDoneEditing];
 }
 
@@ -425,6 +427,5 @@
 }
 
 -(void) dealloc {
-	
 }
 @end

@@ -98,7 +98,6 @@
 		return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 				NSData* imageData = UIImagePNGRepresentation(largerImage);
-//				NSLog(@"image data for publishing size %fKB", imageData.length / 1024.f);
 				resolve (imageData);
 			});
 		}];
@@ -114,7 +113,8 @@
 	options.synchronous = YES;
 	PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[self.phAssetLocalIdentifier] options:nil];
 	PHAsset* imageAsset = fetchResult.firstObject;
-	self.imageName = [imageAsset valueForKey:@"filename"];
+    __weak ImagePinchView * weakSelf = self;
+	weakSelf.imageName = [imageAsset valueForKey:@"filename"];
 	CGSize size = half ? HALF_SCREEN_SIZE : FULL_SCREEN_SIZE;
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -122,9 +122,9 @@
                   options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
                       image = [image imageByScalingAndCroppingForSize: CGSizeMake(size.width, size.height)];
                       
-                      if(self.beingPublished){
+                      if(weakSelf.beingPublished){
                           dispatch_async(dispatch_get_main_queue(), ^{
-                              resolve([self getImageScreenshotWithText:image]);
+                              resolve([weakSelf getImageScreenshotWithText:image inHalf:half]);
                           });
                       }else{
                           resolve(image);
@@ -145,33 +145,28 @@
                    self.textColor, @(0), @(0)]];
 }
 
+//todo: fix half screen problem
+-(UIImage *)getImageScreenshotWithText:(UIImage *)image inHalf:(BOOL)half {
+	@autoreleasepool {
+		CGSize size = half ? HALF_SCREEN_SIZE : FULL_SCREEN_SIZE;
+		CGRect frame = CGRectMake(0.f, 0.f, size.width, size.height);
+		TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:frame andImage:image];
+		BOOL textColorBlack = [self.textColor isEqual:[UIColor blackColor]];
+		NSString * textToCapture = self.text;
 
+		[textAndImageView setText: textToCapture
+				 andTextYPosition: [self.textYPosition floatValue]
+				andTextColorBlack: textColorBlack
+				 andTextAlignment: (NSTextAlignment) ([self.textAlignment integerValue])
+					  andTextSize: [self.textSize floatValue]];
+		[textAndImageView showText:YES];
+		[textAndImageView.textView setHidden:NO];
+		[textAndImageView bringSubviewToFront:textAndImageView.textView];
 
-
-
-
--(UIImage *)getImageScreenshotWithText:(UIImage *)image{
-    
-    TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:[[UIScreen mainScreen] bounds] andImage:image];
-    BOOL textColorBlack = [self.textColor isEqual:[UIColor blackColor]];
-    NSString * textToCapture = self.text;
-    
-    [textAndImageView setText: textToCapture
-             andTextYPosition: [self.textYPosition floatValue]
-            andTextColorBlack: textColorBlack
-             andTextAlignment: (NSTextAlignment) ([self.textAlignment integerValue])
-                  andTextSize: [self.textSize floatValue]];
-    [textAndImageView showText:YES];
-    [textAndImageView.textView setHidden:NO];
-    [textAndImageView bringSubviewToFront:textAndImageView.textView];
-    
-    UIImage * screenShot = [textAndImageView.imageView getViewscreenshotWithTextView:textAndImageView.textView];
-    
-    @autoreleasepool {
-        textAndImageView = nil;
-    }
-    
-    return screenShot;
+		UIImage * screenShot = [textAndImageView.imageView getViewscreenshotWithTextView:textAndImageView.textView];
+		textAndImageView = nil;
+		return screenShot;
+	}
 }
 
 -(void)changeImageToFilterIndex:(NSInteger)filterIndex {

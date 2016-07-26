@@ -65,8 +65,6 @@
 	return sharedInstance;
 }
 
-
-
 -(void)storeLocationToShare:(SelectedPlatformsToShareLink)locationToShare withCaption:(NSString *) caption{
     self.locationToShare = locationToShare;
     self.captionToShare = caption;
@@ -124,7 +122,14 @@
 			totalProgressUnits+=  numVideoPinchViews> 0 ? (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS) : 0;
             
             
-            self.totalMediaCount = self.totalMediaCount + (numVideoPinchViews + numImagePinchViews);
+            if(numVideoPinchViews > 0){
+                self.totalMediaCount = self.totalMediaCount + 2.f;//2.f because of thumbnail and videos fused into 1 video
+            }
+            
+            
+            if(numImagePinchViews > 0){
+                self.totalMediaCount = self.totalMediaCount + numImagePinchViews;
+            }
             
 		} else {//only one piece of media
             
@@ -154,17 +159,13 @@
 -(void)onePieceOfMediaSaved{
     self.totalMediaCount --;
     if(self.totalMediaCount <= 0 && self.currentlyPublishing && self.currentParsePostObject){
-         NSLog(@"Counter worked -- published successfully");
         [self postPublishedSuccessfully];
     }
 }
 
-
-
 -(void)mediaSavingProgressed:(int64_t) newProgress {
 	self.progressAccountant.completedUnitCount += newProgress;
-	NSLog(@"Media saving progressed %lld new units to completed %lld units of total %lld units", newProgress,
-		  self.progressAccountant.completedUnitCount, self.progressAccountant.totalUnitCount);
+//	NSLog(@"Media saving progressed %lld new units to completed %lld units of total %lld units", newProgress, self.progressAccountant.completedUnitCount, self.progressAccountant.totalUnitCount;
 }
 
 -(void)postPublishedSuccessfully {
@@ -172,7 +173,6 @@
 	[self.currentParsePostObject saveInBackground];
 	//register the relationship
 	[Post_Channel_RelationshipManager savePost:self.currentParsePostObject toChannels:[NSMutableArray arrayWithObject:self.currentPublishingChannel] withCompletionBlock:^{
-        
         [self.es storeShareLinkToPost:self.currentParsePostObject withCaption:self.captionToShare withCompletionBlock:^(bool savedSuccessfully, PFObject * postObject) {
             if(savedSuccessfully){
                 [self.es sharePostLink:[postObject objectForKey:POST_SHARE_LINK] toPlatform:self.locationToShare];
@@ -185,7 +185,6 @@
 		self.progressAccountant.totalUnitCount = 0;
 		self.currentlyPublishing = NO;
 		[[PostInProgress sharedInstance] clearPostInProgress];
-		[self.delegate publishingComplete];
 		NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_POST_PUBLISHED object:nil userInfo:nil];
 		[[NSNotificationCenter defaultCenter] postNotification: notification];
 		self.currentParsePostObject = nil;

@@ -18,9 +18,9 @@
 -(void)followersButtonSelected;
 -(void)followingButtonSelected;
 
-
 // If profile tab
 -(void) settingsButtonClicked;
+-(void) editDoneButtonClickedWithoutName;
 
 // If someone else's profile
 -(void) exitCurrentProfile;
@@ -41,4 +41,6 @@
 @property (weak, nonatomic) id<ProfileHeaderViewDelegate> delegate;
 
 -(void)setCoverPhotoImage:(UIImage *) coverPhotoImage;
+-(void)presentProfileUnderConstructionNotification;
+-(void)removeProfileConstructionNotification;
 @end

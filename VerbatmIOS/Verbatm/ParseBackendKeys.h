@@ -17,11 +17,12 @@
 #define USER_FTUE @"UserFtue"
 #define USER_MIGRATED_ONE_CHANNEL @"UserMigratedOneChannel"
 #define USER_RELATION_CHANNELS_FOLLOWING @"ChannelsFollowing"
+#define USER_LAST_FEEDBACK_DATE_KEY @"LastFeedbackDate"
 
 #define FOLLOW_PFCLASS_KEY @"FollowClass"//we maintain all the follow relationships in their own table
 #define FOLLOW_USER_KEY @"UserFollowing"//the user doing the following
 #define FOLLOW_CHANNEL_FOLLOWED_KEY @"ChannelFollowed"//channel being followed by above user
-#define FOLLOW_LATEST_POST_SEEN @"LatestPostSeen"
+#define FOLLOW_LATEST_POST_DATE @"LatestPostSeen"
 
 #define LIKE_PFCLASS_KEY @"LikeClass"//we maintain all the like relationships in their own table
 #define LIKE_USER_KEY @"UserLiking"//the user doing the liking
@@ -59,7 +60,6 @@
 #define PAGE_VIEW_TYPE @"AveType"
 #define PAGE_PHOTOS_PFRELATION @"PhotoObjectsInPageRelation"
 
-
 #define POST_PFCLASS_KEY @"PostClass"
 #define POST_CHANNEL_KEY @"ChannelForPost" //the channel the post lives in
 #define POST_SIZE_KEY @"PostSize" //number of pages on this post
@@ -87,10 +87,20 @@
 #define CHANNEL_PFCLASS_KEY @"ChannelClass"
 #define CHANNEL_NAME_KEY @"ChannelName"
 #define CHANNEL_DESCRIPTION_KEY @"ChannelDescription"
+#define CHANNEL_LATEST_POST_DATE @"ChannelLatestPostDate"
 #define CHANNEL_CREATOR_KEY @"ChannelCreator" //the user that has created this channel
 #define CHANNEL_CREATOR_NAME_KEY @"ChannelCreatorName"
 #define CHANNEL_NUM_FOLLOWS @"ChannelNumFollows"
+#define CHANNEL_NUM_FOLLOWING @"ChannelNumFollowing"
 #define CHANNEL_FEATURED_BOOL @"Featured"
 #define CHANNEL_COVER_PHOTO_URL @"CoverPhotoURL"
+
+#define NOTIFICATION_PFCLASS_KEY @"NotificationClass"
+#define NOTIFICATION_IS_NEW @"IsNewNotification"
+#define NOTIFICATION_SENDER @"NotificationSender"
+#define NOTIFICATION_RECEIVER @"NotificationReceiver"
+#define NOTIFICATION_TYPE @"NotificationType"
+#define NOTIFICATION_POST @"NotificationPost"
+
 
 #endif /* ParseBackendKeys_h */

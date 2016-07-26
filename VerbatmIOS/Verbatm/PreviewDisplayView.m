@@ -95,7 +95,6 @@
 	[self revealPreview:YES];
 }
 
-
 #pragma mark - Buttons -
 
 -(void) addNavigationBar {
@@ -129,6 +128,7 @@
 		}
         [self.delegate aboutToRemovePreview];
         self.frame = self.restingFrame;
+        [self.postView postOffScreen];
         [self.postView clearPost];
         [self.postView removeFromSuperview];
         self.postView = nil;

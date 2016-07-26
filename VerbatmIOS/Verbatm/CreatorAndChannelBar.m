@@ -22,6 +22,8 @@
 
 #import "ProfileVC.h"
 
+#import "UserInfoCache.h"
+
 #define LABEL_WALL_OFFSET 8.f
 #define TEXT_FONT_TYPE @"Quicksand-Bold"
 #define CREATOR_NAME_FONT_SIZE 15.f
@@ -51,28 +53,10 @@
 		[self.currentChannel getChannelOwnerNameWithCompletionBlock:^(NSString *name) {
 			[self addCreatorNameViewWithName:name];
 		}];
-		[self createChannelNameView:channel.name];
-		[self createFollowIcon];
-        [self registerForNotifications];
     }
     return self;
 }
 
--(void)registerForNotifications{
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(userFollowStatusChanged:)
-                                                 name:NOTIFICATION_NOW_FOLLOWING_USER
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(userFollowStatusChanged:)
-                                                 name:NOTIFICATION_STOPPED_FOLLOWING_USER
-                                               object:nil];
-}
-
-
--(void)userFollowStatusChanged:(NSNotification *) notification{
-    [self createFollowIcon];
-}
 
 
 -(void)createChannelNameView:(NSString *)channelName{
@@ -167,13 +151,10 @@
 }
 
 -(void)createFollowIcon{
-    [Follow_BackendManager currentUserFollowsChannel:self.currentChannel withCompletionBlock:^
-        (bool isFollowing) {
-         dispatch_async(dispatch_get_main_queue(), ^{
-             self.isFollowingChannel = isFollowing;
-             [self markFollowViewAsFollowing:isFollowing];
-         });
-     }];
+	dispatch_async(dispatch_get_main_queue(), ^{
+		self.isFollowingChannel = [[UserInfoCache sharedInstance] userFollowsChannel: self.currentChannel] != nil;
+		[self markFollowViewAsFollowing: self.isFollowingChannel];
+	});
 }
 
 -(void)addFollowChannelGestureToView:(UIView *) view{
@@ -186,7 +167,7 @@
     if(self.isFollowingChannel){
         self.isFollowingChannel = NO;
         [self markFollowViewAsFollowing:NO];
-		[Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel:self.currentChannel];
+		[Follow_BackendManager currentUserStopFollowingChannel:self.currentChannel];
     }else{
         self.isFollowingChannel = YES;
         [self markFollowViewAsFollowing:YES];

@@ -20,6 +20,8 @@
 #import <Parse/PFObject.h>
 #import <Parse/PFUser.h>
 
+#import "UserInfoCache.h"
+
 @interface FeaturedContentChannelView() <UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UILabel *userNameLabel;
@@ -52,15 +54,14 @@
 		self.layer.shadowOffset = CGSizeMake(3.f, 3.f);
 		self.layer.shadowOpacity = 1.f;
 		self.channel = channel;
-
-		if (self.channel.channelCreator != [PFUser currentUser]) {
-			[Follow_BackendManager currentUserFollowsChannel:self.channel withCompletionBlock:^(bool isFollowed) {
-				self.isFollowed = isFollowed;
-				dispatch_async(dispatch_get_main_queue(), ^{
-					[self updateFollowIcon];
-					[self addSubview:self.followButton];
-				});
-			}];
+        
+        BOOL isCurrentUser = [[self.channel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
+		if (!isCurrentUser) {
+			self.isFollowed = [[UserInfoCache sharedInstance] userFollowsChannel:self.channel] != nil;
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[self updateFollowIcon];
+				[self addSubview:self.followButton];
+			});
 		}
 
 		[channel getChannelOwnerNameWithCompletionBlock:^(NSString *name) {
@@ -100,7 +101,7 @@
 	if (self.isFollowed) {
 		[Follow_BackendManager currentUserFollowChannel: self.channel];
 	} else {
-		[Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel: self.channel];
+		[Follow_BackendManager currentUserStopFollowingChannel: self.channel];
 	}
 	[self updateFollowIcon];
 }

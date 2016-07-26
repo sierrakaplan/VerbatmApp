@@ -79,7 +79,10 @@
 #define CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE 20.f
 #define CHANNEL_USER_LIST_USER_NAME_FONT_SIZE 15.f
 
-#define LIKE_SHARE_BAR_BACKGROUND_COLOR [UIColor colorWithWhite:0.f alpha:0.3]
+#define NOTIFICATION_LIST_FONT_SIZE 17.f
+
+#define LIKE_SHARE_BAR_BACKGROUND_COLOR [UIColor clearColor]
+#define LIKE_SHARE_BAR_NUMBERS_BACKGROUND_COLOR [UIColor colorWithWhite:0.f alpha:0.3]
 
 #pragma mark - Page Views -
 
@@ -176,5 +179,14 @@
 
 #define CHANNEL_LIST_HEADER_BACKGROUND_COLOR [UIColor colorWithWhite:0.95 alpha:1.f]
 
+#define LIKE_NOTIFICATION_IMAGE_ICON @"HeartIcon"
+
+#define NOTIFICATIONS_LIST_BACKGROUND @"Notifications background"
+
+#define NOTIFICATION_POPUP_ICON @"Notifications alert"
+
+
+
+#define SIGNUP_PHONE_INFO_BACKGROUND_COLOR [UIColor whiteColor]
 
 #endif /* Styles_h */

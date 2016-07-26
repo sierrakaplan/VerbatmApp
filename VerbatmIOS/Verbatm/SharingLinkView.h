@@ -19,10 +19,9 @@
 -(void) continueToPublish;
 -(void) cancelPublishing;
 
-
 @end
 
 
 @interface SharingLinkView : UIView
-@property (nonatomic) id <ShareLinkViewProtocol> delegate;
+@property (nonatomic, weak) id <ShareLinkViewProtocol> delegate;
 @end

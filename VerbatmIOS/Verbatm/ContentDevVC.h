@@ -31,7 +31,6 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 @property (weak, nonatomic) IBOutlet VerbatmScrollView *mainScrollView;
 
 @property (nonatomic) NSInteger startChannelIndex;
-@property (strong, nonatomic) UIPickerView *channelPicker;
 @property (nonatomic) NSUInteger currentPresentedPickerRow;
 
 @property (strong, nonatomic) CustomNavigationBar* navBar;

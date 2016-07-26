@@ -95,7 +95,7 @@
                     // get number of follows from follow objects
                     Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
                                                                     andParseChannelObject:parseChannelObject
-                                                                        andChannelCreator:user];
+                                                                        andChannelCreator:user andFollowObject:nil];
                     [finalChannelObjects addObject:verbatmChannelObject];
                 }
             }
@@ -108,15 +108,16 @@
     PostPublisher * __block mediaPublisher = [[PostPublisher alloc] init];
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         [self getImageDataFromImage:coverPhoto withCompletionBlock:^(NSData * imageData) {
-			//todo: get actual file name for cover photo?
             [mediaPublisher storeImageWithName:@"CoverPhoto.png" andData:imageData].then(^(id result) {
                 if(result){
                     NSString *blobstoreUrl = (NSString*) result;
-                    if (![blobstoreUrl hasSuffix:@"=s0"]) {
-                        blobstoreUrl = [blobstoreUrl stringByAppendingString:@"=s0"];
-                    }
                     [channel setValue:blobstoreUrl forKey:CHANNEL_COVER_PHOTO_URL];
-                    [channel saveInBackground];
+                    [channel saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+                        if(succeeded){
+                            NSLog(@"stored new cover photo url in parse channel object");
+                        }
+                    }];
+                    
                 }
             });
         }];
@@ -129,10 +130,11 @@
 }
 
 
+// NOT IN USE
 + (void) getAllChannelsWithCompletionBlock:(void(^)(NSMutableArray *))completionBlock {
     
-    PFQuery * userChannelQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
-    [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+    PFQuery *allChannelsQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
+    [allChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                          NSError * _Nullable error) {
         NSMutableArray * finalChannelObjects = [[NSMutableArray alloc] init];
         if(objects && !error) {
@@ -141,12 +143,26 @@
                 // get number of follows from follow objects
                     Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
                                                                     andParseChannelObject:parseChannelObject
-                                                                        andChannelCreator:[PFUser currentUser]];
+                                                                        andChannelCreator:[PFUser currentUser] andFollowObject:nil];
                     [finalChannelObjects addObject:verbatmChannelObject];
             }
         }
         completionBlock(finalChannelObjects);
     }];
+}
+
++ (void) updateLatestPostDateForChannel:(PFObject*)channel {
+	PFQuery *findLatestPostQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
+	[findLatestPostQuery orderByDescending:@"createdAt"];
+	[findLatestPostQuery getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+		if (!object || error) {
+			//No more posts exist
+			channel[CHANNEL_LATEST_POST_DATE] = [NSNull null];
+		} else {
+			channel[CHANNEL_LATEST_POST_DATE] = object.createdAt;
+		}
+		[channel saveInBackground];
+	}];
 }
 
 @end

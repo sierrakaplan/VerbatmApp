@@ -14,37 +14,58 @@
 
 @interface Channel : NSObject
 
+// Set to true if the user hasn't added their own blog yet
+@property (nonatomic) BOOL defaultBlogName;
+@property (nonatomic) NSDate *latestPostDate;
 @property (nonatomic, readonly) NSString *name;
 @property (nonatomic, readonly) NSString *blogDescription;
 @property (nonatomic, readonly) PFObject *parseChannelObject;
 @property (nonatomic, readonly) PFUser *channelCreator;
+@property (nonatomic) PFObject *followObject;
 @property (nonatomic, readonly) NSMutableArray *usersFollowingChannel;
 @property (nonatomic, readonly) NSMutableArray *channelsUserFollowing;
+// The follow objects corresponding with channelsUserFollowing
 
-
+// The follow object represents the current user's follow relationship with this channel
+// Pass nil if current user's channel or if none exists (not following)
 -(instancetype) initWithChannelName:(NSString *) channelName
 			  andParseChannelObject:(PFObject *) parseChannelObject
-				  andChannelCreator:(PFUser *) channelCreator;
+				  andChannelCreator:(PFUser *) channelCreator
+					andFollowObject:(PFObject*) followObject;
 
+-(void) changeTitle:(NSString*)title;
+ 
 -(void) changeTitle:(NSString*)title andDescription:(NSString*)description;
 
--(void) currentUserFollowsChannel:(BOOL) follows;
+// Updates if the current user follows this channel
+-(void) currentUserFollowChannel:(BOOL) follows;
+
+-(void) updateLatestPostDate:(NSDate*)date;
 
 -(void) getChannelOwnerNameWithCompletionBlock:(void(^)(NSString *))block;
 
-// Returns when both usersFollowingChannel and channelsUserFollowing are filled in
--(void) getFollowersAndFollowingWithCompletionBlock:(void(^)(void))block;
+-(void) getFollowersWithCompletionBlock:(void(^)(void))block;
 
--(BOOL)channelBelongsToCurrentUser;
+-(void) getChannelsFollowingWithCompletionBlock:(void(^)(void))block;
 
--(void)addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator;
+-(BOOL) channelBelongsToCurrentUser;
 
-
-+(void)getChannelsForUserList:(NSMutableArray *) userList andCompletionBlock:(void(^)(NSMutableArray *))block;
+-(void) addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator;
 
 
--(void)storeCoverPhoto:(UIImage *) coverPhoto;
++(void) getChannelsForUserList:(NSArray *) userList andCompletionBlock:(void(^)(NSMutableArray *))block;
 
--(void)loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*))block;
+
+-(void) storeCoverPhoto:(UIImage *) coverPhoto;
+
+-(void) loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*, NSData*))block;
+
+-(NSString *)getCoverPhotoUrl;
+
+-(void)registerFollowingNewChannel:(Channel *)channel;
+
+-(void)registerStopedFollowingChannel:(Channel *)channel;
+
+-(void) updatePostDeleted:(PFObject*)post;
 
 @end

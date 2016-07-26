@@ -6,10 +6,9 @@
     <customFonts key="customFonts">
         <mutableArray key="Quicksand-Bold.otf">
             <string>Quicksand-Bold</string>
+            <string>Quicksand-Bold</string>
         </mutableArray>
         <mutableArray key="Quicksand-Regular.otf">
-            <string>Quicksand-Regular</string>
-            <string>Quicksand-Regular</string>
             <string>Quicksand-Regular</string>
             <string>Quicksand-Regular</string>
             <string>Quicksand-Regular</string>
@@ -117,19 +116,6 @@
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Login with your phone number" textAlignment="center" minimumFontSize="24" id="EfJ-sF-ht6">
-                                <rect key="frame" x="20" y="388" width="280" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="or" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="7dv-hM-JUO">
-                                <rect key="frame" x="16" y="328" width="289" height="36"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="Quicksand-Regular" family="Quicksand" pointSize="26"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="verbatm_logo" id="Iqv-b5-e4e">
                                 <rect key="frame" x="118" y="0.0" width="85" height="95"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -148,9 +134,7 @@
                     <connections>
                         <outlet property="backgroundImageView" destination="GKm-Mk-qgk" id="Nlf-Rk-NnE"/>
                         <outlet property="mobileBloggingLabel" destination="ZaS-l4-AcK" id="3e8-SA-sjk"/>
-                        <outlet property="orLabel" destination="7dv-hM-JUO" id="UNB-Sk-sdk"/>
                         <outlet property="pageControlView" destination="Mqy-hA-tGQ" id="xdE-Ij-b3s"/>
-                        <outlet property="phoneLoginField" destination="EfJ-sF-ht6" id="Qlf-hp-WDd"/>
                         <outlet property="verbatmLogoImageView" destination="Iqv-b5-e4e" id="Cgi-Cr-ost"/>
                         <outlet property="welcomeLabel" destination="86e-CU-3ZO" id="iD1-Hf-dBS"/>
                         <segue destination="sxR-fz-pfS" kind="unwind" identifier="unwind_to_master_vc_from_login" unwindAction="unwindToMasterNavVC:" id="SyP-B6-Kbt"/>
@@ -161,7 +145,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jhx-H8-RPm" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="sxR-fz-pfS" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="-3321" y="-2091"/>
+            <point key="canvasLocation" x="-3490" y="-2110"/>
         </scene>
         <!--User InfoVC-->
         <scene sceneID="FQa-sz-QTB">
@@ -225,7 +209,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="OIW-e5-B3V">
-                                <rect key="frame" x="-6" y="115" width="320" height="88"/>
+                                <rect key="frame" x="0.0" y="284" width="320" height="88"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" name="Quicksand-Regular" family="Quicksand" pointSize="20"/>
@@ -242,10 +226,10 @@
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="tXt-K3-IoR">
-                                <rect key="frame" x="0.0" y="301" width="320" height="89"/>
+                                <rect key="frame" x="0.0" y="105" width="320" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <fontDescription key="fontDescription" name="Quicksand-Regular" family="Quicksand" pointSize="20"/>
+                                <fontDescription key="fontDescription" name="Quicksand-Bold" family="Quicksand" pointSize="20"/>
                                 <state key="normal" title="Contact Us">
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
@@ -262,7 +246,7 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="DMm-JS-Y99">
-                                <rect key="frame" x="0.0" y="204" width="320" height="89"/>
+                                <rect key="frame" x="0.0" y="187" width="320" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" name="Quicksand-Regular" family="Quicksand" pointSize="20"/>

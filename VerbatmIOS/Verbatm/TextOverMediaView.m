@@ -43,14 +43,18 @@
 		}
 		[self.imageView setImage: croppedImage];
 
-		// After larger image loads, crop it and set it in the image
-		// Only load large image if it's been published already cropped (with s0 tag)
-		if (!small && [imageUrl.absoluteString hasSuffix:@"=s0"]) {
-			[UtilityFunctions loadCachedPhotoDataFromURL:imageUrl].then(^(NSData* largeImageData) {
+		// Load large image cropped
+		if (!small) {
+			NSString *imageURI = [UtilityFunctions addSuffixToPhotoUrl:imageUrl.absoluteString forSize: LARGE_IMAGE_SIZE];
+			imageUrl = [NSURL URLWithString: imageURI];
+            __weak TextOverMediaView *weakSelf = self;
+			[[UtilityFunctions sharedInstance] loadCachedPhotoDataFromURL:imageUrl].then(^(NSData* largeImageData) {
 				// Only display larger data if less than 1000 KB
 				if (largeImageData.length / 1024.f < 1000) {
 					UIImage *image = [UIImage imageWithData:largeImageData];
-					[self.imageView setImage: image];
+					[weakSelf.imageView setImage: image];
+				} else {
+					NSLog(@"Image too big");
 				}
 			});
 		}
@@ -69,7 +73,6 @@
 -(instancetype) initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
-		//		self.displayingLargeImage = NO;
 		[self revertToDefaultTextSettings];
 		[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
 	}
@@ -145,8 +148,9 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	self.textYPosition = yPos;
 	CGRect tempFrame = CGRectMake(self.textView.frame.origin.x, yPos,
 								  self.textView.frame.size.width, self.textView.frame.size.height);
+    __weak TextOverMediaView * weakSelf = self;
 	[UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
-		self.textView.frame = tempFrame;
+		if(weakSelf)weakSelf.textView.frame = tempFrame;
 	}];
 }
 
@@ -259,8 +263,9 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	return _textView;
 }
 
--(void) dealloc {
-
+-(void)dealloc{
+    _imageView.image = nil;
+    _imageView = nil;
 }
 
 @end

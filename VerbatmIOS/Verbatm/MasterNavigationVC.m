@@ -14,7 +14,6 @@
 #import "Durations.h"
 
 #import "DiscoverVC.h"
-#import "FeedVC.h"
 #import "FeedTableViewController.h"
 #import "Icons.h"
 
@@ -40,14 +39,17 @@
 #import "UserSetupParameters.h"
 
 #import <Crashlytics/Crashlytics.h>
-
+#import "NotificationsListTVC.h"
 
 @interface MasterNavigationVC () <UITabBarControllerDelegate, FeedTableViewDelegate,
-ProfileVCDelegate>
+ProfileVCDelegate, NotificationsListTVCProtocol>
 
 #pragma mark - Tab Bar Controller -
 
 @property (nonatomic) BOOL migrated;
+
+@property (nonatomic) BOOL indicatorPresent;
+
 
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
 @property (strong, nonatomic) CustomTabBarController* tabBarController;
@@ -60,15 +62,17 @@ ProfileVCDelegate>
 @property (strong,nonatomic) ProfileVC *profileVC;
 @property (strong,nonatomic) FeedTableViewController *feedVC;
 @property (strong,nonatomic) DiscoverVC *discoverVC;
-@property (strong,nonatomic) NotificationsVC *notificationsVC;
 
+@property (strong, nonatomic) NotificationsListTVC * notificationVC;
+
+@property(strong,nonatomic) UIImageView * notificationIndicator;
 
 #define ANIMATION_NOTIFICATION_DURATION 0.5
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
 #define DARK_GRAY 0.6f
 #define ADK_BUTTON_SIZE 40.f
 #define SELECTED_TAB_ICON_COLOR [UIColor colorWithRed:0.5 green:0.1 blue:0.1 alpha:1.f]
-
+#define NOTIFICATION_INDICATOR_SIZE 40.f
 @end
 
 @implementation MasterNavigationVC
@@ -92,12 +96,16 @@ ProfileVCDelegate>
 	[super viewDidDisappear:animated];
 }
 
--(BOOL) prefersStatusBarHidden {
-	return self.tabBarHidden;
-}
-
 - (UIStatusBarAnimation) preferredStatusBarUpdateAnimation {
 	return UIStatusBarAnimationSlide;
+}
+
+- (UIViewController *)childViewControllerForStatusBarHidden {
+	return self.tabBarController.selectedViewController;
+}
+
+- (UIViewController *)childViewControllerForStatusBarStyle {
+	return self.tabBarController.selectedViewController;
 }
 
 -(void) registerForNotifications {
@@ -130,74 +138,13 @@ ProfileVCDelegate>
                                              selector:@selector(followingSuccessfulNotification:)
                                                  name:NOTIFICATION_NOW_FOLLOWING_USER
                                                object:nil];
-
-
 }
 
-
--(void)successfullyPublishedNotification:(NSNotification *) notification {
-    
-    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Sucessfully Published!                                        " message:@"Remember to share your post! :D" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction* action = [UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault
-                                                   handler:^(UIAlertAction * action) {}];
-    [newAlert addAction:action];
-    [self presentViewController:newAlert animated:YES completion:nil];
-    
-	//todo: bring back image later
-    //	[self.view addSubview:self.publishSuccessful];
-    //	[self.view bringSubviewToFront:self.publishSuccessful];
-    //	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-    //		self.publishSuccessful.alpha = 0.f;
-    //	}completion:^(BOOL finished) {
-    //		[self.publishSuccessful removeFromSuperview];
-    //		self.publishSuccessful = nil;
-    //	}];
-}
-
-
--(void)publishingFailedNotification:(NSNotification *) notification{
-	NSError *error = notification.object;
-	NSString* message = @"Don't worry - we saved all your stuff! Try to publish again later!";
-	if (error.code == -1000 && [error.domain isEqualToString:@"com.alamofire.error.serialization.request"]) {
-		message = @"We couldn't publish one of your pieces of media - the file was unreadable.";
-	}
-    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Ooops...we couldn't publish." message:message preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
-                                                   handler:^(UIAlertAction * action) {}];
-    [newAlert addAction:action];
-    [self presentViewController:newAlert animated:YES completion:nil];
-
-	//todo: bring back image later
-    //	[self.view addSubview:self.publishFailed];
-    //	[self.view bringSubviewToFront:self.publishFailed];
-    //	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-    //		self.publishFailed.alpha = 0.f;
-    //	}completion:^(BOOL finished) {
-    //		[self.publishFailed removeFromSuperview];
-    //		self.publishFailed = nil;
-    //	}];
-}
-
--(void)followingSuccessfulNotification:(NSNotification *) notification{
-    
-    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Following Successful!" message:@"" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
-                                                   handler:^(UIAlertAction * action) {}];
-    [newAlert addAction:action];
-    [self presentViewController:newAlert animated:YES completion:nil];
-    
-//    [self.view addSubview:self.following];
-//    [self.view bringSubviewToFront:self.following];
-//    [UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-//        self.following.alpha = 0.f;
-//    }completion:^(BOOL finished) {
-//        [self.following removeFromSuperview];
-//        self.following = nil;
-//    }];
-}
+#pragma mark - Setting up environment on startup -
 
 /* Migrating to one channel */
 -(void) checkMigrated {
+	
 	self.migrated = NO;
 	NSNumber* migratedObject = [[PFUser currentUser] objectForKey:USER_MIGRATED_ONE_CHANNEL];
 	if (migratedObject && [migratedObject boolValue]) self.migrated = YES;
@@ -258,13 +205,8 @@ ProfileVCDelegate>
 	deadView.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:deadViewTabImage selectedImage:deadViewTabImage];
 	deadView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 
-<<<<<<< HEAD
-    self.tabBarController.viewControllers = @[self.profileVC, deadView, self.feedVC, self.discoverVC, self.notificationsVC];
-    //add adk button to tab bar
-=======
-	self.tabBarController.viewControllers = @[self.feedVC, self.discoverVC, deadView, self.profileVC];
-	//add adk button to tab bar
->>>>>>> master
+	self.tabBarController.viewControllers = @[self.feedVC, self.discoverVC, deadView,self.notificationVC, self.profileVC];
+
 	[self addTabBarCenterButtonOverDeadView];
 	[self formatTabBar];
 }
@@ -281,7 +223,6 @@ ProfileVCDelegate>
 	NSInteger numTabs = self.tabBarController.viewControllers.count;
 	CGSize tabBarItemSize = CGSizeMake(self.tabBarController.tabBar.frame.size.width/numTabs,
 									   self.tabBarController.tabBarHeight);
-	//[self.tabBarController.tabBar setTintColor:SELECTED_TAB_ICON_COLOR];
 	// Sets background of unselected UITabBarItem
 	[self.tabBarController.tabBar setBackgroundImage: [self getUnselectedTabBarItemImageWithSize: tabBarItemSize]];
 	[self.tabBarController.tabBar setBackgroundColor:[UIColor blackColor]];
@@ -306,15 +247,11 @@ ProfileVCDelegate>
 									  andSize: size];
 }
 
+
+
 //the view controllers that will be tabbed
 -(void)createViewControllers {
-<<<<<<< HEAD
-	self.notificationsVC = [self.storyboard instantiateViewControllerWithIdentifier:NOTIFICATIONS_VC_ID];
-	self.discoverVC = [self.storyboard instantiateViewControllerWithIdentifier:DISCOVER_VC_ID];
-=======
 	self.discoverVC = [self.storyboard instantiateViewControllerWithIdentifier:FEATURED_CONTENT_VC_ID];
->>>>>>> master
-
 	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
 	self.profileVC.delegate = self;
 	self.profileVC.ownerOfProfile = [PFUser currentUser];
@@ -325,7 +262,10 @@ ProfileVCDelegate>
     self.feedVC = [[FeedTableViewController alloc] init];
     self.feedVC.view.frame = self.view.bounds;
 	self.feedVC.delegate = self;
-
+    
+    self.notificationVC = [[NotificationsListTVC alloc] init];
+    self.notificationVC.view.frame = self.view.bounds;
+    self.notificationVC.delegate = self;
 	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															  image:[UIImage imageNamed:PROFILE_NAV_ICON]
 													  selectedImage:[UIImage imageNamed:PROFILE_NAV_ICON]];
@@ -333,25 +273,55 @@ ProfileVCDelegate>
 															  image:[UIImage imageNamed:HOME_NAV_ICON]
 													  selectedImage:[UIImage imageNamed:HOME_NAV_ICON]];
 	self.discoverVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
-<<<<<<< HEAD
-															  image:[UIImage imageNamed:DISCOVER_TAB_BAR_ICON]
-													  selectedImage:[UIImage imageNamed:DISCOVER_TAB_BAR_ICON]];
-	self.notificationsVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
-																	image:[UIImage imageNamed:PROFILE_NAV_ICON]
-															selectedImage:[UIImage imageNamed:PROFILE_NAV_ICON]];
-    // images need to be centered this way for some reason
-	self.profileVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
-=======
 															   image:[UIImage imageNamed:DISCOVER_NAV_ICON]
 													   selectedImage:[UIImage imageNamed:DISCOVER_NAV_ICON]];
+    
+    UIImage * unselectedNotification = [self imageWithImage:[[UIImage imageNamed:NOTIFICATION_ICON_UNSELECTED]
+                                                             imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
+                                               scaledToSize:CGSizeMake(30.f, 30.f)];
+    
+    UIImage * selectedNotification = [self imageWithImage:[[UIImage imageNamed:NOTIFICATION_ICON_SELECTED]
+                                                             imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
+                                               scaledToSize:CGSizeMake(30.f, 30.f)];
+    
+    self.notificationVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
+                                                               image:unselectedNotification
+                                                       selectedImage:selectedNotification];
+    
+    self.notificationVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+    
+	self.profileVC.tabBarItem.imageInsets = self.discoverVC.tabBarItem.imageInsets =
+    self.feedVC.tabBarItem.imageInsets =  UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+}
 
-	// images need to be centered this way for some reason
-	self.profileVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
-	//    self.channelListView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
->>>>>>> master
-	self.discoverVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
-	self.feedVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
-	self.notificationsVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+-(void)notificationListHideTabBar:(BOOL) shouldHide{
+    [self showTabBar:!shouldHide];
+}
+
+-(void)showNotificationIndicator{
+    [self showIndicator];
+}
+-(void)removeNotificationIndicator{
+    [self removeIndicator];
+}
+
+-(void)removeIndicator{
+    self.indicatorPresent = NO;
+    [self.notificationIndicator removeFromSuperview];
+}
+
+-(void)showIndicator{
+    self.indicatorPresent = YES;
+    CGFloat tabBarItemWidth = self.view.frame.size.width/5.f;
+    
+    
+    CGFloat xpos = 1.f + (self.view.frame.size.width - (tabBarItemWidth *2)) + tabBarItemWidth/2.f;
+    
+    
+    CGRect frame = CGRectMake(xpos, self.view.frame.size.height - (TAB_BAR_HEIGHT + NOTIFICATION_INDICATOR_SIZE), NOTIFICATION_INDICATOR_SIZE, NOTIFICATION_INDICATOR_SIZE);
+    [self.notificationIndicator setFrame:frame];
+    [self.view addSubview:self.notificationIndicator];
+    [self.view bringSubviewToFront:self.notificationIndicator];
 }
 
 -(void)createTabBarViewController {
@@ -383,6 +353,15 @@ ProfileVCDelegate>
 	[self.tabBarController.tabBar addSubview:button];
 }
 
+- (BOOL)tabBarController:(UITabBarController *)tabBarController
+ shouldSelectViewController:(UIViewController *)viewController {
+	// Refresh feed if they tap the feed icon while on the feed
+	if (viewController == self.feedVC && self.tabBarController.selectedViewController == self.feedVC) {
+		[self.feedVC refreshListOfContent];
+	}
+	return YES;
+}
+
 -(void) revealADK {
 	//Clear memory from discover when bring up adk
 	NSNotification * not = [[NSNotification alloc]initWithName:NOTIFICATION_FREE_MEMORY_DISCOVER object:nil userInfo:nil];
@@ -395,6 +374,7 @@ ProfileVCDelegate>
 -(void)userHasSignedOutNotification:(NSNotification *) notification{
 	[self bringUpLogin];
 }
+
 
 #pragma mark - Handle Login -
 
@@ -413,20 +393,28 @@ ProfileVCDelegate>
 		[[Analytics getSharedInstance] endOfADKSession];
 	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_USER_SETTINGS_TO_LOGIN] ||
                [segue.identifier isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]) {
-
-
 	}
 }
 
-#pragma mark -Profile VC Delegate-
+#pragma mark - Profile VC Delegate -
+
 -(void) userCreateFirstPost{
     [self revealADK];
 }
 
 #pragma mark - Feed VC Delegate -
 
+
+-(void)goToDiscover{
+    [self.tabBarController setSelectedIndex:1];
+}
+
 -(void) showTabBar:(BOOL)show {
 	if (show) {
+        if(self.indicatorPresent){
+            [self showIndicator];
+        }
+        
 		self.tabBarHidden = NO;
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			[self setNeedsStatusBarAppearanceUpdate];
@@ -434,6 +422,12 @@ ProfileVCDelegate>
 		}];
 	} else {
 		self.tabBarHidden = YES;
+        if(self.indicatorPresent){
+            [self removeIndicator];
+            self.indicatorPresent = YES;
+        }else{
+            [self removeIndicator];
+        }
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			[self setNeedsStatusBarAppearanceUpdate];
 			self.tabBarController.tabBar.frame = self.tabBarFrameOffScreen;
@@ -441,21 +435,44 @@ ProfileVCDelegate>
 	}
 }
 
-//show the channels the current user can select to follow
--(void)presentChannelsToFollow{
-	//[self presentShareSelectionViewStartOnChannels:YES];
+#pragma mark - Publishing Alerts -
+
+-(void)successfullyPublishedNotification:(NSNotification *) notification {
+
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Successfully Published!"
+																	   message:@"Remember to share your post! :D"
+																preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* action = [UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault
+												   handler:^(UIAlertAction * action) {}];
+	[newAlert addAction:action];
+	[self presentViewController:newAlert animated:YES completion:nil];
 }
 
-- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController{
-
+-(void)publishingFailedNotification:(NSNotification *) notification{
+	NSError *error = notification.object;
+	NSString* message = @"Don't worry - we saved all your stuff! Try to publish again later!";
+	if (error.code == -1000 && [error.domain isEqualToString:@"com.alamofire.error.serialization.request"]) {
+		message = @"We couldn't publish one of your pieces of media - the file was unreadable.";
+	}
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Publishing Failed" message:message preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+												   handler:^(UIAlertAction * action) {}];
+	[newAlert addAction:action];
+	[self presentViewController:newAlert animated:YES completion:nil];
 }
 
+-(void)followingSuccessfulNotification:(NSNotification *) notification{
+}
 
 - (UIInterfaceOrientationMask) supportedInterfaceOrientations {
     //return supported orientation masks
     return UIInterfaceOrientationMaskPortrait;
 }
 
+-(UIImageView *)notificationIndicator{
+    if(!_notificationIndicator)_notificationIndicator = [[UIImageView alloc] initWithImage:[UIImage imageNamed:NOTIFICATION_POPUP_ICON]];
+    return _notificationIndicator;
+}
 
 #pragma mark - Memory Warning -
 

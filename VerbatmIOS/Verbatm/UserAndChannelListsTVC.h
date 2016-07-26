@@ -29,30 +29,16 @@
 
 
 typedef enum{
-    
-    likersList = 0,
-    followersList =1,
-    followingList =2
-    
-}ListLoadType;
+	LikersList = 0,
+    FollowersList = 1,
+    FollowingList = 2
+} ListType;
 
 @interface UserAndChannelListsTVC : UITableViewController
 
 @property (nonatomic, weak) id<UserAndChannelListsTVCDelegate> listDelegate;
-@property (nonatomic) ListLoadType currentListType;
+@property (nonatomic) ListType currentListType;
 
-//show which users like this post
--(void) presentUserLikeInformationForPost:(id) post;
-
-//show which uses shared this post
--(void) presentUserShareInformationForPost:(id) post;
-
-//Gives us the channels to display and if we should show the users that follow them then
--(void)presentChannelsForUser:(id) userId shouldDisplayFollowers:(BOOL) displayFollowers;
-
-//show which users are being followed by userId
--(void)presentWhoIsFollowedBy:(id)userId;
-
--(void)presentList:(ListLoadType) listType forChannel:(Channel *) channel orPost:(PFObject *) post;
+-(void)presentList:(ListType) listType forChannel:(Channel *) channel orPost:(PFObject *) post;
 
 @end

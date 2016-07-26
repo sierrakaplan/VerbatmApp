@@ -11,135 +11,240 @@
 #import "UserInfoCache.h"
 #import "Channel.h"
 #import "ProfileVC.h"
+#import "UtilityFunctions.h"
+#import "Icons.h"
 
-@interface FeedTableViewController ()<FeedCellDelegate>
 
+@interface FeedTableViewController () <FeedCellDelegate>
 
-@property(nonatomic) NSMutableArray * FollowingProfileList;
-@property (nonatomic) Channel * currentUserChannel;
-@property (nonatomic) ProfileVC * nextProfileToPresent;
+@property(nonatomic) NSMutableArray *followingProfileList;
+@property (nonatomic) Channel *currentUserChannel;
+@property (nonatomic) ProfileVC *nextProfileToPresent;
 @property (nonatomic) NSInteger nextProfileIndex;
+@property (nonatomic) UIRefreshControl *refreshControl;
+
+@property (nonatomic) UIImageView * emptyFeedNotification;
+
+@property (nonatomic) BOOL contentInFullScreen;
+
 @end
 
 @implementation FeedTableViewController
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    [self.tableView registerClass:[FeedTableCell class] forCellReuseIdentifier:@"FeedTableCell"];
-    [self prepareListOfContent];
-    self.tableView.pagingEnabled = YES;
-    self.tableView.allowsSelection = NO;
-    [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-}
+@dynamic refreshControl;
 
--(void)reloadCellsOnScreen{
-    NSArray * visibleCell = [self.tableView visibleCells];
-    
-    if(visibleCell && visibleCell.count){
-        FeedTableCell * cell = [visibleCell firstObject];
-        [cell reloadProfile];
-    }
+- (void)viewDidLoad {
+	[super viewDidLoad];
+	[self.tableView registerClass:[FeedTableCell class] forCellReuseIdentifier:@"FeedTableCell"];
+	[self refreshListOfContent];
+	self.view.backgroundColor = [UIColor blackColor];
+	self.tableView.pagingEnabled = YES;
+	self.tableView.allowsSelection = NO;
+	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+	[self setNeedsStatusBarAppearanceUpdate];
+	self.refreshControl = [[UIRefreshControl alloc] init];
+	[self.refreshControl addTarget:self action:@selector(refreshListOfContent) forControlEvents:UIControlEventValueChanged];
+	[self.tableView addSubview:self.refreshControl];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-    [self reloadCellsOnScreen];
+	[super viewWillAppear:animated];
 }
 
--(void)viewDidDisappear:(BOOL)animated{
-    NSArray * visibleCell = [self.tableView visibleCells];
-    if(visibleCell && visibleCell.count){
-        FeedTableCell * cell = [visibleCell firstObject];
-        [cell clearProfile];
-    }
+-(void)viewWillDisappear:(BOOL)animated {
+
 }
 
--(void)prepareListOfContent{
-    self.currentUserChannel = [[UserInfoCache sharedInstance] getUserChannel] ;
-    
-    [self.currentUserChannel getFollowersAndFollowingWithCompletionBlock:^{
-        self.FollowingProfileList = [self.currentUserChannel channelsUserFollowing];
-        [self.tableView reloadData];
-    }];
+-(UIStatusBarStyle) preferredStatusBarStyle {
+	return UIStatusBarStyleLightContent;
 }
 
+-(BOOL) prefersStatusBarHidden {
+	return self.contentInFullScreen;
+}
 
+-(void)reloadCellsOnScreen{
+	NSArray * visibleCell = [self.tableView visibleCells];
+
+	if(visibleCell && visibleCell.count){
+		FeedTableCell * cell = [visibleCell firstObject];
+		[cell presentProfileForChannel:self.currentUserChannel];
+	}
+}
+
+-(void) refreshListOfContent {
+
+	if (self.tableView.contentOffset.y > (self.view.frame.size.height - 20.f)) {
+		[self.tableView setContentOffset:CGPointZero animated:YES];
+	}
+	self.currentUserChannel = [[UserInfoCache sharedInstance] getUserChannel];
+
+	//todo: change how getfollowersandfollowing is used everywhere (also make sure one instance of updating followers is used)
+	[self.currentUserChannel getChannelsFollowingWithCompletionBlock:^{
+		[self.refreshControl endRefreshing];
+		if ([self.currentUserChannel channelsUserFollowing].count > 0) {
+			[self removeEmptyFeedNotification];
+		} else {
+			[self notifyNotFollowingAnyone];
+			return;
+		}
+
+		//No channels have been previously loaded
+		if (!self.followingProfileList || !self.followingProfileList.count) {
+			self.followingProfileList = [NSMutableArray arrayWithArray: [self.currentUserChannel channelsUserFollowing]];
+			[self.tableView reloadData];
+			return;
+		}
+
+		//Only update indices that have changed (remove channels not followed and add channels user is newly following)
+		NSMutableArray *newChannels = [NSMutableArray arrayWithArray: [self.currentUserChannel channelsUserFollowing]];
+		NSMutableArray *removedChannels = [NSMutableArray arrayWithArray: self.followingProfileList];
+
+		// First remove channels user is no longer following
+		[self removeObjectsFromArrayOfChannels:removedChannels inArray:newChannels];
+		NSMutableArray *removedIndices = [[NSMutableArray alloc] init];
+		NSMutableIndexSet *removedIndexSet = [[NSMutableIndexSet alloc] init];
+		//Note: this is slow but there will probably be few removed indices and alternatives are too complex
+		for (Channel *channel in removedChannels) {
+			NSUInteger removedIndex = [self.followingProfileList indexOfObject: channel];
+			[removedIndices addObject:[NSIndexPath indexPathForRow:removedIndex inSection:0]];
+			[removedIndexSet addIndex: removedIndex];
+		}
+
+		//Load newer channels that user is following
+		[self removeObjectsFromArrayOfChannels:newChannels inArray:self.followingProfileList];
+		NSMutableArray *addedIndices = [[NSMutableArray alloc] init];
+		NSMutableIndexSet *addedIndexSet = [[NSMutableIndexSet alloc] init];
+		//Note: this is slow but there will probably be few removed indices and alternatives are too complex
+		for (Channel *channel in newChannels) {
+			NSUInteger addedIndex = [[self.currentUserChannel channelsUserFollowing] indexOfObject: channel];
+			[addedIndices addObject:[NSIndexPath indexPathForRow:addedIndex inSection:0]];
+			[addedIndexSet addIndex: addedIndex];
+		}
+
+		if ([removedIndices count]) {
+			[self.followingProfileList removeObjectsAtIndexes: removedIndexSet];
+			[self.tableView deleteRowsAtIndexPaths:removedIndices withRowAnimation:UITableViewRowAnimationTop];
+		}
+		if ([addedIndices count]) {
+			[self.followingProfileList insertObjects:newChannels atIndexes: addedIndexSet];
+			[self.tableView insertRowsAtIndexPaths:addedIndices withRowAnimation:UITableViewRowAnimationTop];
+		}
+	}];
+}
+
+//todo: move to utility functions - make work for any pfobject
+//Compares Channel* objects by their PFObject ids
+-(void) removeObjectsFromArrayOfChannels:(NSMutableArray*)receivingArray inArray:(NSArray*)otherArray{
+	if (receivingArray == otherArray) {
+		[receivingArray removeAllObjects];
+		return;
+	}
+	for (Channel *channel in otherArray) {
+		for (int i = 0; i < receivingArray.count; i++) {
+			Channel *otherChannel = receivingArray[i];
+			if ([channel.parseChannelObject.objectId isEqualToString:otherChannel.parseChannelObject.objectId]) {
+				[receivingArray removeObjectAtIndex: i];
+				break;
+			}
+		}
+	}
+}
+
+-(void)notifyNotFollowingAnyone {
+	if(!self.emptyFeedNotification){
+		self.emptyFeedNotification = [[UIImageView alloc] initWithFrame:self.view.bounds];
+		[self.emptyFeedNotification setImage:[UIImage imageNamed:FEED_NOTIFICATION_ICON]];
+		[self.view addSubview:self.emptyFeedNotification];
+		[self.tableView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(goToDiscover)]];
+		self.tableView.allowsSelection = YES;
+	}
+}
+
+-(void)goToDiscover{
+	if(self.emptyFeedNotification){
+		[self.delegate goToDiscover];
+	}
+}
+
+-(void)removeEmptyFeedNotification{
+	if(self.emptyFeedNotification){
+		[self.emptyFeedNotification removeFromSuperview];
+		self.emptyFeedNotification = nil;
+	}
+	self.tableView.allowsSelection = NO;
+}
 
 #pragma mark - Table View Delegate methods (view customization) -
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return self.view.frame.size.height;
+	return self.view.frame.size.height;
 }
 
-
-
 - (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    
-    @autoreleasepool {
-        if(self.nextProfileToPresent){
-            [self.nextProfileToPresent clearOurViews];
-            self.nextProfileToPresent = nil;
-        }
-    }
+	[super didReceiveMemoryWarning];
+
+	if(self.nextProfileToPresent){
+		[self.nextProfileToPresent clearOurViews];
+		self.nextProfileToPresent = nil;
+	}
 }
 
 #pragma mark - Table view data source
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    //[self.delegate showTabBar:YES];
+	//[self.delegate showTabBar:YES];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+	return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.FollowingProfileList.count;
+	return self.followingProfileList.count;
 }
 
 -(void)prepareNextPostFromNextIndex:(NSInteger) nextIndex{
-    
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        if(nextIndex < self.FollowingProfileList.count) {
-            
-            Channel * nextChannel = self.FollowingProfileList[nextIndex];
-            if(self.nextProfileToPresent){
-                @autoreleasepool {
-                    self.nextProfileToPresent = nil;
-                }
-            }
-            
-            self.nextProfileToPresent = [[ProfileVC alloc] init];
-            self.nextProfileToPresent.profileInFeed = YES;
-            self.nextProfileToPresent.isCurrentUserProfile = NO;
-            self.nextProfileToPresent.isProfileTab = NO;
-            self.nextProfileToPresent.ownerOfProfile = nextChannel.channelCreator;
-            self.nextProfileToPresent.channel = nextChannel;
-            [self.nextProfileToPresent loadContentToPostList];
-            
-        }
-    });
-    
+	if(nextIndex < self.followingProfileList.count) {
+		Channel * nextChannel = self.followingProfileList[nextIndex];
+		BOOL isCurrentUserChannel = [[nextChannel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
+		self.nextProfileToPresent = nil;
+		self.nextProfileToPresent = [[ProfileVC alloc] init];
+		self.nextProfileToPresent.profileInFeed = YES;
+		self.nextProfileToPresent.isCurrentUserProfile = isCurrentUserChannel;
+		self.nextProfileToPresent.isProfileTab = NO;
+		self.nextProfileToPresent.ownerOfProfile = nextChannel.channelCreator;
+		self.nextProfileToPresent.channel = nextChannel;
+	}
+}
+- (void)tableView:(UITableView *)tableView
+didEndDisplayingCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath{
+	FeedTableCell *feedCell = (FeedTableCell *) cell;
+	[feedCell clearProfile];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    FeedTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FeedTableCell" forIndexPath:indexPath];
-    cell.delegate = self;
-    if(self.nextProfileToPresent && indexPath.row == self.nextProfileIndex){
-        [cell setProfileAlreadyLoaded:self.nextProfileToPresent];
-    }else{
-        [cell presentProfileForChannel:self.FollowingProfileList[indexPath.row]];
-    }
-     self.nextProfileIndex = indexPath.row + 1;
-    [self prepareNextPostFromNextIndex:self.nextProfileIndex];
-    return cell;
+	FeedTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FeedTableCell" forIndexPath:indexPath];
+	cell.delegate = self;
+	if(self.nextProfileToPresent && indexPath.row == self.nextProfileIndex){
+		[cell setProfileAlreadyLoaded:self.nextProfileToPresent];
+	} else {
+		[cell presentProfileForChannel:self.followingProfileList[indexPath.row]];
+	}
+	self.nextProfileIndex = indexPath.row + 1;
+	[self prepareNextPostFromNextIndex:self.nextProfileIndex];
+	[self removeEmptyFeedNotification];
+	return cell;
 }
 
 
 #pragma mark -Feed Cell Protocol-
 -(void)shouldHideTabBar:(BOOL) shouldHide{
-    [self.delegate showTabBar:!shouldHide];
-    self.tableView.scrollEnabled = !shouldHide;
+	[self.delegate showTabBar:!shouldHide];
+	self.tableView.scrollEnabled = !shouldHide;
+	self.contentInFullScreen = shouldHide;
+	[self setNeedsStatusBarAppearanceUpdate];
 }
 
 @end

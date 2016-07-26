@@ -19,6 +19,7 @@
 #define TEXT_WORD_LIMIT 80
 #define GALLERY_PICKER_TITLE @"Verbatm"
 #define VERBATM_ALBUM_NAME @"Verbatm"
+#define VERBATM_DESCRIPTION @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!"
 #define GALLERY_CUSTOM_MESSAGE @"Pick media to add to your story!"
 
 #define PLACEHOLDER_SELECTOR_FAILED_ERROR_MESSAGE @"Cannot set placeholder using attributed placeholder selector, because deployment target is earlier than iOS 6.0"

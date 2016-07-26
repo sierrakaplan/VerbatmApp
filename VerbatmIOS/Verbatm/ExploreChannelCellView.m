@@ -16,8 +16,9 @@
 #import "PostView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
-
+#import "Notifications.h"
 #import <Parse/PFUser.h>
+#import "UserInfoCache.h"
 
 @interface ExploreChannelCellView() <UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
@@ -38,9 +39,9 @@
 
 
 #define MAIN_VIEW_OFFSET 10.f
-#define POST_VIEW_OFFSET 10.f
-#define POST_VIEW_WIDTH 180.f
-#define OFFSET 5.f
+#define POST_VIEW_OFFSET 5.f
+#define POST_VIEW_WIDTH 150.f
+#define OFFSET 3.f
 #define NUM_FOLLOWERS_WIDTH 40.f
 
 @end
@@ -50,7 +51,6 @@
 -(instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
 	if (self) {
-		self.isFollowed = NO;
 		self.indexOnScreen = 0;
 		self.backgroundColor = [UIColor clearColor];
 		[self addSubview: self.mainView];
@@ -59,8 +59,32 @@
 		UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cellTapped:)];
 		tap.delegate = self;
 		[self addGestureRecognizer:tap];
+        [self registerForFollowNotification];
 	}
 	return self;
+}
+
+-(void)registerForFollowNotification{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(userFollowStatusChanged:)
+                                                 name:NOTIFICATION_NOW_FOLLOWING_USER
+                                               object:nil];
+}
+
+-(void)userFollowStatusChanged:(NSNotification *) notification{
+    
+    NSDictionary * userInfo = [notification userInfo];
+    if(userInfo){
+        NSString * userId = userInfo[USER_FOLLOWING_NOTIFICATION_USERINFO_KEY];
+        NSNumber * isFollowingAction = userInfo[USER_FOLLOWING_NOTIFICATION_ISFOLLOWING_KEY];
+        //only update the follow icon if this is the correct user and also if the action was
+        //no registered on this view
+        if([userId isEqualToString:[self.channelBeingPresented.channelCreator objectId]]&&
+           ([isFollowingAction boolValue] != self.isFollowed)) {
+            self.isFollowed = [isFollowingAction boolValue];
+            [self updateFollowIcon];
+        }
+    }
 }
 
 -(void) cellTapped:(UITapGestureRecognizer*)gesture {
@@ -99,6 +123,7 @@
 }
 
 -(void) presentChannel:(Channel *)channel {
+	self.isFollowed = [[UserInfoCache sharedInstance] userFollowsChannel: channel] != nil;
 	self.channelBeingPresented = channel;
 
 	[self.channelNameLabel setText: channel.name];
@@ -108,7 +133,8 @@
 
 	__block CGFloat xCoordinate = POST_VIEW_OFFSET;
 	[PostsQueryManager getPostsInChannel:channel withLimit:3 withCompletionBlock:^(NSArray *postChannelActivityObjects) {
-		for (PFObject *postChannelActivityObj in postChannelActivityObjects) {
+		for (int i = 0; i < postChannelActivityObjects.count; i++) {
+			PFObject *postChannelActivityObj = postChannelActivityObjects[i];
 			PFObject *post = [postChannelActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
 			[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
 				CGRect frame = CGRectMake(xCoordinate, POST_VIEW_OFFSET, POST_VIEW_WIDTH,
@@ -125,19 +151,22 @@
 				}
 				[postView showPageUpIndicator];
 				[postView muteAllVideos:YES];
-				[self.postViews addObject: postView];
+				if (i < self.postViews.count) [self.postViews insertObject:postView atIndex:i];
+				else [self.postViews addObject:postView];
 			}];
 		}
 	}];
 
-	[Follow_BackendManager numberUsersFollowingChannel:channel withCompletionBlock:^(NSNumber *numFollowers) {
-		self.numFollowers = numFollowers;
-		[self changeNumFollowersLabel];
-	}];
-
-	//Since this is in explore we know the channel is not followed by user
-	[self updateFollowIcon];
-	[self.mainView addSubview:self.followButton];
+	self.numFollowers = self.channelBeingPresented.parseChannelObject[CHANNEL_NUM_FOLLOWS];
+	[self changeNumFollowersLabel];
+     BOOL isCurrentUserChannel = [[channel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
+    if(!isCurrentUserChannel){
+        [self updateFollowIcon];
+        [self.mainView addSubview:self.followButton];
+    }
+    
+    
+	
 	[self.mainView addSubview:self.userNameLabel];
 	[self.mainView addSubview:self.channelNameLabel];
 	[self.mainView addSubview:self.numFollowersLabel];
@@ -148,8 +177,6 @@
 
 	self.channelBeingPresented = nil;
 	self.indexOnScreen = 0;
-	self.isFollowed = NO;
-	self.numFollowers = 0;
 
 	[self.userNameLabel removeFromSuperview];
 	[self.followButton removeFromSuperview];
@@ -171,16 +198,29 @@
 		[Follow_BackendManager currentUserFollowChannel: self.channelBeingPresented];
 	} else {
 		self.numFollowers = [NSNumber numberWithInteger:[self.numFollowers integerValue]-1];
-		[Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel: self.channelBeingPresented];
+		[Follow_BackendManager currentUserStopFollowingChannel: self.channelBeingPresented];
 	}
 	[self updateFollowIcon];
-	[self changeNumFollowersLabel];
 }
 
 -(void) updateFollowIcon {
-	UIImage * newbuttonImage = self.isFollowed ? [UIImage imageNamed:FOLLOWING_ICON_LIGHT] : [UIImage imageNamed:FOLLOW_ICON_LIGHT];
-	[self.followButton setImage:newbuttonImage forState:UIControlStateNormal];
+    if (self.isFollowed) {
+        [self changeFollowButtonTitle:@"Following" toColor:[UIColor blackColor]];
+        self.followButton.backgroundColor = [UIColor whiteColor];
+    } else {
+        [self changeFollowButtonTitle:@"Follow" toColor:[UIColor whiteColor]];
+        self.followButton.backgroundColor = [UIColor clearColor];
+    }
+    [self changeNumFollowersLabel];
 }
+
+-(void) changeFollowButtonTitle:(NSString*)title toColor:(UIColor*) color{
+    NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: color,
+                                      NSFontAttributeName: [UIFont fontWithName:BOLD_FONT size:FOLLOW_TEXT_FONT_SIZE]};
+    NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:titleAttributes];
+    [self.followButton setAttributedTitle:attributedTitle forState:UIControlStateNormal];
+}
+
 
 -(void) changeNumFollowersLabel {
 	[self.numFollowersLabel setText:[self.numFollowers stringValue]];
@@ -290,7 +330,12 @@
 	if (!_followButton) {
 		_followButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		_followButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-		[_followButton addTarget:self action:@selector(followButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+		[_followButton addTarget:self action:@selector(followButtonPressed) forControlEvents:UIControlEventTouchDown];
+        _followButton.clipsToBounds = YES;
+        _followButton.layer.borderColor = [UIColor whiteColor].CGColor;
+        _followButton.layer.borderWidth = 2.f;
+        _followButton.layer.cornerRadius = 7.f;
+
 	}
 	return _followButton;
 }

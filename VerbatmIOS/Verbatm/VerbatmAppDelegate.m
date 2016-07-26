@@ -66,7 +66,6 @@
     Branch *branch = [Branch getInstance];
     [branch initSessionWithLaunchOptions:launchOptions andRegisterDeepLinkHandler:^(NSDictionary *params, NSError *error) {
         // params are the deep linked params associated with the link that the user clicked before showing up.
-        NSLog(@"deep link data: %@", [params description]);
 		if (error) {
 			[[Crashlytics sharedInstance] recordError:error];
 			NSLog(@"Error setting up branch: %@", error.description);
@@ -101,6 +100,7 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
 	[[Crashlytics sharedInstance] recordError:err];
 	//todo: handle the fact that app will not receive notifications
 }
+
 
 // Method that handles push notifications when app is active
 //todo: don't let parse handle it with modal alert

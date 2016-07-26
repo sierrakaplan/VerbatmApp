@@ -34,6 +34,7 @@
 				if (error) {
 					[[Crashlytics sharedInstance] recordError:error];
 				}
+				[channel updateLatestPostDate:postParseObject.createdAt];
 				resolve(nil);
 			}];
 		}];
@@ -46,7 +47,6 @@
 	});
 }
 
-
 +(void)deleteChannelRelationshipsForPost:(PFObject *) postParseObject withCompletionBlock:(void(^)(bool))block{
 	PFQuery * postChannelRelationshipQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 	[postChannelRelationshipQuery whereKey:POST_CHANNEL_ACTIVITY_POST equalTo:postParseObject];
@@ -56,10 +56,12 @@
 			for (PFObject *obj in objects) {
 				[obj deleteInBackground];
 			}
-		}
+			if (block) block(YES);
+		} else if(block) block(NO);
 	}];
 }
 
+//todo: clean this up make faster
 +(void)getChannelObjectFromParsePCRelationship:(PFObject *) pcr withCompletionBlock:(void(^)(Channel * ))block{
 	PFObject * parsePostObject = [pcr valueForKey:POST_CHANNEL_ACTIVITY_POST];
 	[parsePostObject fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
@@ -81,7 +83,8 @@
 				NSString *channelName  = [postChannel valueForKey:CHANNEL_NAME_KEY];
 				Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
 															   andParseChannelObject:postChannel
-																   andChannelCreator:channelCreator];
+																   andChannelCreator:channelCreator
+																	 andFollowObject:nil];
 				block(verbatmChannelObject);
 			}];
 		}];

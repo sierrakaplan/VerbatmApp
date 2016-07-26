@@ -23,11 +23,14 @@
 #define HOME_NAV_ICON @"home"
 #define DISCOVER_NAV_ICON @"search"
 
+#define NOTIFICATION_ICON_SELECTED @"Notification_Icon_Selected"
+#define NOTIFICATION_ICON_UNSELECTED @"Notification_Icon_UnSelected"
 #pragma mark - Profile -
 
 #define BLOCK_USER_ICON @"settings_icon"
 
 #define SETTINGS_BUTTON_ICON @"settings_icon"
+#define BLOCK_ICON @"block_icon"
 
 #define BACK_BUTTON_ICON @"back_arrow_black"
 #define DOWN_ARROW_ICON @"down_arrow_white"
@@ -44,6 +47,8 @@
 #define FOLLOWING_ICON_DARK @"following_icon_dark"
 #define FOLLOWING_SUCCESS_IMAGE @"following_succeeded_notification"
 #define REBLOG_IMAGE @"posted_succeeded_notification"
+
+#define FEED_NOTIFICATION_ICON @"FeedEmptyNotification"
 
 #pragma mark - ADK -
 
@@ -132,6 +137,8 @@
 #define EDIT_PINCHVIEW_INSTRUCTION @"instruction_edit_pinchview"
 #define ADD_TEXT_INSTRUCTION @"instruction_add_text"
 
+#define TAP_TO_EXIT_FULLSCREENPOV_INSTRUCTION @"TAP_TO_EXIT_ICON"
+
 #pragma mark -Photo Slideshow icons-
 
 #define PAUSE_SLIDESHOW_ICON @"Pause_slideshow_icon"
@@ -141,11 +148,25 @@
 
 #define DISCOVER_BACKGROUND @"background_discover"
 
+#define EMPTY_SEARCH_RESULTS_ICON @"EmptySearchResultsIcon"
+#define EMTPY_SEARCH_ICON_HeightWidth_RATIO (327.f/845.f)
+
 #pragma mark - Profile Information Header -
 #define ADD_COVER_PHOTO_ICON @"Add cover photo"
+#define FEEDBACK_NOTIFICATION_ICON @"FeedbackNotification"
+#define FEEDBACK_NOTIFICATION_WidthHeight_RATIO (184.f/168.f)
+
+#define PROFILE_UNDER_CONSTRUCTION_ICON @"ProfileUnderConstruction"
 
 #define NO_COVER_PHOTO_IMAGE @"Empty_Cover_Photo_Image"
 #define PROFILE_BACK_BUTTON_ICON @"back_arrow_white"
 
+#define LOGIN_ICON @"Log In"
+#define CREATE_ACCOUNT @"Create Account"
+
+
+#pragma mark -Notifications View Controller-
+
+#define NOTIFICATIONS_EMPTY_ICON @"NotificationsEmptyIcon"
 
 #endif /* Icons_h */

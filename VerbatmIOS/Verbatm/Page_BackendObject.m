@@ -171,9 +171,9 @@
     PFRelation * postRelation = [post relationForKey:POST_PAGES_PFRELATION];
     [postRelation addObject:page];
     [post saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        if(succeeded){
-            NSLog(@"saved new post relation");
-        }else NSLog(@"Failed to save new post relation");
+        if(error) {
+			[[Crashlytics sharedInstance] recordError:error];
+		}
     }];
     
 }
@@ -214,9 +214,9 @@
                 
                 objects = [objects sortedArrayUsingComparator:[Page_BackendObject comparatorSortPhotosByIndex]];
                 if(isCacheResponse){
-                    NSLog(@"Just used cache for page");
+//                    NSLog(@"Just used cache for page");
                 }else{
-                    NSLog(@"Missed cache using network for page");
+//                    NSLog(@"Missed cache using network for page");
                 }
                 cacheResponsePassed = YES;
                 isCacheResponse = NO;
