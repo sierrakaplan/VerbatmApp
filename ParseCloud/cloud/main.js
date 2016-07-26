@@ -197,6 +197,14 @@ Parse.Cloud.beforeSave("FollowClass", function(request, response) {
     });
 });
 
+Parse.Cloud.beforeSave(Parse.User, function(request, response) {
+  var newACL = new Parse.ACL();
+
+  newACL.setPublicReadAccess(true);
+  request.object.setACL(newACL);
+  response.success();
+});
+
 function sendCodeSms(phoneNumber, code, language) {
 	var prefix = "+1";
 	if(typeof language !== undefined && language == "ja") {
