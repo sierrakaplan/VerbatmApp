@@ -80,7 +80,6 @@
 			}
 		} success:^(NSURLSessionDataTask * _Nonnull task, NSData* responseData) {
 			[[PublishingProgressManager sharedInstance] mediaSavingProgressed:(self.mediaUploadProgress.completedUnitCount)];
-            
 			[self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
 			NSLog(@"Image published!");
 			NSString *response = [[NSString alloc] initWithData:responseData encoding: NSUTF8StringEncoding];

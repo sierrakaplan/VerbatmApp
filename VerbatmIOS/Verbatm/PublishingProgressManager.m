@@ -112,22 +112,27 @@
 }
 
 -(void)countMediaContentFromPinchViews:(NSArray *)pinchViews{
-	CGFloat totalProgressUnits = INITIAL_PROGRESS_UNITS;
-	for(PinchView * pinchView in pinchViews){
+	NSInteger totalProgressUnits = INITIAL_PROGRESS_UNITS;
+	for(PinchView * pinchView in pinchViews) {
+		// There's an extra unit for the final upload to parse of each piece of media
+		NSInteger imageUnits = (IMAGE_PROGRESS_UNITS + 1);
+		// Video + screenshot
+		NSInteger videoUnits = (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS + 2);
 		if([pinchView isKindOfClass:[CollectionPinchView class]]){
             
             CGFloat numImagePinchViews = [(CollectionPinchView *)pinchView imagePinchViews].count;
             CGFloat numVideoPinchViews = [(CollectionPinchView *)pinchView videoPinchViews].count;
-            
-			totalProgressUnits +=  numImagePinchViews* IMAGE_PROGRESS_UNITS;
-			totalProgressUnits +=  numVideoPinchViews > 0 ? (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS) : 0;
+
+			// One for final publishing of each image
+			totalProgressUnits +=  numImagePinchViews * imageUnits;
+			totalProgressUnits +=  numVideoPinchViews > 0 ? videoUnits : 0;
 
 		} else {//only one piece of media
 			//Saves thumbnail for every video too so include the progress for that.
             if([pinchView isKindOfClass:[VideoPinchView class]]){
-                totalProgressUnits += (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS);
+                totalProgressUnits += videoUnits;
             }else{
-				totalProgressUnits += IMAGE_PROGRESS_UNITS;
+				totalProgressUnits += imageUnits;
             }
 		}
 	}
@@ -143,9 +148,9 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POST_FAILED_TO_PUBLISH object:error];
 }
 
--(void)mediaSavingProgressed:(int64_t) newProgress {
+-(void)mediaSavingProgressed:(NSInteger) newProgress {
 	self.progressAccountant.completedUnitCount += newProgress;
-	NSLog(@"Media saving progressed %lld new units to completed %lld units of total %lld units", newProgress,
+	NSLog(@"Media saving progressed %ld new units to completed %lld units of total %lld units", newProgress,
 		  self.progressAccountant.completedUnitCount, self.progressAccountant.totalUnitCount);
 	if (self.progressAccountant.completedUnitCount >= self.progressAccountant.totalUnitCount
 		&& self.currentlyPublishing && self.currentParsePostObject) {

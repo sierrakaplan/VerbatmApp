@@ -304,7 +304,6 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 			return;
 		}
 
-
 		NSMutableArray *indexPaths = [NSMutableArray array];
 		NSInteger startIndex = weakSelf.parsePostObjects.count;
 		NSInteger endIndex = weakSelf.parsePostObjects.count + posts.count;

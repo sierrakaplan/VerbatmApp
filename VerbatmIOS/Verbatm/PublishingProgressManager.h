@@ -35,7 +35,7 @@
 // Blocks is publishing something else, no network
 -(void)publishPostToChannel:(Channel *)channel andFacebook:(BOOL)externalShare withCaption:(NSString *)caption withPinchViews:(NSArray *)pinchViews withCompletionBlock:(void(^)(BOOL, BOOL))block;
 
--(void)mediaSavingProgressed:(int64_t) newProgress;
+-(void)mediaSavingProgressed:(NSInteger) newProgress;
 
 -(void)savingMediaFailedWithError:(NSError*)error;
 
