@@ -35,4 +35,6 @@
 #define USER_FOLLOWING_NOTIFICATION_USERINFO_KEY @"UserFollowing"
 #define USER_FOLLOWING_NOTIFICATION_ISFOLLOWING_KEY @"IsFollowing"//is it a follow or unfollow
 
+#define NOTIFICATION_NEW_PUSH_NOTIFICATION @"new_push_notification"
+
 #endif /* Header_h */

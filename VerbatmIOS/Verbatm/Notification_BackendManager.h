@@ -9,15 +9,15 @@
 #import <Foundation/Foundation.h>
 #import <Parse/PFUser.h>
 #import <Parse/PFObject.h>
+
 typedef enum {
-    
-    NewFollower = 1 << 0,
-    Like = 1 << 1, //someone liked your content
-    FriendJoinedVerbatm = 1 << 2,
-    Share = 1 << 3, //someone shared your content (facebook, twitter, sms)
-    FriendsFirstPost = 1 << 4,
-    Reblog = 1 << 5
-}NotificationType;
+	NewFollower = 1 << 0, 			// 1
+    Like = 1 << 1, 					// 2
+	FriendJoinedVerbatm = 1 << 2, 	// 4
+    Share = 1 << 3, 				// 8
+	FriendsFirstPost = 1 << 4, 		// 16
+	Reblog = 1 << 5 				// 32
+} NotificationType;
 
 @interface Notification_BackendManager : NSObject
 

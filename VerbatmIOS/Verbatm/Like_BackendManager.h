@@ -16,7 +16,9 @@
 +(void) currentUserStopLikingPost:(PFObject *) postParseObject;
 
 //tests to see if the logged in user likes this post
+
 +(void) currentUserLikesPost:(PFObject *) postParseObject withCompletionBlock:(void(^)(bool))block;
+
 + (void)getUsersWhoLikePost:(PFObject *) postParseObject withCompletionBlock:(void(^)(NSArray *))block;
 
 +(void) deleteLikesForPost:(PFObject*) postParseObject withCompletionBlock:(void(^)(BOOL)) block;

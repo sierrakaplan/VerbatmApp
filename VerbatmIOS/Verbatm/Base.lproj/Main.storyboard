@@ -30,6 +30,20 @@
             </objects>
             <point key="canvasLocation" x="-4972" y="-1823"/>
         </scene>
+        <!--NotificationsVC-->
+        <scene sceneID="4EF-Ui-IpL">
+            <objects>
+                <viewController storyboardIdentifier="notifications_vc" id="xmi-6O-Erf" customClass="NotificationsVC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="MWW-as-dto" customClass="UITableView">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KvD-ZL-dgz" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-4909" y="-1042"/>
+        </scene>
         <!--Master NavigationVC-->
         <scene sceneID="IQM-hy-SHi">
             <objects>
