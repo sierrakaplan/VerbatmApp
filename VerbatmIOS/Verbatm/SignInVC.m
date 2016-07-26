@@ -63,6 +63,9 @@
 @property (strong, nonatomic) NSString * password;
 @property (nonatomic) BOOL firstTimeLoggingIn;
 
+@property (nonatomic) BOOL createdUserWithLoginCode;
+
+
 @property (nonatomic) UIScrollView * onBoardingView;
 @property (nonatomic) UIScrollView * contentOnboardingPage;
 
@@ -285,6 +288,7 @@
             [self showAlertWithTitle:@"An account with this phone already exists." andMessage:@"Use a different number."];
              [self goBackFromEnteringConfirmation];
         }else{
+            
             self.firstTimeLoggingIn = YES;
             self.phoneNumber = simplePhoneNumber;
 
@@ -295,6 +299,7 @@
                     [[Crashlytics sharedInstance] recordError: error];
                     [self showAlertWithTitle:@"Error sending code" andMessage:@"Something went wrong. Please verify your phone number is correct."];
                 } else {
+                    self.createdUserWithLoginCode = YES;
                     // Parse has now created an account with this phone number and generated a random code,
                     // user must enter the correct code to be logged in
                 }
@@ -303,6 +308,43 @@
 
 	}];
 }
+
+
+-(void)deleteCreatedUser{
+    if (self.createdUserWithLoginCode) {
+        self.createdUserWithLoginCode = NO;
+        NSString * userNameToDelete = self.phoneNumber;
+        //Sierra todo
+        //delete user with this username
+    }
+}
+
+
+
+-(void) wrongConfirmationNumberAlert:(NSString*)title andMessage:(NSString*)message {
+    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:title message:message
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction1 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                    
+                                                              [self goBackFromEnteringConfirmation];
+                                                              [self deleteCreatedUser];
+                                                          
+                                                          }];
+    UIAlertAction* defaultAction2 = [UIAlertAction actionWithTitle:@"Resend" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                              
+                                                              [self sendCodeToUser];
+                                                              
+                                                          }];
+
+    
+    [newAlert addAction:defaultAction1];
+    [newAlert addAction:defaultAction2];
+    [self presentViewController:newAlert animated:YES completion:nil];
+}
+
+
 
 -(void) codeEnteredWithPhoneNumber:(NSString *)number andCode:(NSString *)code{
 	self.nextButtonEnabled = NO;
@@ -320,7 +362,8 @@
     
 	[PFCloud callFunctionInBackground:@"logIn" withParameters:params block:^(id  _Nullable object, NSError * _Nullable error) {
 		if (error) {
-			[weakSelf showAlertWithTitle:@"Login Error" andMessage: error.localizedDescription];
+            
+             [weakSelf wrongConfirmationNumberAlert:@"Wrong Confirmation Code" andMessage:@"You can choose to resend it."];
 		} else {
 			// This is the session token for the user
 			NSString *token = (NSString*)object;
@@ -333,11 +376,9 @@
                     user.password = self.password;
                     [user setObject:self.verbatmName forKey:VERBATM_USER_NAME_KEY];
                     [user setObject:[NSNumber numberWithBool:NO] forKey:USER_FTUE];
-                    [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-                        if (error || !succeeded) {
-                            [self showAlertWithTitle:@"Error signing up" andMessage: error.localizedDescription];
-                        } else {
-                            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
+                    [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+                        if(succeeded){
+                            [self loginUpWithPhoneNumberSelectedWithNumber:number andPassword:self.password];
                         }
                     }];
 				}
@@ -459,6 +500,10 @@
 
 
 -(void)goBackFromEnteringConfirmation{
+    
+    if(self.createdUserWithLoginCode){
+        [self deleteCreatedUser];
+    }
     [self replaceView:self.confirmationCodeEntry  withView:self.createAccountView goingForward:NO];
 }
 
