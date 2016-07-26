@@ -30,6 +30,7 @@ typedef enum {
 @interface VerbatmKeyboardToolBar()<AdjustTextSizeDelegate, AdjustTextAlignmentToolBarDelegate, AdjustTextFontToolBarDelegate, AdjustTextAVEBackgroundToolBarDelegate>
 
 @property (nonatomic) BOOL textIsBlack;
+@property (nonatomic) BOOL toolbardOnTextAve;
 
 
 @property (strong, nonatomic) UIButton *textColorButton;
@@ -74,11 +75,12 @@ typedef enum {
 
 @implementation VerbatmKeyboardToolBar
 
--(instancetype)initWithFrame:(CGRect)frame andTextColorBlack:(BOOL)textColorBlack{
+-(instancetype)initWithFrame:(CGRect)frame andTextColorBlack:(BOOL)textColorBlack isOnTextAve:(BOOL)onTextAve{
 	self = [super initWithFrame:frame];
 	if(self) {
 		self.backgroundColor = [UIColor clearColor];
 		self.textIsBlack = textColorBlack;
+        self.toolbardOnTextAve = onTextAve;
         self.currentSelectedOption = noSelection;
 		[self addButtons];
 	}
@@ -277,14 +279,13 @@ typedef enum {
 
 
 
-
-
-
-
 -(UIButton *) doneButton {
 	if (!_doneButton) {
-		CGRect doneButtonFrame = CGRectMake(self.frame.size.width  - TEXT_TOOLBAR_DONE_WIDTH - TEXT_TOOLBAR_BUTTON_OFFSET, 0.f,
-											TEXT_TOOLBAR_DONE_WIDTH, (self.frame.size.height/2.f) - TEXT_TOOLBAR_BUTTON_OFFSET);
+        CGFloat height = (self.frame.size.height/2.f) - TEXT_TOOLBAR_BUTTON_OFFSET;
+        CGFloat centeringY = ((self.frame.size.height/2.f) - height)/2.f;
+        
+		CGRect doneButtonFrame = CGRectMake(self.frame.size.width  - TEXT_TOOLBAR_DONE_WIDTH - TEXT_TOOLBAR_BUTTON_OFFSET + 5.f, centeringY,
+											TEXT_TOOLBAR_DONE_WIDTH,height);
 		_doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		_doneButton.frame = doneButtonFrame;
 		UIFont* labelFont = [UIFont fontWithName:REGULAR_FONT size:KEYBOARD_TOOLBAR_FONT_SIZE];
@@ -319,7 +320,7 @@ typedef enum {
 
 - (UIButton *) changeFontTypeButton {
     if (!_changeFontTypeButton) {
-        CGRect buttonFrame = CGRectMake(self.changeTextAlignmentButton.frame.origin.x + self.changeTextAlignmentButton.frame.size.width + ICON_SEPERATION_SPACE, CENTERING_Y,
+        CGRect buttonFrame = CGRectMake(self.changeTextAlignmentButton.frame.origin.x + self.changeTextAlignmentButton.frame.size.width + ICON_SEPERATION_SPACE - 10.f, CENTERING_Y,
                                         TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
         
         _changeFontTypeButton = [self getButtonWithFrame:buttonFrame andIcon:CHANGE_FONT_TYPE_ICON_UNSELECTED
@@ -334,11 +335,13 @@ typedef enum {
 - (UIButton *) changeTextAveBackgroundButton {
     if (!_changeTextAveBackgroundButton) {
         
-        CGRect buttonFrame = CGRectMake(self.changeFontTypeButton.frame.origin.x + self.changeFontTypeButton.frame.size.width, CENTERING_Y,
+        CGRect buttonFrame = CGRectMake(self.changeFontTypeButton.frame.origin.x + self.changeFontTypeButton.frame.size.width + 15.f, CENTERING_Y,
                                         TEXT_TOOLBAR_BUTTON_WIDTH* 2.f, TEXT_TOOLBAR_BUTTON_WIDTH);
         
         _changeTextAveBackgroundButton = [self getButtonWithFrame:buttonFrame andIcon:CHANGE_TEXT_VIEW_BACKGROUND_UNSELECTED
                                              andSelector:@selector(changeTextAveBackgroundButtonPressed)];
+        
+        [_changeTextAveBackgroundButton setHidden:!self.toolbardOnTextAve];
         
     }
     return _changeTextAveBackgroundButton;

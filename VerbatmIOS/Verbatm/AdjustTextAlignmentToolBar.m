@@ -28,7 +28,7 @@
 -(instancetype)initWithFrame:(CGRect)frame{
     self= [super initWithFrame:frame];
     if(self){
-        [self setBackgroundColor:[UIColor whiteColor]];
+        [self setBackgroundColor:TOP_TOOLBAR_BACKGROUND_COLOR];
         [self addSubview:self.leftAlignButton];
         [self addSubview:self.centerAlignButton];
         [self addSubview:self.rightAlignButton];

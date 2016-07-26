@@ -32,7 +32,7 @@
 -(instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if(self){
-        [self setBackgroundColor:[UIColor whiteColor]];
+        [self setBackgroundColor:TOP_TOOLBAR_BACKGROUND_COLOR];
         [self addSubview:self.firstFontButton];
         [self addSubview:self.secondFontButton];
         [self addSubview:self.lastFontButton];

@@ -8,7 +8,7 @@
 
 #import "AdjustTextAVEBackgroundToolBar.h"
 #import "UtilityFunctions.h"
-
+#import "Styles.h"
 @interface AdjustTextAVEBackgroundToolBar()
 
 @property (nonatomic) NSMutableArray * selectionOptions;
@@ -28,6 +28,7 @@
 -(instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if(self){
+        [self setBackgroundColor:TOP_TOOLBAR_BACKGROUND_COLOR];
         self.smallBackgrounds = @[@"circle background 3",@"circle background 4",@"circle background 5",@"circle background 6"];
         self.fullScreenbackgrounds = @[@"Text AVE background 3",@"Text AVE background 4",@"Text AVE background 5",@"Text AVE background 6"];
         [self createScrollingViews];

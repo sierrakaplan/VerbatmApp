@@ -125,14 +125,15 @@
 andTextYPosition:(CGFloat)yPosition
    andTextColorBlack:(BOOL)textColorBlack
 andTextAlignment:(NSTextAlignment)textAlignment
-	andTextSize:(CGFloat)textSize {
+	andTextSize:(CGFloat)textSize andFontName:(NSString *)fontName {
+    
 	[self addToolBarToViewWithTextColorBlack:textColorBlack];
 
 	[self.textAndImageView setText: text
 				  andTextYPosition: yPosition
 					  andTextColorBlack: textColorBlack
 				  andTextAlignment: textAlignment
-					   andTextSize: textSize];
+					   andTextSize: textSize andFontName:fontName];
 }
 
 #pragma mark - Keyboard ToolBar -
@@ -142,7 +143,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - TEXT_TOOLBAR_HEIGHT,
 									 self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
 	VerbatmKeyboardToolBar* toolBar = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
-																  andTextColorBlack: textColorBlack];
+                                                                  andTextColorBlack: textColorBlack isOnTextAve:[self.pinchView isKindOfClass:[TextPinchView class]]];
 	[toolBar setDelegate:self];
 	[self.textAndImageView setTextViewKeyboardToolbar:toolBar];
 }
@@ -473,6 +474,7 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 		mediaAndTextPinchView.textColor = self.textAndImageView.textView.textColor;
 		mediaAndTextPinchView.textSize = [NSNumber numberWithFloat:self.textAndImageView.textSize];
 		mediaAndTextPinchView.textAlignment = [NSNumber numberWithInteger:self.textAndImageView.textAlignment];
+        mediaAndTextPinchView.fontName = self.textAndImageView.textView.font.fontName;
 	}
 }
 

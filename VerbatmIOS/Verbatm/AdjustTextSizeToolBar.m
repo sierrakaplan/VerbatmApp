@@ -9,6 +9,7 @@
 #import "AdjustTextSizeToolBar.h"
 #import "Icons.h"
 #import "SizesAndPositions.h"
+#import "Styles.h"
 #import "UtilityFunctions.h"
 
 @interface AdjustTextSizeToolBar ()
@@ -28,7 +29,7 @@
 -(instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if(self){
-        [self setBackgroundColor:[UIColor whiteColor]];
+        [self setBackgroundColor:TOP_TOOLBAR_BACKGROUND_COLOR];
         [self addSubview:self.textSizeIncreaseButton];
         [self addSubview:self.textSizeDecreaseButton];
         
