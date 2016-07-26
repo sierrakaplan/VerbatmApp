@@ -26,7 +26,7 @@
 
 #import "SizesAndPositions.h"
 #import "Styles.h"
-
+#import "TextPinchView.h"
 #import "TextOverMediaView.h"
 
 #import "UIImage+ImageEffectsAndTransforms.h"
@@ -146,18 +146,21 @@
 	});
 
 	[editMediaContentView displayImages:[pinchView filteredImages] atIndex:pinchView.filterImageIndex];
-
+    //this has to be set before we set the text view information
+    editMediaContentView.pinchView = pinchView;
+    editMediaContentView.povViewMasterScrollView = self.postScrollView;
+    editMediaContentView.delegate = self;
+    
 	BOOL textColorBlack = [pinchView.textColor isEqual:[UIColor blackColor]];
 	[editMediaContentView setText:pinchView.text
 				 andTextYPosition:[pinchView.textYPosition floatValue]
 				andTextColorBlack:textColorBlack
 				 andTextAlignment:[pinchView.textAlignment integerValue]
-					  andTextSize:[pinchView.textSize floatValue]];
+					  andTextSize:[pinchView.textSize floatValue] andFontName:pinchView.fontName];
 
 
-	editMediaContentView.pinchView = pinchView;
-	editMediaContentView.povViewMasterScrollView = self.postScrollView;
-	editMediaContentView.delegate = self;
+	
+	
 	return editMediaContentView;
 }
 
@@ -205,7 +208,7 @@
 			 andTextYPosition: textYPosition
 			andTextColorBlack: textColorBlack
 			 andTextAlignment: textAlignment
-				  andTextSize: textSize];
+				  andTextSize: textSize andFontName:TEXT_PAGE_VIEW_DEFAULT_FONT];
 	[textAndImageView showText:YES];
 	return textAndImageView;
 }
@@ -221,6 +224,9 @@
 
 -(void) pauseToRearrangeButtonPressed {
 	// Pausing slideshow
+    
+    if(![self.pinchView isKindOfClass:[CollectionPinchView class]])return;
+    
 	if(!self.rearrangeView) {
 		[self offScreen];
 		CGFloat y_pos = (self.photoVideoSubview) ? 0.f : CUSTOM_NAV_BAR_HEIGHT;

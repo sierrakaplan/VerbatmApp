@@ -34,6 +34,8 @@
 
 #import <Social/SLRequest.h>
 
+#import "TextPinchView.h"
+
 #import "ParseBackendKeys.h"
 #import "PinchView.h"
 #import "PreviewDisplayView.h"
@@ -47,6 +49,8 @@
 #import "StringsAndAppConstants.h"
 #import "Styles.h"
 #import "SharingLinkView.h"
+
+#import "TextPinchView.h"
 
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "UserInfoCache.h"
@@ -1205,6 +1209,19 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 #pragma mark - Media Tile Delegate -
+-(void)textButtonPressedOnTile:(MediaSelectTile*) tile{
+    NSInteger index = [self.pageElementScrollViews indexOfObject: tile.superview] - 1;
+    self.addMediaBelowView = index >= 0 ? self.pageElementScrollViews[index] : nil;
+    
+    NSString * defaultImage = DEFAULT_TEXT_BACKGROUND_IMAGE;
+    
+    PinchView* newPinchView = [[TextPinchView alloc] initWithRadius:self.defaultPinchViewRadius
+                                                          withCenter:self.defaultPinchViewCenter
+                                                            andImage:[UIImage imageNamed:defaultImage] andPHAssetLocalIdentifier:defaultImage];
+
+    [self newPinchView: newPinchView belowView: self.addMediaBelowView andSaveInUserDefaults:YES];
+    [self presentPreviewAtIndex:(index + 1)];
+}
 
 -(void) galleryButtonPressedOnTile: (MediaSelectTile *)tile  {
 	NSInteger index = [self.pageElementScrollViews indexOfObject: tile.superview] - 1;
@@ -1771,6 +1788,8 @@ andSaveInUserDefaults:(BOOL)save {
 								}];
 }
 
+
+
 -(void) createPinchViewFromImage: (UIImage*) image andPhAssetId: (NSString*) assetId {
 	PinchView* newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius
 														  withCenter:self.defaultPinchViewCenter
@@ -1959,6 +1978,7 @@ andSaveInUserDefaults:(BOOL)save {
 		[_baseMediaTileSelector createFramesForButtonsWithFrame:frame];
 		[_baseMediaTileSelector buttonGlow];
 	}
+    
 	return _baseMediaTileSelector;
 }
 

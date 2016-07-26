@@ -8,6 +8,7 @@
 
 #import "ImagePinchView.h"
 #import "SizesAndPositions.h"
+#import "Styles.h"
 
 #import "TextOverMediaView.h"
 
@@ -150,6 +151,7 @@
 	@autoreleasepool {
 		CGSize size = half ? HALF_SCREEN_SIZE : FULL_SCREEN_SIZE;
 		CGRect frame = CGRectMake(0.f, 0.f, size.width, size.height);
+        
 		TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:frame andImage:image];
 		BOOL textColorBlack = [self.textColor isEqual:[UIColor blackColor]];
 		NSString * textToCapture = self.text;
@@ -158,7 +160,8 @@
 				 andTextYPosition: [self.textYPosition floatValue]
 				andTextColorBlack: textColorBlack
 				 andTextAlignment: (NSTextAlignment) ([self.textAlignment integerValue])
-					  andTextSize: [self.textSize floatValue]];
+					  andTextSize: [self.textSize floatValue] andFontName:self.fontName];
+        
 		[textAndImageView showText:YES];
 		[textAndImageView.textView setHidden:NO];
 		[textAndImageView bringSubviewToFront:textAndImageView.textView];
