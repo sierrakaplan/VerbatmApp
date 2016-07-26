@@ -12,6 +12,8 @@
 
 #import "InstallationVariables.h"
 
+#import "Notifications.h"
+
 #import "UserManager.h"
 #import "UserSetupParameters.h"
 
@@ -116,6 +118,8 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
 //todo: instead of an alert make this custom
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
 	[PFPush handlePush:userInfo];
+	NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_NEW_PUSH_NOTIFICATION object:nil userInfo:userInfo];
+	[[NSNotificationCenter defaultCenter] postNotification: notification];
 }
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {

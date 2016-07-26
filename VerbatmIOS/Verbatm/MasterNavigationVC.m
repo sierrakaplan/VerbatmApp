@@ -49,8 +49,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 
 @property (nonatomic) BOOL migrated;
 
-@property (nonatomic) BOOL indicatorPresent;
-
+@property (nonatomic) BOOL notificationIndicatorPresent;
 
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
 @property (strong, nonatomic) CustomTabBarController* tabBarController;
@@ -134,11 +133,15 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
                                                  name:NOTIFICATION_POST_FAILED_TO_PUBLISH
                                                object:nil];
     
-    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(followingSuccessfulNotification:)
                                                  name:NOTIFICATION_NOW_FOLLOWING_USER
                                                object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(newPushNotification:)
+												 name:NOTIFICATION_NEW_PUSH_NOTIFICATION
+											   object:nil];
 }
 
 #pragma mark - Setting up environment on startup -
@@ -305,23 +308,21 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 -(void)showNotificationIndicator{
     [self showIndicator];
 }
+
 -(void)removeNotificationIndicator{
     [self removeIndicator];
 }
 
--(void)removeIndicator{
-    self.indicatorPresent = NO;
+-(void)removeIndicator {
+    self.notificationIndicatorPresent = NO;
     [self.notificationIndicator removeFromSuperview];
 }
 
 -(void)showIndicator{
-    self.indicatorPresent = YES;
+    self.notificationIndicatorPresent = YES;
     CGFloat tabBarItemWidth = self.view.frame.size.width/5.f;
-    
-    
-    CGFloat xpos = 1.f + (self.view.frame.size.width - (tabBarItemWidth *2)) + tabBarItemWidth/2.f;
-    
-    
+	CGFloat xpos = 1.f + (self.view.frame.size.width - (tabBarItemWidth *2)) + tabBarItemWidth/2.f;
+
     CGRect frame = CGRectMake(xpos, self.view.frame.size.height - (TAB_BAR_HEIGHT + NOTIFICATION_INDICATOR_SIZE), NOTIFICATION_INDICATOR_SIZE, NOTIFICATION_INDICATOR_SIZE);
     [self.notificationIndicator setFrame:frame];
     [self.view addSubview:self.notificationIndicator];
@@ -415,7 +416,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 
 -(void) showTabBar:(BOOL)show {
 	if (show) {
-        if(self.indicatorPresent){
+        if (self.notificationIndicatorPresent) {
             [self showIndicator];
         }
         
@@ -426,9 +427,9 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 		}];
 	} else {
 		self.tabBarHidden = YES;
-        if(self.indicatorPresent){
+        if(self.notificationIndicatorPresent){
             [self removeIndicator];
-            self.indicatorPresent = YES;
+            self.notificationIndicatorPresent = YES;
         }else{
             [self removeIndicator];
         }
@@ -466,6 +467,10 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 }
 
 -(void)followingSuccessfulNotification:(NSNotification *) notification{
+}
+
+-(void) newPushNotification:(NSNotification *) notification {
+	[self showIndicator];
 }
 
 - (UIInterfaceOrientationMask) supportedInterfaceOrientations {
