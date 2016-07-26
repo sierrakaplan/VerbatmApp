@@ -120,7 +120,7 @@
 
 	for (ImagePinchView * imagePinchView in pinchViewArray) {
 		if (self.inPreviewMode) {
-			EditMediaContentView * editMediaContentView = [self getEditContentViewFromPinchView:imagePinchView];
+			EditMediaContentView *editMediaContentView = [self getEditContentViewFromPinchView:imagePinchView];
 			[self.imageContainerViews addObject:editMediaContentView];
 		} else {
 			[photosTextArray addObject: [imagePinchView getPhotosWithText][0]];
@@ -387,7 +387,7 @@
 
 -(void) textIsEditing {
 	// Pause slideshow
-	if(!self.rearrangeView && [self.pinchView isKindOfClass:[CollectionPinchView class]]) {
+	if(!self.rearrangeView && self.imageContainerViews.count > 1) {
 	 [self pauseToRearrangeButtonPressed];
 	}
 	if(self.photoVideoSubview) [self.textEntryDelegate editContentViewTextIsEditing];
