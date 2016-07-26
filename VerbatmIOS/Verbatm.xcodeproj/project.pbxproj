@@ -168,6 +168,9 @@
 		C7178E081D21101900B90643 /* FeedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7178E071D21101900B90643 /* FeedTableViewController.m */; };
 		C7178E0B1D21A12000B90643 /* FeedTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C7178E0A1D21A12000B90643 /* FeedTableCell.m */; };
 		C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4091BA615B50075CA80 /* UserSetupParameters.m */; };
+		C71FA3221D474FAB003989F3 /* AdjustTextFontToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C71FA3211D474FAB003989F3 /* AdjustTextFontToolBar.m */; };
+		C71FA3251D476D91003989F3 /* AdjustTextAVEBackgroundToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C71FA3241D476D91003989F3 /* AdjustTextAVEBackgroundToolBar.m */; };
+		C71FA3281D477E16003989F3 /* TextPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = C71FA3271D477E16003989F3 /* TextPinchView.m */; };
 		C723C9861D2B3DAA00E87D58 /* NotificationsListTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C723C9851D2B3DAA00E87D58 /* NotificationsListTVC.m */; };
 		C723C9891D2B4E9400E87D58 /* NotificationTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C723C9881D2B4E9400E87D58 /* NotificationTableCell.m */; };
 		C734FD9519B13D5F00B2C370 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9419B13D5F00B2C370 /* ImageIO.framework */; };
@@ -524,6 +527,12 @@
 		C7178E0A1D21A12000B90643 /* FeedTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedTableCell.m; sourceTree = "<group>"; };
 		C719A4081BA615B50075CA80 /* UserSetupParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserSetupParameters.h; sourceTree = "<group>"; };
 		C719A4091BA615B50075CA80 /* UserSetupParameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserSetupParameters.m; sourceTree = "<group>"; };
+		C71FA3201D474FAB003989F3 /* AdjustTextFontToolBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdjustTextFontToolBar.h; sourceTree = "<group>"; };
+		C71FA3211D474FAB003989F3 /* AdjustTextFontToolBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdjustTextFontToolBar.m; sourceTree = "<group>"; };
+		C71FA3231D476D91003989F3 /* AdjustTextAVEBackgroundToolBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdjustTextAVEBackgroundToolBar.h; sourceTree = "<group>"; };
+		C71FA3241D476D91003989F3 /* AdjustTextAVEBackgroundToolBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdjustTextAVEBackgroundToolBar.m; sourceTree = "<group>"; };
+		C71FA3261D477E16003989F3 /* TextPinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextPinchView.h; sourceTree = "<group>"; };
+		C71FA3271D477E16003989F3 /* TextPinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextPinchView.m; sourceTree = "<group>"; };
 		C723C9841D2B3DAA00E87D58 /* NotificationsListTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsListTVC.h; sourceTree = "<group>"; };
 		C723C9851D2B3DAA00E87D58 /* NotificationsListTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsListTVC.m; sourceTree = "<group>"; };
 		C723C9871D2B4E9400E87D58 /* NotificationTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationTableCell.h; sourceTree = "<group>"; };
@@ -756,6 +765,10 @@
 				C7A58AB91D46AB08006C3607 /* AdjustTextSizeToolBar.m */,
 				C7A58ABB1D471789006C3607 /* AdjustTextAlignmentToolBar.h */,
 				C7A58ABC1D471789006C3607 /* AdjustTextAlignmentToolBar.m */,
+				C71FA3201D474FAB003989F3 /* AdjustTextFontToolBar.h */,
+				C71FA3211D474FAB003989F3 /* AdjustTextFontToolBar.m */,
+				C71FA3231D476D91003989F3 /* AdjustTextAVEBackgroundToolBar.h */,
+				C71FA3241D476D91003989F3 /* AdjustTextAVEBackgroundToolBar.m */,
 			);
 			name = "Keyboard tool bars";
 			sourceTree = "<group>";
@@ -1241,6 +1254,8 @@
 				A56F687A1B65B25700CE5744 /* CollectionPinchView.m */,
 				A5076D0C1BED6EF000303746 /* SingleMediaAndTextPinchView.h */,
 				A5076D0D1BED6EF000303746 /* SingleMediaAndTextPinchView.m */,
+				C71FA3261D477E16003989F3 /* TextPinchView.h */,
+				C71FA3271D477E16003989F3 /* TextPinchView.m */,
 			);
 			name = "Pinch Views";
 			sourceTree = "<group>";
@@ -1799,6 +1814,7 @@
 				C70E1C4E1C3BC06100346A25 /* SettingsVC.m in Sources */,
 				A5337BC11CCDD96E00551394 /* PostsQueryManager.m in Sources */,
 				A57A93051B55E835006C2597 /* VerbatmCameraView.m in Sources */,
+				C71FA3221D474FAB003989F3 /* AdjustTextFontToolBar.m in Sources */,
 				C7BF1AAE1C57F61F00CEDE4B /* Page_BackendObject.m in Sources */,
 				C723C9891D2B4E9400E87D58 /* NotificationTableCell.m in Sources */,
 				C772057D1D30DBFA00D626FE /* ConfirmationCodeSignUp.m in Sources */,
@@ -1840,6 +1856,7 @@
 				A5C38AC71CC1D1970067D077 /* FeaturedContentCellView.m in Sources */,
 				A5C38AC11CC1B67B0067D077 /* DiscoverVC.m in Sources */,
 				C7F22B311C38408E00E56EA7 /* SharePostView.m in Sources */,
+				C71FA3251D476D91003989F3 /* AdjustTextAVEBackgroundToolBar.m in Sources */,
 				A56B5D1D1CA49A8100A61D27 /* UserInfoCache.m in Sources */,
 				A5337BBA1CCD60CF00551394 /* LoginKeyboardToolBar.m in Sources */,
 				C7EF5BB61B0CD5E500E7915B /* MasterNavigationVC.m in Sources */,
@@ -1890,6 +1907,7 @@
 				A51B85271D2F474F006E90CC /* OpenCollectionView.m in Sources */,
 				C7C69A071BF820FC006B5260 /* EditMediaContentView.m in Sources */,
 				A5C38ACD1CC1D4120067D077 /* FeaturedContentChannelView.m in Sources */,
+				C71FA3281D477E16003989F3 /* TextPinchView.m in Sources */,
 				C763C1BC1CE4430B00929248 /* OnBoardingViewController.m in Sources */,
 				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,
 				A51B851A1D2F39B1006E90CC /* UIView+DTDebug.m in Sources */,

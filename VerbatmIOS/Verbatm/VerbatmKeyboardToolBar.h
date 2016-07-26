@@ -19,6 +19,8 @@
 -(void) rightAlignButtonPressed;
 -(void) doneButtonPressed;
 
+-(void)changeTextToFont:(NSString *)fontName;
+-(void)changeTextBackgroundToImage:(NSString *) backgroundImageName;
 @end
 
 

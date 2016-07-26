@@ -52,6 +52,9 @@
 
 #pragma mark - ADK -
 
+
+#define DEFAULT_TEXT_BACKGROUND_IMAGE @"Text AVE background 3"
+
 #define MINIMIZE_ICON @"minimize_icon"
 #define ADK_BACKGROUND @"background_adk"
 
@@ -88,7 +91,9 @@
 
 #define CHANGE_FONT_TYPE_ICON_UNSELECTED @"Font type icon_unselected"
 #define CHANGE_FONT_TYPE_ICON_SELECTED @"Font type icon_selected"
-#define CHANGE_TEXT_VIEW_BACKGROUND @"Background icon"
+
+#define CHANGE_TEXT_VIEW_BACKGROUND_SELECTED @"Background icon_selected"
+#define CHANGE_TEXT_VIEW_BACKGROUND_UNSELECTED @"Background icon"
 
 
 #define INCREASE_FONT_SIZE_ICON @"text_toolbar_increase_font_icon"

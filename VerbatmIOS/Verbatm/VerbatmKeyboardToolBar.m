@@ -8,6 +8,8 @@
 
 #import "AdjustTextSizeToolBar.h"
 #import "AdjustTextAlignmentToolBar.h"
+#import "AdjustTextFontToolBar.h"
+#import "AdjustTextAVEBackgroundToolBar.h"
 #import "Icons.h"
 #import "VerbatmKeyboardToolBar.h"
 #import "Styles.h"
@@ -25,7 +27,7 @@ typedef enum {
 }ToolBarOptions;
 
 
-@interface VerbatmKeyboardToolBar()<AdjustTextSizeDelegate, AdjustTextAlignmentToolBarDelegate>
+@interface VerbatmKeyboardToolBar()<AdjustTextSizeDelegate, AdjustTextAlignmentToolBarDelegate, AdjustTextFontToolBarDelegate, AdjustTextAVEBackgroundToolBarDelegate>
 
 @property (nonatomic) BOOL textIsBlack;
 
@@ -40,8 +42,9 @@ typedef enum {
 @property (nonatomic) UIView * lowerBarHolder;//holds all the constant icons
 
 @property (nonatomic) AdjustTextSizeToolBar * adjustTextSizeBar;
-@property (nonatomic) AdjustTextAlignmentToolBar * adjustTextAlignmenteBar;
-
+@property (nonatomic) AdjustTextAlignmentToolBar * adjustTextAlignmentBar;
+@property (nonatomic) AdjustTextFontToolBar * adjustTextFontBar;
+@property (nonatomic) AdjustTextAVEBackgroundToolBar * adjustBackgroundBar;
 
 @property (strong, nonatomic) UIButton *doneButton;
 
@@ -100,15 +103,47 @@ typedef enum {
     
 }
 
+
+#pragma mark -Change Background Delegate-
+
+-(void)changeImageToImage:(NSString*) imageName{
+    [self.delegate changeTextBackgroundToImage:imageName];
+}
+
 #pragma mark - Button Actions -
 
 
 -(void)changeFontTypeButtonPressed{
-    
+    [self removeTopHalfBar];
+    UIImage *iconImage;
+    if(self.currentSelectedOption == fontType){
+        self.currentSelectedOption = noSelection;
+        iconImage = [UIImage imageNamed: CHANGE_FONT_TYPE_ICON_UNSELECTED ];
+    }else{
+        self.currentSelectedOption = fontType;
+        iconImage = [UIImage imageNamed: CHANGE_FONT_TYPE_ICON_SELECTED ];
+    }
+    [self.changeFontTypeButton setImage:iconImage forState:UIControlStateNormal];
+    [self addTopHalfBar];
 }
+
+
 -(void)changeTextAveBackgroundButtonPressed{
-    
+    [self removeTopHalfBar];
+    UIImage *iconImage;
+    if(self.currentSelectedOption == background){
+        self.currentSelectedOption = noSelection;
+        iconImage = [UIImage imageNamed:CHANGE_TEXT_VIEW_BACKGROUND_UNSELECTED ];
+    }else{
+        self.currentSelectedOption = background;
+        iconImage = [UIImage imageNamed: CHANGE_TEXT_VIEW_BACKGROUND_SELECTED];
+    }
+    [self.changeTextAveBackgroundButton setImage:iconImage forState:UIControlStateNormal];
+    [self addTopHalfBar];
+
 }
+
+
 -(void)changeTextAlignmentButtonPressed{
     [self removeTopHalfBar];
     if(self.currentSelectedOption == textAlightment){
@@ -150,7 +185,15 @@ typedef enum {
             [self.changeFontSizeButton setImage:[UIImage imageNamed: CHANGE_FONT_SIZE_ICON_UNSELECTED] forState:UIControlStateNormal];
             break;
         case textAlightment:
-            [self.adjustTextAlignmenteBar removeFromSuperview];
+            [self.adjustTextAlignmentBar removeFromSuperview];
+            break;
+        case fontType:
+            [self.adjustTextFontBar removeFromSuperview];
+            [self.changeFontSizeButton setImage:[UIImage imageNamed: CHANGE_FONT_SIZE_ICON_UNSELECTED] forState:UIControlStateNormal];
+            break;
+        case background:
+            [self.adjustBackgroundBar removeFromSuperview];
+            [self.changeTextAveBackgroundButton setImage:[UIImage imageNamed: CHANGE_TEXT_VIEW_BACKGROUND_UNSELECTED] forState:UIControlStateNormal];
             break;
         default:
             break;
@@ -163,9 +206,14 @@ typedef enum {
             [self addSubview:self.adjustTextSizeBar];
             break;
         case textAlightment:
-            [self addSubview:self.self.adjustTextAlignmenteBar];
+            [self addSubview:self.adjustTextAlignmentBar];
             break;
-
+        case fontType:
+            [self addSubview:self.adjustTextFontBar];
+            break;
+        case background:
+            [self addSubview: self.adjustBackgroundBar];
+            break;
         default:
             break;
     }
@@ -186,7 +234,10 @@ typedef enum {
     [self addTopHalfBar];
 }
 
-
+#pragma mark - Change Font Type Delegat -
+-(void)changeTextFontToFont:(NSString *) fontName{
+    [self.delegate changeTextToFont:fontName];
+}
 
 #pragma mark -Adjust Text Size Toolbar Delegate-
 -(void)increaseTextSizeDelegate{
@@ -270,19 +321,25 @@ typedef enum {
     if (!_changeFontTypeButton) {
         CGRect buttonFrame = CGRectMake(self.changeTextAlignmentButton.frame.origin.x + self.changeTextAlignmentButton.frame.size.width + ICON_SEPERATION_SPACE, CENTERING_Y,
                                         TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
+        
         _changeFontTypeButton = [self getButtonWithFrame:buttonFrame andIcon:CHANGE_FONT_TYPE_ICON_UNSELECTED
                                                   andSelector:@selector(changeFontTypeButtonPressed)];
+        
     }
+    
     return _changeFontTypeButton;
 }
 
 
 - (UIButton *) changeTextAveBackgroundButton {
     if (!_changeTextAveBackgroundButton) {
-        CGRect buttonFrame = CGRectMake(self.changeFontTypeButton.frame.origin.x + self.changeFontTypeButton.frame.size.width + ICON_SEPERATION_SPACE, CENTERING_Y,
-                                        TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
-        _changeTextAveBackgroundButton = [self getButtonWithFrame:buttonFrame andIcon:CHANGE_TEXT_VIEW_BACKGROUND
+        
+        CGRect buttonFrame = CGRectMake(self.changeFontTypeButton.frame.origin.x + self.changeFontTypeButton.frame.size.width, CENTERING_Y,
+                                        TEXT_TOOLBAR_BUTTON_WIDTH* 2.f, TEXT_TOOLBAR_BUTTON_WIDTH);
+        
+        _changeTextAveBackgroundButton = [self getButtonWithFrame:buttonFrame andIcon:CHANGE_TEXT_VIEW_BACKGROUND_UNSELECTED
                                              andSelector:@selector(changeTextAveBackgroundButtonPressed)];
+        
     }
     return _changeTextAveBackgroundButton;
 }
@@ -312,13 +369,32 @@ typedef enum {
 }
 
 
--(AdjustTextAlignmentToolBar *)adjustTextAlignmenteBar{
-    if (!_adjustTextAlignmenteBar) {
-        _adjustTextAlignmenteBar = [[AdjustTextAlignmentToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width, self.frame.size.height/2.f)];
-        _adjustTextAlignmenteBar.delegate = self;
+-(AdjustTextAlignmentToolBar *)adjustTextAlignmentBar{
+    if (!_adjustTextAlignmentBar) {
+        _adjustTextAlignmentBar = [[AdjustTextAlignmentToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width, self.frame.size.height/2.f)];
+        _adjustTextAlignmentBar.delegate = self;
     }
-    return _adjustTextAlignmenteBar;
+    return _adjustTextAlignmentBar;
 }
+
+-(AdjustTextFontToolBar *)adjustTextFontBar{
+    if (!_adjustTextFontBar) {
+        _adjustTextFontBar = [[AdjustTextFontToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width, self.frame.size.height/2.f)];
+        _adjustTextFontBar.delegate = self;
+    }
+    return _adjustTextFontBar;
+}
+
+-(AdjustTextAVEBackgroundToolBar *)adjustBackgroundBar{
+    if (!_adjustBackgroundBar) {
+        _adjustBackgroundBar = [[AdjustTextAVEBackgroundToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width, self.frame.size.height/2.f)];
+        _adjustBackgroundBar.toolBarDelegate = self;
+
+    }
+    return _adjustBackgroundBar;
+}
+
+
 
 -(UIButton *) getButtonWithFrame:(CGRect)frame andIcon:(NSString*)iconName andSelector:(SEL)action {
 	UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];

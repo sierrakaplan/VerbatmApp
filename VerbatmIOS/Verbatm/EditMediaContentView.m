@@ -19,6 +19,7 @@
 #import "Styles.h"
 
 #import "TextOverMediaView.h"
+#import "TextPinchView.h"
 
 #import "VerbatmKeyboardToolBar.h"
 
@@ -62,6 +63,8 @@
 
 
 #define SWIPE_NOTIFICATON_WIDTH 300.f
+
+@property (nonatomic) UIImage * currentTextAVEBackground;
 
 @end
 
@@ -274,6 +277,10 @@ andTextAlignment:(NSTextAlignment)textAlignment
 }
 
 #pragma mark - Keyboard toolbar delegate methods -
+-(void)changeTextBackgroundToImage:(NSString *) backgroundImageName{
+    self.currentTextAVEBackground = [UIImage imageNamed:backgroundImageName];
+    [self.textAndImageView changeImageTo:self.currentTextAVEBackground ];
+}
 
 -(void) textColorChangedToBlack:(BOOL)black {
 	if (black) {
@@ -281,6 +288,9 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	} else {
 		[self.textAndImageView changeTextColor:[UIColor whiteColor]];
 	}
+}
+-(void)changeTextToFont:(NSString *)fontName{
+    [self.textAndImageView.textView setFont:[UIFont fontWithName:fontName size:self.textAndImageView.textView.font.pointSize]];
 }
 
 -(void) textSizeIncreased {
@@ -314,13 +324,15 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 /* Adds pan gestures for adding filters to images and changing text position */
 -(void) addPanGestures {
-	UIPanGestureRecognizer * panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPan:)];
-	panGesture.minimumNumberOfTouches = 1;
-	panGesture.maximumNumberOfTouches = 1;
-	[self addGestureRecognizer:panGesture];
-	[self.povViewMasterScrollView.panGestureRecognizer requireGestureRecognizerToFail:panGesture];
-	self.povViewMasterScrollView.panGestureRecognizer.delegate = self;
-	panGesture.delegate = self;
+    //needed for filters
+    
+    //	UIPanGestureRecognizer * panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPan:)];
+//	panGesture.minimumNumberOfTouches = 1;
+//	panGesture.maximumNumberOfTouches = 1;
+//	[self addGestureRecognizer:panGesture];
+//	[self.povViewMasterScrollView.panGestureRecognizer requireGestureRecognizerToFail:panGesture];
+//	self.povViewMasterScrollView.panGestureRecognizer.delegate = self;
+//	panGesture.delegate = self;
 
 	UIPanGestureRecognizer * textViewPanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPanTextView:)];
 	textViewPanGesture.minimumNumberOfTouches = 1;
@@ -466,7 +478,9 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 
 //updates the content in the pinchview after things are changed
 -(void) updatePinchView {
-	if([self.pinchView isKindOfClass:[ImagePinchView class]]){
+    if([self.pinchView isKindOfClass:[TextPinchView class]]){
+        [((TextPinchView *)self.pinchView) putNewImage:self.currentTextAVEBackground];
+    }else if([self.pinchView isKindOfClass:[ImagePinchView class]]){
 		[((ImagePinchView *)self.pinchView) changeImageToFilterIndex:self.imageIndex];
 	}
 }
