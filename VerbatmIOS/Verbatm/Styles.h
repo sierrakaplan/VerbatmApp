@@ -90,7 +90,7 @@
 
 #pragma mark Text
 
-#define TEXT_PAGE_VIEW_DEFAULT_FONT BOLD_FONT
+#define TEXT_PAGE_VIEW_DEFAULT_FONT TEXT_FONT_TYPE_1
 #define TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE 40
 #define TEXT_PAGE_VIEW_MIN_FONT_SIZE 25
 #define TEXT_PAGE_VIEW_MAX_FONT_SIZE 70
@@ -157,6 +157,10 @@
 #pragma mark Verbatm Keyboard Toolbar
 
 #define KEYBOARD_TOOLBAR_FONT_SIZE 18.f
+
+#define TEXT_FONT_TYPE_1 BOLD_FONT
+#define TEXT_FONT_TYPE_2 @"Trebuchet MS"
+#define TEXT_FONT_TYPE_3 @"ArialMT"
 
 #pragma mark Preview
 

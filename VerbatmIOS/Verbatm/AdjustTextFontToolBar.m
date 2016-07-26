@@ -42,16 +42,16 @@
 
 
 -(void)firstFontButtonSelected{
-    [self.delegate changeTextFontToFont:@"Helvetica Bold"];
+    [self.delegate changeTextFontToFont:TEXT_FONT_TYPE_1];
 }
 
 -(void)secondFontButtonSelected{
-    [self.delegate changeTextFontToFont:@"Trebuchet MS"];
+    [self.delegate changeTextFontToFont:TEXT_FONT_TYPE_2];
 }
 
 
 -(void)lastFontButtonSelected{
-    [self.delegate changeTextFontToFont:@"ArialMT"];
+    [self.delegate changeTextFontToFont:TEXT_FONT_TYPE_3];
 }
 
 - (UIButton *) firstFontButton {
