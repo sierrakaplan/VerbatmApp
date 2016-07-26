@@ -235,7 +235,9 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 #pragma mark - Loading content methods -
 
 -(void)nothingToPresentHere {
-	if(self.parsePostObjects.count == 0)[self.postListDelegate noPostFound];
+	if(self.parsePostObjects.count == 0){
+		[self.postListDelegate noPostFound];
+	}
 }
 
 -(void)removePresentLabel{
@@ -266,10 +268,10 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 
 	self.loadOlderPostsCompletion = ^void(NSArray *posts) {
 		// Don't keep loading older if there are no older posts
-		if (!posts.count || weakSelf.exitedView) {
+		if (posts.count < 1 || weakSelf.exitedView) {
 			return;
 		}
-		weakSelf.isLoadingOlder = NO;
+
 		NSMutableArray *indexPaths = [NSMutableArray array];
 		for (NSInteger i = 0; i < posts.count; i++) {
 			[indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
@@ -284,8 +286,11 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 			[weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
 			[weakSelf.collectionView insertItemsAtIndexPaths:indexPaths];
 		} completion:^(BOOL finished) {
-			weakSelf.collectionView.contentOffset = CGPointMake(weakSelf.collectionView.contentSize.width - rightOffset, 0);
-			[CATransaction commit];
+			if (finished) {
+				weakSelf.collectionView.contentOffset = CGPointMake(weakSelf.collectionView.contentSize.width - rightOffset, 0);
+				[CATransaction commit];
+				weakSelf.isLoadingOlder = NO;
+			}
 		}];
 	};
 
@@ -299,7 +304,7 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 			return;
 		}
 
-		weakSelf.isLoadingMore = NO;
+
 		NSMutableArray *indexPaths = [NSMutableArray array];
 		NSInteger startIndex = weakSelf.parsePostObjects.count;
 		NSInteger endIndex = weakSelf.parsePostObjects.count + posts.count;
@@ -316,6 +321,7 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 		} completion:^(BOOL finished) {
 			weakSelf.collectionView.contentOffset = CGPointMake(weakSelf.collectionView.contentSize.width, 0);
 			[CATransaction commit];
+			weakSelf.isLoadingMore = NO;
 		}];
 	};
 }
