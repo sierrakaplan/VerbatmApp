@@ -21,8 +21,6 @@
 
 + (void)getUsersWhoLikePost:(PFObject *) postParseObject withCompletionBlock:(void(^)(NSArray *))block;
 
-+(AnyPromise *) numberOfLikesForPost:(PFObject*) postParseObject;
-
 +(void) deleteLikesForPost:(PFObject*) postParseObject withCompletionBlock:(void(^)(BOOL)) block;
 
 @end
