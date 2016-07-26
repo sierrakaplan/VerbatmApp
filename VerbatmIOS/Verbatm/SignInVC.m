@@ -308,13 +308,10 @@
 -(void)deleteCreatedUser{
     
     __weak SignInVC * weakSelf = self;
-    
     PFQuery * findUser = [PFUser query];
-    NSArray * theKeys = [[PFUser currentUser] allKeys];
-    [findUser whereKey:@"username" equalTo:@"9145741709"];
+    [findUser whereKey:@"username" equalTo:self.phoneNumber];
     [findUser getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
         if(!error){
-            
             PFUser * deadUser = (PFUser *)object;
             if(deadUser){
                 [deadUser deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
@@ -323,10 +320,7 @@
                     }
                 }];
             }
-            
-            
         }
-        
     }];
 }
 
