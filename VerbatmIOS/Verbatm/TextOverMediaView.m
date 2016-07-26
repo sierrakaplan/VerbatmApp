@@ -94,11 +94,11 @@
 
 #pragma mark - Text View functionality -
 
--(void) setText:(NSString*)text
+-(void) setText:(NSString *)text
 andTextYPosition:(CGFloat) textYPosition
 andTextColorBlack:(BOOL) textColorBlack
 andTextAlignment:(NSTextAlignment) textAlignment
-	andTextSize:(CGFloat) textSize {
+    andTextSize:(CGFloat) textSize andFontName:(NSString *) fontName{
 	if(!text.length) return;
 
 	self.textYPosition = textYPosition;
@@ -109,7 +109,8 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	[self changeTextAlignment: textAlignment];
 
 	self.textSize = textSize;
-	[self.textView setFont:[UIFont fontWithName:TEXT_PAGE_VIEW_DEFAULT_FONT size:self.textSize]];
+    
+    [self.textView setFont:[UIFont fontWithName:fontName size:self.textSize]];
 
 	[self changeText: text];
 }

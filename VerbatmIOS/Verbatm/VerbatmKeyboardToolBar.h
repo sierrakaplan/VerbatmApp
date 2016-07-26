@@ -19,12 +19,16 @@
 -(void) rightAlignButtonPressed;
 -(void) doneButtonPressed;
 
+-(void)changeTextToFont:(NSString *)fontName;
+-(void)changeTextBackgroundToImage:(NSString *) backgroundImageName;
 @end
+
+
 
 @interface VerbatmKeyboardToolBar : UIView
 
 @property (nonatomic, weak) id<KeyboardToolBarDelegate> delegate;
 
--(instancetype)initWithFrame:(CGRect)frame andTextColorBlack:(BOOL)textColorBlack;
+-(instancetype)initWithFrame:(CGRect)frame andTextColorBlack:(BOOL)textColorBlack isOnTextAve:(BOOL)onTextAve;
 
 @end

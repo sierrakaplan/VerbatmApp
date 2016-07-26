@@ -52,6 +52,9 @@
 
 #pragma mark - ADK -
 
+
+#define DEFAULT_TEXT_BACKGROUND_IMAGE @"Text AVE background 3"
+
 #define MINIMIZE_ICON @"minimize_icon"
 #define ADK_BACKGROUND @"background_adk"
 
@@ -73,8 +76,26 @@
 
 #pragma mark Text Toolbar
 
-#define WHITE_FONT_ICON @"text_toolbar_white_font_icon"
-#define BLACK_FONT_ICON @"text_toolbar_black_font_icon"
+#define TEXT_FONT_COLOR_BLACK @"text_toolbar_black_font_icon"
+#define TEXT_FONT_COLOR_WHITE @"text_toolbar_white_font_icon"
+
+
+#define CHANGE_FONT_SIZE_ICON_UNSELECTED @"Change Font size icon_unselected"
+#define CHANGE_FONT_SIZE_ICON_SELECTED @"Change Font size icon_selected"
+
+
+
+#define CHANGE_TEXT_ALIGNMENT_ICON @"Alignment icon"
+
+
+
+#define CHANGE_FONT_TYPE_ICON_UNSELECTED @"Font type icon_unselected"
+#define CHANGE_FONT_TYPE_ICON_SELECTED @"Font type icon_selected"
+
+#define CHANGE_TEXT_VIEW_BACKGROUND_SELECTED @"Background icon_selected"
+#define CHANGE_TEXT_VIEW_BACKGROUND_UNSELECTED @"Background icon"
+
+
 #define INCREASE_FONT_SIZE_ICON @"text_toolbar_increase_font_icon"
 #define DECREASE_FONT_SIZE_ICON @"text_toolbar_decrease_font_icon"
 #define LEFT_ALIGN_ICON @"text_toolbar_left_align_icon"
@@ -96,6 +117,7 @@
 #define PLAY_VIDEO_ICON_QUARTER_CIRCLE @"play_video_icon_quarter_circle"
 
 #pragma mark Media Tile
+#define TEXT_BUTTON_ICON @"AddTextIcon"
 
 #define CAMERA_BUTTON_ICON @"camera"
 #define GALLERY_BUTTON_ICON @"galleryIcon"

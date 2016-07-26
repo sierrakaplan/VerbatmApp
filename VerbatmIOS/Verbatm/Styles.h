@@ -189,4 +189,7 @@
 
 #define SIGNUP_PHONE_INFO_BACKGROUND_COLOR [UIColor whiteColor]
 
+
+#define TOP_TOOLBAR_BACKGROUND_COLOR [UIColor whiteColor]
+
 #endif /* Styles_h */
