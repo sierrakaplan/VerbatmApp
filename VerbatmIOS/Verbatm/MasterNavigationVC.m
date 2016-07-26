@@ -21,7 +21,7 @@
 #import "MasterNavigationVC.h"
 
 #import "Notifications.h"
-#import "NotificationsVC.h"
+#import "NotificationsListTVC.h"
 
 #import "ParseBackendKeys.h"
 #import "ProfileVC.h"
@@ -40,7 +40,7 @@
 #import "UserSetupParameters.h"
 
 #import <Crashlytics/Crashlytics.h>
-#import "NotificationsListTVC.h"
+
 
 @interface MasterNavigationVC () <UITabBarControllerDelegate, FeedTableViewDelegate,
 ProfileVCDelegate, NotificationsListTVCProtocol>
