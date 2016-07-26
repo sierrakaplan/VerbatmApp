@@ -42,12 +42,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/CreateAccount.m"
-            timestampString = "465009116.275697"
+            timestampString = "490227660.595413"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "145"
-            endingLineNumber = "145"
-            landmarkName = "-completeAccountCreation"
+            startingLineNumber = "128"
+            endingLineNumber = "128"
+            landmarkName = "-nextButtonPressed"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -63,7 +63,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "57"
             endingLineNumber = "57"
-            landmarkName = "-getUserInfoFromFacebookToken:"
+            landmarkName = "-updateCurrentUserWithName:andEmail:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -110,7 +110,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "147"
-            endingLineNumber = "147">
+            endingLineNumber = "147"
+            landmarkName = "-shouldRequestForUserFeedback"
+            landmarkType = "5">
             <Locations>
                <Location
                   shouldBeEnabled = "No"
