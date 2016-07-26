@@ -21,17 +21,14 @@
 	PFObject *newLikeObject = [PFObject objectWithClassName:LIKE_PFCLASS_KEY];
 	[newLikeObject setObject:[PFUser currentUser]forKey:LIKE_USER_KEY];
 	[newLikeObject setObject:postParseObject forKey:LIKE_POST_LIKED_KEY];
-
-	[PFCloud callFunctionInBackground:@"sendPushToUser"
-					   withParameters:@{@"recipientId": ((PFUser*)[postParseObject objectForKey:POST_ORIGINAL_CREATOR_KEY]).objectId, @"message": @"liked your post"}
-								block:^(NSString *success, NSError *error) {
-									if (!error) {
-										NSLog(@"%@", success);
-									} else {
-										NSLog(@"Unable to send push notification: %@", error.localizedDescription);
-										[[Crashlytics sharedInstance] recordError:error];
-									}
-								}];
+	// Will return error if like already existed - ignore
+	[newLikeObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+		if(succeeded) {
+			[postParseObject incrementKey:POST_NUM_LIKES];
+			[postParseObject saveInBackground];
+			[Notification_BackendManager createNotificationWithType:Like receivingUser:[postParseObject valueForKey:POST_ORIGINAL_CREATOR_KEY] relevantPostObject:postParseObject];
+		}
+	}];
 }
 
 + (void)currentUserStopLikingPost:(PFObject *) postParseObject {

@@ -32,6 +32,15 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
+	// Check if the app is launching from a push notification
+	NSDictionary *pushNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+	if (pushNotification) {
+		// Set initial tab to notifications tab
+		//todo: this is where you deep link
+		UITabBarController *tabBar = (UITabBarController *)self.window.rootViewController;
+		tabBar.selectedIndex = 4;
+	}
+
 	// Limit cache size
 	int cacheSizeMemory = 15*1024*1024; // 4MB
 	int cacheSizeDisk = 32*1024*1024; // 32MB
@@ -101,9 +110,8 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
 	//todo: handle the fact that app will not receive notifications
 }
 
-
 // Method that handles push notifications when app is active
-//todo: don't let parse handle it with modal alert
+//todo: instead of an alert make this custom
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
 	[PFPush handlePush:userInfo];
 }

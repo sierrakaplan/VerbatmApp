@@ -247,8 +247,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 									  andSize: size];
 }
 
-
-
 //the view controllers that will be tabbed
 -(void)createViewControllers {
 	self.discoverVC = [self.storyboard instantiateViewControllerWithIdentifier:FEATURED_CONTENT_VC_ID];

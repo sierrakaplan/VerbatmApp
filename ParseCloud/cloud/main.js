@@ -142,7 +142,8 @@ Parse.Cloud.beforeSave("NotificationClass", function(request, response) {
 			  Parse.Push.send({
 			    where: pushQuery, // Set our Installation query
 			    data: {
-			      alert: notificationText
+			      alert: notificationText,
+			      notificationType: notificationType
 			    }
 			  }, {
 			    success: function() {
