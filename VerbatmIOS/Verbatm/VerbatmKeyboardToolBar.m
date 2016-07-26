@@ -7,6 +7,7 @@
 //
 
 #import "AdjustTextSizeToolBar.h"
+#import "AdjustTextAlignmentToolBar.h"
 #import "Icons.h"
 #import "VerbatmKeyboardToolBar.h"
 #import "Styles.h"
@@ -24,9 +25,9 @@ typedef enum {
 }ToolBarOptions;
 
 
-@interface VerbatmKeyboardToolBar()<AdjustTextSizeDelegate>
+@interface VerbatmKeyboardToolBar()<AdjustTextSizeDelegate, AdjustTextAlignmentToolBarDelegate>
 
-@property (nonatomic) BOOL optionSelected;
+@property (nonatomic) BOOL textIsBlack;
 
 
 @property (strong, nonatomic) UIButton *textColorButton;
@@ -39,11 +40,9 @@ typedef enum {
 @property (nonatomic) UIView * lowerBarHolder;//holds all the constant icons
 
 @property (nonatomic) AdjustTextSizeToolBar * adjustTextSizeBar;
+@property (nonatomic) AdjustTextAlignmentToolBar * adjustTextAlignmenteBar;
 
 
-@property (strong, nonatomic) UIButton *leftAlignButton;
-@property (strong, nonatomic) UIButton *centerAlignButton;
-@property (strong, nonatomic) UIButton *rightAlignButton;
 @property (strong, nonatomic) UIButton *doneButton;
 
 
@@ -75,8 +74,9 @@ typedef enum {
 -(instancetype)initWithFrame:(CGRect)frame andTextColorBlack:(BOOL)textColorBlack{
 	self = [super initWithFrame:frame];
 	if(self) {
-		self.backgroundColor = [UIColor redColor];
-		self.optionSelected = textColorBlack;
+		self.backgroundColor = [UIColor clearColor];
+		self.textIsBlack = textColorBlack;
+        self.currentSelectedOption = noSelection;
 		[self addButtons];
 	}
 	return self;
@@ -104,34 +104,54 @@ typedef enum {
 
 
 -(void)changeFontTypeButtonPressed{
-     self.optionSelected = !self.optionSelected;
     
 }
 -(void)changeTextAveBackgroundButtonPressed{
-     self.optionSelected = !self.optionSelected;
     
 }
 -(void)changeTextAlignmentButtonPressed{
-     self.optionSelected = !self.optionSelected;
+    [self removeTopHalfBar];
+    if(self.currentSelectedOption == textAlightment){
+        self.currentSelectedOption = noSelection;
+    }else{
+        self.currentSelectedOption = textAlightment;
+    }
+    [self addTopHalfBar];
 }
+
+
+#pragma mark - Align Toolbar Delegate -
+-(void)alignTextLeft{
+    [self.delegate leftAlignButtonPressed];
+}
+-(void)alignTextRight{
+    [self.delegate rightAlignButtonPressed];
+}
+-(void)alignTextCenter{
+    [self.delegate centerAlignButtonPressed];
+}
+
 -(void) textColorButtonPressed {
-	self.optionSelected = !self.optionSelected;
 	UIImage *iconImage;
-	if (self.optionSelected) {
-		iconImage = [UIImage imageNamed: SELECT_FONT_ICON_SELECTED ];
+    self.textIsBlack = !self.textIsBlack;
+	if (self.textIsBlack) {
+		iconImage = [UIImage imageNamed: TEXT_FONT_COLOR_BLACK ];
 	} else {
-		iconImage = [UIImage imageNamed: SELECT_FONT_ICON_UNSELECTED];
+		iconImage = [UIImage imageNamed: TEXT_FONT_COLOR_WHITE];
 	}
 	[self.textColorButton setImage:iconImage forState:UIControlStateNormal];
-	[self.delegate textColorChangedToBlack:self.optionSelected];
+	[self.delegate textColorChangedToBlack:self.textIsBlack];
 }
 
 -(void)removeTopHalfBar{
     switch (self.currentSelectedOption) {
         case fontSize:
-            if(self.adjustTextSizeBar)[self.adjustTextSizeBar removeFromSuperview];
+            [self.adjustTextSizeBar removeFromSuperview];
+            [self.changeFontSizeButton setImage:[UIImage imageNamed: CHANGE_FONT_SIZE_ICON_UNSELECTED] forState:UIControlStateNormal];
             break;
-            
+        case textAlightment:
+            [self.adjustTextAlignmenteBar removeFromSuperview];
+            break;
         default:
             break;
     }
@@ -142,7 +162,10 @@ typedef enum {
         case fontSize:
             [self addSubview:self.adjustTextSizeBar];
             break;
-            
+        case textAlightment:
+            [self addSubview:self.self.adjustTextAlignmenteBar];
+            break;
+
         default:
             break;
     }
@@ -150,16 +173,15 @@ typedef enum {
 
 -(void) changeFontSizeButtonPressed {
     [self removeTopHalfBar];
-    self.optionSelected = !self.optionSelected;
-    UIImage *iconImage;
-    if (self.optionSelected) {
+    UIImage * iconImage;
+     if(self.currentSelectedOption != fontSize){
         self.currentSelectedOption = fontSize;
         iconImage = [UIImage imageNamed: CHANGE_FONT_SIZE_ICON_SELECTED];
     } else {
         self.currentSelectedOption = noSelection;
          iconImage = [UIImage imageNamed: CHANGE_FONT_SIZE_ICON_UNSELECTED];
-        
     }
+    
     [self.changeFontSizeButton setImage:iconImage forState:UIControlStateNormal];
     [self addTopHalfBar];
 }
@@ -226,7 +248,7 @@ typedef enum {
 	if (!_textColorButton) {
 		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, CENTERING_Y,
 										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
-		_textColorButton = [self getButtonWithFrame:buttonFrame andIcon:SELECT_FONT_ICON_UNSELECTED
+        _textColorButton = [self getButtonWithFrame:buttonFrame andIcon:((self.textIsBlack) ? TEXT_FONT_COLOR_BLACK :TEXT_FONT_COLOR_WHITE)
 										andSelector:@selector(textColorButtonPressed)];
 	}
 	return _textColorButton;
@@ -290,37 +312,13 @@ typedef enum {
 }
 
 
-//- (UIButton *) leftAlignButton {
-//	if (!_leftAlignButton) {
-//		CGRect buttonFrame = CGRectMake(self.textSizeDecreaseButton.frame.origin.x + self.textSizeDecreaseButton.frame.size.width + ICON_GROUP_STANDARD_SPACING , BUTTON_Y_OFFSET,
-//										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
-//		_leftAlignButton = [self getButtonWithFrame:buttonFrame andIcon:LEFT_ALIGN_ICON
-//										andSelector:@selector(leftAlignButtonPressed)];
-//	}
-//	return _leftAlignButton;
-//}
-//
-//- (UIButton *) centerAlignButton {
-//	if (!_centerAlignButton) {
-//		CGRect buttonFrame = CGRectMake(self.leftAlignButton.frame.origin.x + self.leftAlignButton.frame.size.width + SPACE , BUTTON_Y_OFFSET,
-//										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
-//		_centerAlignButton = [self getButtonWithFrame:buttonFrame andIcon:CENTER_ALIGN_ICON
-//											 andSelector:@selector(centerAlignButtonPressed)];
-//
-//	}
-//	return _centerAlignButton;
-//}
-//
-//- (UIButton *) rightAlignButton {
-//	if (!_rightAlignButton) {
-//		CGRect buttonFrame = CGRectMake(self.centerAlignButton.frame.origin.x + self.centerAlignButton.frame.size.width + SPACE, BUTTON_Y_OFFSET,
-//										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
-//		_rightAlignButton = [self getButtonWithFrame:buttonFrame andIcon:RIGHT_ALIGN_ICON
-//										 andSelector:@selector(rightAlignButtonPressed)];
-//
-//	}
-//	return _rightAlignButton;
-//}
+-(AdjustTextAlignmentToolBar *)adjustTextAlignmenteBar{
+    if (!_adjustTextAlignmenteBar) {
+        _adjustTextAlignmenteBar = [[AdjustTextAlignmentToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width, self.frame.size.height/2.f)];
+        _adjustTextAlignmenteBar.delegate = self;
+    }
+    return _adjustTextAlignmenteBar;
+}
 
 -(UIButton *) getButtonWithFrame:(CGRect)frame andIcon:(NSString*)iconName andSelector:(SEL)action {
 	UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];

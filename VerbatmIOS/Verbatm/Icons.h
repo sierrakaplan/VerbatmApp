@@ -73,8 +73,8 @@
 
 #pragma mark Text Toolbar
 
-#define SELECT_FONT_ICON_SELECTED @"Color icon_selected"
-#define SELECT_FONT_ICON_UNSELECTED @"Color icon_unselected"
+#define TEXT_FONT_COLOR_BLACK @"text_toolbar_black_font_icon"
+#define TEXT_FONT_COLOR_WHITE @"text_toolbar_white_font_icon"
 
 
 #define CHANGE_FONT_SIZE_ICON_UNSELECTED @"Change Font size icon_unselected"
@@ -83,6 +83,9 @@
 
 
 #define CHANGE_TEXT_ALIGNMENT_ICON @"Alignment icon"
+
+
+
 #define CHANGE_FONT_TYPE_ICON_UNSELECTED @"Font type icon_unselected"
 #define CHANGE_FONT_TYPE_ICON_SELECTED @"Font type icon_selected"
 #define CHANGE_TEXT_VIEW_BACKGROUND @"Background icon"
