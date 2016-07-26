@@ -488,7 +488,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		PFObject *postActivityObject = self.parsePostObjects[indexPath.row];
 		NSString *currentId = cell.currentPostActivityObject.objectId;
 		NSString *otherId = postActivityObject.objectId;
-		if (![currentId isEqualToString: otherId]) {
+		if (currentId == nil || otherId == nil || ![currentId isEqualToString: otherId]) {
 			[cell clearViews];
 			if([postActivityObject isKindOfClass:[NSNumber class]]){
 				if (self.currentlyPublishing) [cell presentPublishingView];
