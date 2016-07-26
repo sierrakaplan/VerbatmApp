@@ -304,6 +304,59 @@
 	}];
 }
 
+
+-(void)deleteCreatedUser{
+    
+    __weak SignInVC * weakSelf = self;
+    
+    PFQuery * findUser = [PFUser query];
+    NSArray * theKeys = [[PFUser currentUser] allKeys];
+    [findUser whereKey:@"username" equalTo:@"9145741709"];
+    [findUser getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+        if(!error){
+            
+            PFUser * deadUser = (PFUser *)object;
+            if(deadUser){
+                [deadUser deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+                    if(succeeded){
+                        [weakSelf wrongConfirmationNumberAlert:@"Wrong Confirmation Code" andMessage:@"Please resend it."];
+                    }
+                }];
+            }
+            
+            
+        }
+        
+    }];
+}
+
+
+
+-(void) wrongConfirmationNumberAlert:(NSString*)title andMessage:(NSString*)message {
+    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:title message:message
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction1 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                    
+                                                              [self goBackFromEnteringConfirmation];
+                                                              [self deleteCreatedUser];
+                                                          
+                                                          }];
+    UIAlertAction* defaultAction2 = [UIAlertAction actionWithTitle:@"Resend" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                              
+                                                              [self sendCodeToUser];
+                                                              
+                                                          }];
+
+    
+    [newAlert addAction:defaultAction1];
+    [newAlert addAction:defaultAction2];
+    [self presentViewController:newAlert animated:YES completion:nil];
+}
+
+
+
 -(void) codeEnteredWithPhoneNumber:(NSString *)number andCode:(NSString *)code{
 	self.nextButtonEnabled = NO;
 	if (code.length != 4) {
@@ -320,7 +373,8 @@
     
 	[PFCloud callFunctionInBackground:@"logIn" withParameters:params block:^(id  _Nullable object, NSError * _Nullable error) {
 		if (error) {
-			[weakSelf showAlertWithTitle:@"Login Error" andMessage: error.localizedDescription];
+            
+             [weakSelf wrongConfirmationNumberAlert:@"Wrong Confirmation Code" andMessage:@"You can choose to resend it."];
 		} else {
 			// This is the session token for the user
 			NSString *token = (NSString*)object;
@@ -333,11 +387,9 @@
                     user.password = self.password;
                     [user setObject:self.verbatmName forKey:VERBATM_USER_NAME_KEY];
                     [user setObject:[NSNumber numberWithBool:NO] forKey:USER_FTUE];
-                    [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-                        if (error || !succeeded) {
-                            [self showAlertWithTitle:@"Error signing up" andMessage: error.localizedDescription];
-                        } else {
-                            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
+                    [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+                        if(succeeded){
+                            [self loginUpWithPhoneNumberSelectedWithNumber:number andPassword:self.password];
                         }
                     }];
 				}
