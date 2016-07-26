@@ -118,45 +118,48 @@ Parse.Cloud.beforeSave("NotificationClass", function(request, response) {
 		query.equalTo("NotificationPost", request.object.get("NotificationPost"));
 	}
 	query.first().then(function(existingObject) {
-      if (existingObject) {
-        response.error("Existing notification");
-      } else { 
-      	// Send a push notification
-      	notificationSender.fetch().then(function(fetchedUser) {
-      		var notificationSenderName = fetchedUser.get("VerbatmName");
-		  	var pushQuery = new Parse.Query(Parse.Installation);
-		  	// pushQuery.equalTo('deviceType', 'ios');
-		  	pushQuery.equalTo('user', notificationReceiver);
-		    var notificationText = "";
-		    if (notificationType == 1) {
-		    	notificationText =  notificationSenderName + " is now following you!";
-		    } else if (notificationType == 2) {
-		    	notificationText = notificationSenderName + " has liked your post!";
-		    } else if (notificationType == 4) {
-		    	notificationText = "Your friend " + notificationSenderName + " has joined Verbatm";
-		    } else if (notificationType == 8) {
-		    	notificationText = notificationSenderName + " shared your post on social media!";
-		    } else if (notificationType == 16) {
-		    	notificationText = notificationSenderName + " just created their first Verbatm post";
-		    } else if (notificationType == 32) {
-		    	notificationText = notificationSenderName + " reblogged your post!";
-		    }
-			  Parse.Push.send({
-			    where: pushQuery, // Set our Installation query
-			    data: {
-			      alert: notificationText,
-			      notificationType: notificationType
+	    if (existingObject) {
+	        response.error("Existing notification");
+	    } else { 
+	      	// Send a push notification
+	      	notificationSender.fetch().then(function(fetchedUser) {
+	      		var notificationSenderName = fetchedUser.get("VerbatmName");
+			  	var pushQuery = new Parse.Query(Parse.Installation);
+			  	// pushQuery.equalTo('deviceType', 'ios');
+			  	var targetUser = new Parse.User();
+				targetUser.id = notificationReceiver.id;
+				console.log("RECEIVER ID: " + notificationReceiver.id);
+			  	pushQuery.equalTo('user', targetUser);
+			    var notificationText = "";
+			    if (notificationType == 1) {
+			    	notificationText =  notificationSenderName + " is now following you!";
+			    } else if (notificationType == 2) {
+			    	notificationText = notificationSenderName + " has liked your post!";
+			    } else if (notificationType == 4) {
+			    	notificationText = "Your friend " + notificationSenderName + " has joined Verbatm";
+			    } else if (notificationType == 8) {
+			    	notificationText = notificationSenderName + " shared your post on social media!";
+			    } else if (notificationType == 16) {
+			    	notificationText = notificationSenderName + " just created their first Verbatm post";
+			    } else if (notificationType == 32) {
+			    	notificationText = notificationSenderName + " reblogged your post!";
 			    }
-			  }, {
-			    success: function() {
-			      response.success();
-			    },
-			    error: function(error) {
-			      throw "Got an error " + error.code + " : " + error.message;
-			    }
-			  });
-      	});
-      }
+				Parse.Push.send({
+				    where: pushQuery, // Set our Installation query
+				    data: {
+				      alert: notificationText,
+				      notificationType: notificationType
+				    }
+				}, {
+				    success: function() {
+				      response.success();
+				    },
+				    error: function(error) {
+				      response.error("Got an error " + error.code + " : " + error.message);
+				    }
+				});
+	      	});
+	    }
     });
 });
 
@@ -220,37 +223,3 @@ function sendCodeSms(phoneNumber, code, language) {
 	});
 	return promise;
 }
-
-Parse.Cloud.define("sendPushToUser", function(request, response) {
-  var senderUser = request.user;
-  var recipientUserId = request.params.recipientId;
-  var message = request.params.message;
-
-  // Validate that the sender is allowed to send to the recipient. todo when privacy
-
-  // Validate the message text.
-  // For example make sure it is under 140 characters
-  if (message.length > 140) {
-  // Truncate and add a ...
-    message = message.substring(0, 137) + "...";
-  }
-
-  // Send the push.
-  // Find devices associated with the recipient user
-  var recipientUser = new Parse.User();
-  recipientUser.id = recipientUserId;
-  var pushQuery = new Parse.Query(Parse.Installation);
-  pushQuery.equalTo("user", recipientUser);
- 
-  // Send the push notification to results of the query
-  Parse.Push.send({
-    where: pushQuery,
-    data: {
-      alert: message
-    }
-  }).then(function() {
-      response.success("Push was sent successfully.")
-  }, function(error) {
-      response.error("Push failed to send with error: " + error.message);
-  });
-});

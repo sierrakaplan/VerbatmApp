@@ -9,6 +9,9 @@
 #import "VerbatmAppDelegate.h"
 
 #import "Analytics.h"
+
+#import "InstallationVariables.h"
+
 #import "UserManager.h"
 #import "UserSetupParameters.h"
 
@@ -35,10 +38,10 @@
 	// Check if the app is launching from a push notification
 	NSDictionary *pushNotification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
 	if (pushNotification) {
-		// Set initial tab to notifications tab
-		//todo: this is where you deep link
-		UITabBarController *tabBar = (UITabBarController *)self.window.rootViewController;
-		tabBar.selectedIndex = 4;
+		//todo: deep link? do something better than a global var
+		[InstallationVariables sharedInstance].launchedFromNotification = YES;
+	} else {
+		[InstallationVariables sharedInstance].launchedFromNotification = NO;
 	}
 
 	// Limit cache size
@@ -96,10 +99,9 @@
 
 // Call back method for registering for push notifications. Save device token in parse.
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-	// Store the deviceToken in the current installation and save it to Parse.
+	// Associate the device with a user
 	PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-	[currentInstallation setDeviceTokenFromData:deviceToken];
-	currentInstallation.channels = @[ @"global" ];
+	currentInstallation[@"user"] = [PFUser currentUser];
 	[currentInstallation saveInBackground];
 }
 

@@ -16,6 +16,7 @@
 #import "DiscoverVC.h"
 #import "FeedTableViewController.h"
 #import "Icons.h"
+#import "InstallationVariables.h"
 
 #import "MasterNavigationVC.h"
 
@@ -206,6 +207,11 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	deadView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 
 	self.tabBarController.viewControllers = @[self.feedVC, self.discoverVC, deadView,self.notificationVC, self.profileVC];
+	if ([[InstallationVariables sharedInstance] launchedFromNotification]) {
+		self.tabBarController.selectedIndex = 3;
+	} else {
+		self.tabBarController.selectedIndex = 1;
+	}
 
 	[self addTabBarCenterButtonOverDeadView];
 	[self formatTabBar];

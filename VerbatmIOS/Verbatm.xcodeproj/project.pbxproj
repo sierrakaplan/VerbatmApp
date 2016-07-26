@@ -32,6 +32,7 @@
 		A535E5061BC44BF100A087D1 /* UIScrollView+Effects.m in Sources */ = {isa = PBXBuildFile; fileRef = A535E5051BC44BF100A087D1 /* UIScrollView+Effects.m */; };
 		A535E5091BC45CC600A087D1 /* AVAsset+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A535E5081BC45CC600A087D1 /* AVAsset+Utilities.m */; };
 		A5446C961BBA3C33002177F4 /* CustomNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A5446C951BBA3C33002177F4 /* CustomNavigationBar.m */; };
+		A552F0111D47760600286C54 /* InstallationVariables.m in Sources */ = {isa = PBXBuildFile; fileRef = A552F0101D47760600286C54 /* InstallationVariables.m */; };
 		A55A59DD1BB4DDDA00C7CE7A /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A55A59DC1BB4DDDA00C7CE7A /* Bolts.framework */; };
 		A55A59DF1BB4E07D00C7CE7A /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A55A59DE1BB4E07D00C7CE7A /* libsqlite3.tbd */; };
 		A55AA12C1BD5B79F00EB883A /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A55AA12B1BD5B79F00EB883A /* AdSupport.framework */; };
@@ -140,8 +141,6 @@
 		A5E73C031D177DBF00527ECF /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73C021D177DBF00527ECF /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A5E860011B96249900E148D0 /* PostPublisher.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E860001B96249900E148D0 /* PostPublisher.m */; };
 		A5E860071B97CC3C00E148D0 /* PreviewDisplayView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E860061B97CC3C00E148D0 /* PreviewDisplayView.m */; };
-		A5F51F521CD95DF400EB0A7B /* NotificationsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F51F511CD95DF400EB0A7B /* NotificationsVC.m */; };
-		A5F51F551CD968CC00EB0A7B /* NotificationCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F51F541CD968CC00EB0A7B /* NotificationCellView.m */; };
 		A5FB5D2C1BCB0B9700634A96 /* GMAlbumsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5FB5D151BCB0B9700634A96 /* GMAlbumsViewCell.m */; };
 		A5FB5D2D1BCB0B9700634A96 /* GMAlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5FB5D171BCB0B9700634A96 /* GMAlbumsViewController.m */; };
 		A5FB5D301BCB0B9700634A96 /* GMGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5FB5D1B1BCB0B9700634A96 /* GMGridViewCell.m */; };
@@ -331,6 +330,8 @@
 		A535E5081BC45CC600A087D1 /* AVAsset+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AVAsset+Utilities.m"; sourceTree = "<group>"; };
 		A5446C941BBA3C33002177F4 /* CustomNavigationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomNavigationBar.h; sourceTree = "<group>"; };
 		A5446C951BBA3C33002177F4 /* CustomNavigationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomNavigationBar.m; sourceTree = "<group>"; };
+		A552F00F1D47760600286C54 /* InstallationVariables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InstallationVariables.h; sourceTree = "<group>"; };
+		A552F0101D47760600286C54 /* InstallationVariables.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InstallationVariables.m; sourceTree = "<group>"; };
 		A55A59CF1BB470D300C7CE7A /* SegueIDs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SegueIDs.h; sourceTree = "<group>"; };
 		A55A59D21BB4CFE800C7CE7A /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		A55A59DC1BB4DDDA00C7CE7A /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
@@ -486,8 +487,6 @@
 		A5E860061B97CC3C00E148D0 /* PreviewDisplayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreviewDisplayView.m; sourceTree = "<group>"; };
 		A5F51F501CD95DF400EB0A7B /* NotificationsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsVC.h; sourceTree = "<group>"; };
 		A5F51F511CD95DF400EB0A7B /* NotificationsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsVC.m; sourceTree = "<group>"; };
-		A5F51F531CD968CC00EB0A7B /* NotificationCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationCellView.h; sourceTree = "<group>"; };
-		A5F51F541CD968CC00EB0A7B /* NotificationCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationCellView.m; sourceTree = "<group>"; };
 		A5F94ABC1CCC115500341D01 /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Verbatm-crpoxhdzscotzubuuulfnzwqpfct/Build/Products/Debug-iphoneos/PromiseKit.framework"; sourceTree = "<group>"; };
 		A5FB5D141BCB0B9700634A96 /* GMAlbumsViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMAlbumsViewCell.h; sourceTree = "<group>"; };
 		A5FB5D151BCB0B9700634A96 /* GMAlbumsViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMAlbumsViewCell.m; sourceTree = "<group>"; };
@@ -1460,6 +1459,8 @@
 				C7BC437E199D97F5004B91A1 /* InfoPlist.strings */,
 				C7BC4381199D97F5004B91A1 /* main.m */,
 				C7BC4383199D97F5004B91A1 /* Verbatm-Prefix.pch */,
+				A552F00F1D47760600286C54 /* InstallationVariables.h */,
+				A552F0101D47760600286C54 /* InstallationVariables.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1807,6 +1808,7 @@
 				A5E73BF21D1770B400527ECF /* GTLVerbatmAppConstants.m in Sources */,
 				C74BC2901D2CDD2800C1FD80 /* Notification_BackendManager.m in Sources */,
 				C70E1C4E1C3BC06100346A25 /* SettingsVC.m in Sources */,
+				A552F0111D47760600286C54 /* InstallationVariables.m in Sources */,
 				A5337BC11CCDD96E00551394 /* PostsQueryManager.m in Sources */,
 				A57A93051B55E835006C2597 /* VerbatmCameraView.m in Sources */,
 				C7BF1AAE1C57F61F00CEDE4B /* Page_BackendObject.m in Sources */,
