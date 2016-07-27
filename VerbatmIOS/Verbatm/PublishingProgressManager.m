@@ -152,7 +152,7 @@
 
 -(void)mediaSavingProgressed:(NSInteger) newProgress {
 	self.progressAccountant.completedUnitCount += newProgress;
-	NSLog(@"Media saving progressed %ld new units to completed %lld units of total %lld units", newProgress,
+	NSLog(@"Media saving progressed %ld new units to completed %lld units of total %lld units", (long)newProgress,
 		  self.progressAccountant.completedUnitCount, self.progressAccountant.totalUnitCount);
 	if (self.progressAccountant.completedUnitCount >= self.progressAccountant.totalUnitCount
 		&& self.currentlyPublishing && self.currentParsePostObject) {

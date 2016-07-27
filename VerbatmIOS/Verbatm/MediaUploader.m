@@ -44,12 +44,12 @@
 			float progressAmount = ((float)uploadProgress.completedUnitCount/(float)uploadProgress.totalUnitCount);
 			NSInteger newProgressUnits = (NSInteger)(progressAmount*(float)self.mediaUploadProgress.totalUnitCount);
 			if (newProgressUnits != self.mediaUploadProgress.completedUnitCount) {
-				[[PublishingProgressManager sharedInstance] mediaSavingProgressed:(newProgressUnits - self.mediaUploadProgress.completedUnitCount)];
+				[[PublishingProgressManager sharedInstance] mediaSavingProgressed:(NSInteger)(newProgressUnits - self.mediaUploadProgress.completedUnitCount)];
 				self.mediaUploadProgress.completedUnitCount = newProgressUnits;
 				NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
 			}
 		} success:^(NSURLSessionDataTask * _Nonnull task, NSData* responseData) {
-			[[PublishingProgressManager sharedInstance] mediaSavingProgressed:(self.mediaUploadProgress.totalUnitCount - self.mediaUploadProgress.completedUnitCount)];
+			[[PublishingProgressManager sharedInstance] mediaSavingProgressed:(NSInteger)(self.mediaUploadProgress.totalUnitCount - self.mediaUploadProgress.completedUnitCount)];
 			[self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
 			NSLog(@"Video published!");
 			NSString *response = [[NSString alloc] initWithData:responseData encoding: NSUTF8StringEncoding];
