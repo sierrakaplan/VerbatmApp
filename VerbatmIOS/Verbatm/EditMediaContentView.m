@@ -214,6 +214,8 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	if(textView.frame.origin.y != self.userSetFrame.origin.y){
 		[self.textAndImageView animateTextViewToYPos: self.userSetFrame.origin.y];
 	}
+    [self removeScreenToolbar];
+    [self createScreenToolBar];
 }
 
 /* Enforces word limit */
@@ -230,8 +232,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 #pragma mark Keyboard Notifications
 
 -(void) keyBoardWillHide:(NSNotification*)notification {
-    [self removeScreenToolbar];
-    [self createScreenToolBar];
+    
 }
 
 

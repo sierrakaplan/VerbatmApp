@@ -18,7 +18,7 @@
 @end
 
 #define SPACE 30.f
-#define CENTERING_Y ((self.frame.size.height - TEXT_TOOLBAR_BUTTON_WIDTH)/2.f)
+#define CENTERING_Y ((self.frame.size.height - TEXT_TOOLBAR_BUTTON_WIDTH)/2.f) - 5.f
 
 #define ICON_SIZE (self.frame.size.height - 10.f)
 

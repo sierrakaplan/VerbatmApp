@@ -25,7 +25,7 @@
 
 #define ICON_HEIGHT (self.frame.size.height - 10.f)
 #define ICON_WIDTH (ICON_HEIGHT * 2.f)
-
+#define TEXT_COLOR whiteColor
 @implementation AdjustTextFontToolBar
 
 
@@ -87,7 +87,7 @@
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.frame = frame;
     [button setTitle:title forState:UIControlStateNormal];
-    [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor TEXT_COLOR] forState:UIControlStateNormal];
     [button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
     return button;
 }

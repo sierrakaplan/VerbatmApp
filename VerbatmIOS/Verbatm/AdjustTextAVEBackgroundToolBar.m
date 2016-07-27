@@ -42,6 +42,15 @@
     for(int i = 0; i < self.circleButtonBackgrounds.count; i++) {
         CGRect  buttomFrame = CGRectMake(xAdvanced, 2.f, IMAGE_SIZE, IMAGE_SIZE);
         UIButton * button = [UtilityFunctions getButtonWithFrame:buttomFrame andIcon:self.circleButtonBackgrounds[i] andSelector:@selector(buttonSelected:) andTarget:self];
+        
+        if(i == 1){
+            // this is the black icon so lets give it a boarder
+            //aish should really just give us an icon with a white boarder
+            button.layer.cornerRadius = button.frame.size.width/2.f;
+            button.layer.borderWidth = 2.f;
+            button.layer.borderColor = [UIColor whiteColor].CGColor;
+        }
+        
         [self addSubview:button];
         [self.selectionOptions addObject:button];
         xAdvanced = xAdvanced + IMAGE_SIZE + IMAGE_GAP;
