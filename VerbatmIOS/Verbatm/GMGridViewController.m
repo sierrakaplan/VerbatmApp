@@ -10,6 +10,7 @@
 #import "GMImagePickerController.h"
 #import "GMAlbumsViewController.h"
 #import "GMGridViewCell.h"
+#import <AssetsLibrary/AssetsLibrary.h>
 
 @import Photos;
 
@@ -123,7 +124,11 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     {
         self.navigationItem.prompt = self.picker.customNavigationBarPrompt;
     }
-    
+    [self presentImageManager];
+}
+
+
+-(void)presentImageManager{
     self.imageManager = [[PHCachingImageManager alloc] init];
     [self resetCachedAssets];
     [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];

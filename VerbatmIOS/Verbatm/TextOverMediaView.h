@@ -29,7 +29,7 @@
 andTextYPosition:(CGFloat) textYPosition
    andTextColorBlack:(BOOL) textColorBlack
 andTextAlignment:(NSTextAlignment) textAlignment
-	andTextSize:(CGFloat) textSize;
+    andTextSize:(CGFloat) textSize andFontName:(NSString *) fontName;
 
 -(void) revertToDefaultTextSettings;
 

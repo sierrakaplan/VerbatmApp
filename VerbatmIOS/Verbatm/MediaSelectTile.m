@@ -19,10 +19,13 @@
 // Contains images inside buttons
 @property (nonatomic, strong) UIImageView* galleryButtonImageView;
 @property (nonatomic, strong) UIImageView* cameraButtonImageView;
+@property (nonatomic, strong) UIImageView* textButtonImageView;
+
 
 // Displays plus behind button
 @property (nonatomic, strong) UIImageView* galleryButtonPlus;
 @property (nonatomic, strong) UIImageView* cameraButtonPlus;
+@property (nonatomic, strong) UIImageView* textButtonPlus;
 
 @property (nonatomic, strong) CAShapeLayer * border;
 
@@ -47,22 +50,41 @@
 	float imageOffset = size / 4.f;
 	float plusIconSize = size / 4.f;
 	float plusIconOffset = 0.f;
-
-	self.galleryButton.frame = CGRectMake(buttonOffset + xDifference, buttonOffset, size, size);
-	self.galleryButtonPlus.frame = CGRectMake(self.galleryButton.frame.origin.x - plusIconOffset - plusIconSize,
+    
+    
+    
+    //camera button
+    self.cameraButton.frame = CGRectMake((self.frame.size.width - size)/2.f, buttonOffset, size, size);
+    self.cameraButtonPlus.frame = CGRectMake(self.cameraButton.frame.origin.x + self.cameraButton.frame.size.width + plusIconOffset,
+                                             self.cameraButton.frame.origin.y - plusIconOffset,
+                                             plusIconSize, plusIconSize);
+    self.cameraButtonImageView.frame = CGRectMake(imageOffset, imageOffset, size - imageOffset*2, size - imageOffset*2);
+    self.cameraButton.layer.cornerRadius = self.cameraButton.frame.size.width/2;
+    self.cameraButton.layer.shadowRadius = buttonOffset;
+    
+    
+    //gallery button
+	self.galleryButton.frame = CGRectMake(self.cameraButton.frame.origin.x - xDifference - size, buttonOffset, size, size);
+	self.galleryButtonPlus.frame = CGRectMake(self.galleryButton.frame.origin.x + self.galleryButton.frame.size.width + plusIconOffset,
 											  self.galleryButton.frame.origin.y - plusIconOffset,
 											  plusIconSize, plusIconSize);
 	self.galleryButtonImageView.frame = CGRectMake(imageOffset, imageOffset, size - imageOffset*2, size - imageOffset*2);
 	self.galleryButton.layer.cornerRadius = self.galleryButton.frame.size.width/2;
 	self.galleryButton.layer.shadowRadius = buttonOffset;
+    
+    
+    
+    
+    //text button
+    self.textButton.frame = CGRectMake(self.cameraButton.frame.origin.x + self.cameraButton.frame.size.width + xDifference, buttonOffset, size, size);
+    self.textButtonPlus.frame = CGRectMake(self.textButton.frame.origin.x + self.textButton.frame.size.width + plusIconOffset,
+                                              self.textButton.frame.origin.y - plusIconOffset,
+                                              plusIconSize, plusIconSize);
+    self.textButtonImageView.frame = CGRectMake(imageOffset, imageOffset, size - imageOffset*2, size - imageOffset*2);
+    self.textButton.layer.cornerRadius = self.textButton.frame.size.width/2;
+    self.textButton.layer.shadowRadius = buttonOffset;
 
-	self.cameraButton.frame = CGRectMake(frame.size.width/2.f + xDifference, buttonOffset, size, size);
-	self.cameraButtonPlus.frame = CGRectMake(self.cameraButton.frame.origin.x + self.cameraButton.frame.size.width + plusIconOffset,
-											 self.cameraButton.frame.origin.y - plusIconOffset,
-											 plusIconSize, plusIconSize);
-	self.cameraButtonImageView.frame = CGRectMake(imageOffset, imageOffset, size - imageOffset*2, size - imageOffset*2);
-	self.cameraButton.layer.cornerRadius = self.cameraButton.frame.size.width/2;
-	self.cameraButton.layer.shadowRadius = buttonOffset;
+    
 }
 
 -(void) buttonGlow {
@@ -79,6 +101,11 @@
 		self.cameraButton.layer.shadowOpacity = 1;
 		[self.cameraButton.layer setBackgroundColor:buttonBackgroundColor.CGColor];
 		self.cameraButton.layer.borderWidth = 2.f;
+        
+        self.textButton.layer.shadowColor = buttonBackgroundColor.CGColor;
+        self.textButton.layer.shadowOpacity = 1;
+        [self.textButton.layer setBackgroundColor:buttonBackgroundColor.CGColor];
+        self.textButton.layer.borderWidth = 2.f;
 	} completion:^(BOOL finished) {
 	}];
 }
@@ -95,6 +122,10 @@
 
 - (void) cameraViewButtonPressed {
 	[self.delegate cameraButtonPressedOnTile:self];
+}
+
+-(void)textButtonPressed{
+    [self.delegate textButtonPressedOnTile:self];
 }
 
 #pragma mark - Content Dev Element Delegate methods (selected, deleting) -
@@ -145,12 +176,33 @@
 	return _cameraButton;
 }
 
+- (UIButton *) textButton {
+    if(!_textButton) {
+        _textButton = [[UIButton alloc]init];
+        [_textButton addSubview: self.textButtonImageView];
+        [_textButton addTarget:self action:@selector(textButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+        _textButton.layer.borderColor = [UIColor whiteColor].CGColor;
+        _textButton.clipsToBounds = YES;
+        [self addSubview:_textButton];
+    }
+    
+    return _textButton;
+}
+
 -(UIImageView*) galleryButtonImageView {
 	if (!_galleryButtonImageView) {
 		_galleryButtonImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:GALLERY_BUTTON_ICON]];
 		_galleryButtonImageView.contentMode = UIViewContentModeScaleAspectFit;
 	}
 	return _galleryButtonImageView;
+}
+
+-(UIImageView*) textButtonImageView {
+    if (!_textButtonImageView) {
+        _textButtonImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:TEXT_BUTTON_ICON]];
+        _textButtonImageView.contentMode = UIViewContentModeScaleAspectFit;
+    }
+    return _textButtonImageView;
 }
 
 -(UIImageView*) cameraButtonImageView {
@@ -175,6 +227,14 @@
 		[self addSubview:_cameraButtonPlus];
 	}
 	return _cameraButtonPlus;
+}
+
+-(UIImageView*) textButtonPlus {
+    if (!_textButtonPlus) {
+        _textButtonPlus = [[UIImageView alloc] initWithImage:[UIImage imageNamed:PLUS_ICON]];
+        [self addSubview:_textButtonPlus];
+    }
+    return _textButtonPlus;
 }
 
 @end

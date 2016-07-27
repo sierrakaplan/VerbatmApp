@@ -45,7 +45,7 @@
 andTextYPosition:(CGFloat)yPosition
 andTextColorBlack:(BOOL)textColorBlack
 andTextAlignment:(NSTextAlignment)textAlignment
-	andTextSize:(CGFloat)textSize;
+	andTextSize:(CGFloat)textSize andFontName:(NSString *)fontName ;
 
 //call before removing the view our ecv
 //saves the content into the pinchview

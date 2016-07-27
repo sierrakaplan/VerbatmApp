@@ -76,7 +76,7 @@
 }
 
 -(void)createNextButton{
-    CGFloat loginToolBarHeight = TEXT_TOOLBAR_HEIGHT*1.5;
+    CGFloat loginToolBarHeight = TEXT_TOOLBAR_HEIGHT*(3.f/4.f);
     CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - loginToolBarHeight,
                                      self.frame.size.width, loginToolBarHeight);
     self.toolBar = [[LoginKeyboardToolBar alloc] initWithFrame:toolBarFrame];

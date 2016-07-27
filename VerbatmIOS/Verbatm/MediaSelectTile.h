@@ -16,7 +16,7 @@
 
 -(void) cameraButtonPressedOnTile: (MediaSelectTile*) tile;
 -(void) galleryButtonPressedOnTile: (MediaSelectTile*) tile;
-
+-(void)textButtonPressedOnTile:(MediaSelectTile*) tile;
 @end
 
 @interface MediaSelectTile : UIView<ContentDevElementDelegate>
@@ -29,6 +29,7 @@
 // buttons
 @property (nonatomic, strong) UIButton* galleryButton;
 @property (nonatomic, strong) UIButton* cameraButton;
+@property (nonatomic, strong) UIButton* textButton;
 
 // Resizes buttons from different base frame (of the tile)
 -(void) createFramesForButtonsWithFrame: (CGRect) frame;

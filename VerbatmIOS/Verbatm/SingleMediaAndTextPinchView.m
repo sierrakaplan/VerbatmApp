@@ -61,6 +61,13 @@
 	return _textSize;
 }
 
+-(NSString *)fontName{
+    if(!_fontName){
+        _fontName = TEXT_PAGE_VIEW_DEFAULT_FONT;
+    }
+    return _fontName;
+}
+
 #pragma mark - Encoding -
 
 - (void)encodeWithCoder:(NSCoder *)coder {
