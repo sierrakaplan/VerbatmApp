@@ -140,11 +140,13 @@
 	return self.filteredImages[0];
 }
 
+
 /* media, text, textYPosition, textColor, textAlignment, textSize */
 -(NSArray*) getPhotosWithText {
    return @[@[[self getImage], @"", @(0),
                    self.textColor, @(0), @(0)]];
 }
+
 
 //todo: fix half screen problem
 -(UIImage *)getImageScreenshotWithText:(UIImage *)image inHalf:(BOOL)half {

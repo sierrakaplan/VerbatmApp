@@ -27,6 +27,9 @@
 
 @interface EditMediaContentView () <KeyboardToolBarDelegate, UITextViewDelegate, UIGestureRecognizerDelegate>
 
+//keyboard that appears when the user has text on the screen
+@property (nonatomic) VerbatmKeyboardToolBar * permanentOnScreenKeyboard;
+
 @property (nonatomic, strong) TextOverMediaView * textAndImageView;
 
 @property (nonatomic) UIImageView * swipeInstructionView;
@@ -91,6 +94,12 @@
 											 selector:@selector(keyBoardWillChangeFrame:)
 												 name:UIKeyboardWillChangeFrameNotification
 											   object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyBoardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+    
+    
 }
 
 #pragma mark - Text View -
@@ -105,7 +114,7 @@
 	[self.textCreationButton addTarget:self action:@selector(editText) forControlEvents:UIControlEventTouchUpInside];
 	[self addSubview:self.textCreationButton];
 	[self bringSubviewToFront:self.textCreationButton];
-	[self addLongPress];
+	
 }
 
 /* long press does the same thing as edit text button */
@@ -134,6 +143,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 					  andTextColorBlack: textColorBlack
 				  andTextAlignment: textAlignment
 					   andTextSize: textSize andFontName:fontName];
+    [self createScreenToolBar];
 }
 
 #pragma mark - Keyboard ToolBar -
@@ -147,6 +157,28 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[toolBar setDelegate:self];
 	[self.textAndImageView setTextViewKeyboardToolbar:toolBar];
 }
+
+-(void)createScreenToolBar{
+    if(!self.permanentOnScreenKeyboard && self.textAndImageView &&
+       ![self.textAndImageView.textView.text isEqualToString:@""]){
+        BOOL textColorBlack =NO;
+        CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - TEXT_TOOLBAR_HEIGHT,
+                                         self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
+        self.permanentOnScreenKeyboard = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
+                                                                      andTextColorBlack: textColorBlack isOnTextAve:[self.pinchView isKindOfClass:[TextPinchView class]]];
+        [self.permanentOnScreenKeyboard setDelegate:self];
+        [self addSubview:self.permanentOnScreenKeyboard];
+    }
+}
+
+
+-(void)removeScreenToolbar{
+    if(self.permanentOnScreenKeyboard){
+        [self.permanentOnScreenKeyboard removeFromSuperview];
+        self.permanentOnScreenKeyboard = nil;
+    }
+}
+
 
 #pragma mark - Text view content changed -
 
@@ -182,6 +214,12 @@ andTextAlignment:(NSTextAlignment)textAlignment
 }
 
 #pragma mark Keyboard Notifications
+
+-(void) keyBoardWillHide:(NSNotification*)notification {
+    [self removeScreenToolbar];
+    [self createScreenToolBar];
+}
+
 
 /* Gets keyboard height the first time it appears */
 -(void)keyboardWillShow:(NSNotification *) notification {
@@ -219,6 +257,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self addSubview: self.textAndImageView];
 	[self addPanGestures];
 	[self createTextCreationButton];
+    [self addLongPress];
 
 	//todo: bring back filters
 //    if(![[UserSetupParameters sharedInstance ] checkAndSetFilterInstructionShown]){
