@@ -310,7 +310,7 @@
 }
 
 
--(void)deleteCreatedUser{
+-(void)deleteCreatedUser {
     if (self.createdUserWithLoginCode) {
         self.createdUserWithLoginCode = NO;
         NSString * userNameToDelete = self.phoneNumber;
