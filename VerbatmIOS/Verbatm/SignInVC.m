@@ -314,11 +314,16 @@
     if (self.createdUserWithLoginCode) {
         self.createdUserWithLoginCode = NO;
         NSString * userNameToDelete = self.phoneNumber;
-        //Sierra todo
-        //delete user with this username
+		NSDictionary *params = @{@"phoneNumber" : userNameToDelete};
+		[PFCloud callFunctionInBackground:@"deleteCreatedUser" withParameters:params block:^(id  _Nullable response, NSError * _Nullable error) {
+			if (error) {
+				NSLog(@"Error deleting created user: %@", error.description);
+			} else {
+				NSLog(@"Success deleting created user.");
+			}
+		}];
     }
 }
-
 
 
 -(void) wrongConfirmationNumberAlert:(NSString*)title andMessage:(NSString*)message {

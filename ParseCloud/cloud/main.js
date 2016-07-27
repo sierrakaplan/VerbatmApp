@@ -241,3 +241,18 @@ function sendCodeSms(phoneNumber, code, language) {
 	});
 	return promise;
 }
+
+Parse.Cloud.define("deleteCreatedUser", function(req, res) {
+	var phoneNumber = req.params.phoneNumber;
+	Parse.Cloud.useMasterKey();
+	var query = new Parse.Query(Parse.User);
+	query.equalTo('username', phoneNumber + "");
+	query.first().then(function(user) {
+		if (user) {
+			user.destroy();
+			res.success();
+		} else {
+			res.error("No user with that phone number found");
+		}
+	});
+});
