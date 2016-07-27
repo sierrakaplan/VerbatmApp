@@ -224,7 +224,7 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 		if(contentWidth > 0 && (offset.x + scrollView.bounds.size.width > contentWidth + REFRESH_DISTANCE) && !self.isRefreshing) {
 			self.isRefreshing = YES;
 			self.loadingMoreIndicator.center = CGPointMake(contentWidth + self.loadingMoreIndicator.frame.size.width + 10.f,
-										   scrollView.frame.size.height/2.f - self.loadingMoreIndicator.frame.size.height/2.f);
+														   scrollView.frame.size.height/2.f - self.loadingMoreIndicator.frame.size.height/2.f);
 			[self.loadingMoreIndicator startAnimating];
 			[scrollView addSubview: self.loadingMoreIndicator];
 			[self loadNewerPosts];
@@ -304,19 +304,17 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 			return;
 		}
 
-
 		NSMutableArray *indexPaths = [NSMutableArray array];
 		NSInteger startIndex = weakSelf.parsePostObjects.count;
 		NSInteger endIndex = weakSelf.parsePostObjects.count + posts.count;
 		for (NSInteger i = startIndex; i < endIndex; i++) {
 			[indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
 		}
-		NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(startIndex, endIndex)];
 
 		[CATransaction begin];
 		[CATransaction setDisableActions:YES];
 		[weakSelf.collectionView performBatchUpdates:^{
-			[weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
+			[weakSelf.parsePostObjects addObjectsFromArray: posts];
 			[weakSelf.collectionView insertItemsAtIndexPaths:indexPaths];
 		} completion:^(BOOL finished) {
 			weakSelf.collectionView.contentOffset = CGPointMake(weakSelf.collectionView.contentSize.width, 0);
@@ -486,13 +484,16 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	cell.cellDelegate = self;
 	if(indexPath.row < self.parsePostObjects.count){
 		PFObject *postActivityObject = self.parsePostObjects[indexPath.row];
-		NSString *currentId = cell.currentPostActivityObject.objectId;
-		NSString *otherId = postActivityObject.objectId;
-		if (![currentId isEqualToString: otherId]) {
+		if([postActivityObject isKindOfClass:[NSNumber class]]) {
 			[cell clearViews];
-			if([postActivityObject isKindOfClass:[NSNumber class]]){
-				if (self.currentlyPublishing) [cell presentPublishingView];
-			} else {
+			if (self.currentlyPublishing) {
+				[cell presentPublishingView];
+			}
+		} else {
+			NSString *currentId = cell.currentPostActivityObject.objectId;
+			NSString *otherId = postActivityObject.objectId;
+			if (currentId == nil || otherId == nil || ![currentId isEqualToString: otherId]) {
+				[cell clearViews];
 				[cell presentPostFromPCActivityObj:postActivityObject andChannel:self.channelForList
 								  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:NO];
 			}

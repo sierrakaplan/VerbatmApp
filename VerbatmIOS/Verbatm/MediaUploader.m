@@ -30,7 +30,7 @@
 }
 
 -(AnyPromise*) uploadVideoWithUrl:(NSURL*)videoURL andUri:(NSString*)uri {
-	self.mediaUploadProgress = [NSProgress progressWithTotalUnitCount: VIDEO_PROGRESS_UNITS-1];
+	self.mediaUploadProgress = [NSProgress progressWithTotalUnitCount: VIDEO_PROGRESS_UNITS];
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		self.operationManager = [AFHTTPSessionManager manager];
 		self.operationManager.responseSerializer = [AFHTTPResponseSerializer serializer];
@@ -46,16 +46,15 @@
 			if (newProgressUnits != self.mediaUploadProgress.completedUnitCount) {
 				[[PublishingProgressManager sharedInstance] mediaSavingProgressed:(newProgressUnits - self.mediaUploadProgress.completedUnitCount)];
 				self.mediaUploadProgress.completedUnitCount = newProgressUnits;
-//				NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
+				NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
 			}
 		} success:^(NSURLSessionDataTask * _Nonnull task, NSData* responseData) {
-                [[PublishingProgressManager sharedInstance] onePieceOfMediaSaved];
-                [[PublishingProgressManager sharedInstance] mediaSavingProgressed:(self.mediaUploadProgress.totalUnitCount - self.mediaUploadProgress.completedUnitCount)];
-                [self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
-//                NSLog(@"Video published!");
-                NSString *response = [[NSString alloc] initWithData:responseData encoding: NSUTF8StringEncoding];
-            
-                resolve(response);
+			[[PublishingProgressManager sharedInstance] mediaSavingProgressed:(self.mediaUploadProgress.totalUnitCount - self.mediaUploadProgress.completedUnitCount)];
+			[self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
+			NSLog(@"Video published!");
+			NSString *response = [[NSString alloc] initWithData:responseData encoding: NSUTF8StringEncoding];
+
+			resolve(response);
 		} failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
 			[self savingMediaFailed: error];
 			resolve(error);
@@ -67,7 +66,7 @@
 }
 
 -(AnyPromise*) uploadImageWithName:(NSString*)fileName andData:(NSData*)imageData andUri:(NSString*)uri {
-	self.mediaUploadProgress = [NSProgress progressWithTotalUnitCount: IMAGE_PROGRESS_UNITS-1];
+	self.mediaUploadProgress = [NSProgress progressWithTotalUnitCount: IMAGE_PROGRESS_UNITS];
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		[self.operationManager POST:uri parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull multipartFormData) {
 			[multipartFormData appendPartWithFileData:imageData name:@"defaultImage" fileName:fileName mimeType:@"image/png"];
@@ -77,14 +76,12 @@
 			if (newProgressUnits != self.mediaUploadProgress.completedUnitCount) {
 				[[PublishingProgressManager sharedInstance] mediaSavingProgressed:(newProgressUnits - self.mediaUploadProgress.completedUnitCount)];
 				self.mediaUploadProgress.completedUnitCount = newProgressUnits;
-//				NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
+				NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
 			}
 		} success:^(NSURLSessionDataTask * _Nonnull task, NSData* responseData) {
-			[[PublishingProgressManager sharedInstance] mediaSavingProgressed:(self.mediaUploadProgress.completedUnitCount)];
-            [[PublishingProgressManager sharedInstance] onePieceOfMediaSaved];
-            
+			[[PublishingProgressManager sharedInstance] mediaSavingProgressed:(self.mediaUploadProgress.totalUnitCount - self.mediaUploadProgress.completedUnitCount)];
 			[self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
-//			NSLog(@"Image published!");
+			NSLog(@"Image published!");
 			NSString *response = [[NSString alloc] initWithData:responseData encoding: NSUTF8StringEncoding];
 			resolve(response);
 		} failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

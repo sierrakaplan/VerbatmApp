@@ -829,7 +829,6 @@
 			isa = PBXGroup;
 			children = (
 				A5E73B771D1635B500527ECF /* GTL files */,
-				A5BFA5971CA89A90002C3884 /* Publishing */,
 				A5337BC41CCDD9B800551394 /* User Info + channels */,
 				A5337BC31CCDD99000551394 /* Social Network objects */,
 				A5337BC21CCDD97A00551394 /* Elements of post */,
@@ -1442,6 +1441,7 @@
 				A560EF9E1BA8DFCC003FB041 /* Page Type Analyzer */,
 				C78B682719CA6C0A003D0AC5 /* Custom Views */,
 				C78B681119CA6914003D0AC5 /* View Controllers */,
+				A5BFA5971CA89A90002C3884 /* Publishing */,
 				A560EF9A1BA89552003FB041 /* Model */,
 				C7BC437C199D97F5004B91A1 /* Supporting Files */,
 			);

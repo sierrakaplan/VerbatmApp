@@ -89,7 +89,7 @@
 			[newVideoObj saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 				if(succeeded){
 					//tell our publishing manager that a video is done saving
-					[[PublishingProgressManager sharedInstance] mediaSavingProgressed:2]; //2 for thumbnail and video
+					[[PublishingProgressManager sharedInstance] mediaSavingProgressed:1]; 
 					resolve(nil);
 				} else {
 					resolve(error);

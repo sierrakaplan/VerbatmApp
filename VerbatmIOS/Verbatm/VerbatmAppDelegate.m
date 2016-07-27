@@ -46,11 +46,6 @@
 		[InstallationVariables sharedInstance].launchedFromNotification = NO;
 	}
 
-	// Associate the device with a user
-	PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-	currentInstallation[@"user"] = [PFUser currentUser];
-	[currentInstallation saveInBackground];
-
 	// Limit cache size
 	int cacheSizeMemory = 15*1024*1024; // 4MB
 	int cacheSizeDisk = 32*1024*1024; // 32MB
@@ -106,6 +101,11 @@
 
 // Call back method for registering for push notifications. Save device token in parse.
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+	// Store the deviceToken in the current installation and save it to Parse.
+	PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+	[currentInstallation setDeviceTokenFromData:deviceToken];
+	currentInstallation.channels = @[ @"global" ];
+	[currentInstallation saveInBackground];
 }
 
 - (void)application:(UIApplication *)app

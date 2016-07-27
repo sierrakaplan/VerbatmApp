@@ -27,6 +27,7 @@
 #import "ProfileVC.h"
 #import "PublishingProgressManager.h"
 #import <Parse/PFQuery.h>
+#import <Parse/PFInstallation.h>
 
 #import "StoryboardVCIdentifiers.h"
 #import "SegueIDs.h"
@@ -167,6 +168,11 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 }
 
 -(void) setUpStartUpEnvironment {
+	// Associate the device with a user
+	PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+	currentInstallation[@"user"] = [PFUser currentUser];
+	[currentInstallation saveInBackground];
+
 	[[UserSetupParameters sharedInstance] setUpParameters];
 	self.view.backgroundColor = [UIColor blackColor];
 	[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{

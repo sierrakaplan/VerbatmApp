@@ -24,7 +24,7 @@
 
 #define INITIAL_PROGRESS_UNITS 3
 #define IMAGE_PROGRESS_UNITS 3
-#define VIDEO_PROGRESS_UNITS 21
+#define VIDEO_PROGRESS_UNITS 20
 
 @property (nonatomic, readonly) NSProgress * progressAccountant;
 @property (nonatomic, readonly) BOOL currentlyPublishing;
@@ -35,15 +35,16 @@
 // Blocks is publishing something else, no network
 -(void)publishPostToChannel:(Channel *)channel andFacebook:(BOOL)externalShare withCaption:(NSString *)caption withPinchViews:(NSArray *)pinchViews withCompletionBlock:(void(^)(BOOL, BOOL))block;
 
--(void)mediaSavingProgressed:(int64_t) newProgress;
+-(void)mediaSavingProgressed:(NSInteger) newProgress;
 
 -(void)savingMediaFailedWithError:(NSError*)error;
 
 -(void)storeLocationToShare:(SelectedPlatformsToShareLink)locationToShare withCaption:(NSString *) caption;
+
 //stores a screenshot of the first page to be used during the progress report
 -(void)storeProgressBackgroundImage:(UIImage *) image;
+
 -(UIImage *) getProgressBackgroundImage;
--(void)onePieceOfMediaSaved;
 
 
 @end
