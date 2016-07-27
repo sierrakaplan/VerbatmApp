@@ -61,7 +61,7 @@
 #define CHANNEL_SELECTOR_ARROW_LEFT @"white_selector_arrow_left"
 #define CHANNEL_SELECTOR_ARROW_RIGHT @"white_selector_arrow_right"
 
-#define EDIT_PINCHVIEW_ICON @"edit_icon"
+#define EDIT_PINCHVIEW_ICON @"Tap to Edit icon"
 #define DELETE_PINCHVIEW_ICON @"trash_can"
 
 #define SUCCESS_PUBLISHING_IMAGE @"publishing_succeeded_notification"
@@ -72,7 +72,7 @@
 #define MINIMIZE_ICON @"minimize_icon"
 #define DONE_CHECKMARK @"done_checkmark"
 #define PULLDOWN_ICON @"down_arrow"
-#define CREATE_TEXT_ICON @"text_edit_button"
+#define CREATE_TEXT_ICON @"AddTextBlueIcon"
 
 #pragma mark Text Toolbar
 

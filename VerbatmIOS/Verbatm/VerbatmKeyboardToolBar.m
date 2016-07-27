@@ -319,7 +319,7 @@ typedef enum {
         CGFloat height = (self.frame.size.height/3.f) - TEXT_TOOLBAR_BUTTON_OFFSET;
         CGFloat centeringY = ((self.frame.size.height/2.f) - height)/2.f;
         
-        CGRect keyboardButtonFrame = CGRectMake(self.frame.size.width  - TEXT_TOOLBAR_DONE_WIDTH - TEXT_TOOLBAR_BUTTON_OFFSET + 5.f, centeringY,
+        CGRect keyboardButtonFrame = CGRectMake(self.frame.size.width  - TEXT_TOOLBAR_DONE_WIDTH + 5.f, centeringY,
                                             TEXT_TOOLBAR_DONE_WIDTH/2.f,height);
         _keyboardButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _keyboardButton.frame = keyboardButtonFrame;
