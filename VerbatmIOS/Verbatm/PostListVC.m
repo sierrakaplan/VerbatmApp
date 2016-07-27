@@ -310,12 +310,11 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 		for (NSInteger i = startIndex; i < endIndex; i++) {
 			[indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:0]];
 		}
-		NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(startIndex, endIndex)];
 
 		[CATransaction begin];
 		[CATransaction setDisableActions:YES];
 		[weakSelf.collectionView performBatchUpdates:^{
-			[weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
+			[weakSelf.parsePostObjects addObjectsFromArray: posts];
 			[weakSelf.collectionView insertItemsAtIndexPaths:indexPaths];
 		} completion:^(BOOL finished) {
 			weakSelf.collectionView.contentOffset = CGPointMake(weakSelf.collectionView.contentSize.width, 0);
