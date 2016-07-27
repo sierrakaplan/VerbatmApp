@@ -53,7 +53,7 @@
 #pragma mark - ADK -
 
 
-#define DEFAULT_TEXT_BACKGROUND_IMAGE @"Text AVE background 1"
+#define DEFAULT_TEXT_BACKGROUND_IMAGE TEXTAVE_BACKGROUND_FULLSCREEN_OPTIONS[0]
 
 #define MINIMIZE_ICON @"minimize_icon"
 #define ADK_BACKGROUND @"background_adk"
@@ -77,7 +77,8 @@
 #pragma mark Text Toolbar
 
 #define TEXTAVE_BACKGROUND_CIRCLE_VIEW_OPTIONS @[@"White background circle",@"Black background circle", @"circle background 3",@"circle background 4",@"circle background 5",@"circle background 6"]
-#define TEXTAVE_BACKGROUND_FULLSCREEN_OPTIONS @[@"Text AVE background 1",@"Text AVE background 2",@"Text AVE background 3",@"Text AVE background 4",@"Text AVE background 5",@"Text AVE background 6"]
+
+#define TEXTAVE_BACKGROUND_FULLSCREEN_OPTIONS @[@"TextAVEbackground1",@"TextAVEbackground2",@"TextAVEbackground3",@"TextAVEbackground4",@"TextAVEbackground5",@"TextAVEbackground6"]
 
 #define TEXT_FONT_COLOR_BLACK @"text_toolbar_black_font_icon"
 #define TEXT_FONT_COLOR_WHITE @"text_toolbar_white_font_icon"

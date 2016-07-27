@@ -279,6 +279,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 #pragma mark - Keyboard toolbar delegate methods -
 -(void)changeTextBackgroundToImage:(NSString *) backgroundImageName{
+    ((TextPinchView *) self.pinchView).imageName = backgroundImageName;
     self.currentTextAVEBackground = [UIImage imageNamed:backgroundImageName];
     [self.textAndImageView changeImageTo:self.currentTextAVEBackground ];
 }

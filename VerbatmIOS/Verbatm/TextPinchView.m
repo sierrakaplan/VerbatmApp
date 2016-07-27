@@ -8,24 +8,51 @@
 
 #import "TextPinchView.h"
 #import "Styles.h"
+#import "Icons.h"
+#import "SizesAndPositions.h"
+#import "TextOverMediaView.h"
 
+
+#import "UIView+Effects.h"
 
 @implementation TextPinchView
 
 @synthesize textColor = _textColor;
+@synthesize  imageName = _imageName;
 
--(AnyPromise *) getLargerImageWithHalfSize:(BOOL)half; {
+-(AnyPromise *) getLargerImageWithHalfSize:(BOOL)half {
+    
     AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
-                                                    resolve([self getImage]);
+        
+        if(self.beingPublished){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                resolve([self getImageScreenshotWithText:[self getImage] inHalf:half]);
+            });
+        }else{
+            resolve([self getImage]);
+        }
+        
     }];
+    
     return promise;
 }
 
 -(UIColor *) textColor {
+    
     if (!_textColor) {
         _textColor = [UIColor TEXTPINCHVIEW_PAGE_VIEW_DEFAULT_COLOR];
     }
+    
     return _textColor;
+}
+
+-(NSString *)imageName {
+    
+    if(!_imageName){
+        _imageName = DEFAULT_TEXT_BACKGROUND_IMAGE;
+    }
+    
+    return _imageName;
 }
 
 
