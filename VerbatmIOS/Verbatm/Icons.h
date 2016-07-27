@@ -76,6 +76,8 @@
 
 #pragma mark Text Toolbar
 
+#define PRESENT_KEYBOARD_ICON @"Keyboard icon"
+
 #define TEXTAVE_BACKGROUND_CIRCLE_VIEW_OPTIONS @[@"White background circle",@"Black background circle", @"circle background 3",@"circle background 4",@"circle background 5",@"circle background 6"]
 
 #define TEXTAVE_BACKGROUND_FULLSCREEN_OPTIONS @[@"TextAVEbackground1",@"TextAVEbackground2",@"TextAVEbackground3",@"TextAVEbackground4",@"TextAVEbackground5",@"TextAVEbackground6"]

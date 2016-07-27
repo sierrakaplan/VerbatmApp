@@ -21,6 +21,10 @@
 
 -(void)changeTextToFont:(NSString *)fontName;
 -(void)changeTextBackgroundToImage:(NSString *) backgroundImageName;
+
+@optional
+-(void)keyboardButtonPressed;
+
 @end
 
 
@@ -30,5 +34,5 @@
 @property (nonatomic, weak) id<KeyboardToolBarDelegate> delegate;
 
 -(instancetype)initWithFrame:(CGRect)frame andTextColorBlack:(BOOL)textColorBlack isOnTextAve:(BOOL)onTextAve;
-
+-(void)presentKeyboardButton;
 @end

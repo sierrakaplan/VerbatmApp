@@ -117,6 +117,13 @@
 	
 }
 
+-(void)clearTextCreationButton{
+    if(self.textCreationButton){
+        [self.textCreationButton removeFromSuperview];
+        self.textCreationButton = nil;
+    }
+}
+
 /* long press does the same thing as edit text button */
 -(void) addLongPress {
 	UILongPressGestureRecognizer * longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(editText)];
@@ -161,6 +168,9 @@ andTextAlignment:(NSTextAlignment)textAlignment
 -(void)createScreenToolBar{
     if(!self.permanentOnScreenKeyboard && self.textAndImageView &&
        ![self.textAndImageView.textView.text isEqualToString:@""]){
+        
+        [self clearTextCreationButton];
+        
         BOOL textColorBlack =NO;
         CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - TEXT_TOOLBAR_HEIGHT,
                                          self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
@@ -168,6 +178,9 @@ andTextAlignment:(NSTextAlignment)textAlignment
                                                                       andTextColorBlack: textColorBlack isOnTextAve:[self.pinchView isKindOfClass:[TextPinchView class]]];
         [self.permanentOnScreenKeyboard setDelegate:self];
         [self addSubview:self.permanentOnScreenKeyboard];
+        [self.permanentOnScreenKeyboard presentKeyboardButton];
+    }else{
+        [self createTextCreationButton];
     }
 }
 
@@ -177,6 +190,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
         [self.permanentOnScreenKeyboard removeFromSuperview];
         self.permanentOnScreenKeyboard = nil;
     }
+    [self clearTextCreationButton];
 }
 
 
@@ -317,6 +331,12 @@ andTextAlignment:(NSTextAlignment)textAlignment
 }
 
 #pragma mark - Keyboard toolbar delegate methods -
+
+-(void)keyboardButtonPressed{
+    [self editText];
+}
+
+
 -(void)changeTextBackgroundToImage:(NSString *) backgroundImageName{
     ((TextPinchView *) self.pinchView).imageName = backgroundImageName;
     self.currentTextAVEBackground = [UIImage imageNamed:backgroundImageName];
@@ -353,6 +373,9 @@ andTextAlignment:(NSTextAlignment)textAlignment
 -(void) rightAlignButtonPressed {
 	[self.textAndImageView changeTextAlignment:NSTextAlignmentRight];
 }
+
+
+
 
 -(void) doneButtonPressed {
 	if([[self.textAndImageView getText] isEqualToString:@""]) {
