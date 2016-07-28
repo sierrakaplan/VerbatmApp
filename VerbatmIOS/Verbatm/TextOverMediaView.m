@@ -171,14 +171,14 @@ andTextAlignment:(NSTextAlignment) textAlignment
 -(void) increaseTextSize {
 	self.textSize += 2;
 	if (self.textSize > TEXT_PAGE_VIEW_MAX_FONT_SIZE) self.textSize = TEXT_PAGE_VIEW_MAX_FONT_SIZE;
-	[self.textView setFont:[UIFont fontWithName:TEXT_PAGE_VIEW_DEFAULT_FONT size:self.textSize]];
+	[self.textView setFont:[UIFont fontWithName:self.textView.font.fontName size:self.textSize]];
 	[self resizeTextView];
 }
 
 -(void) decreaseTextSize {
 	self.textSize -= 2;
 	if (self.textSize < TEXT_PAGE_VIEW_MIN_FONT_SIZE) self.textSize = TEXT_PAGE_VIEW_MIN_FONT_SIZE;
-	[self.textView setFont:[UIFont fontWithName:TEXT_PAGE_VIEW_DEFAULT_FONT size:self.textSize]];
+	[self.textView setFont:[UIFont fontWithName:self.textView.font.fontName size:self.textSize]];
 	[self resizeTextView];
 }
 
