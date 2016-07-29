@@ -204,7 +204,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
     self.textViewBeingEdited = YES;
 	[self.delegate textIsEditing];
 	self.userSetFrame = textView.frame;
-    [self removeGestureRecognizer:self.textViewPanGesture];
+    [self.textAndImageView.textView removeGestureRecognizer:self.textViewPanGesture];
 }
 
 -(void)textViewDidEndEditing:(UITextView *)textView {
@@ -229,8 +229,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 /* Enforces word limit */
 - (BOOL) textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
 	NSString* newText = [textView.text stringByReplacingCharactersInRange:range withString:text];
-	NSString *trimmedText = [newText stringByReplacingOccurrencesOfString:@" " withString:@""];
-	if (newText.length - trimmedText.length > TEXT_WORD_LIMIT) {
+	if (newText.length > CHAR_WORD_LIMIT) {
 		return NO;
 	} else {
 		return YES;
@@ -249,6 +248,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
         newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, 0.f, self.frame.size.width, self.frame.size.height - self.keyboardHeight);
         if(![self.textAndImageView.textView isScrollEnabled]){
             [self.textAndImageView.textView setScrollEnabled:YES];
+            [self.textAndImageView.textView setUserInteractionEnabled:YES];
             textView.frame = textView.frame;
         }
     }else{

@@ -128,7 +128,6 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 	self.textSize = TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE;
 	[self.textView setFont:[UIFont fontWithName:TEXT_PAGE_VIEW_DEFAULT_FONT size:self.textSize]];
-   // [self.textView sizeToFit];
 
 	[self changeTextAlignment: NSTextAlignmentLeft];
 	[self changeTextColor:[UIColor TEXT_PAGE_VIEW_DEFAULT_COLOR]];
@@ -179,14 +178,14 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	self.textSize += 2;
 	if (self.textSize > TEXT_PAGE_VIEW_MAX_FONT_SIZE) self.textSize = TEXT_PAGE_VIEW_MAX_FONT_SIZE;
 	[self.textView setFont:[UIFont fontWithName:self.textView.font.fontName size:self.textSize]];
-	[self resizeTextView];
+	//[self resizeTextView];
 }
 
 -(void) decreaseTextSize {
 	self.textSize -= 2;
 	if (self.textSize < TEXT_PAGE_VIEW_MIN_FONT_SIZE) self.textSize = TEXT_PAGE_VIEW_MIN_FONT_SIZE;
 	[self.textView setFont:[UIFont fontWithName:self.textView.font.fontName size:self.textSize]];
-	[self resizeTextView];
+	//[self resizeTextView];
 }
 
 -(void) addTextViewGestureRecognizer: (UIGestureRecognizer*)gestureRecognizer {
@@ -265,7 +264,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 		_textView = textView;
 		_textView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.0];
 		_textView.keyboardAppearance = UIKeyboardAppearanceLight;
-		_textView.scrollEnabled = NO;
+		_textView.scrollEnabled = YES;
 		_textView.editable = NO;
 		_textView.selectable = NO;
 		[_textView setTintAdjustmentMode:UIViewTintAdjustmentModeNormal];
