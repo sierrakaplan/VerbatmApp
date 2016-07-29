@@ -556,16 +556,25 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 -(void)offScreen {
 	[self exiting];
 	self.videoHasBeenPrepared = NO;
+    if([self.pinchView isKindOfClass:[TextPinchView class]]){
+        [self.textAndImageView.textView resignFirstResponder];
+    }
 }
 
 -(void)onScreen {
-	if(!self.videoHasBeenPrepared){
-		[self.videoView prepareVideoFromAsset:self.videoAsset];
-		[self.videoView playVideo];
-	}else{
-		[self.videoView playVideo];
-		self.videoHasBeenPrepared = YES;
-	}
+    
+    if([self.pinchView isKindOfClass:[TextPinchView class]] &&
+       [self.textAndImageView.textView.text isEqualToString:@""]){
+        [self.textAndImageView.textView becomeFirstResponder];
+    }else{
+        if(!self.videoHasBeenPrepared){
+            [self.videoView prepareVideoFromAsset:self.videoAsset];
+            [self.videoView playVideo];
+        }else{
+            [self.videoView playVideo];
+            self.videoHasBeenPrepared = YES;
+        }
+    }
 }
 
 -(void)almostOnScreen {

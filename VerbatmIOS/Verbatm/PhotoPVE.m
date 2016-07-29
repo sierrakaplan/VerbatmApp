@@ -374,7 +374,12 @@
 		if(!self.slideShowPlaying){
 			[self playWithSpeed:2.f];
 		}
-	}
+    }else{
+        if([self.pinchView isKindOfClass:[TextPinchView class]]){
+            EditMediaContentView * emcView = [self.imageContainerViews firstObject];
+            [emcView onScreen];
+        }
+    }
 }
 
 - (void)offScreen {
