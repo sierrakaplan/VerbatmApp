@@ -24,6 +24,7 @@
 #import "VerbatmKeyboardToolBar.h"
 
 #import "UserSetupParameters.h"
+#import "UITextView+Utilities.h"
 
 @interface EditMediaContentView () <KeyboardToolBarDelegate, UITextViewDelegate, UIGestureRecognizerDelegate>
 
@@ -60,6 +61,10 @@
 /* Only want to prepare videos once, otherwise just play them */
 @property (nonatomic) BOOL videoHasBeenPrepared;
 
+@property (nonatomic) BOOL textViewBeingEdited;
+
+@property (nonatomic) UIPanGestureRecognizer * textViewPanGesture;
+
 #define HORIZONTAL_PAN_FILTER_SWITCH_DISTANCE 11
 #define TOUCH_BUFFER 20
 #define DIAGONAL_THRESHOLD 600
@@ -85,8 +90,8 @@
 -(void)registerForKeyboardNotifications{
 	//Tune in to get notifications of keyboard behavior
 	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(keyboardWillShow:)
-												 name:UIKeyboardWillShowNotification
+											 selector:@selector(keyboardDidShow:)
+												 name:UIKeyboardDidShowNotification
 											   object:nil];
 
 
@@ -94,12 +99,6 @@
 											 selector:@selector(keyBoardWillChangeFrame:)
 												 name:UIKeyboardWillChangeFrameNotification
 											   object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyBoardWillHide:)
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
-    
-    
 }
 
 #pragma mark - Text View -
@@ -198,24 +197,33 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 /* User has edited the text view somehow so we adjust its size */
 - (void)textViewDidChange:(UITextView *)textView {
-	[self.textAndImageView resizeTextView];
+    [self addJustTextViewFrame:textView];
 }
 
 - (void)textViewDidBeginEditing: (UITextView *)textView{
+    self.textViewBeingEdited = YES;
 	[self.delegate textIsEditing];
 	self.userSetFrame = textView.frame;
-	if((textView.frame.origin.y + textView.frame.size.height)
-	   > (self.frame.size.height - self.keyboardHeight - TEXT_TOOLBAR_HEIGHT)) {
-		[self.textAndImageView animateTextViewToYPos: TEXT_VIEW_OVER_MEDIA_Y_OFFSET];
-	}
+    [self removeGestureRecognizer:self.textViewPanGesture];
 }
 
 -(void)textViewDidEndEditing:(UITextView *)textView {
-	if(textView.frame.origin.y != self.userSetFrame.origin.y){
-		[self.textAndImageView animateTextViewToYPos: self.userSetFrame.origin.y];
-	}
+    self.textViewBeingEdited = NO;
+    [self.textAndImageView.textView setScrollEnabled:NO];
+    
+    //to do
+    CGFloat contentHeight = [textView measureContentHeight];
+    float height = (TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT < contentHeight) ? contentHeight : TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT;
+    CGFloat y_Diff = self.frame.size.height - (self.userSetFrame.origin.y + height);
+    CGFloat newY = (y_Diff < 0) ? (self.userSetFrame.origin.y + y_Diff) : self.userSetFrame.origin.y;
+    
+    [UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
+        self.textAndImageView.textView.frame = CGRectMake(TEXT_VIEW_X_OFFSET, newY, textView.frame.size.width, height);
+    }];
+    
     [self removeScreenToolbar];
     [self createScreenToolBar];
+    [self addPanGestures];
 }
 
 /* Enforces word limit */
@@ -231,15 +239,38 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 #pragma mark Keyboard Notifications
 
--(void) keyBoardWillHide:(NSNotification*)notification {
+
+-(void)addJustTextViewFrame:(UITextView *)textView{
     
+    CGFloat contentHeight = [textView measureContentHeight];
+    float height = (TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT < contentHeight) ? contentHeight : TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT;
+    CGRect newFrame;
+    if(height > (self.frame.size.height - self.keyboardHeight)){
+        newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, 0.f, self.frame.size.width, self.frame.size.height - self.keyboardHeight);
+        if(![self.textAndImageView.textView isScrollEnabled]){
+            [self.textAndImageView.textView setScrollEnabled:YES];
+            textView.frame = textView.frame;
+        }
+    }else{
+        CGFloat yPos = self.frame.size.height - (self.keyboardHeight+ height);
+        newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, yPos, self.frame.size.width, height);
+    }
+    
+    
+    [UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
+        [textView setFrame:newFrame];
+    }];
+
 }
 
-
 /* Gets keyboard height the first time it appears */
--(void)keyboardWillShow:(NSNotification *) notification {
+-(void)keyboardDidShow:(NSNotification *) notification {
 	CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
 	self.keyboardHeight = keyboardSize.height;
+    
+    if(self.keyboardHeight != TEXT_TOOLBAR_HEIGHT){
+        [self addJustTextViewFrame:self.textAndImageView.textView];
+    }
 }
 
 /* Change size of keyboard when keyboard frame changes */
@@ -389,20 +420,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 /* Adds pan gestures for adding filters to images and changing text position */
 -(void) addPanGestures {
-    //needed for filters
-    
-    //	UIPanGestureRecognizer * panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPan:)];
-//	panGesture.minimumNumberOfTouches = 1;
-//	panGesture.maximumNumberOfTouches = 1;
-//	[self addGestureRecognizer:panGesture];
-//	[self.povViewMasterScrollView.panGestureRecognizer requireGestureRecognizerToFail:panGesture];
-//	self.povViewMasterScrollView.panGestureRecognizer.delegate = self;
-//	panGesture.delegate = self;
-
-	UIPanGestureRecognizer * textViewPanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPanTextView:)];
-	textViewPanGesture.minimumNumberOfTouches = 1;
-	textViewPanGesture.maximumNumberOfTouches = 1;
-	[self.textAndImageView addTextViewGestureRecognizer:textViewPanGesture];
+	[self.textAndImageView addTextViewGestureRecognizer:self.textViewPanGesture];
 }
 
 /* Handles pan gesture which could be horizontal to add a filter to an image,
@@ -455,13 +473,17 @@ andTextAlignment:(NSTextAlignment)textAlignment
 -(void) didPanTextView:(UIGestureRecognizer *) sender{
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan:
-			if (sender.numberOfTouches < 1) return;
+			if (sender.numberOfTouches < 1 ||
+                self.textViewBeingEdited) return;
+            
 			self.textViewPanStartLocation = [sender locationOfTouch:0 inView:self.textAndImageView];
 			self.gestureActionJustStarted = YES;
 
 			break;
 
 		case UIGestureRecognizerStateChanged:{
+            if(self.textViewBeingEdited) return;
+            
 			CGPoint location = [sender locationOfTouch:0 inView:self.textAndImageView];
 			CGFloat verticalDiff = location.y - self.textViewPanStartLocation.y;
 			[self.textAndImageView changeTextViewYPos: verticalDiff];
@@ -586,6 +608,16 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 }
 
 #pragma mark - Lazy Instantiation -
+
+-(UIPanGestureRecognizer *)textViewPanGesture{
+    if(!_textViewPanGesture){
+        UIPanGestureRecognizer * textViewPanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPanTextView:)];
+        textViewPanGesture.minimumNumberOfTouches = 1;
+        textViewPanGesture.maximumNumberOfTouches = 1;
+        _textViewPanGesture = textViewPanGesture;
+    }
+    return _textViewPanGesture;
+}
 
 -(UIButton *)textCreationButton{
 	if(!_textCreationButton) {

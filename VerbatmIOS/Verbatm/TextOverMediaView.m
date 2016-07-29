@@ -74,7 +74,7 @@
 	self = [super initWithFrame:frame];
 	if (self) {
 		[self revertToDefaultTextSettings];
-		[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
+        [self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
 	}
 	return self;
 }
@@ -105,13 +105,14 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 	self.textYPosition = textYPosition;
 	self.textView.frame = DEFAULT_TEXT_VIEW_FRAME;
-		[self changeTextAlignment: textAlignment];
+    [self changeTextAlignment: textAlignment];
 
 	self.textSize = textSize;
     
     [self.textView setFont:[UIFont fontWithName:fontName size:self.textSize]];
     
 	[self changeText: text];
+   
 }
 
 -(void) revertToDefaultTextSettings {
@@ -119,9 +120,15 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 	self.textYPosition = TEXT_VIEW_OVER_MEDIA_Y_OFFSET;
 	self.textView.frame = DEFAULT_TEXT_VIEW_FRAME;
+    
+    
+    
+    
+    [self.textView setBackgroundColor:[UIColor clearColor]];
 
 	self.textSize = TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE;
 	[self.textView setFont:[UIFont fontWithName:TEXT_PAGE_VIEW_DEFAULT_FONT size:self.textSize]];
+   // [self.textView sizeToFit];
 
 	[self changeTextAlignment: NSTextAlignmentLeft];
 	[self changeTextColor:[UIColor TEXT_PAGE_VIEW_DEFAULT_COLOR]];
@@ -230,6 +237,9 @@ andTextAlignment:(NSTextAlignment) textAlignment
 -(void) resizeTextView {
 	CGFloat contentHeight = [self.textView measureContentHeight];
 	float height = (TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT < contentHeight) ? contentHeight : TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT;
+    
+    
+    
 	self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y,
 									 self.textView.frame.size.width, height);
 }
