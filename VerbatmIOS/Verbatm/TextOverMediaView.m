@@ -163,7 +163,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 -(void) changeTextColor:(UIColor *)textColor {
 	self.textView.textColor = textColor;
 	self.textView.tintColor = textColor;
-	if([self.textView isFirstResponder]){
+	if([self.textView isFirstResponder]) {
 		[self.textView resignFirstResponder];
 		[self.textView becomeFirstResponder];
 	}
@@ -178,14 +178,12 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	self.textSize += 2;
 	if (self.textSize > TEXT_PAGE_VIEW_MAX_FONT_SIZE) self.textSize = TEXT_PAGE_VIEW_MAX_FONT_SIZE;
 	[self.textView setFont:[UIFont fontWithName:self.textView.font.fontName size:self.textSize]];
-	//[self resizeTextView];
 }
 
 -(void) decreaseTextSize {
 	self.textSize -= 2;
 	if (self.textSize < TEXT_PAGE_VIEW_MIN_FONT_SIZE) self.textSize = TEXT_PAGE_VIEW_MIN_FONT_SIZE;
 	[self.textView setFont:[UIFont fontWithName:self.textView.font.fontName size:self.textSize]];
-	//[self resizeTextView];
 }
 
 -(void) addTextViewGestureRecognizer: (UIGestureRecognizer*)gestureRecognizer {

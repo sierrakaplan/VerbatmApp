@@ -63,6 +63,9 @@
 
 @property (nonatomic) BOOL textViewBeingEdited;
 
+//is half screen for photo video ave
+@property (nonatomic) BOOL isAtHalfScreen;
+
 @property (nonatomic) UIPanGestureRecognizer * textViewPanGesture;
 
 #define HORIZONTAL_PAN_FILTER_SWITCH_DISTANCE 11
@@ -205,6 +208,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self.delegate textIsEditing];
 	self.userSetFrame = textView.frame;
     [self.textAndImageView.textView removeGestureRecognizer:self.textViewPanGesture];
+    [self removeScreenToolbar];
 }
 
 -(void)textViewDidEndEditing:(UITextView *)textView {
@@ -221,7 +225,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
         self.textAndImageView.textView.frame = CGRectMake(TEXT_VIEW_X_OFFSET, newY, textView.frame.size.width, height);
     }];
     
-    [self removeScreenToolbar];
     [self createScreenToolBar];
     [self addPanGestures];
 }
@@ -240,21 +243,36 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 
 -(void)addJustTextViewFrame:(UITextView *)textView{
+    if(!textView)return;
     
     CGFloat contentHeight = [textView measureContentHeight];
     float height = (TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT < contentHeight) ? contentHeight : TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT;
     CGRect newFrame;
-    if(height > (self.frame.size.height - self.keyboardHeight)){
-        newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, 0.f, self.frame.size.width, self.frame.size.height - self.keyboardHeight);
-        if(![self.textAndImageView.textView isScrollEnabled]){
-            [self.textAndImageView.textView setScrollEnabled:YES];
-            [self.textAndImageView.textView setUserInteractionEnabled:YES];
-            textView.frame = textView.frame;
+    
+    if(self.isAtHalfScreen){
+        if(height > self.frame.size.height){
+            newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, 0.f, self.frame.size.width, self.frame.size.height);
+            if(![textView isScrollEnabled]){
+                [textView setScrollEnabled:YES];
+                textView.frame = textView.frame;
+            }
+        }else{
+            CGFloat yPos = self.frame.size.height - height;
+            newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, yPos, self.frame.size.width, height);
         }
     }else{
-        CGFloat yPos = self.frame.size.height - (self.keyboardHeight+ height);
-        newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, yPos, self.frame.size.width, height);
+        if(height > (self.frame.size.height - self.keyboardHeight)){
+            newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, 0.f, self.frame.size.width, self.frame.size.height - self.keyboardHeight);
+            if(![textView isScrollEnabled]){
+                [textView setScrollEnabled:YES];
+                textView.frame = textView.frame;
+            }
+        }else{
+            CGFloat yPos = self.frame.size.height - (self.keyboardHeight+ height);
+            newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, yPos, self.frame.size.width, height);
+        }
     }
+    
     
     
     [UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
@@ -295,8 +313,9 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self.videoView prepareVideoFromAsset:videoAsset];
 }
 
--(void)displayImages: (NSArray*) filteredImages atIndex:(NSInteger)index {
+-(void)displayImages: (NSArray*) filteredImages atIndex:(NSInteger)index isHalfScreen:(BOOL) isHalfScreen{
 	self.imageIndex = index;
+    self.isAtHalfScreen = isHalfScreen;
 	self.textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
 															andImage:filteredImages[index]];
 	self.filteredImages = filteredImages;

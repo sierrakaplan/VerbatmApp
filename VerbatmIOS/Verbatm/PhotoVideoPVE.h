@@ -13,11 +13,23 @@
 #import "PageViewingExperience.h"
 #import "CollectionPinchView.h"
 
+
+
+@protocol PhotoVideoPVETextEntryDelegate <NSObject>
+
+-(void) editContentViewTextIsEditing_PhotoVideoPVE;
+-(void) editContentViewTextDoneEditing_PhotoVideoPVE;
+
+@end
+
+
 @class VideoPVE;
 
 @interface PhotoVideoPVE : PageViewingExperience
 
 @property (strong, nonatomic) VideoPVE *videoView;
+
+@property (nonatomic) id<PhotoVideoPVETextEntryDelegate> textEntryDelegate;
 
 //set before showAndRemoveCircle is called. This allows us to make the pan gestures not interact
 @property (weak, nonatomic) UIScrollView * postScrollView;
