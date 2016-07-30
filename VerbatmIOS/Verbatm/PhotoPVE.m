@@ -145,7 +145,7 @@
 		[editMediaContentView changeImageTo:image];
 	});
 
-	[editMediaContentView displayImages:[pinchView filteredImages] atIndex:pinchView.filterImageIndex];
+	[editMediaContentView displayImages:[pinchView filteredImages] atIndex:pinchView.filterImageIndex isHalfScreen:self.photoVideoSubview];
     //this has to be set before we set the text view information
     editMediaContentView.pinchView = pinchView;
     editMediaContentView.povViewMasterScrollView = self.postScrollView;
@@ -374,7 +374,12 @@
 		if(!self.slideShowPlaying){
 			[self playWithSpeed:2.f];
 		}
-	}
+    }else{
+        if([self.pinchView isKindOfClass:[TextPinchView class]]){
+            EditMediaContentView * emcView = [self.imageContainerViews firstObject];
+            [emcView onScreen];
+        }
+    }
 }
 
 - (void)offScreen {
@@ -396,11 +401,11 @@
 	if(!self.rearrangeView && self.imageContainerViews.count > 1) {
 	 [self pauseToRearrangeButtonPressed];
 	}
-	if(self.photoVideoSubview) [self.textEntryDelegate editContentViewTextIsEditing];
+	if([self.textEntryDelegate respondsToSelector:@selector(editContentViewTextIsEditing)])[self.textEntryDelegate editContentViewTextIsEditing];
 }
 
 -(void) textDoneEditing {
-	if(self.photoVideoSubview) [self.textEntryDelegate editContentViewTextDoneEditing];
+	if([self.textEntryDelegate respondsToSelector:@selector(editContentViewTextDoneEditing)])[self.textEntryDelegate editContentViewTextDoneEditing];
 }
 
 

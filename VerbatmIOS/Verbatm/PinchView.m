@@ -32,7 +32,8 @@
 #define CENTER_X_KEY @"center_x"
 #define CENTER_Y_KEY @"center_y"
 
-#define EDIT_VIEW_SIZE 30.f
+#define EDIT_VIEW_SIZE 50.f
+#define WIDTH_HEIGHT_RATIO (7.f/30.f)
 #define EDIT_VIEW_OFFSET 50.f
 
 @end
@@ -78,7 +79,9 @@
 	if (_editImageView) {
 		[self.editImageView removeFromSuperview];
 	}
-	self.editImageView.frame = CGRectMake(EDIT_VIEW_OFFSET, EDIT_VIEW_OFFSET, EDIT_VIEW_SIZE, EDIT_VIEW_SIZE);
+    CGFloat editIconWidth = self.frame.size.width;
+    self.editImageView.frame = CGRectMake(0.f, -2.f, editIconWidth, editIconWidth * WIDTH_HEIGHT_RATIO);
+    
 	[self.background addSubview: self.editImageView];
 }
 

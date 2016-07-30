@@ -61,7 +61,7 @@
 #define CHANNEL_SELECTOR_ARROW_LEFT @"white_selector_arrow_left"
 #define CHANNEL_SELECTOR_ARROW_RIGHT @"white_selector_arrow_right"
 
-#define EDIT_PINCHVIEW_ICON @"edit_icon"
+#define EDIT_PINCHVIEW_ICON @"Tap to Edit icon"
 #define DELETE_PINCHVIEW_ICON @"trash_can"
 
 #define SUCCESS_PUBLISHING_IMAGE @"publishing_succeeded_notification"
@@ -72,9 +72,11 @@
 #define MINIMIZE_ICON @"minimize_icon"
 #define DONE_CHECKMARK @"done_checkmark"
 #define PULLDOWN_ICON @"down_arrow"
-#define CREATE_TEXT_ICON @"text_edit_button"
+#define CREATE_TEXT_ICON @"AddTextBlueIcon"
 
 #pragma mark Text Toolbar
+
+#define PRESENT_KEYBOARD_ICON @"Keyboard icon"
 
 #define TEXTAVE_BACKGROUND_CIRCLE_VIEW_OPTIONS @[@"White background circle",@"Black background circle", @"circle background 3",@"circle background 4",@"circle background 5",@"circle background 6"]
 
@@ -121,7 +123,7 @@
 #define PLAY_VIDEO_ICON_QUARTER_CIRCLE @"play_video_icon_quarter_circle"
 
 #pragma mark Media Tile
-#define TEXT_BUTTON_ICON @"AddTextIcon"
+#define TEXT_BUTTON_ICON @"add_text_icon_pencil"
 
 #define CAMERA_BUTTON_ICON @"camera"
 #define GALLERY_BUTTON_ICON @"galleryIcon"
