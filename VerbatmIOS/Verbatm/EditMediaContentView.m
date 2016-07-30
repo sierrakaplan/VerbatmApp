@@ -326,8 +326,8 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	self.filteredImages = filteredImages;
 	[self addSubview: self.textAndImageView];
 	[self addPanGestures];
-    [self createScreenToolBar];
-	//[self createTextCreationButton];
+    //[self createScreenToolBar];
+	[self createTextCreationButton];
 
 	//todo: bring back filters
 //    if(![[UserSetupParameters sharedInstance ] checkAndSetFilterInstructionShown]){

@@ -95,10 +95,12 @@
 
 -(instancetype) initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
-	if (self) {
+	
+    if (self) {
 		[self revertToDefaultTextSettings];
         [self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
 	}
+    
 	return self;
 }
 
@@ -286,11 +288,10 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 -(UIImageView*) imageView {
 	if (!_imageView) {
-		_imageView = [[UIImageView alloc] init];
+		_imageView = [[UIImageView alloc] initWithFrame:self.bounds];
         [self.photoResizeScrollView addSubview:_imageView];
 		_imageView.clipsToBounds = YES;
 		_imageView.contentMode = UIViewContentModeScaleAspectFit;
-        [_imageView setBackgroundColor:[UIColor greenColor]];
 	}
 	return _imageView;
 }

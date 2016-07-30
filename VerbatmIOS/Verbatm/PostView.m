@@ -181,6 +181,21 @@
 	}
 }
 
+-(void) repositioningPhoto_PhotoVideoPVE{
+    [self repositioningPhotoPVE];
+}
+-(void)stopRepositioningPhoto_PhotoVideoPVE{
+    [self stopRepositioningPhotoPVE];
+}
+
+-(void) repositioningPhotoPVE{
+    [self.mainScrollView setScrollEnabled:NO];
+}
+
+-(void) stopRepositioningPhotoPVE{
+    [self.mainScrollView setScrollEnabled:YES];
+}
+
 -(void) editContentViewTextIsEditing_PhotoVideoPVE{
     [self editContentViewTextIsEditing];
 }
@@ -615,7 +630,7 @@
 		_mainScrollView = [[UIScrollView alloc] initWithFrame: self.bounds];
 		_mainScrollView.backgroundColor = [UIColor blueColor];
 		_mainScrollView.pagingEnabled = YES;
-		_mainScrollView.scrollEnabled = NO;
+		_mainScrollView.scrollEnabled = YES;
 		[_mainScrollView setShowsVerticalScrollIndicator:NO];
 		[_mainScrollView setShowsHorizontalScrollIndicator:NO];
 		_mainScrollView.bounces = YES;

@@ -395,6 +395,12 @@
 }
 
 #pragma mark - EditContentViewDelegate methods -
+-(void)repositioningPhoto{
+    [self.textEntryDelegate repositioningPhotoPVE];
+}
+-(void)stopRepositioningPhoto{
+    [self.textEntryDelegate stopRepositioningPhotoPVE];
+}
 
 -(void) textIsEditing {
 	// Pause slideshow
