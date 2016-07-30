@@ -167,6 +167,8 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self.textAndImageView setTextViewKeyboardToolbar:toolBar];
 }
 
+//creates a second toolbar (same view as keyboard toolbar) to be on the screen
+//when the keyboard is down. So the user can still edit the text.
 -(void)createScreenToolBar{
     if(!self.permanentOnScreenKeyboard && self.textAndImageView &&
        ![self.textAndImageView.textView.text isEqualToString:@""]){
@@ -239,9 +241,8 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	}
 }
 
-#pragma mark Keyboard Notifications
-
-
+//changes the frame of a textview based on it's content and
+//alsio the visible height of the screen
 -(void)addJustTextViewFrame:(UITextView *)textView{
     if(!textView)return;
     
@@ -277,19 +278,31 @@ andTextAlignment:(NSTextAlignment)textAlignment
     
     [UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
         [textView setFrame:newFrame];
+    }completion:^(BOOL finished) {
+        if(finished){
+            if([textView isHidden]){
+                [textView setHidden:NO];
+            }
+        }
     }];
-
+    
 }
+
+#pragma mark Keyboard Notifications
 
 /* Gets keyboard height the first time it appears */
 -(void)keyboardDidShow:(NSNotification *) notification {
-	CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
-	self.keyboardHeight = keyboardSize.height;
+	
+    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
+	
+    self.keyboardHeight = keyboardSize.height;
     
-    if(self.keyboardHeight != TEXT_TOOLBAR_HEIGHT){
+    if(self.keyboardHeight != TEXT_TOOLBAR_HEIGHT) {
         [self addJustTextViewFrame:self.textAndImageView.textView];
     }
+    
 }
+
 
 /* Change size of keyboard when keyboard frame changes */
 -(void)keyBoardWillChangeFrame: (NSNotification *) notification {
@@ -603,9 +616,9 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 }
 
 -(void)onScreen {
-    
     if([self.pinchView isKindOfClass:[TextPinchView class]] &&
        [self.textAndImageView.textView.text isEqualToString:@""]){
+        [self.textAndImageView.textView setHidden:YES];
         [self.textAndImageView.textView becomeFirstResponder];
     }else{
         if(!self.videoHasBeenPrepared){
