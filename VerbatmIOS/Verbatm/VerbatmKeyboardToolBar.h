@@ -33,6 +33,6 @@
 
 @property (nonatomic, weak) id<KeyboardToolBarDelegate> delegate;
 
--(instancetype)initWithFrame:(CGRect)frame andTextColorBlack:(BOOL)textColorBlack isOnTextAve:(BOOL)onTextAve;
+-(instancetype)initWithFrame:(CGRect)frame andTextColorBlack:(BOOL)textColorBlack isOnTextAve:(BOOL)onTextAve isOnScreenPermenantly:(BOOL) onScreen;
 -(void)presentKeyboardButton;
 @end

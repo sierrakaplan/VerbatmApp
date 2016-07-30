@@ -126,14 +126,6 @@
     }
 }
 
-/* long press does the same thing as edit text button */
--(void) addLongPress {
-	UILongPressGestureRecognizer * longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(editText)];
-	longPressRecognizer.minimumPressDuration = 0.1;
-	longPressRecognizer.delegate = self;
-	[self addGestureRecognizer:longPressRecognizer];
-}
-
 -(void) editText {
 	[self.textAndImageView showText: YES];
 	[self.textAndImageView setTextViewFirstResponder: YES];
@@ -162,7 +154,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - TEXT_TOOLBAR_HEIGHT,
 									 self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
 	VerbatmKeyboardToolBar* toolBar = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
-                                                                  andTextColorBlack: textColorBlack isOnTextAve:[self.pinchView isKindOfClass:[TextPinchView class]]];
+                                                                  andTextColorBlack: textColorBlack isOnTextAve:[self.pinchView isKindOfClass:[TextPinchView class]] isOnScreenPermenantly:NO];
 	[toolBar setDelegate:self];
 	[self.textAndImageView setTextViewKeyboardToolbar:toolBar];
 }
@@ -179,7 +171,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
         CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - TEXT_TOOLBAR_HEIGHT,
                                          self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
         self.permanentOnScreenKeyboard = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
-                                                                      andTextColorBlack: textColorBlack isOnTextAve:[self.pinchView isKindOfClass:[TextPinchView class]]];
+                                                                      andTextColorBlack: textColorBlack isOnTextAve:[self.pinchView isKindOfClass:[TextPinchView class]] isOnScreenPermenantly:YES];
         [self.permanentOnScreenKeyboard setDelegate:self];
         [self addSubview:self.permanentOnScreenKeyboard];
         [self.permanentOnScreenKeyboard presentKeyboardButton];
@@ -220,7 +212,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
     //to do
     CGFloat contentHeight = [textView measureContentHeight];
     float height = (TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT < contentHeight) ? contentHeight : TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT;
-    CGFloat y_Diff = self.frame.size.height - (self.userSetFrame.origin.y + height);
+    CGFloat y_Diff = (self.frame.size.height - TEXT_TOOLBAR_HEIGHT) - (self.userSetFrame.origin.y + height);
     CGFloat newY = (y_Diff < 0) ? (self.userSetFrame.origin.y + y_Diff) : self.userSetFrame.origin.y;
     
     [UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
@@ -335,7 +327,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self addSubview: self.textAndImageView];
 	[self addPanGestures];
 	[self createTextCreationButton];
-    [self addLongPress];
 
 	//todo: bring back filters
 //    if(![[UserSetupParameters sharedInstance ] checkAndSetFilterInstructionShown]){
@@ -547,11 +538,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 			return NO;
 		}
 	}
-	if ([gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]) {
-		if ([self.textAndImageView.textView isFirstResponder]) { //keyboard is up
-			return NO;
-		}
-	}
+	
 	return YES;
 }
 

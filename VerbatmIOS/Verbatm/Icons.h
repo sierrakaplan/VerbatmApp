@@ -123,7 +123,7 @@
 #define PLAY_VIDEO_ICON_QUARTER_CIRCLE @"play_video_icon_quarter_circle"
 
 #pragma mark Media Tile
-#define TEXT_BUTTON_ICON @"AddTextIcon"
+#define TEXT_BUTTON_ICON @"add_text_icon_pencil"
 
 #define CAMERA_BUTTON_ICON @"camera"
 #define GALLERY_BUTTON_ICON @"galleryIcon"

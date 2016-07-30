@@ -76,14 +76,18 @@ typedef enum {
 
 @implementation VerbatmKeyboardToolBar
 
--(instancetype)initWithFrame:(CGRect)frame andTextColorBlack:(BOOL)textColorBlack isOnTextAve:(BOOL)onTextAve{
+-(instancetype)initWithFrame:(CGRect)frame andTextColorBlack:(BOOL)textColorBlack isOnTextAve:(BOOL)onTextAve isOnScreenPermenantly:(BOOL) onScreen {
 	self = [super initWithFrame:frame];
 	if(self) {
-		self.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = (onScreen) ? [UIColor clearColor] : [UIColor colorWithWhite:0.f alpha:0.1];
 		self.textIsBlack = textColorBlack;
         self.toolbardOnTextAve = onTextAve;
         self.currentSelectedOption = noSelection;
 		[self addButtons];
+        if(!onScreen){
+            self.layer.borderWidth = 1.f;
+            self.layer.borderColor = [UIColor blackColor].CGColor;
+        }
 	}
 	return self;
 }
