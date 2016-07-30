@@ -615,7 +615,7 @@
 		_mainScrollView = [[UIScrollView alloc] initWithFrame: self.bounds];
 		_mainScrollView.backgroundColor = [UIColor blueColor];
 		_mainScrollView.pagingEnabled = YES;
-		_mainScrollView.scrollEnabled = YES;
+		_mainScrollView.scrollEnabled = NO;
 		[_mainScrollView setShowsVerticalScrollIndicator:NO];
 		[_mainScrollView setShowsHorizontalScrollIndicator:NO];
 		_mainScrollView.bounces = YES;

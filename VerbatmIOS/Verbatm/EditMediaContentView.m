@@ -162,9 +162,9 @@ andTextAlignment:(NSTextAlignment)textAlignment
 //creates a second toolbar (same view as keyboard toolbar) to be on the screen
 //when the keyboard is down. So the user can still edit the text.
 -(void)createScreenToolBar{
-    if(!self.permanentOnScreenKeyboard && self.textAndImageView &&
-       ![self.textAndImageView.textView.text isEqualToString:@""]){
-        
+//    if(!self.permanentOnScreenKeyboard && self.textAndImageView &&
+//       ![self.textAndImageView.textView.text isEqualToString:@""]){
+    
         [self clearTextCreationButton];
         
         BOOL textColorBlack =NO;
@@ -175,9 +175,9 @@ andTextAlignment:(NSTextAlignment)textAlignment
         [self.permanentOnScreenKeyboard setDelegate:self];
         [self addSubview:self.permanentOnScreenKeyboard];
         [self.permanentOnScreenKeyboard presentKeyboardButton];
-    }else{
-        [self createTextCreationButton];
-    }
+//    }else{
+//        [self createTextCreationButton];
+//    }
 }
 
 
@@ -220,7 +220,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
     }];
     
     [self createScreenToolBar];
-    [self addPanGestures];
+    //[self addPanGestures];
 }
 
 /* Enforces word limit */
@@ -326,7 +326,8 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	self.filteredImages = filteredImages;
 	[self addSubview: self.textAndImageView];
 	[self addPanGestures];
-	[self createTextCreationButton];
+    [self createScreenToolBar];
+	//[self createTextCreationButton];
 
 	//todo: bring back filters
 //    if(![[UserSetupParameters sharedInstance ] checkAndSetFilterInstructionShown]){
@@ -389,6 +390,14 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 -(void)keyboardButtonPressed{
     [self editText];
+}
+
+
+-(void)repositionPhotoSelected{
+    [self.textAndImageView startRepositioningPhoto];
+}
+-(void)repositionPhotoUnSelected{
+    [self.textAndImageView endRepositioningPhoto];
 }
 
 
