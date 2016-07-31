@@ -18,7 +18,6 @@
 @implementation Like_BackendManager
 
 + (void)currentUserLikePost:(PFObject *) postParseObject {
-    if(postParseObject){
         PFObject * newLikeObject = [PFObject objectWithClassName:LIKE_PFCLASS_KEY];
         [newLikeObject setObject:[PFUser currentUser]forKey:LIKE_USER_KEY];
         [newLikeObject setObject:postParseObject forKey:LIKE_POST_LIKED_KEY];
@@ -30,11 +29,9 @@
                 [Notification_BackendManager createNotificationWithType:Like receivingUser:[postParseObject valueForKey:POST_ORIGINAL_CREATOR_KEY] relevantPostObject:postParseObject];
             }
         }];
-    }
 }
 
 + (void)currentUserStopLikingPost:(PFObject *) postParseObject {
-    if(postParseObject){
         PFQuery * likeQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
         [likeQuery whereKey:LIKE_POST_LIKED_KEY equalTo:postParseObject];
         [likeQuery whereKey:LIKE_USER_KEY equalTo:[PFUser currentUser]];
@@ -54,7 +51,6 @@
                 }
             }
         }];
-    }
 }
 
 + (void)getUsersWhoLikePost:(PFObject *) postParseObject withCompletionBlock:(void(^)(NSArray *))block{
