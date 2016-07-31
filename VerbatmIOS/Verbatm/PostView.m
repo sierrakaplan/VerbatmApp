@@ -107,7 +107,6 @@
         if (postObject){
             self.parsePostChannelActivityObject = postObject;
             if(self.small){
-                [self createLikeButton];
                 [self checkIfUserHasLikedThePost];
             }
         }
@@ -245,24 +244,28 @@
 
 -(void) checkIfUserHasLikedThePost {
     __weak PostView *weakSelf = self;
-	[Like_BackendManager currentUserLikesPost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST] withCompletionBlock:^(bool userLikedPost) {
-		dispatch_async(dispatch_get_main_queue(), ^{
-            if(weakSelf.inSmallMode){
-                weakSelf.liked = userLikedPost;
-                [weakSelf updateLikeButton];
-            }else{
-                [weakSelf.likeShareBar shouldStartPostAsLiked:userLikedPost];
-            }
-            
-			
-		});
-	}];
+    //this checks if the parse object has been fetched - hack but it's the simplest way
+    if([self.parsePostChannelActivityObject createdAt]){
+        [Like_BackendManager currentUserLikesPost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST] withCompletionBlock:^(bool userLikedPost) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if(weakSelf.inSmallMode){
+                    weakSelf.liked = userLikedPost;
+                    [weakSelf createLikeButton];
+                    [weakSelf updateLikeButton];
+                }else{
+                    [weakSelf.likeShareBar shouldStartPostAsLiked:userLikedPost];
+                }
+            });
+        }];
+    }
 }
 
 
 -(void)updateLikeButton{
     if(self.liked){
-        [self likeButtonPressed];
+        [self.likeButton setImage:[UIImage imageNamed:LIKE_ICON_PRESSED ] forState:UIControlStateNormal];
+    }else{
+        [self.likeButton setImage:[UIImage imageNamed:LIKE_ICON_UNPRESSED] forState:UIControlStateNormal];
     }
 }
 

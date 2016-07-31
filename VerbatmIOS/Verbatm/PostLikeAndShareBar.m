@@ -342,7 +342,6 @@
 //                  self.numSharesButton.frame.origin.y - (DELETE_FLAG_BUTTON_HEIGHT + BIG_ICON_SPACING),
 //                  DELETE_FLAG_BUTTON_HEIGHT, DELETE_FLAG_BUTTON_HEIGHT);
 
-		CGFloat size = self.frame.size.height - (ICON_SPACING_GAP*2);
         CGRect buttonFrame = CGRectMake(ICON_SPACING_GAP,
 										self.shareButon.frame.origin.y - (BIG_ICON_SPACING + DELETE_FLAG_BUTTON_HEIGHT), DELETE_FLAG_BUTTON_HEIGHT, DELETE_FLAG_BUTTON_HEIGHT);
         _muteButton.frame = buttonFrame;
