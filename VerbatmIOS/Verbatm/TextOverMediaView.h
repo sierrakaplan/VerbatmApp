@@ -71,4 +71,6 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 -(BOOL) pointInTextView: (CGPoint)point withBuffer: (CGFloat)buffer;
 
+-(void)startRepositioningPhoto;
+-(void)endRepositioningPhoto;
 @end
