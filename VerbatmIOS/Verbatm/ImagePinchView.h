@@ -21,6 +21,7 @@
 	andPHAssetLocalIdentifier: (NSString*) localIdentifier;
 
 -(void) initWithImage:(UIImage*)image andSetFilteredImages: (BOOL) setFilters;
+-(UIImage *)getImageScreenshotWithText:(UIImage *)image inHalf:(BOOL)half;
 
 //change which filter is applied
 -(void)changeImageToFilterIndex:(NSInteger)filterIndex;

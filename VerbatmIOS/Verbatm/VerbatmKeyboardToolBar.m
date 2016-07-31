@@ -48,6 +48,7 @@ typedef enum {
 @property (nonatomic) AdjustTextAVEBackgroundToolBar * adjustBackgroundBar;
 
 @property (strong, nonatomic) UIButton *doneButton;
+@property (strong, nonatomic) UIButton *keyboardButton;
 
 
 @property (nonatomic) ToolBarOptions currentSelectedOption;
@@ -75,16 +76,29 @@ typedef enum {
 
 @implementation VerbatmKeyboardToolBar
 
--(instancetype)initWithFrame:(CGRect)frame andTextColorBlack:(BOOL)textColorBlack isOnTextAve:(BOOL)onTextAve{
+-(instancetype)initWithFrame:(CGRect)frame andTextColorBlack:(BOOL)textColorBlack isOnTextAve:(BOOL)onTextAve isOnScreenPermenantly:(BOOL) onScreen {
 	self = [super initWithFrame:frame];
 	if(self) {
-		self.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = (onScreen) ? [UIColor clearColor] : [UIColor colorWithWhite:0.f alpha:0.1];
 		self.textIsBlack = textColorBlack;
         self.toolbardOnTextAve = onTextAve;
         self.currentSelectedOption = noSelection;
 		[self addButtons];
+        if(!onScreen){
+            self.layer.borderWidth = 1.f;
+            self.layer.borderColor = [UIColor blackColor].CGColor;
+        }
 	}
 	return self;
+}
+
+
+-(void)presentKeyboardButton{
+    if(self.doneButton){
+        [self.doneButton removeFromSuperview];
+        self.doneButton = nil;
+    }
+    [self.lowerBarHolder addSubview:self.keyboardButton];
 }
 
 -(void) addButtons {
@@ -265,6 +279,11 @@ typedef enum {
 -(void) doneButtonPressed {
 	[self.delegate doneButtonPressed];
 }
+-(void)keyboardButtonPressed{
+    if([self.delegate respondsToSelector:@selector(keyboardButtonPressed)]){
+        [self.delegate keyboardButtonPressed];
+    }
+}
 
 #pragma mark - Lazy Instantiation -
 - (UIButton *) changeFontSizeButton {
@@ -294,6 +313,25 @@ typedef enum {
 		[_doneButton addTarget:self action:@selector(doneButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 	}
 	return _doneButton;
+}
+
+
+
+
+-(UIButton *) keyboardButton {
+    if (!_keyboardButton) {
+        CGFloat height = (self.frame.size.height/3.f) - TEXT_TOOLBAR_BUTTON_OFFSET;
+        CGFloat centeringY = ((self.frame.size.height/2.f) - height)/2.f;
+        
+        CGRect keyboardButtonFrame = CGRectMake(self.frame.size.width  - TEXT_TOOLBAR_DONE_WIDTH + 5.f, centeringY,
+                                            TEXT_TOOLBAR_DONE_WIDTH/2.f,height);
+        _keyboardButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _keyboardButton.frame = keyboardButtonFrame;
+        [_keyboardButton setImage:[UIImage imageNamed:PRESENT_KEYBOARD_ICON] forState:UIControlStateNormal];
+        [_keyboardButton addTarget:self action:@selector(keyboardButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+        
+    }
+    return _keyboardButton;
 }
 
 - (UIButton *) textColorButton {
@@ -346,8 +384,6 @@ typedef enum {
     }
     return _changeTextAveBackgroundButton;
 }
-
-
 
 
 

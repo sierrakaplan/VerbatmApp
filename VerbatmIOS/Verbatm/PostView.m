@@ -41,7 +41,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
 
-@interface PostView () <UIScrollViewDelegate, PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
+@interface PostView () <UIScrollViewDelegate, PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol,PhotoPVETextEntryDelegate, PhotoVideoPVETextEntryDelegate>
 
 
 @property (nonatomic) UIScrollView *mainScrollView;
@@ -169,9 +169,29 @@
 							   [pageView isKindOfClass:[PhotoVideoPVE class]])) {
 			[(VideoPVE *)pageView muteVideo: YES];
 		}
+        
+        
+        if([pageView isKindOfClass:[PhotoVideoPVE class]]){
+            ((PhotoVideoPVE *) pageView).textEntryDelegate = self;
+        }else if ([pageView isKindOfClass:[PhotoPVE class]]){
+            ((PhotoPVE *) pageView).textEntryDelegate = self;
+        }
 		[self.mainScrollView addSubview: pageView];
 		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
 	}
+}
+
+-(void) editContentViewTextIsEditing_PhotoVideoPVE{
+    [self editContentViewTextIsEditing];
+}
+-(void) editContentViewTextDoneEditing_PhotoVideoPVE{
+    [self editContentViewTextDoneEditing];
+}
+-(void) editContentViewTextIsEditing{
+    [self.mainScrollView setScrollEnabled:NO];
+}
+-(void) editContentViewTextDoneEditing{
+    [self.mainScrollView setScrollEnabled:YES];
 }
 
 -(void)createBorder{

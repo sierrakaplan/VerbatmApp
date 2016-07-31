@@ -155,6 +155,7 @@
 	thumbnailRect.size.height = scaledHeight;
 
 	[sourceImage drawInRect:thumbnailRect];
+    
 	newImage = UIGraphicsGetImageFromCurrentImageContext();
 
 	if(newImage == nil) {

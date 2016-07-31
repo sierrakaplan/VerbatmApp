@@ -21,7 +21,6 @@
 @interface PhotoPVE : PageViewingExperience
 
 @property (weak, nonatomic) id<PhotoPVETextEntryDelegate> textEntryDelegate;
-
 @property (weak, nonatomic) UIScrollView * postScrollView;
 
 // Will start loading icon until displayPhotos is called if halfScreen is false

@@ -53,7 +53,7 @@
 #pragma mark - ADK -
 
 
-#define DEFAULT_TEXT_BACKGROUND_IMAGE @"Text AVE background 1"
+#define DEFAULT_TEXT_BACKGROUND_IMAGE TEXTAVE_BACKGROUND_FULLSCREEN_OPTIONS[0]
 
 #define MINIMIZE_ICON @"minimize_icon"
 #define ADK_BACKGROUND @"background_adk"
@@ -61,7 +61,7 @@
 #define CHANNEL_SELECTOR_ARROW_LEFT @"white_selector_arrow_left"
 #define CHANNEL_SELECTOR_ARROW_RIGHT @"white_selector_arrow_right"
 
-#define EDIT_PINCHVIEW_ICON @"edit_icon"
+#define EDIT_PINCHVIEW_ICON @"Tap to Edit icon"
 #define DELETE_PINCHVIEW_ICON @"trash_can"
 
 #define SUCCESS_PUBLISHING_IMAGE @"publishing_succeeded_notification"
@@ -72,12 +72,15 @@
 #define MINIMIZE_ICON @"minimize_icon"
 #define DONE_CHECKMARK @"done_checkmark"
 #define PULLDOWN_ICON @"down_arrow"
-#define CREATE_TEXT_ICON @"text_edit_button"
+#define CREATE_TEXT_ICON @"AddTextBlueIcon"
 
 #pragma mark Text Toolbar
 
+#define PRESENT_KEYBOARD_ICON @"Keyboard icon"
+
 #define TEXTAVE_BACKGROUND_CIRCLE_VIEW_OPTIONS @[@"White background circle",@"Black background circle", @"circle background 3",@"circle background 4",@"circle background 5",@"circle background 6"]
-#define TEXTAVE_BACKGROUND_FULLSCREEN_OPTIONS @[@"Text AVE background 1",@"Text AVE background 2",@"Text AVE background 3",@"Text AVE background 4",@"Text AVE background 5",@"Text AVE background 6"]
+
+#define TEXTAVE_BACKGROUND_FULLSCREEN_OPTIONS @[@"TextAVEbackground1",@"TextAVEbackground2",@"TextAVEbackground3",@"TextAVEbackground4",@"TextAVEbackground5",@"TextAVEbackground6"]
 
 #define TEXT_FONT_COLOR_BLACK @"text_toolbar_black_font_icon"
 #define TEXT_FONT_COLOR_WHITE @"text_toolbar_white_font_icon"
@@ -120,7 +123,7 @@
 #define PLAY_VIDEO_ICON_QUARTER_CIRCLE @"play_video_icon_quarter_circle"
 
 #pragma mark Media Tile
-#define TEXT_BUTTON_ICON @"AddTextIcon"
+#define TEXT_BUTTON_ICON @"add_text_icon_pencil"
 
 #define CAMERA_BUTTON_ICON @"camera"
 #define GALLERY_BUTTON_ICON @"galleryIcon"

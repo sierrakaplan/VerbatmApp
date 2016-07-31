@@ -101,10 +101,12 @@
 #pragma mark - PhotoAveTextEntry Delegate methods -
 
 -(void) editContentViewTextIsEditing {
+    [self.textEntryDelegate editContentViewTextIsEditing_PhotoVideoPVE];
     [self movePhotoPageUp:YES];
 }
 
 -(void) editContentViewTextDoneEditing {
+    [self.textEntryDelegate editContentViewTextDoneEditing_PhotoVideoPVE];
     [self movePhotoPageUp:NO];
 }
 
