@@ -90,7 +90,8 @@
 #define PAGING_LINE_WIDTH 4.f
 #define PAGING_LINE_ANIMATION_DURATION 0.5
 #define PAGING_LINE_COLE [UIColor whiteColor]
-
+#define LIKE_BUTTON_WALL_OFFSET 5.f
+#define LIKE_BUTTION_SIZE 30.f
 @end
 
 @implementation PostView
@@ -103,7 +104,13 @@
 		//load all page views
 		self.pageObjects = pageObjects;
 		if (self.pageObjects) [self createPageViews];
-		if (postObject) self.parsePostChannelActivityObject = postObject;
+        if (postObject){
+            self.parsePostChannelActivityObject = postObject;
+            if(self.small){
+                [self createLikeButton];
+                [self checkIfUserHasLikedThePost];
+            }
+        }
 	}
 	return self;
 }
@@ -238,11 +245,25 @@
 
 -(void) checkIfUserHasLikedThePost {
     __weak PostView *weakSelf = self;
-	[Like_BackendManager currentUserLikesPost:[weakSelf.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST] withCompletionBlock:^(bool userLikedPost) {
+	[Like_BackendManager currentUserLikesPost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST] withCompletionBlock:^(bool userLikedPost) {
 		dispatch_async(dispatch_get_main_queue(), ^{
-			[weakSelf.likeShareBar shouldStartPostAsLiked:userLikedPost];
+            if(weakSelf.inSmallMode){
+                weakSelf.liked = userLikedPost;
+                [weakSelf updateLikeButton];
+            }else{
+                [weakSelf.likeShareBar shouldStartPostAsLiked:userLikedPost];
+            }
+            
+			
 		});
 	}];
+}
+
+
+-(void)updateLikeButton{
+    if(self.liked){
+        [self likeButtonPressed];
+    }
 }
 
 -(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares
@@ -393,6 +414,18 @@
 -(void)muteButtonSelected:(BOOL)shouldMute{
 	[self muteAllVideos:shouldMute];
 }
+
+-(void) likeButtonPressed {
+    if(self.liked){
+        [self.likeButton setImage:[UIImage imageNamed:LIKE_ICON_UNPRESSED] forState:UIControlStateNormal];
+        self.liked = NO;
+    }else{
+        [self.likeButton setImage:[UIImage imageNamed:LIKE_ICON_PRESSED] forState:UIControlStateNormal];
+        self.liked = YES;
+    }
+    [self userAction:Like isPositive:self.liked];
+}
+
 
 -(void)muteAllVideos:(BOOL) shouldMute {
 	self.postMuted = shouldMute;
@@ -636,6 +669,20 @@
 	}
 	return _downArrow;
 }
+
+-(void)createLikeButton {
+    CGRect likeButtonFrame =  CGRectMake(LIKE_BUTTON_WALL_OFFSET,
+                                         self.frame.size.height - (LIKE_BUTTION_SIZE + LIKE_BUTTON_WALL_OFFSET),
+                                         LIKE_BUTTION_SIZE, LIKE_BUTTION_SIZE);
+    
+    self.likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.likeButton.contentMode = UIViewContentModeScaleAspectFit;
+    [self.likeButton setFrame:likeButtonFrame];
+    [self.likeButton setImage:[UIImage imageNamed:LIKE_ICON_UNPRESSED] forState:UIControlStateNormal];
+    [self.likeButton addTarget:self action:@selector(likeButtonPressed) forControlEvents:UIControlEventTouchDown];
+    [self addSubview:self.likeButton];
+}
+
 
 -(void) dealloc {
 }

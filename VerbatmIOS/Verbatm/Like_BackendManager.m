@@ -18,7 +18,9 @@
 @implementation Like_BackendManager
 
 + (void)currentUserLikePost:(PFObject *) postParseObject {
-	PFObject *newLikeObject = [PFObject objectWithClassName:LIKE_PFCLASS_KEY];
+    NSLog(@"liking parse object: %@ with id: %@", [postParseObject parseClassName], [postParseObject objectId]);
+    
+	PFObject * newLikeObject = [PFObject objectWithClassName:LIKE_PFCLASS_KEY];
 	[newLikeObject setObject:[PFUser currentUser]forKey:LIKE_USER_KEY];
 	[newLikeObject setObject:postParseObject forKey:LIKE_POST_LIKED_KEY];
 	// Will return error if like already existed - ignore
@@ -94,14 +96,18 @@
 //tests to see if the logged in user likes this post
 + (void)currentUserLikesPost:(PFObject *) postParseObject withCompletionBlock:(void(^)(bool))block {
     if(!postParseObject)return;
+    
+    NSLog(@"Searching for parse object: %@ with id: %@", [postParseObject parseClassName], [postParseObject objectId]);
+    
     //we just delete the Follow Object
     PFQuery * likeQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
-    [likeQuery whereKey:LIKE_POST_LIKED_KEY equalTo:postParseObject];
     [likeQuery whereKey:LIKE_USER_KEY equalTo:[PFUser currentUser]];
+    [likeQuery whereKey:LIKE_POST_LIKED_KEY equalTo:postParseObject];
+    
     [likeQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                          NSError * _Nullable error) {
         if(objects && !error) {
-            if(objects.count >= 1)block(YES);
+            if(objects.count > 0)block(YES);
             else block(NO);
         }
     }];
