@@ -56,6 +56,7 @@
 
 -(void) clearViews {
 	if (self.currentPostView) {
+        [self.currentPostView postOffScreen];
 		[self.currentPostView removeFromSuperview];
 	}
 
