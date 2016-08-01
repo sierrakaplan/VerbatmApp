@@ -294,7 +294,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	self.filteredImages = filteredImages;
 	[self addSubview: self.textAndImageView];
 	[self addPanGestures];
-	//[self createScreenToolBar];
 	[self createTextCreationButton];
 
 	//todo: bring back filters
@@ -304,7 +303,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 	if (![[UserSetupParameters sharedInstance] checkAndSetAddTextInstructionShown]) {
 		//todo:
-		//		[self presentAddTextInstruction];
+		//[self presentAddTextInstruction];
 	}
 }
 
@@ -482,7 +481,15 @@ andTextAlignment:(NSTextAlignment)textAlignment
 			if(self.textViewBeingEdited) return;
 
 			CGPoint location = [sender locationOfTouch:0 inView:self.textAndImageView];
-			CGFloat verticalDiff = location.y - self.textViewPanStartLocation.y;
+			CGFloat newYLocation = location.y;
+			CGFloat contentHeight = [self.textAndImageView.textView measureContentHeight];
+			if ((newYLocation + contentHeight) > (self.frame.size.height - TEXT_TOOLBAR_HEIGHT)) {
+				newYLocation = self.frame.size.height - TEXT_TOOLBAR_HEIGHT - contentHeight;
+			}
+			if (newYLocation < 0.f) {
+				newYLocation = 0.f;
+			}
+			CGFloat verticalDiff = newYLocation - self.textViewPanStartLocation.y;
 			[self.textAndImageView changeTextViewYPos: verticalDiff];
 			self.textViewPanStartLocation = location;
 			break;

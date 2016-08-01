@@ -36,6 +36,17 @@
 
 @implementation TextOverMediaView
 
+-(instancetype) initWithFrame:(CGRect)frame {
+	self = [super initWithFrame:frame];
+
+	if (self) {
+		[self revertToDefaultTextSettings];
+		[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
+	}
+
+	return self;
+}
+
 -(instancetype) initWithFrame:(CGRect)frame andImageURL:(NSURL*)imageUrl
 			   withSmallImage: (UIImage*)smallImage asSmall:(BOOL) small {
 	self = [self initWithFrame:frame];
@@ -89,17 +100,6 @@
         self.repositionPhotoGrid = nil;
         [self.textView setHidden:NO];
     }
-}
-
--(instancetype) initWithFrame:(CGRect)frame {
-	self = [super initWithFrame:frame];
-	
-    if (self) {
-		[self revertToDefaultTextSettings];
-        [self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
-	}
-    
-	return self;
 }
 
 /* Returns image view with image centered */
