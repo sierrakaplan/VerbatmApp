@@ -16,6 +16,10 @@
 -(void) editContentViewTextIsEditing;
 -(void) editContentViewTextDoneEditing;
 
+
+-(void) repositioningPhotoPVE;
+-(void) stopRepositioningPhotoPVE;
+
 @end
 
 @interface PhotoPVE : PageViewingExperience

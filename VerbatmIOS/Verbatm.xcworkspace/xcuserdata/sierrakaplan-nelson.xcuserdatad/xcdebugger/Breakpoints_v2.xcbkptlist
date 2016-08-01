@@ -367,7 +367,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "228"
             endingLineNumber = "228"
-            landmarkName = "-textView:shouldChangeTextInRange:replacementText:"
+            landmarkName = "-moveTextView:afterEdit:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -383,7 +383,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "233"
             endingLineNumber = "233"
-            landmarkName = "-textView:shouldChangeTextInRange:replacementText:"
+            landmarkName = "-moveTextView:afterEdit:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -399,7 +399,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "239"
             endingLineNumber = "239"
-            landmarkName = "-addJustTextViewFrame:"
+            landmarkName = "-moveTextView:afterEdit:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

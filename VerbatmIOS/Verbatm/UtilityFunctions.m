@@ -114,6 +114,27 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 
 
 
++(CGSize)getScreenFrameForImage:(UIImage *)image{
+    CGSize ratioSize;
+    CGSize imageSize = image.size;
+    
+    //if(imageSize.height > imageSize.width){
+    
+    
+    CGFloat windowHeight = [[UIApplication sharedApplication] keyWindow].frame.size.height;
+    
+    CGFloat newWidth = windowHeight * ((imageSize.width * image.scale)/(imageSize.height* image.scale));
+    ratioSize = CGSizeMake(newWidth, windowHeight);
+    //    }else{
+    //
+    //        CGFloat newHeight = self.frame.size.width * (imageSize.height/imageSize.width);
+    //        ratioSize = CGSizeMake(self.frame.size.width, newHeight);
+    //
+    //    }
+    //
+    return ratioSize;
+}
+
 
 +(UIButton *) getButtonWithFrame:(CGRect)frame andIcon:(NSString*)iconName andSelector:(SEL)action andTarget:(id) target {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];

@@ -46,6 +46,7 @@
 
 +(PFObject*)checkIfObjectsList:(NSArray*)list containsObject:(PFObject*)object;
 
++(CGSize)getScreenFrameForImage:(UIImage *)image;
 
 //get button
 +(UIButton *) getButtonWithFrame:(CGRect)frame andIcon:(NSString*)iconName andSelector:(SEL)action andTarget:(id) target;

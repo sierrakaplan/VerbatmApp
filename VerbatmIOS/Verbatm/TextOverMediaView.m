@@ -15,11 +15,12 @@
 #import "UITextView+Utilities.h"
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "UtilityFunctions.h"
+#import "GridView.h"
 
 @interface TextOverMediaView ()
 
 @property (nonatomic, readwrite) BOOL textShowing;
-
+@property (nonatomic) UIScrollView * photoResizeScrollView;
 #pragma mark Text properties
 
 @property (nonatomic, readwrite) CGFloat textYPosition;
@@ -27,7 +28,9 @@
 @property (nonatomic, readwrite) NSTextAlignment textAlignment;
 @property (nonatomic, readwrite) BOOL blackTextColor;
 
-#define DEFAULT_TEXT_VIEW_FRAME CGRectMake(TEXT_VIEW_X_OFFSET, self.textYPosition, self.frame.size.width - TEXT_VIEW_X_OFFSET*2, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT)
+@property (nonatomic) GridView * repositionPhotoGrid;
+
+#define DEFAULT_TEXT_VIEW_FRAME CGRectMake(TEXT_VIEW_X_OFFSET, self.textYPosition, self.frame.size.width - TEXT_VIEW_X_OFFSET*2, self.frame.size.height)
 
 @end
 
@@ -65,17 +68,37 @@
 -(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image {
 	self = [self initWithFrame: frame];
 	if (self) {
-		[self.imageView setImage: image];
+        [self changeImageTo:image];
 	}
 	return self;
 }
 
+
+
+-(void)startRepositioningPhoto{
+    if(!self.repositionPhotoGrid){
+        self.repositionPhotoGrid = [[GridView alloc] initWithFrame:self.bounds];
+        [self addSubview:self.repositionPhotoGrid];
+        [self.textView setHidden:YES];
+    }
+}
+
+-(void)endRepositioningPhoto{
+    if(self.repositionPhotoGrid){
+        [self.repositionPhotoGrid removeFromSuperview];
+        self.repositionPhotoGrid = nil;
+        [self.textView setHidden:NO];
+    }
+}
+
 -(instancetype) initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
-	if (self) {
+	
+    if (self) {
 		[self revertToDefaultTextSettings];
         [self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
 	}
+    
 	return self;
 }
 
@@ -89,7 +112,10 @@
 }
 
 -(void)changeImageTo:(UIImage *) image {
-	[self.imageView setImage:image];
+//    CGSize  newSize = [UtilityFunctions getScreenFrameForImage:image];
+//    [self.imageView setFrame:CGRectMake(0.f, 0.f, newSize.height, newSize.height)];
+    [self.imageView setImage: image];
+    //[self.photoResizeScrollView setContentSize:newSize];
 }
 
 #pragma mark - Text View functionality -
@@ -120,10 +146,6 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 	self.textYPosition = TEXT_VIEW_OVER_MEDIA_Y_OFFSET;
 	self.textView.frame = DEFAULT_TEXT_VIEW_FRAME;
-    
-    
-    
-    
     [self.textView setBackgroundColor:[UIColor clearColor]];
 
 	self.textSize = TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE;
@@ -135,7 +157,6 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 -(void)changeText:(NSString *) text{
 	[self.textView setText:text];
-	[self resizeTextView];
 	[self bringSubviewToFront:self.textView];
 }
 
@@ -205,8 +226,10 @@ andTextAlignment:(NSTextAlignment) textAlignment
 }
 
 -(BOOL) pointInTextView: (CGPoint)point withBuffer: (CGFloat)buffer {
+    
 	return point.y > self.textView.frame.origin.y - buffer
 	&& point.y < self.textView.frame.origin.y + self.textView.frame.size.height + buffer;
+
 }
 
 #pragma mark - Change text properties -
@@ -230,26 +253,27 @@ andTextAlignment:(NSTextAlignment) textAlignment
 		[self.textView resignFirstResponder];
 }
 
-/* Resizes text view based on content height. Only resizes to a height larger than the default. */
--(void) resizeTextView {
-	CGFloat contentHeight = [self.textView measureContentHeight];
-	float height = (TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT < contentHeight) ? contentHeight : TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT;
-    
-    
-    
-	self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y,
-									 self.textView.frame.size.width, height);
-}
-
 #pragma mark - Lazy Instantiation -
+
+
+-(UIScrollView *)photoResizeScrollView{
+    if(!_photoResizeScrollView){
+        _photoResizeScrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
+        _photoResizeScrollView.scrollEnabled = YES;
+        [_photoResizeScrollView setBounces:NO];
+        _photoResizeScrollView.minimumZoomScale = 1.0;
+        _photoResizeScrollView.zoomScale = 0.1;
+        [self insertSubview:_photoResizeScrollView belowSubview:self.textView];
+    }
+    return _photoResizeScrollView;
+}
 
 -(UIImageView*) imageView {
 	if (!_imageView) {
-		UIImageView *imageView = [[UIImageView alloc] initWithFrame: self.bounds];
-		[self insertSubview:imageView belowSubview:self.textView];
-		_imageView = imageView;
+		_imageView = [[UIImageView alloc] initWithFrame:self.bounds];
+        [self.photoResizeScrollView addSubview:_imageView];
 		_imageView.clipsToBounds = YES;
-		_imageView.contentMode = UIViewContentModeScaleAspectFill;
+		_imageView.contentMode = UIViewContentModeScaleAspectFit;
 	}
 	return _imageView;
 }

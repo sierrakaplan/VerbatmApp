@@ -63,12 +63,11 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 -(void) setTextViewFirstResponder:(BOOL)firstResponder;
 
-/* Changes text view height based on content height */
--(void) resizeTextView;
-
 /* Adds or removes text view */
 -(void) showText: (BOOL) show;
 
 -(BOOL) pointInTextView: (CGPoint)point withBuffer: (CGFloat)buffer;
 
+-(void)startRepositioningPhoto;
+-(void)endRepositioningPhoto;
 @end
