@@ -229,6 +229,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 	if (after) {
 		CGFloat heightDiff = (self.userSetYPos + contentHeight) - (self.frame.size.height - TEXT_TOOLBAR_HEIGHT);
+		yPos = self.userSetYPos;
 		if (heightDiff > 0) yPos = self.userSetYPos - heightDiff;
 		if (yPos < 0.f) yPos = 0.f;
 		CGFloat height = self.frame.size.height - yPos;
