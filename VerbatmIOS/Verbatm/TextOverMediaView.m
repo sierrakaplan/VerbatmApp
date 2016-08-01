@@ -30,7 +30,7 @@
 
 @property (nonatomic) GridView * repositionPhotoGrid;
 
-#define DEFAULT_TEXT_VIEW_FRAME CGRectMake(TEXT_VIEW_X_OFFSET, self.textYPosition, self.frame.size.width - TEXT_VIEW_X_OFFSET*2, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT)
+#define DEFAULT_TEXT_VIEW_FRAME CGRectMake(TEXT_VIEW_X_OFFSET, self.textYPosition, self.frame.size.width - TEXT_VIEW_X_OFFSET*2, self.frame.size.height)
 
 @end
 
@@ -91,8 +91,6 @@
     }
 }
 
-
-
 -(instancetype) initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	
@@ -148,10 +146,6 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 	self.textYPosition = TEXT_VIEW_OVER_MEDIA_Y_OFFSET;
 	self.textView.frame = DEFAULT_TEXT_VIEW_FRAME;
-    
-    
-    
-    
     [self.textView setBackgroundColor:[UIColor clearColor]];
 
 	self.textSize = TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE;
@@ -163,7 +157,6 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 -(void)changeText:(NSString *) text{
 	[self.textView setText:text];
-	[self resizeTextView];
 	[self bringSubviewToFront:self.textView];
 }
 
@@ -258,17 +251,6 @@ andTextAlignment:(NSTextAlignment) textAlignment
 		[self.textView becomeFirstResponder];
 	else if (self.textView.isFirstResponder)
 		[self.textView resignFirstResponder];
-}
-
-/* Resizes text view based on content height. Only resizes to a height larger than the default. */
--(void) resizeTextView {
-	CGFloat contentHeight = [self.textView measureContentHeight];
-	float height = (TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT < contentHeight) ? contentHeight : TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT;
-    
-    
-    
-	self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y,
-									 self.textView.frame.size.width, height);
 }
 
 #pragma mark - Lazy Instantiation -
