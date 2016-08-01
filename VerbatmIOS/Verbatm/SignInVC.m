@@ -334,11 +334,9 @@
                                                                 preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction* defaultAction1 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {
-                                                    
                                                               [self goBackFromEnteringConfirmation];
-                                                              [self deleteCreatedUserWithCompletionBlock:nil];
-                                                          
                                                           }];
+    
     UIAlertAction* defaultAction2 = [UIAlertAction actionWithTitle:@"Resend" style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {
                                                               [self deleteCreatedUserWithCompletionBlock:^{
