@@ -224,6 +224,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 -(void) moveTextView:(UITextView *)textView afterEdit:(BOOL)after {
 
 	CGFloat contentHeight = [textView measureContentHeight];
+	CGFloat height = self.isAtHalfScreen ? self.frame.size.height : (self.frame.size.height - self.keyboardHeight);
 	CGRect newFrame;
 	CGFloat yPos = 0.f;
 
@@ -236,7 +237,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 		newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, yPos, self.frame.size.width, height);
 	} else {
 		yPos = self.userSetYPos;
-		CGFloat heightDiff = (self.userSetYPos + contentHeight) - (self.frame.size.height - self.keyboardHeight);
+		CGFloat heightDiff = (self.userSetYPos + contentHeight) - height;
 		if (heightDiff > 0) yPos = yPos - heightDiff;
 		newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, yPos, self.frame.size.width, contentHeight);
 	}
