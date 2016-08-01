@@ -42,8 +42,6 @@
 
 @property (nonatomic) CGPoint  panStartLocation;
 
-@property (nonatomic) CGPoint  textViewPanStartLocation;
-
 @property (nonatomic) CGFloat horizontalPanDistance;
 @property (nonatomic) BOOL isHorizontalPan;
 
@@ -471,8 +469,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
 		case UIGestureRecognizerStateBegan:
 			if (sender.numberOfTouches < 1 ||
 				self.textViewBeingEdited) return;
-
-			self.textViewPanStartLocation = [sender locationOfTouch:0 inView:self.textAndImageView];
 			self.gestureActionJustStarted = YES;
 
 			break;
@@ -489,9 +485,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 			if (newYLocation < 0.f) {
 				newYLocation = 0.f;
 			}
-			CGFloat verticalDiff = newYLocation - self.textViewPanStartLocation.y;
-			[self.textAndImageView changeTextViewYPos: verticalDiff];
-			self.textViewPanStartLocation = location;
+			[self.textAndImageView changeTextViewYPos: newYLocation];
 			break;
 		}
 		case UIGestureRecognizerStateCancelled:

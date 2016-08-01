@@ -164,10 +164,11 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	return self.textView.text;
 }
 
-- (BOOL) changeTextViewYPos: (CGFloat) yDiff {
-	CGRect newFrame = CGRectOffset(self.textView.frame, 0.f, yDiff);
-    self.textView.frame = newFrame;
-    self.textYPosition = newFrame.origin.y;
+- (BOOL) changeTextViewYPos: (CGFloat) yPos {
+	CGRect tempFrame = CGRectMake(self.textView.frame.origin.x, yPos,
+								  self.textView.frame.size.width, self.textView.frame.size.height);
+    self.textView.frame = tempFrame;
+	self.textYPosition = yPos;
     return YES;
 }
 
