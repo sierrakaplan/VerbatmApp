@@ -310,7 +310,7 @@
 }
 
 
--(void)deleteCreatedUser {
+-(void)deleteCreatedUserWithCompletionBlock:(void(^)())block{
     if (self.createdUserWithLoginCode) {
         self.createdUserWithLoginCode = NO;
         NSString * userNameToDelete = self.phoneNumber;
@@ -320,6 +320,9 @@
 				NSLog(@"Error deleting created user: %@", error.description);
 			} else {
 				NSLog(@"Success deleting created user.");
+                if(block){
+                    block();
+                }
 			}
 		}];
     }
@@ -333,14 +336,14 @@
                                                           handler:^(UIAlertAction * action) {
                                                     
                                                               [self goBackFromEnteringConfirmation];
-                                                              [self deleteCreatedUser];
+                                                              [self deleteCreatedUserWithCompletionBlock:nil];
                                                           
                                                           }];
     UIAlertAction* defaultAction2 = [UIAlertAction actionWithTitle:@"Resend" style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {
-                                                              
-                                                              [self sendCodeToUser];
-                                                              
+                                                              [self deleteCreatedUserWithCompletionBlock:^{
+                                                                  [self sendCodeToUser];
+                                                              }];
                                                           }];
 
     
@@ -505,9 +508,8 @@
 
 
 -(void)goBackFromEnteringConfirmation{
-    
     if(self.createdUserWithLoginCode){
-        [self deleteCreatedUser];
+        [self deleteCreatedUserWithCompletionBlock:nil];
     }
     [self replaceView:self.confirmationCodeEntry  withView:self.createAccountView goingForward:NO];
 }

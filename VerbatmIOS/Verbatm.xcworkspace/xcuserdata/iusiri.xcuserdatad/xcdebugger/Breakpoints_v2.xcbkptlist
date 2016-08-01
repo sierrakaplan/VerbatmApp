@@ -4222,11 +4222,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/SignInVC.m"
-            timestampString = "491270259.038567"
+            timestampString = "491703512.847287"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "541"
-            endingLineNumber = "541"
+            startingLineNumber = "543"
+            endingLineNumber = "543"
             landmarkName = "-errorInSignInAnimation:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4238,11 +4238,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/SignInVC.m"
-            timestampString = "491270259.038567"
+            timestampString = "491703512.847287"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "458"
-            endingLineNumber = "458"
+            startingLineNumber = "461"
+            endingLineNumber = "461"
             landmarkName = "-verbatmNameWrongFormatCreateAccount"
             landmarkType = "5">
          </BreakpointContent>
@@ -4270,11 +4270,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/SignInVC.m"
-            timestampString = "491270259.038567"
+            timestampString = "491703512.847287"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "437"
-            endingLineNumber = "437"
+            startingLineNumber = "440"
+            endingLineNumber = "440"
             landmarkName = "-signUpWithPhoneNumberSelectedWithNumber:andPassword:andName:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4302,11 +4302,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/SignInVC.m"
-            timestampString = "491270259.038567"
+            timestampString = "491703512.847287"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "478"
-            endingLineNumber = "478"
+            startingLineNumber = "481"
+            endingLineNumber = "481"
             landmarkName = "-textNotAlphaNumericaLoginAccount"
             landmarkType = "5">
          </BreakpointContent>
@@ -4318,11 +4318,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/SignInVC.m"
-            timestampString = "491270259.038567"
+            timestampString = "491703512.847287"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "489"
-            endingLineNumber = "489"
+            startingLineNumber = "492"
+            endingLineNumber = "492"
             landmarkName = "@implementation SignInVC"
             landmarkType = "3">
          </BreakpointContent>
@@ -5582,7 +5582,7 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/iusiri/Desktop/IOS%20APP%20PROJECTS/Verbatm%20Project/VerbatmIOS/Verbatm/Channel_BackendObject.m"
-                  timestampString = "491682368.465631"
+                  timestampString = "491703517.101496"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "115"
@@ -5597,7 +5597,7 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/iusiri/Desktop/IOS%20APP%20PROJECTS/Verbatm%20Project/VerbatmIOS/Verbatm/Channel_BackendObject.m"
-                  timestampString = "491682368.465791"
+                  timestampString = "491703517.101625"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "116"
@@ -5966,11 +5966,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/SignInVC.m"
-            timestampString = "491270259.038567"
+            timestampString = "491703512.847287"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "365"
-            endingLineNumber = "365"
+            startingLineNumber = "368"
+            endingLineNumber = "368"
             landmarkName = "-codeEnteredWithPhoneNumber:andCode:"
             landmarkType = "5">
          </BreakpointContent>
@@ -5982,11 +5982,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/SignInVC.m"
-            timestampString = "491270259.038567"
+            timestampString = "491703512.847287"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "372"
-            endingLineNumber = "372"
+            startingLineNumber = "375"
+            endingLineNumber = "375"
             landmarkName = "-codeEnteredWithPhoneNumber:andCode:"
             landmarkType = "5">
          </BreakpointContent>
@@ -5998,12 +5998,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/SignInVC.m"
-            timestampString = "491270259.038567"
+            timestampString = "491703512.847287"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "324"
-            endingLineNumber = "324"
-            landmarkName = "-deleteCreatedUser"
+            startingLineNumber = "327"
+            endingLineNumber = "327"
+            landmarkName = "-deleteCreatedUserWithCompletionBlock:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -6014,11 +6014,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/SignInVC.m"
-            timestampString = "491270259.038567"
+            timestampString = "491703512.847287"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "363"
-            endingLineNumber = "363"
+            startingLineNumber = "366"
+            endingLineNumber = "366"
             landmarkName = "-codeEnteredWithPhoneNumber:andCode:"
             landmarkType = "5">
             <Locations>
@@ -6062,11 +6062,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/SignInVC.m"
-            timestampString = "491270259.038567"
+            timestampString = "491703512.847287"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "365"
-            endingLineNumber = "365"
+            startingLineNumber = "368"
+            endingLineNumber = "368"
             landmarkName = "-codeEnteredWithPhoneNumber:andCode:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6078,11 +6078,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/SignInVC.m"
-            timestampString = "491270259.038567"
+            timestampString = "491703512.847287"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "366"
-            endingLineNumber = "366"
+            startingLineNumber = "369"
+            endingLineNumber = "369"
             landmarkName = "-codeEnteredWithPhoneNumber:andCode:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6094,11 +6094,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/SignInVC.m"
-            timestampString = "491270259.038567"
+            timestampString = "491703512.847287"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "366"
-            endingLineNumber = "366"
+            startingLineNumber = "369"
+            endingLineNumber = "369"
             landmarkName = "-codeEnteredWithPhoneNumber:andCode:"
             landmarkType = "5">
             <Locations>
@@ -6138,7 +6138,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/SignInVC.m"
@@ -7218,6 +7218,38 @@
             startingLineNumber = "96"
             endingLineNumber = "96"
             landmarkName = "+currentUserLikesPost:withCompletionBlock:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/SignInVC.m"
+            timestampString = "491703704.163989"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "323"
+            endingLineNumber = "323"
+            landmarkName = "-deleteCreatedUserWithCompletionBlock:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/SignInVC.m"
+            timestampString = "491703790.114812"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "298"
+            endingLineNumber = "298"
+            landmarkName = "-sendCodeToUser"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
