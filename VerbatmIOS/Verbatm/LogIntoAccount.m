@@ -75,9 +75,8 @@
 }
 
 -(void)createNextButton{
-    CGFloat loginToolBarHeight = (TEXT_TOOLBAR_HEIGHT)*(3.f/4.f);
-    CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - loginToolBarHeight,
-                                     self.frame.size.width, loginToolBarHeight);
+    CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - LOGIN_TOOLBAR_HEIGHT,
+                                     self.frame.size.width, LOGIN_TOOLBAR_HEIGHT);
     self.toolBar = [[LoginKeyboardToolBar alloc] initWithFrame:toolBarFrame];
     self.toolBar.delegate = self;
     [self.toolBar setNextButtonText:@"Sign In"];
@@ -190,7 +189,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     [[notification.userInfo valueForKey:UIKeyboardFrameBeginUserInfoKey] getValue:&keyboardBounds];
     
     CGFloat newYOrigin = (self.frame.size.height - keyboardBounds.size.height -
-                          self.phoneNumber.frame.size.height - TEXT_TOOLBAR_HEIGHT - 50.f);
+                          self.phoneNumber.frame.size.height - LOGIN_TOOLBAR_HEIGHT - 50.f);
     if (newYOrigin < self.phoneNumber.frame.origin.y) {
         keyboardOffset = self.phoneNumber.frame.origin.y - newYOrigin;
     }

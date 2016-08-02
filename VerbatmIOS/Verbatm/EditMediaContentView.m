@@ -29,16 +29,16 @@
 @interface EditMediaContentView () <KeyboardToolBarDelegate, UITextViewDelegate, UIGestureRecognizerDelegate>
 
 //keyboard that appears when the user has text on the screen
-@property (nonatomic) VerbatmKeyboardToolBar * permanentOnScreenKeyboard;
+@property (nonatomic) VerbatmKeyboardToolBar *permanentOnScreenKeyboard;
 
-@property (nonatomic, strong) TextOverMediaView * textAndImageView;
+@property (nonatomic, strong) TextOverMediaView *textAndImageView;
 
-@property (nonatomic) UIImageView * swipeInstructionView;
+@property (nonatomic) UIImageView *swipeInstructionView;
 
 #pragma mark FilteredPhotos
-@property (nonatomic, strong) NSArray * filteredImages;
+@property (nonatomic, strong) NSArray *filteredImages;
 @property (nonatomic) NSInteger imageIndex;
-@property (nonatomic, strong) UIButton * textCreationButton;
+@property (nonatomic, strong) UIButton *textCreationButton;
 
 @property (nonatomic) CGPoint  panStartLocation;
 
@@ -136,15 +136,14 @@ andTextYPosition:(CGFloat)yPosition
    andTextColorBlack:(BOOL)textColorBlack
 andTextAlignment:(NSTextAlignment)textAlignment
 	andTextSize:(CGFloat)textSize andFontName:(NSString *)fontName {
-    
-	[self addToolBarToViewWithTextColorBlack:textColorBlack];
 
 	[self.textAndImageView setText: text
 				  andTextYPosition: yPosition
 					  andTextColorBlack: textColorBlack
 				  andTextAlignment: textAlignment
 					   andTextSize: textSize andFontName:fontName];
-    [self createScreenToolBar];
+
+	[self addToolBarToViewWithTextColorBlack:textColorBlack];
 }
 
 #pragma mark - Keyboard ToolBar -
@@ -153,38 +152,34 @@ andTextAlignment:(NSTextAlignment)textAlignment
 -(void)addToolBarToViewWithTextColorBlack:(BOOL)textColorBlack {
 	CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - TEXT_TOOLBAR_HEIGHT,
 									 self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
+	BOOL onTextAve = [self.pinchView isKindOfClass:[TextPinchView class]];
 	VerbatmKeyboardToolBar* toolBar = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
-                                                                  andTextColorBlack: textColorBlack isOnTextAve:[self.pinchView isKindOfClass:[TextPinchView class]] isOnScreenPermenantly:NO];
+                                                                  andTextColorBlack: textColorBlack
+																		isOnTextAve:onTextAve
+															  isOnScreenPermanently:NO];
 	[toolBar setDelegate:self];
 	[self.textAndImageView setTextViewKeyboardToolbar:toolBar];
+
+	// add toolbar to screen permanently
+	if(!self.permanentOnScreenKeyboard && self.textAndImageView &&
+	   ![self.textAndImageView.textView.text isEqualToString:@""]) {
+		[self clearTextCreationButton];
+		self.permanentOnScreenKeyboard = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
+																	 andTextColorBlack:textColorBlack
+																		   isOnTextAve:onTextAve
+																 isOnScreenPermanently:YES];
+		[self.permanentOnScreenKeyboard setDelegate:self];
+		[self addSubview:self.permanentOnScreenKeyboard];
+	} else if (!self.permanentOnScreenKeyboard) {
+		[self createTextCreationButton];
+	} else {
+		[self addSubview:self.permanentOnScreenKeyboard];
+	}
 }
 
-//creates a second toolbar (same view as keyboard toolbar) to be on the screen
-//when the keyboard is down. So the user can still edit the text.
--(void)createScreenToolBar{
-    if(!self.permanentOnScreenKeyboard && self.textAndImageView &&
-       ![self.textAndImageView.textView.text isEqualToString:@""]){
-        
-        [self clearTextCreationButton];
-        
-        BOOL textColorBlack =NO;
-        CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - TEXT_TOOLBAR_HEIGHT,
-                                         self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
-        self.permanentOnScreenKeyboard = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
-                                                                      andTextColorBlack: textColorBlack isOnTextAve:[self.pinchView isKindOfClass:[TextPinchView class]] isOnScreenPermenantly:YES];
-        [self.permanentOnScreenKeyboard setDelegate:self];
-        [self addSubview:self.permanentOnScreenKeyboard];
-        [self.permanentOnScreenKeyboard presentKeyboardButton];
-    }else{
-        [self createTextCreationButton];
-    }
-}
-
-
--(void)removeScreenToolbar{
-    if(self.permanentOnScreenKeyboard){
+-(void)removeScreenToolbar {
+    if(self.permanentOnScreenKeyboard) {
         [self.permanentOnScreenKeyboard removeFromSuperview];
-        self.permanentOnScreenKeyboard = nil;
     }
     [self clearTextCreationButton];
 }
@@ -211,7 +206,9 @@ andTextAlignment:(NSTextAlignment)textAlignment
     self.textViewBeingEdited = NO;
     [self.textAndImageView.textView setScrollEnabled:NO];
 	[self moveTextView:textView afterEdit:YES];
-    [self createScreenToolBar];
+	if (self.permanentOnScreenKeyboard) {
+		[self addSubview: self.permanentOnScreenKeyboard];
+	}
     [self addPanGestures];
 }
 
