@@ -187,6 +187,21 @@
 	}
 }
 
+-(void) repositioningPhoto_PhotoVideoPVE{
+    [self repositioningPhotoPVE];
+}
+-(void)stopRepositioningPhoto_PhotoVideoPVE{
+    [self stopRepositioningPhotoPVE];
+}
+
+-(void) repositioningPhotoPVE{
+    [self.mainScrollView setScrollEnabled:NO];
+}
+
+-(void) stopRepositioningPhotoPVE{
+    [self.mainScrollView setScrollEnabled:YES];
+}
+
 -(void) editContentViewTextIsEditing_PhotoVideoPVE{
     [self editContentViewTextIsEditing];
 }

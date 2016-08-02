@@ -43,7 +43,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 -(BOOL) changeTextViewYPos: (CGFloat) yDiff;
 
 /* Animates text view to new frame. Does not store new frame information (not permanent) */
--(void) animateTextViewToYPos: (CGFloat) tempYPos;
+-(void) animateTextViewToYPos: (CGFloat) yPos;
 
 -(void) changeTextColor:(UIColor *)textColor;
 
@@ -63,12 +63,11 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 -(void) setTextViewFirstResponder:(BOOL)firstResponder;
 
-/* Changes text view height based on content height */
--(void) resizeTextView;
-
 /* Adds or removes text view */
 -(void) showText: (BOOL) show;
 
 -(BOOL) pointInTextView: (CGPoint)point withBuffer: (CGFloat)buffer;
 
+-(void)startRepositioningPhoto;
+-(void)endRepositioningPhoto;
 @end

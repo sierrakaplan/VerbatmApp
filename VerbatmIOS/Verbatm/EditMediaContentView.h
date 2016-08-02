@@ -16,6 +16,9 @@
 -(void) textIsEditing;
 -(void) textDoneEditing;
 
+-(void)repositioningPhoto;
+-(void)stopRepositioningPhoto;
+
 @end
 
 @interface EditMediaContentView : UIView

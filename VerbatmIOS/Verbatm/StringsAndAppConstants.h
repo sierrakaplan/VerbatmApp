@@ -16,7 +16,8 @@
 
 #pragma mark - ADK -
 
-#define CHAR_WORD_LIMIT 140
+#define CHARACTER_LIMIT 150
+
 #define GALLERY_PICKER_TITLE @"Verbatm"
 #define VERBATM_ALBUM_NAME @"Verbatm"
 #define VERBATM_DESCRIPTION @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!"
