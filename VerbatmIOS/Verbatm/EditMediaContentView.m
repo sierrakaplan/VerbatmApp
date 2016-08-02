@@ -146,6 +146,13 @@ andTextAlignment:(NSTextAlignment)textAlignment
 					  andTextColorBlack: textColorBlack
 				  andTextAlignment: textAlignment
 					   andTextSize: textSize andFontName:fontName];
+	// Move text if half screen
+	if (self.isAtHalfScreen) {
+		CGFloat contentHeight = [self.textAndImageView.textView measureContentHeight];
+		if ((yPosition + contentHeight) > (self.frame.size.height - TEXT_TOOLBAR_HEIGHT)) {
+			[self.textAndImageView changeTextViewYPos: 0.f];
+		}
+	}
 	[self addToolBarToViewWithTextColorBlack:textColorBlack];
 }
 
@@ -196,7 +203,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self moveTextView:textView afterEdit: NO];
 }
 
-- (void)textViewDidBeginEditing: (UITextView *)textView{
+- (void)textViewDidBeginEditing: (UITextView *)textView {
     self.textViewBeingEdited = YES;
 	[self.textAndImageView.textView setScrollEnabled:NO];
 	[self.delegate textIsEditing];
@@ -302,15 +309,15 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self addPanGestures];
 	[self createTextCreationButton];
 
-	//todo: bring back filters
+//	todo: bring back filters
 //    if(![[UserSetupParameters sharedInstance ] checkAndSetFilterInstructionShown]){
 //        [self presentUserInstructionForFilterSwipe];
 //    }
-
-	if (![[UserSetupParameters sharedInstance] checkAndSetAddTextInstructionShown]) {
-		//todo:
+//
+//	if (![[UserSetupParameters sharedInstance] checkAndSetAddTextInstructionShown]) {
+//		todo:
 //		[self presentAddTextInstruction];
-	}
+//	}
 }
 
 //todo: bring back filters?
@@ -483,7 +490,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
             
 			CGPoint location = [sender locationOfTouch:0 inView:self.textAndImageView];
 			CGFloat verticalDiff = location.y - self.textViewPanStartLocation.y;
-			[self.textAndImageView changeTextViewYPos: verticalDiff];
+			[self.textAndImageView changeTextViewYPosByDiff: verticalDiff];
 			self.textViewPanStartLocation = location;
 			break;
 		}

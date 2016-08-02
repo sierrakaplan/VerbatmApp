@@ -41,6 +41,7 @@
 		if (small) {
 			croppedImage = [smallImage imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width, self.bounds.size.height)];
 		}
+		[self addSubview: self.textView];
 		[self.imageView setImage: croppedImage];
 
 		// Load large image cropped
@@ -65,6 +66,7 @@
 -(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image {
 	self = [self initWithFrame: frame];
 	if (self) {
+		[self addSubview: self.textView];
 		[self.imageView setImage: image];
 	}
 	return self;
@@ -120,10 +122,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 	self.textYPosition = TEXT_VIEW_OVER_MEDIA_Y_OFFSET;
 	self.textView.frame = DEFAULT_TEXT_VIEW_FRAME;
-    
-    
-    
-    
+
     [self.textView setBackgroundColor:[UIColor clearColor]];
 
 	self.textSize = TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE;
@@ -139,22 +138,27 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	[self bringSubviewToFront:self.textView];
 }
 
--(NSString *)getText {
+-(NSString *) getText {
 	return self.textView.text;
 }
 
-- (BOOL) changeTextViewYPos: (CGFloat) yDiff {
+- (void) changeTextViewYPosByDiff: (CGFloat) yDiff {
 	CGRect newFrame = CGRectOffset(self.textView.frame, 0.f, yDiff);
+	[self changeTextViewYPos: newFrame.origin.y];
+}
+
+-(void) changeTextViewYPos: (CGFloat) newYPos {
 	CGFloat contentHeight = [self.textView measureContentHeight];
-	if ((newFrame.origin.y + contentHeight) > (self.frame.size.height - TEXT_TOOLBAR_HEIGHT)) {
-		newFrame.origin.y = self.frame.size.height - TEXT_TOOLBAR_HEIGHT - contentHeight;
+	if ((newYPos + contentHeight) > (self.frame.size.height - TEXT_TOOLBAR_HEIGHT)) {
+		newYPos = self.frame.size.height - TEXT_TOOLBAR_HEIGHT - contentHeight;
 	}
-	if (newFrame.origin.y < 0.f) {
-		newFrame.origin.y = 0.f;
+	if (newYPos < 0.f) {
+		newYPos = 0.f;
 	}
-    self.textView.frame = newFrame;
-    self.textYPosition = newFrame.origin.y;
-    return YES;
+	CGRect newFrame = self.textView.frame;
+	newFrame.origin.y = newYPos;
+	self.textView.frame = newFrame;
+	self.textYPosition = newYPos;
 }
 
 -(void) animateTextViewToYPos: (CGFloat) yPos {
@@ -200,10 +204,8 @@ andTextAlignment:(NSTextAlignment) textAlignment
 /* Adds or removes text view */
 -(void)showText: (BOOL) show {
 	if (show) {
-		if (self.textView.isHidden){
-			[self.textView setHidden: NO];
-			[self bringSubviewToFront:self.textView];
-		}
+		[self.textView setHidden: NO];
+		[self bringSubviewToFront:self.textView];
 	} else {
 		if (!self.textShowing) return;
 		[self.textView setHidden:YES];
@@ -263,10 +265,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 -(UITextView*) textView {
 	if (!_textView) {
-		CGRect textViewFrame = DEFAULT_TEXT_VIEW_FRAME;
-		UITextView *textView = [[UITextView alloc] initWithFrame: textViewFrame];
-		[self addSubview:textView];
-		_textView = textView;
+		_textView = [[UITextView alloc] initWithFrame: DEFAULT_TEXT_VIEW_FRAME];
 		_textView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.0];
 		_textView.keyboardAppearance = UIKeyboardAppearanceLight;
 		_textView.scrollEnabled = YES;

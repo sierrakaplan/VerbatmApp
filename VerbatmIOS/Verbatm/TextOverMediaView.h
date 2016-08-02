@@ -39,8 +39,11 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 -(NSString *) getText;
 
-/* Changes y position of textView, if it is legal (within bounds */
--(BOOL) changeTextViewYPos: (CGFloat) yDiff;
+/* Changes y position of textView to new value, if it is legal (within bounds */
+-(void) changeTextViewYPos: (CGFloat) newYPos;
+
+/* Changes y position of textView by amount, if it is legal (within bounds */
+- (void) changeTextViewYPosByDiff: (CGFloat) yDiff;
 
 /* Animates text view to new frame. Does not store new frame information (not permanent) */
 -(void) animateTextViewToYPos: (CGFloat) tempYPos;
