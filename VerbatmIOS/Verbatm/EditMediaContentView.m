@@ -146,7 +146,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
 					  andTextColorBlack: textColorBlack
 				  andTextAlignment: textAlignment
 					   andTextSize: textSize andFontName:fontName];
-
 	[self addToolBarToViewWithTextColorBlack:textColorBlack];
 }
 
@@ -268,9 +267,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 }
 
 -(void)keyboardDidHide:(NSNotification *) notification {
-	if (self.permanentOnScreenKeyboard) {
-		[self addSubview: self.permanentOnScreenKeyboard];
-	}
+	[self addToolBarToViewWithTextColorBlack:NO];
 }
 
 /* Change size of keyboard when keyboard frame changes */
