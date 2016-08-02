@@ -375,9 +375,9 @@
 			[self playWithSpeed:2.f];
 		}
     }else{
-        if([self.pinchView isKindOfClass:[TextPinchView class]]){
-            EditMediaContentView * emcView = [self.imageContainerViews firstObject];
-            [emcView onScreen];
+        if([self.pinchView isKindOfClass:[SingleMediaAndTextPinchView class]]){
+            EditMediaContentView *editContentView = [self.imageContainerViews firstObject];
+            [editContentView onScreen];
         }
     }
 }

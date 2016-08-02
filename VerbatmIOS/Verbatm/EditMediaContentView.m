@@ -49,6 +49,7 @@
 
 /* Stores if filter has been changed in order to preserve state on exit */
 @property (nonatomic) BOOL filterSwitched;
+
 /* Sentinel to check direction of gesture the first time a
  gesture state changed event is recorded */
 @property (nonatomic) BOOL gestureActionJustStarted;
@@ -160,8 +161,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 //creates a toolbar to add onto the keyboard
 -(void)addToolBarToViewWithTextColorBlack:(BOOL)textColorBlack {
-	CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - TEXT_TOOLBAR_HEIGHT,
-									 self.frame.size.width, TEXT_TOOLBAR_HEIGHT/2.f);
+	CGRect toolBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, TEXT_TOOLBAR_HEIGHT/2.f);
 	BOOL onTextAve = [self.pinchView isKindOfClass:[TextPinchView class]];
 	VerbatmKeyboardToolBar* toolBar = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
                                                                   andTextColorBlack: textColorBlack
@@ -174,6 +174,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	if(!self.permanentOnScreenKeyboard && self.textAndImageView &&
 	   ![self.textAndImageView.textView.text isEqualToString:@""]) {
 		[self clearTextCreationButton];
+		toolBarFrame.origin.y = self.frame.size.height - TEXT_TOOLBAR_HEIGHT;
 		toolBarFrame.size.height = TEXT_TOOLBAR_HEIGHT;
 		self.permanentOnScreenKeyboard = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
 																	 andTextColorBlack:textColorBlack
@@ -578,7 +579,7 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 -(void)offScreen {
 	[self exiting];
 	self.videoHasBeenPrepared = NO;
-    if([self.pinchView isKindOfClass:[TextPinchView class]]){
+    if([self.pinchView isKindOfClass:[SingleMediaAndTextPinchView class]]){
         [self.textAndImageView.textView resignFirstResponder];
     }
 }
@@ -588,7 +589,7 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
        [self.textAndImageView.textView.text isEqualToString:@""]){
         [self.textAndImageView.textView setHidden:YES];
         [self.textAndImageView.textView becomeFirstResponder];
-    }else{
+    } else {
         if(!self.videoHasBeenPrepared){
             [self.videoView prepareVideoFromAsset:self.videoAsset];
             [self.videoView playVideo];

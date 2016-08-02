@@ -28,7 +28,7 @@ typedef enum {
 @interface VerbatmKeyboardToolBar()<AdjustTextSizeDelegate, AdjustTextAlignmentToolBarDelegate, AdjustTextFontToolBarDelegate, AdjustTextAVEBackgroundToolBarDelegate>
 
 @property (nonatomic) BOOL textIsBlack;
-@property (nonatomic) BOOL toolbardOnTextAve;
+@property (nonatomic) BOOL onTextAve;
 
 @property (strong, nonatomic) UIButton *textColorButton;
 @property (strong, nonatomic) UIButton *changeFontSizeButton;
@@ -73,7 +73,7 @@ typedef enum {
 	if(self) {
         self.backgroundColor = (onScreen) ? [UIColor clearColor] : [UIColor colorWithWhite:0.f alpha:0.1];
 		self.textIsBlack = textColorBlack;
-        self.toolbardOnTextAve = onTextAve;
+        self.onTextAve = onTextAve;
         self.currentSelectedOption = noSelection;
 
         if(onScreen) {
@@ -362,7 +362,7 @@ typedef enum {
 																	  andIcon:CHANGE_TEXT_VIEW_BACKGROUND_UNSELECTED
                                              andSelector:@selector(changeTextAveBackgroundButtonPressed) andTarget:self];
         
-        [_changeTextAveBackgroundButton setHidden:!self.toolbardOnTextAve];
+        [_changeTextAveBackgroundButton setHidden:!self.onTextAve];
         
     }
     return _changeTextAveBackgroundButton;
