@@ -97,6 +97,10 @@
 												 name:UIKeyboardDidShowNotification
 											   object:nil];
 
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(keyboardDidHide:)
+												 name:UIKeyboardDidHideNotification
+											   object:nil];
 
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(keyBoardWillChangeFrame:)
@@ -151,7 +155,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 //creates a toolbar to add onto the keyboard
 -(void)addToolBarToViewWithTextColorBlack:(BOOL)textColorBlack {
 	CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - TEXT_TOOLBAR_HEIGHT,
-									 self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
+									 self.frame.size.width, TEXT_TOOLBAR_HEIGHT/2.f);
 	BOOL onTextAve = [self.pinchView isKindOfClass:[TextPinchView class]];
 	VerbatmKeyboardToolBar* toolBar = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
                                                                   andTextColorBlack: textColorBlack
@@ -164,6 +168,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	if(!self.permanentOnScreenKeyboard && self.textAndImageView &&
 	   ![self.textAndImageView.textView.text isEqualToString:@""]) {
 		[self clearTextCreationButton];
+		toolBarFrame.size.height = TEXT_TOOLBAR_HEIGHT;
 		self.permanentOnScreenKeyboard = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
 																	 andTextColorBlack:textColorBlack
 																		   isOnTextAve:onTextAve
@@ -206,9 +211,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
     self.textViewBeingEdited = NO;
     [self.textAndImageView.textView setScrollEnabled:NO];
 	[self moveTextView:textView afterEdit:YES];
-	if (self.permanentOnScreenKeyboard) {
-		[self addSubview: self.permanentOnScreenKeyboard];
-	}
     [self addPanGestures];
 }
 
@@ -261,17 +263,15 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 /* Gets keyboard height the first time it appears */
 -(void)keyboardDidShow:(NSNotification *) notification {
-
-//    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
-//	
-//    self.keyboardHeight = keyboardSize.height;
-//    
-//    if(self.keyboardHeight != TEXT_TOOLBAR_HEIGHT) {
-//        [self addJustTextViewFrame:self.textAndImageView.textView];
-//    }
-
+    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
+    self.keyboardHeight = keyboardSize.height;
 }
 
+-(void)keyboardDidHide:(NSNotification *) notification {
+	if (self.permanentOnScreenKeyboard) {
+		[self addSubview: self.permanentOnScreenKeyboard];
+	}
+}
 
 /* Change size of keyboard when keyboard frame changes */
 -(void)keyBoardWillChangeFrame: (NSNotification *) notification {

@@ -16,5 +16,7 @@
 @end
 
 @interface AdjustTextSizeToolBar : UIView
+
 @property (nonatomic, weak) id<AdjustTextSizeDelegate> delegate;
+
 @end

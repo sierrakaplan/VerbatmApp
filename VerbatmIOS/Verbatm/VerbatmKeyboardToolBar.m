@@ -14,8 +14,7 @@
 #import "VerbatmKeyboardToolBar.h"
 #import "Styles.h"
 #import "SizesAndPositions.h"
-
-
+#import "UtilityFunctions.h"
 
 typedef enum {
     noSelection = 0,
@@ -24,8 +23,7 @@ typedef enum {
     textAlightment = 3,
     fontType = 4,
     background = 5
-}ToolBarOptions;
-
+} ToolBarOptions;
 
 @interface VerbatmKeyboardToolBar()<AdjustTextSizeDelegate, AdjustTextAlignmentToolBarDelegate, AdjustTextFontToolBarDelegate, AdjustTextAVEBackgroundToolBarDelegate>
 
@@ -62,7 +60,7 @@ typedef enum {
 
 #define NUM_BASE_BUTTONS 5
 
-#define CENTERING_Y (((self.frame.size.height/2.f) - TEXT_TOOLBAR_BUTTON_WIDTH)/2.f)
+#define CENTERING_Y ((TEXT_TOOLBAR_HEIGHT/2.f/2.f) - (TEXT_TOOLBAR_BUTTON_WIDTH/2.f))
 
 
 @end
@@ -81,10 +79,8 @@ typedef enum {
         if(onScreen) {
 			[self addAllButtons];
 		} else {
-			[self.lowerBarHolder addSubview:self.textColorButton];
-			[self.lowerBarHolder addSubview:self.doneButton];
-            self.layer.borderWidth = 1.f;
-            self.layer.borderColor = [UIColor blackColor].CGColor;
+			[self addSubview:self.textColorButton];
+			[self addSubview:self.doneButton];
         }
 	}
 	return self;
@@ -280,8 +276,9 @@ typedef enum {
         CGRect buttonFrame = CGRectMake(self.textColorButton.frame.origin.x +
 										self.textColorButton.frame.size.width + ICON_SEPARATION_SPACE,
 										CENTERING_Y, TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
-        _changeFontSizeButton = [self getButtonWithFrame:buttonFrame andIcon:CHANGE_FONT_SIZE_ICON_UNSELECTED
-                                             andSelector:@selector(changeFontSizeButtonPressed)];
+        _changeFontSizeButton = [UtilityFunctions getButtonWithFrame:buttonFrame
+															 andIcon:CHANGE_FONT_SIZE_ICON_UNSELECTED
+                                             andSelector:@selector(changeFontSizeButtonPressed) andTarget:self];
     }
     return _changeFontSizeButton;
 }
@@ -289,10 +286,7 @@ typedef enum {
 -(UIButton *) doneButton {
 	if (!_doneButton) {
         CGFloat height = (self.frame.size.height/2.f) - TEXT_TOOLBAR_BUTTON_OFFSET;
-        CGFloat centeringY = ((self.frame.size.height/2.f) - height)/2.f;
-        
-		CGRect doneButtonFrame = CGRectMake(self.frame.size.width  - TEXT_TOOLBAR_DONE_WIDTH - TEXT_TOOLBAR_BUTTON_OFFSET + 5.f, centeringY,
-											TEXT_TOOLBAR_DONE_WIDTH,height);
+		CGRect doneButtonFrame = CGRectMake(self.frame.size.width  - TEXT_TOOLBAR_DONE_WIDTH - TEXT_TOOLBAR_BUTTON_OFFSET + 5.f, CENTERING_Y, TEXT_TOOLBAR_DONE_WIDTH,height);
 		_doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		_doneButton.frame = doneButtonFrame;
 		UIFont* labelFont = [UIFont fontWithName:REGULAR_FONT size:KEYBOARD_TOOLBAR_FONT_SIZE];
@@ -324,8 +318,8 @@ typedef enum {
 	if (!_textColorButton) {
 		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, CENTERING_Y,
 										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
-        _textColorButton = [self getButtonWithFrame:buttonFrame andIcon:((self.textIsBlack) ? TEXT_FONT_COLOR_BLACK :TEXT_FONT_COLOR_WHITE)
-										andSelector:@selector(textColorButtonPressed)];
+        _textColorButton = [UtilityFunctions getButtonWithFrame:buttonFrame andIcon:((self.textIsBlack) ? TEXT_FONT_COLOR_BLACK :TEXT_FONT_COLOR_WHITE)
+										andSelector:@selector(textColorButtonPressed) andTarget:self];
 	}
 	return _textColorButton;
 }
@@ -335,8 +329,9 @@ typedef enum {
     if (!_changeTextAlignmentButton) {
         CGRect buttonFrame = CGRectMake(self.changeFontSizeButton.frame.origin.x +
 										self.changeFontSizeButton.frame.size.width + ICON_SEPARATION_SPACE, CENTERING_Y, TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
-        _changeTextAlignmentButton = [self getButtonWithFrame:buttonFrame andIcon:CHANGE_TEXT_ALIGNMENT_ICON
-                                             andSelector:@selector(changeTextAlignmentButtonPressed)];
+        _changeTextAlignmentButton = [UtilityFunctions getButtonWithFrame:buttonFrame
+																  andIcon:CHANGE_TEXT_ALIGNMENT_ICON
+                                             andSelector:@selector(changeTextAlignmentButtonPressed) andTarget:self];
     }
     return _changeTextAlignmentButton;
 }
@@ -347,8 +342,9 @@ typedef enum {
         CGRect buttonFrame = CGRectMake(self.changeTextAlignmentButton.frame.origin.x + self.changeTextAlignmentButton.frame.size.width + ICON_SEPARATION_SPACE - 10.f, CENTERING_Y,
                                         TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
         
-        _changeFontTypeButton = [self getButtonWithFrame:buttonFrame andIcon:CHANGE_FONT_TYPE_ICON_UNSELECTED
-                                                  andSelector:@selector(changeFontTypeButtonPressed)];
+        _changeFontTypeButton = [UtilityFunctions getButtonWithFrame:buttonFrame
+															 andIcon:CHANGE_FONT_TYPE_ICON_UNSELECTED
+                                                  andSelector:@selector(changeFontTypeButtonPressed) andTarget:self];
         
     }
     
@@ -362,8 +358,9 @@ typedef enum {
         CGRect buttonFrame = CGRectMake(self.changeFontTypeButton.frame.origin.x + self.changeFontTypeButton.frame.size.width + 15.f, CENTERING_Y,
                                         TEXT_TOOLBAR_BUTTON_WIDTH* 2.f, TEXT_TOOLBAR_BUTTON_WIDTH);
         
-        _changeTextAveBackgroundButton = [self getButtonWithFrame:buttonFrame andIcon:CHANGE_TEXT_VIEW_BACKGROUND_UNSELECTED
-                                             andSelector:@selector(changeTextAveBackgroundButtonPressed)];
+        _changeTextAveBackgroundButton = [UtilityFunctions getButtonWithFrame:buttonFrame
+																	  andIcon:CHANGE_TEXT_VIEW_BACKGROUND_UNSELECTED
+                                             andSelector:@selector(changeTextAveBackgroundButtonPressed) andTarget:self];
         
         [_changeTextAveBackgroundButton setHidden:!self.toolbardOnTextAve];
         
@@ -371,7 +368,7 @@ typedef enum {
     return _changeTextAveBackgroundButton;
 }
 
--(UIView *)lowerBarHolder{
+-(UIView *)lowerBarHolder {
     if (!_lowerBarHolder) {
         _lowerBarHolder = [[UIView alloc] initWithFrame:CGRectMake(0.f, self.frame.size.height/2.f, self.frame.size.width, self.frame.size.height/2.f)];
         [_lowerBarHolder setBackgroundColor:[UIColor whiteColor]];
@@ -413,16 +410,6 @@ typedef enum {
 
     }
     return _adjustBackgroundBar;
-}
-
-
-
--(UIButton *) getButtonWithFrame:(CGRect)frame andIcon:(NSString*)iconName andSelector:(SEL)action {
-	UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-	button.frame = frame;
-	[button setImage:[UIImage imageNamed:iconName] forState:UIControlStateNormal];
-	[button addTarget:self action:action forControlEvents:UIControlEventTouchUpInside];
-	return button;
 }
 
 
