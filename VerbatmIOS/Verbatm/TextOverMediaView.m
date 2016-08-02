@@ -145,6 +145,13 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 - (BOOL) changeTextViewYPos: (CGFloat) yDiff {
 	CGRect newFrame = CGRectOffset(self.textView.frame, 0.f, yDiff);
+	CGFloat contentHeight = [self.textView measureContentHeight];
+	if ((newFrame.origin.y + contentHeight) > (self.frame.size.height - TEXT_TOOLBAR_HEIGHT)) {
+		newFrame.origin.y = self.frame.size.height - TEXT_TOOLBAR_HEIGHT - contentHeight;
+	}
+	if (newFrame.origin.y < 0.f) {
+		newFrame.origin.y = 0.f;
+	}
     self.textView.frame = newFrame;
     self.textYPosition = newFrame.origin.y;
     return YES;

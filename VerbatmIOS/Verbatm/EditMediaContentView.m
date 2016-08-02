@@ -54,9 +54,9 @@
 @property (nonatomic) BOOL gestureActionJustStarted;
 
 @property (nonatomic) NSInteger keyboardHeight;
-/* Stores frame for text view that user has set so that it can be
- restored after keyboard goes away */
-@property (nonatomic) CGRect userSetFrame;
+
+// Stores y position of text view after user set it before keyboard appears
+@property (nonatomic) CGFloat userSetYPos;
 
 /* Only want to prepare videos once, otherwise just play them */
 @property (nonatomic) BOOL videoHasBeenPrepared;
@@ -194,31 +194,23 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 /* User has edited the text view somehow so we adjust its size */
 - (void)textViewDidChange:(UITextView *)textView {
-    [self addJustTextViewFrame:textView];
+	[self moveTextView:textView afterEdit: NO];
 }
 
 - (void)textViewDidBeginEditing: (UITextView *)textView{
     self.textViewBeingEdited = YES;
+	[self.textAndImageView.textView setScrollEnabled:NO];
 	[self.delegate textIsEditing];
-	self.userSetFrame = textView.frame;
+	self.userSetYPos = textView.frame.origin.y;
     [self.textAndImageView.textView removeGestureRecognizer:self.textViewPanGesture];
+	[self moveTextView:textView afterEdit: NO];
     [self removeScreenToolbar];
 }
 
 -(void)textViewDidEndEditing:(UITextView *)textView {
     self.textViewBeingEdited = NO;
     [self.textAndImageView.textView setScrollEnabled:NO];
-    
-    //to do
-    CGFloat contentHeight = [textView measureContentHeight];
-    float height = (TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT < contentHeight) ? contentHeight : TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT;
-    CGFloat y_Diff = (self.frame.size.height - TEXT_TOOLBAR_HEIGHT) - (self.userSetFrame.origin.y + height);
-    CGFloat newY = (y_Diff < 0) ? (self.userSetFrame.origin.y + y_Diff) : self.userSetFrame.origin.y;
-    
-    [UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
-        self.textAndImageView.textView.frame = CGRectMake(TEXT_VIEW_X_OFFSET, newY, textView.frame.size.width, height);
-    }];
-    
+	[self moveTextView:textView afterEdit:YES];
     [self createScreenToolBar];
     [self addPanGestures];
 }
@@ -226,73 +218,61 @@ andTextAlignment:(NSTextAlignment)textAlignment
 /* Enforces word limit */
 - (BOOL) textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
 	NSString* newText = [textView.text stringByReplacingCharactersInRange:range withString:text];
-	if (newText.length > CHAR_WORD_LIMIT) {
+	if (newText.length > CHARACTER_LIMIT) {
 		return NO;
 	} else {
 		return YES;
 	}
 }
 
-//changes the frame of a textview based on it's content and
-//alsio the visible height of the screen
--(void)addJustTextViewFrame:(UITextView *)textView{
-    if(!textView)return;
-    
-    CGFloat contentHeight = [textView measureContentHeight];
-    float height = (TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT < contentHeight) ? contentHeight : TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT;
-    CGRect newFrame;
-    
-    if(self.isAtHalfScreen){
-        if(height > self.frame.size.height){
-            newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, 0.f, self.frame.size.width, self.frame.size.height);
-            if(![textView isScrollEnabled]){
-                [textView setScrollEnabled:YES];
-                textView.frame = textView.frame;
-            }
-        }else{
-            CGFloat yPos = self.frame.size.height - height;
-            newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, yPos, self.frame.size.width, height);
-        }
-    }else{
-        if(height > (self.frame.size.height - self.keyboardHeight)){
-            newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, 0.f, self.frame.size.width, self.frame.size.height - self.keyboardHeight);
-            if(![textView isScrollEnabled]){
-                [textView setScrollEnabled:YES];
-                textView.frame = textView.frame;
-            }
-        }else{
-            CGFloat yPos = self.frame.size.height - (self.keyboardHeight+ height);
-            newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, yPos, self.frame.size.width, height);
-        }
-    }
-    
-    
-    
-    [UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
-        [textView setFrame:newFrame];
-    }completion:^(BOOL finished) {
-        if(finished){
-            if([textView isHidden]){
-                [textView setHidden:NO];
-            }
-        }
-    }];
-    
+//todo: tell textView it's new ypos to save in user defaults
+// If afterEdit, moves TextView to the position it should be after user finishes editing
+// (ensuring it's on screen based on new contentHeight)
+// If not afterEdit, text is still being edited so positions text with last line above keyboard
+// if text is not already above it
+-(void) moveTextView:(UITextView *)textView afterEdit:(BOOL)after {
+
+	CGFloat contentHeight = [textView measureContentHeight];
+	CGRect newFrame;
+	CGFloat yPos = 0.f;
+
+	if (after) {
+		CGFloat heightDiff = (self.userSetYPos + contentHeight) - (self.frame.size.height - TEXT_TOOLBAR_HEIGHT);
+		yPos = self.userSetYPos;
+		if (heightDiff > 0) yPos = self.userSetYPos - heightDiff;
+		if (yPos < 0.f) yPos = 0.f;
+		CGFloat height = self.frame.size.height - yPos;
+		newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, yPos, self.frame.size.width, height);
+	} else {
+		CGFloat heightWithKeyboard = self.isAtHalfScreen ? self.frame.size.height : (self.frame.size.height - self.keyboardHeight);
+		yPos = self.userSetYPos;
+		CGFloat heightDiff = (self.userSetYPos + contentHeight) - heightWithKeyboard;
+		if (heightDiff > 0) yPos = yPos - heightDiff;
+		newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, yPos, self.frame.size.width, contentHeight);
+	}
+
+	[UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
+		[textView setFrame:newFrame];
+	}completion:^(BOOL finished) {
+		if(finished){
+			[textView setHidden:NO];
+		}
+	}];
 }
 
 #pragma mark Keyboard Notifications
 
 /* Gets keyboard height the first time it appears */
 -(void)keyboardDidShow:(NSNotification *) notification {
-	
-    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
-	
-    self.keyboardHeight = keyboardSize.height;
-    
-    if(self.keyboardHeight != TEXT_TOOLBAR_HEIGHT) {
-        [self addJustTextViewFrame:self.textAndImageView.textView];
-    }
-    
+
+//    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
+//	
+//    self.keyboardHeight = keyboardSize.height;
+//    
+//    if(self.keyboardHeight != TEXT_TOOLBAR_HEIGHT) {
+//        [self addJustTextViewFrame:self.textAndImageView.textView];
+//    }
+
 }
 
 
