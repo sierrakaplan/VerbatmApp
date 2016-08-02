@@ -26,6 +26,12 @@
 
 #define STATUS_BAR_HEIGHT 20.f
 
+#pragma mark - Log In/Sign Up -
+
+#define LOGIN_TOOLBAR_HEIGHT 75.f
+#define LOGIN_BUTTON_HEIGHT 200.f
+#define LOGIN_BUTTON_WIDTH 400.f
+
 #pragma mark - Main Tab bar -
 
 #define TAB_BUTTON_PADDING_X 12.f
@@ -33,7 +39,6 @@
 
 #define TAB_DIVIDER_WIDTH 2.f
 #define TAB_BAR_HEIGHT 40.f
-
 
 
 #pragma mark - Custom Navigation Bar -
@@ -104,10 +109,10 @@
 #define EXIT_CV_BUTTON_HEIGHT 30
 #define EXIT_CV_BUTTON_WALL_OFFSET 20
 
-#pragma mark Toolbar
-#define TOOLBAR_BUTTON_Y_OFFSET 2.f
+#pragma mark - Text Toolbar
 
 #define TEXT_TOOLBAR_HEIGHT 100.f
+#define TEXT_TOOLBAR_BUTTON_Y_OFFSET 2.f
 #define TEXT_TOOLBAR_BUTTON_OFFSET 10.f
 #define TEXT_TOOLBAR_BUTTON_WIDTH 25.f
 #define TEXT_TOOLBAR_DONE_WIDTH 75.f
@@ -127,7 +132,6 @@
 #define HORIZONTAL_PINCH_THRESHOLD 100
 #define PINCH_VIEW_DELETING_THRESHOLD 80
 #define PINCH_DISTANCE_THRESHOLD_FOR_NEW_MEDIA_TILE_CREATION (MEDIA_TILE_SELECTOR_HEIGHT * 3.f/4.f)
-
 
 
 
@@ -165,6 +169,7 @@
 
 #define TEXT_VIEW_X_OFFSET 0.f
 #define TEXT_VIEW_OVER_MEDIA_Y_OFFSET 150.f
+#define TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT 70.f
 
 #define PAN_CIRCLE_CENTER_Y (self.frame.size.height - CIRCLE_RADIUS - CIRCLE_OFFSET)
 

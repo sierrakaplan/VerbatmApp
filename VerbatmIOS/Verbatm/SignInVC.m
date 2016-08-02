@@ -310,7 +310,7 @@
 }
 
 
--(void)deleteCreatedUserWithCompletionBlock:(void(^)())block{
+-(void)deleteCreatedUser {
     if (self.createdUserWithLoginCode) {
         self.createdUserWithLoginCode = NO;
         NSString * userNameToDelete = self.phoneNumber;
@@ -320,9 +320,6 @@
 				NSLog(@"Error deleting created user: %@", error.description);
 			} else {
 				NSLog(@"Success deleting created user.");
-                if(block){
-                    block();
-                }
 			}
 		}];
     }
@@ -334,14 +331,16 @@
                                                                 preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction* defaultAction1 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {
+                                                    
                                                               [self goBackFromEnteringConfirmation];
+                                                              [self deleteCreatedUser];
+                                                          
                                                           }];
-    
     UIAlertAction* defaultAction2 = [UIAlertAction actionWithTitle:@"Resend" style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {
-                                                              [self deleteCreatedUserWithCompletionBlock:^{
-                                                                  [self sendCodeToUser];
-                                                              }];
+                                                              
+                                                              [self sendCodeToUser];
+                                                              
                                                           }];
 
     
@@ -506,8 +505,9 @@
 
 
 -(void)goBackFromEnteringConfirmation{
+    
     if(self.createdUserWithLoginCode){
-        [self deleteCreatedUserWithCompletionBlock:nil];
+        [self deleteCreatedUser];
     }
     [self replaceView:self.confirmationCodeEntry  withView:self.createAccountView goingForward:NO];
 }

@@ -18,10 +18,9 @@
 
 @implementation Post_Channel_RelationshipManager
 
-
 +(void)savePost:(PFObject *) postParseObject toChannels: (NSMutableArray *) channels withCompletionBlock:(void(^)())block{
 
-	NSMutableArray * pageLoadPromises = [[NSMutableArray alloc] init];
+	NSMutableArray *postToChannelPromises = [[NSMutableArray alloc] init];
 
 	for(Channel * channel in channels){
 		AnyPromise * promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
@@ -38,11 +37,10 @@
 				resolve(nil);
 			}];
 		}];
-
-		[pageLoadPromises addObject:promise];
+		[postToChannelPromises addObject:promise];
 	}
 
-	PMKWhen(pageLoadPromises).then(^(id data){
+	PMKWhen(postToChannelPromises).then(^(id data){
 		if(block)block();
 	});
 }

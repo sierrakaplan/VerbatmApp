@@ -20,8 +20,6 @@
 -(void) editContentViewTextIsEditing_PhotoVideoPVE;
 -(void) editContentViewTextDoneEditing_PhotoVideoPVE;
 
--(void) repositioningPhoto_PhotoVideoPVE;
--(void) stopRepositioningPhoto_PhotoVideoPVE;
 @end
 
 

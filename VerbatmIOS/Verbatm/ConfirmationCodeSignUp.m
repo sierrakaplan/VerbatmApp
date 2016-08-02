@@ -57,10 +57,9 @@
 
 
 
--(void)createNextButton{
-    CGFloat loginToolBarHeight = TEXT_TOOLBAR_HEIGHT*(3.f/4.f);
-    CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - loginToolBarHeight,
-                                     self.frame.size.width, loginToolBarHeight);
+-(void)createNextButton {
+    CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - LOGIN_TOOLBAR_HEIGHT,
+                                     self.frame.size.width, LOGIN_TOOLBAR_HEIGHT);
     self.toolBar = [[LoginKeyboardToolBar alloc] initWithFrame:toolBarFrame];
     self.toolBar.delegate = self;
     [self.toolBar setNextButtonText:@"Submit Code"];
