@@ -386,7 +386,6 @@ typedef enum {
     return _adjustTextSizeBar;
 }
 
-
 -(AdjustTextAlignmentToolBar *)adjustTextAlignmentBar{
     if (!_adjustTextAlignmentBar) {
         _adjustTextAlignmentBar = [[AdjustTextAlignmentToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width, self.frame.size.height/2.f)];
