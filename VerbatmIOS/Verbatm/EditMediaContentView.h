@@ -39,8 +39,6 @@
 
 -(void)changeImageTo: (UIImage *) image;
 
--(void)createTextCreationButton;
-
 -(void) setText:(NSString *)text
 andTextYPosition:(CGFloat)yPosition
 andTextColorBlack:(BOOL)textColorBlack

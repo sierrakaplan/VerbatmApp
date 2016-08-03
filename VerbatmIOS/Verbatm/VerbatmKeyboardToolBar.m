@@ -300,7 +300,7 @@ typedef enum {
 - (UIButton *) textColorButton {
 	if (!_textColorButton) {
 		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, CENTERING_Y,
-										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
+										TEXT_TOOLBAR_BUTTON_WIDTH-5.f, TEXT_TOOLBAR_BUTTON_WIDTH);
         _textColorButton = [UtilityFunctions getButtonWithFrame:buttonFrame andIcon:((self.textIsBlack) ? TEXT_FONT_COLOR_BLACK :TEXT_FONT_COLOR_WHITE)
 										andSelector:@selector(textColorButtonPressed) andTarget:self];
 	}
@@ -356,15 +356,14 @@ typedef enum {
 
 -(UIButton *) keyboardButton {
 	if (!_keyboardButton) {
-
 		CGRect keyboardButtonFrame = CGRectMake(self.changeTextAveBackgroundButton.frame.origin.x + self.changeTextAveBackgroundButton.frame.size.width +
 												ICON_SEPARATION_SPACE, CENTERING_Y,
-												TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
+												TEXT_TOOLBAR_BUTTON_WIDTH*1.2, TEXT_TOOLBAR_BUTTON_WIDTH);
 		_keyboardButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		_keyboardButton.frame = keyboardButtonFrame;
+		[_keyboardButton.imageView setContentMode:UIViewContentModeScaleAspectFit];
 		[_keyboardButton setImage:[UIImage imageNamed:PRESENT_KEYBOARD_ICON] forState:UIControlStateNormal];
 		[_keyboardButton addTarget:self action:@selector(keyboardButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-
 	}
 	return _keyboardButton;
 }

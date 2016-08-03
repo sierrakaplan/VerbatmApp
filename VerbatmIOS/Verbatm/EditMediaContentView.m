@@ -38,7 +38,6 @@
 #pragma mark FilteredPhotos
 @property (nonatomic, strong) NSArray *filteredImages;
 @property (nonatomic) NSInteger imageIndex;
-@property (nonatomic, strong) UIButton *textCreationButton;
 
 @property (nonatomic) CGPoint  panStartLocation;
 
@@ -111,26 +110,6 @@
 
 #pragma mark - Text View -
 
--(void)createTextCreationButton {
-	[self.textAndImageView setTextViewEditable:YES];
-	[self.textAndImageView showText:YES];
-    __weak EditMediaContentView * weakSelf = self;
-	[self.textAndImageView setTextViewDelegate:weakSelf];
-    	[self.textCreationButton setImage:[UIImage imageNamed:CREATE_TEXT_ICON] forState:UIControlStateNormal];
-	self.textCreationButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-	[self.textCreationButton addTarget:self action:@selector(editText) forControlEvents:UIControlEventTouchUpInside];
-	[self addSubview:self.textCreationButton];
-	[self bringSubviewToFront:self.textCreationButton];
-	
-}
-
--(void)clearTextCreationButton{
-    if(self.textCreationButton){
-        [self.textCreationButton removeFromSuperview];
-        self.textCreationButton = nil;
-    }
-}
-
 -(void) editText {
 	[self.textAndImageView showText: YES];
 	[self.textAndImageView setTextViewFirstResponder: YES];
@@ -154,6 +133,11 @@ andTextAlignment:(NSTextAlignment)textAlignment
 			[self.textAndImageView changeTextViewYPos: 0.f];
 		}
 	}
+	[self.textAndImageView setTextViewEditable:YES];
+	[self.textAndImageView showText:YES];
+	__weak EditMediaContentView * weakSelf = self;
+	[self.textAndImageView setTextViewDelegate:weakSelf];
+
 	[self addToolBarToViewWithTextColorBlack:textColorBlack];
 }
 
@@ -171,9 +155,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self.textAndImageView setTextViewKeyboardToolbar:toolBar];
 
 	// add toolbar to screen permanently
-	if(!self.permanentOnScreenKeyboard && self.textAndImageView &&
-	   ![self.textAndImageView.textView.text isEqualToString:@""]) {
-		[self clearTextCreationButton];
+	if(!self.permanentOnScreenKeyboard && self.textAndImageView) {
 		toolBarFrame.origin.y = self.frame.size.height - TEXT_TOOLBAR_HEIGHT;
 		toolBarFrame.size.height = TEXT_TOOLBAR_HEIGHT;
 		self.permanentOnScreenKeyboard = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
@@ -182,20 +164,10 @@ andTextAlignment:(NSTextAlignment)textAlignment
 																 isOnScreenPermanently:YES];
 		[self.permanentOnScreenKeyboard setDelegate:self];
 		[self addSubview:self.permanentOnScreenKeyboard];
-	} else if (!self.permanentOnScreenKeyboard) {
-		[self createTextCreationButton];
-	} else {
+	} else if (self.textAndImageView) {
 		[self addSubview:self.permanentOnScreenKeyboard];
 	}
 }
-
--(void)removeScreenToolbar {
-    if(self.permanentOnScreenKeyboard) {
-        [self.permanentOnScreenKeyboard removeFromSuperview];
-    }
-    [self clearTextCreationButton];
-}
-
 
 #pragma mark - Text view content changed -
 
@@ -211,7 +183,13 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	self.userSetYPos = textView.frame.origin.y;
     [self.textAndImageView.textView removeGestureRecognizer:self.textViewPanGesture];
 	[self moveTextView:textView afterEdit: NO];
-    [self removeScreenToolbar];
+	[self removeScreenToolbar];
+}
+
+-(void)removeScreenToolbar {
+	if(self.permanentOnScreenKeyboard) {
+		[self.permanentOnScreenKeyboard removeFromSuperview];
+	}
 }
 
 -(void)textViewDidEndEditing:(UITextView *)textView {
@@ -308,7 +286,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	self.filteredImages = filteredImages;
 	[self addSubview: self.textAndImageView];
 	[self addPanGestures];
-	[self createTextCreationButton];
 
 //	todo: bring back filters
 //    if(![[UserSetupParameters sharedInstance ] checkAndSetFilterInstructionShown]){
@@ -618,17 +595,6 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
         _textViewPanGesture = textViewPanGesture;
     }
     return _textViewPanGesture;
-}
-
--(UIButton *)textCreationButton{
-	if(!_textCreationButton) {
-		CGRect buttonFrame = CGRectMake(self.frame.size.width -  EXIT_CV_BUTTON_WALL_OFFSET - EXIT_CV_BUTTON_WIDTH,
-										self.frame.size.height - EXIT_CV_BUTTON_WIDTH - EXIT_CV_BUTTON_WALL_OFFSET,
-										EXIT_CV_BUTTON_WIDTH,
-										EXIT_CV_BUTTON_WIDTH);
-		_textCreationButton = [[UIButton alloc] initWithFrame:buttonFrame];
-	}
-	return _textCreationButton;
 }
 
 -(void) dealloc {
