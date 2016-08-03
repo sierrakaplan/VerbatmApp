@@ -71,7 +71,7 @@ typedef enum {
 				 isOnTextAve:(BOOL)onTextAve isOnScreenPermanently:(BOOL)onScreen {
 	self = [super initWithFrame:frame];
 	if(self) {
-        self.backgroundColor = (onScreen) ? [UIColor clearColor] : [UIColor colorWithWhite:0.f alpha:0.1];
+		self.backgroundColor = (onScreen) ? [UIColor clearColor] : [UIColor whiteColor];
 		self.textIsBlack = textColorBlack;
         self.onTextAve = onTextAve;
         self.currentSelectedOption = noSelection;
@@ -297,23 +297,6 @@ typedef enum {
 	return _doneButton;
 }
 
-
--(UIButton *) keyboardButton {
-    if (!_keyboardButton) {
-        CGFloat height = (self.frame.size.height/3.f) - TEXT_TOOLBAR_BUTTON_OFFSET;
-        CGFloat centeringY = ((self.frame.size.height/2.f) - height)/2.f;
-        
-        CGRect keyboardButtonFrame = CGRectMake(self.frame.size.width  - TEXT_TOOLBAR_DONE_WIDTH + 5.f, centeringY,
-                                            TEXT_TOOLBAR_DONE_WIDTH/2.f,height);
-        _keyboardButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _keyboardButton.frame = keyboardButtonFrame;
-        [_keyboardButton setImage:[UIImage imageNamed:PRESENT_KEYBOARD_ICON] forState:UIControlStateNormal];
-        [_keyboardButton addTarget:self action:@selector(keyboardButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-        
-    }
-    return _keyboardButton;
-}
-
 - (UIButton *) textColorButton {
 	if (!_textColorButton) {
 		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, CENTERING_Y,
@@ -328,7 +311,8 @@ typedef enum {
 - (UIButton *) changeTextAlignmentButton {
     if (!_changeTextAlignmentButton) {
         CGRect buttonFrame = CGRectMake(self.changeFontSizeButton.frame.origin.x +
-										self.changeFontSizeButton.frame.size.width + ICON_SEPARATION_SPACE, CENTERING_Y, TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
+										self.changeFontSizeButton.frame.size.width + ICON_SEPARATION_SPACE,
+										CENTERING_Y, TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
         _changeTextAlignmentButton = [UtilityFunctions getButtonWithFrame:buttonFrame
 																  andIcon:CHANGE_TEXT_ALIGNMENT_ICON
                                              andSelector:@selector(changeTextAlignmentButtonPressed) andTarget:self];
@@ -339,13 +323,14 @@ typedef enum {
 
 - (UIButton *) changeFontTypeButton {
     if (!_changeFontTypeButton) {
-        CGRect buttonFrame = CGRectMake(self.changeTextAlignmentButton.frame.origin.x + self.changeTextAlignmentButton.frame.size.width + ICON_SEPARATION_SPACE - 10.f, CENTERING_Y,
+        CGRect buttonFrame = CGRectMake(self.changeTextAlignmentButton.frame.origin.x + self.changeTextAlignmentButton.frame.size.width +
+										ICON_SEPARATION_SPACE - 10.f, CENTERING_Y,
                                         TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
         
         _changeFontTypeButton = [UtilityFunctions getButtonWithFrame:buttonFrame
 															 andIcon:CHANGE_FONT_TYPE_ICON_UNSELECTED
                                                   andSelector:@selector(changeFontTypeButtonPressed) andTarget:self];
-        
+
     }
     
     return _changeFontTypeButton;
@@ -355,17 +340,33 @@ typedef enum {
 - (UIButton *) changeTextAveBackgroundButton {
     if (!_changeTextAveBackgroundButton) {
         
-        CGRect buttonFrame = CGRectMake(self.changeFontTypeButton.frame.origin.x + self.changeFontTypeButton.frame.size.width + 15.f, CENTERING_Y,
-                                        TEXT_TOOLBAR_BUTTON_WIDTH* 2.f, TEXT_TOOLBAR_BUTTON_WIDTH);
+        CGRect buttonFrame = CGRectMake(self.changeFontTypeButton.frame.origin.x + self.changeFontTypeButton.frame.size.width +
+										ICON_SEPARATION_SPACE, CENTERING_Y,
+                                        TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
         
         _changeTextAveBackgroundButton = [UtilityFunctions getButtonWithFrame:buttonFrame
 																	  andIcon:CHANGE_TEXT_VIEW_BACKGROUND_UNSELECTED
                                              andSelector:@selector(changeTextAveBackgroundButtonPressed) andTarget:self];
-        
+
         [_changeTextAveBackgroundButton setHidden:!self.onTextAve];
         
     }
     return _changeTextAveBackgroundButton;
+}
+
+-(UIButton *) keyboardButton {
+	if (!_keyboardButton) {
+
+		CGRect keyboardButtonFrame = CGRectMake(self.changeTextAveBackgroundButton.frame.origin.x + self.changeTextAveBackgroundButton.frame.size.width +
+												ICON_SEPARATION_SPACE, CENTERING_Y,
+												TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
+		_keyboardButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		_keyboardButton.frame = keyboardButtonFrame;
+		[_keyboardButton setImage:[UIImage imageNamed:PRESENT_KEYBOARD_ICON] forState:UIControlStateNormal];
+		[_keyboardButton addTarget:self action:@selector(keyboardButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+
+	}
+	return _keyboardButton;
 }
 
 -(UIView *)lowerBarHolder {
