@@ -397,16 +397,22 @@
 #pragma mark - EditContentViewDelegate methods -
 
 -(void) textIsEditing {
-	// Pause slideshow
-	if(!self.rearrangeView && self.imageContainerViews.count > 1) {
-		[self pauseToRearrangeButtonPressed];
+
+	if (self.imageContainerViews.count > 1) {
+		// Pause slideshow
+		if(!self.rearrangeView) {
+			[self pauseToRearrangeButtonPressed];
+		}
+		[self.rearrangeView setHidden:YES];
 		[self.pauseToRearrangeButton setHidden:YES];
 	}
+
 	if([self.textEntryDelegate respondsToSelector:@selector(editContentViewTextIsEditing)])[self.textEntryDelegate editContentViewTextIsEditing];
 }
 
 -(void) textDoneEditing {
 	[self.pauseToRearrangeButton setHidden:NO];
+	[self.rearrangeView setHidden:NO];
 	if([self.textEntryDelegate respondsToSelector:@selector(editContentViewTextDoneEditing)])[self.textEntryDelegate editContentViewTextDoneEditing];
 }
 

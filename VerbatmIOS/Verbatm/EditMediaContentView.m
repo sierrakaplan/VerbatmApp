@@ -179,7 +179,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 - (void)textViewDidBeginEditing: (UITextView *)textView {
     self.textViewBeingEdited = YES;
 	[self.textAndImageView.textView setScrollEnabled:NO];
-	[self.delegate textIsEditing];
+	
 	self.userSetYPos = textView.frame.origin.y;
     [self.textAndImageView.textView removeGestureRecognizer:self.textViewPanGesture];
 	[self moveTextView:textView afterEdit: NO];
@@ -346,10 +346,10 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 #pragma mark - Keyboard toolbar delegate methods -
 
--(void)keyboardButtonPressed{
+-(void)keyboardButtonPressed {
+	[self.delegate textIsEditing];
     [self editText];
 }
-
 
 -(void)changeTextBackgroundToImage:(NSString *) backgroundImageName{
     ((TextPinchView *) self.pinchView).imageName = backgroundImageName;
