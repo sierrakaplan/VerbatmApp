@@ -233,10 +233,12 @@ andTextAlignment:(NSTextAlignment) textAlignment
 }
 
 -(void) setTextViewFirstResponder:(BOOL)firstResponder {
-	if (firstResponder)
+	if (firstResponder) {
+		[self.textView.inputAccessoryView removeFromSuperview];
 		[self.textView becomeFirstResponder];
-	else if (self.textView.isFirstResponder)
+	} else if (self.textView.isFirstResponder) {
 		[self.textView resignFirstResponder];
+	}
 }
 
 /* Resizes text view based on content height. Only resizes to a height larger than the default. */
