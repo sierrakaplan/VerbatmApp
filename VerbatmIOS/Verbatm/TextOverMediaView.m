@@ -114,7 +114,6 @@ andTextAlignment:(NSTextAlignment) textAlignment
     [self.textView setFont:[UIFont fontWithName:fontName size:self.textSize]];
     
 	[self changeText: text];
-   
 }
 
 -(void) revertToDefaultTextSettings {
