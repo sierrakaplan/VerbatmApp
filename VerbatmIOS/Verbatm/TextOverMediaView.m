@@ -15,12 +15,11 @@
 #import "UITextView+Utilities.h"
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "UtilityFunctions.h"
-#import "GridView.h"
 
 @interface TextOverMediaView ()
 
 @property (nonatomic, readwrite) BOOL textShowing;
-@property (nonatomic) UIScrollView * photoResizeScrollView;
+
 #pragma mark Text properties
 
 @property (nonatomic, readwrite) CGFloat textYPosition;
@@ -28,24 +27,11 @@
 @property (nonatomic, readwrite) NSTextAlignment textAlignment;
 @property (nonatomic, readwrite) BOOL blackTextColor;
 
-@property (nonatomic) GridView * repositionPhotoGrid;
-
-#define DEFAULT_TEXT_VIEW_FRAME CGRectMake(TEXT_VIEW_X_OFFSET, self.textYPosition, self.frame.size.width - TEXT_VIEW_X_OFFSET*2, self.frame.size.height)
+#define DEFAULT_TEXT_VIEW_FRAME CGRectMake(TEXT_VIEW_X_OFFSET, self.textYPosition, self.frame.size.width - TEXT_VIEW_X_OFFSET*2, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT)
 
 @end
 
 @implementation TextOverMediaView
-
--(instancetype) initWithFrame:(CGRect)frame {
-	self = [super initWithFrame:frame];
-
-	if (self) {
-		[self revertToDefaultTextSettings];
-		[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
-	}
-
-	return self;
-}
 
 -(instancetype) initWithFrame:(CGRect)frame andImageURL:(NSURL*)imageUrl
 			   withSmallImage: (UIImage*)smallImage asSmall:(BOOL) small {
@@ -55,6 +41,7 @@
 		if (small) {
 			croppedImage = [smallImage imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width, self.bounds.size.height)];
 		}
+		[self addSubview: self.textView];
 		[self.imageView setImage: croppedImage];
 
 		// Load large image cropped
@@ -79,27 +66,19 @@
 -(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image {
 	self = [self initWithFrame: frame];
 	if (self) {
-        [self changeImageTo:image];
+		[self addSubview: self.textView];
+		[self.imageView setImage: image];
 	}
 	return self;
 }
 
-
-
--(void)startRepositioningPhoto{
-    if(!self.repositionPhotoGrid){
-        self.repositionPhotoGrid = [[GridView alloc] initWithFrame:self.bounds];
-        [self addSubview:self.repositionPhotoGrid];
-        [self.textView setHidden:YES];
-    }
-}
-
--(void)endRepositioningPhoto{
-    if(self.repositionPhotoGrid){
-        [self.repositionPhotoGrid removeFromSuperview];
-        self.repositionPhotoGrid = nil;
-        [self.textView setHidden:NO];
-    }
+-(instancetype) initWithFrame:(CGRect)frame {
+	self = [super initWithFrame:frame];
+	if (self) {
+		[self revertToDefaultTextSettings];
+        [self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
+	}
+	return self;
 }
 
 /* Returns image view with image centered */
@@ -112,10 +91,7 @@
 }
 
 -(void)changeImageTo:(UIImage *) image {
-//    CGSize  newSize = [UtilityFunctions getScreenFrameForImage:image];
-//    [self.imageView setFrame:CGRectMake(0.f, 0.f, newSize.height, newSize.height)];
-    [self.imageView setImage: image];
-    //[self.photoResizeScrollView setContentSize:newSize];
+	[self.imageView setImage:image];
 }
 
 #pragma mark - Text View functionality -
@@ -146,6 +122,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 	self.textYPosition = TEXT_VIEW_OVER_MEDIA_Y_OFFSET;
 	self.textView.frame = DEFAULT_TEXT_VIEW_FRAME;
+
     [self.textView setBackgroundColor:[UIColor clearColor]];
 
 	self.textSize = TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE;
@@ -157,19 +134,31 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 -(void)changeText:(NSString *) text{
 	[self.textView setText:text];
+	[self resizeTextView];
 	[self bringSubviewToFront:self.textView];
 }
 
--(NSString *)getText {
+-(NSString *) getText {
 	return self.textView.text;
 }
 
-- (BOOL) changeTextViewYPos: (CGFloat) yPos {
-	CGRect tempFrame = CGRectMake(self.textView.frame.origin.x, yPos,
-								  self.textView.frame.size.width, self.textView.frame.size.height);
-    self.textView.frame = tempFrame;
-	self.textYPosition = yPos;
-    return YES;
+- (void) changeTextViewYPosByDiff: (CGFloat) yDiff {
+	CGRect newFrame = CGRectOffset(self.textView.frame, 0.f, yDiff);
+	[self changeTextViewYPos: newFrame.origin.y];
+}
+
+-(void) changeTextViewYPos: (CGFloat) newYPos {
+	CGFloat contentHeight = [self.textView measureContentHeight];
+	if ((newYPos + contentHeight) > (self.frame.size.height - TEXT_TOOLBAR_HEIGHT)) {
+		newYPos = self.frame.size.height - TEXT_TOOLBAR_HEIGHT - contentHeight;
+	}
+	if (newYPos < 0.f) {
+		newYPos = 0.f;
+	}
+	CGRect newFrame = self.textView.frame;
+	newFrame.origin.y = newYPos;
+	self.textView.frame = newFrame;
+	self.textYPosition = newYPos;
 }
 
 -(void) animateTextViewToYPos: (CGFloat) yPos {
@@ -215,10 +204,8 @@ andTextAlignment:(NSTextAlignment) textAlignment
 /* Adds or removes text view */
 -(void)showText: (BOOL) show {
 	if (show) {
-		if (self.textView.isHidden){
-			[self.textView setHidden: NO];
-			[self bringSubviewToFront:self.textView];
-		}
+		[self.textView setHidden: NO];
+		[self bringSubviewToFront:self.textView];
 	} else {
 		if (!self.textShowing) return;
 		[self.textView setHidden:YES];
@@ -227,10 +214,8 @@ andTextAlignment:(NSTextAlignment) textAlignment
 }
 
 -(BOOL) pointInTextView: (CGPoint)point withBuffer: (CGFloat)buffer {
-    
 	return point.y > self.textView.frame.origin.y - buffer
 	&& point.y < self.textView.frame.origin.y + self.textView.frame.size.height + buffer;
-
 }
 
 #pragma mark - Change text properties -
@@ -254,37 +239,33 @@ andTextAlignment:(NSTextAlignment) textAlignment
 		[self.textView resignFirstResponder];
 }
 
-#pragma mark - Lazy Instantiation -
-
-
--(UIScrollView *)photoResizeScrollView{
-    if(!_photoResizeScrollView){
-        _photoResizeScrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
-        _photoResizeScrollView.scrollEnabled = YES;
-        [_photoResizeScrollView setBounces:NO];
-        _photoResizeScrollView.minimumZoomScale = 1.0;
-        _photoResizeScrollView.zoomScale = 0.1;
-        [self insertSubview:_photoResizeScrollView belowSubview:self.textView];
-    }
-    return _photoResizeScrollView;
+/* Resizes text view based on content height. Only resizes to a height larger than the default. */
+-(void) resizeTextView {
+	CGFloat contentHeight = [self.textView measureContentHeight];
+	float height = (TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT < contentHeight) ? contentHeight : TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT;
+    
+    
+    
+	self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y,
+									 self.textView.frame.size.width, height);
 }
+
+#pragma mark - Lazy Instantiation -
 
 -(UIImageView*) imageView {
 	if (!_imageView) {
-		_imageView = [[UIImageView alloc] initWithFrame:self.bounds];
-        [self.photoResizeScrollView addSubview:_imageView];
+		UIImageView *imageView = [[UIImageView alloc] initWithFrame: self.bounds];
+		[self insertSubview:imageView belowSubview:self.textView];
+		_imageView = imageView;
 		_imageView.clipsToBounds = YES;
-		_imageView.contentMode = UIViewContentModeScaleAspectFit;
+		_imageView.contentMode = UIViewContentModeScaleAspectFill;
 	}
 	return _imageView;
 }
 
 -(UITextView*) textView {
 	if (!_textView) {
-		CGRect textViewFrame = DEFAULT_TEXT_VIEW_FRAME;
-		UITextView *textView = [[UITextView alloc] initWithFrame: textViewFrame];
-		[self addSubview:textView];
-		_textView = textView;
+		_textView = [[UITextView alloc] initWithFrame: DEFAULT_TEXT_VIEW_FRAME];
 		_textView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.0];
 		_textView.keyboardAppearance = UIKeyboardAppearanceLight;
 		_textView.scrollEnabled = YES;

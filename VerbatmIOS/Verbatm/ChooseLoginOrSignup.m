@@ -12,15 +12,14 @@
 #import "Styles.h"
 #import "SizesAndPositions.h"
 #import "UserManager.h"
+
 @interface ChooseLoginOrSignup()
+
 @property (nonatomic) UIButton * loginButton;
 @property (nonatomic) UIButton * signUpButton;
 @property (nonatomic) UILabel * orLabel;
 
 @end
-
-#define BUTTON_HEIGHT (TEXT_TOOLBAR_HEIGHT * 2.f)
-#define BUTTON_WITDH (BUTTON_HEIGHT * 4.f)
 
 @implementation ChooseLoginOrSignup
 
@@ -33,14 +32,13 @@
     return self;
 }
 
-
-
 -(void)createActionButtions{
 
-    CGRect topFrame = CGRectMake((self.frame.size.width- BUTTON_WITDH)/2.f, TOP_BUTTON_YOFFSET, BUTTON_WITDH, BUTTON_HEIGHT);
+    CGRect topFrame = CGRectMake((self.frame.size.width - LOGIN_BUTTON_WIDTH)/2.f,
+								 TOP_BUTTON_YOFFSET, LOGIN_BUTTON_WIDTH, LOGIN_BUTTON_HEIGHT);
     
-    CGRect bottomFrame = CGRectMake((self.frame.size.width- BUTTON_WITDH)/2.f, topFrame.origin.y +
-                                    topFrame.size.height + SIGN_UP_BUTTON_GAP, BUTTON_WITDH, BUTTON_HEIGHT);
+    CGRect bottomFrame = CGRectMake((self.frame.size.width - LOGIN_BUTTON_WIDTH)/2.f, topFrame.origin.y +
+                                    topFrame.size.height + SIGN_UP_BUTTON_GAP, LOGIN_BUTTON_WIDTH, LOGIN_BUTTON_HEIGHT);
     
     self.loginButton = [[UIButton alloc] initWithFrame:topFrame];
     self.signUpButton = [[UIButton alloc] initWithFrame:bottomFrame];

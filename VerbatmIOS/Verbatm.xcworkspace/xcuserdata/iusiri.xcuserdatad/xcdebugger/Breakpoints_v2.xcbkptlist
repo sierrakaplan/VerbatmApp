@@ -47,7 +47,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "530"
             endingLineNumber = "530"
-            landmarkName = "-collectionView:didEndDisplayingCell:forItemAtIndexPath:"
+            landmarkName = "-collectionView:willDisplayCell:forItemAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -527,7 +527,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "312"
             endingLineNumber = "312"
-            landmarkName = "-addCreatorInfo"
+            landmarkName = "-userAction:isPositive:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1193,7 +1193,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "392"
             endingLineNumber = "392"
-            landmarkName = "-displayMediaOnCurrentPage"
+            landmarkName = "-muteButtonSelected:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4035,7 +4035,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "579"
             endingLineNumber = "579"
-            landmarkName = "-stopAllVideos"
+            landmarkName = "-showPageUpIndicator"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4051,7 +4051,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "581"
             endingLineNumber = "581"
-            landmarkName = "-removePageUpIndicatorFromView"
+            landmarkName = "-showPageUpIndicator"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -5582,7 +5582,7 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/iusiri/Desktop/IOS%20APP%20PROJECTS/Verbatm%20Project/VerbatmIOS/Verbatm/Channel_BackendObject.m"
-                  timestampString = "491762125.314541"
+                  timestampString = "491874560.867914"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "115"
@@ -5597,7 +5597,7 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/iusiri/Desktop/IOS%20APP%20PROJECTS/Verbatm%20Project/VerbatmIOS/Verbatm/Channel_BackendObject.m"
-                  timestampString = "491762125.314717"
+                  timestampString = "491874560.868048"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "116"
@@ -5955,7 +5955,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "220"
             endingLineNumber = "220"
-            landmarkName = "-addPagingLine"
+            landmarkName = "-upDatePagingLine"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -6787,7 +6787,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "212"
             endingLineNumber = "212"
-            landmarkName = "-createBorder"
+            landmarkName = "-addPagingLine"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -6803,7 +6803,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "215"
             endingLineNumber = "215"
-            landmarkName = "-addPagingLine"
+            landmarkName = "-upDatePagingLine"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -6851,7 +6851,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "216"
             endingLineNumber = "216"
-            landmarkName = "-addPagingLine"
+            landmarkName = "-upDatePagingLine"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -7009,7 +7009,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "197"
             endingLineNumber = "197"
-            landmarkName = "-editContentViewTextIsEditing"
+            landmarkName = "-createBorder"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -7025,7 +7025,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "542"
             endingLineNumber = "542"
-            landmarkName = "-postOffScreen"
+            landmarkName = "-stopAllVideos"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -7073,7 +7073,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "408"
             endingLineNumber = "408"
-            landmarkName = "-checkForMuteButton:"
+            landmarkName = "-presentSwipeUpAndDownInstruction"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -7105,7 +7105,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "260"
             endingLineNumber = "260"
-            landmarkName = "-checkIfUserHasLikedThePost"
+            landmarkName = "-createLikeAndShareBarWithNumberOfLikes:numberOfShares:numberOfPages:andStartingPageNumber:startUp:withDeleteButton:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -7153,7 +7153,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "336"
             endingLineNumber = "336"
-            landmarkName = "-userAction:isPositive:"
+            landmarkName = "-scrollViewDidEndDecelerating:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -13,6 +13,7 @@
 #import "UtilityFunctions.h"
 
 @interface AdjustTextSizeToolBar ()
+
 @property (strong, nonatomic) UIButton *textSizeIncreaseButton;
 @property (strong, nonatomic) UIButton *textSizeDecreaseButton;
 @end
@@ -38,8 +39,6 @@
     return self;
 }
 
-
-
 -(void)textSizeIncreaseButtonPressed{
     [self.delegate increaseTextSizeDelegate];
 }
@@ -47,7 +46,6 @@
 -(void)textSizeDecreaseButtonPressed{
     [self.delegate decreaseTextSizeDelegate];
 }
-
 
 - (UIButton *) textSizeIncreaseButton {
     if (!_textSizeIncreaseButton) {
@@ -68,12 +66,5 @@
     return _textSizeDecreaseButton;
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 
 @end

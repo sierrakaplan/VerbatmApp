@@ -22,9 +22,6 @@
 -(void)changeTextToFont:(NSString *)fontName;
 -(void)changeTextBackgroundToImage:(NSString *) backgroundImageName;
 
--(void)repositionPhotoSelected;
--(void)repositionPhotoUnSelected;
-
 @optional
 -(void)keyboardButtonPressed;
 
@@ -36,6 +33,7 @@
 
 @property (nonatomic, weak) id<KeyboardToolBarDelegate> delegate;
 
--(instancetype)initWithFrame:(CGRect)frame andTextColorBlack:(BOOL)textColorBlack isOnTextAve:(BOOL)onTextAve isOnScreenPermenantly:(BOOL) onScreen;
--(void)presentKeyboardButton;
+-(instancetype)initWithFrame:(CGRect)frame andTextColorBlack:(BOOL)textColorBlack
+				 isOnTextAve:(BOOL)onTextAve isOnScreenPermanently:(BOOL) onScreen;
+
 @end

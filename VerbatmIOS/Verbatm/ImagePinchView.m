@@ -15,9 +15,6 @@
 #import "UIView+Effects.h"
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "MediaSessionManager.h"
-#import "UtilityFunctions.h"
-
-
 @import AVFoundation;
 @import Photos;
 
@@ -124,7 +121,6 @@
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             [[PHImageManager defaultManager] requestImageForAsset:imageAsset targetSize:size contentMode:PHImageContentModeAspectFill
                   options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
-                      //CGSize imageShrinkSize = [UtilityFunctions getScreenFrameForImage:image];
                       image = [image imageByScalingAndCroppingForSize: CGSizeMake(size.width, size.height)];
                       
                       if(weakSelf.beingPublished){

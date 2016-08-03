@@ -68,7 +68,6 @@ Parse.Cloud.beforeSave("NotificationClass", function(request, response) {
 			  	// pushQuery.equalTo('deviceType', 'ios');
 			  	var targetUser = new Parse.User();
 				targetUser.id = notificationReceiver.id;
-				console.log("RECEIVER ID: " + notificationReceiver.id);
 			  	pushQuery.equalTo('user', targetUser);
 			    var notificationText = "";
 			    if (notificationType == 1) {
@@ -101,6 +100,58 @@ Parse.Cloud.beforeSave("NotificationClass", function(request, response) {
 	      	});
 	    }
     });
+});
+
+// Send push notification when someone posts
+Parse.Cloud.beforeSave("PostChannelActivityClass", function(request, response) {
+	if (!request.object.isNew()) {
+		response.success();
+	}
+	var userWhoPosted = request.object.get("RelationshipOwner");
+	var channelPostedIn = request.object.get("PostChannelActivityChannelPosted");
+	userWhoPosted.fetch().then(function(fetchedUser) {
+  		var notificationSenderName = fetchedUser.get("VerbatmName");
+  		var query = new Parse.Query(FollowClass);
+  		query.equalTo("ChannelFollowed", channelPostedIn);
+  		query.find({
+		  success: function(results) {
+		  	var promises = [];
+		    for (var i = 0; i < results.length; i++) {
+		    	var followObject = results[i];
+		    	var userFollowing = followObject.get("UserFollowing");
+		    	var pushQuery = new Parse.Query(Parse.Installation);
+			  	// pushQuery.equalTo('deviceType', 'ios');
+			  	var targetUser = new Parse.User();
+				targetUser.id = userFollowing.id;
+				console.log("user following id " + targetUser.id);
+			  	pushQuery.equalTo('user', targetUser);
+			  	var notificationText = notificationSenderName + " just posted in their Verbatm blog!";
+		    	promises.push(Parse.Push.send({
+				    where: pushQuery, // Set our Installation query
+				    data: {
+				      alert: notificationText,
+				      notificationType: 20
+				    }
+				}, {
+				    success: function() {
+				      //do nothing
+				    },
+				    error: function(error) {
+				      console.log(error);
+				    }
+				}));
+		    }
+		    Parse.Promise.when(promises).then(function(results) {
+				console.log(results); 
+				response.success(); 
+			});
+		  },
+
+		  error: function(error) {
+		    response.error("Got an error " + error.code + " : " + error.message);
+		  }
+		});
+  	});
 });
 
 // DON'T SAVE MULTIPLE LIKE OR FOLLOWS
