@@ -29,4 +29,6 @@
 +(void)storeCoverPhoto:(UIImage *) coverPhoto withParseChannelObject:(PFObject *) channel;
 
 + (void) updateLatestPostDateForChannel:(PFObject*)channel;
+
++(NSArray*) channelsFromParseChannelObjects:(NSArray*)parseChannels;
 @end

@@ -176,6 +176,12 @@
 	}
 }
 
+-(void) offScreen {
+	self.isOnScreen = NO;
+	self.isAlmostOnScreen = NO;
+	[self.currentPostView postOffScreen];
+}
+
 -(void)removeDot{
     if(self.dot){
         [self.dot removeFromSuperview];
@@ -192,10 +198,6 @@
         [self addSubview:self.dot];
         [self.dot.layer setCornerRadius:7.5];
     }
-}
-
--(void) offScreen {
-	[self clearViews];
 }
 
 -(void)presentTapToExitNotification{

@@ -99,13 +99,7 @@
 }
 
 #pragma mark - PhotoAveTextEntry Delegate methods -
--(void) repositioningPhotoPVE{
-    [self.textEntryDelegate repositioningPhoto_PhotoVideoPVE];
-}
 
--(void) stopRepositioningPhotoPVE{
-    [self.textEntryDelegate stopRepositioningPhoto_PhotoVideoPVE];
-}
 -(void) editContentViewTextIsEditing {
     [self.textEntryDelegate editContentViewTextIsEditing_PhotoVideoPVE];
     [self movePhotoPageUp:YES];

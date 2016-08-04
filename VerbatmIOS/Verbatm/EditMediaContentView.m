@@ -29,16 +29,15 @@
 @interface EditMediaContentView () <KeyboardToolBarDelegate, UITextViewDelegate, UIGestureRecognizerDelegate>
 
 //keyboard that appears when the user has text on the screen
-@property (nonatomic) VerbatmKeyboardToolBar * permanentOnScreenKeyboard;
+@property (nonatomic) VerbatmKeyboardToolBar *permanentOnScreenKeyboard;
 
-@property (nonatomic, strong) TextOverMediaView * textAndImageView;
+@property (nonatomic, strong) TextOverMediaView *textAndImageView;
 
-@property (nonatomic) UIImageView * swipeInstructionView;
+@property (nonatomic) UIImageView *swipeInstructionView;
 
 #pragma mark FilteredPhotos
-@property (nonatomic, strong) NSArray * filteredImages;
+@property (nonatomic, strong) NSArray *filteredImages;
 @property (nonatomic) NSInteger imageIndex;
-@property (nonatomic, strong) UIButton * textCreationButton;
 
 @property (nonatomic) CGPoint  panStartLocation;
 
@@ -49,13 +48,14 @@
 
 /* Stores if filter has been changed in order to preserve state on exit */
 @property (nonatomic) BOOL filterSwitched;
+
 /* Sentinel to check direction of gesture the first time a
  gesture state changed event is recorded */
 @property (nonatomic) BOOL gestureActionJustStarted;
 
 @property (nonatomic) NSInteger keyboardHeight;
-/* Stores frame for text view that user has set so that it can be
- restored after keyboard goes away */
+
+// Stores y position of text view after user set it before keyboard appears
 @property (nonatomic) CGFloat userSetYPos;
 
 /* Only want to prepare videos once, otherwise just play them */
@@ -97,6 +97,10 @@
 												 name:UIKeyboardDidShowNotification
 											   object:nil];
 
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(keyboardDidHide:)
+												 name:UIKeyboardDidHideNotification
+											   object:nil];
 
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(keyBoardWillChangeFrame:)
@@ -106,26 +110,6 @@
 
 #pragma mark - Text View -
 
--(void)createTextCreationButton {
-	[self.textAndImageView setTextViewEditable:YES];
-	[self.textAndImageView showText:YES];
-	__weak EditMediaContentView * weakSelf = self;
-	[self.textAndImageView setTextViewDelegate:weakSelf];
-	[self.textCreationButton setImage:[UIImage imageNamed:CREATE_TEXT_ICON] forState:UIControlStateNormal];
-	self.textCreationButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-	[self.textCreationButton addTarget:self action:@selector(editText) forControlEvents:UIControlEventTouchUpInside];
-	[self addSubview:self.textCreationButton];
-	[self bringSubviewToFront:self.textCreationButton];
-
-}
-
--(void)clearTextCreationButton{
-	if(self.textCreationButton){
-		[self.textCreationButton removeFromSuperview];
-		self.textCreationButton = nil;
-	}
-}
-
 -(void) editText {
 	[self.textAndImageView showText: YES];
 	[self.textAndImageView setTextViewFirstResponder: YES];
@@ -133,96 +117,103 @@
 
 -(void) setText:(NSString *)text
 andTextYPosition:(CGFloat)yPosition
-andTextColorBlack:(BOOL)textColorBlack
+   andTextColorBlack:(BOOL)textColorBlack
 andTextAlignment:(NSTextAlignment)textAlignment
 	andTextSize:(CGFloat)textSize andFontName:(NSString *)fontName {
 
-	[self addToolBarToViewWithTextColorBlack:textColorBlack];
-
 	[self.textAndImageView setText: text
 				  andTextYPosition: yPosition
-				 andTextColorBlack: textColorBlack
+					  andTextColorBlack: textColorBlack
 				  andTextAlignment: textAlignment
 					   andTextSize: textSize andFontName:fontName];
-	[self createScreenToolBar];
+	// Move text if half screen
+	if (self.isAtHalfScreen) {
+		CGFloat contentHeight = [self.textAndImageView.textView measureContentHeight];
+		if ((yPosition + contentHeight) > (self.frame.size.height - TEXT_TOOLBAR_HEIGHT)) {
+			[self.textAndImageView changeTextViewYPos: 0.f];
+		}
+	}
+	[self.textAndImageView setTextViewEditable:YES];
+	[self.textAndImageView showText:YES];
+	__weak EditMediaContentView * weakSelf = self;
+	[self.textAndImageView setTextViewDelegate:weakSelf];
+
+	[self addToolBarToViewWithTextColorBlack:textColorBlack];
 }
 
 #pragma mark - Keyboard ToolBar -
 
 //creates a toolbar to add onto the keyboard
 -(void)addToolBarToViewWithTextColorBlack:(BOOL)textColorBlack {
-	CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - TEXT_TOOLBAR_HEIGHT,
-									 self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
+	CGRect toolBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, TEXT_TOOLBAR_HEIGHT/2.f);
+	BOOL onTextAve = [self.pinchView isKindOfClass:[TextPinchView class]];
 	VerbatmKeyboardToolBar* toolBar = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
-																  andTextColorBlack: textColorBlack isOnTextAve:[self.pinchView isKindOfClass:[TextPinchView class]] isOnScreenPermenantly:NO];
+                                                                  andTextColorBlack: textColorBlack
+																		isOnTextAve:onTextAve
+															  isOnScreenPermanently:NO];
 	[toolBar setDelegate:self];
 	[self.textAndImageView setTextViewKeyboardToolbar:toolBar];
-}
 
-//creates a second toolbar (same view as keyboard toolbar) to be on the screen
-//when the keyboard is down. So the user can still edit the text.
--(void)createScreenToolBar{
-	[self clearTextCreationButton];
-
-	BOOL textColorBlack =NO;
-	CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - TEXT_TOOLBAR_HEIGHT,
-									 self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
-	self.permanentOnScreenKeyboard = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
-																 andTextColorBlack: textColorBlack isOnTextAve:[self.pinchView isKindOfClass:[TextPinchView class]] isOnScreenPermenantly:YES];
-	[self.permanentOnScreenKeyboard setDelegate:self];
-	[self addSubview:self.permanentOnScreenKeyboard];
-	[self.permanentOnScreenKeyboard presentKeyboardButton];
-
-}
-
-
--(void)removeScreenToolbar{
-	if(self.permanentOnScreenKeyboard){
-		[self.permanentOnScreenKeyboard removeFromSuperview];
-		self.permanentOnScreenKeyboard = nil;
+	// add toolbar to screen permanently
+	if(!self.permanentOnScreenKeyboard && self.textAndImageView) {
+		toolBarFrame.origin.y = self.frame.size.height - TEXT_TOOLBAR_HEIGHT;
+		toolBarFrame.size.height = TEXT_TOOLBAR_HEIGHT;
+		self.permanentOnScreenKeyboard = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
+																	 andTextColorBlack:textColorBlack
+																		   isOnTextAve:onTextAve
+																 isOnScreenPermanently:YES];
+		[self.permanentOnScreenKeyboard setDelegate:self];
+		[self addSubview:self.permanentOnScreenKeyboard];
+	} else if (self.textAndImageView) {
+		[self addSubview:self.permanentOnScreenKeyboard];
 	}
-	[self clearTextCreationButton];
 }
-
 
 #pragma mark - Text view content changed -
 
 /* User has edited the text view somehow so we adjust its size */
 - (void)textViewDidChange:(UITextView *)textView {
-	[self moveTextView:textView afterEdit:NO];
+	[self moveTextView:textView afterEdit: NO];
 }
 
-- (void)textViewDidBeginEditing: (UITextView *)textView{
-	self.textViewBeingEdited = YES;
+- (void)textViewDidBeginEditing: (UITextView *)textView {
+    self.textViewBeingEdited = YES;
 	[self.textAndImageView.textView setScrollEnabled:NO];
-	[self.delegate textIsEditing];
+	
 	self.userSetYPos = textView.frame.origin.y;
-	[self.textAndImageView.textView removeGestureRecognizer:self.textViewPanGesture];
-	[self moveTextView:textView afterEdit:NO];
+    [self.textAndImageView.textView removeGestureRecognizer:self.textViewPanGesture];
+	[self moveTextView:textView afterEdit: NO];
 	[self removeScreenToolbar];
 }
 
--(void)textViewDidEndEditing:(UITextView *)textView {
-	self.textViewBeingEdited = NO;
-	[self.textAndImageView.textView setScrollEnabled:NO];
+-(void)removeScreenToolbar {
+	if(self.permanentOnScreenKeyboard) {
+		[self.permanentOnScreenKeyboard removeFromSuperview];
+	}
+}
 
+-(void)textViewDidEndEditing:(UITextView *)textView {
+    self.textViewBeingEdited = NO;
+    [self.textAndImageView.textView setScrollEnabled:NO];
 	[self moveTextView:textView afterEdit:YES];
-	[self createScreenToolBar];
-	[self addPanGestures];
+    [self addPanGestures];
 }
 
 /* Enforces word limit */
 - (BOOL) textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
 	NSString* newText = [textView.text stringByReplacingCharactersInRange:range withString:text];
-	if (newText.length > CHARACTER_LIMIT) {
+	if (newText.length > TEXT_AVE_CHARACTER_LIMIT) {
 		return NO;
 	} else {
 		return YES;
 	}
 }
 
-//changes the frame of a textview based on it's content and
-//alsio the visible height of the screen
+//todo: tell textView it's new ypos to save in user defaults
+// If afterEdit, moves TextView to the position it should be after user finishes editing
+// (ensuring it's on screen based on new contentHeight)
+// If not afterEdit, text is still being edited so positions text with last line above keyboard
+// if text is not already above it
 -(void) moveTextView:(UITextView *)textView afterEdit:(BOOL)after {
 
 	CGFloat contentHeight = [textView measureContentHeight];
@@ -231,17 +222,18 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 	if (after) {
 		CGFloat heightDiff = (self.userSetYPos + contentHeight) - (self.frame.size.height - TEXT_TOOLBAR_HEIGHT);
+		yPos = self.userSetYPos;
 		if (heightDiff > 0) yPos = self.userSetYPos - heightDiff;
 		if (yPos < 0.f) yPos = 0.f;
 		CGFloat height = self.frame.size.height - yPos;
 		newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, yPos, self.frame.size.width, height);
 	} else {
+		CGFloat heightWithKeyboard = self.isAtHalfScreen ? self.frame.size.height : (self.frame.size.height - self.keyboardHeight);
 		yPos = self.userSetYPos;
-		CGFloat heightDiff = (self.userSetYPos + contentHeight) - (self.frame.size.height - self.keyboardHeight);
+		CGFloat heightDiff = (self.userSetYPos + contentHeight) - heightWithKeyboard;
 		if (heightDiff > 0) yPos = yPos - heightDiff;
 		newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, yPos, self.frame.size.width, contentHeight);
 	}
-
 
 	[UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
 		[textView setFrame:newFrame];
@@ -250,19 +242,19 @@ andTextAlignment:(NSTextAlignment)textAlignment
 			[textView setHidden:NO];
 		}
 	}];
-
 }
 
 #pragma mark Keyboard Notifications
 
 /* Gets keyboard height the first time it appears */
 -(void)keyboardDidShow:(NSNotification *) notification {
-
-	CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
-
-	self.keyboardHeight = keyboardSize.height;
+    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
+    self.keyboardHeight = keyboardSize.height;
 }
 
+-(void)keyboardDidHide:(NSNotification *) notification {
+	[self addToolBarToViewWithTextColorBlack:NO];
+}
 
 /* Change size of keyboard when keyboard frame changes */
 -(void)keyBoardWillChangeFrame: (NSNotification *) notification {
@@ -288,24 +280,22 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 -(void)displayImages: (NSArray*) filteredImages atIndex:(NSInteger)index isHalfScreen:(BOOL) isHalfScreen{
 	self.imageIndex = index;
-	self.isAtHalfScreen = isHalfScreen;
+    self.isAtHalfScreen = isHalfScreen;
 	self.textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
 															andImage:filteredImages[index]];
 	self.filteredImages = filteredImages;
 	[self addSubview: self.textAndImageView];
 	[self addPanGestures];
-	//[self createScreenToolBar];
-	[self createTextCreationButton];
 
-	//todo: bring back filters
-	//    if(![[UserSetupParameters sharedInstance ] checkAndSetFilterInstructionShown]){
-	//        [self presentUserInstructionForFilterSwipe];
-	//    }
-
-	if (![[UserSetupParameters sharedInstance] checkAndSetAddTextInstructionShown]) {
-		//todo:
-		//		[self presentAddTextInstruction];
-	}
+//	todo: bring back filters
+//    if(![[UserSetupParameters sharedInstance ] checkAndSetFilterInstructionShown]){
+//        [self presentUserInstructionForFilterSwipe];
+//    }
+//
+//	if (![[UserSetupParameters sharedInstance] checkAndSetAddTextInstructionShown]) {
+//		todo:
+//		[self presentAddTextInstruction];
+//	}
 }
 
 //todo: bring back filters?
@@ -315,23 +305,23 @@ andTextAlignment:(NSTextAlignment)textAlignment
 }
 
 -(void)presentUserInstructionForFilterSwipe {
-
-	self.swipeInstructionView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"swipe_to_add_filter"]];
-
-	CGFloat width = SWIPE_NOTIFICATON_WIDTH;
-	CGFloat height =  width * (82.f/527.f);
-
-	self.swipeInstructionView.frame = CGRectMake((self.frame.size.width/2.f) - (width/2.f), (self.frame.size.height/2.f) - (height/2.f), width,height);
-
-	[self addSubview:self.swipeInstructionView];
-	[self bringSubviewToFront:self.swipeInstructionView];
-
-	[UIView animateWithDuration:6.f animations:^{
-		self.swipeInstructionView.alpha = 0.f;
-	}completion:^(BOOL finished) {
-		[self.swipeInstructionView removeFromSuperview];
-	}];
-
+    
+    self.swipeInstructionView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"swipe_to_add_filter"]];
+    
+    CGFloat width = SWIPE_NOTIFICATON_WIDTH;
+    CGFloat height =  width * (82.f/527.f);
+    
+    self.swipeInstructionView.frame = CGRectMake((self.frame.size.width/2.f) - (width/2.f), (self.frame.size.height/2.f) - (height/2.f), width,height);
+    
+    [self addSubview:self.swipeInstructionView];
+    [self bringSubviewToFront:self.swipeInstructionView];
+    
+    [UIView animateWithDuration:6.f animations:^{
+        self.swipeInstructionView.alpha = 0.f;
+    }completion:^(BOOL finished) {
+        [self.swipeInstructionView removeFromSuperview];
+    }];
+    
 }
 
 
@@ -356,23 +346,15 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 #pragma mark - Keyboard toolbar delegate methods -
 
--(void)keyboardButtonPressed{
-	[self editText];
+-(void)keyboardButtonPressed {
+	[self.delegate textIsEditing];
+    [self editText];
 }
-
-
--(void)repositionPhotoSelected{
-	[self.textAndImageView startRepositioningPhoto];
-}
--(void)repositionPhotoUnSelected{
-	[self.textAndImageView endRepositioningPhoto];
-}
-
 
 -(void)changeTextBackgroundToImage:(NSString *) backgroundImageName{
-	((TextPinchView *) self.pinchView).imageName = backgroundImageName;
-	self.currentTextAVEBackground = [UIImage imageNamed:backgroundImageName];
-	[self.textAndImageView changeImageTo:self.currentTextAVEBackground ];
+    ((TextPinchView *) self.pinchView).imageName = backgroundImageName;
+    self.currentTextAVEBackground = [UIImage imageNamed:backgroundImageName];
+    [self.textAndImageView changeImageTo:self.currentTextAVEBackground ];
 }
 
 -(void) textColorChangedToBlack:(BOOL)black {
@@ -383,7 +365,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	}
 }
 -(void)changeTextToFont:(NSString *)fontName{
-	[self.textAndImageView.textView setFont:[UIFont fontWithName:fontName size:self.textAndImageView.textView.font.pointSize]];
+    [self.textAndImageView.textView setFont:[UIFont fontWithName:fontName size:self.textAndImageView.textView.font.pointSize]];
 }
 
 -(void) textSizeIncreased {
@@ -405,6 +387,9 @@ andTextAlignment:(NSTextAlignment)textAlignment
 -(void) rightAlignButtonPressed {
 	[self.textAndImageView changeTextAlignment:NSTextAlignmentRight];
 }
+
+
+
 
 -(void) doneButtonPressed {
 	if([[self.textAndImageView getText] isEqualToString:@""]) {
@@ -471,19 +456,19 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan:
 			if (sender.numberOfTouches < 1 ||
-				self.textViewBeingEdited) return;
-
+                self.textViewBeingEdited) return;
+            
 			self.textViewPanStartLocation = [sender locationOfTouch:0 inView:self.textAndImageView];
 			self.gestureActionJustStarted = YES;
 
 			break;
 
 		case UIGestureRecognizerStateChanged:{
-			if(self.textViewBeingEdited) return;
-
+            if(self.textViewBeingEdited) return;
+            
 			CGPoint location = [sender locationOfTouch:0 inView:self.textAndImageView];
 			CGFloat verticalDiff = location.y - self.textViewPanStartLocation.y;
-			[self.textAndImageView changeTextViewYPos: verticalDiff];
+			[self.textAndImageView changeTextViewYPosByDiff: verticalDiff];
 			self.textViewPanStartLocation = location;
 			break;
 		}
@@ -512,7 +497,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 			return NO;
 		}
 	}
-
+	
 	return YES;
 }
 
@@ -553,15 +538,15 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 		mediaAndTextPinchView.textColor = self.textAndImageView.textView.textColor;
 		mediaAndTextPinchView.textSize = [NSNumber numberWithFloat:self.textAndImageView.textSize];
 		mediaAndTextPinchView.textAlignment = [NSNumber numberWithInteger:self.textAndImageView.textAlignment];
-		mediaAndTextPinchView.fontName = self.textAndImageView.textView.font.fontName;
+        mediaAndTextPinchView.fontName = self.textAndImageView.textView.font.fontName;
 	}
 }
 
 //updates the content in the pinchview after things are changed
 -(void) updatePinchView {
-	if([self.pinchView isKindOfClass:[TextPinchView class]]){
-		[((TextPinchView *)self.pinchView) putNewImage:self.currentTextAVEBackground];
-	}else if([self.pinchView isKindOfClass:[ImagePinchView class]]){
+    if([self.pinchView isKindOfClass:[TextPinchView class]]){
+        [((TextPinchView *)self.pinchView) putNewImage:self.currentTextAVEBackground];
+    }else if([self.pinchView isKindOfClass:[ImagePinchView class]]){
 		[((ImagePinchView *)self.pinchView) changeImageToFilterIndex:self.imageIndex];
 	}
 }
@@ -571,25 +556,25 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 -(void)offScreen {
 	[self exiting];
 	self.videoHasBeenPrepared = NO;
-	if([self.pinchView isKindOfClass:[TextPinchView class]]){
-		[self.textAndImageView.textView resignFirstResponder];
-	}
+    if([self.pinchView isKindOfClass:[SingleMediaAndTextPinchView class]]){
+        [self.textAndImageView.textView resignFirstResponder];
+    }
 }
 
 -(void)onScreen {
-	if([self.pinchView isKindOfClass:[TextPinchView class]] &&
-	   [self.textAndImageView.textView.text isEqualToString:@""]){
-		[self.textAndImageView.textView setHidden:YES];
-		[self.textAndImageView.textView becomeFirstResponder];
-	}else{
-		if(!self.videoHasBeenPrepared){
-			[self.videoView prepareVideoFromAsset:self.videoAsset];
-			[self.videoView playVideo];
-		}else{
-			[self.videoView playVideo];
-			self.videoHasBeenPrepared = YES;
-		}
-	}
+    if([self.pinchView isKindOfClass:[TextPinchView class]] &&
+       [self.textAndImageView.textView.text isEqualToString:@""]){
+        [self.textAndImageView.textView setHidden:YES];
+        [self.textAndImageView.textView becomeFirstResponder];
+    } else {
+        if(!self.videoHasBeenPrepared){
+            [self.videoView prepareVideoFromAsset:self.videoAsset];
+            [self.videoView playVideo];
+        }else{
+            [self.videoView playVideo];
+            self.videoHasBeenPrepared = YES;
+        }
+    }
 }
 
 -(void)almostOnScreen {
@@ -603,24 +588,13 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 #pragma mark - Lazy Instantiation -
 
 -(UIPanGestureRecognizer *)textViewPanGesture{
-	if(!_textViewPanGesture){
-		UIPanGestureRecognizer * textViewPanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPanTextView:)];
-		textViewPanGesture.minimumNumberOfTouches = 1;
-		textViewPanGesture.maximumNumberOfTouches = 1;
-		_textViewPanGesture = textViewPanGesture;
-	}
-	return _textViewPanGesture;
-}
-
--(UIButton *)textCreationButton{
-	if(!_textCreationButton) {
-		CGRect buttonFrame = CGRectMake(self.frame.size.width -  EXIT_CV_BUTTON_WALL_OFFSET - EXIT_CV_BUTTON_WIDTH,
-										self.frame.size.height - EXIT_CV_BUTTON_WIDTH - EXIT_CV_BUTTON_WALL_OFFSET,
-										EXIT_CV_BUTTON_WIDTH,
-										EXIT_CV_BUTTON_WIDTH);
-		_textCreationButton = [[UIButton alloc] initWithFrame:buttonFrame];
-	}
-	return _textCreationButton;
+    if(!_textViewPanGesture){
+        UIPanGestureRecognizer * textViewPanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPanTextView:)];
+        textViewPanGesture.minimumNumberOfTouches = 1;
+        textViewPanGesture.maximumNumberOfTouches = 1;
+        _textViewPanGesture = textViewPanGesture;
+    }
+    return _textViewPanGesture;
 }
 
 -(void) dealloc {

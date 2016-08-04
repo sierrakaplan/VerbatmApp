@@ -140,17 +140,17 @@
 
 	PHImageRequestOptions *options = [PHImageRequestOptions new];
 	options.synchronous = YES;
-     __weak PhotoPVE * weakSelf = self;
+	__weak PhotoPVE * weakSelf = self;
 	[pinchView getLargerImageWithHalfSize:weakSelf.photoVideoSubview].then(^(UIImage *image) {
 		[editMediaContentView changeImageTo:image];
 	});
 
 	[editMediaContentView displayImages:[pinchView filteredImages] atIndex:pinchView.filterImageIndex isHalfScreen:self.photoVideoSubview];
-    //this has to be set before we set the text view information
-    editMediaContentView.pinchView = pinchView;
-    editMediaContentView.povViewMasterScrollView = self.postScrollView;
-    editMediaContentView.delegate = self;
-    
+	//this has to be set before we set the text view information
+	editMediaContentView.pinchView = pinchView;
+	editMediaContentView.povViewMasterScrollView = self.postScrollView;
+	editMediaContentView.delegate = self;
+
 	BOOL textColorBlack = [pinchView.textColor isEqual:[UIColor blackColor]];
 	[editMediaContentView setText:pinchView.text
 				 andTextYPosition:[pinchView.textYPosition floatValue]
@@ -159,8 +159,8 @@
 					  andTextSize:[pinchView.textSize floatValue] andFontName:pinchView.fontName];
 
 
-	
-	
+
+
 	return editMediaContentView;
 }
 
@@ -224,9 +224,9 @@
 
 -(void) pauseToRearrangeButtonPressed {
 	// Pausing slideshow
-    
-    if(![self.pinchView isKindOfClass:[CollectionPinchView class]])return;
-    
+
+	if(![self.pinchView isKindOfClass:[CollectionPinchView class]])return;
+
 	if(!self.rearrangeView) {
 		[self offScreen];
 		CGFloat y_pos = (self.photoVideoSubview) ? 0.f : CUSTOM_NAV_BAR_HEIGHT;
@@ -299,13 +299,13 @@
 }
 
 -(void)animateNextView{
-    __weak PhotoPVE * weakSelf = self;
+	__weak PhotoPVE * weakSelf = self;
 	if(weakSelf.slideShowPlaying && !weakSelf.animating){
 		//todo: This is a hack. Find where animations get disabled
-        if(![UIView areAnimationsEnabled]){
-//            NSLog(@"Animations are disabled.");
-            [UIView setAnimationsEnabled:YES];
-        }
+		if(![UIView areAnimationsEnabled]){
+			//            NSLog(@"Animations are disabled.");
+			[UIView setAnimationsEnabled:YES];
+		}
 		[UIView animateWithDuration:IMAGE_FADE_OUT_ANIMATION_DURATION animations:^{
 			weakSelf.animating = YES;
 			[weakSelf setImageViewsToLocation:(weakSelf.currentPhotoIndex + 1)];
@@ -313,7 +313,7 @@
 			weakSelf.animating = NO;
 			[NSTimer scheduledTimerWithTimeInterval:SLIDESHOW_ANIMATION_DURATION target:weakSelf selector:@selector(animateNextView) userInfo:nil repeats:NO];
 		}];
-        
+
 	}
 }
 
@@ -374,12 +374,12 @@
 		if(!self.slideShowPlaying){
 			[self playWithSpeed:2.f];
 		}
-    }else{
-        if([self.pinchView isKindOfClass:[TextPinchView class]]){
-            EditMediaContentView * emcView = [self.imageContainerViews firstObject];
-            [emcView onScreen];
-        }
-    }
+	}else{
+		if([self.pinchView isKindOfClass:[SingleMediaAndTextPinchView class]]){
+			EditMediaContentView *editContentView = [self.imageContainerViews firstObject];
+			[editContentView onScreen];
+		}
+	}
 }
 
 - (void)offScreen {
@@ -395,22 +395,24 @@
 }
 
 #pragma mark - EditContentViewDelegate methods -
--(void)repositioningPhoto{
-    [self.textEntryDelegate repositioningPhotoPVE];
-}
--(void)stopRepositioningPhoto{
-    [self.textEntryDelegate stopRepositioningPhotoPVE];
-}
 
 -(void) textIsEditing {
-	// Pause slideshow
-	if(!self.rearrangeView && self.imageContainerViews.count > 1) {
-	 [self pauseToRearrangeButtonPressed];
+
+	if (self.imageContainerViews.count > 1) {
+		// Pause slideshow
+		if(!self.rearrangeView) {
+			[self pauseToRearrangeButtonPressed];
+		}
+		[self.rearrangeView setHidden:YES];
+		[self.pauseToRearrangeButton setHidden:YES];
 	}
+
 	if([self.textEntryDelegate respondsToSelector:@selector(editContentViewTextIsEditing)])[self.textEntryDelegate editContentViewTextIsEditing];
 }
 
 -(void) textDoneEditing {
+	[self.pauseToRearrangeButton setHidden:NO];
+	[self.rearrangeView setHidden:NO];
 	if([self.textEntryDelegate respondsToSelector:@selector(editContentViewTextDoneEditing)])[self.textEntryDelegate editContentViewTextDoneEditing];
 }
 

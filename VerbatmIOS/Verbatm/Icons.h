@@ -69,19 +69,12 @@
 
 #pragma mark Edit Content View
 
-#define REPOSITION_PHOTO_GRID @"Grid"
-
 #define MINIMIZE_ICON @"minimize_icon"
 #define DONE_CHECKMARK @"done_checkmark"
 #define PULLDOWN_ICON @"down_arrow"
 #define CREATE_TEXT_ICON @"AddTextBlueIcon"
 
 #pragma mark Text Toolbar
-
-
-#define REPOSITION_PHOTO_ICON_SELECTED @"Edit photo icon_selected"
-#define REPOSITION_PHOTO_ICON_UNSELECTED @"Edit photo icon_unselected"
-
 
 #define PRESENT_KEYBOARD_ICON @"Keyboard icon"
 

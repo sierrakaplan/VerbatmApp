@@ -525,6 +525,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 - (void) collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
 	// If the indexpath is not within visible objects then it is offscreen
 	if ([collectionView.indexPathsForVisibleItems indexOfObject:indexPath] == NSNotFound) {
+		[(PostCollectionViewCell*)cell offScreen];
 	}
 }
 

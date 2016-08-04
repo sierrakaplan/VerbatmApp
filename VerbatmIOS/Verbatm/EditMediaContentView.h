@@ -16,9 +16,6 @@
 -(void) textIsEditing;
 -(void) textDoneEditing;
 
--(void)repositioningPhoto;
--(void)stopRepositioningPhoto;
-
 @end
 
 @interface EditMediaContentView : UIView
@@ -41,8 +38,6 @@
 -(void)displayImages: (NSArray*) filteredImages atIndex:(NSInteger)index isHalfScreen:(BOOL) isHalfScreen;
 
 -(void)changeImageTo: (UIImage *) image;
-
--(void)createTextCreationButton;
 
 -(void) setText:(NSString *)text
 andTextYPosition:(CGFloat)yPosition

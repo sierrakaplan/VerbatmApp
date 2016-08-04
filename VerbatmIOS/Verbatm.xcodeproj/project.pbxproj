@@ -169,7 +169,6 @@
 		C7178E081D21101900B90643 /* FeedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7178E071D21101900B90643 /* FeedTableViewController.m */; };
 		C7178E0B1D21A12000B90643 /* FeedTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C7178E0A1D21A12000B90643 /* FeedTableCell.m */; };
 		C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4091BA615B50075CA80 /* UserSetupParameters.m */; };
-		C71F40BA1D4C6D1300AF18EE /* GridView.m in Sources */ = {isa = PBXBuildFile; fileRef = C71F40B91D4C6D1300AF18EE /* GridView.m */; };
 		C71FA3221D474FAB003989F3 /* AdjustTextFontToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C71FA3211D474FAB003989F3 /* AdjustTextFontToolBar.m */; };
 		C71FA3251D476D91003989F3 /* AdjustTextAVEBackgroundToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C71FA3241D476D91003989F3 /* AdjustTextAVEBackgroundToolBar.m */; };
 		C71FA3281D477E16003989F3 /* TextPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = C71FA3271D477E16003989F3 /* TextPinchView.m */; };
@@ -529,8 +528,6 @@
 		C7178E0A1D21A12000B90643 /* FeedTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedTableCell.m; sourceTree = "<group>"; };
 		C719A4081BA615B50075CA80 /* UserSetupParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserSetupParameters.h; sourceTree = "<group>"; };
 		C719A4091BA615B50075CA80 /* UserSetupParameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserSetupParameters.m; sourceTree = "<group>"; };
-		C71F40B81D4C6D1300AF18EE /* GridView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GridView.h; sourceTree = "<group>"; };
-		C71F40B91D4C6D1300AF18EE /* GridView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GridView.m; sourceTree = "<group>"; };
 		C71FA3201D474FAB003989F3 /* AdjustTextFontToolBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdjustTextFontToolBar.h; sourceTree = "<group>"; };
 		C71FA3211D474FAB003989F3 /* AdjustTextFontToolBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdjustTextFontToolBar.m; sourceTree = "<group>"; };
 		C71FA3231D476D91003989F3 /* AdjustTextAVEBackgroundToolBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdjustTextAVEBackgroundToolBar.h; sourceTree = "<group>"; };
@@ -1375,8 +1372,6 @@
 				C7996CC11C8FCF74002E5DA6 /* LoadingIndicator.h */,
 				C78B682219CA6C01003D0AC5 /* MediaSelectTile.h */,
 				C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */,
-				C71F40B81D4C6D1300AF18EE /* GridView.h */,
-				C71F40B91D4C6D1300AF18EE /* GridView.m */,
 			);
 			name = "Custom Views";
 			sourceTree = "<group>";
@@ -1845,7 +1840,6 @@
 				C723C9891D2B4E9400E87D58 /* NotificationTableCell.m in Sources */,
 				C772057D1D30DBFA00D626FE /* ConfirmationCodeSignUp.m in Sources */,
 				A5446C961BBA3C33002177F4 /* CustomNavigationBar.m in Sources */,
-				C71F40BA1D4C6D1300AF18EE /* GridView.m in Sources */,
 				C75690A81D0891FF002C9402 /* OnboardingBlogSelectionViewController.m in Sources */,
 				C7F22B3B1C38B2A600E56EA7 /* SelectOptionButton.m in Sources */,
 				C7BF1AA51C57EFC000CEDE4B /* Post_BackendObject.m in Sources */,
