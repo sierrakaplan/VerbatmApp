@@ -155,7 +155,8 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	[currentInstallation saveInBackground];
 
 	[[UserSetupParameters sharedInstance] setUpParameters];
-	if (![PFUser currentUser][USER_FB_ID]) {
+	NSString *facebookId = [PFUser currentUser][USER_FB_ID];
+	if (!facebookId) {
 		[UserManager setFbId];
 	}
 	self.view.backgroundColor = [UIColor blackColor];
