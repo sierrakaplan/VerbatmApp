@@ -21,14 +21,16 @@
 
 + (UserManager *)sharedInstance;
 
++(void) setFbId;
+
 //-(void) signUpUserFromEmail: (NSString*)email andName: (NSString*)name
 //				andPassword: (NSString*)password andPhoneNumber: (NSString*) phoneNumber;
 
 -(void) signUpOrLoginUserFromFacebookToken: (FBSDKAccessToken*) accessToken;
 
 -(void) logOutUser;
--(BOOL)shouldRequestForUserFeedback;
+-(BOOL) shouldRequestForUserFeedback;
 
--(void)holdCurrentCoverPhoto:(UIImage *)coverPhoto;
--(UIImage *)getCurrentCoverPhoto;
+-(void) holdCurrentCoverPhoto:(UIImage *)coverPhoto;
+-(UIImage*) getCurrentCoverPhoto;
 @end

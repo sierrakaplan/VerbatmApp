@@ -165,4 +165,18 @@
 	}];
 }
 
++(NSArray*) channelsFromParseChannelObjects:(NSArray*)parseChannels {
+	NSMutableArray *finalChannels = [[NSMutableArray alloc] init];
+	for (PFObject *channelObj in parseChannels) {
+		PFUser *channelCreator = channelObj[CHANNEL_CREATOR_KEY];
+		NSString *channelName  = [channelObj valueForKey:CHANNEL_NAME_KEY];
+		//todo: when someone navigates to a channel from search or a list they need the follow object
+		Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
+													   andParseChannelObject:channelObj
+														   andChannelCreator:channelCreator andFollowObject:nil];
+		[finalChannels addObject:verbatmChannelObject];
+	}
+	return finalChannels;
+}
+
 @end
