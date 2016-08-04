@@ -39,6 +39,7 @@
 #import "User_BackendObject.h"
 #import "UserInfoCache.h"
 #import "UserSetupParameters.h"
+#import "UserManager.h"
 
 #import <Crashlytics/Crashlytics.h>
 
@@ -82,7 +83,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	[super viewDidLoad];
 	[self registerForNotifications];
 	if ([PFUser currentUser].isAuthenticated) {
-		[self checkMigrated];
+		[self setUpStartUpEnvironment];
 	}
 }
 
@@ -147,26 +148,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 
 #pragma mark - Setting up environment on startup -
 
-/* Migrating to one channel */
--(void) checkMigrated {
-	
-	self.migrated = NO;
-	NSNumber* migratedObject = [[PFUser currentUser] objectForKey:USER_MIGRATED_ONE_CHANNEL];
-	if (migratedObject && [migratedObject boolValue]) self.migrated = YES;
-	if (!self.migrated) {
-		[User_BackendObject migrateUserToOneChannelWithCompletionBlock:^(BOOL success) {
-			if (success) {
-				self.migrated = YES;
-				[[PFUser currentUser] setObject:[NSNumber numberWithBool:YES] forKey:USER_MIGRATED_ONE_CHANNEL];
-				[[PFUser currentUser] saveInBackground];
-			}
-			[self setUpStartUpEnvironment];
-		}];
-	} else {
-		[self setUpStartUpEnvironment];
-	}
-}
-
 -(void) setUpStartUpEnvironment {
 	// Associate the device with a user
 	PFInstallation *currentInstallation = [PFInstallation currentInstallation];
@@ -174,6 +155,9 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	[currentInstallation saveInBackground];
 
 	[[UserSetupParameters sharedInstance] setUpParameters];
+	if (![PFUser currentUser][USER_FB_ID]) {
+		[UserManager setFbId];
+	}
 	self.view.backgroundColor = [UIColor blackColor];
 	[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
 		[self setUpTabBarController];
@@ -190,7 +174,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	[[Crashlytics sharedInstance] setUserIdentifier: [user username]];
 	[[Crashlytics sharedInstance] setUserName: [user objectForKey:VERBATM_USER_NAME_KEY]];
 	dispatch_async(dispatch_get_main_queue(), ^{
-		[self checkMigrated];
+		[self setUpStartUpEnvironment];
 	});
 }
 

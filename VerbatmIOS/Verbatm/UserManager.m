@@ -28,7 +28,6 @@
 	return _sharedInstance;
 }
 
-
 #pragma mark - Creating Account (Signing up user) -
 
 -(void) signUpOrLoginUserFromFacebookToken:(FBSDKAccessToken *)accessToken {
@@ -60,6 +59,22 @@
 			[[Crashlytics sharedInstance] recordError:error];
 		}
 	}];
+}
+
++(void) setFbId {
+	FBSDKGraphRequestConnection *connection = [[FBSDKGraphRequestConnection alloc] init];
+	NSDictionary* userFields =  [NSDictionary dictionaryWithObject: @"id" forKey:@"fields"];
+	FBSDKGraphRequest *requestMe = [[FBSDKGraphRequest alloc]
+									initWithGraphPath:@"me" parameters:userFields];
+	[connection addRequest:requestMe
+		 completionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+			 if (!error) {
+				  NSString *fbId = [result objectForKey:@"id"];
+				 [[PFUser currentUser] setObject:fbId forKey:USER_FB_ID];
+				 [[PFUser currentUser] saveInBackground];
+			 }
+		 }];
+	[connection start];
 }
 
 // Starts request query for a fb user's name, email, picture, and friends.

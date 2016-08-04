@@ -21,6 +21,8 @@
 
 + (UserManager *)sharedInstance;
 
++(void) setFbId;
+
 //-(void) signUpUserFromEmail: (NSString*)email andName: (NSString*)name
 //				andPassword: (NSString*)password andPhoneNumber: (NSString*) phoneNumber;
 
