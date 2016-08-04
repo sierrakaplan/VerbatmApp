@@ -202,7 +202,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 /* Enforces word limit */
 - (BOOL) textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
 	NSString* newText = [textView.text stringByReplacingCharactersInRange:range withString:text];
-	if (newText.length > CHARACTER_LIMIT) {
+	if (newText.length > TEXT_AVE_CHARACTER_LIMIT) {
 		return NO;
 	} else {
 		return YES;
