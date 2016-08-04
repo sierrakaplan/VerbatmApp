@@ -15,6 +15,9 @@
 #import <PromiseKit/PromiseKit.h>
 #import "UtilityFunctions.h"
 
+#import <ParseFacebookutilsV4/PFFacebookUtils.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+
 @interface FeedQueryManager ()
 
 @property (nonatomic) NSInteger postsInFeed;
@@ -28,6 +31,9 @@
 
 @property (nonatomic) NSInteger exploreChannelsLoaded;
 @property (nonatomic, strong) NSMutableArray *usersWhoHaveBlockedUser;
+
+@property (nonatomic, strong) NSArray *friendUsers;
+@property (nonatomic, strong) NSArray *friendChannels;
 
 @end
 
@@ -195,35 +201,114 @@
 				[self.usersWhoHaveBlockedUser addObject:[block valueForKey:BLOCK_USER_BLOCKING_KEY]];
 			}
 			[self.usersWhoHaveBlockedUser addObject:[PFUser currentUser]];
-			PFQuery *exploreChannelsQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
-			[exploreChannelsQuery whereKey:CHANNEL_CREATOR_KEY notContainedIn: self.usersWhoHaveBlockedUser];
-			[exploreChannelsQuery whereKey:@"objectId" notContainedIn: self.channelsFollowedIds];
-			[exploreChannelsQuery whereKeyExists:CHANNEL_LATEST_POST_DATE];
-			[exploreChannelsQuery orderByDescending:@"createdAt"];
-			[exploreChannelsQuery setLimit:CHANNEL_DOWNLOAD_MAX_SIZE];
-			[exploreChannelsQuery setSkip: skip];
-			[exploreChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
-				NSMutableArray *finalChannels = [[NSMutableArray alloc] init];
-				if(error || !channels) {
-					[[Crashlytics sharedInstance] recordError:error];
-					completionBlock (finalChannels);
-					return;
-				}
 
-				for (PFObject *channelObj in channels) {
-					PFUser *channelCreator = channelObj[CHANNEL_CREATOR_KEY];
-					NSString *channelName  = [channelObj valueForKey:CHANNEL_NAME_KEY];
-					//todo: when someone navigates to a channel from search or a list they need the follow object
-					Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
-																   andParseChannelObject:channelObj
-																	   andChannelCreator:channelCreator andFollowObject:nil];
-					[finalChannels addObject:verbatmChannelObject];
+			[self loadFbFriendsChannelsWithCompletionHandler:^(NSArray *friendChannelObjects, NSArray *friendObjects) {
+				NSArray *friendChannels = [self channelsFromParseChannelObjects: friendChannelObjects];
+
+				// add other channels
+				// skip > 0 indicates loading more channels, should not show friend's channels
+				if (friendChannels.count < CHANNEL_DOWNLOAD_MAX_SIZE || skip > 0) {
+					PFQuery *exploreChannelsQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
+					NSMutableArray *usersNotInclude = [NSMutableArray arrayWithArray: self.usersWhoHaveBlockedUser];
+					[usersNotInclude addObjectsFromArray: friendObjects];
+					[exploreChannelsQuery whereKey:CHANNEL_CREATOR_KEY notContainedIn: usersNotInclude];
+					[exploreChannelsQuery whereKey:@"objectId" notContainedIn: self.channelsFollowedIds];
+					[exploreChannelsQuery whereKeyExists:CHANNEL_LATEST_POST_DATE];
+					[exploreChannelsQuery orderByDescending:@"createdAt"];
+					[exploreChannelsQuery setLimit:CHANNEL_DOWNLOAD_MAX_SIZE];
+					[exploreChannelsQuery setSkip: skip];
+					[exploreChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
+
+						if(error || !channels) {
+							[[Crashlytics sharedInstance] recordError:error];
+							completionBlock (@[]);
+							return;
+						}
+						NSArray *exploreChannels = [self channelsFromParseChannelObjects: channels];
+						exploreChannels = [UtilityFunctions shuffleArray: exploreChannels];
+						NSMutableArray *finalChannels = [NSMutableArray arrayWithArray:exploreChannels];
+						if (skip == 0) {
+							[finalChannels insertObjects:friendChannels atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, friendChannels.count)]];
+						}
+						completionBlock(finalChannels);
+					}];
+				} else {
+					completionBlock(friendChannels);
 				}
-				self.exploreChannelsLoaded += channels.count;
-				completionBlock([UtilityFunctions shuffleArray: finalChannels]);
 			}];
 		}];
 	}];
+}
+
+-(NSArray*) channelsFromParseChannelObjects:(NSArray*)parseChannels {
+	NSMutableArray *finalChannels = [[NSMutableArray alloc] init];
+	for (PFObject *channelObj in parseChannels) {
+		PFUser *channelCreator = channelObj[CHANNEL_CREATOR_KEY];
+		NSString *channelName  = [channelObj valueForKey:CHANNEL_NAME_KEY];
+		//todo: when someone navigates to a channel from search or a list they need the follow object
+		Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
+													   andParseChannelObject:channelObj
+														   andChannelCreator:channelCreator andFollowObject:nil];
+		[finalChannels addObject:verbatmChannelObject];
+	}
+	self.exploreChannelsLoaded += finalChannels.count;
+	return finalChannels;
+}
+
+// resolves to channels of friends (as pfobjects), friend ids
+-(void) loadFbFriendsChannelsWithCompletionHandler:(void(^)(NSArray *, NSArray *))completionBlock {
+	if (self.friendChannels) {
+		completionBlock(self.friendChannels, self.friendUsers);
+		return;
+	}
+	if ([[FBSDKAccessToken currentAccessToken] hasGranted:@"user_friends"]) {
+
+		FBSDKGraphRequestConnection *connection = [[FBSDKGraphRequestConnection alloc] init];
+		FBSDKGraphRequest *requestMe = [[FBSDKGraphRequest alloc]
+										initWithGraphPath:@"me/friends" parameters:@{@"fields": @"id, name"}];
+		[connection addRequest:requestMe
+			 completionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+				 if (error) {
+					 completionBlock(@[], @[]);
+				 } else {
+					 NSArray *friendObjects = [result objectForKey:@"data"];
+					 NSMutableArray *friendIds = [NSMutableArray arrayWithCapacity:friendObjects.count];
+					 // Create a list of friends' Facebook IDs
+					 for (NSDictionary *friendObject in friendObjects) {
+						 [friendIds addObject:[friendObject objectForKey:@"id"]];
+					 }
+					 //1341267872568153
+					 PFQuery *friendQuery = [PFUser query];
+					 [friendQuery whereKey:USER_FB_ID containedIn:friendIds];
+
+					 // findObjects will return a list of PFUsers that are friends
+					 // with the current user
+					 [friendQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable friendUsers, NSError * _Nullable error) {
+						 if (error || !friendUsers.count) {
+							 completionBlock(@[], @[]);
+						 } else {
+							 self.friendUsers = friendUsers;
+							 PFQuery *channelsForFriends = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
+							 [channelsForFriends whereKey:CHANNEL_CREATOR_KEY containedIn:friendUsers];
+							 [channelsForFriends whereKey:CHANNEL_CREATOR_KEY notContainedIn: self.usersWhoHaveBlockedUser];
+							 [channelsForFriends whereKey:@"objectId" notContainedIn: self.channelsFollowedIds];
+							 [channelsForFriends whereKeyExists:CHANNEL_LATEST_POST_DATE];
+							 [channelsForFriends orderByDescending:@"createdAt"];
+							 channelsForFriends.limit = 1000;
+							 [channelsForFriends findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
+								 if (error) {
+									 completionBlock(@[], friendUsers);
+								 } else {
+									 self.friendChannels = channels;
+									 completionBlock(channels, friendUsers);
+								 }
+							 }];
+						 }
+					 }];
+				 }
+			 }];
+		[connection start];
+	}
 }
 
 -(void) loadFeaturedChannelsWithCompletionHandler:(void(^)(NSArray *))completionBlock {
