@@ -122,7 +122,8 @@
 }
 
 -(CGPoint)getImageOffset {
-	return self.repositionPhotoScrollView.contentOffset;
+	CGPoint contentOffset = self.repositionPhotoScrollView.contentOffset;
+	return contentOffset;
 }
 
 -(void) moveImageX:(CGFloat)xDiff andY:(CGFloat)yDiff {

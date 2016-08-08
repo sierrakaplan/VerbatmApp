@@ -37,7 +37,6 @@
 
 #pragma mark FilteredPhotos
 @property (nonatomic, strong) UIImage *image;
-@property (nonatomic) CGPoint imageContentOffset;
 
 @property (nonatomic) CGPoint  panStartLocation;
 
@@ -282,7 +281,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 -(void)displayImage:(UIImage*)image isHalfScreen:(BOOL)isHalfScreen withContentOffset:(CGPoint) contentOffset {
 	self.image = image;
-	self.imageContentOffset = contentOffset;
     self.isAtHalfScreen = isHalfScreen;
 	self.textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
 															andImage:image andContentOffset:contentOffset];
@@ -568,8 +566,9 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
         [((TextPinchView *)self.pinchView) putNewImage:self.currentTextAVEBackground];
     }else if([self.pinchView isKindOfClass:[ImagePinchView class]]){
 //		[((ImagePinchView *)self.pinchView) changeImageToFilterIndex:self.imageIndex];
-		self.imageContentOffset = [self.textAndImageView getImageOffset];
-		((ImagePinchView *)self.pinchView).imageContentOffset = self.imageContentOffset;
+		if (self.textAndImageView) {
+			((ImagePinchView *)self.pinchView).imageContentOffset = [self.textAndImageView getImageOffset];
+		}
 	}
 }
 
