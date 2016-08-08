@@ -1870,7 +1870,7 @@ andSaveInUserDefaults:(BOOL)save {
 	[postView displayPageViews: pages];
 	[postView prepareForScreenShot];
 
-	UIImage *screenShotImage = [postView getViewScreenshotWithTextView:nil];
+	UIImage *screenShotImage = [postView getViewScreenshot];
 
 	//        UIGraphicsEndImageContext();
 	[postView postOffScreen];

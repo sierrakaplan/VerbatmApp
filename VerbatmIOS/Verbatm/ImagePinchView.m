@@ -158,7 +158,7 @@
                    self.textColor, @(0), @(0)]];
 }
 
-//todo: fix photo quality
+//todo: set size to actual size of current screen so positioning isn't wrong
 -(UIImage *)getImageScreenshotWithText:(UIImage *)image inHalf:(BOOL)half {
 	@autoreleasepool {
 		CGSize size = half ? HALF_SCREEN_SIZE : FULL_SCREEN_SIZE;
@@ -179,7 +179,7 @@
 		[textAndImageView.textView setHidden:NO];
 		[textAndImageView bringSubviewToFront:textAndImageView.textView];
 
-		UIImage * screenShot = [textAndImageView.imageView getViewScreenshotWithTextView:textAndImageView.textView];
+		UIImage * screenShot = [textAndImageView getViewScreenshot];
 		textAndImageView = nil;
 		return screenShot;
 	}
