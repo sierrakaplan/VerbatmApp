@@ -145,7 +145,8 @@
 		[editMediaContentView changeImageTo:image];
 	});
 
-	[editMediaContentView displayImages:[pinchView filteredImages] atIndex:pinchView.filterImageIndex isHalfScreen:self.photoVideoSubview];
+	[editMediaContentView displayImage:[pinchView getImage] isHalfScreen:self.photoVideoSubview
+					 withContentOffset:pinchView.imageContentOffset];
 	//this has to be set before we set the text view information
 	editMediaContentView.pinchView = pinchView;
 	editMediaContentView.povViewMasterScrollView = self.postScrollView;

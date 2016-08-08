@@ -135,7 +135,7 @@
 
                       if(weakSelf.beingPublished){
                           dispatch_async(dispatch_get_main_queue(), ^{
-                              resolve([weakSelf getImageScreenshotWithText:image inHalf:half]);
+                              resolve([weakSelf getImageScreenshotWithTextInHalf:half]);
                           });
                       }else{
                           resolve(image);
@@ -157,14 +157,14 @@
                    self.textColor, @(0), @(0)]];
 }
 
-
-//todo: fix half screen problem
--(UIImage *)getImageScreenshotWithText:(UIImage *)image inHalf:(BOOL)half {
+//todo: fix photo quality
+-(UIImage *)getImageScreenshotWithTextInHalf:(BOOL)half {
 	@autoreleasepool {
 		CGSize size = half ? HALF_SCREEN_SIZE : FULL_SCREEN_SIZE;
 		CGRect frame = CGRectMake(0.f, 0.f, size.width, size.height);
         
-		TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:frame andImage:image];
+		TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:frame andImage:self.image
+																	  andContentOffset:self.imageContentOffset];
 		BOOL textColorBlack = [self.textColor isEqual:[UIColor blackColor]];
 		NSString * textToCapture = self.text;
 
@@ -178,7 +178,7 @@
 		[textAndImageView.textView setHidden:NO];
 		[textAndImageView bringSubviewToFront:textAndImageView.textView];
 
-		UIImage * screenShot = [textAndImageView.imageView getViewscreenshotWithTextView:textAndImageView.textView];
+		UIImage * screenShot = [textAndImageView.imageView getViewScreenshotWithTextView:textAndImageView.textView];
 		textAndImageView = nil;
 		return screenShot;
 	}

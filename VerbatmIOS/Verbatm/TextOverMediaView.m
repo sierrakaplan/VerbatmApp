@@ -60,7 +60,7 @@
 }
 
 // For preview mode
--(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image {
+-(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image andContentOffset:(CGPoint)contentOffset {
 	self = [self initWithFrame: frame];
 	if (self) {
 		[self addSubview: self.textView];
@@ -71,6 +71,7 @@
 		[self.imageView removeFromSuperview];
 		[self.repositionPhotoScrollView addSubview:self.imageView];
 		[self setRepositionImageScrollViewFromImage: image];
+		self.repositionPhotoScrollView.contentOffset = contentOffset;
 		[self insertSubview:self.repositionPhotoScrollView belowSubview:self.textView];
 	}
 	return self;
@@ -119,6 +120,10 @@
 		[self.repositionPhotoGrid removeFromSuperview];
 		[self.textView setHidden:NO];
 	}
+}
+
+-(CGPoint)getImageOffset {
+	return self.repositionPhotoScrollView.contentOffset;
 }
 
 -(void) moveImageX:(CGFloat)xDiff andY:(CGFloat)yDiff {

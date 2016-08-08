@@ -20,8 +20,10 @@
 @property (nonatomic, readonly) BOOL blackTextColor;
 @property (nonatomic) UIImageView* imageView;
 
--(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image;
+// Preview mode
+-(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image andContentOffset:(CGPoint)contentOffset;
 
+// Published mode
 -(instancetype) initWithFrame:(CGRect)frame andImageURL:(NSURL*)imageUrl
 			   withSmallImage: (UIImage*)smallImage asSmall:(BOOL) small;
 
@@ -75,6 +77,8 @@ andTextAlignment:(NSTextAlignment) textAlignment
 -(void) startRepositioningPhoto;
 
 -(void) endRepositioningPhoto;
+
+-(CGPoint)getImageOffset;
 
 -(void) moveImageX:(CGFloat)xDiff andY:(CGFloat)yDiff;
 

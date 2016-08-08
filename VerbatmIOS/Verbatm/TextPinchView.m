@@ -20,18 +20,16 @@
 @synthesize textColor = _textColor;
 @synthesize  imageName = _imageName;
 
+//todo:
 -(AnyPromise *) getLargerImageWithHalfSize:(BOOL)half {
-    
     AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
-        
         if(self.beingPublished){
             dispatch_async(dispatch_get_main_queue(), ^{
-                resolve([self getImageScreenshotWithText:[self getImage] inHalf:half]);
+                resolve([self getImageScreenshotWithTextInHalf:half]);
             });
-        }else{
+        } else {
             resolve([self getImage]);
         }
-        
     }];
     
     return promise;

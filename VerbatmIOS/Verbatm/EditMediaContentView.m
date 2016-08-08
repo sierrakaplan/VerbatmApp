@@ -36,8 +36,8 @@
 @property (nonatomic) UIImageView *swipeInstructionView;
 
 #pragma mark FilteredPhotos
-@property (nonatomic, strong) NSArray *filteredImages;
-@property (nonatomic) NSInteger imageIndex;
+@property (nonatomic, strong) UIImage *image;
+@property (nonatomic) CGPoint imageContentOffset;
 
 @property (nonatomic) CGPoint  panStartLocation;
 
@@ -280,14 +280,14 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self.videoView prepareVideoFromAsset:videoAsset];
 }
 
--(void)displayImages: (NSArray*) filteredImages atIndex:(NSInteger)index isHalfScreen:(BOOL) isHalfScreen{
-	self.imageIndex = index;
+-(void)displayImage:(UIImage*)image isHalfScreen:(BOOL)isHalfScreen withContentOffset:(CGPoint) contentOffset {
+	self.image = image;
+	self.imageContentOffset = contentOffset;
     self.isAtHalfScreen = isHalfScreen;
 	self.textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
-															andImage:filteredImages[index]];
+															andImage:image andContentOffset:contentOffset];
 	UIPanGestureRecognizer *moveImageGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPan:)];
 	[self.textAndImageView addGestureRecognizer: moveImageGesture];
-	self.filteredImages = filteredImages;
 	[self addSubview: self.textAndImageView];
 	[self addPanGestures];
 
@@ -303,8 +303,8 @@ andTextAlignment:(NSTextAlignment)textAlignment
 }
 
 //todo: bring back filters?
--(void)changeImageTo: (UIImage *) image {
-	self.filteredImages = @[image];
+-(void)changeImageTo: (UIImage *)image {
+	self.image = image;
 	[self.textAndImageView changeImageTo: image];
 }
 
@@ -331,22 +331,22 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 #pragma mark Filters
 
--(void)changeFilteredImageLeft{
-	if (self.imageIndex >= ([self.filteredImages count]-1)) {
-		self.imageIndex = -1;
-	}
-	self.imageIndex = self.imageIndex+1;
-	[self.textAndImageView changeImageTo:self.filteredImages[self.imageIndex]];
-
-}
-
--(void)changeFilteredImageRight {
-	if (self.imageIndex <= 0) {
-		self.imageIndex = [self.filteredImages count];
-	}
-	self.imageIndex = self.imageIndex-1;
-	[self.textAndImageView changeImageTo:self.filteredImages[self.imageIndex]];
-}
+//-(void)changeFilteredImageLeft{
+//	if (self.imageIndex >= ([self.filteredImages count]-1)) {
+//		self.imageIndex = -1;
+//	}
+//	self.imageIndex = self.imageIndex+1;
+//	[self.textAndImageView changeImageTo:self.filteredImages[self.imageIndex]];
+//
+//}
+//
+//-(void)changeFilteredImageRight {
+//	if (self.imageIndex <= 0) {
+//		self.imageIndex = [self.filteredImages count];
+//	}
+//	self.imageIndex = self.imageIndex-1;
+//	[self.textAndImageView changeImageTo:self.filteredImages[self.imageIndex]];
+//}
 
 #pragma mark - Keyboard toolbar delegate methods -
 
@@ -567,7 +567,9 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
     if([self.pinchView isKindOfClass:[TextPinchView class]]){
         [((TextPinchView *)self.pinchView) putNewImage:self.currentTextAVEBackground];
     }else if([self.pinchView isKindOfClass:[ImagePinchView class]]){
-		[((ImagePinchView *)self.pinchView) changeImageToFilterIndex:self.imageIndex];
+//		[((ImagePinchView *)self.pinchView) changeImageToFilterIndex:self.imageIndex];
+		self.imageContentOffset = [self.textAndImageView getImageOffset];
+		((ImagePinchView *)self.pinchView).imageContentOffset = self.imageContentOffset;
 	}
 }
 

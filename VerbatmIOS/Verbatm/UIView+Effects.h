@@ -26,5 +26,5 @@
 															andStyle:(UIActivityIndicatorViewStyle)style;
 
 //make sure to set the frame of the view before calling for a screenshot
--(UIImage *)getViewscreenshotWithTextView:(UITextView *) textView;
+-(UIImage *)getViewScreenshotWithTextView:(UITextView *) textView;
 @end

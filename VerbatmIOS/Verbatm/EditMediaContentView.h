@@ -35,7 +35,7 @@
 -(void) prepareVideoFromAsset: (AVAsset *)videoAsset;
 
 //passes it an array of UIImages to display
--(void)displayImages: (NSArray*) filteredImages atIndex:(NSInteger)index isHalfScreen:(BOOL) isHalfScreen;
+-(void)displayImage:(UIImage*)image isHalfScreen:(BOOL)isHalfScreen withContentOffset:(CGPoint) contentOffset;
 
 -(void)changeImageTo: (UIImage *) image;
 

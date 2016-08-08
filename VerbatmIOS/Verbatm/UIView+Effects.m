@@ -119,7 +119,7 @@
 	return indicator;
 }
 
--(UIImage *)getViewscreenshotWithTextView:(UITextView *) textView{
+-(UIImage *)getViewScreenshotWithTextView:(UITextView *) textView {
     UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, [UIScreen mainScreen].scale);
     [self drawViewHierarchyInRect:self.bounds afterScreenUpdates:YES];
     if(textView){
