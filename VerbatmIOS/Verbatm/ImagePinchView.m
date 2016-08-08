@@ -36,7 +36,7 @@
 
 @implementation ImagePinchView
 
--(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andImage:(UIImage*)image
+-(instancetype)initWithRadius:(CGFloat)radius withCenter:(CGPoint)center andImage:(UIImage*)image
 	andPHAssetLocalIdentifier: (NSString*) localIdentifier {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {

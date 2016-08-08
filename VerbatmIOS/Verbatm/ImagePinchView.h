@@ -18,7 +18,7 @@
 @property (nonatomic) CGPoint imageContentOffset; //stores position of image
 @property (strong, nonatomic) NSString* phAssetLocalIdentifier;
 
--(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andImage:(UIImage*)image
+-(instancetype)initWithRadius:(CGFloat)radius withCenter:(CGPoint)center andImage:(UIImage*)image
 	andPHAssetLocalIdentifier: (NSString*) localIdentifier;
 
 -(void) initWithImage:(UIImage*)image andSetFilteredImages: (BOOL) setFilters;
