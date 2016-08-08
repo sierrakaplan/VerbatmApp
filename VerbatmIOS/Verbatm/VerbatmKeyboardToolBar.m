@@ -22,7 +22,8 @@ typedef enum {
     fontSize = 2,
     textAlightment = 3,
     fontType = 4,
-    background = 5
+    background = 5,
+	photoPosition = 6
 } ToolBarOptions;
 
 @interface VerbatmKeyboardToolBar()<AdjustTextSizeDelegate, AdjustTextAlignmentToolBarDelegate, AdjustTextFontToolBarDelegate, AdjustTextAVEBackgroundToolBarDelegate>
@@ -35,6 +36,8 @@ typedef enum {
 @property (strong, nonatomic) UIButton *changeTextAlignmentButton;
 @property (strong, nonatomic) UIButton *changeFontTypeButton;
 @property (strong, nonatomic) UIButton *changeTextAveBackgroundButton;
+@property (strong, nonatomic) UIButton *repositionPhotoButton;
+
 
 @property (nonatomic) UIView * lowerBarHolder;//holds all the constant icons
 
@@ -61,7 +64,6 @@ typedef enum {
 #define NUM_BASE_BUTTONS 5
 
 #define CENTERING_Y ((TEXT_TOOLBAR_HEIGHT/2.f/2.f) - (TEXT_TOOLBAR_BUTTON_WIDTH/2.f))
-
 
 @end
 
@@ -92,6 +94,7 @@ typedef enum {
     [self.lowerBarHolder addSubview:self.changeTextAlignmentButton];
     [self.lowerBarHolder addSubview:self.changeFontTypeButton];
     [self.lowerBarHolder addSubview:self.changeTextAveBackgroundButton];
+	[self.lowerBarHolder addSubview:self.repositionPhotoButton];
     [self.lowerBarHolder addSubview:self.keyboardButton];
 }
 
@@ -119,7 +122,7 @@ typedef enum {
 }
 
 
--(void)changeTextAveBackgroundButtonPressed{
+-(void)changeTextAveBackgroundButtonPressed {
     [self removeTopHalfBar];
     UIImage *iconImage;
     if(self.currentSelectedOption == background){
@@ -134,7 +137,7 @@ typedef enum {
 
 }
 
--(void)changeTextAlignmentButtonPressed{
+-(void)changeTextAlignmentButtonPressed {
     [self removeTopHalfBar];
     if(self.currentSelectedOption == textAlightment){
         self.currentSelectedOption = noSelection;
@@ -144,6 +147,20 @@ typedef enum {
     [self addTopHalfBar];
 }
 
+-(void)changePhotoPositionButtonPressed {
+	[self removeTopHalfBar];
+	UIImage *iconImage;
+	if (self.currentSelectedOption == photoPosition){
+		self.currentSelectedOption = noSelection;
+		iconImage = [UIImage imageNamed:REPOSITION_PHOTO_ICON_UNSELECTED];
+		[self.delegate repositionPhotoUnSelected];
+	} else {
+		self.currentSelectedOption = photoPosition;
+		iconImage = [UIImage imageNamed: REPOSITION_PHOTO_ICON_SELECTED];
+		[self.delegate repositionPhotoSelected];
+	}
+	[self.repositionPhotoButton setImage:iconImage forState:UIControlStateNormal];
+}
 
 #pragma mark - Align Toolbar Delegate -
 
@@ -188,6 +205,10 @@ typedef enum {
             [self.adjustBackgroundBar removeFromSuperview];
             [self.changeTextAveBackgroundButton setImage:[UIImage imageNamed: CHANGE_TEXT_VIEW_BACKGROUND_UNSELECTED] forState:UIControlStateNormal];
             break;
+		case photoPosition:
+			[self.adjustBackgroundBar removeFromSuperview];
+			[self.repositionPhotoButton setImage:[UIImage imageNamed: REPOSITION_PHOTO_ICON_UNSELECTED] forState:UIControlStateNormal];
+			break;
         default:
             break;
     }
@@ -354,6 +375,19 @@ typedef enum {
     return _changeTextAveBackgroundButton;
 }
 
+-(UIButton *)repositionPhotoButton{
+	if (!_repositionPhotoButton) {
+		CGRect buttonFrame = CGRectMake(self.changeFontTypeButton.frame.origin.x + self.changeFontTypeButton.frame.size.width +
+										ICON_SEPARATION_SPACE, CENTERING_Y,
+										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
+
+		_repositionPhotoButton = [UtilityFunctions getButtonWithFrame:buttonFrame andIcon:REPOSITION_PHOTO_ICON_UNSELECTED
+											  andSelector:@selector(changePhotoPositionButtonPressed) andTarget:self];
+		[_repositionPhotoButton setHidden: self.onTextAve];
+	}
+	return _repositionPhotoButton;
+}
+
 -(UIButton *) keyboardButton {
 	if (!_keyboardButton) {
 		CGRect keyboardButtonFrame = CGRectMake(self.changeTextAveBackgroundButton.frame.origin.x + self.changeTextAveBackgroundButton.frame.size.width +
@@ -410,6 +444,5 @@ typedef enum {
     }
     return _adjustBackgroundBar;
 }
-
 
 @end

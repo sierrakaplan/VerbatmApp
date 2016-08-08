@@ -66,6 +66,8 @@
 //is half screen for photo video ave
 @property (nonatomic) BOOL isAtHalfScreen;
 
+@property (nonatomic) BOOL isRepositioningPhoto;
+
 @property (nonatomic) UIPanGestureRecognizer * textViewPanGesture;
 
 #define HORIZONTAL_PAN_FILTER_SWITCH_DISTANCE 11
@@ -283,6 +285,8 @@ andTextAlignment:(NSTextAlignment)textAlignment
     self.isAtHalfScreen = isHalfScreen;
 	self.textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
 															andImage:filteredImages[index]];
+	UIPanGestureRecognizer *moveImageGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPan:)];
+	[self.textAndImageView addGestureRecognizer: moveImageGesture];
 	self.filteredImages = filteredImages;
 	[self addSubview: self.textAndImageView];
 	[self addPanGestures];
@@ -388,8 +392,15 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self.textAndImageView changeTextAlignment:NSTextAlignmentRight];
 }
 
+-(void)repositionPhotoSelected {
+	[self.textAndImageView startRepositioningPhoto];
+	self.isRepositioningPhoto = YES;
+}
 
-
+-(void)repositionPhotoUnSelected {
+	[self.textAndImageView endRepositioningPhoto];
+	self.isRepositioningPhoto = NO;
+}
 
 -(void) doneButtonPressed {
 	if([[self.textAndImageView getText] isEqualToString:@""]) {
@@ -422,18 +433,21 @@ andTextAlignment:(NSTextAlignment)textAlignment
 				self.gestureActionJustStarted = NO;
 			}
 
-			if(self.isHorizontalPan && !self.filterSwitched ) {
-				float horizontalDiff = location.x - self.panStartLocation.x;
-				self.horizontalPanDistance += horizontalDiff;
-				//checks if the horizontal pan gone long enough for a "swipe" to change filter
-				if((fabs(self.horizontalPanDistance) >= HORIZONTAL_PAN_FILTER_SWITCH_DISTANCE)){
-					if(self.horizontalPanDistance < 0){
-						[self changeFilteredImageLeft];
-					}else{
-						[self changeFilteredImageRight];
-					}
-					self.filterSwitched = YES;
-				}
+			if (self.isRepositioningPhoto) {
+				[self repositionPhoto: location];
+			} else if(self.isHorizontalPan && !self.filterSwitched) {
+				//todo: filters?
+//				float horizontalDiff = location.x - self.panStartLocation.x;
+//				self.horizontalPanDistance += horizontalDiff;
+//				//checks if the horizontal pan gone long enough for a "swipe" to change filter
+//				if((fabs(self.horizontalPanDistance) >= HORIZONTAL_PAN_FILTER_SWITCH_DISTANCE)){
+//					if(self.horizontalPanDistance < 0){
+//						[self changeFilteredImageLeft];
+//					}else{
+//						[self changeFilteredImageRight];
+//					}
+//					self.filterSwitched = YES;
+//				}
 			}
 
 			self.panStartLocation = location;
@@ -449,6 +463,12 @@ andTextAlignment:(NSTextAlignment)textAlignment
 		default:
 			break;
 	}
+}
+
+-(void) repositionPhoto: (CGPoint) location {
+	CGFloat xDiff = location.x - self.panStartLocation.x;
+	CGFloat yDiff = location.y - self.panStartLocation.y;
+	[self.textAndImageView moveImageX:xDiff andY:yDiff];
 }
 
 /* Handles pan gesture on text by moving text to new position */

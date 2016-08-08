@@ -23,8 +23,8 @@
 #define HOME_NAV_ICON @"home"
 #define DISCOVER_NAV_ICON @"search"
 
-#define NOTIFICATION_ICON_SELECTED @"Notification_Icon_Selected"
-#define NOTIFICATION_ICON_UNSELECTED @"Notification_Icon_UnSelected"
+#define NOTIFICATION_ICON_SELECTED @"notification_icon_selected"
+#define NOTIFICATION_ICON_UNSELECTED @"notification_icon_unselected"
 #pragma mark - Profile -
 
 #define BLOCK_USER_ICON @"settings_icon"
@@ -52,7 +52,6 @@
 
 #pragma mark - ADK -
 
-
 #define DEFAULT_TEXT_BACKGROUND_IMAGE TEXTAVE_BACKGROUND_FULLSCREEN_OPTIONS[0]
 
 #define MINIMIZE_ICON @"minimize_icon"
@@ -61,7 +60,7 @@
 #define CHANNEL_SELECTOR_ARROW_LEFT @"white_selector_arrow_left"
 #define CHANNEL_SELECTOR_ARROW_RIGHT @"white_selector_arrow_right"
 
-#define EDIT_PINCHVIEW_ICON @"Tap to Edit icon"
+#define EDIT_PINCHVIEW_ICON @"tap_to_edit"
 #define DELETE_PINCHVIEW_ICON @"trash_can"
 
 #define SUCCESS_PUBLISHING_IMAGE @"publishing_succeeded_notification"
@@ -78,29 +77,29 @@
 
 #define PRESENT_KEYBOARD_ICON @"Keyboard icon"
 
-#define TEXTAVE_BACKGROUND_CIRCLE_VIEW_OPTIONS @[@"White background circle",@"Black background circle", @"circle background 3",@"circle background 4",@"circle background 5",@"circle background 6"]
+#define TEXTAVE_BACKGROUND_CIRCLE_VIEW_OPTIONS @[@"text_ave_background1_circle",@"text_ave_background2_circle", @"text_ave_background3_circle",@"text_ave_background4_circle",@"text_ave_background5_circle",@"text_ave_background6_circle"]
 
 #define TEXTAVE_BACKGROUND_FULLSCREEN_OPTIONS @[@"TextAVEbackground1",@"TextAVEbackground2",@"TextAVEbackground3",@"TextAVEbackground4",@"TextAVEbackground5",@"TextAVEbackground6"]
 
 #define TEXT_FONT_COLOR_BLACK @"text_toolbar_black_font_icon"
 #define TEXT_FONT_COLOR_WHITE @"text_toolbar_white_font_icon"
 
-
 #define CHANGE_FONT_SIZE_ICON_UNSELECTED @"Change Font size icon_unselected"
 #define CHANGE_FONT_SIZE_ICON_SELECTED @"Change Font size icon_selected"
 
+#define CHANGE_TEXT_ALIGNMENT_ICON @"text_toolbar_alignment_icon"
 
-
-#define CHANGE_TEXT_ALIGNMENT_ICON @"Alignment icon"
-
-
+#define CHANGE_TEXT_COLOR_ICON_SELECTED @"text_toolbar_color_icon_selected"
+#define CHANGE_TEXT_COLOR_ICON_UNSELECTED @"text_toolbar_color_icon_unselected"
 
 #define CHANGE_FONT_TYPE_ICON_UNSELECTED @"Font type icon_unselected"
 #define CHANGE_FONT_TYPE_ICON_SELECTED @"Font type icon_selected"
 
-#define CHANGE_TEXT_VIEW_BACKGROUND_SELECTED @"Background icon_selected"
-#define CHANGE_TEXT_VIEW_BACKGROUND_UNSELECTED @"Background icon"
+#define CHANGE_TEXT_VIEW_BACKGROUND_SELECTED @"text_toolbar_change_background_selected"
+#define CHANGE_TEXT_VIEW_BACKGROUND_UNSELECTED @"text_toolbar_change_background_unselected"
 
+#define REPOSITION_PHOTO_ICON_SELECTED @"text_toolbar_reposition_image_selected"
+#define REPOSITION_PHOTO_ICON_UNSELECTED @"text_toolbar_reposition_image_unselected"
 
 #define INCREASE_FONT_SIZE_ICON @"text_toolbar_increase_font_icon"
 #define DECREASE_FONT_SIZE_ICON @"text_toolbar_decrease_font_icon"
@@ -193,12 +192,13 @@
 #define CREATE_ACCOUNT @"Create Account"
 
 
-
-
-
-
-#pragma mark -Notifications View Controller-
+#pragma mark - Notifications View Controller -
 
 #define NOTIFICATIONS_EMPTY_ICON @"NotificationsEmptyIcon"
+#define LIKE_NOTIFICATION_IMAGE_ICON @"HeartIcon"
+
+#define NOTIFICATIONS_LIST_BACKGROUND @"notifications_background"
+
+#define NOTIFICATION_POPUP_ICON @"notifications_alert"
 
 #endif /* Icons_h */

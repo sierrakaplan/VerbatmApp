@@ -72,6 +72,12 @@ andTextAlignment:(NSTextAlignment) textAlignment
 /* Adds or removes text view */
 -(void) showText: (BOOL) show;
 
+-(void) startRepositioningPhoto;
+
+-(void) endRepositioningPhoto;
+
+-(void) moveImageX:(CGFloat)xDiff andY:(CGFloat)yDiff;
+
 -(BOOL) pointInTextView: (CGPoint)point withBuffer: (CGFloat)buffer;
 
 @end

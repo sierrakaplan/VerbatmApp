@@ -139,6 +139,7 @@
 		scaledWidth  = width * scaleFactor;
 		scaledHeight = height * scaleFactor;
 
+
 		// center the image
 		if (widthFactor > heightFactor) {
 			thumbnailPoint.y = (targetHeight - scaledHeight) * 0.5;
@@ -147,7 +148,12 @@
 		}
 	}
 
-	UIGraphicsBeginImageContext(targetSize); // this will crop
+	CGSize newSize = CGSizeMake(scaledWidth, scaledHeight);
+	if (CGSizeEqualToSize(imageSize, newSize)) {
+		return self;
+	}
+
+	UIGraphicsBeginImageContext(newSize); // this will crop
 
 	CGRect thumbnailRect = CGRectZero;
 	thumbnailRect.origin = thumbnailPoint;
