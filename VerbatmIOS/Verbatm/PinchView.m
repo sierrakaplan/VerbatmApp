@@ -133,7 +133,7 @@
 }
 
 //allows the user to change the width and height of the frame keeping the same center
--(void) changeWidthTo: (double) width {
+-(void) changeWidthTo: (CGFloat) width {
     [self specifyRadius:(width/2.f) andCenter:self.center];
 }
 
