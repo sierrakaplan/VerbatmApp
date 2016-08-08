@@ -265,7 +265,7 @@
 					 for (NSDictionary *friendObject in friendObjects) {
 						 [friendIds addObject:[friendObject objectForKey:@"id"]];
 						 NSString *userName = [friendObject objectForKey:@"name"];
-						 NSLog(@"friend: %@", userName);
+//						 NSLog(@"friend: %@", userName);
 					 }
 					 PFQuery *friendQuery = [PFUser query];
 					 [friendQuery whereKey:USER_FB_ID containedIn:friendIds];

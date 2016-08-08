@@ -226,6 +226,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 		if (heightDiff > 0) yPos = self.userSetYPos - heightDiff;
 		if (yPos < 0.f) yPos = 0.f;
 		CGFloat height = self.frame.size.height - yPos;
+		height = contentHeight < height ? contentHeight : height;
 		newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, yPos, self.frame.size.width, height);
 		self.textAndImageView.textYPosition = yPos;
 	} else {
@@ -285,6 +286,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	self.textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
 															andImage:image andContentOffset:contentOffset];
 	UIPanGestureRecognizer *moveImageGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPan:)];
+	moveImageGesture.delegate = self;
 	[self.textAndImageView addGestureRecognizer: moveImageGesture];
 	[self addSubview: self.textAndImageView];
 	[self addPanGestures];
@@ -548,7 +550,17 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 -(void) exiting {
 	[self updatePinchView];
 	if(self.videoView)[self.videoView stopVideo];
+}
 
+//updates the content in the pinchview after things are changed
+-(void) updatePinchView {
+	if (!self.textAndImageView) return;
+    if([self.pinchView isKindOfClass:[TextPinchView class]]){
+        [((TextPinchView *)self.pinchView) putNewImage:self.currentTextAVEBackground];
+    }else if([self.pinchView isKindOfClass:[ImagePinchView class]]) {
+//		[((ImagePinchView *)self.pinchView) changeImageToFilterIndex:self.imageIndex];
+		((ImagePinchView *)self.pinchView).imageContentOffset = [self.textAndImageView getImageOffset];
+	}
 	if([self.pinchView isKindOfClass:[SingleMediaAndTextPinchView class]]){
 		SingleMediaAndTextPinchView *mediaAndTextPinchView = (SingleMediaAndTextPinchView *)self.pinchView;
 		mediaAndTextPinchView.text = [self.textAndImageView getText];
@@ -556,19 +568,7 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 		mediaAndTextPinchView.textColor = self.textAndImageView.textView.textColor;
 		mediaAndTextPinchView.textSize = [NSNumber numberWithFloat:self.textAndImageView.textSize];
 		mediaAndTextPinchView.textAlignment = [NSNumber numberWithInteger:self.textAndImageView.textAlignment];
-        mediaAndTextPinchView.fontName = self.textAndImageView.textView.font.fontName;
-	}
-}
-
-//updates the content in the pinchview after things are changed
--(void) updatePinchView {
-    if([self.pinchView isKindOfClass:[TextPinchView class]]){
-        [((TextPinchView *)self.pinchView) putNewImage:self.currentTextAVEBackground];
-    }else if([self.pinchView isKindOfClass:[ImagePinchView class]]){
-//		[((ImagePinchView *)self.pinchView) changeImageToFilterIndex:self.imageIndex];
-		if (self.textAndImageView) {
-			((ImagePinchView *)self.pinchView).imageContentOffset = [self.textAndImageView getImageOffset];
-		}
+		mediaAndTextPinchView.fontName = self.textAndImageView.textView.font.fontName;
 	}
 }
 

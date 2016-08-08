@@ -72,6 +72,10 @@
 		[self setRepositionImageScrollViewFromImage: image];
 		self.repositionPhotoScrollView.contentOffset = contentOffset;
 		[self insertSubview:self.repositionPhotoScrollView belowSubview:self.textView];
+
+		self.repositionPhotoGrid = [[GridView alloc] initWithFrame:self.bounds];
+		[self addSubview:self.repositionPhotoGrid];
+		self.repositionPhotoGrid.hidden = YES;
 	}
 	return self;
 }
@@ -102,23 +106,14 @@
 	[self.imageView setImage: image];
 }
 
--(void)startRepositioningPhoto{
-	if(!self.repositionPhotoGrid){
-
-		self.repositionPhotoGrid = [[GridView alloc] initWithFrame:self.bounds];
-		[self addSubview:self.repositionPhotoGrid];
-
-		[self.textView setHidden:YES];
-	} else if (!self.repositionPhotoGrid.superview) {
-		[self addSubview:self.repositionPhotoGrid];
-	}
+-(void)startRepositioningPhoto {
+	[self.repositionPhotoGrid setHidden:NO];
+	[self.textView setHidden:YES];
 }
 
--(void)endRepositioningPhoto{
-	if(self.repositionPhotoGrid){
-		[self.repositionPhotoGrid removeFromSuperview];
-		[self.textView setHidden:NO];
-	}
+-(void)endRepositioningPhoto {
+	[self.repositionPhotoGrid setHidden:YES];
+	[self.textView setHidden:NO];
 }
 
 -(CGPoint)getImageOffset {

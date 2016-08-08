@@ -61,7 +61,7 @@
 	[self renderMedia];
 }
 
--(void) putNewImage:(UIImage*)image{
+-(void) putNewImage:(UIImage*)image {
 	if(!image)return;
 	if(!_imageView) {
 		[self.background addSubview:self.imageView];

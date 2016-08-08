@@ -383,7 +383,7 @@
 	[self stopSlideshow];
 	for (UIView * view in self.imageContainerViews) {
 		if([view isKindOfClass:[EditMediaContentView class]]){
-			[((EditMediaContentView *)view) exiting];
+			[((EditMediaContentView *)view) offScreen];
 		}
 	}
 	if(self.rearrangeView)[self.rearrangeView exitView];
