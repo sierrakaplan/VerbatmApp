@@ -23,7 +23,7 @@
 
 -(void) initWithImage:(UIImage*)image andSetFilteredImages: (BOOL) setFilters;
 
--(UIImage *)getImageScreenshotWithTextInHalf:(BOOL)half;
+-(UIImage *)getImageScreenshotWithText:(UIImage *)image inHalf:(BOOL)half;
 
 //change which filter is applied
 -(void)changeImageToFilterIndex:(NSInteger)filterIndex;

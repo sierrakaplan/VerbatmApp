@@ -41,7 +41,6 @@
 			   withSmallImage: (UIImage*)smallImage asSmall:(BOOL) small {
 	self = [self initWithFrame:frame];
 	if (self) {
-
 		[self addSubview: self.textView];
 		[self.imageView setImage: smallImage];
 

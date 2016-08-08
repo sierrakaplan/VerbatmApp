@@ -98,6 +98,7 @@
 	}
 }
 
+//todo
 -(AnyPromise *) getImageDataWithHalfSize:(BOOL)half {
 	return [self getLargerImageWithHalfSize:half].then(^(UIImage *largerImage) {
 		return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
@@ -135,9 +136,9 @@
 
                       if(weakSelf.beingPublished){
                           dispatch_async(dispatch_get_main_queue(), ^{
-                              resolve([weakSelf getImageScreenshotWithTextInHalf:half]);
+                              resolve([weakSelf getImageScreenshotWithText:image inHalf:half]);
                           });
-                      }else{
+                      } else {
                           resolve(image);
                       }  
             }];
@@ -158,12 +159,12 @@
 }
 
 //todo: fix photo quality
--(UIImage *)getImageScreenshotWithTextInHalf:(BOOL)half {
+-(UIImage *)getImageScreenshotWithText:(UIImage *)image inHalf:(BOOL)half {
 	@autoreleasepool {
 		CGSize size = half ? HALF_SCREEN_SIZE : FULL_SCREEN_SIZE;
 		CGRect frame = CGRectMake(0.f, 0.f, size.width, size.height);
         
-		TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:frame andImage:self.image
+		TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:frame andImage:image
 																	  andContentOffset:self.imageContentOffset];
 		BOOL textColorBlack = [self.textColor isEqual:[UIColor blackColor]];
 		NSString * textToCapture = self.text;
