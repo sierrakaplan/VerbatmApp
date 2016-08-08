@@ -50,7 +50,7 @@
 			imageUrl = [NSURL URLWithString: imageURI];
             __weak TextOverMediaView *weakSelf = self;
 			[[UtilityFunctions sharedInstance] loadCachedPhotoDataFromURL:imageUrl].then(^(NSData* largeImageData) {
-				NSLog(@"Image size is : %.2f KB",(float)largeImageData.length/1024.0f);
+//				NSLog(@"Image size is : %.2f KB",(float)largeImageData.length/1024.0f);
 				UIImage *image = [UIImage imageWithData:largeImageData];
 				[weakSelf.imageView setImage: image];
 			});

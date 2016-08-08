@@ -120,9 +120,7 @@
 	PHAsset* imageAsset = fetchResult.firstObject;
     __weak ImagePinchView * weakSelf = self;
 	weakSelf.imageName = [imageAsset valueForKey:@"filename"];
-	//todo: wrong size for all screens
 	CGSize size = half ? HALF_SCREEN_SIZE : FULL_SCREEN_SIZE;
-
 	PHImageRequestOptions *options = [PHImageRequestOptions new];
 	options.synchronous = YES;
 	options.resizeMode = PHImageRequestOptionsResizeModeFast;

@@ -346,11 +346,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ImagePinchView.m"
-            timestampString = "492382813.569645"
+            timestampString = "492383282.319694"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "163"
-            endingLineNumber = "163"
+            startingLineNumber = "161"
+            endingLineNumber = "161"
             landmarkName = "-getImageScreenshotWithText:inHalf:"
             landmarkType = "5">
          </BreakpointContent>
@@ -362,11 +362,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ImagePinchView.m"
-            timestampString = "492382813.569645"
+            timestampString = "492383282.319694"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "184"
-            endingLineNumber = "184"
+            startingLineNumber = "182"
+            endingLineNumber = "182"
             landmarkName = "-getImageScreenshotWithText:inHalf:"
             landmarkType = "5">
          </BreakpointContent>
@@ -417,6 +417,22 @@
                   offsetFromSymbolStart = "64">
                </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/TextOverMediaView.m"
+            timestampString = "492383187.779947"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "99"
+            endingLineNumber = "99"
+            landmarkName = "-setRepositionImageScrollViewFromImage:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
