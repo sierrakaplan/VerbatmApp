@@ -22,6 +22,7 @@
 
 @property (strong, nonatomic) UIImage* image;
 @property (strong, nonatomic) UIImageView *imageView;
+@property (nonatomic) BOOL contentOffsetSet;
 
 #pragma mark Encoding Keys
 
@@ -42,8 +43,8 @@
 	if (self) {
 		if(!image) return self;
 		self.phAssetLocalIdentifier = localIdentifier;
-		//todo: center image beginning
 		self.imageContentOffset = CGPointZero;
+		self.contentOffsetSet = NO;
 		[self initWithImage:image andSetFilteredImages:YES];
 	}
 	return self;
@@ -98,7 +99,6 @@
 	}
 }
 
-//todo
 -(AnyPromise *) getImageDataWithHalfSize:(BOOL)half {
 	return [self getLargerImageWithHalfSize:half].then(^(UIImage *largerImage) {
 		return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
@@ -129,7 +129,6 @@
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             [[PHImageManager defaultManager] requestImageForAsset:imageAsset targetSize:size contentMode:PHImageContentModeAspectFill
                   options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
-					  //todo:
                       image = [image imageByScalingAndCroppingForSize: CGSizeMake(size.width, size.height)];
 
                       if(weakSelf.beingPublished){
@@ -137,6 +136,13 @@
                               resolve([weakSelf getImageScreenshotWithText:image inHalf:half]);
                           });
                       } else {
+						  if (!self.contentOffsetSet) {
+							  CGSize imageSize = image.size;
+							  CGFloat xOffset = imageSize.width > size.width ? (imageSize.width - size.width)/2.f : 0.f;
+							  CGFloat yOffset = imageSize.height > size.height ? (imageSize.height - size.height)/2.f : 0.f;
+							  self.imageContentOffset = CGPointMake(xOffset, yOffset);
+							  self.contentOffsetSet = YES;
+						  }
                           resolve(image);
                       }  
             }];
@@ -156,7 +162,6 @@
                    self.textColor, @(0), @(0)]];
 }
 
-//todo: set size to actual size of current screen so positioning isn't wrong
 -(UIImage *)getImageScreenshotWithText:(UIImage *)image inHalf:(BOOL)half {
 	@autoreleasepool {
 		CGSize size = half ? HALF_SCREEN_SIZE : FULL_SCREEN_SIZE;
@@ -242,6 +247,7 @@
 		self.phAssetLocalIdentifier = [decoder decodeObjectForKey:PHASSET_IDENTIFIER_KEY];
 		[self initWithImage:image andSetFilteredImages:YES];
 		self.imageContentOffset = CGPointMake(contentOffsetX.floatValue, contentOffsetY.floatValue);
+		self.contentOffsetSet = YES;
 		[self changeImageToFilterIndex:filterImageIndexNumber.integerValue];
 	}
 	return self;

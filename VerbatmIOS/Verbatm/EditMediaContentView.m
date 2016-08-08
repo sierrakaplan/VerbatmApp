@@ -211,7 +211,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	}
 }
 
-//todo: tell textView it's new ypos to save in user defaults
 // If afterEdit, moves TextView to the position it should be after user finishes editing
 // (ensuring it's on screen based on new contentHeight)
 // If not afterEdit, text is still being edited so positions text with last line above keyboard
@@ -229,6 +228,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 		if (yPos < 0.f) yPos = 0.f;
 		CGFloat height = self.frame.size.height - yPos;
 		newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, yPos, self.frame.size.width, height);
+		self.textAndImageView.textYPosition = yPos;
 	} else {
 		CGFloat heightWithKeyboard = self.isAtHalfScreen ? self.frame.size.height : (self.frame.size.height - self.keyboardHeight);
 		yPos = self.userSetYPos;
@@ -240,7 +240,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
 		[textView setFrame:newFrame];
 	}completion:^(BOOL finished) {
-		if(finished){
+		if(finished) {
 			[textView setHidden:NO];
 		}
 	}];

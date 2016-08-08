@@ -25,7 +25,6 @@
 
 #pragma mark Text properties
 
-@property (nonatomic, readwrite) CGFloat textYPosition;
 @property (nonatomic, readwrite) CGFloat textSize;
 @property (nonatomic, readwrite) NSTextAlignment textAlignment;
 @property (nonatomic, readwrite) BOOL blackTextColor;

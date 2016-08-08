@@ -197,7 +197,6 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 	self.userChannel = [[UserInfoCache sharedInstance] getUserChannel];
 	[self createBaseSelector];
 	[self loadPostFromUserDefaults];
-	//todo: display channel title and cover photo?
 	[UIView setAnimationsEnabled:YES];
 }
 

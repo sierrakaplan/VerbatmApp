@@ -14,7 +14,7 @@
 
 @property (nonatomic, readonly) BOOL textShowing;
 @property (nonatomic) UITextView * textView;
-@property (nonatomic, readonly) CGFloat textYPosition;
+@property (nonatomic) CGFloat textYPosition;
 @property (nonatomic, readonly) CGFloat textSize;
 @property (nonatomic, readonly) NSTextAlignment textAlignment;
 @property (nonatomic, readonly) BOOL blackTextColor;

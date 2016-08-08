@@ -128,7 +128,6 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 		NSURLRequest* request = [NSURLRequest requestWithURL:url
 												 cachePolicy: NSURLRequestReturnCacheDataElseLoad
 											 timeoutInterval:300];
-		//todo: delete debugging
 		NSURLSessionDataTask *task = [[NSURLSession sharedSession]
 									  dataTaskWithRequest:request
 									  completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {

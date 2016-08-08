@@ -137,31 +137,25 @@
 
 -(EditMediaContentView *) getEditContentViewFromPinchView: (ImagePinchView *)pinchView {
 	EditMediaContentView * editMediaContentView = [[EditMediaContentView alloc] initWithFrame:self.bounds];
-
-	PHImageRequestOptions *options = [PHImageRequestOptions new];
-	options.synchronous = YES;
-	__weak PhotoPVE * weakSelf = self;
-	[pinchView getLargerImageWithHalfSize:weakSelf.photoVideoSubview].then(^(UIImage *image) {
-		[editMediaContentView changeImageTo:image];
-	});
-
-	[editMediaContentView displayImage:[pinchView getImage] isHalfScreen:self.photoVideoSubview
-					 withContentOffset:pinchView.imageContentOffset];
 	//this has to be set before we set the text view information
 	editMediaContentView.pinchView = pinchView;
 	editMediaContentView.povViewMasterScrollView = self.postScrollView;
 	editMediaContentView.delegate = self;
 
-	BOOL textColorBlack = [pinchView.textColor isEqual:[UIColor blackColor]];
-	[editMediaContentView setText:pinchView.text
-				 andTextYPosition:[pinchView.textYPosition floatValue]
-				andTextColorBlack:textColorBlack
-				 andTextAlignment:[pinchView.textAlignment integerValue]
-					  andTextSize:[pinchView.textSize floatValue] andFontName:pinchView.fontName];
+	PHImageRequestOptions *options = [PHImageRequestOptions new];
+	options.synchronous = YES;
+	__weak PhotoPVE * weakSelf = self;
+	[pinchView getLargerImageWithHalfSize:weakSelf.photoVideoSubview].then(^(UIImage *image) {
+		[editMediaContentView displayImage:image isHalfScreen:self.photoVideoSubview
+						 withContentOffset:pinchView.imageContentOffset];
 
-
-
-
+		BOOL textColorBlack = [pinchView.textColor isEqual:[UIColor blackColor]];
+		[editMediaContentView setText:pinchView.text
+					 andTextYPosition:[pinchView.textYPosition floatValue]
+					andTextColorBlack:textColorBlack
+					 andTextAlignment:[pinchView.textAlignment integerValue]
+						  andTextSize:[pinchView.textSize floatValue] andFontName:pinchView.fontName];
+	});
 	return editMediaContentView;
 }
 

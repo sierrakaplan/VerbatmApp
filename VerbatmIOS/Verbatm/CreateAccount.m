@@ -152,11 +152,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
         [self.delegate errorInSignInWithError: @"Facebook login failed."];
         return;
     }
-    
-    //TODO(sierrakn): If any declined permissions are essential
-    //explain to user why and ask them to agree to each individually
     //	NSSet* declinedPermissions = result.declinedPermissions;
-    
     //batch request for user info as well as friends
     if ([FBSDKAccessToken currentAccessToken]) {
         [[UserManager sharedInstance] signUpOrLoginUserFromFacebookToken: [FBSDKAccessToken currentAccessToken]];
