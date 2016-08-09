@@ -226,17 +226,21 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 #pragma mark - Formatting phone number -
 
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
+       return YES;
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField{
     if (self.enteringPhoneNumber) {
         [self setEnteringPhone];
     }
-    return YES;
 }
+
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     NSString* totalString = [NSString stringWithFormat:@"%@%@",textField.text,string];
     
     // if it's the phone number textfield format it.
-    if(textField == self.phoneNumber && self.enteringPhoneNumber) {
+    if(textField == self.phoneNumber) {
         if (range.length == 1) {
             // Delete button was hit.. so tell the method to delete the last char.
             textField.text = [self formatPhoneNumber:totalString deleteLastChar:YES];
