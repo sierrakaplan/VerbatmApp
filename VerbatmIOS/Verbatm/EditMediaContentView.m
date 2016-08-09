@@ -179,8 +179,10 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 - (void)textViewDidBeginEditing: (UITextView *)textView {
     self.textViewBeingEdited = YES;
-	[self.textAndImageView.textView setScrollEnabled:NO];
-	
+	[self.textAndImageView.textView setScrollEnabled:YES];
+	UIScrollView* mainScroll = (UIScrollView*)self.superview.superview;
+	[mainScroll setScrollEnabled:NO];
+
 	self.userSetYPos = textView.frame.origin.y;
     [self.textAndImageView.textView removeGestureRecognizer:self.textViewPanGesture];
 	[self moveTextView:textView afterEdit: NO];
@@ -195,8 +197,10 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 -(void)textViewDidEndEditing:(UITextView *)textView {
     self.textViewBeingEdited = NO;
-    [self.textAndImageView.textView setScrollEnabled:NO];
 	[self moveTextView:textView afterEdit:YES];
+	[self.textAndImageView.textView setScrollEnabled:NO];
+	UIScrollView* mainScroll = (UIScrollView*)self.superview.superview;
+	[mainScroll setScrollEnabled:YES];
     [self addPanGestures];
 }
 
@@ -233,8 +237,12 @@ andTextAlignment:(NSTextAlignment)textAlignment
 		CGFloat heightWithKeyboard = self.isAtHalfScreen ? self.frame.size.height : (self.frame.size.height - self.keyboardHeight);
 		yPos = self.userSetYPos;
 		CGFloat heightDiff = (self.userSetYPos + contentHeight) - heightWithKeyboard;
-		if (heightDiff > 0) yPos = yPos - heightDiff;
-		newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, yPos, self.frame.size.width, contentHeight);
+		if (heightDiff > 0) {
+			yPos = yPos - heightDiff;
+			if (yPos < 0) yPos = 0;
+			[textView setContentOffset:CGPointMake(0.f, contentHeight - textView.bounds.size.height) animated:YES];
+		}
+		newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, yPos, self.frame.size.width, heightWithKeyboard - yPos);
 	}
 
 	[UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{

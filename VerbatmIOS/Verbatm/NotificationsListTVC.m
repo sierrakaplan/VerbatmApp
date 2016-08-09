@@ -134,7 +134,7 @@
 	[self refreshNotifications];
 }
 
--(void)refreshNotifications{
+-(void)refreshNotifications {
 	if(self.refreshing) return;
 	self.refreshing = YES;
 	if (![self.refreshControl isRefreshing]) [self.loadMoreSpinner startAnimating];

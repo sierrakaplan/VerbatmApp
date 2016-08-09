@@ -64,7 +64,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 @property (strong,nonatomic) ProfileVC *profileVC;
 @property (strong,nonatomic) FeedTableViewController *feedVC;
 @property (strong,nonatomic) DiscoverVC *discoverVC;
-
 @property (strong, nonatomic) NotificationsListTVC * notificationVC;
 
 @property(strong,nonatomic) UIImageView * notificationIndicator;
@@ -201,6 +200,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	deadView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 
 	self.tabBarController.viewControllers = @[self.feedVC, self.discoverVC, deadView,self.notificationVC, self.profileVC];
+
 	if ([[InstallationVariables sharedInstance] launchedFromNotification]) {
 		self.tabBarController.selectedIndex = 3;
 	} else {
@@ -461,6 +461,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 }
 
 -(void) newPushNotification:(NSNotification *) notification {
+	[self.notificationVC refreshNotifications];
 	[self showIndicator];
 }
 
