@@ -246,17 +246,26 @@
     if(!self.isCurrentUser || ([self newCoverPhotoAvailable] || !coverPhoto)){
         //Now look for cloud one
         [self.channel loadCoverPhotoWithCompletionBlock:^(UIImage * coverPhoto, NSData * coverPhotoData) {
-            if(weakSelf.isCurrentUser){
-                [weakSelf saveCoverPhotoDataToCache:coverPhotoData];
-                [[UserManager sharedInstance] holdCurrentCoverPhoto:coverPhoto];
+            
+            if(coverPhoto && coverPhotoData && weakSelf){
+                
+                if(weakSelf.isCurrentUser){
+                    [weakSelf saveCoverPhotoDataToCache:coverPhotoData];
+                    [[UserManager sharedInstance] holdCurrentCoverPhoto:coverPhoto];
+                }
+
+                
+                if([[NSThread currentThread] isMainThread]){
+                    [weakSelf createTopAndReflectionCoverImageFromImage:coverPhoto];
+                }else{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [weakSelf createTopAndReflectionCoverImageFromImage:coverPhoto];
+                    });
+                }
             }
-            if([[NSThread currentThread] isMainThread]){
-                if(coverPhoto && weakSelf)[weakSelf createTopAndReflectionCoverImageFromImage:coverPhoto];
-            }else{
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if(coverPhoto && weakSelf)[weakSelf createTopAndReflectionCoverImageFromImage:coverPhoto];
-                });
-            }
+            
+            
+            
         }];
     }
 }
