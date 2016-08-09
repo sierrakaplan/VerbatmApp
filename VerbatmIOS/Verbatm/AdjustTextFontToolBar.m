@@ -20,7 +20,7 @@
 
 @end
 
-#define SPACE 10.f
+#define SPACE 5.f
 #define CENTERING_Y ((self.frame.size.height - ICON_HEIGHT)/2.f)
 
 #define ICON_HEIGHT (self.frame.size.height - 10.f)

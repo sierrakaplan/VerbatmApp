@@ -98,12 +98,6 @@
 	[self addEditIcon];
 }
 
-//NSString* text;
-//@property (strong, nonatomic) NSNumber *textYPosition; //float value
-//@property (strong, nonatomic) UIColor *textColor;
-//@property (strong, nonatomic) NSNumber *textAlignment; //NSTextAlignment integer value
-//@property (strong, nonatomic) NSNumber *textSize; //float value
-//@property (strong, nonatomic) NSString *fontName;//
 #pragma mark - Get or Change Image -
 
 //warns the pinchview that it is getting published -- so it can
