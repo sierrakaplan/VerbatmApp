@@ -125,6 +125,16 @@
 	CGFloat height = imageSize.height;
 	CGFloat targetWidth = targetSize.width;
 	CGFloat targetHeight = targetSize.height;
+
+	// Necessary for iphone 6, for some reason height is 1 pixel different
+	if (fabs(targetWidth - width) < 2) {
+		width = targetWidth;
+	}
+	if (fabs(targetHeight - height) < 2) {
+		height = targetHeight;
+	}
+	imageSize = CGSizeMake(width, height);
+
 	CGFloat scaleFactor = 0.0;
 	CGFloat scaledWidth = targetWidth;
 	CGFloat scaledHeight = targetHeight;

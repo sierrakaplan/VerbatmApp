@@ -283,8 +283,10 @@ andTextAlignment:(NSTextAlignment)textAlignment
 -(void)displayImage:(UIImage*)image isHalfScreen:(BOOL)isHalfScreen withContentOffset:(CGPoint) contentOffset {
 	self.image = image;
     self.isAtHalfScreen = isHalfScreen;
+	BOOL onTextAve = [self.pinchView isKindOfClass:[TextPinchView class]];
 	self.textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
-															andImage:image andContentOffset:contentOffset];
+															andImage:image andContentOffset:contentOffset
+														  forTextAVE:onTextAve];
 	UIPanGestureRecognizer *moveImageGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPan:)];
 	moveImageGesture.delegate = self;
 	[self.textAndImageView addGestureRecognizer: moveImageGesture];

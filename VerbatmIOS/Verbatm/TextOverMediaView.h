@@ -21,7 +21,8 @@
 @property (nonatomic) UIImageView* imageView;
 
 // Preview mode
--(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image andContentOffset:(CGPoint)contentOffset;
+-(instancetype) initWithFrame:(CGRect)frame andImage:(UIImage *)image
+			 andContentOffset:(CGPoint)contentOffset forTextAVE:(BOOL)onTextAve;
 
 // Published mode
 -(instancetype) initWithFrame:(CGRect)frame andImageURL:(NSURL*)imageUrl

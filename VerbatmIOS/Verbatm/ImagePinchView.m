@@ -11,10 +11,12 @@
 #import "Styles.h"
 
 #import "TextOverMediaView.h"
+#import "TextPinchView.h"
 
 #import "UIView+Effects.h"
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "MediaSessionManager.h"
+
 @import AVFoundation;
 @import Photos;
 
@@ -168,7 +170,8 @@
 		CGRect frame = CGRectMake(0.f, 0.f, size.width, size.height);
         
 		TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:frame andImage:image
-																	  andContentOffset:self.imageContentOffset];
+																	  andContentOffset:self.imageContentOffset
+																			forTextAVE:[self isKindOfClass:[TextPinchView class]]];
 		BOOL textColorBlack = [self.textColor isEqual:[UIColor blackColor]];
 		NSString * textToCapture = self.text;
 
