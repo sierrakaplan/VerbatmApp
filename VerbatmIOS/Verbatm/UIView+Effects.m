@@ -119,17 +119,13 @@
 	return indicator;
 }
 
--(UIImage *)getViewscreenshotWithTextView:(UITextView *) textView{
-    UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, [UIScreen mainScreen].scale);
-    [self drawViewHierarchyInRect:self.bounds afterScreenUpdates:YES];
-    if(textView){
-        [textView drawViewHierarchyInRect:textView.frame afterScreenUpdates:YES];
-    }
+-(UIImage *)getViewScreenshot {
+    UIGraphicsBeginImageContextWithOptions(self.bounds.size, self.opaque, 0.f);
+	[self.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *screenShotImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return screenShotImage;
 }
-
 
     
 @end

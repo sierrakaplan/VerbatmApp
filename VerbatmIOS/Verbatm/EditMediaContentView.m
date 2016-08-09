@@ -36,8 +36,7 @@
 @property (nonatomic) UIImageView *swipeInstructionView;
 
 #pragma mark FilteredPhotos
-@property (nonatomic, strong) NSArray *filteredImages;
-@property (nonatomic) NSInteger imageIndex;
+@property (nonatomic, strong) UIImage *image;
 
 @property (nonatomic) CGPoint  panStartLocation;
 
@@ -65,6 +64,8 @@
 
 //is half screen for photo video ave
 @property (nonatomic) BOOL isAtHalfScreen;
+
+@property (nonatomic) BOOL isRepositioningPhoto;
 
 @property (nonatomic) UIPanGestureRecognizer * textViewPanGesture;
 
@@ -209,7 +210,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	}
 }
 
-//todo: tell textView it's new ypos to save in user defaults
 // If afterEdit, moves TextView to the position it should be after user finishes editing
 // (ensuring it's on screen based on new contentHeight)
 // If not afterEdit, text is still being edited so positions text with last line above keyboard
@@ -226,7 +226,9 @@ andTextAlignment:(NSTextAlignment)textAlignment
 		if (heightDiff > 0) yPos = self.userSetYPos - heightDiff;
 		if (yPos < 0.f) yPos = 0.f;
 		CGFloat height = self.frame.size.height - yPos;
+		height = contentHeight < height ? contentHeight : height;
 		newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, yPos, self.frame.size.width, height);
+		self.textAndImageView.textYPosition = yPos;
 	} else {
 		CGFloat heightWithKeyboard = self.isAtHalfScreen ? self.frame.size.height : (self.frame.size.height - self.keyboardHeight);
 		yPos = self.userSetYPos;
@@ -238,7 +240,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
 		[textView setFrame:newFrame];
 	}completion:^(BOOL finished) {
-		if(finished){
+		if(finished) {
 			[textView setHidden:NO];
 		}
 	}];
@@ -278,12 +280,14 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self.videoView prepareVideoFromAsset:videoAsset];
 }
 
--(void)displayImages: (NSArray*) filteredImages atIndex:(NSInteger)index isHalfScreen:(BOOL) isHalfScreen{
-	self.imageIndex = index;
+-(void)displayImage:(UIImage*)image isHalfScreen:(BOOL)isHalfScreen withContentOffset:(CGPoint) contentOffset {
+	self.image = image;
     self.isAtHalfScreen = isHalfScreen;
 	self.textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
-															andImage:filteredImages[index]];
-	self.filteredImages = filteredImages;
+															andImage:image andContentOffset:contentOffset];
+	UIPanGestureRecognizer *moveImageGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPan:)];
+	moveImageGesture.delegate = self;
+	[self.textAndImageView addGestureRecognizer: moveImageGesture];
 	[self addSubview: self.textAndImageView];
 	[self addPanGestures];
 
@@ -299,8 +303,8 @@ andTextAlignment:(NSTextAlignment)textAlignment
 }
 
 //todo: bring back filters?
--(void)changeImageTo: (UIImage *) image {
-	self.filteredImages = @[image];
+-(void)changeImageTo: (UIImage *)image {
+	self.image = image;
 	[self.textAndImageView changeImageTo: image];
 }
 
@@ -327,22 +331,22 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 #pragma mark Filters
 
--(void)changeFilteredImageLeft{
-	if (self.imageIndex >= ([self.filteredImages count]-1)) {
-		self.imageIndex = -1;
-	}
-	self.imageIndex = self.imageIndex+1;
-	[self.textAndImageView changeImageTo:self.filteredImages[self.imageIndex]];
-
-}
-
--(void)changeFilteredImageRight {
-	if (self.imageIndex <= 0) {
-		self.imageIndex = [self.filteredImages count];
-	}
-	self.imageIndex = self.imageIndex-1;
-	[self.textAndImageView changeImageTo:self.filteredImages[self.imageIndex]];
-}
+//-(void)changeFilteredImageLeft{
+//	if (self.imageIndex >= ([self.filteredImages count]-1)) {
+//		self.imageIndex = -1;
+//	}
+//	self.imageIndex = self.imageIndex+1;
+//	[self.textAndImageView changeImageTo:self.filteredImages[self.imageIndex]];
+//
+//}
+//
+//-(void)changeFilteredImageRight {
+//	if (self.imageIndex <= 0) {
+//		self.imageIndex = [self.filteredImages count];
+//	}
+//	self.imageIndex = self.imageIndex-1;
+//	[self.textAndImageView changeImageTo:self.filteredImages[self.imageIndex]];
+//}
 
 #pragma mark - Keyboard toolbar delegate methods -
 
@@ -388,8 +392,15 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self.textAndImageView changeTextAlignment:NSTextAlignmentRight];
 }
 
+-(void)repositionPhotoSelected {
+	[self.textAndImageView startRepositioningPhoto];
+	self.isRepositioningPhoto = YES;
+}
 
-
+-(void)repositionPhotoUnSelected {
+	[self.textAndImageView endRepositioningPhoto];
+	self.isRepositioningPhoto = NO;
+}
 
 -(void) doneButtonPressed {
 	if([[self.textAndImageView getText] isEqualToString:@""]) {
@@ -422,18 +433,21 @@ andTextAlignment:(NSTextAlignment)textAlignment
 				self.gestureActionJustStarted = NO;
 			}
 
-			if(self.isHorizontalPan && !self.filterSwitched ) {
-				float horizontalDiff = location.x - self.panStartLocation.x;
-				self.horizontalPanDistance += horizontalDiff;
-				//checks if the horizontal pan gone long enough for a "swipe" to change filter
-				if((fabs(self.horizontalPanDistance) >= HORIZONTAL_PAN_FILTER_SWITCH_DISTANCE)){
-					if(self.horizontalPanDistance < 0){
-						[self changeFilteredImageLeft];
-					}else{
-						[self changeFilteredImageRight];
-					}
-					self.filterSwitched = YES;
-				}
+			if (self.isRepositioningPhoto) {
+				[self repositionPhoto: location];
+			} else if(self.isHorizontalPan && !self.filterSwitched) {
+				//todo: filters?
+//				float horizontalDiff = location.x - self.panStartLocation.x;
+//				self.horizontalPanDistance += horizontalDiff;
+//				//checks if the horizontal pan gone long enough for a "swipe" to change filter
+//				if((fabs(self.horizontalPanDistance) >= HORIZONTAL_PAN_FILTER_SWITCH_DISTANCE)){
+//					if(self.horizontalPanDistance < 0){
+//						[self changeFilteredImageLeft];
+//					}else{
+//						[self changeFilteredImageRight];
+//					}
+//					self.filterSwitched = YES;
+//				}
 			}
 
 			self.panStartLocation = location;
@@ -449,6 +463,12 @@ andTextAlignment:(NSTextAlignment)textAlignment
 		default:
 			break;
 	}
+}
+
+-(void) repositionPhoto: (CGPoint) location {
+	CGFloat xDiff = location.x - self.panStartLocation.x;
+	CGFloat yDiff = location.y - self.panStartLocation.y;
+	[self.textAndImageView moveImageX:xDiff andY:yDiff];
 }
 
 /* Handles pan gesture on text by moving text to new position */
@@ -530,7 +550,17 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 -(void) exiting {
 	[self updatePinchView];
 	if(self.videoView)[self.videoView stopVideo];
+}
 
+//updates the content in the pinchview after things are changed
+-(void) updatePinchView {
+	if (!self.textAndImageView) return;
+    if([self.pinchView isKindOfClass:[TextPinchView class]]){
+        [((TextPinchView *)self.pinchView) putNewImage:self.currentTextAVEBackground];
+    }else if([self.pinchView isKindOfClass:[ImagePinchView class]]) {
+//		[((ImagePinchView *)self.pinchView) changeImageToFilterIndex:self.imageIndex];
+		((ImagePinchView *)self.pinchView).imageContentOffset = [self.textAndImageView getImageOffset];
+	}
 	if([self.pinchView isKindOfClass:[SingleMediaAndTextPinchView class]]){
 		SingleMediaAndTextPinchView *mediaAndTextPinchView = (SingleMediaAndTextPinchView *)self.pinchView;
 		mediaAndTextPinchView.text = [self.textAndImageView getText];
@@ -538,16 +568,7 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 		mediaAndTextPinchView.textColor = self.textAndImageView.textView.textColor;
 		mediaAndTextPinchView.textSize = [NSNumber numberWithFloat:self.textAndImageView.textSize];
 		mediaAndTextPinchView.textAlignment = [NSNumber numberWithInteger:self.textAndImageView.textAlignment];
-        mediaAndTextPinchView.fontName = self.textAndImageView.textView.font.fontName;
-	}
-}
-
-//updates the content in the pinchview after things are changed
--(void) updatePinchView {
-    if([self.pinchView isKindOfClass:[TextPinchView class]]){
-        [((TextPinchView *)self.pinchView) putNewImage:self.currentTextAVEBackground];
-    }else if([self.pinchView isKindOfClass:[ImagePinchView class]]){
-		[((ImagePinchView *)self.pinchView) changeImageToFilterIndex:self.imageIndex];
+		mediaAndTextPinchView.fontName = self.textAndImageView.textView.font.fontName;
 	}
 }
 

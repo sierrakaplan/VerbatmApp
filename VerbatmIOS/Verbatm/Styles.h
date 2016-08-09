@@ -10,7 +10,7 @@
 #define Styles_h
 
 
-#pragma mark -General Style -
+#pragma mark - General Style -
 
 #define STANDARD_VIEW_CORNER_RADIUS 10.f
 
@@ -27,6 +27,7 @@
 
 #pragma mark - Sign In -
 
+#define SIGNUP_PHONE_INFO_BACKGROUND_COLOR [UIColor whiteColor]
 #define ERROR_ANIMATION_TEXT_COLOR whiteColor
 #define ERROR_ANIMATION_FONT_SIZE 20
 
@@ -177,7 +178,7 @@
 
 
 
-#pragma mark -Share Post Link View -
+#pragma mark - Share Post Link View  -
 
 
 #define SPLV_LABEL_TEXT_COLOR [UIColor grayColor]
@@ -187,15 +188,8 @@
 
 #define CHANNEL_LIST_HEADER_BACKGROUND_COLOR [UIColor colorWithWhite:0.95 alpha:1.f]
 
-#define LIKE_NOTIFICATION_IMAGE_ICON @"HeartIcon"
-
-#define NOTIFICATIONS_LIST_BACKGROUND @"Notifications background"
-
-#define NOTIFICATION_POPUP_ICON @"Notifications alert"
 
 
-
-#define SIGNUP_PHONE_INFO_BACKGROUND_COLOR [UIColor whiteColor]
 
 
 #define TOP_TOOLBAR_BACKGROUND_COLOR [UIColor blackColor]

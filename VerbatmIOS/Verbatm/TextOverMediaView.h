@@ -14,14 +14,16 @@
 
 @property (nonatomic, readonly) BOOL textShowing;
 @property (nonatomic) UITextView * textView;
-@property (nonatomic, readonly) CGFloat textYPosition;
+@property (nonatomic) CGFloat textYPosition;
 @property (nonatomic, readonly) CGFloat textSize;
 @property (nonatomic, readonly) NSTextAlignment textAlignment;
 @property (nonatomic, readonly) BOOL blackTextColor;
 @property (nonatomic) UIImageView* imageView;
 
--(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image;
+// Preview mode
+-(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image andContentOffset:(CGPoint)contentOffset;
 
+// Published mode
 -(instancetype) initWithFrame:(CGRect)frame andImageURL:(NSURL*)imageUrl
 			   withSmallImage: (UIImage*)smallImage asSmall:(BOOL) small;
 
@@ -71,6 +73,14 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 /* Adds or removes text view */
 -(void) showText: (BOOL) show;
+
+-(void) startRepositioningPhoto;
+
+-(void) endRepositioningPhoto;
+
+-(CGPoint)getImageOffset;
+
+-(void) moveImageX:(CGFloat)xDiff andY:(CGFloat)yDiff;
 
 -(BOOL) pointInTextView: (CGPoint)point withBuffer: (CGFloat)buffer;
 

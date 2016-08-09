@@ -51,7 +51,7 @@
 }
 
 //Instantiates an instance of the custom view
--(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center {
+-(instancetype)initWithRadius:(CGFloat)radius  withCenter:(CGPoint)center {
 
     if((self = [super init])) {
         //set up the properties
@@ -98,7 +98,7 @@
 }
 
 
--(void) specifyRadius:(float)radius andCenter:(CGPoint)center {
+-(void) specifyRadius:(CGFloat)radius andCenter:(CGPoint)center {
 	self.radius = radius;
 	self.center = center;
 	self.frame = CGRectMake(self.center.x - self.radius,
@@ -133,7 +133,7 @@
 }
 
 //allows the user to change the width and height of the frame keeping the same center
--(void) changeWidthTo: (double) width {
+-(void) changeWidthTo: (CGFloat) width {
     [self specifyRadius:(width/2.f) andCenter:self.center];
 }
 

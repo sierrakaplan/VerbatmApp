@@ -197,7 +197,6 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 	self.userChannel = [[UserInfoCache sharedInstance] getUserChannel];
 	[self createBaseSelector];
 	[self loadPostFromUserDefaults];
-	//todo: display channel title and cover photo?
 	[UIView setAnimationsEnabled:YES];
 }
 
@@ -1870,7 +1869,7 @@ andSaveInUserDefaults:(BOOL)save {
 	[postView displayPageViews: pages];
 	[postView prepareForScreenShot];
 
-	UIImage *screenShotImage = [postView getViewscreenshotWithTextView:nil];
+	UIImage *screenShotImage = [postView getViewScreenshot];
 
 	//        UIGraphicsEndImageContext();
 	[postView postOffScreen];

@@ -137,30 +137,25 @@
 
 -(EditMediaContentView *) getEditContentViewFromPinchView: (ImagePinchView *)pinchView {
 	EditMediaContentView * editMediaContentView = [[EditMediaContentView alloc] initWithFrame:self.bounds];
-
-	PHImageRequestOptions *options = [PHImageRequestOptions new];
-	options.synchronous = YES;
-	__weak PhotoPVE * weakSelf = self;
-	[pinchView getLargerImageWithHalfSize:weakSelf.photoVideoSubview].then(^(UIImage *image) {
-		[editMediaContentView changeImageTo:image];
-	});
-
-	[editMediaContentView displayImages:[pinchView filteredImages] atIndex:pinchView.filterImageIndex isHalfScreen:self.photoVideoSubview];
 	//this has to be set before we set the text view information
 	editMediaContentView.pinchView = pinchView;
 	editMediaContentView.povViewMasterScrollView = self.postScrollView;
 	editMediaContentView.delegate = self;
 
-	BOOL textColorBlack = [pinchView.textColor isEqual:[UIColor blackColor]];
-	[editMediaContentView setText:pinchView.text
-				 andTextYPosition:[pinchView.textYPosition floatValue]
-				andTextColorBlack:textColorBlack
-				 andTextAlignment:[pinchView.textAlignment integerValue]
-					  andTextSize:[pinchView.textSize floatValue] andFontName:pinchView.fontName];
+	PHImageRequestOptions *options = [PHImageRequestOptions new];
+	options.synchronous = YES;
+	__weak PhotoPVE * weakSelf = self;
+	[pinchView getLargerImageWithHalfSize:weakSelf.photoVideoSubview].then(^(UIImage *image) {
+		[editMediaContentView displayImage:image isHalfScreen:self.photoVideoSubview
+						 withContentOffset:pinchView.imageContentOffset];
 
-
-
-
+		BOOL textColorBlack = [pinchView.textColor isEqual:[UIColor blackColor]];
+		[editMediaContentView setText:pinchView.text
+					 andTextYPosition:[pinchView.textYPosition floatValue]
+					andTextColorBlack:textColorBlack
+					 andTextAlignment:[pinchView.textAlignment integerValue]
+						  andTextSize:[pinchView.textSize floatValue] andFontName:pinchView.fontName];
+	});
 	return editMediaContentView;
 }
 
@@ -388,7 +383,7 @@
 	[self stopSlideshow];
 	for (UIView * view in self.imageContainerViews) {
 		if([view isKindOfClass:[EditMediaContentView class]]){
-			[((EditMediaContentView *)view) exiting];
+			[((EditMediaContentView *)view) offScreen];
 		}
 	}
 	if(self.rearrangeView)[self.rearrangeView exitView];

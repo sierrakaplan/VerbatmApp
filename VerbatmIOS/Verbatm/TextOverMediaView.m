@@ -8,6 +8,7 @@
 
 #import "Durations.h"
 #import "Icons.h"
+#import "GridView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "StringsAndAppConstants.h"
@@ -19,10 +20,11 @@
 @interface TextOverMediaView ()
 
 @property (nonatomic, readwrite) BOOL textShowing;
+@property (nonatomic) GridView *repositionPhotoGrid;
+@property (nonatomic) UIScrollView *repositionPhotoScrollView;
 
 #pragma mark Text properties
 
-@property (nonatomic, readwrite) CGFloat textYPosition;
 @property (nonatomic, readwrite) CGFloat textSize;
 @property (nonatomic, readwrite) NSTextAlignment textAlignment;
 @property (nonatomic, readwrite) BOOL blackTextColor;
@@ -33,41 +35,47 @@
 
 @implementation TextOverMediaView
 
+// For published view
 -(instancetype) initWithFrame:(CGRect)frame andImageURL:(NSURL*)imageUrl
 			   withSmallImage: (UIImage*)smallImage asSmall:(BOOL) small {
 	self = [self initWithFrame:frame];
 	if (self) {
-		UIImage *croppedImage = smallImage;
-		if (small) {
-			croppedImage = [smallImage imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width, self.bounds.size.height)];
-		}
 		[self addSubview: self.textView];
-		[self.imageView setImage: croppedImage];
+		[self.imageView setImage: smallImage];
 
-		// Load large image cropped
+		// Load large image
 		if (!small) {
 			NSString *imageURI = [UtilityFunctions addSuffixToPhotoUrl:imageUrl.absoluteString forSize: LARGE_IMAGE_SIZE];
 			imageUrl = [NSURL URLWithString: imageURI];
             __weak TextOverMediaView *weakSelf = self;
 			[[UtilityFunctions sharedInstance] loadCachedPhotoDataFromURL:imageUrl].then(^(NSData* largeImageData) {
-				// Only display larger data if less than 1000 KB
-				if (largeImageData.length / 1024.f < 1000) {
-					UIImage *image = [UIImage imageWithData:largeImageData];
-					[weakSelf.imageView setImage: image];
-				} else {
-					NSLog(@"Image too big");
-				}
+//				NSLog(@"Image size is : %.2f KB",(float)largeImageData.length/1024.0f);
+				UIImage *image = [UIImage imageWithData:largeImageData];
+				[weakSelf.imageView setImage: image];
 			});
 		}
 	}
 	return self;
 }
 
--(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image {
+// For preview mode
+-(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image andContentOffset:(CGPoint)contentOffset {
 	self = [self initWithFrame: frame];
 	if (self) {
 		[self addSubview: self.textView];
-		[self.imageView setImage: image];
+		self.repositionPhotoScrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
+		self.repositionPhotoScrollView.scrollEnabled = NO;
+		self.repositionPhotoScrollView.showsVerticalScrollIndicator = NO;
+		self.repositionPhotoScrollView.showsHorizontalScrollIndicator = NO;
+		[self.imageView removeFromSuperview];
+		[self.repositionPhotoScrollView addSubview:self.imageView];
+		[self setRepositionImageScrollViewFromImage: image];
+		self.repositionPhotoScrollView.contentOffset = contentOffset;
+		[self insertSubview:self.repositionPhotoScrollView belowSubview:self.textView];
+
+		self.repositionPhotoGrid = [[GridView alloc] initWithFrame:self.bounds];
+		[self addSubview:self.repositionPhotoGrid];
+		self.repositionPhotoGrid.hidden = YES;
 	}
 	return self;
 }
@@ -81,17 +89,56 @@
 	return self;
 }
 
-/* Returns image view with image centered */
--(UIImageView*) getImageViewForImage:(UIImage*) image {
-	UIImageView* photoView = [[UIImageView alloc] initWithImage:image];
-	photoView.frame = self.bounds;
-	photoView.clipsToBounds = YES;
-	photoView.contentMode = UIViewContentModeScaleAspectFit;
-	return photoView;
+-(void)changeImageTo:(UIImage *) image {
+	if (self.repositionPhotoScrollView) {
+		[self setRepositionImageScrollViewFromImage: image];
+	} else {
+		[self.imageView setImage: image];
+	}
 }
 
--(void)changeImageTo:(UIImage *) image {
-	[self.imageView setImage:image];
+-(void) setRepositionImageScrollViewFromImage: (UIImage *) image {
+	CGSize imageSize = image.size;
+	if (imageSize.width < self.frame.size.width) imageSize.width = self.frame.size.width;
+	if (imageSize.height < self.frame.size.height) imageSize.height = self.frame.size.height;
+	self.repositionPhotoScrollView.contentSize = imageSize;
+	self.imageView.frame = CGRectMake(0.f, 0.f, imageSize.width, imageSize.height);
+	[self.imageView setImage: image];
+}
+
+-(void)startRepositioningPhoto {
+	[self.repositionPhotoGrid setHidden:NO];
+	[self.textView setHidden:YES];
+}
+
+-(void)endRepositioningPhoto {
+	[self.repositionPhotoGrid setHidden:YES];
+	[self.textView setHidden:NO];
+}
+
+-(CGPoint)getImageOffset {
+	CGPoint contentOffset = self.repositionPhotoScrollView.contentOffset;
+	return contentOffset;
+}
+
+-(void) moveImageX:(CGFloat)xDiff andY:(CGFloat)yDiff {
+	CGPoint oldContentOffset = self.repositionPhotoScrollView.contentOffset;
+
+	CGFloat newX = oldContentOffset.x - xDiff;
+	if (newX < 0) newX = 0;
+	CGFloat xMax = self.repositionPhotoScrollView.contentSize.width - self.bounds.size.width;
+	if (newX > xMax) {
+		newX = xMax;
+	}
+
+	CGFloat newY = oldContentOffset.y - yDiff;
+	if (newY < 0) newY = 0;
+	CGFloat yMax = self.repositionPhotoScrollView.contentSize.height - self.bounds.size.height;
+	if (newY > yMax) {
+		newY = yMax;
+	}
+
+	self.repositionPhotoScrollView.contentOffset = CGPointMake(newX, newY);
 }
 
 #pragma mark - Text View functionality -
@@ -110,9 +157,8 @@ andTextAlignment:(NSTextAlignment) textAlignment
     [self changeTextAlignment: textAlignment];
 
 	self.textSize = textSize;
-    
     [self.textView setFont:[UIFont fontWithName:fontName size:self.textSize]];
-    
+
 	[self changeText: text];
 }
 

@@ -37,7 +37,7 @@
 
 @implementation CollectionPinchView
 
--(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andPinchViews:(NSArray*)pinchViews {
+-(instancetype)initWithRadius:(CGFloat)radius withCenter:(CGPoint)center andPinchViews:(NSArray*)pinchViews {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
 		[self initWithPinchViews:pinchViews];

@@ -320,7 +320,7 @@ ExploreChannelCellViewDelegate>
 	}
 }
 
-//todo: Stop videos
+//todo: Stop videos (to make scrolling smooth)
 -(void) scrollViewWillBeginDragging:(UIScrollView *)scrollView {
 
 }

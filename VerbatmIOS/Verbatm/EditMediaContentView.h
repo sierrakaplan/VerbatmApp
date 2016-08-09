@@ -35,7 +35,7 @@
 -(void) prepareVideoFromAsset: (AVAsset *)videoAsset;
 
 //passes it an array of UIImages to display
--(void)displayImages: (NSArray*) filteredImages atIndex:(NSInteger)index isHalfScreen:(BOOL) isHalfScreen;
+-(void)displayImage:(UIImage*)image isHalfScreen:(BOOL)isHalfScreen withContentOffset:(CGPoint) contentOffset;
 
 -(void)changeImageTo: (UIImage *) image;
 
@@ -43,7 +43,8 @@
 andTextYPosition:(CGFloat)yPosition
 andTextColorBlack:(BOOL)textColorBlack
 andTextAlignment:(NSTextAlignment)textAlignment
-	andTextSize:(CGFloat)textSize andFontName:(NSString *)fontName ;
+	andTextSize:(CGFloat)textSize andFontName:(NSString *)fontName;
+
 
 //call before removing the view our ecv
 //saves the content into the pinchview
