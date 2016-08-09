@@ -241,6 +241,10 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	self.textSize += 2;
 	if (self.textSize > TEXT_PAGE_VIEW_MAX_FONT_SIZE) self.textSize = TEXT_PAGE_VIEW_MAX_FONT_SIZE;
 	[self.textView setFont:[UIFont fontWithName:self.textView.font.fontName size:self.textSize]];
+	CGFloat contentHeight = [self.textView measureContentHeight];
+	CGSize textViewSize = CGSizeMake(self.textView.frame.size.width, contentHeight);
+	self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y,
+									 textViewSize.width, textViewSize.height);
 }
 
 -(void) decreaseTextSize {
