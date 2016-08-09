@@ -146,7 +146,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 //creates a toolbar to add onto the keyboard
 -(void)addToolBarToViewWithTextColorBlack:(BOOL)textColorBlack {
-	CGRect toolBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, TEXT_TOOLBAR_HEIGHT/2.f);
+	CGRect toolBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
 	BOOL onTextAve = [self.pinchView isKindOfClass:[TextPinchView class]];
 	VerbatmKeyboardToolBar* toolBar = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
                                                                   andTextColorBlack: textColorBlack
@@ -283,8 +283,10 @@ andTextAlignment:(NSTextAlignment)textAlignment
 -(void)displayImage:(UIImage*)image isHalfScreen:(BOOL)isHalfScreen withContentOffset:(CGPoint) contentOffset {
 	self.image = image;
     self.isAtHalfScreen = isHalfScreen;
+	BOOL onTextAve = [self.pinchView isKindOfClass:[TextPinchView class]];
 	self.textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
-															andImage:image andContentOffset:contentOffset];
+															andImage:image andContentOffset:contentOffset
+														  forTextAVE:onTextAve];
 	UIPanGestureRecognizer *moveImageGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPan:)];
 	moveImageGesture.delegate = self;
 	[self.textAndImageView addGestureRecognizer: moveImageGesture];
@@ -583,10 +585,8 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 }
 
 -(void)onScreen {
-    if([self.pinchView isKindOfClass:[TextPinchView class]] &&
-       [self.textAndImageView.textView.text isEqualToString:@""]){
-        [self.textAndImageView.textView setHidden:YES];
-        [self.textAndImageView.textView becomeFirstResponder];
+    if([self.pinchView isKindOfClass:[TextPinchView class]] && self.textAndImageView) {
+		[self.textAndImageView setTextViewFirstResponder: [self.textAndImageView.textView.text isEqualToString:@""]];
     } else {
         if(!self.videoHasBeenPrepared){
             [self.videoView prepareVideoFromAsset:self.videoAsset];

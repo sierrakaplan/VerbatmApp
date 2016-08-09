@@ -11,10 +11,12 @@
 #import "Styles.h"
 
 #import "TextOverMediaView.h"
+#import "TextPinchView.h"
 
 #import "UIView+Effects.h"
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "MediaSessionManager.h"
+
 @import AVFoundation;
 @import Photos;
 
@@ -22,6 +24,7 @@
 
 @property (strong, nonatomic) UIImage* image;
 @property (strong, nonatomic) UIImageView *imageView;
+@property (nonatomic) UITextView *textView;
 @property (nonatomic) BOOL contentOffsetSet;
 
 #pragma mark Encoding Keys
@@ -53,6 +56,7 @@
 -(void) initWithImage:(UIImage*)image andSetFilteredImages: (BOOL) setFilters {
 	if (image == nil) return;
 	[self.background addSubview:self.imageView];
+	[self.background addSubview:self.textView];
 	self.containsImage = YES;
 	self.image = image;
 	self.filteredImages = [[NSMutableArray alloc] init];
@@ -81,6 +85,16 @@
 -(void)renderMedia {
 	self.imageView.frame = self.background.frame;
 	[self.imageView setImage:[self getImage]];
+
+	//Note: move this to SingleMediaAndText pinch view if add text to video
+	CGFloat scale = self.frame.size.height / FULL_SCREEN_SIZE.height;
+	[self.textView setText: self.text];
+	CGFloat yPos = self.textYPosition.floatValue * scale;
+	[self.textView setFrame:CGRectMake(0.f, yPos, self.frame.size.width, self.frame.size.height)];
+	[self.textView setTextColor:self.textColor];
+	[self.textView setTextAlignment:self.textAlignment.integerValue];
+	[self.textView setFont:[UIFont fontWithName:self.fontName size:self.textSize.floatValue * scale]];
+
 	[self addEditIcon];
 }
 
@@ -168,7 +182,8 @@
 		CGRect frame = CGRectMake(0.f, 0.f, size.width, size.height);
         
 		TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:frame andImage:image
-																	  andContentOffset:self.imageContentOffset];
+																	  andContentOffset:self.imageContentOffset
+																			forTextAVE:[self isKindOfClass:[TextPinchView class]]];
 		BOOL textColorBlack = [self.textColor isEqual:[UIColor blackColor]];
 		NSString * textToCapture = self.text;
 
@@ -262,6 +277,15 @@
 		_imageView.layer.masksToBounds = YES;
 	}
 	return _imageView;
+}
+
+-(UITextView*) textView {
+	if (!_textView) {
+		_textView = [[UITextView alloc] init];
+		_textView.editable = NO;
+		_textView.backgroundColor = [UIColor clearColor];
+	}
+	return _textView;
 }
 
 @end

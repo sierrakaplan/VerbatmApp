@@ -239,7 +239,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "123"
             endingLineNumber = "123"
-            landmarkName = "-getLargerImageWithHalfSize:"
+            landmarkName = "-getImageDataWithHalfSize:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -319,7 +319,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "208"
             endingLineNumber = "208"
-            landmarkName = "-createFilteredImagesFromImage:"
+            landmarkName = "-changeImageToFilterIndex:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -383,7 +383,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "159"
             endingLineNumber = "159"
-            landmarkName = "-getPhotosWithText"
+            landmarkName = "-getLargerImageWithHalfSize:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -398,7 +398,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "271"
-            endingLineNumber = "271">
+            endingLineNumber = "271"
+            landmarkName = "@implementation ImagePinchView"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -429,7 +431,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "160"
             endingLineNumber = "160"
-            landmarkName = "-getPhotosWithText"
+            landmarkName = "-getLargerImageWithHalfSize:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -989,7 +991,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "92"
             endingLineNumber = "92"
-            landmarkName = "-publishingPinchView"
+            landmarkName = "-renderMedia"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1005,8 +1007,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "89"
             endingLineNumber = "89"
-            landmarkName = "@implementation ImagePinchView"
-            landmarkType = "3">
+            landmarkName = "-renderMedia"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1149,8 +1151,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "86"
             endingLineNumber = "86"
-            landmarkName = "@implementation ImagePinchView"
-            landmarkType = "3">
+            landmarkName = "-renderMedia"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

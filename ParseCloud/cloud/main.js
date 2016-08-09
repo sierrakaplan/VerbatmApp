@@ -73,7 +73,7 @@ Parse.Cloud.beforeSave("NotificationClass", function(request, response) {
 			    if (notificationType == 1) {
 			    	notificationText =  notificationSenderName + " is now following you!";
 			    } else if (notificationType == 2) {
-			    	notificationText = notificationSenderName + " has liked your post!";
+			    	notificationText = notificationSenderName + " liked your post!";
 			    } else if (notificationType == 4) {
 			    	notificationText = "Your friend " + notificationSenderName + " has joined Verbatm";
 			    } else if (notificationType == 8) {

@@ -9,11 +9,10 @@
 #ifndef SizesAndPositions_h
 #define SizesAndPositions_h
 
-#define LARGE_IMAGE_SIZE 700
-#define THUMBNAIL_IMAGE_SIZE 300
-#define HALFSCREEN_IMAGE_SIZE 400
+#define LARGE_IMAGE_SIZE 650
+#define THUMBNAIL_IMAGE_SIZE 250
+#define HALFSCREEN_IMAGE_SIZE 350
 
-//Goes off of largest device the media will be displayed on
 #define FULL_SCREEN_SIZE [[UIScreen mainScreen] bounds].size
 #define HALF_SCREEN_SIZE CGSizeMake(FULL_SCREEN_SIZE.width, FULL_SCREEN_SIZE.height/2.f)
 
@@ -108,7 +107,7 @@
 
 #pragma mark - Text Toolbar
 
-#define TEXT_TOOLBAR_HEIGHT 100.f
+#define TEXT_TOOLBAR_HEIGHT 50.f
 #define TEXT_TOOLBAR_BUTTON_Y_OFFSET 2.f
 #define TEXT_TOOLBAR_BUTTON_OFFSET 10.f
 #define TEXT_TOOLBAR_BUTTON_WIDTH 35.f

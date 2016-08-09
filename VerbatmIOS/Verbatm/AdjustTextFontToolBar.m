@@ -20,12 +20,13 @@
 
 @end
 
-#define SPACE 30.f
+#define SPACE 5.f
 #define CENTERING_Y ((self.frame.size.height - ICON_HEIGHT)/2.f)
 
 #define ICON_HEIGHT (self.frame.size.height - 10.f)
 #define ICON_WIDTH (ICON_HEIGHT * 2.f)
 #define TEXT_COLOR whiteColor
+
 @implementation AdjustTextFontToolBar
 
 

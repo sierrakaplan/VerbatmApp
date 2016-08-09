@@ -126,10 +126,10 @@
 		for (int i = 0; i < self.pinchViews.count; i++) {
 			[[PostInProgress sharedInstance] removePinchViewAtIndex:i andReplaceWithPinchView:self.pinchViews[i]];
 		}
-        [self.delegate aboutToRemovePreview];
         self.frame = self.restingFrame;
         [self.postView postOffScreen];
         [self.postView clearPost];
+		[self.delegate aboutToRemovePreview];
         [self.postView removeFromSuperview];
         self.postView = nil;
         [self.publishButton removeFromSuperview];

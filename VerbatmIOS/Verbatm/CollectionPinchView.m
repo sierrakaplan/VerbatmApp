@@ -65,6 +65,7 @@
 	} else if ([pinchView isKindOfClass:[VideoPinchView class]]) {
 		[self.videoPinchViews addObject:pinchView];
 	}
+	[self renderMedia];
 }
 
 #pragma mark - Adding play button to video
@@ -111,7 +112,7 @@
 			[self renderTwoMedia];
 			break;
 		default:
-			return;
+			break;
 	}
 	[self displayMedia];
 }

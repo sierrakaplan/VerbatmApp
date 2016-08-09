@@ -38,8 +38,7 @@ typedef enum {
 @property (strong, nonatomic) UIButton *changeTextAveBackgroundButton;
 @property (strong, nonatomic) UIButton *repositionPhotoButton;
 
-
-@property (nonatomic) UIView * lowerBarHolder;//holds all the constant icons
+@property (nonatomic) UIButton *cancelButton;
 
 @property (nonatomic) AdjustTextSizeToolBar * adjustTextSizeBar;
 @property (nonatomic) AdjustTextAlignmentToolBar * adjustTextAlignmentBar;
@@ -58,12 +57,13 @@ typedef enum {
 #define SIZE_BUTTONS_OFFSET 80.f
 #define ALIGNMENT_BUTTONS_OFFSET 200.f
 #define SPACE 10.f
+#define CANCEL_BUTTON_SIZE (2*TEXT_TOOLBAR_BUTTON_OFFSET + TEXT_TOOLBAR_BUTTON_WIDTH)
 
-#define ICON_SEPARATION_SPACE (((self.frame.size.width - (2*TEXT_TOOLBAR_BUTTON_OFFSET)) - (NUM_BASE_BUTTONS * TEXT_TOOLBAR_BUTTON_WIDTH) - TEXT_TOOLBAR_DONE_WIDTH)/(NUM_BASE_BUTTONS - 1.f))
+#define ICON_SEPARATION_SPACE (((self.frame.size.width - (2*TEXT_TOOLBAR_BUTTON_OFFSET)) - (NUM_BASE_BUTTONS * TEXT_TOOLBAR_BUTTON_WIDTH) - TEXT_TOOLBAR_DONE_WIDTH)/(NUM_BASE_BUTTONS - 1))
 
 #define NUM_BASE_BUTTONS 5
 
-#define CENTERING_Y ((TEXT_TOOLBAR_HEIGHT/2.f/2.f) - (TEXT_TOOLBAR_BUTTON_WIDTH/2.f))
+#define CENTERING_Y ((TEXT_TOOLBAR_HEIGHT/2.f) - (TEXT_TOOLBAR_BUTTON_WIDTH/2.f))
 
 @end
 
@@ -73,29 +73,29 @@ typedef enum {
 				 isOnTextAve:(BOOL)onTextAve isOnScreenPermanently:(BOOL)onScreen {
 	self = [super initWithFrame:frame];
 	if(self) {
-		self.backgroundColor = (onScreen) ? [UIColor clearColor] : [UIColor whiteColor];
+		self.backgroundColor = [UIColor whiteColor];
 		self.textIsBlack = textColorBlack;
         self.onTextAve = onTextAve;
         self.currentSelectedOption = noSelection;
 
-        if(onScreen) {
-			[self addAllButtons];
+        [self addAllButtons];
+
+		if (onScreen) {
+			 [self addSubview:self.keyboardButton];
 		} else {
-			[self addSubview:self.textColorButton];
 			[self addSubview:self.doneButton];
-        }
+		}
 	}
 	return self;
 }
 
 -(void) addAllButtons {
-	[self.lowerBarHolder addSubview:self.textColorButton];
-    [self.lowerBarHolder addSubview:self.changeFontSizeButton];
-    [self.lowerBarHolder addSubview:self.changeTextAlignmentButton];
-    [self.lowerBarHolder addSubview:self.changeFontTypeButton];
-    [self.lowerBarHolder addSubview:self.changeTextAveBackgroundButton];
-	[self.lowerBarHolder addSubview:self.repositionPhotoButton];
-    [self.lowerBarHolder addSubview:self.keyboardButton];
+	[self addSubview:self.textColorButton];
+    [self addSubview:self.changeFontSizeButton];
+    [self addSubview:self.changeTextAlignmentButton];
+    [self addSubview:self.changeFontTypeButton];
+    [self addSubview:self.changeTextAveBackgroundButton];
+	[self addSubview:self.repositionPhotoButton];
 }
 
 
@@ -148,9 +148,8 @@ typedef enum {
 }
 
 -(void)changePhotoPositionButtonPressed {
-	[self removeTopHalfBar];
 	UIImage *iconImage;
-	if (self.currentSelectedOption == photoPosition){
+	if (self.currentSelectedOption == photoPosition) {
 		self.currentSelectedOption = noSelection;
 		iconImage = [UIImage imageNamed:REPOSITION_PHOTO_ICON_UNSELECTED];
 		[self.delegate repositionPhotoUnSelected];
@@ -188,7 +187,14 @@ typedef enum {
 	[self.delegate textColorChangedToBlack:self.textIsBlack];
 }
 
+-(void) cancelButtonPressed {
+	[self removeTopHalfBar];
+}
+
 -(void)removeTopHalfBar {
+	if (self.cancelButton.superview) {
+		[self.cancelButton removeFromSuperview];
+	}
     switch (self.currentSelectedOption) {
         case fontSize:
             [self.adjustTextSizeBar removeFromSuperview];
@@ -206,15 +212,15 @@ typedef enum {
             [self.changeTextAveBackgroundButton setImage:[UIImage imageNamed: CHANGE_TEXT_VIEW_BACKGROUND_UNSELECTED] forState:UIControlStateNormal];
             break;
 		case photoPosition:
-			[self.adjustBackgroundBar removeFromSuperview];
-			[self.repositionPhotoButton setImage:[UIImage imageNamed: REPOSITION_PHOTO_ICON_UNSELECTED] forState:UIControlStateNormal];
+			[self changePhotoPositionButtonPressed];
 			break;
         default:
             break;
     }
+	self.currentSelectedOption = noSelection;
 }
 
--(void)addTopHalfBar{
+-(void)addTopHalfBar {
     switch (self.currentSelectedOption) {
         case fontSize:
             [self addSubview:self.adjustTextSizeBar];
@@ -231,6 +237,7 @@ typedef enum {
         default:
             break;
     }
+	[self addSubview: self.cancelButton];
 }
 
 -(void) changeFontSizeButtonPressed {
@@ -241,7 +248,7 @@ typedef enum {
         iconImage = [UIImage imageNamed: CHANGE_FONT_SIZE_ICON_SELECTED];
     } else {
         self.currentSelectedOption = noSelection;
-         iconImage = [UIImage imageNamed: CHANGE_FONT_SIZE_ICON_UNSELECTED];
+		iconImage = [UIImage imageNamed: CHANGE_FONT_SIZE_ICON_UNSELECTED];
     }
     
     [self.changeFontSizeButton setImage:iconImage forState:UIControlStateNormal];
@@ -281,10 +288,12 @@ typedef enum {
 #pragma mark - Done/Keyboard buttons -
 
 -(void) doneButtonPressed {
+	[self removeTopHalfBar];
 	[self.delegate doneButtonPressed];
 }
 
--(void)keyboardButtonPressed{
+-(void)keyboardButtonPressed {
+	[self removeTopHalfBar];
     if([self.delegate respondsToSelector:@selector(keyboardButtonPressed)]){
         [self.delegate keyboardButtonPressed];
     }
@@ -306,7 +315,7 @@ typedef enum {
 
 -(UIButton *) doneButton {
 	if (!_doneButton) {
-        CGFloat height = (self.frame.size.height/2.f) - TEXT_TOOLBAR_BUTTON_OFFSET;
+        CGFloat height = self.frame.size.height - TEXT_TOOLBAR_BUTTON_OFFSET;
 		CGRect doneButtonFrame = CGRectMake(self.frame.size.width  - TEXT_TOOLBAR_DONE_WIDTH - TEXT_TOOLBAR_BUTTON_OFFSET + 5.f, CENTERING_Y, TEXT_TOOLBAR_DONE_WIDTH,height);
 		_doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		_doneButton.frame = doneButtonFrame;
@@ -402,19 +411,20 @@ typedef enum {
 	return _keyboardButton;
 }
 
--(UIView *)lowerBarHolder {
-    if (!_lowerBarHolder) {
-        _lowerBarHolder = [[UIView alloc] initWithFrame:CGRectMake(0.f, self.frame.size.height/2.f, self.frame.size.width, self.frame.size.height/2.f)];
-        [_lowerBarHolder setBackgroundColor:[UIColor whiteColor]];
-        [self addSubview:_lowerBarHolder];
-    }
-    return _lowerBarHolder;
+- (UIButton *) cancelButton {
+	if (!_cancelButton) {
+		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, CENTERING_Y,
+										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
+		_cancelButton = [UtilityFunctions getButtonWithFrame:buttonFrame andIcon:EXIT_ICON
+													andSelector:@selector(cancelButtonPressed) andTarget:self];
+	}
+	return _cancelButton;
 }
-
 
 -(AdjustTextSizeToolBar *)adjustTextSizeBar{
     if (!_adjustTextSizeBar) {
-        _adjustTextSizeBar = [[AdjustTextSizeToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width, self.frame.size.height/2.f)];
+        _adjustTextSizeBar = [[AdjustTextSizeToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f,
+																					self.frame.size.width, self.frame.size.height)];
         _adjustTextSizeBar.delegate = self;
     }
     return _adjustTextSizeBar;
@@ -422,7 +432,8 @@ typedef enum {
 
 -(AdjustTextAlignmentToolBar *)adjustTextAlignmentBar{
     if (!_adjustTextAlignmentBar) {
-        _adjustTextAlignmentBar = [[AdjustTextAlignmentToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width, self.frame.size.height/2.f)];
+        _adjustTextAlignmentBar = [[AdjustTextAlignmentToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f,
+																							  self.frame.size.width, self.frame.size.height)];
         _adjustTextAlignmentBar.delegate = self;
     }
     return _adjustTextAlignmentBar;
@@ -430,7 +441,8 @@ typedef enum {
 
 -(AdjustTextFontToolBar *)adjustTextFontBar{
     if (!_adjustTextFontBar) {
-        _adjustTextFontBar = [[AdjustTextFontToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width, self.frame.size.height/2.f)];
+        _adjustTextFontBar = [[AdjustTextFontToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f,
+																					self.frame.size.width, self.frame.size.height)];
         _adjustTextFontBar.delegate = self;
     }
     return _adjustTextFontBar;
@@ -438,7 +450,8 @@ typedef enum {
 
 -(AdjustTextAVEBackgroundToolBar *)adjustBackgroundBar{
     if (!_adjustBackgroundBar) {
-        _adjustBackgroundBar = [[AdjustTextAVEBackgroundToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width, self.frame.size.height/2.f)];
+        _adjustBackgroundBar = [[AdjustTextAVEBackgroundToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width,
+																							   self.frame.size.height)];
         _adjustBackgroundBar.toolBarDelegate = self;
 
     }

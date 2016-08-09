@@ -19,6 +19,7 @@
 
 @interface TextOverMediaView ()
 
+@property (nonatomic) BOOL onTextAve;
 @property (nonatomic, readwrite) BOOL textShowing;
 @property (nonatomic) GridView *repositionPhotoGrid;
 @property (nonatomic) UIScrollView *repositionPhotoScrollView;
@@ -59,23 +60,29 @@
 }
 
 // For preview mode
--(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image andContentOffset:(CGPoint)contentOffset {
+-(instancetype) initWithFrame:(CGRect)frame andImage:(UIImage *)image
+			 andContentOffset:(CGPoint)contentOffset forTextAVE:(BOOL)onTextAve {
 	self = [self initWithFrame: frame];
 	if (self) {
 		[self addSubview: self.textView];
-		self.repositionPhotoScrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
-		self.repositionPhotoScrollView.scrollEnabled = NO;
-		self.repositionPhotoScrollView.showsVerticalScrollIndicator = NO;
-		self.repositionPhotoScrollView.showsHorizontalScrollIndicator = NO;
-		[self.imageView removeFromSuperview];
-		[self.repositionPhotoScrollView addSubview:self.imageView];
-		[self setRepositionImageScrollViewFromImage: image];
-		self.repositionPhotoScrollView.contentOffset = contentOffset;
-		[self insertSubview:self.repositionPhotoScrollView belowSubview:self.textView];
+		self.onTextAve = onTextAve;
+		if (!self.onTextAve) {
+			self.repositionPhotoScrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
+			self.repositionPhotoScrollView.scrollEnabled = NO;
+			self.repositionPhotoScrollView.showsVerticalScrollIndicator = NO;
+			self.repositionPhotoScrollView.showsHorizontalScrollIndicator = NO;
+			[self.imageView removeFromSuperview];
+			[self.repositionPhotoScrollView addSubview:self.imageView];
+			[self setRepositionImageScrollViewFromImage: image];
+			self.repositionPhotoScrollView.contentOffset = contentOffset;
+			[self insertSubview:self.repositionPhotoScrollView belowSubview:self.textView];
 
-		self.repositionPhotoGrid = [[GridView alloc] initWithFrame:self.bounds];
-		[self addSubview:self.repositionPhotoGrid];
-		self.repositionPhotoGrid.hidden = YES;
+			self.repositionPhotoGrid = [[GridView alloc] initWithFrame:self.bounds];
+			[self addSubview:self.repositionPhotoGrid];
+			self.repositionPhotoGrid.hidden = YES;
+		} else {
+			[self.imageView setImage: image];
+		}
 	}
 	return self;
 }

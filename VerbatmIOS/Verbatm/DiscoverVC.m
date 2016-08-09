@@ -67,8 +67,8 @@ ExploreChannelCellViewDelegate>
 	[self addRefreshFeature];
 	[self refreshChannels];
 
-
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearViews) name:NOTIFICATION_FREE_MEMORY_DISCOVER object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearViews)
+												 name:NOTIFICATION_FREE_MEMORY_DISCOVER object:nil];
 	[self setNeedsStatusBarAppearanceUpdate];
 }
 
