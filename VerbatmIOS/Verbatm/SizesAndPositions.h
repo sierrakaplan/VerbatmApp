@@ -9,11 +9,10 @@
 #ifndef SizesAndPositions_h
 #define SizesAndPositions_h
 
-#define LARGE_IMAGE_SIZE 700
-#define THUMBNAIL_IMAGE_SIZE 300
-#define HALFSCREEN_IMAGE_SIZE 400
+#define LARGE_IMAGE_SIZE 650
+#define THUMBNAIL_IMAGE_SIZE 250
+#define HALFSCREEN_IMAGE_SIZE 350
 
-//Goes off of largest device the media will be displayed on
 #define FULL_SCREEN_SIZE [[UIScreen mainScreen] bounds].size
 #define HALF_SCREEN_SIZE CGSizeMake(FULL_SCREEN_SIZE.width, FULL_SCREEN_SIZE.height/2.f)
 
