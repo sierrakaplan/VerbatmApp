@@ -561,7 +561,6 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 // Create a horizontal scrollview displaying a pinch object from a pinchView passed in
 - (void) newPinchView:(PinchView *) pinchView belowView:(ContentPageElementScrollView *)upperScrollView
 andSaveInUserDefaults:(BOOL)save {
-
 	if(!pinchView) {
 		return;
 	}
@@ -1613,7 +1612,14 @@ andSaveInUserDefaults:(BOOL)save {
 -(void) aboutToShowPreview{
 	self.currentlyPreviewingContent = YES;
 }
--(void) aboutToRemovePreview{
+
+-(void) aboutToRemovePreview {
+ 	for (ContentPageElementScrollView* contentScrollView in self.pageElementScrollViews) {
+		if ([contentScrollView.pageElement isKindOfClass:[PinchView class]]) {
+			PinchView *pinchView = (PinchView*)contentScrollView.pageElement;
+			[pinchView renderMedia];
+		}
+	}
 	self.currentlyPreviewingContent = NO;
 }
 

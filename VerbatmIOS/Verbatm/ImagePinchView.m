@@ -87,6 +87,13 @@
 	[self.imageView setImage:[self getImage]];
 
 	//Note: move this to SingleMediaAndText pinch view if add text to video
+	CGFloat scale = self.frame.size.height / FULL_SCREEN_SIZE.height;
+	[self.textView setText: self.text];
+	CGFloat yPos = self.textYPosition.floatValue * scale;
+	[self.textView setFrame:CGRectMake(0.f, yPos, self.frame.size.width, self.frame.size.height)];
+	[self.textView setTextColor:self.textColor];
+	[self.textView setTextAlignment:self.textAlignment.integerValue];
+	[self.textView setFont:[UIFont fontWithName:self.fontName size:self.textSize.floatValue * scale]];
 
 	[self addEditIcon];
 }
@@ -281,6 +288,8 @@
 -(UITextView*) textView {
 	if (!_textView) {
 		_textView = [[UITextView alloc] init];
+		_textView.editable = NO;
+		_textView.backgroundColor = [UIColor clearColor];
 	}
 	return _textView;
 }

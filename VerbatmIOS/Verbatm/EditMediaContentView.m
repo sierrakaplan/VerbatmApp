@@ -585,10 +585,8 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 }
 
 -(void)onScreen {
-    if([self.pinchView isKindOfClass:[TextPinchView class]] &&
-       [self.textAndImageView.textView.text isEqualToString:@""]){
-        [self.textAndImageView.textView setHidden:YES];
-        [self.textAndImageView.textView becomeFirstResponder];
+    if([self.pinchView isKindOfClass:[TextPinchView class]] && self.textAndImageView) {
+		[self.textAndImageView setTextViewFirstResponder: [self.textAndImageView.textView.text isEqualToString:@""]];
     } else {
         if(!self.videoHasBeenPrepared){
             [self.videoView prepareVideoFromAsset:self.videoAsset];

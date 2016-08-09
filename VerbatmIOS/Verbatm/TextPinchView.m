@@ -35,11 +35,9 @@
 }
 
 -(UIColor *) textColor {
-    
     if (!_textColor) {
         _textColor = [UIColor TEXTPINCHVIEW_PAGE_VIEW_DEFAULT_COLOR];
     }
-    
     return _textColor;
 }
 

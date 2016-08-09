@@ -155,6 +155,9 @@
 					andTextColorBlack:textColorBlack
 					 andTextAlignment:[pinchView.textAlignment integerValue]
 						  andTextSize:[pinchView.textSize floatValue] andFontName:pinchView.fontName];
+		if (self.currentlyOnScreen) {
+			[editMediaContentView onScreen];
+		}
 	});
 	return editMediaContentView;
 }
