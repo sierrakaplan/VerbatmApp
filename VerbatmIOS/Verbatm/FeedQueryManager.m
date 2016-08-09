@@ -248,7 +248,8 @@
 	BOOL isLinkedToFacebook = [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]];
 	// Logged in with phone number
 	if (!isLinkedToFacebook) {
-
+		completionBlock(@[], @[]);
+		//todo: get phone contacts
 		return;
 	}
 	if (![[FBSDKAccessToken currentAccessToken] hasGranted:@"user_friends"]) {

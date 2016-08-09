@@ -79,6 +79,12 @@ typedef enum {
         self.currentSelectedOption = noSelection;
 
         [self addAllButtons];
+
+		if (onScreen) {
+			 [self addSubview:self.keyboardButton];
+		} else {
+			[self addSubview:self.doneButton];
+		}
 	}
 	return self;
 }
@@ -90,7 +96,6 @@ typedef enum {
     [self addSubview:self.changeFontTypeButton];
     [self addSubview:self.changeTextAveBackgroundButton];
 	[self addSubview:self.repositionPhotoButton];
-    [self addSubview:self.keyboardButton];
 }
 
 
@@ -143,9 +148,8 @@ typedef enum {
 }
 
 -(void)changePhotoPositionButtonPressed {
-	[self removeTopHalfBar];
 	UIImage *iconImage;
-	if (self.currentSelectedOption == photoPosition){
+	if (self.currentSelectedOption == photoPosition) {
 		self.currentSelectedOption = noSelection;
 		iconImage = [UIImage imageNamed:REPOSITION_PHOTO_ICON_UNSELECTED];
 		[self.delegate repositionPhotoUnSelected];
@@ -184,12 +188,13 @@ typedef enum {
 }
 
 -(void) cancelButtonPressed {
-	self.currentSelectedOption = noSelection;
 	[self removeTopHalfBar];
 }
 
 -(void)removeTopHalfBar {
-	[self.cancelButton removeFromSuperview];
+	if (self.cancelButton.superview) {
+		[self.cancelButton removeFromSuperview];
+	}
     switch (self.currentSelectedOption) {
         case fontSize:
             [self.adjustTextSizeBar removeFromSuperview];
@@ -207,12 +212,12 @@ typedef enum {
             [self.changeTextAveBackgroundButton setImage:[UIImage imageNamed: CHANGE_TEXT_VIEW_BACKGROUND_UNSELECTED] forState:UIControlStateNormal];
             break;
 		case photoPosition:
-			[self.adjustBackgroundBar removeFromSuperview];
-			[self.repositionPhotoButton setImage:[UIImage imageNamed: REPOSITION_PHOTO_ICON_UNSELECTED] forState:UIControlStateNormal];
+			[self changePhotoPositionButtonPressed];
 			break;
         default:
             break;
     }
+	self.currentSelectedOption = noSelection;
 }
 
 -(void)addTopHalfBar {
@@ -243,7 +248,7 @@ typedef enum {
         iconImage = [UIImage imageNamed: CHANGE_FONT_SIZE_ICON_SELECTED];
     } else {
         self.currentSelectedOption = noSelection;
-         iconImage = [UIImage imageNamed: CHANGE_FONT_SIZE_ICON_UNSELECTED];
+		iconImage = [UIImage imageNamed: CHANGE_FONT_SIZE_ICON_UNSELECTED];
     }
     
     [self.changeFontSizeButton setImage:iconImage forState:UIControlStateNormal];
@@ -283,10 +288,12 @@ typedef enum {
 #pragma mark - Done/Keyboard buttons -
 
 -(void) doneButtonPressed {
+	[self removeTopHalfBar];
 	[self.delegate doneButtonPressed];
 }
 
--(void)keyboardButtonPressed{
+-(void)keyboardButtonPressed {
+	[self removeTopHalfBar];
     if([self.delegate respondsToSelector:@selector(keyboardButtonPressed)]){
         [self.delegate keyboardButtonPressed];
     }
@@ -308,7 +315,7 @@ typedef enum {
 
 -(UIButton *) doneButton {
 	if (!_doneButton) {
-        CGFloat height = (self.frame.size.height/2.f) - TEXT_TOOLBAR_BUTTON_OFFSET;
+        CGFloat height = self.frame.size.height - TEXT_TOOLBAR_BUTTON_OFFSET;
 		CGRect doneButtonFrame = CGRectMake(self.frame.size.width  - TEXT_TOOLBAR_DONE_WIDTH - TEXT_TOOLBAR_BUTTON_OFFSET + 5.f, CENTERING_Y, TEXT_TOOLBAR_DONE_WIDTH,height);
 		_doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		_doneButton.frame = doneButtonFrame;
