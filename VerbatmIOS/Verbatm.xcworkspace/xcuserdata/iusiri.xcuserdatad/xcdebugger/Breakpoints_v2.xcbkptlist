@@ -765,7 +765,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "523"
             endingLineNumber = "523"
-            landmarkName = "-blogTitlePlaceholder"
+            landmarkName = "-addSubviewsToTitle"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1639,7 +1639,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "351"
             endingLineNumber = "351"
-            landmarkName = "-createTopAndReflectionCoverImageFromImage:"
+            landmarkName = "-coverPhotoButtonSelected"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3665,7 +3665,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "558"
             endingLineNumber = "558"
-            landmarkName = "-flippedCoverPhoto"
+            landmarkName = "-coverPhotoView"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3809,7 +3809,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "550"
             endingLineNumber = "550"
-            landmarkName = "-coverPhotoView"
+            landmarkName = "-blogDescriptionPlaceholder"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4257,7 +4257,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "423"
             endingLineNumber = "423"
-            landmarkName = "-textViewDidChange:"
+            landmarkName = "-textViewDidBeginEditing:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4353,7 +4353,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "276"
             endingLineNumber = "276"
-            landmarkName = "-storeNewUrl"
+            landmarkName = "-newCoverPhotoAvailable"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4369,7 +4369,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "291"
             endingLineNumber = "291"
-            landmarkName = "-saveCoverPhotoDataToCache:"
+            landmarkName = "-storeNewUrl"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4385,8 +4385,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "305"
             endingLineNumber = "305"
-            landmarkName = "@implementation ProfileHeaderView"
-            landmarkType = "3">
+            landmarkName = "-saveCoverPhotoDataToCache:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -5361,7 +5361,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "372"
             endingLineNumber = "372"
-            landmarkName = "-editButtonSelected"
+            landmarkName = "-settingsButtonSelected"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -7263,7 +7263,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "363"
             endingLineNumber = "363"
-            landmarkName = "-settingsButtonSelected"
+            landmarkName = "-setCoverPhotoImage:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
