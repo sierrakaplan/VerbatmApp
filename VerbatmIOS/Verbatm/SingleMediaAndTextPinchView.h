@@ -15,6 +15,6 @@
 @property (strong, nonatomic) NSNumber *textYPosition; //float value
 @property (strong, nonatomic) UIColor *textColor;
 @property (strong, nonatomic) NSNumber *textAlignment; //NSTextAlignment integer value
-@property (strong, nonatomic) NSNumber *textSize; //foat value
-@property (strong, nonatomic) NSString * fontName;//
+@property (strong, nonatomic) NSNumber *textSize; //float value
+@property (strong, nonatomic) NSString *fontName;//
 @end

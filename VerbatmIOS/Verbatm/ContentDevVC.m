@@ -565,7 +565,6 @@ andSaveInUserDefaults:(BOOL)save {
 	if(!pinchView) {
 		return;
 	}
-	pinchView.showEditIcon = YES;
 	[pinchView renderMedia];
 	[self addTapGestureToPinchView:pinchView];
 	// must be below base media tile selector

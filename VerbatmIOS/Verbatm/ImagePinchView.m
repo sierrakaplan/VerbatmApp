@@ -24,6 +24,7 @@
 
 @property (strong, nonatomic) UIImage* image;
 @property (strong, nonatomic) UIImageView *imageView;
+@property (nonatomic) UITextView *textView;
 @property (nonatomic) BOOL contentOffsetSet;
 
 #pragma mark Encoding Keys
@@ -55,6 +56,7 @@
 -(void) initWithImage:(UIImage*)image andSetFilteredImages: (BOOL) setFilters {
 	if (image == nil) return;
 	[self.background addSubview:self.imageView];
+	[self.background addSubview:self.textView];
 	self.containsImage = YES;
 	self.image = image;
 	self.filteredImages = [[NSMutableArray alloc] init];
@@ -83,9 +85,18 @@
 -(void)renderMedia {
 	self.imageView.frame = self.background.frame;
 	[self.imageView setImage:[self getImage]];
+
+	//Note: move this to SingleMediaAndText pinch view if add text to video
+
 	[self addEditIcon];
 }
 
+//NSString* text;
+//@property (strong, nonatomic) NSNumber *textYPosition; //float value
+//@property (strong, nonatomic) UIColor *textColor;
+//@property (strong, nonatomic) NSNumber *textAlignment; //NSTextAlignment integer value
+//@property (strong, nonatomic) NSNumber *textSize; //float value
+//@property (strong, nonatomic) NSString *fontName;//
 #pragma mark - Get or Change Image -
 
 //warns the pinchview that it is getting published -- so it can
@@ -265,6 +276,13 @@
 		_imageView.layer.masksToBounds = YES;
 	}
 	return _imageView;
+}
+
+-(UITextView*) textView {
+	if (!_textView) {
+		_textView = [[UITextView alloc] init];
+	}
+	return _textView;
 }
 
 @end

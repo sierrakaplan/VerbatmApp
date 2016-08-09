@@ -32,8 +32,6 @@
 @property (nonatomic) BOOL containsImage;
 @property (nonatomic) BOOL containsVideo;
 
-@property (nonatomic) BOOL showEditIcon;
-
 //This creates a new pinch object with a particular radius and a center
 -(instancetype)initWithRadius:(CGFloat)radius withCenter:(CGPoint)center;
 

@@ -66,7 +66,6 @@
 }
 
 -(void) initialize {
-	self.showEditIcon = NO;
 	[self setBackgroundFrames];
 	[self formatBackground];
 	[self addBorderToPinchView];
@@ -75,7 +74,6 @@
 }
 
 -(void) addEditIcon {
-	if (!self.showEditIcon) return;
 	if (_editImageView) {
 		[self.editImageView removeFromSuperview];
 	}
