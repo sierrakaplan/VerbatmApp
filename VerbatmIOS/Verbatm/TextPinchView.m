@@ -21,28 +21,23 @@
 @synthesize  imageName = _imageName;
 
 -(AnyPromise *) getLargerImageWithHalfSize:(BOOL)half {
-    
     AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
-        
         if(self.beingPublished){
             dispatch_async(dispatch_get_main_queue(), ^{
                 resolve([self getImageScreenshotWithText:[self getImage] inHalf:half]);
             });
-        }else{
+        } else {
             resolve([self getImage]);
         }
-        
     }];
     
     return promise;
 }
 
 -(UIColor *) textColor {
-    
     if (!_textColor) {
         _textColor = [UIColor TEXTPINCHVIEW_PAGE_VIEW_DEFAULT_COLOR];
     }
-    
     return _textColor;
 }
 

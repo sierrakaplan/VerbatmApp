@@ -20,7 +20,7 @@
 @property (strong, nonatomic, readonly) NSMutableArray* pinchedObjects;
 
 //Takes an array of SingleMediaAndTextPinchViews which are being pinched together
--(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andPinchViews:(NSArray*)pinchViews;
+-(instancetype)initWithRadius:(CGFloat)radius withCenter:(CGPoint)center andPinchViews:(NSArray*)pinchViews;
 
 -(NSInteger) getNumPinchViews;
 

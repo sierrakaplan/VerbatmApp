@@ -198,6 +198,7 @@
     
     CGRect subtextFrame = CGRectMake(WALL_OFFSET_X, instructionFrame.origin.y + instructionFrame.size.height, self.frame.size.width - (WALL_OFFSET_X*2), TEXT_LABEL_HEIGHT);
     self.subtextView = [[UILabel alloc] initWithFrame:subtextFrame];
+	self.subtextView.adjustsFontSizeToFitWidth = YES;
     self.subtextView.textAlignment = NSTextAlignmentCenter;
     [self.subtextView setAttributedText:[self getAttributeStringWithText:SHARE_SUBTEXT_TEXT andColor:SPLV_LABEL_TEXT_COLOR]];
     [self addSubview:self.subtextView];

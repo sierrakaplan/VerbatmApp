@@ -15,12 +15,14 @@
 @property (strong, nonatomic) NSString *imageName;
 @property (strong, nonatomic) NSMutableArray* filteredImages;
 @property (nonatomic) NSInteger filterImageIndex;
+@property (nonatomic) CGPoint imageContentOffset; //stores position of image
 @property (strong, nonatomic) NSString* phAssetLocalIdentifier;
 
--(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andImage:(UIImage*)image
+-(instancetype)initWithRadius:(CGFloat)radius withCenter:(CGPoint)center andImage:(UIImage*)image
 	andPHAssetLocalIdentifier: (NSString*) localIdentifier;
 
 -(void) initWithImage:(UIImage*)image andSetFilteredImages: (BOOL) setFilters;
+
 -(UIImage *)getImageScreenshotWithText:(UIImage *)image inHalf:(BOOL)half;
 
 //change which filter is applied
@@ -40,8 +42,11 @@
 
 //replaces the current image with this image
 -(void) putNewImage:(UIImage*)image;
+
+//todo: delete?
 //warns the pinchview that it is getting published -- so it can
 //release all the excess media that it has in order to clear up some
 //space (prevents crashing)
 -(void)publishingPinchView;
+
 @end

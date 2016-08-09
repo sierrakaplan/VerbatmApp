@@ -27,7 +27,7 @@
 
 @implementation VideoPinchView
 
--(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andVideo: (AVURLAsset*)video
+-(instancetype)initWithRadius:(CGFloat)radius withCenter:(CGPoint)center andVideo: (AVURLAsset*)video
 	andPHAssetLocalIdentifier: (NSString*) localIdentifier {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {

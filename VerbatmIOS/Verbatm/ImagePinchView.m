@@ -11,10 +11,12 @@
 #import "Styles.h"
 
 #import "TextOverMediaView.h"
+#import "TextPinchView.h"
 
 #import "UIView+Effects.h"
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "MediaSessionManager.h"
+
 @import AVFoundation;
 @import Photos;
 
@@ -22,24 +24,30 @@
 
 @property (strong, nonatomic) UIImage* image;
 @property (strong, nonatomic) UIImageView *imageView;
+@property (nonatomic) UITextView *textView;
+@property (nonatomic) BOOL contentOffsetSet;
 
 #pragma mark Encoding Keys
 
 #define CREATE_FILTERED_IMAGES_QUEUE_KEY "create_filtered_images_queue"
 #define IMAGE_KEY @"image_key"
 #define FILTER_INDEX_KEY @"filter_index_key"
+#define CONTENT_OFFSET_X_KEY @"content_offset_x_key"
+#define CONTENT_OFFSET_Y_KEY @"content_offset_y_key"
 #define PHASSET_IDENTIFIER_KEY @"image_phasset_local_id"
 
 @end
 
 @implementation ImagePinchView
 
--(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andImage:(UIImage*)image
+-(instancetype)initWithRadius:(CGFloat)radius withCenter:(CGPoint)center andImage:(UIImage*)image
 	andPHAssetLocalIdentifier: (NSString*) localIdentifier {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
 		if(!image) return self;
 		self.phAssetLocalIdentifier = localIdentifier;
+		self.imageContentOffset = CGPointZero;
+		self.contentOffsetSet = NO;
 		[self initWithImage:image andSetFilteredImages:YES];
 	}
 	return self;
@@ -48,6 +56,7 @@
 -(void) initWithImage:(UIImage*)image andSetFilteredImages: (BOOL) setFilters {
 	if (image == nil) return;
 	[self.background addSubview:self.imageView];
+	[self.background addSubview:self.textView];
 	self.containsImage = YES;
 	self.image = image;
 	self.filteredImages = [[NSMutableArray alloc] init];
@@ -56,7 +65,7 @@
 	[self renderMedia];
 }
 
--(void) putNewImage:(UIImage*)image{
+-(void) putNewImage:(UIImage*)image {
 	if(!image)return;
 	if(!_imageView) {
 		[self.background addSubview:self.imageView];
@@ -76,6 +85,16 @@
 -(void)renderMedia {
 	self.imageView.frame = self.background.frame;
 	[self.imageView setImage:[self getImage]];
+
+	//Note: move this to SingleMediaAndText pinch view if add text to video
+	CGFloat scale = self.frame.size.height / FULL_SCREEN_SIZE.height;
+	[self.textView setText: self.text];
+	CGFloat yPos = self.textYPosition.floatValue * scale;
+	[self.textView setFrame:CGRectMake(0.f, yPos, self.frame.size.width, self.frame.size.height)];
+	[self.textView setTextColor:self.textColor];
+	[self.textView setTextAlignment:self.textAlignment.integerValue];
+	[self.textView setFont:[UIFont fontWithName:self.fontName size:self.textSize.floatValue * scale]];
+
 	[self addEditIcon];
 }
 
@@ -110,24 +129,34 @@
 }
 
 -(AnyPromise *) getLargerImageWithHalfSize:(BOOL)half; {
-	PHImageRequestOptions *options = [PHImageRequestOptions new];
-	options.synchronous = YES;
+
 	PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[self.phAssetLocalIdentifier] options:nil];
 	PHAsset* imageAsset = fetchResult.firstObject;
     __weak ImagePinchView * weakSelf = self;
 	weakSelf.imageName = [imageAsset valueForKey:@"filename"];
 	CGSize size = half ? HALF_SCREEN_SIZE : FULL_SCREEN_SIZE;
+	PHImageRequestOptions *options = [PHImageRequestOptions new];
+	options.synchronous = YES;
+	options.resizeMode = PHImageRequestOptionsResizeModeFast;
+	options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             [[PHImageManager defaultManager] requestImageForAsset:imageAsset targetSize:size contentMode:PHImageContentModeAspectFill
                   options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
                       image = [image imageByScalingAndCroppingForSize: CGSizeMake(size.width, size.height)];
-                      
+
                       if(weakSelf.beingPublished){
                           dispatch_async(dispatch_get_main_queue(), ^{
                               resolve([weakSelf getImageScreenshotWithText:image inHalf:half]);
                           });
-                      }else{
+                      } else {
+						  if (!self.contentOffsetSet) {
+							  CGSize imageSize = image.size;
+							  CGFloat xOffset = imageSize.width > size.width ? (imageSize.width - size.width)/2.f : 0.f;
+							  CGFloat yOffset = imageSize.height > size.height ? (imageSize.height - size.height)/2.f : 0.f;
+							  self.imageContentOffset = CGPointMake(xOffset, yOffset);
+							  self.contentOffsetSet = YES;
+						  }
                           resolve(image);
                       }  
             }];
@@ -147,14 +176,14 @@
                    self.textColor, @(0), @(0)]];
 }
 
-
-//todo: fix half screen problem
 -(UIImage *)getImageScreenshotWithText:(UIImage *)image inHalf:(BOOL)half {
 	@autoreleasepool {
 		CGSize size = half ? HALF_SCREEN_SIZE : FULL_SCREEN_SIZE;
 		CGRect frame = CGRectMake(0.f, 0.f, size.width, size.height);
         
-		TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:frame andImage:image];
+		TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:frame andImage:image
+																	  andContentOffset:self.imageContentOffset
+																			forTextAVE:[self isKindOfClass:[TextPinchView class]]];
 		BOOL textColorBlack = [self.textColor isEqual:[UIColor blackColor]];
 		NSString * textToCapture = self.text;
 
@@ -168,7 +197,7 @@
 		[textAndImageView.textView setHidden:NO];
 		[textAndImageView bringSubviewToFront:textAndImageView.textView];
 
-		UIImage * screenShot = [textAndImageView.imageView getViewscreenshotWithTextView:textAndImageView.textView];
+		UIImage * screenShot = [textAndImageView getViewScreenshot];
 		textAndImageView = nil;
 		return screenShot;
 	}
@@ -218,6 +247,8 @@
 	[super encodeWithCoder:coder];
 	[coder encodeObject:UIImagePNGRepresentation(self.image) forKey:IMAGE_KEY];
 	[coder encodeObject:[NSNumber numberWithInteger:self.filterImageIndex] forKey:FILTER_INDEX_KEY];
+	[coder encodeObject:[NSNumber numberWithFloat:self.imageContentOffset.x] forKey:CONTENT_OFFSET_X_KEY];
+	[coder encodeObject:[NSNumber numberWithFloat:self.imageContentOffset.y] forKey:CONTENT_OFFSET_Y_KEY];
 	[coder encodeObject: self.phAssetLocalIdentifier forKey:PHASSET_IDENTIFIER_KEY];
 }
 
@@ -226,8 +257,12 @@
 		NSData* imageData = [decoder decodeObjectForKey:IMAGE_KEY];
 		UIImage* image = [UIImage imageWithData:imageData];
 		NSNumber* filterImageIndexNumber = [decoder decodeObjectForKey:FILTER_INDEX_KEY];
+		NSNumber* contentOffsetX = [decoder decodeObjectForKey:CONTENT_OFFSET_X_KEY];
+		NSNumber* contentOffsetY = [decoder decodeObjectForKey:CONTENT_OFFSET_Y_KEY];
 		self.phAssetLocalIdentifier = [decoder decodeObjectForKey:PHASSET_IDENTIFIER_KEY];
 		[self initWithImage:image andSetFilteredImages:YES];
+		self.imageContentOffset = CGPointMake(contentOffsetX.floatValue, contentOffsetY.floatValue);
+		self.contentOffsetSet = YES;
 		[self changeImageToFilterIndex:filterImageIndexNumber.integerValue];
 	}
 	return self;
@@ -242,6 +277,15 @@
 		_imageView.layer.masksToBounds = YES;
 	}
 	return _imageView;
+}
+
+-(UITextView*) textView {
+	if (!_textView) {
+		_textView = [[UITextView alloc] init];
+		_textView.editable = NO;
+		_textView.backgroundColor = [UIColor clearColor];
+	}
+	return _textView;
 }
 
 @end

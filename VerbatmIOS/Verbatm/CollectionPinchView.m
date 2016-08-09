@@ -37,7 +37,7 @@
 
 @implementation CollectionPinchView
 
--(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andPinchViews:(NSArray*)pinchViews {
+-(instancetype)initWithRadius:(CGFloat)radius withCenter:(CGPoint)center andPinchViews:(NSArray*)pinchViews {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
 		[self initWithPinchViews:pinchViews];
@@ -65,6 +65,7 @@
 	} else if ([pinchView isKindOfClass:[VideoPinchView class]]) {
 		[self.videoPinchViews addObject:pinchView];
 	}
+	[self renderMedia];
 }
 
 #pragma mark - Adding play button to video
@@ -111,7 +112,7 @@
 			[self renderTwoMedia];
 			break;
 		default:
-			return;
+			break;
 	}
 	[self displayMedia];
 }

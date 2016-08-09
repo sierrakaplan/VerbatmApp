@@ -22,7 +22,8 @@ typedef enum {
     fontSize = 2,
     textAlightment = 3,
     fontType = 4,
-    background = 5
+    background = 5,
+	photoPosition = 6
 } ToolBarOptions;
 
 @interface VerbatmKeyboardToolBar()<AdjustTextSizeDelegate, AdjustTextAlignmentToolBarDelegate, AdjustTextFontToolBarDelegate, AdjustTextAVEBackgroundToolBarDelegate>
@@ -35,8 +36,9 @@ typedef enum {
 @property (strong, nonatomic) UIButton *changeTextAlignmentButton;
 @property (strong, nonatomic) UIButton *changeFontTypeButton;
 @property (strong, nonatomic) UIButton *changeTextAveBackgroundButton;
+@property (strong, nonatomic) UIButton *repositionPhotoButton;
 
-@property (nonatomic) UIView * lowerBarHolder;//holds all the constant icons
+@property (nonatomic) UIButton *cancelButton;
 
 @property (nonatomic) AdjustTextSizeToolBar * adjustTextSizeBar;
 @property (nonatomic) AdjustTextAlignmentToolBar * adjustTextAlignmentBar;
@@ -55,13 +57,13 @@ typedef enum {
 #define SIZE_BUTTONS_OFFSET 80.f
 #define ALIGNMENT_BUTTONS_OFFSET 200.f
 #define SPACE 10.f
+#define CANCEL_BUTTON_SIZE (2*TEXT_TOOLBAR_BUTTON_OFFSET + TEXT_TOOLBAR_BUTTON_WIDTH)
 
-#define ICON_SEPARATION_SPACE (((self.frame.size.width - (2*TEXT_TOOLBAR_BUTTON_OFFSET)) - (NUM_BASE_BUTTONS * TEXT_TOOLBAR_BUTTON_WIDTH) - TEXT_TOOLBAR_DONE_WIDTH)/(NUM_BASE_BUTTONS - 1.f))
+#define ICON_SEPARATION_SPACE (((self.frame.size.width - (2*TEXT_TOOLBAR_BUTTON_OFFSET)) - (NUM_BASE_BUTTONS * TEXT_TOOLBAR_BUTTON_WIDTH) - TEXT_TOOLBAR_DONE_WIDTH)/(NUM_BASE_BUTTONS - 1))
 
 #define NUM_BASE_BUTTONS 5
 
-#define CENTERING_Y ((TEXT_TOOLBAR_HEIGHT/2.f/2.f) - (TEXT_TOOLBAR_BUTTON_WIDTH/2.f))
-
+#define CENTERING_Y ((TEXT_TOOLBAR_HEIGHT/2.f) - (TEXT_TOOLBAR_BUTTON_WIDTH/2.f))
 
 @end
 
@@ -71,28 +73,29 @@ typedef enum {
 				 isOnTextAve:(BOOL)onTextAve isOnScreenPermanently:(BOOL)onScreen {
 	self = [super initWithFrame:frame];
 	if(self) {
-		self.backgroundColor = (onScreen) ? [UIColor clearColor] : [UIColor whiteColor];
+		self.backgroundColor = [UIColor whiteColor];
 		self.textIsBlack = textColorBlack;
         self.onTextAve = onTextAve;
         self.currentSelectedOption = noSelection;
 
-        if(onScreen) {
-			[self addAllButtons];
+        [self addAllButtons];
+
+		if (onScreen) {
+			 [self addSubview:self.keyboardButton];
 		} else {
-			[self addSubview:self.textColorButton];
 			[self addSubview:self.doneButton];
-        }
+		}
 	}
 	return self;
 }
 
 -(void) addAllButtons {
-	[self.lowerBarHolder addSubview:self.textColorButton];
-    [self.lowerBarHolder addSubview:self.changeFontSizeButton];
-    [self.lowerBarHolder addSubview:self.changeTextAlignmentButton];
-    [self.lowerBarHolder addSubview:self.changeFontTypeButton];
-    [self.lowerBarHolder addSubview:self.changeTextAveBackgroundButton];
-    [self.lowerBarHolder addSubview:self.keyboardButton];
+	[self addSubview:self.textColorButton];
+    [self addSubview:self.changeFontSizeButton];
+    [self addSubview:self.changeTextAlignmentButton];
+    [self addSubview:self.changeFontTypeButton];
+    [self addSubview:self.changeTextAveBackgroundButton];
+	[self addSubview:self.repositionPhotoButton];
 }
 
 
@@ -119,7 +122,7 @@ typedef enum {
 }
 
 
--(void)changeTextAveBackgroundButtonPressed{
+-(void)changeTextAveBackgroundButtonPressed {
     [self removeTopHalfBar];
     UIImage *iconImage;
     if(self.currentSelectedOption == background){
@@ -134,7 +137,7 @@ typedef enum {
 
 }
 
--(void)changeTextAlignmentButtonPressed{
+-(void)changeTextAlignmentButtonPressed {
     [self removeTopHalfBar];
     if(self.currentSelectedOption == textAlightment){
         self.currentSelectedOption = noSelection;
@@ -144,6 +147,19 @@ typedef enum {
     [self addTopHalfBar];
 }
 
+-(void)changePhotoPositionButtonPressed {
+	UIImage *iconImage;
+	if (self.currentSelectedOption == photoPosition) {
+		self.currentSelectedOption = noSelection;
+		iconImage = [UIImage imageNamed:REPOSITION_PHOTO_ICON_UNSELECTED];
+		[self.delegate repositionPhotoUnSelected];
+	} else {
+		self.currentSelectedOption = photoPosition;
+		iconImage = [UIImage imageNamed: REPOSITION_PHOTO_ICON_SELECTED];
+		[self.delegate repositionPhotoSelected];
+	}
+	[self.repositionPhotoButton setImage:iconImage forState:UIControlStateNormal];
+}
 
 #pragma mark - Align Toolbar Delegate -
 
@@ -171,7 +187,14 @@ typedef enum {
 	[self.delegate textColorChangedToBlack:self.textIsBlack];
 }
 
+-(void) cancelButtonPressed {
+	[self removeTopHalfBar];
+}
+
 -(void)removeTopHalfBar {
+	if (self.cancelButton.superview) {
+		[self.cancelButton removeFromSuperview];
+	}
     switch (self.currentSelectedOption) {
         case fontSize:
             [self.adjustTextSizeBar removeFromSuperview];
@@ -188,12 +211,16 @@ typedef enum {
             [self.adjustBackgroundBar removeFromSuperview];
             [self.changeTextAveBackgroundButton setImage:[UIImage imageNamed: CHANGE_TEXT_VIEW_BACKGROUND_UNSELECTED] forState:UIControlStateNormal];
             break;
+		case photoPosition:
+			[self changePhotoPositionButtonPressed];
+			break;
         default:
             break;
     }
+	self.currentSelectedOption = noSelection;
 }
 
--(void)addTopHalfBar{
+-(void)addTopHalfBar {
     switch (self.currentSelectedOption) {
         case fontSize:
             [self addSubview:self.adjustTextSizeBar];
@@ -210,6 +237,7 @@ typedef enum {
         default:
             break;
     }
+	[self addSubview: self.cancelButton];
 }
 
 -(void) changeFontSizeButtonPressed {
@@ -220,7 +248,7 @@ typedef enum {
         iconImage = [UIImage imageNamed: CHANGE_FONT_SIZE_ICON_SELECTED];
     } else {
         self.currentSelectedOption = noSelection;
-         iconImage = [UIImage imageNamed: CHANGE_FONT_SIZE_ICON_UNSELECTED];
+		iconImage = [UIImage imageNamed: CHANGE_FONT_SIZE_ICON_UNSELECTED];
     }
     
     [self.changeFontSizeButton setImage:iconImage forState:UIControlStateNormal];
@@ -260,10 +288,12 @@ typedef enum {
 #pragma mark - Done/Keyboard buttons -
 
 -(void) doneButtonPressed {
+	[self removeTopHalfBar];
 	[self.delegate doneButtonPressed];
 }
 
--(void)keyboardButtonPressed{
+-(void)keyboardButtonPressed {
+	[self removeTopHalfBar];
     if([self.delegate respondsToSelector:@selector(keyboardButtonPressed)]){
         [self.delegate keyboardButtonPressed];
     }
@@ -285,7 +315,7 @@ typedef enum {
 
 -(UIButton *) doneButton {
 	if (!_doneButton) {
-        CGFloat height = (self.frame.size.height/2.f) - TEXT_TOOLBAR_BUTTON_OFFSET;
+        CGFloat height = self.frame.size.height - TEXT_TOOLBAR_BUTTON_OFFSET;
 		CGRect doneButtonFrame = CGRectMake(self.frame.size.width  - TEXT_TOOLBAR_DONE_WIDTH - TEXT_TOOLBAR_BUTTON_OFFSET + 5.f, CENTERING_Y, TEXT_TOOLBAR_DONE_WIDTH,height);
 		_doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		_doneButton.frame = doneButtonFrame;
@@ -300,7 +330,7 @@ typedef enum {
 - (UIButton *) textColorButton {
 	if (!_textColorButton) {
 		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, CENTERING_Y,
-										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
+										TEXT_TOOLBAR_BUTTON_WIDTH-5.f, TEXT_TOOLBAR_BUTTON_WIDTH);
         _textColorButton = [UtilityFunctions getButtonWithFrame:buttonFrame andIcon:((self.textIsBlack) ? TEXT_FONT_COLOR_BLACK :TEXT_FONT_COLOR_WHITE)
 										andSelector:@selector(textColorButtonPressed) andTarget:self];
 	}
@@ -354,34 +384,47 @@ typedef enum {
     return _changeTextAveBackgroundButton;
 }
 
+-(UIButton *)repositionPhotoButton{
+	if (!_repositionPhotoButton) {
+		CGRect buttonFrame = CGRectMake(self.changeFontTypeButton.frame.origin.x + self.changeFontTypeButton.frame.size.width +
+										ICON_SEPARATION_SPACE, CENTERING_Y,
+										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
+
+		_repositionPhotoButton = [UtilityFunctions getButtonWithFrame:buttonFrame andIcon:REPOSITION_PHOTO_ICON_UNSELECTED
+											  andSelector:@selector(changePhotoPositionButtonPressed) andTarget:self];
+		[_repositionPhotoButton setHidden: self.onTextAve];
+	}
+	return _repositionPhotoButton;
+}
+
 -(UIButton *) keyboardButton {
 	if (!_keyboardButton) {
-
 		CGRect keyboardButtonFrame = CGRectMake(self.changeTextAveBackgroundButton.frame.origin.x + self.changeTextAveBackgroundButton.frame.size.width +
 												ICON_SEPARATION_SPACE, CENTERING_Y,
-												TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
+												TEXT_TOOLBAR_BUTTON_WIDTH*1.2, TEXT_TOOLBAR_BUTTON_WIDTH);
 		_keyboardButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		_keyboardButton.frame = keyboardButtonFrame;
+		[_keyboardButton.imageView setContentMode:UIViewContentModeScaleAspectFit];
 		[_keyboardButton setImage:[UIImage imageNamed:PRESENT_KEYBOARD_ICON] forState:UIControlStateNormal];
 		[_keyboardButton addTarget:self action:@selector(keyboardButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-
 	}
 	return _keyboardButton;
 }
 
--(UIView *)lowerBarHolder {
-    if (!_lowerBarHolder) {
-        _lowerBarHolder = [[UIView alloc] initWithFrame:CGRectMake(0.f, self.frame.size.height/2.f, self.frame.size.width, self.frame.size.height/2.f)];
-        [_lowerBarHolder setBackgroundColor:[UIColor whiteColor]];
-        [self addSubview:_lowerBarHolder];
-    }
-    return _lowerBarHolder;
+- (UIButton *) cancelButton {
+	if (!_cancelButton) {
+		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, CENTERING_Y,
+										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
+		_cancelButton = [UtilityFunctions getButtonWithFrame:buttonFrame andIcon:EXIT_ICON
+													andSelector:@selector(cancelButtonPressed) andTarget:self];
+	}
+	return _cancelButton;
 }
-
 
 -(AdjustTextSizeToolBar *)adjustTextSizeBar{
     if (!_adjustTextSizeBar) {
-        _adjustTextSizeBar = [[AdjustTextSizeToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width, self.frame.size.height/2.f)];
+        _adjustTextSizeBar = [[AdjustTextSizeToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f,
+																					self.frame.size.width, self.frame.size.height)];
         _adjustTextSizeBar.delegate = self;
     }
     return _adjustTextSizeBar;
@@ -389,7 +432,8 @@ typedef enum {
 
 -(AdjustTextAlignmentToolBar *)adjustTextAlignmentBar{
     if (!_adjustTextAlignmentBar) {
-        _adjustTextAlignmentBar = [[AdjustTextAlignmentToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width, self.frame.size.height/2.f)];
+        _adjustTextAlignmentBar = [[AdjustTextAlignmentToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f,
+																							  self.frame.size.width, self.frame.size.height)];
         _adjustTextAlignmentBar.delegate = self;
     }
     return _adjustTextAlignmentBar;
@@ -397,7 +441,8 @@ typedef enum {
 
 -(AdjustTextFontToolBar *)adjustTextFontBar{
     if (!_adjustTextFontBar) {
-        _adjustTextFontBar = [[AdjustTextFontToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width, self.frame.size.height/2.f)];
+        _adjustTextFontBar = [[AdjustTextFontToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f,
+																					self.frame.size.width, self.frame.size.height)];
         _adjustTextFontBar.delegate = self;
     }
     return _adjustTextFontBar;
@@ -405,12 +450,12 @@ typedef enum {
 
 -(AdjustTextAVEBackgroundToolBar *)adjustBackgroundBar{
     if (!_adjustBackgroundBar) {
-        _adjustBackgroundBar = [[AdjustTextAVEBackgroundToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width, self.frame.size.height/2.f)];
+        _adjustBackgroundBar = [[AdjustTextAVEBackgroundToolBar alloc]initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width,
+																							   self.frame.size.height)];
         _adjustBackgroundBar.toolBarDelegate = self;
 
     }
     return _adjustBackgroundBar;
 }
-
 
 @end

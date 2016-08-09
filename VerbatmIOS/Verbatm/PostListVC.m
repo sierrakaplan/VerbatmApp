@@ -279,9 +279,9 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 		NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0,[posts count])];
 
 		CGFloat rightOffset = self.collectionView.contentSize.width - self.collectionView.contentOffset.x;
+
 		[CATransaction begin];
 		[CATransaction setDisableActions:YES];
-
 		[weakSelf.collectionView performBatchUpdates:^{
 			[weakSelf.parsePostObjects insertObjects:posts atIndexes:indexSet];
 			[weakSelf.collectionView insertItemsAtIndexPaths:indexPaths];
@@ -317,7 +317,6 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 			[weakSelf.parsePostObjects addObjectsFromArray: posts];
 			[weakSelf.collectionView insertItemsAtIndexPaths:indexPaths];
 		} completion:^(BOOL finished) {
-			weakSelf.collectionView.contentOffset = CGPointMake(weakSelf.collectionView.contentSize.width, 0);
 			[CATransaction commit];
 			weakSelf.isLoadingMore = NO;
 		}];
@@ -389,7 +388,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
 				  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
 
-	PostCollectionViewCell *currentCell;
+	PostCollectionViewCell *currentCell = nil;
 	if (!self.inSmallMode) {
 		if (indexPath.row == self.nextIndexToPresent) {
 			currentCell = self.nextCellToPresent;
@@ -427,7 +426,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 			if (!self.inSmallMode) {
 				self.latestPostSeen = postDate;
 			} else {
-				//IAIN TODO
 				[self.currentDisplayCell addDot];
 			}
 		} else if (self.inSmallMode) {
@@ -482,21 +480,19 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:POST_CELL_ID forIndexPath:indexPath];
 	}
 	cell.cellDelegate = self;
-	if(indexPath.row < self.parsePostObjects.count){
-		PFObject *postActivityObject = self.parsePostObjects[indexPath.row];
-		if([postActivityObject isKindOfClass:[NSNumber class]]) {
+	PFObject *postActivityObject = self.parsePostObjects[indexPath.row];
+	if([postActivityObject isKindOfClass:[NSNumber class]]) {
+		[cell clearViews];
+		if (self.currentlyPublishing) {
+			[cell presentPublishingView];
+		}
+	} else {
+		NSString *currentId = cell.currentPostActivityObject.objectId;
+		NSString *otherId = postActivityObject.objectId;
+		if (currentId == nil || otherId == nil || ![currentId isEqualToString: otherId]) {
 			[cell clearViews];
-			if (self.currentlyPublishing) {
-				[cell presentPublishingView];
-			}
-		} else {
-			NSString *currentId = cell.currentPostActivityObject.objectId;
-			NSString *otherId = postActivityObject.objectId;
-			if (currentId == nil || otherId == nil || ![currentId isEqualToString: otherId]) {
-				[cell clearViews];
-				[cell presentPostFromPCActivityObj:postActivityObject andChannel:self.channelForList
-								  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:NO];
-			}
+			[cell presentPostFromPCActivityObj:postActivityObject andChannel:self.channelForList
+							  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:NO];
 		}
 	}
 	[self addTapGestureToCell:cell];

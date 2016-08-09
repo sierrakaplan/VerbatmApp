@@ -14,6 +14,7 @@
 		9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995719BA7EBD005EBC8A /* MediaSessionManager.m */; };
 		A5076D0E1BED6EF000303746 /* SingleMediaAndTextPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5076D0D1BED6EF000303746 /* SingleMediaAndTextPinchView.m */; };
 		A5076D141BF2B25100303746 /* TextOverMediaView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5076D131BF2B25100303746 /* TextOverMediaView.m */; };
+		A50E62461D542060007FD5AD /* GridView.m in Sources */ = {isa = PBXBuildFile; fileRef = A50E62451D542060007FD5AD /* GridView.m */; };
 		A51B851A1D2F39B1006E90CC /* UIView+DTDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = A51B85191D2F39B1006E90CC /* UIView+DTDebug.m */; };
 		A51B851E1D2F3B79006E90CC /* NSObject+DTRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = A51B851D1D2F3B79006E90CC /* NSObject+DTRuntime.m */; };
 		A51B85201D2F3C43006E90CC /* DTLog.m in Sources */ = {isa = PBXBuildFile; fileRef = A51B851F1D2F3C43006E90CC /* DTLog.m */; };
@@ -292,6 +293,8 @@
 		A5076D0D1BED6EF000303746 /* SingleMediaAndTextPinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SingleMediaAndTextPinchView.m; sourceTree = "<group>"; };
 		A5076D121BF2B25100303746 /* TextOverMediaView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextOverMediaView.h; sourceTree = "<group>"; };
 		A5076D131BF2B25100303746 /* TextOverMediaView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextOverMediaView.m; sourceTree = "<group>"; };
+		A50E62441D542060007FD5AD /* GridView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GridView.h; sourceTree = "<group>"; };
+		A50E62451D542060007FD5AD /* GridView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GridView.m; sourceTree = "<group>"; };
 		A51B85181D2F39B1006E90CC /* UIView+DTDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+DTDebug.h"; sourceTree = "<group>"; };
 		A51B85191D2F39B1006E90CC /* UIView+DTDebug.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+DTDebug.m"; sourceTree = "<group>"; };
 		A51B851C1D2F3B79006E90CC /* NSObject+DTRuntime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+DTRuntime.h"; sourceTree = "<group>"; };
@@ -1372,6 +1375,8 @@
 				C7996CC11C8FCF74002E5DA6 /* LoadingIndicator.h */,
 				C78B682219CA6C01003D0AC5 /* MediaSelectTile.h */,
 				C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */,
+				A50E62441D542060007FD5AD /* GridView.h */,
+				A50E62451D542060007FD5AD /* GridView.m */,
 			);
 			name = "Custom Views";
 			sourceTree = "<group>";
@@ -1840,6 +1845,7 @@
 				C723C9891D2B4E9400E87D58 /* NotificationTableCell.m in Sources */,
 				C772057D1D30DBFA00D626FE /* ConfirmationCodeSignUp.m in Sources */,
 				A5446C961BBA3C33002177F4 /* CustomNavigationBar.m in Sources */,
+				A50E62461D542060007FD5AD /* GridView.m in Sources */,
 				C75690A81D0891FF002C9402 /* OnboardingBlogSelectionViewController.m in Sources */,
 				C7F22B3B1C38B2A600E56EA7 /* SelectOptionButton.m in Sources */,
 				C7BF1AA51C57EFC000CEDE4B /* Post_BackendObject.m in Sources */,

@@ -125,10 +125,20 @@
 	CGFloat height = imageSize.height;
 	CGFloat targetWidth = targetSize.width;
 	CGFloat targetHeight = targetSize.height;
+
+	// Necessary for iphone 6, for some reason height is 1 pixel different
+	if (fabs(targetWidth - width) < 2) {
+		width = targetWidth;
+	}
+	if (fabs(targetHeight - height) < 2) {
+		height = targetHeight;
+	}
+	imageSize = CGSizeMake(width, height);
+
 	CGFloat scaleFactor = 0.0;
 	CGFloat scaledWidth = targetWidth;
 	CGFloat scaledHeight = targetHeight;
-	CGPoint thumbnailPoint = CGPointMake(0.0,0.0);
+	CGPoint thumbnailPoint = CGPointMake(0.0, 0.0);
 
 	if (!CGSizeEqualToSize(imageSize, targetSize)) {
 		CGFloat widthFactor = targetWidth / width;
@@ -139,6 +149,7 @@
 		scaledWidth  = width * scaleFactor;
 		scaledHeight = height * scaleFactor;
 
+
 		// center the image
 		if (widthFactor > heightFactor) {
 			thumbnailPoint.y = (targetHeight - scaledHeight) * 0.5;
@@ -147,7 +158,12 @@
 		}
 	}
 
-	UIGraphicsBeginImageContext(targetSize); // this will crop
+	CGSize newSize = CGSizeMake(scaledWidth, scaledHeight);
+	if (CGSizeEqualToSize(imageSize, newSize)) {
+		return self;
+	}
+
+	UIGraphicsBeginImageContext(newSize); // this will crop
 
 	CGRect thumbnailRect = CGRectZero;
 	thumbnailRect.origin = thumbnailPoint;

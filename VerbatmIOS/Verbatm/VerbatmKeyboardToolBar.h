@@ -22,7 +22,12 @@
 -(void)changeTextToFont:(NSString *)fontName;
 -(void)changeTextBackgroundToImage:(NSString *) backgroundImageName;
 
+-(void) repositionPhotoSelected;
+-(void) repositionPhotoUnSelected;
+
+
 @optional
+
 -(void)keyboardButtonPressed;
 
 @end

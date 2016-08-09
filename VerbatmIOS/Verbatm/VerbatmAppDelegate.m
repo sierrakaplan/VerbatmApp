@@ -116,7 +116,6 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
 }
 
 // Method that handles push notifications when app is active
-//todo: instead of an alert make this custom
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
 	NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_NEW_PUSH_NOTIFICATION object:nil userInfo:userInfo];
 	[[NSNotificationCenter defaultCenter] postNotification: notification];

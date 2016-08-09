@@ -32,16 +32,14 @@
 @property (nonatomic) BOOL containsImage;
 @property (nonatomic) BOOL containsVideo;
 
-@property (nonatomic) BOOL showEditIcon;
-
 //This creates a new pinch object with a particular radius and a center
--(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center;
+-(instancetype)initWithRadius:(CGFloat)radius withCenter:(CGPoint)center;
 
 /*
  allows you to change the width and height of the object without changing it's center
  note that the object frame is a square so width == height
  */
--(void) changeWidthTo: (double) width;
+-(void) changeWidthTo: (CGFloat) width;
 
 /*
  *This sets the frame of the pinch object, updating
@@ -50,7 +48,7 @@
 -(void)specifyFrame:(CGRect)frame;
 
 //Updats the radius and center and resets the frame based on these
--(void) specifyRadius:(float)radius andCenter:(CGPoint)center;
+-(void) specifyRadius:(CGFloat)radius andCenter:(CGPoint)center;
 
 -(void) addEditIcon;
 //This reverts to the center and radius specified

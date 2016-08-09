@@ -16,7 +16,8 @@
 @property (strong, nonatomic) AVURLAsset* video;
 @property (strong, nonatomic) NSString* phAssetLocalIdentifier;
 
--(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andVideo: (AVURLAsset*)video andPHAssetLocalIdentifier: (NSString*) localIdentifier;
+-(instancetype)initWithRadius:(CGFloat)radius withCenter:(CGPoint)center andVideo: (AVURLAsset*)video
+	andPHAssetLocalIdentifier: (NSString*) localIdentifier;
 
 // sets up the pinch view with a video
 -(void) initWithVideo: (AVURLAsset*) video;

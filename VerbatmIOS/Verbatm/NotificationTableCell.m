@@ -6,6 +6,7 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+#import "Icons.h"
 #import "NotificationTableCell.h"
 #import "ParseBackendKeys.h"
 #import "Styles.h"
@@ -219,7 +220,7 @@
     [self addSubview:self.notificationTextLabel];
 }
 
--(void)createHeartIcon{
+-(void)createHeartIcon {
     CGFloat x_pos = (FOLLOW_BUTTON_X_POS) + ((LARGE_FOLLOW_BUTTON_WIDTH -LARGE_FOLLOW_BUTTON_HEIGHT) /2.f);
     CGFloat y_pos = (self.frame.size.height - LARGE_FOLLOW_BUTTON_HEIGHT)/2.f;
     CGRect frame = CGRectMake(x_pos, y_pos, LARGE_FOLLOW_BUTTON_HEIGHT, LARGE_FOLLOW_BUTTON_HEIGHT);

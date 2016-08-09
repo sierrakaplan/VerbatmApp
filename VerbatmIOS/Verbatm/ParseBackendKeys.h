@@ -18,6 +18,7 @@
 #define USER_MIGRATED_ONE_CHANNEL @"UserMigratedOneChannel"
 #define USER_RELATION_CHANNELS_FOLLOWING @"ChannelsFollowing"
 #define USER_LAST_FEEDBACK_DATE_KEY @"LastFeedbackDate"
+#define USER_FB_ID @"FbID"
 
 #define FOLLOW_PFCLASS_KEY @"FollowClass"//we maintain all the follow relationships in their own table
 #define FOLLOW_USER_KEY @"UserFollowing"//the user doing the following

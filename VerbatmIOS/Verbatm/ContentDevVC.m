@@ -197,7 +197,6 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 	self.userChannel = [[UserInfoCache sharedInstance] getUserChannel];
 	[self createBaseSelector];
 	[self loadPostFromUserDefaults];
-	//todo: display channel title and cover photo?
 	[UIView setAnimationsEnabled:YES];
 }
 
@@ -562,11 +561,9 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 // Create a horizontal scrollview displaying a pinch object from a pinchView passed in
 - (void) newPinchView:(PinchView *) pinchView belowView:(ContentPageElementScrollView *)upperScrollView
 andSaveInUserDefaults:(BOOL)save {
-
 	if(!pinchView) {
 		return;
 	}
-	pinchView.showEditIcon = YES;
 	[pinchView renderMedia];
 	[self addTapGestureToPinchView:pinchView];
 	// must be below base media tile selector
@@ -1615,7 +1612,14 @@ andSaveInUserDefaults:(BOOL)save {
 -(void) aboutToShowPreview{
 	self.currentlyPreviewingContent = YES;
 }
--(void) aboutToRemovePreview{
+
+-(void) aboutToRemovePreview {
+ 	for (ContentPageElementScrollView* contentScrollView in self.pageElementScrollViews) {
+		if ([contentScrollView.pageElement isKindOfClass:[PinchView class]]) {
+			PinchView *pinchView = (PinchView*)contentScrollView.pageElement;
+			[pinchView renderMedia];
+		}
+	}
 	self.currentlyPreviewingContent = NO;
 }
 
@@ -1870,7 +1874,7 @@ andSaveInUserDefaults:(BOOL)save {
 	[postView displayPageViews: pages];
 	[postView prepareForScreenShot];
 
-	UIImage *screenShotImage = [postView getViewscreenshotWithTextView:nil];
+	UIImage *screenShotImage = [postView getViewScreenshot];
 
 	//        UIGraphicsEndImageContext();
 	[postView postOffScreen];

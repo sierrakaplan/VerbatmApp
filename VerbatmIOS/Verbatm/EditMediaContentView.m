@@ -36,9 +36,7 @@
 @property (nonatomic) UIImageView *swipeInstructionView;
 
 #pragma mark FilteredPhotos
-@property (nonatomic, strong) NSArray *filteredImages;
-@property (nonatomic) NSInteger imageIndex;
-@property (nonatomic, strong) UIButton *textCreationButton;
+@property (nonatomic, strong) UIImage *image;
 
 @property (nonatomic) CGPoint  panStartLocation;
 
@@ -66,6 +64,8 @@
 
 //is half screen for photo video ave
 @property (nonatomic) BOOL isAtHalfScreen;
+
+@property (nonatomic) BOOL isRepositioningPhoto;
 
 @property (nonatomic) UIPanGestureRecognizer * textViewPanGesture;
 
@@ -111,26 +111,6 @@
 
 #pragma mark - Text View -
 
--(void)createTextCreationButton {
-	[self.textAndImageView setTextViewEditable:YES];
-	[self.textAndImageView showText:YES];
-    __weak EditMediaContentView * weakSelf = self;
-	[self.textAndImageView setTextViewDelegate:weakSelf];
-    	[self.textCreationButton setImage:[UIImage imageNamed:CREATE_TEXT_ICON] forState:UIControlStateNormal];
-	self.textCreationButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-	[self.textCreationButton addTarget:self action:@selector(editText) forControlEvents:UIControlEventTouchUpInside];
-	[self addSubview:self.textCreationButton];
-	[self bringSubviewToFront:self.textCreationButton];
-	
-}
-
--(void)clearTextCreationButton{
-    if(self.textCreationButton){
-        [self.textCreationButton removeFromSuperview];
-        self.textCreationButton = nil;
-    }
-}
-
 -(void) editText {
 	[self.textAndImageView showText: YES];
 	[self.textAndImageView setTextViewFirstResponder: YES];
@@ -154,6 +134,11 @@ andTextAlignment:(NSTextAlignment)textAlignment
 			[self.textAndImageView changeTextViewYPos: 0.f];
 		}
 	}
+	[self.textAndImageView setTextViewEditable:YES];
+	[self.textAndImageView showText:YES];
+	__weak EditMediaContentView * weakSelf = self;
+	[self.textAndImageView setTextViewDelegate:weakSelf];
+
 	[self addToolBarToViewWithTextColorBlack:textColorBlack];
 }
 
@@ -161,7 +146,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 //creates a toolbar to add onto the keyboard
 -(void)addToolBarToViewWithTextColorBlack:(BOOL)textColorBlack {
-	CGRect toolBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, TEXT_TOOLBAR_HEIGHT/2.f);
+	CGRect toolBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
 	BOOL onTextAve = [self.pinchView isKindOfClass:[TextPinchView class]];
 	VerbatmKeyboardToolBar* toolBar = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
                                                                   andTextColorBlack: textColorBlack
@@ -171,9 +156,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self.textAndImageView setTextViewKeyboardToolbar:toolBar];
 
 	// add toolbar to screen permanently
-	if(!self.permanentOnScreenKeyboard && self.textAndImageView &&
-	   ![self.textAndImageView.textView.text isEqualToString:@""]) {
-		[self clearTextCreationButton];
+	if(!self.permanentOnScreenKeyboard && self.textAndImageView) {
 		toolBarFrame.origin.y = self.frame.size.height - TEXT_TOOLBAR_HEIGHT;
 		toolBarFrame.size.height = TEXT_TOOLBAR_HEIGHT;
 		self.permanentOnScreenKeyboard = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
@@ -182,20 +165,10 @@ andTextAlignment:(NSTextAlignment)textAlignment
 																 isOnScreenPermanently:YES];
 		[self.permanentOnScreenKeyboard setDelegate:self];
 		[self addSubview:self.permanentOnScreenKeyboard];
-	} else if (!self.permanentOnScreenKeyboard) {
-		[self createTextCreationButton];
-	} else {
+	} else if (self.textAndImageView) {
 		[self addSubview:self.permanentOnScreenKeyboard];
 	}
 }
-
--(void)removeScreenToolbar {
-    if(self.permanentOnScreenKeyboard) {
-        [self.permanentOnScreenKeyboard removeFromSuperview];
-    }
-    [self clearTextCreationButton];
-}
-
 
 #pragma mark - Text view content changed -
 
@@ -206,32 +179,41 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 - (void)textViewDidBeginEditing: (UITextView *)textView {
     self.textViewBeingEdited = YES;
-	[self.textAndImageView.textView setScrollEnabled:NO];
-	[self.delegate textIsEditing];
+	[self.textAndImageView.textView setScrollEnabled:YES];
+	UIScrollView* mainScroll = (UIScrollView*)self.superview.superview;
+	[mainScroll setScrollEnabled:NO];
+
 	self.userSetYPos = textView.frame.origin.y;
     [self.textAndImageView.textView removeGestureRecognizer:self.textViewPanGesture];
 	[self moveTextView:textView afterEdit: NO];
-    [self removeScreenToolbar];
+	[self removeScreenToolbar];
+}
+
+-(void)removeScreenToolbar {
+	if(self.permanentOnScreenKeyboard) {
+		[self.permanentOnScreenKeyboard removeFromSuperview];
+	}
 }
 
 -(void)textViewDidEndEditing:(UITextView *)textView {
     self.textViewBeingEdited = NO;
-    [self.textAndImageView.textView setScrollEnabled:NO];
 	[self moveTextView:textView afterEdit:YES];
+	[self.textAndImageView.textView setScrollEnabled:NO];
+	UIScrollView* mainScroll = (UIScrollView*)self.superview.superview;
+	[mainScroll setScrollEnabled:YES];
     [self addPanGestures];
 }
 
 /* Enforces word limit */
 - (BOOL) textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
 	NSString* newText = [textView.text stringByReplacingCharactersInRange:range withString:text];
-	if (newText.length > CHARACTER_LIMIT) {
+	if (newText.length > TEXT_AVE_CHARACTER_LIMIT) {
 		return NO;
 	} else {
 		return YES;
 	}
 }
 
-//todo: tell textView it's new ypos to save in user defaults
 // If afterEdit, moves TextView to the position it should be after user finishes editing
 // (ensuring it's on screen based on new contentHeight)
 // If not afterEdit, text is still being edited so positions text with last line above keyboard
@@ -248,19 +230,25 @@ andTextAlignment:(NSTextAlignment)textAlignment
 		if (heightDiff > 0) yPos = self.userSetYPos - heightDiff;
 		if (yPos < 0.f) yPos = 0.f;
 		CGFloat height = self.frame.size.height - yPos;
+		height = contentHeight < height ? contentHeight : height;
 		newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, yPos, self.frame.size.width, height);
+		self.textAndImageView.textYPosition = yPos;
 	} else {
 		CGFloat heightWithKeyboard = self.isAtHalfScreen ? self.frame.size.height : (self.frame.size.height - self.keyboardHeight);
 		yPos = self.userSetYPos;
 		CGFloat heightDiff = (self.userSetYPos + contentHeight) - heightWithKeyboard;
-		if (heightDiff > 0) yPos = yPos - heightDiff;
-		newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, yPos, self.frame.size.width, contentHeight);
+		if (heightDiff > 0) {
+			yPos = yPos - heightDiff;
+			if (yPos < 0) yPos = 0;
+			[textView setContentOffset:CGPointMake(0.f, contentHeight - textView.bounds.size.height) animated:YES];
+		}
+		newFrame = CGRectMake(TEXT_VIEW_X_OFFSET, yPos, self.frame.size.width, heightWithKeyboard - yPos);
 	}
 
 	[UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
 		[textView setFrame:newFrame];
 	}completion:^(BOOL finished) {
-		if(finished){
+		if(finished) {
 			[textView setHidden:NO];
 		}
 	}];
@@ -300,15 +288,18 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self.videoView prepareVideoFromAsset:videoAsset];
 }
 
--(void)displayImages: (NSArray*) filteredImages atIndex:(NSInteger)index isHalfScreen:(BOOL) isHalfScreen{
-	self.imageIndex = index;
+-(void)displayImage:(UIImage*)image isHalfScreen:(BOOL)isHalfScreen withContentOffset:(CGPoint) contentOffset {
+	self.image = image;
     self.isAtHalfScreen = isHalfScreen;
+	BOOL onTextAve = [self.pinchView isKindOfClass:[TextPinchView class]];
 	self.textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
-															andImage:filteredImages[index]];
-	self.filteredImages = filteredImages;
+															andImage:image andContentOffset:contentOffset
+														  forTextAVE:onTextAve];
+	UIPanGestureRecognizer *moveImageGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPan:)];
+	moveImageGesture.delegate = self;
+	[self.textAndImageView addGestureRecognizer: moveImageGesture];
 	[self addSubview: self.textAndImageView];
 	[self addPanGestures];
-	[self createTextCreationButton];
 
 //	todo: bring back filters
 //    if(![[UserSetupParameters sharedInstance ] checkAndSetFilterInstructionShown]){
@@ -322,8 +313,8 @@ andTextAlignment:(NSTextAlignment)textAlignment
 }
 
 //todo: bring back filters?
--(void)changeImageTo: (UIImage *) image {
-	self.filteredImages = @[image];
+-(void)changeImageTo: (UIImage *)image {
+	self.image = image;
 	[self.textAndImageView changeImageTo: image];
 }
 
@@ -350,29 +341,29 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 #pragma mark Filters
 
--(void)changeFilteredImageLeft{
-	if (self.imageIndex >= ([self.filteredImages count]-1)) {
-		self.imageIndex = -1;
-	}
-	self.imageIndex = self.imageIndex+1;
-	[self.textAndImageView changeImageTo:self.filteredImages[self.imageIndex]];
-
-}
-
--(void)changeFilteredImageRight {
-	if (self.imageIndex <= 0) {
-		self.imageIndex = [self.filteredImages count];
-	}
-	self.imageIndex = self.imageIndex-1;
-	[self.textAndImageView changeImageTo:self.filteredImages[self.imageIndex]];
-}
+//-(void)changeFilteredImageLeft{
+//	if (self.imageIndex >= ([self.filteredImages count]-1)) {
+//		self.imageIndex = -1;
+//	}
+//	self.imageIndex = self.imageIndex+1;
+//	[self.textAndImageView changeImageTo:self.filteredImages[self.imageIndex]];
+//
+//}
+//
+//-(void)changeFilteredImageRight {
+//	if (self.imageIndex <= 0) {
+//		self.imageIndex = [self.filteredImages count];
+//	}
+//	self.imageIndex = self.imageIndex-1;
+//	[self.textAndImageView changeImageTo:self.filteredImages[self.imageIndex]];
+//}
 
 #pragma mark - Keyboard toolbar delegate methods -
 
--(void)keyboardButtonPressed{
+-(void)keyboardButtonPressed {
+	[self.delegate textIsEditing];
     [self editText];
 }
-
 
 -(void)changeTextBackgroundToImage:(NSString *) backgroundImageName{
     ((TextPinchView *) self.pinchView).imageName = backgroundImageName;
@@ -411,8 +402,15 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self.textAndImageView changeTextAlignment:NSTextAlignmentRight];
 }
 
+-(void)repositionPhotoSelected {
+	[self.textAndImageView startRepositioningPhoto];
+	self.isRepositioningPhoto = YES;
+}
 
-
+-(void)repositionPhotoUnSelected {
+	[self.textAndImageView endRepositioningPhoto];
+	self.isRepositioningPhoto = NO;
+}
 
 -(void) doneButtonPressed {
 	if([[self.textAndImageView getText] isEqualToString:@""]) {
@@ -445,18 +443,21 @@ andTextAlignment:(NSTextAlignment)textAlignment
 				self.gestureActionJustStarted = NO;
 			}
 
-			if(self.isHorizontalPan && !self.filterSwitched ) {
-				float horizontalDiff = location.x - self.panStartLocation.x;
-				self.horizontalPanDistance += horizontalDiff;
-				//checks if the horizontal pan gone long enough for a "swipe" to change filter
-				if((fabs(self.horizontalPanDistance) >= HORIZONTAL_PAN_FILTER_SWITCH_DISTANCE)){
-					if(self.horizontalPanDistance < 0){
-						[self changeFilteredImageLeft];
-					}else{
-						[self changeFilteredImageRight];
-					}
-					self.filterSwitched = YES;
-				}
+			if (self.isRepositioningPhoto) {
+				[self repositionPhoto: location];
+			} else if(self.isHorizontalPan && !self.filterSwitched) {
+				//todo: filters?
+//				float horizontalDiff = location.x - self.panStartLocation.x;
+//				self.horizontalPanDistance += horizontalDiff;
+//				//checks if the horizontal pan gone long enough for a "swipe" to change filter
+//				if((fabs(self.horizontalPanDistance) >= HORIZONTAL_PAN_FILTER_SWITCH_DISTANCE)){
+//					if(self.horizontalPanDistance < 0){
+//						[self changeFilteredImageLeft];
+//					}else{
+//						[self changeFilteredImageRight];
+//					}
+//					self.filterSwitched = YES;
+//				}
 			}
 
 			self.panStartLocation = location;
@@ -472,6 +473,12 @@ andTextAlignment:(NSTextAlignment)textAlignment
 		default:
 			break;
 	}
+}
+
+-(void) repositionPhoto: (CGPoint) location {
+	CGFloat xDiff = location.x - self.panStartLocation.x;
+	CGFloat yDiff = location.y - self.panStartLocation.y;
+	[self.textAndImageView moveImageX:xDiff andY:yDiff];
 }
 
 /* Handles pan gesture on text by moving text to new position */
@@ -553,7 +560,17 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 -(void) exiting {
 	[self updatePinchView];
 	if(self.videoView)[self.videoView stopVideo];
+}
 
+//updates the content in the pinchview after things are changed
+-(void) updatePinchView {
+	if (!self.textAndImageView) return;
+    if([self.pinchView isKindOfClass:[TextPinchView class]]){
+        [((TextPinchView *)self.pinchView) putNewImage:self.currentTextAVEBackground];
+    }else if([self.pinchView isKindOfClass:[ImagePinchView class]]) {
+//		[((ImagePinchView *)self.pinchView) changeImageToFilterIndex:self.imageIndex];
+		((ImagePinchView *)self.pinchView).imageContentOffset = [self.textAndImageView getImageOffset];
+	}
 	if([self.pinchView isKindOfClass:[SingleMediaAndTextPinchView class]]){
 		SingleMediaAndTextPinchView *mediaAndTextPinchView = (SingleMediaAndTextPinchView *)self.pinchView;
 		mediaAndTextPinchView.text = [self.textAndImageView getText];
@@ -561,16 +578,7 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 		mediaAndTextPinchView.textColor = self.textAndImageView.textView.textColor;
 		mediaAndTextPinchView.textSize = [NSNumber numberWithFloat:self.textAndImageView.textSize];
 		mediaAndTextPinchView.textAlignment = [NSNumber numberWithInteger:self.textAndImageView.textAlignment];
-        mediaAndTextPinchView.fontName = self.textAndImageView.textView.font.fontName;
-	}
-}
-
-//updates the content in the pinchview after things are changed
--(void) updatePinchView {
-    if([self.pinchView isKindOfClass:[TextPinchView class]]){
-        [((TextPinchView *)self.pinchView) putNewImage:self.currentTextAVEBackground];
-    }else if([self.pinchView isKindOfClass:[ImagePinchView class]]){
-		[((ImagePinchView *)self.pinchView) changeImageToFilterIndex:self.imageIndex];
+		mediaAndTextPinchView.fontName = self.textAndImageView.textView.font.fontName;
 	}
 }
 
@@ -585,10 +593,8 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 }
 
 -(void)onScreen {
-    if([self.pinchView isKindOfClass:[TextPinchView class]] &&
-       [self.textAndImageView.textView.text isEqualToString:@""]){
-        [self.textAndImageView.textView setHidden:YES];
-        [self.textAndImageView.textView becomeFirstResponder];
+    if([self.pinchView isKindOfClass:[TextPinchView class]] && self.textAndImageView) {
+		[self.textAndImageView setTextViewFirstResponder: [self.textAndImageView.textView.text isEqualToString:@""]];
     } else {
         if(!self.videoHasBeenPrepared){
             [self.videoView prepareVideoFromAsset:self.videoAsset];
@@ -618,17 +624,6 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
         _textViewPanGesture = textViewPanGesture;
     }
     return _textViewPanGesture;
-}
-
--(UIButton *)textCreationButton{
-	if(!_textCreationButton) {
-		CGRect buttonFrame = CGRectMake(self.frame.size.width -  EXIT_CV_BUTTON_WALL_OFFSET - EXIT_CV_BUTTON_WIDTH,
-										self.frame.size.height - EXIT_CV_BUTTON_WIDTH - EXIT_CV_BUTTON_WALL_OFFSET,
-										EXIT_CV_BUTTON_WIDTH,
-										EXIT_CV_BUTTON_WIDTH);
-		_textCreationButton = [[UIButton alloc] initWithFrame:buttonFrame];
-	}
-	return _textCreationButton;
 }
 
 -(void) dealloc {
