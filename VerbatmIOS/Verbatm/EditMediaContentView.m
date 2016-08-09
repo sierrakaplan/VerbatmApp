@@ -146,7 +146,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 //creates a toolbar to add onto the keyboard
 -(void)addToolBarToViewWithTextColorBlack:(BOOL)textColorBlack {
-	CGRect toolBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, TEXT_TOOLBAR_HEIGHT/2.f);
+	CGRect toolBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
 	BOOL onTextAve = [self.pinchView isKindOfClass:[TextPinchView class]];
 	VerbatmKeyboardToolBar* toolBar = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
                                                                   andTextColorBlack: textColorBlack

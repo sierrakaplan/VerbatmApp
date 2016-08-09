@@ -166,6 +166,8 @@
 
 #define TAP_TO_EXIT_FULLSCREENPOV_INSTRUCTION @"TAP_TO_EXIT_ICON"
 
+#define EXIT_ICON @"exit"
+
 #pragma mark -Photo Slideshow icons-
 
 #define PAUSE_SLIDESHOW_ICON @"Pause_slideshow_icon"
