@@ -57,7 +57,7 @@
         
         BOOL isCurrentUser = [[self.channel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
 		if (!isCurrentUser) {
-			self.isFollowed = [[UserInfoCache sharedInstance] userFollowsChannel:self.channel] != nil;
+			self.isFollowed = [[UserInfoCache sharedInstance] checkUserFollowsChannel:self.channel];
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[self updateFollowIcon];
 				[self addSubview:self.followButton];

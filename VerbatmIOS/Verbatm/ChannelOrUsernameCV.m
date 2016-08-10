@@ -105,7 +105,7 @@
     
     if(!(self.channel.usersFollowingChannel && self.channel.usersFollowingChannel.count)){
         if(![[creator objectId] isEqualToString:[[PFUser currentUser] objectId]]){
-			self.currentUserFollowingChannelUser = [[UserInfoCache sharedInstance] userFollowsChannel: self.channel] != nil;
+			self.currentUserFollowingChannelUser = [[UserInfoCache sharedInstance] checkUserFollowsChannel: self.channel];
 			if(self.followButton)[self updateUserFollowingChannel];
         }
         

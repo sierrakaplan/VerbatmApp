@@ -20,6 +20,10 @@
 // Returns the follow object if the user follows the channel
 -(PFObject*) userFollowsChannel:(Channel*)channel;
 
+//tells you if the user follows this channel
+//use this if all you need is true/false answer
+-(BOOL)checkUserFollowsChannel:(Channel*)channel;
+
 //increments followers number in backend
 -(void)registerNewFollower;
 

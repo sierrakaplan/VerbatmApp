@@ -76,7 +76,7 @@
 			if (!self.isCurrentUser) {
 				// This allows a user to block another user
 				[self createSettingsButton];
-				self.currentUserFollowsUser = [[UserInfoCache sharedInstance] userFollowsChannel:channel] != nil;
+				self.currentUserFollowsUser = [[UserInfoCache sharedInstance] checkUserFollowsChannel:channel];
 				[self createFollowButton];
                 [self registerForFollowNotification];
 			}

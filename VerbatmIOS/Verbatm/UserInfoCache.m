@@ -107,6 +107,11 @@
 	return nil;
 }
 
+-(BOOL)checkUserFollowsChannel:(Channel*)channel{
+    Channel *followedChannel = [UtilityFunctions checkIfChannelList:self.userChannel.channelsUserFollowing containsChannel:channel];
+    return (followedChannel != nil);
+}
+
 -(void)reloadUserChannels {
     [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray * channels) {
         if (channels.count > 0) self.userChannel = channels[0];

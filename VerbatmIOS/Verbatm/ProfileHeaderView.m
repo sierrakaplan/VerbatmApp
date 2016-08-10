@@ -570,7 +570,7 @@
 -(UIView *)transparentTintCoverView{
 	if(!_transparentTintCoverView){
 		_transparentTintCoverView = [[UIView alloc] initWithFrame: self.coverPhotoView.frame];
-		_transparentTintCoverView.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.5];
+		_transparentTintCoverView.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.3];
 		[self insertSubview:_transparentTintCoverView aboveSubview:self.coverPhotoView];
 	}
 	return _transparentTintCoverView;

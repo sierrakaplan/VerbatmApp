@@ -231,7 +231,7 @@
 }
 
 -(void)getFollowInformation{
-	self.currentUserFollowingChannelUser = [[UserInfoCache sharedInstance] userFollowsChannel: self.channel] != nil;
+	self.currentUserFollowingChannelUser = [[UserInfoCache sharedInstance] checkUserFollowsChannel: self.channel];
 	[self updateUserFollowingChannel];
 }
 
