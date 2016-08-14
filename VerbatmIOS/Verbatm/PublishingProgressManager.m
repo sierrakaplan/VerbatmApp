@@ -11,6 +11,8 @@
 
 #import "ExternalShare.h"
 
+#import "ImagePinchView.h"
+
 #import "Notifications.h"
 
 
@@ -28,6 +30,7 @@
 #import "UIView+Effects.h"
 
 #import "Video_BackendObject.h"
+#import <PromiseKit/PromiseKit.h>
 
 
 @interface PublishingProgressManager()
@@ -73,8 +76,9 @@
 }
 
 -(void)storeProgressBackgroundImage:(UIImage *) image{
-        self.publishingProgressBackgroundImage = image;
+	self.publishingProgressBackgroundImage = image;
 }
+
 -(UIImage *) getProgressBackgroundImage{
     return self.publishingProgressBackgroundImage;
 }
@@ -95,20 +99,34 @@
 
 	self.channelManager = [[Channel_BackendObject alloc] init];
     [self countMediaContentFromPinchViews:pinchViews];
-    
-	[self.channelManager createPostFromPinchViews:pinchViews
 
-										toChannel:channel
-							  withCompletionBlock:^(PFObject *parsePostObject) {
-								  if (!parsePostObject) {
-									  publishHasStartedSuccessfully (NO, YES);
-									  return;
-								  }
-								  self.currentParsePostObject = parsePostObject;
-								  self.currentPublishingChannel = channel;
-                                  [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POST_CURRENTLY_PUBLISHING object:nil];
-								  publishHasStartedSuccessfully(NO, NO);
-							  }];
+	// Load all screenshots first so that you can close app while publishing
+	NSMutableArray *loadScreenshotsPromises = [[NSMutableArray alloc] init];
+	for (PinchView *pinchView in pinchViews) {
+		if ([pinchView isKindOfClass:[ImagePinchView class]]) {
+			ImagePinchView* imagePinchView = (ImagePinchView*)pinchView;
+			[loadScreenshotsPromises addObject: [imagePinchView getImageDataWithHalfSize: NO]];
+		} else if ([pinchView isKindOfClass:[CollectionPinchView class]]) {
+			BOOL half = ((CollectionPinchView*)pinchView).containsImage && ((CollectionPinchView*)pinchView).containsVideo;
+			for (ImagePinchView *subImagePinchView in [(CollectionPinchView*)pinchView imagePinchViews]) {
+				[loadScreenshotsPromises addObject: [subImagePinchView getImageDataWithHalfSize: half]];
+			}
+		}
+	}
+	PMKWhen(loadScreenshotsPromises).then(^(NSArray* data) {
+		[self.channelManager createPostFromPinchViews:pinchViews
+											toChannel:channel
+								  withCompletionBlock:^(PFObject *parsePostObject) {
+									  if (!parsePostObject) {
+										  publishHasStartedSuccessfully (NO, YES);
+										  return;
+									  }
+									  self.currentParsePostObject = parsePostObject;
+									  self.currentPublishingChannel = channel;
+									  [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POST_CURRENTLY_PUBLISHING object:nil];
+									  publishHasStartedSuccessfully(NO, NO);
+								  }];
+	});
 }
 
 -(void)countMediaContentFromPinchViews:(NSArray *)pinchViews {

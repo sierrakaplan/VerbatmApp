@@ -16,7 +16,7 @@
 
 #pragma mark - ADK -
 
-#define TEXT_AVE_CHARACTER_LIMIT 300
+#define TEXT_AVE_CHARACTER_LIMIT 180
 #define GALLERY_PICKER_TITLE @"Verbatm"
 #define VERBATM_ALBUM_NAME @"Verbatm"
 #define VERBATM_DESCRIPTION @"Verbatm is a social network here to help you share real stories with your friends"
