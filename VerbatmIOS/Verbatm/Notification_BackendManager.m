@@ -10,7 +10,7 @@
 #import <Parse/PFQuery.h>
 #import "ParseBackendKeys.h"
 #import <Crashlytics/Crashlytics.h>
-#import "UserInfoCache.m"
+#import "UserInfoCache.h"
 
 @interface Notification_BackendManager ()
 #define LOAD_MAX_AMOUNT 20
@@ -20,7 +20,7 @@
 
 
 + (void)createNotificationWithType:(NotificationType) notType receivingUser:(PFUser *) receivingUser relevantPostObject:(PFObject *) post {
-	if (![[UserInfoCache sharedInstance] userChannel]) return; // Don't send notification if for some reason user hasn't saved channel
+	if (![[UserInfoCache sharedInstance] getUserChannel]) return; // Don't send notification if for some reason user hasn't saved channel
     if(![[receivingUser objectId] isEqualToString:[[PFUser currentUser] objectId]]){
         NSNumber * notificationType = [NSNumber numberWithInteger:notType];
         PFObject * notificationObject = [PFObject objectWithClassName:NOTIFICATION_PFCLASS_KEY];
@@ -51,7 +51,7 @@
 		NSMutableArray *finalObjects = [[NSMutableArray alloc] initWithCapacity:objects.count];
 		for (PFObject* notificationObject in objects) {
 			PFUser *notificationSender = [notificationObject valueForKey:NOTIFICATION_SENDER];
-			if (notificationSender != nil && notificationSender[VERBATM_USER_NAME_KEY] != nil) {
+			if (notificationSender != nil) {
 				[finalObjects addObject:notificationObject];
 			}
 		}
