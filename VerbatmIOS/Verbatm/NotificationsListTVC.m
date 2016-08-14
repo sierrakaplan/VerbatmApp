@@ -97,7 +97,8 @@
 }
 
 -(void)createHeader{
-	CGRect navBarFrame = CGRectMake(0.f, -(LIST_BAR_Y_OFFSET + STATUS_BAR_HEIGHT + CUSTOM_BAR_HEIGHT), self.view.frame.size.width, STATUS_BAR_HEIGHT+ CUSTOM_BAR_HEIGHT);
+	CGRect navBarFrame = CGRectMake(0.f, -(LIST_BAR_Y_OFFSET + STATUS_BAR_HEIGHT + CUSTOM_BAR_HEIGHT),
+									self.view.frame.size.width, STATUS_BAR_HEIGHT+ CUSTOM_BAR_HEIGHT);
 
 	self.headerBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:CHANNEL_LIST_HEADER_BACKGROUND_COLOR];
 	[self.headerBar createMiddleButtonWithTitle:@"Notifications" blackText:YES largeSize:YES];
@@ -170,7 +171,6 @@
 	}
 }
 
-
 -(void)addRefreshFeature{
 	self.refreshControl = [[UIRefreshControl alloc] init];
 	[self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
@@ -189,7 +189,6 @@
 -(void)exitPreview{
 	[self removePreview];
 }
-
 
 -(void)getMoreNotifications{
 	PFObject * lastObject =[self.parseNotificationObjects lastObject];
@@ -317,20 +316,21 @@
 }
 
 -(void)setNotificationOnCell:( NotificationTableCell *)cell notificationObject:(PFObject *)notification{
-
     NotificationType notType = [(NSNumber *)[notification valueForKey:NOTIFICATION_TYPE] intValue];
     PFUser * notificationSender = [notification valueForKey:NOTIFICATION_SENDER];
     PFObject * postActivityObject = [notification valueForKey:NOTIFICATION_POST];
     [postActivityObject fetchInBackground];
-    
-    
+
     [Channel_BackendObject getChannelsForUser:notificationSender withCompletionBlock:^(NSMutableArray * userChannels) {
-        if(userChannels){
+        if(userChannels && userChannels.count){
             dispatch_async(dispatch_get_main_queue(), ^{
                 Channel * channel = [userChannels firstObject];
                 [cell presentNotification:notType withChannel:channel andParseObject:postActivityObject];
             });
-        }
+        } else {
+			//Error where user doesn't have channel
+
+		}
     }];
 }
 
