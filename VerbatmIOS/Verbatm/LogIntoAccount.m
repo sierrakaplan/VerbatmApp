@@ -54,7 +54,6 @@
         [self registerForKeyboardNotifications];
     }
     return self;
-    
 }
 
 - (void) addFacebookLoginButton {
@@ -87,10 +86,11 @@
 
 #pragma mark - TOOLBAR NEXT BUTTON -
 
--(void) nextButtonPressed{
-    if([self sanityCheckPhoneNumberString:self.phoneNumber.text] &&
+-(void) nextButtonPressed {
+	NSString *simplePhoneNumber = [self getSimpleNumberFromFormattedPhoneNumber: self.phoneNumber.text];
+    if([self sanityCheckPhoneNumberString: simplePhoneNumber] &&
        [self sanityCheckPasswordString:self.firstPassword.text]){
-        [self.delegate loginUpWithPhoneNumberSelectedWithNumber:[self removeSpaces:self.phoneNumber.text]  andPassword:self.firstPassword.text];
+        [self.delegate loginUpWithPhoneNumberSelectedWithNumber:[self removeSpaces: simplePhoneNumber]  andPassword:self.firstPassword.text];
         [self removeKeyBoardOnScreen];
     }
 }
@@ -109,17 +109,11 @@
     return simpleNumber;
 }
 
--(BOOL)sanityCheckPhoneNumberString:(NSString *)text{
-    NSCharacterSet *s = [NSCharacterSet characterSetWithCharactersInString:@"1234567890"];
-    s = [s invertedSet];
-    NSRange r = [[self removeSpaces:text] rangeOfCharacterFromSet:s];
-
-    if (r.location != NSNotFound || text.length != 10) {
-        //string contains illegal characters
-        //call phone number delegate function
-        [self.delegate phoneNumberNotCorrect];
-        return NO;
-    }
+// no need - phone number is being formatted
+-(BOOL)sanityCheckPhoneNumberString:(NSString *)text {
+//    NSCharacterSet *s = [NSCharacterSet characterSetWithCharactersInString:@"1234567890"];
+//    s = [s invertedSet];
+//    NSRange r = [[self removeSpaces:text] rangeOfCharacterFromSet:s];
     return YES;
 }
 
@@ -314,7 +308,8 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     
     if(!_phoneNumber){
         
-        CGRect frame = CGRectMake(self.facebookLoginButton.frame.origin.x, self.facebookLoginButton.frame.origin.y + self.facebookLoginButton.frame.size.height + SIGN_UP_BUTTON_GAP,
+        CGRect frame = CGRectMake(self.facebookLoginButton.frame.origin.x, self.orLabel.frame.origin.y +
+								  self.orLabel.frame.size.height + SIGN_UP_BUTTON_GAP,
                                   self.facebookLoginButton.frame.size.width, PHONE_NUMBER_FIELD_HEIGHT);
         _phoneNumber = [[UITextField alloc] initWithFrame:frame];
         self.originalPhoneTextFrame = frame;
@@ -347,9 +342,9 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 -(UILabel *)orLabel{
     if(!_orLabel){
         
-        CGFloat baseYFacebookButton = self.facebookLoginButton.frame.origin.y + self.facebookLoginButton.frame.size.height;
-        CGFloat yPos = baseYFacebookButton + (self.phoneNumber.frame.origin.y - baseYFacebookButton)/2.f;
-        _orLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.center.x - 25.f,  yPos - 25.f, 50.f, 50.f)];
+        CGFloat yPos = self.facebookLoginButton.frame.origin.y + self.facebookLoginButton.frame.size.height;
+        _orLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.center.x - OR_LABEL_WIDTH/2.f,  yPos + SIGN_UP_BUTTON_GAP,
+															 OR_LABEL_WIDTH, OR_LABEL_WIDTH)];
         [_orLabel setText:@"OR"];
         [_orLabel setBackgroundColor:[UIColor clearColor]];
         [_orLabel setTextColor:[UIColor whiteColor]];

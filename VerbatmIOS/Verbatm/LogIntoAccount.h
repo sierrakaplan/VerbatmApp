@@ -11,14 +11,12 @@
 
 -(void)textNotAlphaNumericaLoginAccount;
 
-
--(void)phoneNumberNotCorrect;
 -(void)passwordIsOnlySpaces;
 
 -(void)loginUpWithPhoneNumberSelectedWithNumber:(NSString *) phoneNumber andPassword:(NSString *)password;
 
--(void)errorInLogInWithError:(NSString *)error;
 -(void)goBackSelectedLoginAccount;
+
 @end
 
 

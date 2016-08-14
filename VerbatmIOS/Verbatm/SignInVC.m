@@ -71,8 +71,6 @@
 
 
 @property (nonatomic) LogIntoAccount * loginToAccountView;
-
-
 @property (nonatomic) ConfirmationCodeSignUp * confirmationCodeEntry;
 
 @property (nonatomic) ChooseLoginOrSignup * chooseLoginOrSignUpView;
@@ -427,12 +425,9 @@
 }
 
 #pragma mark - CreateAccount Protocol-
--(void)errorInSignInWithError:(NSString *)error{
-    [self errorInSignInWithError:error];
-}
 
--(void)loginWithFacebookSucceeded{
-    
+-(void)errorInSignInWithError:(NSString *)error{
+    [self errorInSignInAnimation: error.description];
 }
 
 -(void)signUpWithPhoneNumberSelectedWithNumber:(NSString *) phoneNumber
@@ -446,13 +441,11 @@
     [self replaceView:self.createAccountView withView:self.confirmationCodeEntry goingForward:YES];
     
 }
--(void)phoneNumberTooShortCreateAccount{
-    [self showAlertWithTitle:@"Please reformat your phone number" andMessage:@"Make sure it only contains numbers, spaces and is 10 characters long."];
-}
 
 -(void)phoneNumberWrongFormatCreateAccount{
     [self showAlertWithTitle:@"Phone Login" andMessage:@"You must enter a 10-digit US phone number including area code."];
 }
+
 -(void)verbatmNameWrongFormatCreateAccount{
     [self showAlertWithTitle:@"Your name can only be letters, numbers and an underscore." andMessage:@""];
 }
@@ -478,15 +471,9 @@
      [self alertTextNotAcceptable];
 }
 
-
--(void)phoneNumberNotCorrect{
-    [self showAlertWithTitle:@"Please reformat your phone number." andMessage: @"Make sure it only contains numbers, spaces and is 10 characters long."];
-}
-
 -(void)passwordIsOnlySpaces{
     [self showAlertWithTitle:@"Please insert characters into the password field." andMessage: @""];
 }
-
 
 -(void)loginUpWithPhoneNumberSelectedWithNumber:(NSString *) phoneNumber andPassword:(NSString *)password{
     [PFUser logInWithUsernameInBackground:phoneNumber password:password block:^(PFUser * _Nullable user, NSError * _Nullable error) {
@@ -498,12 +485,6 @@
     }];
 }
 
--(void)errorInLogInWithError:(NSString *)error{
-    
-}
-
-
-
 -(void)goBackFromEnteringConfirmation{
     
     if(self.createdUserWithLoginCode){
@@ -513,6 +494,7 @@
 }
 
 #pragma mark -ConfirmationCodeSignup Protocol-
+
 -(void)goBackSelectedConfirmationCode{
     [self goBackFromEnteringConfirmation];
 }
@@ -646,14 +628,13 @@
     return _loginToAccountView;
 }
 
--(CreateAccount *)createAccountView{
+-(CreateAccount *)createAccountView {
     if(!_createAccountView){
         _createAccountView = [[CreateAccount alloc] initWithFrame:self.view.bounds];
         _createAccountView.delegate = self;
     }
     return _createAccountView;
 }
-
 
 
 -(ConfirmationCodeSignUp *)confirmationCodeEntry{

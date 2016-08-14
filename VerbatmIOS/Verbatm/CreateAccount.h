@@ -14,7 +14,6 @@
 -(void)verbatmNameWrongFormatCreateAccount;
 -(void)noPasswordEnteredCreateAccount;
 
--(void)loginWithFacebookSucceeded;
 -(void)signUpWithPhoneNumberSelectedWithNumber:(NSString *) phoneNumber andPassword:(NSString *)password andName:(NSString *) verbatmName;
 -(void)errorInSignInWithError:(NSString *)error;
 -(void)goBackSelectedCreateAccount;

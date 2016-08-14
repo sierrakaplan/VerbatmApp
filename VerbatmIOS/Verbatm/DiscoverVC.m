@@ -1,5 +1,5 @@
 //
-//  FeaturedContentVC.m
+//  DisocverVC.m
 //  Verbatm
 //
 //  Created by Sierra Kaplan-Nelson on 4/15/16.
@@ -204,7 +204,8 @@ ExploreChannelCellViewDelegate>
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	if(self.onboardingBlogSelection) return 1;
-	return 2;
+//	return 2;
+	return 1;
 }
 
 -(NSString*) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -213,11 +214,12 @@ ExploreChannelCellViewDelegate>
 		return ONBOARDING_TEXT;
 	} else {
 
-		if (section == 0) {
-			return @"Featured";
-		} else {
-			return @"Discover";
-		}
+//		if (section == 0) {
+//			return @"Featured";
+//		} else {
+//			return @"Discover";
+//		}
+		return @"Discover";
 	}
 }
 
@@ -240,11 +242,11 @@ ExploreChannelCellViewDelegate>
 	if(self.onboardingBlogSelection){
 		[header.textLabel setText:ONBOARDING_TEXT];
 	}else{
-		if (section == 0) {
-			[header.textLabel setText:@"Featured"];
-		} else {
+//		if (section == 0) {
+//			[header.textLabel setText:@"Featured"];
+//		} else {
 			[header.textLabel setText:@"Discover"];
-		}
+//		}
 	}
 	[header.textLabel setTextAlignment:NSTextAlignmentCenter];
 	[header.textLabel setLineBreakMode:NSLineBreakByClipping];
@@ -258,19 +260,17 @@ ExploreChannelCellViewDelegate>
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-
-	if(self.onboardingBlogSelection){
-		return self.exploreChannels.count;
-	}else{
-		switch (section) {
-			case 0:
-				return 1;
-			case 1:
-				return self.exploreChannels.count;
-			default:
-				return 0;
-		}
-	}
+	return self.exploreChannels.count;
+//	}else{
+//		switch (section) {
+//			case 0:
+//				return 1;
+//			case 1:
+//				return self.exploreChannels.count;
+//			default:
+//				return 0;
+//		}
+//	}
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -284,7 +284,7 @@ ExploreChannelCellViewDelegate>
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSString *identifier = [NSString stringWithFormat:@"cell,%ld%ld", (long)indexPath.section, (long)indexPath.row % 10]; // reuse cells every 10
-	if (indexPath.section == 1 || self.onboardingBlogSelection) {
+//	if (indexPath.section == 1 || self.onboardingBlogSelection) {
 		ExploreChannelCellView *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
 		if(cell == nil) {
 			cell = [[ExploreChannelCellView alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
@@ -303,21 +303,21 @@ ExploreChannelCellViewDelegate>
 			[self loadMoreChannels];
 		}
 		return cell;
-	} else {
-		FeaturedContentCellView *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-		if(cell == nil) {
-			cell = [[FeaturedContentCellView alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
-			[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-			cell.delegate = self;
-		}
-		if (!cell.alreadyPresented && self.featuredChannels.count > 0) {
-			//Only one featured content cell
-			[cell presentChannels: self.featuredChannels];
-		}
-
-		[cell onScreen];
-		return cell;
-	}
+//	} else {
+//		FeaturedContentCellView *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+//		if(cell == nil) {
+//			cell = [[FeaturedContentCellView alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+//			[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+//			cell.delegate = self;
+//		}
+//		if (!cell.alreadyPresented && self.featuredChannels.count > 0) {
+//			//Only one featured content cell
+//			[cell presentChannels: self.featuredChannels];
+//		}
+//
+//		[cell onScreen];
+//		return cell;
+//	}
 }
 
 //todo: Stop videos (to make scrolling smooth)

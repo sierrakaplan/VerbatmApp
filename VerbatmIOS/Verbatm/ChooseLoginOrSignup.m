@@ -65,7 +65,9 @@
         
         CGFloat baseYFacebookButton = self.loginButton.frame.origin.y + self.loginButton.frame.size.height;
         CGFloat yPos = baseYFacebookButton + (self.signUpButton.frame.origin.y - baseYFacebookButton)/2.f;
-        _orLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.center.x - 25.f,  yPos - 25.f, 50.f, 50.f)];
+
+        _orLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.center.x - OR_LABEL_WIDTH/2.f,  yPos - SIGN_UP_BUTTON_GAP,
+															 OR_LABEL_WIDTH, OR_LABEL_WIDTH)];
         [_orLabel setText:@"OR"];
         [_orLabel setBackgroundColor:[UIColor clearColor]];
         [_orLabel setTextColor:[UIColor whiteColor]];
