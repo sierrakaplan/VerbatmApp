@@ -16,15 +16,15 @@
 
 #pragma mark - ADK -
 
-#define TEXT_AVE_CHARACTER_LIMIT 300
+#define TEXT_AVE_CHARACTER_LIMIT 180
 #define GALLERY_PICKER_TITLE @"Verbatm"
 #define VERBATM_ALBUM_NAME @"Verbatm"
-#define VERBATM_DESCRIPTION @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!"
+#define VERBATM_DESCRIPTION @"Verbatm is a social network here to help you share real stories with your friends"
 #define GALLERY_CUSTOM_MESSAGE @"Pick media to add to your story!"
 
 #define PLACEHOLDER_SELECTOR_FAILED_ERROR_MESSAGE @"Cannot set placeholder using attributed placeholder selector, because deployment target is earlier than iOS 6.0"
 
-#define PUBLISH_BUTTON_LABEL @"PUBLISH"
+#define PUBLISH_BUTTON_LABEL @"POST"
 
 #define WITH_TRANSITION @"with_transition"
 

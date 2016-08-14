@@ -27,6 +27,8 @@
 @property (nonatomic) UITextView *textView;
 @property (nonatomic) BOOL contentOffsetSet;
 
+@property (nonatomic) NSData *publishingData;
+
 #pragma mark Encoding Keys
 
 #define CREATE_FILTERED_IMAGES_QUEUE_KEY "create_filtered_images_queue"
@@ -114,10 +116,15 @@
 }
 
 -(AnyPromise *) getImageDataWithHalfSize:(BOOL)half {
+	if (self.publishingData) return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+		resolve (self.publishingData);
+	}];
+
 	return [self getLargerImageWithHalfSize:half].then(^(UIImage *largerImage) {
 		return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 				NSData* imageData = UIImagePNGRepresentation(largerImage);
+				self.publishingData = imageData;
 				resolve (imageData);
 			});
 		}];

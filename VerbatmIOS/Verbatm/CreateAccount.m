@@ -25,7 +25,7 @@
 @property (strong, nonatomic) LoginKeyboardToolBar *toolBar;
 
 @property (nonatomic) UIButton * backButton;
-@property (nonatomic) UITextField * phoneNumber;
+@property (nonatomic) UITextField * phoneNumberField;
 @property (nonatomic) BOOL enteringPhoneNumber;
 @property (nonatomic) BOOL nextButtonEnabled;
 
@@ -43,13 +43,11 @@
 @implementation CreateAccount
 
 
-
-
 -(instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if(self){
         [self addFacebookLoginButton];
-        [self createPhoneNumebrField];
+        [self createPhoneNumberField];
         [self addSubview:self.backButton];
         [self addSubview:self.orLabel];
         [self registerForKeyboardNotifications];
@@ -59,6 +57,7 @@
 }
 
 - (void) addFacebookLoginButton {
+
     self.facebookLoginButton = [[FBSDKLoginButton alloc] init];
     float buttonWidth = self.facebookLoginButton.frame.size.width*1.5;
     float buttonHeight = self.facebookLoginButton.frame.size.height*1.5;
@@ -71,11 +70,11 @@
 }
 
 
--(void)createPhoneNumebrField{
-    [self addSubview:self.phoneNumber];
+-(void)createPhoneNumberField{
+    [self addSubview:self.phoneNumberField];
 }
 
--(void)createNextButton{
+-(void)createNextButton {
     CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - LOGIN_TOOLBAR_HEIGHT,
                                      self.frame.size.width, LOGIN_TOOLBAR_HEIGHT);
     self.toolBar = [[LoginKeyboardToolBar alloc] initWithFrame:toolBarFrame];
@@ -87,11 +86,11 @@
 
 #pragma mark - TOOLBAR NEXT BUTTON -
 
--(void) nextButtonPressed{
-    if([self sanityCheckPhoneNumberString:self.phoneNumber.text] &&
+-(void) nextButtonPressed {
+    if([self sanityCheckPhoneNumberString:self.phoneNumberField.text] &&
        [self sanityCheckPassword:self.firstPassword.text]
        && [self sanityCheckName:self.createName.text] ) {
-        [self.delegate signUpWithPhoneNumberSelectedWithNumber:[self removeSpaces:self.phoneNumber.text]andPassword:self.firstPassword.text andName:self.createName.text];
+        [self.delegate signUpWithPhoneNumberSelectedWithNumber:[self removeSpaces:self.phoneNumberField.text]andPassword:self.firstPassword.text andName:self.createName.text];
         [self removeKeyBoardOnScreen];
     }
 }
@@ -106,11 +105,11 @@
     return YES;
 }
 
--(NSString *)removeSpaces:(NSString *)text{
+-(NSString *)removeSpaces:(NSString *)text {
     return  [text stringByReplacingOccurrencesOfString:@" " withString:@""];
 }
 
--(BOOL)sanityCheckPhoneNumberString:(NSString *)text{
+-(BOOL)sanityCheckPhoneNumberString:(NSString *)text {
     NSCharacterSet *s = [NSCharacterSet characterSetWithCharactersInString:@"1234567890"];
     s = [s invertedSet];
     NSRange r = [[self removeSpaces:text] rangeOfCharacterFromSet:s];
@@ -124,16 +123,13 @@
 }
 
 
--(void)removeKeyBoardOnScreen{
+-(void)removeKeyBoardOnScreen {
     [self.firstPassword resignFirstResponder];
-    [self.phoneNumber resignFirstResponder];
+    [self.phoneNumberField resignFirstResponder];
     [self.createName resignFirstResponder];
 }
 
-
-
-
--(BOOL)sanityCheckPassword:(NSString *)password{
+-(BOOL)sanityCheckPassword:(NSString *)password {
     if (password.length == 0 || [[self removeSpaces:password] isEqualToString:@""]) {
         //string contains illegal characters
         return NO;
@@ -189,9 +185,9 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	CGFloat keyboardOffset = 0.f;
 	CGFloat padding = 20.f;
     CGFloat newYOrigin = (self.frame.size.height - keyboardBounds.size.height -
-                          self.phoneNumber.frame.size.height - LOGIN_TOOLBAR_HEIGHT - padding);
-    if (newYOrigin < self.phoneNumber.frame.origin.y) {
-        keyboardOffset = self.phoneNumber.frame.origin.y - newYOrigin;
+                          self.phoneNumberField.frame.size.height - LOGIN_TOOLBAR_HEIGHT - padding);
+    if (newYOrigin < self.phoneNumberField.frame.origin.y) {
+        keyboardOffset = self.phoneNumberField.frame.origin.y - newYOrigin;
     }
     
     [UIView animateWithDuration:0.2 animations:^{
@@ -207,12 +203,13 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 }
 
 -(void)shiftPhoneFieldUp:(BOOL) up{
-    if(up){
-        self.phoneNumber.frame = CGRectOffset(self.phoneNumber.frame, 0, self.facebookLoginButton.frame.origin.y - self.phoneNumber.frame.origin.y);
+    if(up) {
+        self.phoneNumberField.frame = CGRectOffset(self.phoneNumberField.frame, 0, self.facebookLoginButton.frame.origin.y -
+												   self.phoneNumberField.frame.origin.y - LOGIN_TOOLBAR_HEIGHT); // make room for next button
         [self.firstPassword setHidden:NO];
         [self.createName setHidden:NO];
     }else{
-        self.phoneNumber.frame = self.originalPhoneTextFrame;
+        self.phoneNumberField.frame = self.originalPhoneTextFrame;
         [self.firstPassword setHidden:YES];
         [self.createName setHidden:YES];
         [self.orLabel setHidden:NO];
@@ -243,7 +240,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     NSString* totalString = [NSString stringWithFormat:@"%@%@",textField.text,string];
     
     // if it's the phone number textfield format it.
-    if(textField == self.phoneNumber && self.enteringPhoneNumber) {
+    if(textField == self.phoneNumberField) {
         if (range.length == 1) {
             // Delete button was hit.. so tell the method to delete the last char.
             textField.text = [self formatPhoneNumber:totalString deleteLastChar:YES];
@@ -297,8 +294,8 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 -(void) setEnteringPhone {
     self.enteringPhoneNumber = YES;
-    self.phoneNumber.text = @"";
-    self.phoneNumber.placeholder = @"Enter your phone number";
+    self.phoneNumberField.text = @"";
+    self.phoneNumberField.placeholder = @"Enter your phone number";
 }
 
 -(void)backButtonSelected{
@@ -318,29 +315,31 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 }
 
 
--(UITextField *)phoneNumber{
+-(UITextField *)phoneNumberField {
     
-    if(!_phoneNumber){
+    if(!_phoneNumberField){
     
-        CGRect frame = CGRectMake(self.facebookLoginButton.frame.origin.x, self.facebookLoginButton.frame.origin.y + self.facebookLoginButton.frame.size.height + SIGN_UP_BUTTON_GAP,
+        CGRect frame = CGRectMake(self.facebookLoginButton.frame.origin.x, self.orLabel.frame.origin.y + self.orLabel.frame.size.height
+								  + SIGN_UP_BUTTON_GAP,
                               self.facebookLoginButton.frame.size.width, PHONE_NUMBER_FIELD_HEIGHT);
-        _phoneNumber = [[UITextField alloc] initWithFrame:frame];
+        _phoneNumberField = [[UITextField alloc] initWithFrame:frame];
         self.originalPhoneTextFrame = frame;
-        _phoneNumber.backgroundColor = [UIColor whiteColor];
-        _phoneNumber.delegate = self;
-        _phoneNumber.layer.cornerRadius = TEXTFIELDS_CORNER_RADIUS;
-        [_phoneNumber setPlaceholder:ENTER_PHONE_NUMBER_PROMT];
-        _phoneNumber.keyboardType = UIKeyboardTypePhonePad;
-        _phoneNumber.textAlignment = NSTextAlignmentCenter;
-
+        _phoneNumberField.backgroundColor = [UIColor whiteColor];
+        _phoneNumberField.delegate = self;
+        _phoneNumberField.layer.cornerRadius = TEXTFIELDS_CORNER_RADIUS;
+        [_phoneNumberField setPlaceholder:ENTER_PHONE_NUMBER_PROMT];
+        _phoneNumberField.keyboardType = UIKeyboardTypePhonePad;
+        _phoneNumberField.textAlignment = NSTextAlignmentCenter;
 
     }
-    return _phoneNumber;
+    return _phoneNumberField;
 }
 
 -(UITextField *)createName{
     if(!_createName){
-        CGRect frame = CGRectMake(self.phoneNumber.frame.origin.x, self.facebookLoginButton.frame.origin.y + self.phoneNumber.frame.size.height + 5.f, self.phoneNumber.frame.size.width, self.phoneNumber.frame.size.height);
+        CGRect frame = CGRectMake(self.phoneNumberField.frame.origin.x, self.phoneNumberField.frame.origin.y +
+								  self.phoneNumberField.frame.size.height + 5.f, self.phoneNumberField.frame.size.width,
+								  self.phoneNumberField.frame.size.height);
         _createName = [[UITextField alloc] initWithFrame:frame];
         _createName.backgroundColor = [UIColor whiteColor];
         _createName.delegate = self;
@@ -354,7 +353,9 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 -(UITextField *)firstPassword{
     if(!_firstPassword){
-        CGRect frame = CGRectMake(self.createName.frame.origin.x, self.createName.frame.origin.y + self.createName.frame.size.height + 5.f, self.createName.frame.size.width, self.createName.frame.size.height);
+        CGRect frame = CGRectMake(self.createName.frame.origin.x, self.createName.frame.origin.y +
+								  self.createName.frame.size.height + 5.f, self.createName.frame.size.width,
+								  self.createName.frame.size.height);
         _firstPassword = [[UITextField alloc] initWithFrame:frame];
         _firstPassword.backgroundColor = [UIColor whiteColor];
         _firstPassword.delegate = self;
@@ -371,9 +372,9 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 -(UILabel *)orLabel{
     if(!_orLabel){
         
-        CGFloat baseYFacebookButton = self.facebookLoginButton.frame.origin.y + self.facebookLoginButton.frame.size.height;
-        CGFloat yPos = baseYFacebookButton + (self.phoneNumber.frame.origin.y - baseYFacebookButton)/2.f;
-        _orLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.center.x - 25.f,  yPos - 25.f, 50.f, 50.f)];
+        CGFloat yPos = self.facebookLoginButton.frame.origin.y + self.facebookLoginButton.frame.size.height;
+        _orLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.center.x - OR_LABEL_WIDTH/2.f, yPos + SIGN_UP_BUTTON_GAP,
+															 OR_LABEL_WIDTH, OR_LABEL_WIDTH)];
         [_orLabel setText:@"OR"];
         [_orLabel setBackgroundColor:[UIColor clearColor]];
         [_orLabel setTextColor:[UIColor whiteColor]];

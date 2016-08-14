@@ -300,7 +300,7 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 
 -(void) formatNavBar {
 	[self.navBar createLeftButtonWithTitle:@"CLOSE" orImage:nil];
-	[self.navBar createRightButtonWithTitle:@"PUBLISH" orImage:nil];
+	[self.navBar createRightButtonWithTitle:@"POST" orImage:nil];
 	[self.navBar createMiddleButtonWithTitle:@"UPDATE BLOG" blackText:YES largeSize:YES];
 	self.navBar.delegate = self;
 	[self.view addSubview: self.navBar];
@@ -1866,17 +1866,14 @@ andSaveInUserDefaults:(BOOL)save {
 
 -(void)capturePublishingProgressImageWithPinchViews:(NSMutableArray *) pinchViews{
 
-
 	NSMutableArray* pages = [PageTypeAnalyzer getPageViewsFromPinchViews: @[[pinchViews firstObject]] withFrame: self.view.bounds inPreviewMode:YES];
 
 	//temporarily create POV to screenshot
 	PostView * postView = [[PostView alloc] initWithFrame: self.view.bounds andPostChannelActivityObject:nil small:NO andPageObjects:nil];
 	[postView displayPageViews: pages];
 	[postView prepareForScreenShot];
-
 	UIImage *screenShotImage = [postView getViewScreenshot];
 
-	//        UIGraphicsEndImageContext();
 	[postView postOffScreen];
 	[[PublishingProgressManager sharedInstance] storeProgressBackgroundImage:screenShotImage];
 }

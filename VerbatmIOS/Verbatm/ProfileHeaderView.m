@@ -248,13 +248,11 @@
         [self.channel loadCoverPhotoWithCompletionBlock:^(UIImage * coverPhoto, NSData * coverPhotoData) {
             
             if(coverPhoto && coverPhotoData && weakSelf){
-                
                 if(weakSelf.isCurrentUser){
                     [weakSelf saveCoverPhotoDataToCache:coverPhotoData];
                     [[UserManager sharedInstance] holdCurrentCoverPhoto:coverPhoto];
                 }
 
-                
                 if([[NSThread currentThread] isMainThread]){
                     [weakSelf createTopAndReflectionCoverImageFromImage:coverPhoto];
                 }else{
@@ -263,9 +261,6 @@
                     });
                 }
             }
-            
-            
-            
         }];
     }
 }

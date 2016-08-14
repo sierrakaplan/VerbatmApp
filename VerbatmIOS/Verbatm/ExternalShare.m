@@ -19,6 +19,7 @@
 #import "PageTypeAnalyzer.h"
 
 #import <Social/SLRequest.h>
+#import "StringsAndAppConstants.h"
 
 #import "Video_BackendObject.h"
 
@@ -77,16 +78,11 @@
 
 
 -(void)storeLinkWithCaption:(NSString *) caption channelName:(NSString *) channelName postObject:(PFObject *) postObject andBranchUniversalObject: (BranchUniversalObject*) branchUniversalObject withCompletionBlock:(void(^)(bool, PFObject *))block {
-    
-    
+
     NSString * title = [NSString stringWithFormat:@"%@ posted on their Verbatm blog : %@!", self.name, channelName];
-    
-    
-    branchUniversalObject.title = title;
-    branchUniversalObject.contentDescription = @"Verbatm is a blogging app that allows users to create, curate, and consume multimedia content. Find Verbatm in the App Store!";
-    
+	branchUniversalObject.title = title;
+    branchUniversalObject.contentDescription = VERBATM_DESCRIPTION;
     branchUniversalObject.imageUrl = self.link;
-    
     
     BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
     linkProperties.feature = @"share";
