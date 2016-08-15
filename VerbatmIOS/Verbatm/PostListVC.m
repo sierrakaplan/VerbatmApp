@@ -669,15 +669,20 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		[self.sharePostView removeFromSuperview];
 		self.sharePostView = nil;
 	}
-
-	CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
-	CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+    
+    
+    CGFloat height = [UIApplication sharedApplication].keyWindow.frame.size.height/2.f;
+    CGFloat onScreenY = height;
+    
+	CGRect onScreenFrame = CGRectMake(0.f,onScreenY, self.view.frame.size.width,height);
+	CGRect offScreenFrame = CGRectMake(0.f, [UIApplication sharedApplication].keyWindow.frame.size.height, self.view.frame.size.width, height);
 	self.sharePostView = [[SharePostView alloc] initWithFrame:offScreenFrame];
 	self.sharePostView.delegate = self;
 	self.view.userInteractionEnabled = NO;
 	[[UIApplication sharedApplication].keyWindow addSubview:self.sharePostView];
 
 	[[UIApplication sharedApplication].keyWindow bringSubviewToFront:self.sharePostView];
+    
 	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^ {
 		self.sharePostView.frame = onScreenFrame;
 	}];
@@ -685,7 +690,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void)removeSharePOVView{
 	if(self.sharePostView){
-		CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+		CGRect offScreenFrame = CGRectMake(0.f, [UIApplication sharedApplication].keyWindow.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+        
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			self.sharePostView.frame = offScreenFrame;
 		}completion:^(BOOL finished) {

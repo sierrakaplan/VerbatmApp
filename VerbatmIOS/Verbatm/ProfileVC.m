@@ -567,7 +567,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 -(PostListVC *) postListVC{
 	if(!_postListVC){
-		CGFloat postHeight = self.view.frame.size.height - (self.view.frame.size.width);
+		CGFloat postHeight = self.view.frame.size.height - (self.view.frame.size.width - SMALL_SQUARE_LIKESHAREBAR_HEIGHT);
 		CGFloat postWidth = (self.view.frame.size.width / self.view.frame.size.height ) * postHeight;//same ratio as screen
         CGFloat postListSmallY = self.view.frame.size.height - postHeight - ((self.profileInFeed || self.isCurrentUserProfile) ? (TAB_BAR_HEIGHT + 1.f): 1.f);
         
