@@ -20,7 +20,7 @@
 
 -(void)hideNavBarIfPresent;
 -(void)channelSelected:(Channel *) channel;
-
+-(void) shareToSmsSelectedToUrl:(NSString *) url;
 @end
 
 @interface PostListVC : UICollectionViewController

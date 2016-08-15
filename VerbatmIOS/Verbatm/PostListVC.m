@@ -47,7 +47,7 @@
 #import "Styles.h"
 #import <TwitterKit/TwitterKit.h>
 
-#import <MessageUI/MFMessageComposeViewController.h>
+
 #import "Notifications.h"
 #import "Notification_BackendManager.h"
 
@@ -59,7 +59,7 @@
 
 @interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource,
 SharePostViewDelegate,
-UIScrollViewDelegate, PostCollectionViewCellDelegate, MFMessageComposeViewControllerDelegate, FBSDKSharingDelegate>
+UIScrollViewDelegate, PostCollectionViewCellDelegate, FBSDKSharingDelegate>
 
 @property (nonatomic) BOOL isCurrentUserProfile;
 @property (nonatomic) PFUser *listOwner;
@@ -797,21 +797,13 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(void) shareToSmsSelected{
 	NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
 	if(url){
-		MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
-		NSString * message = @"Hey - checkout this post on Verbatm!   ";
-		controller.body = [message stringByAppendingString:url];
-
-		controller.messageComposeDelegate = self;
-		[self presentViewController:controller animated:YES completion:nil];
+        [self.postListDelegate shareToSmsSelectedToUrl:url];
 	}else{
 		[self.externalShare storeShareLinkToPost:self.postToShare withCaption:nil withCompletionBlock:nil];
 		[self reportLinkError];
 	}
 }
 
-- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result{
-	[controller.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-}
 
 -(void) copyLinkSelected{
 	NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];

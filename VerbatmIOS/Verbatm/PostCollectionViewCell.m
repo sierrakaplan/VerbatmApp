@@ -129,54 +129,59 @@
 	self.hasPublishingView = NO;
 	self.footerUp = up;
 	self.currentPostActivityObject = pfActivityObj;
-	PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
-
-	__weak PostCollectionViewCell *weakSelf = self;
-
     
+    PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
+    __weak PostCollectionViewCell *weakSelf = self;
     
-    
-	[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
+    [post fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
         
-        weakSelf.currentPostView = [[PostView alloc] initWithFrame:POSTVIEW_FRAME
-									  andPostChannelActivityObject:pfActivityObj small:weakSelf.inSmallMode andPageObjects:pages];
-
-		if(weakSelf.inSmallMode)[weakSelf.currentPostView muteAllVideos:YES];
-		NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
-		if (weakSelf.isOnScreen) {
-			[weakSelf.currentPostView postOnScreen];
-		} else if (weakSelf.isAlmostOnScreen) {
-			[weakSelf.currentPostView postAlmostOnScreen];
-		} else {
-			[weakSelf.currentPostView postOffScreen];
-		}
-		weakSelf.currentPostView.delegate = weakSelf;
-		weakSelf.currentPostView.listChannel = channelForList;
-		
-        if(self.tapToExitNotification){
-            [weakSelf insertSubview:weakSelf.currentPostView belowSubview:self.tapToExitNotification];
-        }else{
-            [weakSelf addSubview: weakSelf.currentPostView];
-        }
-		weakSelf.currentPostView.inSmallMode = weakSelf.inSmallMode;
-
-        weakSelf.numLikes = post[POST_NUM_LIKES];
-        weakSelf.numShares = post[POST_NUM_REBLOGS];
+        weakSelf.numLikes = object[POST_NUM_LIKES];
+        weakSelf.numShares = object[POST_NUM_REBLOGS];
         
-		if(weakSelf.inSmallMode){
-            [weakSelf.currentPostView checkIfUserHasLikedThePost];
-        }else{
+        
+        [Page_BackendObject getPagesFromPost:object andCompletionBlock:^(NSArray * pages) {
             
-            [weakSelf.currentPostView createLikeAndShareBarWithNumberOfLikes:weakSelf.numLikes numberOfShares:weakSelf.numShares
-                                                               numberOfPages:numberOfPages
-                                                       andStartingPageNumber:@(1)
-                                                                     startUp:up
-                                                            withDeleteButton:withDelete];
-            [weakSelf.currentPostView addCreatorInfo];
-
-        }
-        [weakSelf bringSubviewToFront:weakSelf.dot];
-	}];
+            weakSelf.currentPostView = [[PostView alloc] initWithFrame:POSTVIEW_FRAME
+                                          andPostChannelActivityObject:pfActivityObj small:weakSelf.inSmallMode andPageObjects:pages];
+            
+            if(weakSelf.inSmallMode)[weakSelf.currentPostView muteAllVideos:YES];
+            NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
+            if (weakSelf.isOnScreen) {
+                [weakSelf.currentPostView postOnScreen];
+            } else if (weakSelf.isAlmostOnScreen) {
+                [weakSelf.currentPostView postAlmostOnScreen];
+            } else {
+                [weakSelf.currentPostView postOffScreen];
+            }
+            weakSelf.currentPostView.delegate = weakSelf;
+            weakSelf.currentPostView.listChannel = channelForList;
+            
+            if(self.tapToExitNotification){
+                [weakSelf insertSubview:weakSelf.currentPostView belowSubview:self.tapToExitNotification];
+            }else{
+                [weakSelf addSubview: weakSelf.currentPostView];
+            }
+            weakSelf.currentPostView.inSmallMode = weakSelf.inSmallMode;
+            
+            
+            
+            if(weakSelf.inSmallMode){
+                [weakSelf.currentPostView checkIfUserHasLikedThePost];
+            }else{
+                
+                [weakSelf.currentPostView createLikeAndShareBarWithNumberOfLikes:weakSelf.numLikes numberOfShares:weakSelf.numShares
+                                                                   numberOfPages:numberOfPages
+                                                           andStartingPageNumber:@(1)
+                                                                         startUp:up
+                                                                withDeleteButton:withDelete];
+                [weakSelf.currentPostView addCreatorInfo];
+                
+            }
+            [weakSelf bringSubviewToFront:weakSelf.dot];
+        }];
+    }];
+    
+    
 }
 
 -(void) showWhoLikesThePost:(PFObject *) post{

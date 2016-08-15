@@ -20,6 +20,8 @@
 
 #import "LoadingIndicator.h"
 
+#import <MessageUI/MFMessageComposeViewController.h>
+
 #import "ParseBackendKeys.h"
 
 #import "ProfileVC.h"
@@ -46,7 +48,7 @@
 
 @interface ProfileVC() <ProfileHeaderViewDelegate, Intro_Notification_Delegate,
 UIScrollViewDelegate, PostListVCProtocol,
-UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
+UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeViewControllerDelegate>
 
 @property (nonatomic) UIButton * postPrompt;
 
@@ -438,6 +440,22 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
         [self.profileHeaderView presentProfileUnderConstructionNotification];
     }
 }
+
+-(void) shareToSmsSelectedToUrl:(NSString *) url{
+    if(url){
+        MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
+        NSString * message = @"Hey - checkout this post on Verbatm!   ";
+        controller.body = [message stringByAppendingString:url];
+        
+        controller.messageComposeDelegate = self;
+        [self presentViewController:controller animated:YES completion:nil];
+    }
+}
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result{
+    [controller.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
 
 //the current user has selected the back button
 -(void)exitCurrentProfile {
