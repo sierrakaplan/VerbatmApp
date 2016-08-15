@@ -123,6 +123,10 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	[super viewWillDisappear:animated];
 }
 
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+}
+
 -(void)clearOurViews {
 	if(self.postListVC)[self.postListVC offScreen];
 	if(self.postListVC)[self.postListVC clearViews];
@@ -130,9 +134,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	self.profileHeaderView = nil;
 }
 
--(void)viewDidAppear:(BOOL)animated{
-	[super viewDidAppear:animated];
-}
+
 
 -(void)presentUserList:(ListType) listType{
 	UserAndChannelListsTVC *userList = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
