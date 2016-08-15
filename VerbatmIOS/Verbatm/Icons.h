@@ -142,6 +142,7 @@
 #define LIKE_ICON_PRESSED @"Red Heart"
 
 
+#define SMALL_SHARE_ICON @"Gray Share icon"
 
 #define SHARE_ICON @"Blue Share icon"
 #define UNMUTED_ICON @"sound_unmuted"

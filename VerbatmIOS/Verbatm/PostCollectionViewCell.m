@@ -294,7 +294,7 @@
         self.smallShareButton = [UIButton buttonWithType:UIButtonTypeCustom];
         self.smallShareButton.contentMode = UIViewContentModeScaleAspectFit;
         [self.smallShareButton setFrame:CGRectMake(self.numLikeLabel.frame.origin.x + self.numLikeLabel.frame.size.width + SMALL_ICON_SPACING, shareButtonY, SHARE_BUTTION_SIZE, SHARE_BUTTION_SIZE)];
-        [self.smallShareButton setImage:[UIImage imageNamed:SHARE_ICON] forState:UIControlStateNormal];
+        [self.smallShareButton setImage:[UIImage imageNamed:SMALL_SHARE_ICON] forState:UIControlStateNormal];
         [self.smallShareButton addTarget:self action:@selector(shareButtonPressed) forControlEvents:UIControlEventTouchDown];
         [self addSubview:self.smallShareButton];
     }
