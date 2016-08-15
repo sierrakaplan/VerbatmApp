@@ -10,7 +10,7 @@
 #import <Parse/PFQuery.h>
 #import "ParseBackendKeys.h"
 #import <Crashlytics/Crashlytics.h>
-#import "UserInfoCache.m"
+#import "UserInfoCache.h"
 
 @interface Notification_BackendManager ()
 #define LOAD_MAX_AMOUNT 20
