@@ -20,7 +20,7 @@
 
 -(void)hideNavBarIfPresent;
 -(void)channelSelected:(Channel *) channel;
-
+-(void)removePostViewSelected;
 @end
 
 @interface PostListVC : UICollectionViewController

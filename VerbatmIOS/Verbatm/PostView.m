@@ -318,19 +318,24 @@
 														  withCompletionBlock:^(Channel * channel) {
 															  weakSelf.postChannel = channel;
 															  //we only add the channel info to posts that don't belong to the current user
-															  if(channel.parseChannelObject != weakSelf.listChannel.parseChannelObject
-																 && ![channel channelBelongsToCurrentUser]) {
+															  if(channel.parseChannelObject != weakSelf.listChannel.parseChannelObject) {
+                                                                  
 																  dispatch_async(dispatch_get_main_queue(), ^{
 																	  weakSelf.creatorAndChannelBar = [[CreatorAndChannelBar alloc] initWithFrame:weakSelf.creatorBarFrameDown andChannel:channel];
 																	  weakSelf.creatorAndChannelBar.delegate = weakSelf;
 																	  [weakSelf addSubview:weakSelf.creatorAndChannelBar];
 																  });
+                                                                  
 															  }
 														  }];
 }
 
 -(void)channelSelected:(Channel *) channel {
 	[self.delegate channelSelected:channel];
+}
+
+-(void)exitSelected{
+    [self.delegate removePostViewSelected];
 }
 
 #pragma mark - Like Share Bar -

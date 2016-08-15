@@ -65,5 +65,6 @@
 -(void) deleteButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post reblogged: (BOOL)reblogged;
 -(void) flagButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post;
 -(void) showWhoLikesThePost:(PFObject *) post;
+-(void)removePostViewSelected;
 @end
 
