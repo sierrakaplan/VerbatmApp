@@ -97,6 +97,7 @@
 -(void)presentComment:(PFObject *) commentObject{
     
     NSString * commentString = [commentObject valueForKey:COMMENT_STRING];
+    PFUser * commentCreator = [commentObject valueForKey:COMMENT_USER_KEY];
     
     
     
