@@ -99,6 +99,7 @@
 			if (activities.count > 0) {
 				// Posts are in reverse chronological order
 				self.latestDate = [(PFObject*)(activities[0]) createdAt];
+				if (!self.oldestDate) self.oldestDate = [(PFObject*)(activities[activities.count-1]) createdAt];
 			}
 			block([[[finalPostObjects reverseObjectEnumerator] allObjects] mutableCopy]);
 		}
