@@ -207,13 +207,12 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self moveTextView:textView afterEdit:YES];
 	[self.textAndImageView.textView setUserInteractionEnabled:NO];
 	[self.textAndImageView addGestureRecognizer: self.editTextGesture];
+	[self.textAndImageView addGestureRecognizer: self.textViewPanGesture];
 	UIView *mainScrollView = self.superview.superview;
 	if (![mainScrollView isKindOfClass:[UIScrollView class]]) {
 		mainScrollView = mainScrollView.superview;
 	}
 	[((UIScrollView*)mainScrollView) setScrollEnabled:YES];
-
-    [self addPanGestures];
 }
 
 /* Enforces word limit */
@@ -307,16 +306,9 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	self.textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
 															andImage:image andContentOffset:contentOffset
 														  forTextAVE:onTextAve];
-	UIPanGestureRecognizer *moveImageGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPan:)];
-	moveImageGesture.delegate = self;
-	[self.textAndImageView addGestureRecognizer: moveImageGesture];
-
-	self.editTextGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(keyboardButtonPressed)];
-	self.editTextGesture.delegate = self;
-	[self.textAndImageView addGestureRecognizer: self.editTextGesture];
 
 	[self addSubview: self.textAndImageView];
-	[self addPanGestures];
+	[self addTextViewGestures];
 
 //	todo: bring back filters
 //    if(![[UserSetupParameters sharedInstance ] checkAndSetFilterInstructionShown]){
@@ -437,9 +429,17 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 #pragma maro - Pan gestures -
 
-/* Adds pan gestures for adding filters to images and changing text position */
--(void) addPanGestures {
-	[self.textAndImageView addTextViewGestureRecognizer:self.textViewPanGesture];
+// Add gestures related to text/image view
+-(void) addTextViewGestures {
+	UIPanGestureRecognizer *moveImageGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPan:)];
+	moveImageGesture.delegate = self;
+	[self.textAndImageView addGestureRecognizer: moveImageGesture];
+
+	self.editTextGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(keyboardButtonPressed)];
+	self.editTextGesture.delegate = self;
+	[self.textAndImageView addGestureRecognizer: self.editTextGesture];
+
+	[self.textAndImageView addGestureRecognizer:self.textViewPanGesture];
 }
 
 /* Handles pan gesture which could be horizontal to add a filter to an image,
@@ -505,6 +505,10 @@ andTextAlignment:(NSTextAlignment)textAlignment
                 self.textViewBeingEdited) return;
             
 			self.textViewPanStartLocation = [sender locationOfTouch:0 inView:self.textAndImageView];
+			if (!CGRectContainsPoint(self.textAndImageView.textView.frame, self.textViewPanStartLocation)) {
+				sender.enabled = NO;
+				sender.enabled = YES;
+			}
 			self.gestureActionJustStarted = YES;
 
 			break;

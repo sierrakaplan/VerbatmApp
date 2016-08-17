@@ -253,10 +253,6 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	[self.textView setFont:[UIFont fontWithName:self.textView.font.fontName size:self.textSize]];
 }
 
--(void) addTextViewGestureRecognizer: (UIGestureRecognizer*)gestureRecognizer {
-	[self.textView addGestureRecognizer:gestureRecognizer];
-}
-
 /* Adds or removes text view */
 -(void)showText: (BOOL) show {
 	if (show) {
