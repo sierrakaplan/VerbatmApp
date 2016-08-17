@@ -422,11 +422,13 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 -(void)repositionPhotoSelected {
 	[self.textAndImageView startRepositioningPhoto];
+	[self enableMainScrollView:NO];
 	self.isRepositioningPhoto = YES;
 }
 
 -(void)repositionPhotoUnSelected {
 	[self.textAndImageView endRepositioningPhoto];
+	[self enableMainScrollView:YES];
 	self.isRepositioningPhoto = NO;
 }
 
@@ -515,7 +517,8 @@ andTextAlignment:(NSTextAlignment)textAlignment
                 self.textViewBeingEdited) return;
             
 			self.textViewPanStartLocation = [sender locationOfTouch:0 inView:self.textAndImageView];
-			if (!CGRectContainsPoint(self.textAndImageView.textView.frame, self.textViewPanStartLocation)) {
+			if (!CGRectContainsPoint(self.textAndImageView.textView.frame, self.textViewPanStartLocation)
+				|| self.isRepositioningPhoto) {
 				sender.enabled = NO;
 				sender.enabled = YES;
 				return;
@@ -536,6 +539,9 @@ andTextAlignment:(NSTextAlignment)textAlignment
 		}
 		case UIGestureRecognizerStateCancelled:
 		case UIGestureRecognizerStateEnded: {
+			if (self.isRepositioningPhoto) {
+				return;
+			}
 			[self enableMainScrollView:YES];
 			break;
 		}
