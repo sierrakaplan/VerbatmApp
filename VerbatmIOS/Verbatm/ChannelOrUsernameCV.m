@@ -94,6 +94,17 @@
 
 #pragma mark - Edit Cell formatting -
 
+-(void)presentComment:(PFObject *) commentObject{
+    
+    NSString * commentString = [commentObject valueForKey:COMMENT_STRING];
+    
+    
+    
+    
+    
+}
+
+
 
 -(void)setHeaderTitle{
 	self.isHeaderTile = YES;
@@ -229,8 +240,18 @@
 	[self addSubview: self.channelNameLabel];
 	[self addSubview: self.usernameLabel];
     
+}
+
+
+-(void)setComment:(PFObject *) parseCommentObject{
+    
+    
+    
+    
+    
     
 }
+
 
 -(UILabel *) getLabel:(NSString *) title withOrigin:(CGPoint) origin andAttributes:(NSDictionary *) nameLabelAttribute withMaxWidth:(CGFloat) maxWidth {
     UILabel * nameLabel = [[UILabel alloc] init];

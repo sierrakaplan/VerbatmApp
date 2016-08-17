@@ -25,6 +25,13 @@
 #define FOLLOW_CHANNEL_FOLLOWED_KEY @"ChannelFollowed"//channel being followed by above user
 #define FOLLOW_LATEST_POST_DATE @"LatestPostSeen"
 
+
+#define COMMENT_PFCLASS_KEY @"CommentClass"
+#define COMMENT_USER_KEY @"UserCommenting"//the user doing the commenting
+#define COMMENT_POSTCOMMENTED_KEY @"PostCommented"//post commented on by user
+#define COMMENT_STRING @"CommentString" //the actual comment
+
+
 #define LIKE_PFCLASS_KEY @"LikeClass"//we maintain all the like relationships in their own table
 #define LIKE_USER_KEY @"UserLiking"//the user doing the liking
 #define LIKE_POST_LIKED_KEY @"PostLiked"//post being liked by above user

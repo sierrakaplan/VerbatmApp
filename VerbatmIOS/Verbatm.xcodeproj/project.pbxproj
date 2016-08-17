@@ -180,6 +180,8 @@
 		C734FD9919B13D8600B2C370 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9819B13D8600B2C370 /* CoreMedia.framework */; };
 		C734FD9C19B14B8D00B2C370 /* ContentDevVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */; };
 		C736C9FF1D1B2AE500535C7E /* PublishingProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = C736C9FE1D1B2AE500535C7E /* PublishingProgressView.m */; };
+		C737666F1D63C5F700933A81 /* CommentingViewTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C737666E1D63C5F700933A81 /* CommentingViewTVC.m */; };
+		C73766731D63C71F00933A81 /* Commenting_BackendObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C73766721D63C71F00933A81 /* Commenting_BackendObject.m */; };
 		C73B7C2F1CA8719200128926 /* Intro_Instruction_Notification_View.m in Sources */ = {isa = PBXBuildFile; fileRef = C73B7C2E1CA8719200128926 /* Intro_Instruction_Notification_View.m */; };
 		C7469BF41B4874A600EA7B10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7469BF21B4874A600EA7B10 /* Main.storyboard */; };
 		C74749911C2B1CB90047C66E /* ProfileInformationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C74749901C2B1CB90047C66E /* ProfileInformationBar.m */; };
@@ -548,6 +550,10 @@
 		C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentDevVC.m; sourceTree = "<group>"; };
 		C736C9FD1D1B2AE500535C7E /* PublishingProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PublishingProgressView.h; sourceTree = "<group>"; };
 		C736C9FE1D1B2AE500535C7E /* PublishingProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PublishingProgressView.m; sourceTree = "<group>"; };
+		C737666D1D63C5F700933A81 /* CommentingViewTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentingViewTVC.h; sourceTree = "<group>"; };
+		C737666E1D63C5F700933A81 /* CommentingViewTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentingViewTVC.m; sourceTree = "<group>"; };
+		C73766711D63C71F00933A81 /* Commenting_BackendObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Commenting_BackendObject.h; sourceTree = "<group>"; };
+		C73766721D63C71F00933A81 /* Commenting_BackendObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Commenting_BackendObject.m; sourceTree = "<group>"; };
 		C73B7C2D1CA8719200128926 /* Intro_Instruction_Notification_View.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Intro_Instruction_Notification_View.h; sourceTree = "<group>"; };
 		C73B7C2E1CA8719200128926 /* Intro_Instruction_Notification_View.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Intro_Instruction_Notification_View.m; sourceTree = "<group>"; };
 		C7469BF31B4874A600EA7B10 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -795,6 +801,8 @@
 				C7BF1AAA1C57F60600CEDE4B /* Video_BackendObject.m */,
 				C7BF1AAC1C57F61F00CEDE4B /* Page_BackendObject.h */,
 				C7BF1AAD1C57F61F00CEDE4B /* Page_BackendObject.m */,
+				C73766711D63C71F00933A81 /* Commenting_BackendObject.h */,
+				C73766721D63C71F00933A81 /* Commenting_BackendObject.m */,
 			);
 			name = "Elements of post";
 			sourceTree = "<group>";
@@ -1241,6 +1249,15 @@
 			name = Analytics;
 			sourceTree = "<group>";
 		};
+		C73766701D63C60900933A81 /* Commenting */ = {
+			isa = PBXGroup;
+			children = (
+				C737666D1D63C5F700933A81 /* CommentingViewTVC.h */,
+				C737666E1D63C5F700933A81 /* CommentingViewTVC.m */,
+			);
+			name = Commenting;
+			sourceTree = "<group>";
+		};
 		C748836A1B489AE300E64ED9 /* GMImagePicker */ = {
 			isa = PBXGroup;
 			children = (
@@ -1345,6 +1362,7 @@
 				A58EE8831BA876FA00B7B396 /* Segues */,
 				C76172791C4DFB7700AB0D84 /* PostListVC.h */,
 				C761727A1C4DFB7700AB0D84 /* PostListVC.m */,
+				C73766701D63C60900933A81 /* Commenting */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -1909,6 +1927,7 @@
 				A5934B8F1C0FDFD6007C7830 /* VerbatmScrollView.m in Sources */,
 				C7AA49FB1D148A8C00A031C6 /* verbatmButton.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
+				C73766731D63C71F00933A81 /* Commenting_BackendObject.m in Sources */,
 				C716E9D21BD6C338001B769D /* Analytics.m in Sources */,
 				A5E73B911D16967A00527ECF /* GTLQuery.m in Sources */,
 				C7D5963B1C66E47100161136 /* Follow_BackendManager.m in Sources */,
@@ -1925,6 +1944,7 @@
 				A5E73B8B1D16945600527ECF /* GTLJSONParser.m in Sources */,
 				C761727B1C4DFB7700AB0D84 /* PostListVC.m in Sources */,
 				C7996CC31C8FCF74002E5DA6 /* LoadingIndicator.m in Sources */,
+				C737666F1D63C5F700933A81 /* CommentingViewTVC.m in Sources */,
 				C788745C1C334AE80048B66E /* PostLikeAndShareBar.m in Sources */,
 				A56B5D231CA49D0E00A61D27 /* Like_BackendManager.m in Sources */,
 				A56F68871B66FED900CE5744 /* ContentPageElementScrollView.m in Sources */,

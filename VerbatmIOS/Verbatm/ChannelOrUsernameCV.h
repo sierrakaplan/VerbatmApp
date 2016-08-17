@@ -17,4 +17,7 @@
 -(void)setHeaderTitle;
 -(void)presentChannel:(Channel *) channel;
 
+-(void)presentComment:(PFObject *) commentObject;
+
+
 @end

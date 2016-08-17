@@ -8,8 +8,8 @@
 
 #import "ChannelOrUsernameCV.h"
 #import "CustomNavigationBar.h"
-
 #import "Channel_BackendObject.h"
+#import "Commenting_BackendObject.h"
 
 #import "Like_BackendManager.h"
 
@@ -35,8 +35,9 @@
 @property (nonatomic) UIActivityIndicatorView *loadMoreSpinner;
 @property (nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic) NSMutableArray * channelsToDisplay;
-
 @property (nonatomic) NSMutableArray * usersToDisplay;//catch all array -- can be used for any of the usecases to store a list of users
+
+@property (nonatomic) NSArray * commentParseObjectList;
 
 @property (nonatomic) BOOL shouldDisplayFollowers;
 
@@ -52,6 +53,8 @@
 #define CUSTOM_CHANNEL_LIST_BAR_HEIGHT 50.f
 #define LIKERS_TEXT @"Likes"
 #define FOLLOWING_TEXT @"Following"
+#define COMMENTING_TEXT @"Comments"
+
 #define FOLLOWERS_TEXT @"Followers"
 #define LIST_BAR_Y_OFFSET -15.f
 
@@ -221,7 +224,13 @@
 				block();
 			}];
 			break;
-		}
+        } case CommentList: {
+            
+            [Commenting_BackendObject getCommentsForObject:post withCompletionBlock:^(NSArray * parseCommentObjects) {
+                    self.commentParseObjectList = (parseCommentObjects == nil) ? @[] : parseCommentObjects;
+            }];
+            
+        }
 	}
 }
 
@@ -257,7 +266,9 @@
 		navBarMiddleText = LIKERS_TEXT;
 	}else if (self.currentListType == FollowingList){
 		navBarMiddleText = FOLLOWING_TEXT;
-	}
+	}else if (self.currentListType == CommentList){
+        navBarMiddleText = COMMENTING_TEXT;
+    }
 
 	[customNavBar createMiddleButtonWithTitle:navBarMiddleText blackText:YES largeSize:YES];
 
@@ -332,7 +343,13 @@
 
 	if(self.presentAllChannels && indexPath.row == 0) {
 		[cell setHeaderTitle];
-	} else {
+    } else if(self.commentParseObjectList) {
+        
+        NSInteger objectIndex = indexPath.row;
+        PFObject * post = [self.commentParseObjectList objectAtIndex:objectIndex];
+        
+        
+    } else {
 		NSInteger objectIndex = self.presentAllChannels ? (indexPath.row - 1) : indexPath.row;
 		Channel *channel = [self.channelsToDisplay objectAtIndex:objectIndex];
 		[cell presentChannel:channel];
