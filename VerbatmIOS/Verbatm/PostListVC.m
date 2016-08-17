@@ -1024,6 +1024,10 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 #pragma mark - POV delegate -
 
+-(void)removePostViewSelected{
+    [self.postListDelegate removePostViewSelected];
+}
+
 -(void)channelSelected:(Channel *) channel{
 	[self.postListDelegate channelSelected:channel];
 }

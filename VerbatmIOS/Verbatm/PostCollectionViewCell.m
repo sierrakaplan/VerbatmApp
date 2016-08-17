@@ -222,6 +222,11 @@
 	[self.cellDelegate shareOptionSelectedForParsePostObject:post];
 }
 
+
+-(void)removePostViewSelected{
+    [self.cellDelegate removePostViewSelected];
+}
+
 -(void) channelSelected:(Channel *) channel {
 	[self.cellDelegate channelSelected:channel];
 }

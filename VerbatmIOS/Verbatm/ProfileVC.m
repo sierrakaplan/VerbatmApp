@@ -259,14 +259,24 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	return  (![touch.view isKindOfClass:[Intro_Instruction_Notification_View class]]);
 }
 
+
+-(void)exitCurrentPostView{
+    [self createNewPostViewFromCellIndexPath:nil];
+}
+
 #pragma mark - Post list vc delegate -
+
+-(void)removePostViewSelected{
+    [self exitCurrentPostView];
+}
+
 
 // Something in profile was reblogged so contains a header allowing user to navigate
 // to a different profile
 -(void)channelSelected:(Channel *) channel{
     if([[[channel channelCreator] objectId] isEqualToString:[[self.channel channelCreator] objectId]]){
         //if the channel belongs to this profile then simply remove the large postlist view
-        [self createNewPostViewFromCellIndexPath:nil];
+        [self exitCurrentPostView];
     } else {
         ProfileVC *  userProfile = [[ProfileVC alloc] init];
 		BOOL isCurrentUserChannel = [[channel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];

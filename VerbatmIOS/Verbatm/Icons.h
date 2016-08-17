@@ -39,6 +39,8 @@
 
 #pragma mark - Feed -
 
+#define EXIT_POST_FULLSCREEN @"White X_ Exit"
+
 #define VIDEO_LOADING_ICON @"white_spin_icon"
 #define FOLLOWED_BY_ICON  @"followed_by_icon"
 #define FOLLOW_ICON_LIGHT  @"follow_icon_light"

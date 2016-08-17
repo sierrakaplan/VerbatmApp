@@ -19,6 +19,7 @@
 -(void) flagOrBlockButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post;
 -(void) showWhoLikesThePost:(PFObject *) post;
 -(void)justRemovedTapToExitNotification;
+-(void)removePostViewSelected;
 @end
 
 @interface PostCollectionViewCell : UICollectionViewCell
