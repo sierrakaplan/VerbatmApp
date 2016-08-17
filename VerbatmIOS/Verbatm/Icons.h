@@ -40,16 +40,14 @@
 #pragma mark - Feed -
 
 #define EXIT_POST_FULLSCREEN @"White X_ Exit"
-
 #define VIDEO_LOADING_ICON @"white_spin_icon"
-#define FOLLOWED_BY_ICON  @"followed_by_icon"
-#define FOLLOW_ICON_LIGHT  @"follow_icon_light"
-#define FOLLOW_ICON_DARK  @"follow_icon_dark"
+#define FOLLOWED_BY_ICON @"followed_by_icon"
+#define FOLLOW_ICON_LIGHT @"follow_icon_light"
+#define FOLLOW_ICON_DARK @"follow_icon_dark"
 #define FOLLOWING_ICON_LIGHT @"following_icon_light"
 #define FOLLOWING_ICON_DARK @"following_icon_dark"
 #define FOLLOWING_SUCCESS_IMAGE @"following_succeeded_notification"
 #define REBLOG_IMAGE @"posted_succeeded_notification"
-
 #define FEED_NOTIFICATION_ICON @"FeedEmptyNotification"
 
 #pragma mark - ADK -

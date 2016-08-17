@@ -254,7 +254,7 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear: animated];
 	[self checkIntroNotification];
-	[self checkAdkSlideShowOnboarding];
+//	[self checkAdkSlideShowOnboarding];
 }
 
 -(void) checkIntroNotification {
