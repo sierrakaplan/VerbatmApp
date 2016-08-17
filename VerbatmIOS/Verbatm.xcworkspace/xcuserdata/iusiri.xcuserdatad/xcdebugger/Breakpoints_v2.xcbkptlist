@@ -506,18 +506,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostView.m"
-            timestampString = "492994752.561693"
+            timestampString = "493087605.487298"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "340"
-            endingLineNumber = "340"
-<<<<<<< HEAD
+            startingLineNumber = "339"
+            endingLineNumber = "339"
             landmarkName = "-userAction:isPositive:"
             landmarkType = "5">
-=======
-            landmarkName = "@implementation PostView"
-            landmarkType = "3">
->>>>>>> XtoExit
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -770,11 +765,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "199"
             endingLineNumber = "199"
-<<<<<<< HEAD
             landmarkName = "-almostOnScreen"
-=======
-            landmarkName = "-addDot"
->>>>>>> XtoExit
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1136,11 +1127,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "107"
             endingLineNumber = "107"
-<<<<<<< HEAD
             landmarkName = "-presentPublishingView"
-=======
-            landmarkName = "-presentPostFromPCActivityObj:andChannel:withDeleteButton:andLikeShareBarUp:"
->>>>>>> XtoExit
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1167,16 +1154,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostView.m"
-            timestampString = "492994752.561693"
+            timestampString = "493087605.487298"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "420"
-            endingLineNumber = "420"
-<<<<<<< HEAD
-            landmarkName = "-likeButtonPressed"
-=======
+            startingLineNumber = "419"
+            endingLineNumber = "419"
             landmarkName = "-checkForMuteButton:"
->>>>>>> XtoExit
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1192,11 +1175,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "231"
             endingLineNumber = "231"
-<<<<<<< HEAD
             landmarkName = "-addDot"
-=======
-            landmarkName = "-channelSelected:"
->>>>>>> XtoExit
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1212,11 +1191,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "240"
             endingLineNumber = "240"
-<<<<<<< HEAD
             landmarkName = "-addDot"
-=======
-            landmarkName = "-flagButtonSelectedOnPostView:withPostObject:"
->>>>>>> XtoExit
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1231,13 +1206,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "335"
-<<<<<<< HEAD
             endingLineNumber = "335"
             landmarkName = "-deleteButtonSelectedOnPostView:withPostObject:reblogged:"
             landmarkType = "5">
-=======
-            endingLineNumber = "335">
->>>>>>> XtoExit
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1251,13 +1222,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "334"
-<<<<<<< HEAD
             endingLineNumber = "334"
             landmarkName = "-deleteButtonSelectedOnPostView:withPostObject:reblogged:"
             landmarkType = "5">
-=======
-            endingLineNumber = "334">
->>>>>>> XtoExit
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -3933,11 +3900,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostView.m"
-            timestampString = "492994752.561693"
+            timestampString = "493087605.487298"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "620"
-            endingLineNumber = "620"
+            startingLineNumber = "619"
+            endingLineNumber = "619"
             landmarkName = "-showPageUpIndicator"
             landmarkType = "5">
          </BreakpointContent>
@@ -3949,11 +3916,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostView.m"
-            timestampString = "492994752.561693"
+            timestampString = "493087605.487298"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "622"
-            endingLineNumber = "622"
+            startingLineNumber = "621"
+            endingLineNumber = "621"
             landmarkName = "-showPageUpIndicator"
             landmarkType = "5">
          </BreakpointContent>
@@ -6690,11 +6657,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "218"
             endingLineNumber = "218"
-<<<<<<< HEAD
             landmarkName = "-upDatePagingLine"
-=======
-            landmarkName = "-addPagingLine"
->>>>>>> XtoExit
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -6742,11 +6705,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "219"
             endingLineNumber = "219"
-<<<<<<< HEAD
             landmarkName = "-upDatePagingLine"
-=======
-            landmarkName = "-addPagingLine"
->>>>>>> XtoExit
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -6904,11 +6863,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "200"
             endingLineNumber = "200"
-<<<<<<< HEAD
             landmarkName = "-createBorder"
-=======
-            landmarkName = "-editContentViewTextIsEditing"
->>>>>>> XtoExit
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -6919,16 +6874,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostView.m"
-            timestampString = "492994752.561693"
+            timestampString = "493087605.487298"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "583"
-            endingLineNumber = "583"
-<<<<<<< HEAD
-            landmarkName = "-removePageUpIndicatorFromView"
-=======
+            startingLineNumber = "582"
+            endingLineNumber = "582"
             landmarkName = "-stopAllVideos"
->>>>>>> XtoExit
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -6971,16 +6922,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostView.m"
-            timestampString = "492994752.561693"
+            timestampString = "493087605.487298"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "449"
-            endingLineNumber = "449"
-<<<<<<< HEAD
+            startingLineNumber = "448"
+            endingLineNumber = "448"
             landmarkName = "-presentSwipeUpAndDownInstruction"
-=======
-            landmarkName = "-muteAllVideos:"
->>>>>>> XtoExit
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -7039,13 +6986,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostView.m"
-            timestampString = "492994752.561693"
+            timestampString = "493087605.487298"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "364"
-            endingLineNumber = "364"
-            landmarkName = "@implementation PostView"
-            landmarkType = "3">
+            startingLineNumber = "363"
+            endingLineNumber = "363"
+            landmarkName = "-scrollViewDidEndDecelerating:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -7299,13 +7246,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "268"
-<<<<<<< HEAD
             endingLineNumber = "268"
             landmarkName = "-presentSmallLikeButton"
             landmarkType = "5">
-=======
-            endingLineNumber = "268">
->>>>>>> XtoExit
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -7319,13 +7262,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "264"
-<<<<<<< HEAD
             endingLineNumber = "264"
             landmarkName = "-shareButtonPressed"
             landmarkType = "5">
-=======
-            endingLineNumber = "264">
->>>>>>> XtoExit
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -7335,16 +7274,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostView.m"
-            timestampString = "492994752.561693"
+            timestampString = "493087605.487298"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "425"
-            endingLineNumber = "425"
-<<<<<<< HEAD
+            startingLineNumber = "424"
+            endingLineNumber = "424"
             landmarkName = "-likeButtonPressed"
-=======
-            landmarkName = "-muteButtonSelected:"
->>>>>>> XtoExit
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -7407,13 +7342,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "274"
-<<<<<<< HEAD
             endingLineNumber = "274"
             landmarkName = "-presentSmallLikeButton"
             landmarkType = "5">
-=======
-            endingLineNumber = "274">
->>>>>>> XtoExit
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -7428,11 +7359,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "243"
             endingLineNumber = "243"
-<<<<<<< HEAD
             landmarkName = "-checkIfUserHasLikedThePost"
-=======
-            landmarkName = "-scrollToPageAtIndex:"
->>>>>>> XtoExit
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

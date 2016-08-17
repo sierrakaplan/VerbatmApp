@@ -56,6 +56,12 @@
 
 -(void)showPageUpIndicator;
 -(void)prepareForScreenShot;
+
+-(void)checkIfUserHasLikedThePost;
+
+-(void)likeButtonPressed;
+
+-(void)shareButtonPressed;
 @end
 
 @protocol PostViewDelegate <NSObject>
@@ -66,5 +72,8 @@
 -(void) flagButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post;
 -(void) showWhoLikesThePost:(PFObject *) post;
 -(void)removePostViewSelected;
+-(void)presentSmallLikeButton;
+-(void)updateSmallLikeButton:(BOOL)isLiked;
+
 @end
 
