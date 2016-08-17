@@ -103,6 +103,7 @@
 	// Load all screenshots first so that you can close app while publishing
 	NSMutableArray *loadScreenshotsPromises = [[NSMutableArray alloc] init];
 	for (PinchView *pinchView in pinchViews) {
+		pinchView.beingPublished = YES;
 		if ([pinchView isKindOfClass:[ImagePinchView class]]) {
 			ImagePinchView* imagePinchView = (ImagePinchView*)pinchView;
 			[loadScreenshotsPromises addObject: [imagePinchView getImageDataWithHalfSize: NO]];

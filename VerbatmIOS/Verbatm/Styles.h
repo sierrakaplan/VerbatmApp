@@ -127,7 +127,6 @@
 #pragma mark - ADK -
 
 #define ADK_NAV_BAR_COLOR [UIColor clearColor]
-//CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED
 #define SETTINGS_NAV_BAR_COLOR [UIColor blackColor]
 
 #define CHANNEL_PICKER_TEXT_COLOR whiteColor
@@ -176,7 +175,6 @@
 #define DISCOVER_USER_NAME_FONT_SIZE 14.f
 
 
-
 #pragma mark - Share Post Link View  -
 
 
@@ -184,12 +182,7 @@
 
 #define SPLV_BACKGROUND_COLOR [UIColor colorWithWhite:1.f alpha:0.9f]
 
-
 #define CHANNEL_LIST_HEADER_BACKGROUND_COLOR [UIColor colorWithWhite:0.95 alpha:1.f]
-
-
-
-
 
 #define TOP_TOOLBAR_BACKGROUND_COLOR [UIColor blackColor]
 
