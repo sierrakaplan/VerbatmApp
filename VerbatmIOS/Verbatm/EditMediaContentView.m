@@ -139,8 +139,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self.textAndImageView showText:YES];
 	__weak EditMediaContentView * weakSelf = self;
 	[self.textAndImageView setTextViewDelegate:weakSelf];
-
-	[self addToolBarToViewWithTextColorBlack:textColorBlack];
 }
 
 #pragma mark - Keyboard ToolBar -
@@ -171,6 +169,14 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	}
 }
 
+-(void) showTextToolbar:(BOOL)show {
+	if (show) {
+		[self addToolBarToViewWithTextColorBlack:NO];
+	} else {
+		[self removeScreenToolbar];
+	}
+}
+
 #pragma mark - Text view content changed -
 
 /* User has edited the text view somehow so we adjust its size */
@@ -184,16 +190,19 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self.textAndImageView.textView setScrollEnabled:YES];
 	[self.textAndImageView.textView setUserInteractionEnabled:YES];
 	[self.textAndImageView removeGestureRecognizer: self.editTextGesture];
-	UIView *mainScrollView = self.superview.superview;
-	if (![mainScrollView isKindOfClass:[UIScrollView class]]) {
-		mainScrollView = mainScrollView.superview;
-	}
-	[((UIScrollView*)mainScrollView) setScrollEnabled:NO];
-
+	[self enableMainScrollView:NO];
 	self.userSetYPos = textView.frame.origin.y;
     [self.textAndImageView.textView removeGestureRecognizer:self.textViewPanGesture];
 	[self moveTextView:textView afterEdit: NO];
 	[self removeScreenToolbar];
+}
+
+-(void) enableMainScrollView: (BOOL)enable {
+	UIView *mainScrollView = self.superview.superview;
+	if (![mainScrollView isKindOfClass:[UIScrollView class]]) {
+		mainScrollView = mainScrollView.superview;
+	}
+	[((UIScrollView*)mainScrollView) setScrollEnabled: enable];
 }
 
 -(void)removeScreenToolbar {
@@ -206,6 +215,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
     self.textViewBeingEdited = NO;
 	[self moveTextView:textView afterEdit:YES];
 	[self.textAndImageView.textView setUserInteractionEnabled:NO];
+	[self enableMainScrollView: YES];
 	[self.textAndImageView addGestureRecognizer: self.editTextGesture];
 	[self.textAndImageView addGestureRecognizer: self.textViewPanGesture];
 	UIView *mainScrollView = self.superview.superview;
@@ -508,7 +518,9 @@ andTextAlignment:(NSTextAlignment)textAlignment
 			if (!CGRectContainsPoint(self.textAndImageView.textView.frame, self.textViewPanStartLocation)) {
 				sender.enabled = NO;
 				sender.enabled = YES;
+				return;
 			}
+			[self enableMainScrollView:NO];
 			self.gestureActionJustStarted = YES;
 
 			break;
@@ -524,6 +536,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 		}
 		case UIGestureRecognizerStateCancelled:
 		case UIGestureRecognizerStateEnded: {
+			[self enableMainScrollView:YES];
 			break;
 		}
 		default:
@@ -641,6 +654,7 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
         UIPanGestureRecognizer * textViewPanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPanTextView:)];
         textViewPanGesture.minimumNumberOfTouches = 1;
         textViewPanGesture.maximumNumberOfTouches = 1;
+		textViewPanGesture.delegate = self;
         _textViewPanGesture = textViewPanGesture;
     }
     return _textViewPanGesture;
