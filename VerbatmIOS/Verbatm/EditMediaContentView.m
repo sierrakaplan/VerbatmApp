@@ -32,6 +32,7 @@
 @property (nonatomic) VerbatmKeyboardToolBar *permanentOnScreenKeyboard;
 
 @property (nonatomic, strong) TextOverMediaView *textAndImageView;
+@property (nonatomic) UITapGestureRecognizer *editTextGesture;
 
 @property (nonatomic) UIImageView *swipeInstructionView;
 
@@ -181,6 +182,8 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self.delegate textIsEditing];
     self.textViewBeingEdited = YES;
 	[self.textAndImageView.textView setScrollEnabled:YES];
+	[self.textAndImageView.textView setUserInteractionEnabled:YES];
+	[self.textAndImageView removeGestureRecognizer: self.editTextGesture];
 	UIView *mainScrollView = self.superview.superview;
 	if (![mainScrollView isKindOfClass:[UIScrollView class]]) {
 		mainScrollView = mainScrollView.superview;
@@ -202,8 +205,8 @@ andTextAlignment:(NSTextAlignment)textAlignment
 -(void)textViewDidEndEditing:(UITextView *)textView {
     self.textViewBeingEdited = NO;
 	[self moveTextView:textView afterEdit:YES];
-	[self.textAndImageView.textView setScrollEnabled:NO];
-
+	[self.textAndImageView.textView setUserInteractionEnabled:NO];
+	[self.textAndImageView addGestureRecognizer: self.editTextGesture];
 	UIView *mainScrollView = self.superview.superview;
 	if (![mainScrollView isKindOfClass:[UIScrollView class]]) {
 		mainScrollView = mainScrollView.superview;
@@ -307,6 +310,11 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	UIPanGestureRecognizer *moveImageGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPan:)];
 	moveImageGesture.delegate = self;
 	[self.textAndImageView addGestureRecognizer: moveImageGesture];
+
+	self.editTextGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(keyboardButtonPressed)];
+	self.editTextGesture.delegate = self;
+	[self.textAndImageView addGestureRecognizer: self.editTextGesture];
+
 	[self addSubview: self.textAndImageView];
 	[self addPanGestures];
 
@@ -346,7 +354,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
     }];
     
 }
-
 
 #pragma mark Filters
 

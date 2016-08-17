@@ -326,9 +326,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 		_textView = [[UITextView alloc] initWithFrame: DEFAULT_TEXT_VIEW_FRAME];
 		_textView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.0];
 		_textView.keyboardAppearance = UIKeyboardAppearanceLight;
-		_textView.scrollEnabled = YES;
-		_textView.editable = NO;
-		_textView.selectable = NO;
+		_textView.userInteractionEnabled = NO;
 		[_textView setTintAdjustmentMode:UIViewTintAdjustmentModeNormal];
 	}
 	return _textView;
