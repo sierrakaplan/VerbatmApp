@@ -1151,6 +1151,7 @@ andSaveInUserDefaults:(BOOL)save {
 	if(newCollectionPinchView.pinchedObjects.count == 1) {
 		SingleMediaAndTextPinchView *unPinchedPinchView = [collectionPinchView.pinchedObjects lastObject];
 		unPinchedPinchView.frame = toRemove.frame;
+		[self addTapGestureToPinchView: unPinchedPinchView];
 		[newCollectionPinchView unPinchAndRemove:unPinchedPinchView];
 		[[PostInProgress sharedInstance] removePinchViewAtIndex:upperIndex andReplaceWithPinchView:unPinchedPinchView];
 		[self.upperPinchScrollView changePageElement:unPinchedPinchView];
