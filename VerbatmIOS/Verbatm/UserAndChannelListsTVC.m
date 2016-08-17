@@ -347,7 +347,7 @@
         
         NSInteger objectIndex = indexPath.row;
         PFObject * post = [self.commentParseObjectList objectAtIndex:objectIndex];
-        
+        [cell presentComment:post];
         
     } else {
 		NSInteger objectIndex = self.presentAllChannels ? (indexPath.row - 1) : indexPath.row;

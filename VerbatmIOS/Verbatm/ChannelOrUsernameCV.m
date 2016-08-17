@@ -31,6 +31,11 @@
 @property (nonatomic,strong) UILabel * channelNameLabel;
 @property (nonatomic, strong) UILabel * usernameLabel;
 
+@property (nonatomic,strong) UILabel * commentLabel;
+@property (nonatomic, strong) UILabel * commentUserNameLabel;
+
+
+
 @property (nonatomic) NSString * channelName;
 @property (nonatomic) NSString * userName;
 
@@ -96,13 +101,20 @@
 
 -(void)presentComment:(PFObject *) commentObject{
     
-    NSString * commentString = [commentObject valueForKey:COMMENT_STRING];
+   
     PFUser * commentCreator = [commentObject valueForKey:COMMENT_USER_KEY];
     
-    
-    
-    
-    
+    [commentCreator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable user, NSError * _Nullable error) {
+            NSString * commentString = [commentObject valueForKey:COMMENT_STRING];
+            NSString * creatorName = [user valueForKey:VERBATM_USER_NAME_KEY];
+        
+            dispatch_async(dispatch_get_main_queue() , ^{
+                
+                
+                
+            });
+        
+    }];
 }
 
 
@@ -240,6 +252,35 @@
     
 	[self addSubview: self.channelNameLabel];
 	[self addSubview: self.usernameLabel];
+    
+}
+
+
+-(void)setLabelsForComment:(NSString *) comment andUserName:(NSString *) userName{
+    
+    if(self.commentLabel){
+        [self.commentLabel removeFromSuperview];
+        
+        self.commentLabel = nil;
+    }
+    
+    if(self.commentUserNameLabel){
+        [self.commentUserNameLabel removeFromSuperview];
+        self.commentUserNameLabel = nil;
+    }
+    
+    CGPoint nameLabelOrigin = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y);
+    CGPoint channelNameLabelOrigin  = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y + self.frame.size.height/3.f);
+    
+    CGFloat maxWidth = self.frame.size.width - (TAB_BUTTON_PADDING_X * 2);
+    
+    self.channelNameLabel = [self getLabel:comment withOrigin:channelNameLabelOrigin andAttributes:self.channelNameLabelAttributes withMaxWidth:maxWidth];
+    self.usernameLabel = [self getLabel:comment withOrigin:nameLabelOrigin andAttributes:self.userNameLabelAttributes withMaxWidth:maxWidth];
+    
+    
+    
+    [self addSubview: self.commentLabel];
+    [self addSubview: self.commentUserNameLabel];
     
 }
 

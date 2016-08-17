@@ -596,8 +596,10 @@
 }
 
 -(void)logAVEDoneViewing:(PageViewingExperience*) pve {
-	NSString * pageType = @"";
-	if ([pve isKindOfClass:[VideoPVE class]]) {
+	
+    NSString * pageType = @"";
+	
+    if ([pve isKindOfClass:[VideoPVE class]]) {
 		pageType = @"VideoPageView";
 	} else if([pve isKindOfClass:[PhotoVideoPVE class]]) {
 		pageType = @"PhotoVideoPageView";
@@ -606,6 +608,7 @@
 	}
 
 	[[Analytics getSharedInstance] pageEndedViewingWithIndex:self.currentPageIndex aveType:pageType];
+    
 }
 
 -(void)showPageUpIndicator {
