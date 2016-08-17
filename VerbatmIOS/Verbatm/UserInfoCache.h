@@ -11,6 +11,9 @@
 
 @interface UserInfoCache : NSObject
 
+@property (nonatomic, readonly) Channel *userChannel;
+
+
 +(instancetype)sharedInstance;
 
 -(void)loadUserChannelsWithCompletionBlock:(void(^)())block;

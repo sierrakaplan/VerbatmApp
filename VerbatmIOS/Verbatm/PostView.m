@@ -18,13 +18,13 @@
 #import "Like_BackendManager.h"
 
 #import "PageTypeAnalyzer.h"
-#import "PostLikeAndShareBar.h"
 #import "PhotoVideoPVE.h"
 #import "PhotoPVE.h"
 #import "PostView.h"
 #import "ParseBackendKeys.h"
 #import <PromiseKit/PromiseKit.h>
 #import "Post_Channel_RelationshipManager.h"
+#import "PostLikeAndShareBar.h"
 
 #import "SizesAndPositions.h"
 #import "Share_BackendManager.h"
@@ -90,8 +90,6 @@
 #define PAGING_LINE_WIDTH 4.f
 #define PAGING_LINE_ANIMATION_DURATION 0.5
 #define PAGING_LINE_COLE [UIColor whiteColor]
-#define LIKE_BUTTON_WALL_OFFSET 5.f
-#define LIKE_BUTTION_SIZE 30.f
 
 @end
 
@@ -107,9 +105,6 @@
 		if (self.pageObjects) [self createPageViews];
         if (postObject){
             self.parsePostChannelActivityObject = postObject;
-            if(self.small){
-                [self checkIfUserHasLikedThePost];
-            }
         }
 
 	}
@@ -204,7 +199,7 @@
 
 -(void)createBorder{
     [self setClipsToBounds:YES];
-	[self.layer setBorderWidth:0.2];
+	[self.layer setBorderWidth:0.5];
 	[self.layer setCornerRadius:POST_VIEW_CORNER_RADIUS];
 	[self.layer setBorderColor:[UIColor blackColor].CGColor];
 
@@ -253,7 +248,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 if(weakSelf.inSmallMode){
                     weakSelf.liked = userLikedPost;
-                    [weakSelf createLikeButton];
+                    [weakSelf.delegate presentSmallLikeButton];
                     [weakSelf updateLikeButton];
                 }else{
                     [weakSelf.likeShareBar shouldStartPostAsLiked:userLikedPost];
@@ -265,11 +260,7 @@
 
 
 -(void)updateLikeButton{
-    if(self.liked){
-        [self.likeButton setImage:[UIImage imageNamed:LIKE_ICON_PRESSED ] forState:UIControlStateNormal];
-    }else{
-        [self.likeButton setImage:[UIImage imageNamed:LIKE_ICON_UNPRESSED] forState:UIControlStateNormal];
-    }
+    [self.delegate updateSmallLikeButton:self.liked];
 }
 
 -(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares
@@ -318,13 +309,14 @@
 														  withCompletionBlock:^(Channel * channel) {
 															  weakSelf.postChannel = channel;
 															  //we only add the channel info to posts that don't belong to the current user
-															  if(channel.parseChannelObject != weakSelf.listChannel.parseChannelObject
-																 && ![channel channelBelongsToCurrentUser]) {
+															  if(channel.parseChannelObject != weakSelf.listChannel.parseChannelObject) {
+                                                                  
 																  dispatch_async(dispatch_get_main_queue(), ^{
 																	  weakSelf.creatorAndChannelBar = [[CreatorAndChannelBar alloc] initWithFrame:weakSelf.creatorBarFrameDown andChannel:channel];
 																	  weakSelf.creatorAndChannelBar.delegate = weakSelf;
 																	  [weakSelf addSubview:weakSelf.creatorAndChannelBar];
 																  });
+                                                                  
 															  }
 														  }];
 }
@@ -333,7 +325,16 @@
 	[self.delegate channelSelected:channel];
 }
 
+-(void)exitSelected{
+    [self.delegate removePostViewSelected];
+}
+
+-(void)shareButtonPressed{
+    [self userAction:Share isPositive:YES];
+}
+
 #pragma mark - Like Share Bar -
+
 
 
 -(void)userAction:(ActivityOptions) action isPositive:(BOOL) positive {
@@ -430,6 +431,7 @@
         self.liked = YES;
     }
     [self userAction:Like isPositive:self.liked];
+    [self updateLikeButton];
 }
 
 
@@ -679,18 +681,6 @@
 	return _downArrow;
 }
 
--(void)createLikeButton {
-    CGRect likeButtonFrame =  CGRectMake(LIKE_BUTTON_WALL_OFFSET,
-                                         self.frame.size.height - (LIKE_BUTTION_SIZE + LIKE_BUTTON_WALL_OFFSET),
-                                         LIKE_BUTTION_SIZE, LIKE_BUTTION_SIZE);
-    
-    self.likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.likeButton.contentMode = UIViewContentModeScaleAspectFit;
-    [self.likeButton setFrame:likeButtonFrame];
-    [self.likeButton setImage:[UIImage imageNamed:LIKE_ICON_UNPRESSED] forState:UIControlStateNormal];
-    [self.likeButton addTarget:self action:@selector(likeButtonPressed) forControlEvents:UIControlEventTouchDown];
-    [self addSubview:self.likeButton];
-}
 
 
 -(void) dealloc {

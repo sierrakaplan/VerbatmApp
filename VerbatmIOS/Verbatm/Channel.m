@@ -196,7 +196,6 @@
     self.blogDescription = object[CHANNEL_DESCRIPTION_KEY];
 }
 
-
 -(void)registerFollowingNewChannel:(Channel *)channel{
     if(channel){
 		Channel* listChannel = [UtilityFunctions checkIfChannelList:self.channelsUserFollowing containsChannel:channel];

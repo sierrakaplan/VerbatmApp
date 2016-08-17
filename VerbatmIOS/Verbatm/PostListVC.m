@@ -47,7 +47,7 @@
 #import "Styles.h"
 #import <TwitterKit/TwitterKit.h>
 
-#import <MessageUI/MFMessageComposeViewController.h>
+
 #import "Notifications.h"
 #import "Notification_BackendManager.h"
 
@@ -59,7 +59,7 @@
 
 @interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource,
 SharePostViewDelegate,
-UIScrollViewDelegate, PostCollectionViewCellDelegate, MFMessageComposeViewControllerDelegate, FBSDKSharingDelegate>
+UIScrollViewDelegate, PostCollectionViewCellDelegate, FBSDKSharingDelegate>
 
 @property (nonatomic) BOOL isCurrentUserProfile;
 @property (nonatomic) PFUser *listOwner;
@@ -669,15 +669,20 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		[self.sharePostView removeFromSuperview];
 		self.sharePostView = nil;
 	}
-
-	CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
-	CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+    
+    
+    CGFloat height = [UIApplication sharedApplication].keyWindow.frame.size.height/2.f;
+    CGFloat onScreenY = height;
+    
+	CGRect onScreenFrame = CGRectMake(0.f,onScreenY, self.view.frame.size.width,height);
+	CGRect offScreenFrame = CGRectMake(0.f, [UIApplication sharedApplication].keyWindow.frame.size.height, self.view.frame.size.width, height);
 	self.sharePostView = [[SharePostView alloc] initWithFrame:offScreenFrame];
 	self.sharePostView.delegate = self;
 	self.view.userInteractionEnabled = NO;
 	[[UIApplication sharedApplication].keyWindow addSubview:self.sharePostView];
 
 	[[UIApplication sharedApplication].keyWindow bringSubviewToFront:self.sharePostView];
+    
 	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^ {
 		self.sharePostView.frame = onScreenFrame;
 	}];
@@ -685,7 +690,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void)removeSharePOVView{
 	if(self.sharePostView){
-		CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+		CGRect offScreenFrame = CGRectMake(0.f, [UIApplication sharedApplication].keyWindow.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+        
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			self.sharePostView.frame = offScreenFrame;
 		}completion:^(BOOL finished) {
@@ -791,21 +797,13 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(void) shareToSmsSelected{
 	NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
 	if(url){
-		MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
-		NSString * message = @"Hey - checkout this post on Verbatm!   ";
-		controller.body = [message stringByAppendingString:url];
-
-		controller.messageComposeDelegate = self;
-		[self presentViewController:controller animated:YES completion:nil];
+        [self.postListDelegate shareToSmsSelectedToUrl:url];
 	}else{
 		[self.externalShare storeShareLinkToPost:self.postToShare withCaption:nil withCompletionBlock:nil];
 		[self reportLinkError];
 	}
 }
 
-- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result{
-	[controller.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-}
 
 -(void) copyLinkSelected{
 	NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
@@ -1023,6 +1021,10 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 #pragma mark - POV delegate -
+
+-(void)removePostViewSelected{
+    [self.postListDelegate removePostViewSelected];
+}
 
 -(void)channelSelected:(Channel *) channel{
 	[self.postListDelegate channelSelected:channel];

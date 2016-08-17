@@ -27,6 +27,8 @@
 
 @property (nonatomic) BOOL contentInFullScreen;
 
+#define REFRESH_DISTANCE 20.f
+
 @end
 
 @implementation FeedTableViewController
@@ -65,8 +67,7 @@
 
 -(void)reloadCellsOnScreen{
 	NSArray * visibleCell = [self.tableView visibleCells];
-
-	if(visibleCell && visibleCell.count){
+	if(visibleCell && visibleCell.count) {
 		FeedTableCell * cell = [visibleCell firstObject];
 		[cell presentProfileForChannel:self.currentUserChannel];
 	}
@@ -74,7 +75,7 @@
 
 -(void) refreshListOfContent {
 
-	if (self.tableView.contentOffset.y > (self.view.frame.size.height - 20.f)) {
+	if (self.tableView.contentOffset.y > (self.view.frame.size.height - REFRESH_DISTANCE)) {
 		[self.tableView setContentOffset:CGPointZero animated:YES];
 	}
 	self.currentUserChannel = [[UserInfoCache sharedInstance] getUserChannel];
@@ -106,18 +107,18 @@
 		NSMutableIndexSet *removedIndexSet = [[NSMutableIndexSet alloc] init];
 		//Note: this is slow but there will probably be few removed indices and alternatives are too complex
 		for (Channel *channel in removedChannels) {
-			NSUInteger removedIndex = [self.followingProfileList indexOfObject: channel];
+			NSUInteger removedIndex = [self indexOfChannel:channel inArray:self.followingProfileList];
 			[removedIndices addObject:[NSIndexPath indexPathForRow:removedIndex inSection:0]];
 			[removedIndexSet addIndex: removedIndex];
 		}
 
 		//Load newer channels that user is following
-		[self removeObjectsFromArrayOfChannels:newChannels inArray:self.followingProfileList];
+		NSArray *remainingChannels = [self removeObjectsFromArrayOfChannels:newChannels inArray:self.followingProfileList];
 		NSMutableArray *addedIndices = [[NSMutableArray alloc] init];
 		NSMutableIndexSet *addedIndexSet = [[NSMutableIndexSet alloc] init];
 		//Note: this is slow but there will probably be few removed indices and alternatives are too complex
 		for (Channel *channel in newChannels) {
-			NSUInteger addedIndex = [[self.currentUserChannel channelsUserFollowing] indexOfObject: channel];
+			NSUInteger addedIndex = [self indexOfChannel:channel inArray:[self.currentUserChannel channelsUserFollowing]];
 			[addedIndices addObject:[NSIndexPath indexPathForRow:addedIndex inSection:0]];
 			[addedIndexSet addIndex: addedIndex];
 		}
@@ -130,25 +131,54 @@
 			[self.followingProfileList insertObjects:newChannels atIndexes: addedIndexSet];
 			[self.tableView insertRowsAtIndexPaths:addedIndices withRowAnimation:UITableViewRowAnimationTop];
 		}
+
+		// Reordering channels
+		for (Channel *channel in remainingChannels) {
+			NSUInteger newIndex = [self indexOfChannel:channel inArray:[self.currentUserChannel channelsUserFollowing]];
+			NSUInteger oldIndex = [self indexOfChannel:channel inArray:self.followingProfileList];
+
+			// Only need to move the channels that have moved up
+			if (newIndex < oldIndex) {
+				NSIndexPath *oldIndexPath = [NSIndexPath indexPathForRow:oldIndex inSection:0];
+				NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:newIndex inSection:0];
+				[self.followingProfileList removeObjectAtIndex: oldIndex];
+				[self.followingProfileList insertObject:channel atIndex:newIndex];
+				[self.tableView moveRowAtIndexPath:oldIndexPath toIndexPath:newIndexPath];
+			}
+		}
+
 	}];
 }
 
-//todo: move to utility functions - make work for any pfobject
 //Compares Channel* objects by their PFObject ids
--(void) removeObjectsFromArrayOfChannels:(NSMutableArray*)receivingArray inArray:(NSArray*)otherArray{
+//Returns array of removed channels
+-(NSArray*) removeObjectsFromArrayOfChannels:(NSMutableArray*)receivingArray inArray:(NSArray*)otherArray {
+	NSMutableArray *removedChannels = [[NSMutableArray alloc] init];
 	if (receivingArray == otherArray) {
 		[receivingArray removeAllObjects];
-		return;
+		return otherArray;
 	}
 	for (Channel *channel in otherArray) {
 		for (int i = 0; i < receivingArray.count; i++) {
 			Channel *otherChannel = receivingArray[i];
 			if ([channel.parseChannelObject.objectId isEqualToString:otherChannel.parseChannelObject.objectId]) {
+				[removedChannels addObject: receivingArray[i]];
 				[receivingArray removeObjectAtIndex: i];
 				break;
 			}
 		}
 	}
+	return removedChannels;
+}
+
+-(NSUInteger) indexOfChannel: (Channel*)channel inArray:(NSArray*)array {
+	for (NSUInteger i = 0; i < array.count; i++) {
+		Channel *otherChannel = array[i];
+		if ([channel.parseChannelObject.objectId isEqualToString:otherChannel.parseChannelObject.objectId]) {
+			return i;
+		}
+	}
+	return NSNotFound;
 }
 
 -(void)notifyNotFollowingAnyone {

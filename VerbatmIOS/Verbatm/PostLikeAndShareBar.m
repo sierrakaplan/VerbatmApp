@@ -54,6 +54,8 @@
 #define BIG_ICON_SIZE (self.frame.size.width - (BIG_ICON_SPACING*2))
 
 
+
+
 #define DELETE_FLAG_BUTTON_HEIGHT (self.frame.size.width - (ICON_SPACING_GAP*2))
 #define DELETE_FLAG_BUTTON_Y  (self.frame.size.height - DELETE_FLAG_BUTTON_HEIGHT - ICON_SPACING_GAP)
 @end

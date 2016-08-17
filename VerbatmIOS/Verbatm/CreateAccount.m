@@ -87,10 +87,12 @@
 #pragma mark - TOOLBAR NEXT BUTTON -
 
 -(void) nextButtonPressed {
-    if([self sanityCheckPhoneNumberString:self.phoneNumberField.text] &&
+	NSString *simplePhoneNumber = [self getSimpleNumberFromFormattedPhoneNumber: self.phoneNumberField.text];
+	if([self sanityCheckPhoneNumberString: simplePhoneNumber] &&
        [self sanityCheckPassword:self.firstPassword.text]
        && [self sanityCheckName:self.createName.text] ) {
-        [self.delegate signUpWithPhoneNumberSelectedWithNumber:[self removeSpaces:self.phoneNumberField.text]andPassword:self.firstPassword.text andName:self.createName.text];
+        [self.delegate signUpWithPhoneNumberSelectedWithNumber:[self removeSpaces:simplePhoneNumber]
+												   andPassword:self.firstPassword.text andName:self.createName.text];
         [self removeKeyBoardOnScreen];
     }
 }
@@ -110,15 +112,15 @@
 }
 
 -(BOOL)sanityCheckPhoneNumberString:(NSString *)text {
-    NSCharacterSet *s = [NSCharacterSet characterSetWithCharactersInString:@"1234567890"];
-    s = [s invertedSet];
-    NSRange r = [[self removeSpaces:text] rangeOfCharacterFromSet:s];
-    
-    if (r.location != NSNotFound || text.length != 10) {
-        //string contains illegal characters
-        [self.delegate phoneNumberWrongFormatCreateAccount];
-        return NO;
-    }
+//    NSCharacterSet *s = [NSCharacterSet characterSetWithCharactersInString:@"1234567890"];
+//    s = [s invertedSet];
+//    NSRange r = [[self removeSpaces:text] rangeOfCharacterFromSet:s];
+//    
+//    if (r.location != NSNotFound || text.length != 10) {
+//        //string contains illegal characters
+//        [self.delegate phoneNumberWrongFormatCreateAccount];
+//        return NO;
+//    }
     return YES;
 }
 
