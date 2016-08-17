@@ -178,10 +178,14 @@ andTextAlignment:(NSTextAlignment)textAlignment
 }
 
 - (void)textViewDidBeginEditing: (UITextView *)textView {
+	[self.delegate textIsEditing];
     self.textViewBeingEdited = YES;
 	[self.textAndImageView.textView setScrollEnabled:YES];
-	UIScrollView* mainScroll = (UIScrollView*)self.superview.superview;
-	[mainScroll setScrollEnabled:NO];
+	UIView *mainScrollView = self.superview.superview;
+	if (![mainScrollView isKindOfClass:[UIScrollView class]]) {
+		mainScrollView = mainScrollView.superview;
+	}
+	[((UIScrollView*)mainScrollView) setScrollEnabled:NO];
 
 	self.userSetYPos = textView.frame.origin.y;
     [self.textAndImageView.textView removeGestureRecognizer:self.textViewPanGesture];
@@ -199,8 +203,13 @@ andTextAlignment:(NSTextAlignment)textAlignment
     self.textViewBeingEdited = NO;
 	[self moveTextView:textView afterEdit:YES];
 	[self.textAndImageView.textView setScrollEnabled:NO];
-	UIScrollView* mainScroll = (UIScrollView*)self.superview.superview;
-	[mainScroll setScrollEnabled:YES];
+
+	UIView *mainScrollView = self.superview.superview;
+	if (![mainScrollView isKindOfClass:[UIScrollView class]]) {
+		mainScrollView = mainScrollView.superview;
+	}
+	[((UIScrollView*)mainScrollView) setScrollEnabled:YES];
+
     [self addPanGestures];
 }
 

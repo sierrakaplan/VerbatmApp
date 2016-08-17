@@ -275,7 +275,7 @@
                                          LIKE_BUTTION_SIZE, LIKE_BUTTION_SIZE);
     if(!self.smallLikeButton){
         self.smallLikeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        self.smallLikeButton.contentMode = UIViewContentModeScaleAspectFit;
+        self.smallLikeButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
         [self.smallLikeButton setFrame:likeButtonFrame];
         [self.smallLikeButton setImage:[UIImage imageNamed:LIKE_ICON_UNPRESSED] forState:UIControlStateNormal];
         [self.smallLikeButton addTarget:self action:@selector(likeButtonPressed) forControlEvents:UIControlEventTouchDown];
@@ -292,7 +292,7 @@
     
     if(!self.smallShareButton){
         self.smallShareButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        self.smallShareButton.contentMode = UIViewContentModeScaleAspectFit;
+        self.smallShareButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
         [self.smallShareButton setFrame:CGRectMake(self.numLikeLabel.frame.origin.x + self.numLikeLabel.frame.size.width + SMALL_ICON_SPACING, shareButtonY, SHARE_BUTTION_SIZE, SHARE_BUTTION_SIZE)];
         [self.smallShareButton setImage:[UIImage imageNamed:SMALL_SHARE_ICON] forState:UIControlStateNormal];
         [self.smallShareButton addTarget:self action:@selector(shareButtonPressed) forControlEvents:UIControlEventTouchDown];

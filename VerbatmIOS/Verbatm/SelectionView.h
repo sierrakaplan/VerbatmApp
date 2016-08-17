@@ -15,5 +15,7 @@
  */
 
 @interface SelectionView : UIView
+
 @property (nonatomic) SelectOptionButton * shareOptionButton;
+
 @end

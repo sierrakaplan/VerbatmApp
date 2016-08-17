@@ -18,7 +18,7 @@
 @property (nonatomic,strong) UIButton *likeButton;
 @property (nonatomic,strong) UIButton *numLikesButton;
 
-@property (nonatomic, strong) UIButton *shareButon;
+@property (nonatomic, strong) UIButton *shareButton;
 @property (nonatomic, strong) UIButton *delete_Or_FlagButton;
 @property (nonatomic,strong) UIButton *numSharesButton;
 @property (nonatomic, strong) UILabel *pageNumberLabel;
@@ -133,13 +133,13 @@
                                          self.numSharesButton.frame.origin.y - (DELETE_FLAG_BUTTON_HEIGHT + BIG_ICON_SPACING),
                                          DELETE_FLAG_BUTTON_HEIGHT, DELETE_FLAG_BUTTON_HEIGHT);
     
-    self.shareButon = [UIButton buttonWithType:UIButtonTypeCustom];
-	self.shareButon.contentMode = UIViewContentModeScaleAspectFit;
-    [self.shareButon setFrame:shareButtonFrame];
-    [self.shareButon setImage:[UIImage imageNamed:SHARE_ICON] forState:UIControlStateNormal];
-    [self.shareButon addTarget:self action:@selector(shareButtonPressed) forControlEvents:UIControlEventTouchDown];
+    self.shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	self.shareButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    [self.shareButton setFrame:shareButtonFrame];
+    [self.shareButton setImage:[UIImage imageNamed:SHARE_ICON] forState:UIControlStateNormal];
+    [self.shareButton addTarget:self action:@selector(shareButtonPressed) forControlEvents:UIControlEventTouchDown];
     
-    [self addSubview:self.shareButon];
+    [self addSubview:self.shareButton];
 }
 
 -(void)createLikeButton {
@@ -148,7 +148,7 @@
                                          DELETE_FLAG_BUTTON_HEIGHT, DELETE_FLAG_BUTTON_HEIGHT);
     
     self.likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	self.likeButton.contentMode = UIViewContentModeScaleAspectFit;
+	self.likeButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
     [self.likeButton setFrame:likeButtonFrame];
     self.likeButtonLikedImage = [UIImage imageNamed:LIKE_ICON_PRESSED];
     self.likeButtonNotLikedImage = [UIImage imageNamed:LIKE_ICON_UNPRESSED];

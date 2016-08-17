@@ -106,10 +106,12 @@
 		pinchView.beingPublished = YES;
 		if ([pinchView isKindOfClass:[ImagePinchView class]]) {
 			ImagePinchView* imagePinchView = (ImagePinchView*)pinchView;
+			imagePinchView.beingPublished = YES;
 			[loadScreenshotsPromises addObject: [imagePinchView getImageDataWithHalfSize: NO]];
 		} else if ([pinchView isKindOfClass:[CollectionPinchView class]]) {
 			BOOL half = ((CollectionPinchView*)pinchView).containsImage && ((CollectionPinchView*)pinchView).containsVideo;
 			for (ImagePinchView *subImagePinchView in [(CollectionPinchView*)pinchView imagePinchViews]) {
+				subImagePinchView.beingPublished = YES;
 				[loadScreenshotsPromises addObject: [subImagePinchView getImageDataWithHalfSize: half]];
 			}
 		}
