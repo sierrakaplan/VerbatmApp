@@ -22,6 +22,7 @@
 
 @property (weak, nonatomic) UIImage* image;
 @property (strong, nonatomic) UIImageView *imageView;
+@property (nonatomic) UITextView *textView;
 @property (strong, nonatomic) UIImage* videoImage;
 @property (strong, nonatomic) UIImageView* videoView;
 @property (strong, nonatomic) UIImageView *playVideoImageView;
@@ -52,6 +53,7 @@
 	[self addCollectionViewBorder];
 	[self.background addSubview:self.imageView];
 	[self.background addSubview:self.videoView];
+	[self.background addSubview:self.textView];
 	[self.pinchedObjects addObjectsFromArray:pinchViews];
 	for (SingleMediaAndTextPinchView* pinchView in pinchViews) {
 		[self addPinchView:pinchView];
@@ -122,15 +124,17 @@
 	if(self.containsVideo){
 		self.videoView.frame = self.background.frame;
 		self.playVideoImageView.image = self.playVideoIconFull;
-	}else {
+	} else {
 		self.imageView.frame = self.background.frame;
 	}
 }
 
 //this renders two media in a vertical split view kind of way on the pinch object.
 -(void)renderTwoMedia {
-	CGRect frame1 = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y, self.background.frame.size.width/2.f , self.background.frame.size.height);
-	CGRect frame2 = CGRectMake(self.background.frame.origin.x + self.background.frame.size.width/2.f, self.background.frame.origin.y, self.background.frame.size.width/2.f, self.background.frame.size.height);
+	CGRect frame1 = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y, self.background.frame.size.width,
+							   self.background.frame.size.height/2.f);
+	CGRect frame2 = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y + self.background.frame.size.height/2.f,
+							   self.background.frame.size.width, self.background.frame.size.height/2.f);
 
 	self.videoView.frame = frame1;
 	self.playVideoImageView.image = self.playVideoIconHalf;
@@ -143,11 +147,25 @@
 	if (self.containsImage) {
 		[self.imageView setImage:self.image];
 		[self.background bringSubviewToFront:self.imageView];
+
+		ImagePinchView* lastPinchView = (ImagePinchView*)self.imagePinchViews[self.imagePinchViews.count-1];
+		if (lastPinchView.text && lastPinchView.text.length) {
+			CGFloat scale = self.imageView.frame.size.height / FULL_SCREEN_SIZE.height;
+			[self.textView setText: lastPinchView.text];
+			CGFloat yPos = lastPinchView.textYPosition.floatValue * scale + self.imageView.frame.origin.y;
+			[self.textView setFrame:CGRectMake(0.f, yPos, self.frame.size.width, self.imageView.frame.size.height)];
+			[self.textView setTextColor: lastPinchView.textColor];
+			[self.textView setTextAlignment:lastPinchView.textAlignment.integerValue];
+			if (self.containsVideo) scale = scale * 2;
+			[self.textView setFont:[UIFont fontWithName:lastPinchView.fontName size:lastPinchView.textSize.floatValue * scale]];
+			[self.background bringSubviewToFront:self.textView];
+		}
 	}
 	if (self.containsVideo) {
 		[self.videoView setImage: self.videoImage];
 		[self.background bringSubviewToFront:self.videoView];
 	}
+
 	[self addEditIcon];
 }
 
@@ -288,6 +306,16 @@
 		_videoView.clipsToBounds = YES;
 	}
 	return _videoView;
+}
+
+-(UITextView*) textView {
+	if (!_textView) {
+		_textView = [[UITextView alloc] init];
+		_textView.editable = NO;
+		_textView.backgroundColor = [UIColor clearColor];
+		_textView.userInteractionEnabled = NO;
+	}
+	return _textView;
 }
 
 @end
