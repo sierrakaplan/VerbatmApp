@@ -82,7 +82,7 @@
 
 #define NOTIFICATION_LIST_FONT_SIZE 17.f
 
-#define LIKE_SHARE_BAR_BACKGROUND_COLOR [UIColor clearColor]
+#define LIKE_SHARE_BAR_BACKGROUND_COLOR [UIColor colorWithWhite:0.f alpha:0.3]
 #define LIKE_SHARE_BAR_NUMBERS_BACKGROUND_COLOR [UIColor colorWithWhite:0.f alpha:0.3]
 
 #pragma mark - Page Views -

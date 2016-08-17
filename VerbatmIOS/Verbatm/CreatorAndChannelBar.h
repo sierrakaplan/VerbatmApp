@@ -14,7 +14,7 @@
 //this prompts the view controller to present the channel
 //that has been selected
 -(void)channelSelected:(Channel *) channel;
-
+-(void)exitSelected;
 @end
 
 @interface CreatorAndChannelBar : UIView

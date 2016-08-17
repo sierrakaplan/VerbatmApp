@@ -40,6 +40,7 @@
 @property (nonatomic) UILabel * channelNameLabel;
 @property (nonatomic) UIView * channelNameLabelHolder;
 @property (nonatomic) BOOL isFollowingChannel;
+@property (nonatomic) UIButton * exitButton;
 @end
 
 
@@ -52,6 +53,7 @@
         [self createBackground];
 		[self.currentChannel getChannelOwnerNameWithCompletionBlock:^(NSString *name) {
 			[self addCreatorNameViewWithName:name];
+            [self addExitButton];
 		}];
     }
     return self;
@@ -122,14 +124,34 @@
     }
 }
 
+-(void)exitButtonSelected{
+    [self.delegate exitSelected];
+}
+
+-(void)addExitButton{
+    CGFloat frameHeight = self.frame.size.height - (2*LABEL_WALL_OFFSET) - STATUS_BAR_HEIGHT;
+
+    CGRect exitButtonFrame = CGRectMake(LABEL_WALL_OFFSET, LABEL_WALL_OFFSET + STATUS_BAR_HEIGHT, frameHeight, frameHeight);
+    self.exitButton = [[UIButton alloc] initWithFrame:exitButtonFrame];
+    [self.exitButton setImage:[UIImage imageNamed:EXIT_POST_FULLSCREEN] forState:UIControlStateNormal];
+    [self.exitButton addTarget:self action:@selector(exitButtonSelected) forControlEvents:UIControlEventTouchDown];
+    [self addSubview:self.exitButton];
+    
+    
+}
+
 -(void)addCreatorNameViewWithName:(NSString *) creatorName{
     //create username
-    CGRect creatorNameFrame = CGRectMake(LABEL_WALL_OFFSET,
-                                         LABEL_WALL_OFFSET + STATUS_BAR_HEIGHT, self.frame.size.width/2.f,
-                                         self.frame.size.height - (2*LABEL_WALL_OFFSET) - STATUS_BAR_HEIGHT);
+    CGFloat frameWidth = self.frame.size.width/2.f;
+    CGFloat frameHeight = self.frame.size.height - (2*LABEL_WALL_OFFSET) - STATUS_BAR_HEIGHT;
+
+    CGFloat xPos = (self.frame.size.width/2.f) - LABEL_WALL_OFFSET;
+    
+    CGRect creatorNameFrame = CGRectMake(xPos,
+                                         LABEL_WALL_OFFSET + STATUS_BAR_HEIGHT,frameWidth,frameHeight)                                         ;
     
     UILabel* creatorNameView = [[UILabel alloc] initWithFrame:creatorNameFrame];
-    creatorNameView.textAlignment = NSTextAlignmentLeft;
+    creatorNameView.textAlignment = NSTextAlignmentRight;
     creatorNameView.text = creatorName;
     UIFont * fontForCreatorName = [UIFont fontWithName:TEXT_FONT_TYPE size:CREATOR_NAME_FONT_SIZE];
     creatorNameView.font = fontForCreatorName;

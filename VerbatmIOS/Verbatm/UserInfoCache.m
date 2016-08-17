@@ -21,7 +21,7 @@
 
 @interface UserInfoCache ()
 
-@property (nonatomic) Channel *userChannel;
+@property (nonatomic, readwrite) Channel *userChannel;
 
 @end
 

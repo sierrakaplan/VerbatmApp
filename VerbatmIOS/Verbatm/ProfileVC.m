@@ -20,6 +20,8 @@
 
 #import "LoadingIndicator.h"
 
+#import <MessageUI/MFMessageComposeViewController.h>
+
 #import "ParseBackendKeys.h"
 
 #import "ProfileVC.h"
@@ -46,7 +48,7 @@
 
 @interface ProfileVC() <ProfileHeaderViewDelegate, Intro_Notification_Delegate,
 UIScrollViewDelegate, PostListVCProtocol,
-UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
+UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeViewControllerDelegate>
 
 @property (nonatomic) UIButton * postPrompt;
 
@@ -76,7 +78,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 @property (nonatomic) PHImageManager* imageManager;
 
-#define CELL_SPACING_SMALL 2.f
+#define CELL_SPACING_SMALL 5.f
 #define CELL_SPACING_LARGE 0.3
 #define POSTLISTVC_ISNOT_CREATED_YET (!_postListVC)
 
@@ -123,6 +125,10 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	[super viewWillDisappear:animated];
 }
 
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+}
+
 -(void)clearOurViews {
 	if(self.postListVC)[self.postListVC offScreen];
 	if(self.postListVC)[self.postListVC clearViews];
@@ -130,9 +136,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	self.profileHeaderView = nil;
 }
 
--(void)viewDidAppear:(BOOL)animated{
-	[super viewDidAppear:animated];
-}
+
 
 -(void)presentUserList:(ListType) listType{
 	UserAndChannelListsTVC *userList = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
@@ -259,14 +263,24 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 	return  (![touch.view isKindOfClass:[Intro_Instruction_Notification_View class]]);
 }
 
+
+-(void)exitCurrentPostView{
+    [self createNewPostViewFromCellIndexPath:nil];
+}
+
 #pragma mark - Post list vc delegate -
+
+-(void)removePostViewSelected{
+    [self exitCurrentPostView];
+}
+
 
 // Something in profile was reblogged so contains a header allowing user to navigate
 // to a different profile
 -(void)channelSelected:(Channel *) channel{
     if([[[channel channelCreator] objectId] isEqualToString:[[self.channel channelCreator] objectId]]){
         //if the channel belongs to this profile then simply remove the large postlist view
-        [self createNewPostViewFromCellIndexPath:nil];
+        [self exitCurrentPostView];
     } else {
         ProfileVC *  userProfile = [[ProfileVC alloc] init];
 		BOOL isCurrentUserChannel = [[channel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
@@ -437,6 +451,22 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
     }
 }
 
+-(void) shareToSmsSelectedToUrl:(NSString *) url{
+    if(url){
+        MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
+        NSString * message = @"Hey - checkout this post on Verbatm!   ";
+        controller.body = [message stringByAppendingString:url];
+        
+        controller.messageComposeDelegate = self;
+        [self presentViewController:controller animated:YES completion:nil];
+    }
+}
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result{
+    [controller.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+
 //the current user has selected the back button
 -(void)exitCurrentProfile {
 	[self.presentingViewController dismissViewControllerAnimated:YES completion:^{
@@ -567,7 +597,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate>
 
 -(PostListVC *) postListVC{
 	if(!_postListVC){
-		CGFloat postHeight = self.view.frame.size.height - (self.view.frame.size.width);
+		CGFloat postHeight = self.view.frame.size.height - (self.view.frame.size.width - SMALL_SQUARE_LIKESHAREBAR_HEIGHT);
 		CGFloat postWidth = (self.view.frame.size.width / self.view.frame.size.height ) * postHeight;//same ratio as screen
         CGFloat postListSmallY = self.view.frame.size.height - postHeight - ((self.profileInFeed || self.isCurrentUserProfile) ? (TAB_BAR_HEIGHT + 1.f): 1.f);
         

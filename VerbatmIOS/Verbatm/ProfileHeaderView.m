@@ -53,7 +53,7 @@
 
 
 
-#define OFFSET_X 5.f
+#define LABELS_OFFSET_X 5.f
 #define OFFSET_Y 10.f
 #define USER_NAME_HEIGHT 15.f
 #define BLOG_TITLE_HEIGHT 30.f
@@ -73,6 +73,13 @@
 
 #define COVER_PHOTO_DIRECTORY_PATH [NSHomeDirectory() stringByAppendingString:@"/Library/Caches/verbatmCoverPhoto.png"]
 #define COVER_PHOTO_URL_KEY @"CoverPhotoUrlKey"
+
+#define USERINFO_BAR_HEIGHT (STATUS_BAR_HEIGHT + PROFILE_INFO_BAR_HEIGHT)
+#define COVER_PHOTO_WALL_OFFSET_X 20.f
+#define COVER_PHOTO_WALL_OFFSET_Y (USERINFO_BAR_HEIGHT + COVER_PHOTO_WALL_OFFSET_X)
+
+#define COVER_PHOTO_WIDTH (self.frame.size.width - (2* COVER_PHOTO_WALL_OFFSET_X))
+#define COVER_PHOTO_HEIGHT (COVER_PHOTO_WIDTH * (3.f/4.5))
 @end
 
 @implementation ProfileHeaderView
@@ -85,8 +92,8 @@
 		self.channel = channel;
 		self.isCurrentUser = (user == nil);
 		self.editMode = NO;
-		self.backgroundColor = [UIColor clearColor];
-		CGRect userInfoBarFrame = CGRectMake(0.f, 0.f, frame.size.width, STATUS_BAR_HEIGHT + PROFILE_INFO_BAR_HEIGHT);
+		self.backgroundColor = [UIColor blackColor];
+		CGRect userInfoBarFrame = CGRectMake(0.f, 0.f,frame.size.width,USERINFO_BAR_HEIGHT);
 		self.userInformationBar = [[ProfileInformationBar alloc] initWithFrame:userInfoBarFrame andUser:user
 																	andChannel:channel inProfileTab:profileTab inFeed:inFeed];
 		self.userInformationBar.delegate = self;
@@ -136,13 +143,12 @@
 
 
 -(void) createLabels {
-	CGRect userNameFrame = CGRectMake(OFFSET_X, self.userInformationBar.frame.origin.y +
-									  self.userInformationBar.frame.size.height + OFFSET_Y,
-									  self.frame.size.width - OFFSET_X*2, USER_NAME_HEIGHT);
-	CGRect blogTitleFrame = CGRectMake(OFFSET_X, userNameFrame.origin.y + userNameFrame.size.height + OFFSET_Y,
-									   self.frame.size.width - OFFSET_X*2, BLOG_TITLE_HEIGHT);
-	CGRect blogDescriptionFrame = CGRectMake(OFFSET_X, blogTitleFrame.origin.y + blogTitleFrame.size.height + OFFSET_Y,
-									   self.frame.size.width - OFFSET_X*2, BLOG_DESCRIPTION_HEIGHT);
+	CGRect userNameFrame = CGRectMake(COVER_PHOTO_WALL_OFFSET_X + LABELS_OFFSET_X, COVER_PHOTO_WALL_OFFSET_Y + OFFSET_Y,
+									  COVER_PHOTO_WIDTH - LABELS_OFFSET_X, USER_NAME_HEIGHT);
+	CGRect blogTitleFrame = CGRectMake(COVER_PHOTO_WALL_OFFSET_X + LABELS_OFFSET_X, userNameFrame.origin.y + userNameFrame.size.height + OFFSET_Y,
+									   COVER_PHOTO_WIDTH - LABELS_OFFSET_X, BLOG_TITLE_HEIGHT);
+	CGRect blogDescriptionFrame = CGRectMake(COVER_PHOTO_WALL_OFFSET_X + LABELS_OFFSET_X, blogTitleFrame.origin.y + blogTitleFrame.size.height + OFFSET_Y,
+									   COVER_PHOTO_WIDTH - LABELS_OFFSET_X, BLOG_DESCRIPTION_HEIGHT);
 
 	self.userNameLabel = [[UILabel alloc] initWithFrame: userNameFrame];
 	self.userNameLabel.font = [UIFont fontWithName:REGULAR_FONT size:USER_NAME_FONT_SIZE];
@@ -333,8 +339,8 @@
 	[self.changeCoverPhoto setImage:[UIImage imageNamed:ADD_COVER_PHOTO_ICON] forState:UIControlStateNormal];
 
 	CGFloat coverPhotoIconWidth = COVER_PHOTO_IMAGE_RATIO * CHANGE_COVER_PHOTO_HEIGHT;
-    CGFloat y_position = self.frame.size.height - self.frame.size.width - CHANGE_COVER_PHOTO_HEIGHT;
-    CGFloat x_position = self.frame.size.width - (coverPhotoIconWidth+OFFSET_X);
+    CGFloat y_position = COVER_PHOTO_WALL_OFFSET_Y + COVER_PHOTO_HEIGHT -  (CHANGE_COVER_PHOTO_HEIGHT);
+    CGFloat x_position = self.frame.size.width - (coverPhotoIconWidth+LABELS_OFFSET_X + COVER_PHOTO_WALL_OFFSET_X);
     
 	self.changeCoverPhoto.frame = CGRectMake(x_position, y_position,coverPhotoIconWidth, CHANGE_COVER_PHOTO_HEIGHT);
 	[self addSubview:self.changeCoverPhoto];
@@ -348,11 +354,11 @@
 
 -(void)createTopAndReflectionCoverImageFromImage:(UIImage *)coverPhotoImage{
 	[self.coverPhotoView setImage:coverPhotoImage];
-	self.coverPhotoView.contentMode = UIViewContentModeScaleAspectFit;
+	self.coverPhotoView.contentMode = UIViewContentModeScaleAspectFill;
 	[self insertSubview:self.transparentTintCoverView aboveSubview:self.coverPhotoView];
-	[self.flippedCoverPhoto setImage:coverPhotoImage];
-	self.flippedCoverPhoto.transform = CGAffineTransformMakeRotation(M_PI);
-	[self.flippedCoverPhoto createBlurViewOnViewWithStyle:UIBlurEffectStyleDark];
+//	[self.flippedCoverPhoto setImage:coverPhotoImage];
+//	self.flippedCoverPhoto.transform = CGAffineTransformMakeRotation(M_PI);
+//	[self.flippedCoverPhoto createBlurViewOnViewWithStyle:UIBlurEffectStyleDark];
 }
 
 -(void)setCoverPhotoImage:(UIImage *) coverPhotoImage{
@@ -455,8 +461,8 @@
 
 -(UITextView *) blogTitleEditable {
 	if (!_blogTitleEditable) {
-		_blogTitleEditable = [[UITextView alloc] initWithFrame: CGRectMake(OFFSET_X, self.blogTitle.frame.origin.y,
-																		   self.frame.size.width - OFFSET_X*2,
+		_blogTitleEditable = [[UITextView alloc] initWithFrame: CGRectMake(LABELS_OFFSET_X, self.blogTitle.frame.origin.y,
+																		   self.frame.size.width - LABELS_OFFSET_X*2,
 																		   BLOG_TITLE_HEIGHT)];
 		_blogTitleEditable.backgroundColor = [UIColor clearColor];
 		_blogTitleEditable.layer.borderWidth = 0.5f;
@@ -476,8 +482,8 @@
 
 -(UITextView *) blogDescriptionEditable {
 	if (!_blogDescriptionEditable) {
-		_blogDescriptionEditable = [[UITextView alloc] initWithFrame: CGRectMake(OFFSET_X, self.blogDescription.frame.origin.y,
-																				 self.frame.size.width - OFFSET_X*2,
+		_blogDescriptionEditable = [[UITextView alloc] initWithFrame: CGRectMake(LABELS_OFFSET_X, self.blogDescription.frame.origin.y,
+																				 self.frame.size.width - LABELS_OFFSET_X*2,
 																				 BLOG_DESCRIPTION_HEIGHT)];
 		_blogDescriptionEditable.backgroundColor = [UIColor clearColor];
 		_blogDescriptionEditable.layer.borderWidth = 0.5f;
@@ -497,8 +503,8 @@
 
 -(void) addSubviewsToDescription {
 	UIImageView *editImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EDIT_PINCHVIEW_ICON]];
-	editImage.frame = CGRectMake(self.blogDescriptionEditable.frame.size.width - OFFSET_X - 20.f,
-								 self.blogDescriptionEditable.frame.size.height - OFFSET_X - 20.f,
+	editImage.frame = CGRectMake(self.blogDescriptionEditable.frame.size.width - LABELS_OFFSET_X - 20.f,
+								 self.blogDescriptionEditable.frame.size.height - LABELS_OFFSET_X - 20.f,
 								 20.f, 20.f);
 	[self.blogDescriptionEditable addSubview: editImage];
 	[self.blogDescriptionEditable addSubview: self.blogDescriptionPlaceholder];
@@ -511,8 +517,8 @@
 
 -(void) addSubviewsToTitle {
 	UIImageView *editImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EDIT_PINCHVIEW_ICON]];
-	editImage.frame = CGRectMake(self.blogTitleEditable.frame.size.width - OFFSET_X - 20.f,
-								 self.blogTitleEditable.frame.size.height - OFFSET_X - 20.f,
+	editImage.frame = CGRectMake(self.blogTitleEditable.frame.size.width - LABELS_OFFSET_X - 20.f,
+								 self.blogTitleEditable.frame.size.height - LABELS_OFFSET_X - 20.f,
 								 20.f, 20.f);
 	[self.blogTitleEditable addSubview: editImage];
 	[self.blogTitleEditable addSubview: self.blogTitlePlaceholder];
@@ -546,7 +552,9 @@
 
 -(UIImageView *)coverPhotoView{
 	if(!_coverPhotoView){
-		_coverPhotoView = [[UIImageView alloc] initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width,self.frame.size.width)];
+        
+        _coverPhotoView = [[UIImageView alloc] initWithFrame:CGRectMake(COVER_PHOTO_WALL_OFFSET_X, COVER_PHOTO_WALL_OFFSET_Y,COVER_PHOTO_WIDTH,COVER_PHOTO_HEIGHT)];
+        [_coverPhotoView setClipsToBounds:YES];
 		[self addSubview:_coverPhotoView];
 		[self sendSubviewToBack:_coverPhotoView];
 	}

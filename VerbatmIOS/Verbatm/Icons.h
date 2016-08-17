@@ -39,6 +39,8 @@
 
 #pragma mark - Feed -
 
+#define EXIT_POST_FULLSCREEN @"White X_ Exit"
+
 #define VIDEO_LOADING_ICON @"white_spin_icon"
 #define FOLLOWED_BY_ICON  @"followed_by_icon"
 #define FOLLOW_ICON_LIGHT  @"follow_icon_light"
@@ -138,9 +140,13 @@
 
 #pragma mark Like Share Bar
 
-#define LIKE_ICON_UNPRESSED @"heart_unfilled"
-#define LIKE_ICON_PRESSED @"heart_filled"
-#define SHARE_ICON @"share_icon"
+#define LIKE_ICON_UNPRESSED @"Gray Heart"
+#define LIKE_ICON_PRESSED @"Red Heart"
+
+
+#define SMALL_SHARE_ICON @"Gray Share icon"
+
+#define SHARE_ICON @"Blue Share icon"
 #define UNMUTED_ICON @"sound_unmuted"
 #define MUTED_ICON @"sound_muted"
 #define DELETE_POST_ICON @"trash_icon_dark"
