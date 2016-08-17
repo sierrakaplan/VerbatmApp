@@ -972,6 +972,12 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	} completion:^(BOOL finished) {
 		if(finished){
 			self.performingUpdate = NO;
+
+			// scroll to publishing item
+			NSInteger item = [self.collectionView numberOfItemsInSection:0] - 1;
+			NSIndexPath *indexPath = [NSIndexPath indexPathForItem:item inSection:0];
+			[self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:(UICollectionViewScrollPositionRight) animated:YES];
+
 			[CATransaction commit];
 			[self.postListDelegate postsFound];
 		}
