@@ -138,6 +138,8 @@
 
 #pragma mark Like Share Bar
 
+#define COMMENT_ICON @"Comment icon"
+
 #define LIKE_ICON_UNPRESSED @"heart_unfilled"
 #define LIKE_ICON_PRESSED @"heart_filled"
 #define SHARE_ICON @"share_icon"

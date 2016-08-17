@@ -42,6 +42,10 @@
 @property (strong, nonatomic) NSDictionary* channelNameLabelAttributes;
 @property (strong, nonatomic) NSDictionary* userNameLabelAttributes;
 
+@property (strong, nonatomic) NSDictionary* userNameCommentLabelAttributes;
+@property (strong, nonatomic) NSDictionary* commentStringLabelAttributes;
+
+
 @property (nonatomic) UIView * seperatorView;
 
 @property (nonatomic) UILabel * headerTitle;//makes the cell a header for the table view
@@ -100,18 +104,12 @@
 #pragma mark - Edit Cell formatting -
 
 -(void)presentComment:(PFObject *) commentObject{
-    
-   
     PFUser * commentCreator = [commentObject valueForKey:COMMENT_USER_KEY];
-    
     [commentCreator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable user, NSError * _Nullable error) {
             NSString * commentString = [commentObject valueForKey:COMMENT_STRING];
             NSString * creatorName = [user valueForKey:VERBATM_USER_NAME_KEY];
-        
             dispatch_async(dispatch_get_main_queue() , ^{
-                
-                
-                
+                [self setLabelsForComment:commentString andUserName:creatorName];
             });
         
     }];
@@ -250,6 +248,7 @@
 	self.channelNameLabel = [self getLabel:self.channelName withOrigin:channelNameLabelOrigin andAttributes:self.channelNameLabelAttributes withMaxWidth:maxWidth];
 	self.usernameLabel = [self getLabel:self.userName withOrigin:nameLabelOrigin andAttributes:self.userNameLabelAttributes withMaxWidth:maxWidth];
     
+    
 	[self addSubview: self.channelNameLabel];
 	[self addSubview: self.usernameLabel];
     
@@ -269,14 +268,14 @@
         self.commentUserNameLabel = nil;
     }
     
-    CGPoint nameLabelOrigin = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y);
-    CGPoint channelNameLabelOrigin  = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y + self.frame.size.height/3.f);
+    CGPoint userNameLabelOrigin = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y);
+    CGPoint commentStringLabelOrigin  = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y + self.frame.size.height/3.f);
     
     CGFloat maxWidth = self.frame.size.width - (TAB_BUTTON_PADDING_X * 2);
     
-    self.channelNameLabel = [self getLabel:comment withOrigin:channelNameLabelOrigin andAttributes:self.channelNameLabelAttributes withMaxWidth:maxWidth];
-    self.usernameLabel = [self getLabel:comment withOrigin:nameLabelOrigin andAttributes:self.userNameLabelAttributes withMaxWidth:maxWidth];
+    self.commentUserNameLabel = [self getLabel:userName withOrigin:commentStringLabelOrigin andAttributes:self.userNameCommentLabelAttributes withMaxWidth:maxWidth];
     
+    self.commentLabel = [self getLabel:comment withOrigin:userNameLabelOrigin andAttributes:self.commentStringLabelAttributes withMaxWidth:maxWidth];
     
     
     [self addSubview: self.commentLabel];
@@ -284,15 +283,6 @@
     
 }
 
-
--(void)setComment:(PFObject *) parseCommentObject{
-    
-    
-    
-    
-    
-    
-}
 
 
 -(UILabel *) getLabel:(NSString *) title withOrigin:(CGPoint) origin andAttributes:(NSDictionary *) nameLabelAttribute withMaxWidth:(CGFloat) maxWidth {
@@ -330,6 +320,14 @@
 	//create "followers" text
 	self.userNameLabelAttributes =@{NSForegroundColorAttributeName: [UIColor blackColor],
 									NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:CHANNEL_USER_LIST_USER_NAME_FONT_SIZE]};
+    
+    
+    self.userNameCommentLabelAttributes = @{NSForegroundColorAttributeName: [UIColor blackColor],
+                                            NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT size: CHANNEL_USER_LIST_USER_NAME_FONT_SIZE]};
+
+    
+    self.commentStringLabelAttributes = @{NSForegroundColorAttributeName: [UIColor blackColor],
+                                          NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:CHANNEL_USER_LIST_USER_NAME_FONT_SIZE], NSParagraphStyleAttributeName:paragraphStyle};
 }
 
 

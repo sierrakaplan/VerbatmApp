@@ -23,6 +23,11 @@
 @property (nonatomic,strong) UIButton *numSharesButton;
 @property (nonatomic, strong) UILabel *pageNumberLabel;
 
+@property (nonatomic, strong) UIButton *commentButon;
+@property (nonatomic, strong) UIButton * numCommentsButton;
+
+
+
 @property (nonatomic, strong) UIButton *muteButton;
 @property (nonatomic) BOOL isMuted;
 
@@ -109,6 +114,10 @@
 }
 
 -(void) creatButtonsWithNumLike:(NSNumber *) numLikes andNumShare:(NSNumber *) numShares {
+    
+    [self createCommentButtonNumbers:@(0)];
+    [self createCommentButton];
+    
     if (numLikes && numLikes.integerValue >= 0) {
         [self createLikeButtonNumbers:numLikes];
     }else{
@@ -156,6 +165,20 @@
     [self addSubview:self.likeButton];
 }
 
+-(void)createCommentButton{
+    CGRect commentButtonFrame =  CGRectMake(ICON_SPACING_GAP,
+                                         self.numCommentsButton.frame.origin.y - (DELETE_FLAG_BUTTON_HEIGHT + BIG_ICON_SPACING),
+                                         DELETE_FLAG_BUTTON_HEIGHT, DELETE_FLAG_BUTTON_HEIGHT);
+    
+    self.commentButon = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.commentButon.contentMode = UIViewContentModeScaleAspectFit;
+    [self.commentButon setFrame:commentButtonFrame];
+    [self.commentButon setImage:[UIImage imageNamed:COMMENT_ICON] forState:UIControlStateNormal];
+    [self.commentButon addTarget:self action:@selector(likeButtonPressed) forControlEvents:UIControlEventTouchDown];
+    
+    [self addSubview:self.commentButon];
+}
+
 -(void)presentMuteButton:(BOOL) shouldPresent{
 	if(shouldPresent){
 		[self addSubview:self.muteButton];
@@ -178,14 +201,42 @@
     CGSize textSize = [[numLikes.stringValue stringByAppendingString:likesText] sizeWithAttributes:self.likeNumberTextAttributes];
     
     CGRect likeNumberButtonFrame = CGRectMake((self.frame.size.width - textSize.width)/2.f,
-											  DELETE_FLAG_BUTTON_Y - (BIG_ICON_SPACING + textSize.height),
+                                              self.commentButon.frame.origin.y - (BIG_ICON_SPACING + textSize.height),
                                               textSize.width, textSize.height);
+    
     [self.numLikesButton setFrame:likeNumberButtonFrame];
     
     
     [self.numLikesButton addTarget:self action:@selector(numLikesButtonSelected) forControlEvents:UIControlEventTouchDown];
     
     [self addSubview:self.numLikesButton];
+}
+
+//
+-(void)createCommentButtonNumbers:(NSNumber *) numComments {
+    if(self.numCommentsButton){
+        [self.numCommentsButton removeFromSuperview];
+        self.numCommentsButton = nil;
+    }
+    self.numCommentsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    
+    NSString * commentsText = numComments.integerValue > 1 ? @" comments" : @" comment";
+    
+    NSAttributedString * commentAttrText = [[NSAttributedString alloc] initWithString:[numComments.stringValue stringByAppendingString:commentsText] attributes:self.likeNumberTextAttributes];
+    
+    [self.numCommentsButton setAttributedTitle:commentAttrText forState:UIControlStateNormal];
+    
+    CGSize textSize = [[numComments.stringValue stringByAppendingString:commentsText] sizeWithAttributes:self.likeNumberTextAttributes];
+    
+    CGRect likeNumberButtonFrame = CGRectMake((self.frame.size.width - textSize.width)/2.f,
+                                              DELETE_FLAG_BUTTON_Y - (BIG_ICON_SPACING + textSize.height),
+                                              textSize.width, textSize.height);
+    [self.numCommentsButton setFrame:likeNumberButtonFrame];
+    
+    
+    [self.numCommentsButton addTarget:self action:@selector(numCommentsButtonSelected) forControlEvents:UIControlEventTouchDown];
+    
+    [self addSubview:self.numCommentsButton];
 }
 
 
@@ -201,10 +252,10 @@
     [self.numSharesButton setAttributedTitle:followersText forState:UIControlStateNormal];
     CGSize textSize = [[numShares.stringValue stringByAppendingString:likesText] sizeWithAttributes:self.likeNumberTextAttributes];
     
-    CGRect likeNumberButtonFrame = CGRectMake((self.frame.size.width - textSize.width)/2.f,
+    CGRect shareNumberButtonFrame = CGRectMake((self.frame.size.width - textSize.width)/2.f,
 											  self.likeButton.frame.origin.y - (BIG_ICON_SPACING + textSize.height),
                                               textSize.width, textSize.height);
-    [self.numSharesButton setFrame:likeNumberButtonFrame];
+    [self.numSharesButton setFrame:shareNumberButtonFrame];
 
     [self.numSharesButton addTarget:self action:@selector(numSharesButtonSelected) forControlEvents:UIControlEventTouchDown];
     
@@ -312,6 +363,10 @@
 //the actual number view is selected
 -(void) numLikesButtonSelected {
     [self.delegate showWhoLikesThePost];
+}
+
+-(void) numCommentsButtonSelected {
+    //[self.delegate showWhoLikesThePost];
 }
 
 //todo:
