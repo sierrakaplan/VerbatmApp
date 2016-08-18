@@ -56,8 +56,8 @@
 
 
 
-#define DELETE_FLAG_BUTTON_HEIGHT (self.frame.size.width - (ICON_SPACING_GAP*2))
-#define DELETE_FLAG_BUTTON_Y  (self.frame.size.height - DELETE_FLAG_BUTTON_HEIGHT - ICON_SPACING_GAP)
+#define DELETE_FLAG_BUTTON_HEIGHT (self.frame.size.width - (ICON_SPACING_GAP*3.f))
+#define DELETE_FLAG_BUTTON_Y  (self.frame.size.height - DELETE_FLAG_BUTTON_HEIGHT - ICON_SPACING_GAP - 10.f)
 @end
 
 @implementation PostLikeAndShareBar
@@ -78,9 +78,7 @@
 
 -(void)formatView{
     self.backgroundColor = LIKE_SHARE_BAR_BACKGROUND_COLOR;
-    
-    self.layer.cornerRadius = 1.f;
-    
+    self.layer.cornerRadius = 10.f;
 }
 
 -(void) createCounterLabelStartingAtPage:(NSNumber *) startPage outOf:(NSNumber *) totalPages{

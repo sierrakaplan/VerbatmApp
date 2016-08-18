@@ -204,7 +204,7 @@
 	[self.layer setBorderColor:[UIColor blackColor].CGColor];
 
 	self.lsBarDownFrame = CGRectMake(self.frame.size.width - (LIKE_SHARE_BAR_WIDTH + 3.f),
-                                     self.frame.size.height - LIKE_SHARE_BAR_HEIGHT,
+                                     (self.frame.size.height + 10.f) - LIKE_SHARE_BAR_HEIGHT,
                                      LIKE_SHARE_BAR_WIDTH, LIKE_SHARE_BAR_HEIGHT);
 }
 
