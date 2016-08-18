@@ -67,6 +67,9 @@
 #define COMMENTING_KEYBOARD_HEIGHT 50.f
 #define TOP_INSET (LIST_BAR_Y_OFFSET+ STATUS_BAR_HEIGHT + CUSTOM_CHANNEL_LIST_BAR_HEIGHT)
 #define BOTTOM_INSET CUSTOM_CHANNEL_LIST_BAR_HEIGHT
+
+
+#define KEYBOARD_BAR_START_YPOS (self.view.frame.size.height - (COMMENTING_KEYBOARD_HEIGHT + TOP_INSET))
 @end
 
 
@@ -169,7 +172,7 @@
 
 -(void)putCommentingKeyboardBarOnScreen{
     
-    CGFloat yPos = self.view.frame.size.height - (COMMENTING_KEYBOARD_HEIGHT + TOP_INSET + BOTTOM_INSET);
+    CGFloat yPos = KEYBOARD_BAR_START_YPOS;
     
     
     self.commentingKeyboard = [[CommentingKeyboardToolbar alloc] initWithFrame:CGRectMake(0.f, yPos, self.view.frame.size.width, COMMENTING_KEYBOARD_HEIGHT)];
@@ -203,8 +206,11 @@
     [UIView setAnimationDuration:animationDuration];
     [UIView setAnimationCurve:animationCurve];
     
+    
+    CGFloat yPosKeyboardWithTableViewCord = keyboardEndFrame.origin.y + self.tableView.contentOffset.y;
+    
     CGRect newFrame = self.commentingKeyboard.frame;
-    newFrame.origin.y = keyboardEndFrame.origin.y - (self.commentingKeyboard.frame.size.height + TOP_INSET);
+    newFrame.origin.y =  yPosKeyboardWithTableViewCord - (self.commentingKeyboard.frame.size.height);
     self.commentingKeyboard.frame = newFrame;
     
     [UIView commitAnimations];
@@ -237,7 +243,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	if(self.channelsToDisplay){
+	if(self.channelsToDisplay && (self.currentListType != CommentList)){
 		//this is some list of channels
 
 		NSInteger objectIndex = indexPath.row - self.presentAllChannels;
@@ -401,7 +407,13 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	[scrollView bringSubviewToFront:self.navBar];
-	self.navBar.frame = CGRectMake(0.f, scrollView.contentOffset.y, self.navBar.frame.size.width, self.navBar.frame.size.height);
+    CGRect newNavBarFrame = CGRectMake(0.f, scrollView.contentOffset.y, self.navBar.frame.size.width, self.navBar.frame.size.height);;
+    if(self.currentListType == CommentList){
+        CGFloat navBar_CommentBarDiff = self.commentingKeyboard.frame.origin.y - self.navBar.frame.origin.y;
+        self.commentingKeyboard.frame = CGRectMake(0.f, newNavBarFrame.origin.y + navBar_CommentBarDiff, self.commentingKeyboard.frame.size.width, self.commentingKeyboard.frame.size.height);
+    }
+    self.navBar.frame = newNavBarFrame;
+    
 
 }
 
