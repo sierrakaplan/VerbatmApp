@@ -100,17 +100,15 @@
     }
 }
 
-
-
 +(CGFloat)getHeightForCellFromCommentObject:(Comment *) commentObject{
     
     CGFloat maxWidth = [[UIScreen mainScreen] bounds].size.width - (TAB_BUTTON_PADDING_X * 2);
     
-    UILabel * heightFinder = [ChannelOrUsernameCV getTextView:[commentObject commentString] withOrigin:CGPointMake(0.f, 0.f) andAttributes:[ChannelOrUsernameCV getAttrForCommentString] withMaxWidth:maxWidth];
+    UILabel * heightFinder = [ChannelOrUsernameCV getTextView:[commentObject commentString] withOrigin:CGPointMake(0.f, 0.f)
+                                                andAttributes:[ChannelOrUsernameCV getAttrForCommentString] withMaxWidth:maxWidth];
     
     return heightFinder.frame.size.height + (CHANNEL_USER_LIST_CELL_HEIGHT/2.f );
 }
-
 
 +(NSDictionary *) getAttrForCommentString{
     NSMutableParagraphStyle *usernameAlignment = NSMutableParagraphStyle.new;
@@ -277,31 +275,21 @@
     
 }
 
-
 -(void)setLabelsForComment:(NSString *) comment andUserName:(NSString *) userName{
     
     [self clearView];
     
     CGFloat maxWidth = [[UIScreen mainScreen] bounds].size.width - (TAB_BUTTON_PADDING_X * 2);
-
-    
     CGPoint userNameLabelOrigin = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y);
    
-    
     self.commentUserNameLabel = [self getLabel:userName withOrigin:userNameLabelOrigin andAttributes:self.userNameCommentLabelAttributes withMaxWidth:maxWidth];
     
-    
-     CGPoint  commentStringLabelOrigin = CGPointMake(TAB_BUTTON_PADDING_X,self.commentUserNameLabel.frame.origin.y + self.commentUserNameLabel.frame.size.height);
+    CGPoint  commentStringLabelOrigin = CGPointMake(TAB_BUTTON_PADDING_X,self.commentUserNameLabel.frame.origin.y + self.commentUserNameLabel.frame.size.height);
     
     self.commentLabel = [ChannelOrUsernameCV getTextView:comment withOrigin:commentStringLabelOrigin andAttributes:self.commentStringLabelAttributes withMaxWidth:maxWidth];
-    
-    
     [self addSubview: self.commentLabel];
     [self addSubview: self.commentUserNameLabel];
-    
 }
-
-
 
 -(UILabel *) getLabel:(NSString *) title withOrigin:(CGPoint) origin andAttributes:(NSDictionary *) nameLabelAttribute withMaxWidth:(CGFloat) maxWidth {
     UILabel * nameLabel = [[UILabel alloc] init];

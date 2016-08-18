@@ -16,7 +16,7 @@
 #import "SizesAndPositions.h"
 #import "ParseBackendKeys.h"
 
-@interface NotificationPostPreview () <CustomNavigationBarDelegate>
+@interface NotificationPostPreview () <CustomNavigationBarDelegate, PostViewDelegate>
 @property (nonatomic, readwrite) PFObject *currentPostActivityObject;
 @property (nonatomic, readwrite) PostView *currentPostView;
 
@@ -53,12 +53,9 @@
 	self.customNavBar = nil;
 }
 
--(void)leftButtonPressed{
-	[self.delegate exitPreview];
-}
+
 
 -(void)presentPost:(PFObject *) pfActivityObj andChannel:(Channel *) channel{
-    [self createNavBar];
 	self.postBeingPresented = pfActivityObj;
 	PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
     [post fetchInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
@@ -66,6 +63,7 @@
             [Page_BackendObject getPagesFromPost:object andCompletionBlock:^(NSArray * pages) {
                 self.currentPostView = [[PostView alloc] initWithFrame:self.bounds
                                           andPostChannelActivityObject:pfActivityObj small:NO andPageObjects:pages];
+                self.currentPostView.delegate = self;
                 
                 NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
                 self.currentPostView.listChannel = channel;
@@ -84,5 +82,59 @@
     }];
 	
 }
+
+#pragma mark -POVDelegate-
+
+
+-(void) shareOptionSelectedForParsePostObject: (PFObject* ) post{
+    
+}
+-(void) channelSelected:(Channel *) channel{
+    
+}
+-(void) deleteButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post reblogged: (BOOL)reblogged{
+    
+}
+
+-(void) flagButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post{
+    
+}
+-(void) showWhoLikesThePost:(PFObject *) post{
+    
+}
+
+-(void)removePostViewSelected{
+    [self.delegate exitPreview];
+}
+
+-(void)presentSmallLikeButton{
+    
+}
+
+
+-(void)updateSmallLikeButton:(BOOL)isLiked{
+    
+}
+-(void)startLikeButtonAsLiked:(BOOL)isLiked{
+    
+}
+-(void)showWhoCommentedOnPost:(PFObject *) post{
+    [self.delegate presentCommentListForPost:post];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @end

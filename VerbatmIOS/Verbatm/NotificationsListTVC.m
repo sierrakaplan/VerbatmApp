@@ -20,6 +20,7 @@
 #import "NotificationPostPreview.h"
 #import "Durations.h"
 #import "Icons.h"
+#import "UserAndChannelListsTVC.h"
 
 @interface NotificationsListTVC () <NotificationPostPreviewProtocol>
 
@@ -188,6 +189,11 @@
 
 -(void)exitPreview{
 	[self removePreview];
+}
+-(void)presentCommentListForPost:(PFObject *)post{
+    UserAndChannelListsTVC *likersListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    [likersListVC presentList:CommentList forChannel:nil orPost:post];
+    [self presentViewController:likersListVC animated:YES completion:nil];
 }
 
 -(void)getMoreNotifications{

@@ -356,6 +356,9 @@
 			[Share_BackendManager currentUserReblogPost:post toChannel:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO]];
 			[self.delegate shareOptionSelectedForParsePostObject:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
 			break;
+        case CommentListPresent:
+            [self showWhoCommentedOnthePost];
+            break;
 		default:
 			break;
 	}
@@ -439,6 +442,9 @@
     [self updateLikeButton];
 }
 
+-(void)commentButtonPressed{
+    [self userAction:CommentListPresent isPositive:YES];
+}
 
 -(void)muteAllVideos:(BOOL) shouldMute {
 	self.postMuted = shouldMute;

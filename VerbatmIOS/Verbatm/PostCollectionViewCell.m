@@ -38,8 +38,11 @@
 
 @property (nonatomic) UIButton *smallLikeButton;
 @property (nonatomic) UIButton *smallShareButton;
+@property (nonatomic) UIButton *smallCommentButton;
+
 @property (nonatomic) UILabel * numLikeLabel;
 @property (nonatomic) UILabel * numSharesLabel;
+@property (nonatomic) UILabel * numCommentsLabel;
 
 @property (nonatomic) NSNumber * numLikes;
 @property (nonatomic) NSNumber * numShares;
@@ -52,6 +55,8 @@
 
 #define LIKE_BUTTON_WALL_OFFSET 5.f
 #define SMALL_ICON_SPACING 5.f
+
+#define SMALL_NUMBER_TEXT_COLOR whiteColor
 @end
 
 @implementation PostCollectionViewCell
@@ -84,7 +89,10 @@
         [self.smallShareButton removeFromSuperview];
         [self.numLikeLabel removeFromSuperview];
         [self.smallLikeButton removeFromSuperview];
-        
+        [self.numCommentsLabel removeFromSuperview];
+        [self.smallCommentButton removeFromSuperview];
+        self.numCommentsLabel = nil;
+        self.smallCommentButton = nil;
         self.numSharesLabel = nil;
         self.smallShareButton = nil;
         self.numLikeLabel = nil;
@@ -259,7 +267,9 @@
     }
 }
 
-
+-(void)commentButtonPressed{
+    [self.currentPostView commentButtonPressed];
+}
 -(void)likeButtonPressed{
     [self.currentPostView likeButtonPressed];
 }
@@ -275,6 +285,9 @@
     self.numLikes = self.currentPostObject[POST_NUM_LIKES];
     self.numShares = self.currentPostObject[POST_NUM_REBLOGS];
     self.numComments = self.currentPostObject[POST_NUM_COMMENTS];
+    if(self.numComments == nil){
+        self.numComments = @(0);
+    }
     
     //create LikeButton
     CGFloat likeButtonY =  2.5;
@@ -293,7 +306,7 @@
     
     if(!self.numLikeLabel){
         self.numLikeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.smallLikeButton.frame.origin.x + self.smallLikeButton.frame.size.width + SMALL_ICON_SPACING, likeButtonY, LIKE_BUTTION_SIZE, LIKE_BUTTION_SIZE)];
-        [self.numLikeLabel setTextColor:[UIColor whiteColor]];
+        [self.numLikeLabel setTextColor:[UIColor SMALL_NUMBER_TEXT_COLOR]];
         [self addSubview:self.numLikeLabel];
     }
     
@@ -312,11 +325,30 @@
     
     if(!self.numSharesLabel){
         self.numSharesLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.smallShareButton.frame.origin.x + self.smallShareButton.frame.size.width + SMALL_ICON_SPACING, shareButtonY, LIKE_BUTTION_SIZE, LIKE_BUTTION_SIZE)];
-        [self.numSharesLabel setTextColor:[UIColor whiteColor]];
+        [self.numSharesLabel setTextColor:[UIColor SMALL_NUMBER_TEXT_COLOR]];
         [self addSubview:self.numSharesLabel];
     }
     
     [self.numSharesLabel setText:[self.numShares stringValue]];
+    
+    //create comment button
+    if(!self.smallCommentButton){
+        self.smallCommentButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        self.smallCommentButton.contentMode = UIViewContentModeScaleAspectFit;
+        [self.smallCommentButton setFrame:CGRectMake(self.numSharesLabel.frame.origin.x + self.numSharesLabel.frame.size.width + SMALL_ICON_SPACING, shareButtonY, SHARE_BUTTION_SIZE, SHARE_BUTTION_SIZE)];
+        [self.smallCommentButton setImage:[UIImage imageNamed:SMALL_COMMENT_ICON] forState:UIControlStateNormal];
+        [self.smallCommentButton addTarget:self action:@selector(commentButtonPressed) forControlEvents:UIControlEventTouchDown];
+        [self addSubview:self.smallCommentButton];
+    }
+    
+    if(!self.numCommentsLabel){
+        self.numCommentsLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.smallCommentButton.frame.origin.x + self.smallCommentButton.frame.size.width + SMALL_ICON_SPACING, shareButtonY, LIKE_BUTTION_SIZE, LIKE_BUTTION_SIZE)];
+        [self.numCommentsLabel setTextColor:[UIColor SMALL_NUMBER_TEXT_COLOR]];
+        [self addSubview:self.numCommentsLabel];
+    }
+    
+    [self.numCommentsLabel setText:[self.numComments stringValue]];
+
 
 }
 //set the start state of the like button

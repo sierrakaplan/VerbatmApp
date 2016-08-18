@@ -17,6 +17,7 @@
 typedef enum BarActivityOptions{
 	Like = 0,
 	Share = 1,
+    CommentListPresent = 2
 } ActivityOptions;
 
 @protocol PostLikeAndShareBarProtocol <NSObject>

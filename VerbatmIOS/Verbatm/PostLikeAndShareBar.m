@@ -312,6 +312,7 @@
 
 #pragma mark - Button actions -
 
+
 //the icon is selected
 -(void)shareButtonPressed{
     [self.delegate userAction:Share isPositive:YES];

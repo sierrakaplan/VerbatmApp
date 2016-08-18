@@ -58,6 +58,7 @@
 -(void)prepareForScreenShot;
 
 -(void)checkIfUserHasLikedThePost;
+-(void)commentButtonPressed;
 
 -(void)likeButtonPressed;
 
