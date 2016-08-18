@@ -477,20 +477,16 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		return nil;
 	}
 
-	PostCollectionViewCell *cell = (PostCollectionViewCell *) [self.collectionView cellForItemAtIndexPath: indexPath];
-	if (cell == nil) {
-		cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:POST_CELL_ID forIndexPath:indexPath];
-	}
-	cell.cellDelegate = self;
+	PostCollectionViewCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:POST_CELL_ID forIndexPath:indexPath];
 	PFObject *postActivityObject = self.parsePostObjects[indexPath.row];
-	NSInteger row = indexPath.row;
+	NSString *currentId = cell.currentPostActivityObject.objectId;
+	cell.cellDelegate = self;
 	if([postActivityObject isKindOfClass:[NSNumber class]]) {
 		[cell clearViews];
 		if (self.currentlyPublishing) {
 			[cell presentPublishingView];
 		}
 	} else {
-		NSString *currentId = cell.currentPostActivityObject.objectId;
 		NSString *otherId = postActivityObject.objectId;
 		if (currentId == nil || otherId == nil || ![currentId isEqualToString: otherId]) {
 			[cell clearViews];

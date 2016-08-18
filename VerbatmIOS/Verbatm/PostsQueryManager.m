@@ -18,7 +18,7 @@
 @property (strong, nonatomic) NSDate *oldestDate;
 @property (nonatomic) BOOL smallMode;
 
-#define POSTS_DOWNLOAD_SIZE 5
+#define POSTS_DOWNLOAD_SIZE 20
 
 @end
 
