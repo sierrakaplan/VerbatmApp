@@ -59,8 +59,6 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 -(void) decreaseTextSize;
 
--(void) addTextViewGestureRecognizer: (UIGestureRecognizer*)gestureRecognizer;
-
 -(void) setTextViewEditable:(BOOL)editable;
 
 -(void) setTextViewDelegate:(id<UITextViewDelegate>)textViewDelegate;

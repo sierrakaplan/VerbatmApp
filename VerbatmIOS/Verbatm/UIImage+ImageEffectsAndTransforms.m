@@ -166,7 +166,8 @@
 	UIGraphicsBeginImageContext(newSize); // this will crop
 
 	CGRect thumbnailRect = CGRectZero;
-	thumbnailRect.origin = thumbnailPoint;
+	//this doesn't allow moving the image around
+//	thumbnailRect.origin = thumbnailPoint;
 	thumbnailRect.size.width  = scaledWidth;
 	thumbnailRect.size.height = scaledHeight;
 

@@ -56,6 +56,8 @@
 
 @property (nonatomic) SelectedPlatformsToShareLink locationToShare;
 
+@property (nonatomic) UIBackgroundTaskIdentifier publishingTask;
+
 @end
 
 @implementation PublishingProgressManager
@@ -106,14 +108,23 @@
 		pinchView.beingPublished = YES;
 		if ([pinchView isKindOfClass:[ImagePinchView class]]) {
 			ImagePinchView* imagePinchView = (ImagePinchView*)pinchView;
+			imagePinchView.beingPublished = YES;
 			[loadScreenshotsPromises addObject: [imagePinchView getImageDataWithHalfSize: NO]];
 		} else if ([pinchView isKindOfClass:[CollectionPinchView class]]) {
 			BOOL half = ((CollectionPinchView*)pinchView).containsImage && ((CollectionPinchView*)pinchView).containsVideo;
 			for (ImagePinchView *subImagePinchView in [(CollectionPinchView*)pinchView imagePinchViews]) {
+				subImagePinchView.beingPublished = YES;
 				[loadScreenshotsPromises addObject: [subImagePinchView getImageDataWithHalfSize: half]];
 			}
 		}
 	}
+	self.publishingTask = [[UIApplication sharedApplication] beginBackgroundTaskWithName:@"PublishingTask" expirationHandler:^{
+		// Clean up any unfinished task business by marking where you
+		// stopped or ending the task outright.
+		[[UIApplication sharedApplication] endBackgroundTask: self.publishingTask];
+		self.publishingTask = UIBackgroundTaskInvalid;
+	}];
+
 	PMKWhen(loadScreenshotsPromises).then(^(NSArray* data) {
 		[self.channelManager createPostFromPinchViews:pinchViews
 											toChannel:channel
@@ -167,6 +178,10 @@
 	self.currentlyPublishing = NO;
     self.publishingProgressBackgroundImage = nil;
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POST_FAILED_TO_PUBLISH object:error];
+
+	//todo: alert user that publishing failed when they come back to app
+	[[UIApplication sharedApplication] endBackgroundTask: self.publishingTask];
+	self.publishingTask = UIBackgroundTaskInvalid;
 }
 
 -(void)mediaSavingProgressed:(NSInteger) newProgress {
@@ -187,9 +202,11 @@
         [self.externalShareObject storeShareLinkToPost:self.currentParsePostObject withCaption:self.captionToShare withCompletionBlock:^(bool savedSuccessfully, PFObject * postObject) {
             if(savedSuccessfully){
                 [self.externalShareObject sharePostLink:[postObject objectForKey:POST_SHARE_LINK] toPlatform:self.locationToShare];
-            }else{
+            } else {
                 NSLog(@"Failed to get and save link to post :/");
             }
+			[[UIApplication sharedApplication] endBackgroundTask: self.publishingTask];
+			self.publishingTask = UIBackgroundTaskInvalid;
         }];
         
 		self.progressAccountant.completedUnitCount = 0;

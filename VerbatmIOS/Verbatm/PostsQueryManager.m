@@ -86,7 +86,9 @@
 	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
 	[postQuery orderByDescending:@"createdAt"];
-	if (self.latestDate) [postQuery whereKey:@"createdAt" greaterThan:self.latestDate];
+	if (self.latestDate) {
+		[postQuery whereKey:@"createdAt" greaterThan:self.latestDate];
+	}
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
 												  NSError * _Nullable error) {
 		if(activities && !error) {
@@ -99,6 +101,7 @@
 			if (activities.count > 0) {
 				// Posts are in reverse chronological order
 				self.latestDate = [(PFObject*)(activities[0]) createdAt];
+				if (!self.oldestDate) self.oldestDate = [(PFObject*)(activities[activities.count-1]) createdAt];
 			}
 			block([[[finalPostObjects reverseObjectEnumerator] allObjects] mutableCopy]);
 		}
@@ -110,7 +113,9 @@
 	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
 	[postQuery orderByDescending:@"createdAt"];
-	if (self.oldestDate) [postQuery whereKey:@"createdAt" lessThan:self.oldestDate];
+	if (self.oldestDate) {
+		[postQuery whereKey:@"createdAt" lessThan:self.oldestDate];
+	}
 	[postQuery setLimit: POSTS_DOWNLOAD_SIZE];
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
 												  NSError * _Nullable error) {
@@ -126,6 +131,9 @@
 			if (activities.count > 0) {
 				// Posts are in reverse chronological order
 				self.oldestDate = [(PFObject*)(activities[activities.count-1]) createdAt];
+				if (!self.latestDate) {
+					self.latestDate = [(PFObject*)(activities[0]) createdAt];
+				}
 			}
 			block([[[finalPostObjects reverseObjectEnumerator] allObjects] mutableCopy]);
 		}

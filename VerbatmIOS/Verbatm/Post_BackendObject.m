@@ -48,6 +48,7 @@
 	[newPostObject setObject:[NSNumber numberWithInteger:0] forKey:POST_NUM_REBLOGS];
 	[newPostObject setObject:[PFUser currentUser] forKey:POST_ORIGINAL_CREATOR_KEY];
 	[newPostObject setObject:[NSNumber numberWithInteger:pinchViews.count] forKey:POST_SIZE_KEY];
+
 	[newPostObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 		if(succeeded){
 			Page_BackendObject * newPage = [[Page_BackendObject alloc] init];

@@ -74,7 +74,7 @@
 			[self.imageView removeFromSuperview];
 			[self.repositionPhotoScrollView addSubview:self.imageView];
 			[self setRepositionImageScrollViewFromImage: image];
-			self.repositionPhotoScrollView.contentOffset = contentOffset;
+			[self setNewImageContentOffset:contentOffset.x andY:contentOffset.y];
 			[self insertSubview:self.repositionPhotoScrollView belowSubview:self.textView];
 
 			self.repositionPhotoGrid = [[GridView alloc] initWithFrame:self.bounds];
@@ -130,15 +130,19 @@
 
 -(void) moveImageX:(CGFloat)xDiff andY:(CGFloat)yDiff {
 	CGPoint oldContentOffset = self.repositionPhotoScrollView.contentOffset;
-
 	CGFloat newX = oldContentOffset.x - xDiff;
+	CGFloat newY = oldContentOffset.y - yDiff;
+	[self setNewImageContentOffset:newX andY:newY];
+}
+
+-(void) setNewImageContentOffset:(CGFloat)newX andY:(CGFloat)newY {
+
 	if (newX < 0) newX = 0;
 	CGFloat xMax = self.repositionPhotoScrollView.contentSize.width - self.bounds.size.width;
 	if (newX > xMax) {
 		newX = xMax;
 	}
 
-	CGFloat newY = oldContentOffset.y - yDiff;
 	if (newY < 0) newY = 0;
 	CGFloat yMax = self.repositionPhotoScrollView.contentSize.height - self.bounds.size.height;
 	if (newY > yMax) {
@@ -253,10 +257,6 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	[self.textView setFont:[UIFont fontWithName:self.textView.font.fontName size:self.textSize]];
 }
 
--(void) addTextViewGestureRecognizer: (UIGestureRecognizer*)gestureRecognizer {
-	[self.textView addGestureRecognizer:gestureRecognizer];
-}
-
 /* Adds or removes text view */
 -(void)showText: (BOOL) show {
 	if (show) {
@@ -326,9 +326,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 		_textView = [[UITextView alloc] initWithFrame: DEFAULT_TEXT_VIEW_FRAME];
 		_textView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.0];
 		_textView.keyboardAppearance = UIKeyboardAppearanceLight;
-		_textView.scrollEnabled = YES;
-		_textView.editable = NO;
-		_textView.selectable = NO;
+		_textView.userInteractionEnabled = NO;
 		[_textView setTintAdjustmentMode:UIViewTintAdjustmentModeNormal];
 	}
 	return _textView;

@@ -32,6 +32,7 @@
 @property (nonatomic) VerbatmKeyboardToolBar *permanentOnScreenKeyboard;
 
 @property (nonatomic, strong) TextOverMediaView *textAndImageView;
+@property (nonatomic) UITapGestureRecognizer *editTextGesture;
 
 @property (nonatomic) UIImageView *swipeInstructionView;
 
@@ -138,8 +139,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self.textAndImageView showText:YES];
 	__weak EditMediaContentView * weakSelf = self;
 	[self.textAndImageView setTextViewDelegate:weakSelf];
-
-	[self addToolBarToViewWithTextColorBlack:textColorBlack];
 }
 
 #pragma mark - Keyboard ToolBar -
@@ -170,6 +169,14 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	}
 }
 
+-(void) showTextToolbar:(BOOL)show {
+	if (show) {
+		[self addToolBarToViewWithTextColorBlack:NO];
+	} else {
+		[self removeScreenToolbar];
+	}
+}
+
 #pragma mark - Text view content changed -
 
 /* User has edited the text view somehow so we adjust its size */
@@ -178,15 +185,24 @@ andTextAlignment:(NSTextAlignment)textAlignment
 }
 
 - (void)textViewDidBeginEditing: (UITextView *)textView {
+	[self.delegate textIsEditing];
     self.textViewBeingEdited = YES;
 	[self.textAndImageView.textView setScrollEnabled:YES];
-	UIScrollView* mainScroll = (UIScrollView*)self.superview.superview;
-	[mainScroll setScrollEnabled:NO];
-
+	[self.textAndImageView.textView setUserInteractionEnabled:YES];
+	[self.textAndImageView removeGestureRecognizer: self.editTextGesture];
+	[self enableMainScrollView:NO];
 	self.userSetYPos = textView.frame.origin.y;
     [self.textAndImageView.textView removeGestureRecognizer:self.textViewPanGesture];
 	[self moveTextView:textView afterEdit: NO];
 	[self removeScreenToolbar];
+}
+
+-(void) enableMainScrollView: (BOOL)enable {
+	UIView *mainScrollView = self.superview.superview;
+	if (![mainScrollView isKindOfClass:[UIScrollView class]]) {
+		mainScrollView = mainScrollView.superview;
+	}
+	[((UIScrollView*)mainScrollView) setScrollEnabled: enable];
 }
 
 -(void)removeScreenToolbar {
@@ -198,10 +214,15 @@ andTextAlignment:(NSTextAlignment)textAlignment
 -(void)textViewDidEndEditing:(UITextView *)textView {
     self.textViewBeingEdited = NO;
 	[self moveTextView:textView afterEdit:YES];
-	[self.textAndImageView.textView setScrollEnabled:NO];
-	UIScrollView* mainScroll = (UIScrollView*)self.superview.superview;
-	[mainScroll setScrollEnabled:YES];
-    [self addPanGestures];
+	[self.textAndImageView.textView setUserInteractionEnabled:NO];
+	[self enableMainScrollView: YES];
+	[self.textAndImageView addGestureRecognizer: self.editTextGesture];
+	[self.textAndImageView addGestureRecognizer: self.textViewPanGesture];
+	UIView *mainScrollView = self.superview.superview;
+	if (![mainScrollView isKindOfClass:[UIScrollView class]]) {
+		mainScrollView = mainScrollView.superview;
+	}
+	[((UIScrollView*)mainScrollView) setScrollEnabled:YES];
 }
 
 /* Enforces word limit */
@@ -295,11 +316,9 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	self.textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
 															andImage:image andContentOffset:contentOffset
 														  forTextAVE:onTextAve];
-	UIPanGestureRecognizer *moveImageGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPan:)];
-	moveImageGesture.delegate = self;
-	[self.textAndImageView addGestureRecognizer: moveImageGesture];
+
 	[self addSubview: self.textAndImageView];
-	[self addPanGestures];
+	[self addTextViewGestures];
 
 //	todo: bring back filters
 //    if(![[UserSetupParameters sharedInstance ] checkAndSetFilterInstructionShown]){
@@ -337,7 +356,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
     }];
     
 }
-
 
 #pragma mark Filters
 
@@ -404,11 +422,13 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 -(void)repositionPhotoSelected {
 	[self.textAndImageView startRepositioningPhoto];
+	[self enableMainScrollView:NO];
 	self.isRepositioningPhoto = YES;
 }
 
 -(void)repositionPhotoUnSelected {
 	[self.textAndImageView endRepositioningPhoto];
+	[self enableMainScrollView:YES];
 	self.isRepositioningPhoto = NO;
 }
 
@@ -421,9 +441,17 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 #pragma maro - Pan gestures -
 
-/* Adds pan gestures for adding filters to images and changing text position */
--(void) addPanGestures {
-	[self.textAndImageView addTextViewGestureRecognizer:self.textViewPanGesture];
+// Add gestures related to text/image view
+-(void) addTextViewGestures {
+	UIPanGestureRecognizer *moveImageGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPan:)];
+	moveImageGesture.delegate = self;
+	[self.textAndImageView addGestureRecognizer: moveImageGesture];
+
+	self.editTextGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(keyboardButtonPressed)];
+	self.editTextGesture.delegate = self;
+	[self.textAndImageView addGestureRecognizer: self.editTextGesture];
+
+	[self.textAndImageView addGestureRecognizer:self.textViewPanGesture];
 }
 
 /* Handles pan gesture which could be horizontal to add a filter to an image,
@@ -489,6 +517,13 @@ andTextAlignment:(NSTextAlignment)textAlignment
                 self.textViewBeingEdited) return;
             
 			self.textViewPanStartLocation = [sender locationOfTouch:0 inView:self.textAndImageView];
+			if (!CGRectContainsPoint(self.textAndImageView.textView.frame, self.textViewPanStartLocation)
+				|| self.isRepositioningPhoto) {
+				sender.enabled = NO;
+				sender.enabled = YES;
+				return;
+			}
+			[self enableMainScrollView:NO];
 			self.gestureActionJustStarted = YES;
 
 			break;
@@ -504,6 +539,10 @@ andTextAlignment:(NSTextAlignment)textAlignment
 		}
 		case UIGestureRecognizerStateCancelled:
 		case UIGestureRecognizerStateEnded: {
+			if (self.isRepositioningPhoto) {
+				return;
+			}
+			[self enableMainScrollView:YES];
 			break;
 		}
 		default:
@@ -621,6 +660,7 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
         UIPanGestureRecognizer * textViewPanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPanTextView:)];
         textViewPanGesture.minimumNumberOfTouches = 1;
         textViewPanGesture.maximumNumberOfTouches = 1;
+		textViewPanGesture.delegate = self;
         _textViewPanGesture = textViewPanGesture;
     }
     return _textViewPanGesture;

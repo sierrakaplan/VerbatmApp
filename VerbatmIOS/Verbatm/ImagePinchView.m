@@ -291,6 +291,7 @@
 		_textView = [[UITextView alloc] init];
 		_textView.editable = NO;
 		_textView.backgroundColor = [UIColor clearColor];
+		_textView.userInteractionEnabled = NO;
 	}
 	return _textView;
 }

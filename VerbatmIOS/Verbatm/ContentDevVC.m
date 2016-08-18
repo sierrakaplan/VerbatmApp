@@ -254,7 +254,7 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear: animated];
 	[self checkIntroNotification];
-	[self checkAdkSlideShowOnboarding];
+//	[self checkAdkSlideShowOnboarding];
 }
 
 -(void) checkIntroNotification {
@@ -1151,6 +1151,7 @@ andSaveInUserDefaults:(BOOL)save {
 	if(newCollectionPinchView.pinchedObjects.count == 1) {
 		SingleMediaAndTextPinchView *unPinchedPinchView = [collectionPinchView.pinchedObjects lastObject];
 		unPinchedPinchView.frame = toRemove.frame;
+		[self addTapGestureToPinchView: unPinchedPinchView];
 		[newCollectionPinchView unPinchAndRemove:unPinchedPinchView];
 		[[PostInProgress sharedInstance] removePinchViewAtIndex:upperIndex andReplaceWithPinchView:unPinchedPinchView];
 		[self.upperPinchScrollView changePageElement:unPinchedPinchView];

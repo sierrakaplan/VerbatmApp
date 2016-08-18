@@ -118,7 +118,7 @@
 -(void) addContentFromImagePinchViews:(NSMutableArray *)pinchViewArray{
 	NSMutableArray* photosTextArray = [[NSMutableArray alloc] init];
 
-	for (ImagePinchView * imagePinchView in pinchViewArray) {
+	for (ImagePinchView *imagePinchView in pinchViewArray) {
 		if (self.inPreviewMode) {
 			EditMediaContentView *editMediaContentView = [self getEditContentViewFromPinchView:imagePinchView];
 			[self.imageContainerViews addObject:editMediaContentView];
@@ -130,8 +130,9 @@
 		[self addPhotos: photosTextArray];
 	} else {
 		[self layoutContainerViews];
-		if(pinchViewArray.count > 1)
+		if(pinchViewArray.count > 1) {
 			[self createRearrangeButton];
+		}
 	}
 }
 
@@ -155,6 +156,9 @@
 					andTextColorBlack:textColorBlack
 					 andTextAlignment:[pinchView.textAlignment integerValue]
 						  andTextSize:[pinchView.textSize floatValue] andFontName:pinchView.fontName];
+		if (self.imageContainerViews.count < 2) {
+			[editMediaContentView showTextToolbar:YES];
+		}
 		if (self.currentlyOnScreen) {
 			[editMediaContentView onScreen];
 		}
@@ -222,10 +226,15 @@
 
 -(void) pauseToRearrangeButtonPressed {
 	// Pausing slideshow
-
 	if(![self.pinchView isKindOfClass:[CollectionPinchView class]])return;
 
 	if(!self.rearrangeView) {
+		for (UIView * view in self.imageContainerViews) {
+			if([view isKindOfClass:[EditMediaContentView class]]){
+				[((EditMediaContentView *)view) showTextToolbar:YES];
+			}
+		}
+
 		[self offScreen];
 		CGFloat y_pos = (self.photoVideoSubview) ? 0.f : CUSTOM_NAV_BAR_HEIGHT;
 		CGRect frame = CGRectMake(0.f,y_pos, self.frame.size.width, OPEN_COLLECTION_FRAME_HEIGHT);
@@ -239,6 +248,7 @@
 		for (UIView * view in self.imageContainerViews) {
 			if([view isKindOfClass:[EditMediaContentView class]]){
 				[((EditMediaContentView *)view) exiting];
+				[((EditMediaContentView *)view) showTextToolbar: NO];
 			}
 		}
 		[self.pauseToRearrangeButton setImage:[UIImage imageNamed:PAUSE_SLIDESHOW_ICON] forState:UIControlStateNormal];

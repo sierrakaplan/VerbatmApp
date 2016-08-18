@@ -27,7 +27,6 @@
     return  self;
 }
 
-
 -(void)formatButton{
     self.backgroundColor = [UIColor UNSELECTED_BACKGROUND_COLOR];
     self.layer.cornerRadius = self.frame.size.height/2.f;
