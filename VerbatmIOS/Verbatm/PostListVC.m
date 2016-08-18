@@ -1043,6 +1043,10 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	[self presentViewController:likersListVC animated:YES completion:nil];
 }
 
+-(void)showWhoCommentedOnPost:(PFObject *) post{
+    [self.postListDelegate showWhoCommentedOnPost:post];
+}
+
 #pragma mark - Lazy instantiation -
 
 -(UIImageView *)reblogSucessful {

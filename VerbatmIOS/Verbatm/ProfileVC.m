@@ -168,6 +168,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	self.headerViewOnScreen = YES;
 }
 
+
 #pragma mark - Profile Photo -
 
 -(void)presentGalleryToSelectImage {
@@ -274,6 +275,11 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
     [self exitCurrentPostView];
 }
 
+-(void)showWhoCommentedOnPost:(PFObject *) post{
+    UserAndChannelListsTVC *likersListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    [likersListVC presentList:CommentList forChannel:nil orPost:post];
+    [self presentViewController:likersListVC animated:YES completion:nil];
+}
 
 // Something in profile was reblogged so contains a header allowing user to navigate
 // to a different profile

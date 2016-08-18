@@ -17,6 +17,7 @@
 typedef enum BarActivityOptions{
 	Like = 0,
 	Share = 1,
+    CommentListPresent = 2
 } ActivityOptions;
 
 @protocol PostLikeAndShareBarProtocol <NSObject>
@@ -28,7 +29,7 @@ typedef enum BarActivityOptions{
 -(void)showwhoHasSharedThePost;
 -(void)muteButtonSelected:(BOOL)shouldMute;
 -(void)deleteButtonPressed;
-
+-(void)showWhoCommentedOnthePost;
 -(void)flagButtonPressed;
 
 
@@ -37,7 +38,7 @@ typedef enum BarActivityOptions{
 
 @interface PostLikeAndShareBar : UIView
 
--(instancetype) initWithFrame:(CGRect)frame numberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage;
+-(instancetype) initWithFrame:(CGRect)frame numberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numComments:(NSNumber *) numComments numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage;
 
 -(void)presentMuteButton:(BOOL) shouldPresent;
 -(void)shouldStartPostAsLiked:(BOOL) postLiked;

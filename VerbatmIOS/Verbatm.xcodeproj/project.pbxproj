@@ -180,6 +180,9 @@
 		C734FD9919B13D8600B2C370 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9819B13D8600B2C370 /* CoreMedia.framework */; };
 		C734FD9C19B14B8D00B2C370 /* ContentDevVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */; };
 		C736C9FF1D1B2AE500535C7E /* PublishingProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = C736C9FE1D1B2AE500535C7E /* PublishingProgressView.m */; };
+		C73766731D63C71F00933A81 /* Commenting_BackendObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C73766721D63C71F00933A81 /* Commenting_BackendObject.m */; };
+		C73766761D64D9D800933A81 /* CommentingKeyboardToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = C73766751D64D9D800933A81 /* CommentingKeyboardToolbar.m */; };
+		C73766791D650B1900933A81 /* Comment.m in Sources */ = {isa = PBXBuildFile; fileRef = C73766781D650B1900933A81 /* Comment.m */; };
 		C73B7C2F1CA8719200128926 /* Intro_Instruction_Notification_View.m in Sources */ = {isa = PBXBuildFile; fileRef = C73B7C2E1CA8719200128926 /* Intro_Instruction_Notification_View.m */; };
 		C7469BF41B4874A600EA7B10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7469BF21B4874A600EA7B10 /* Main.storyboard */; };
 		C74749911C2B1CB90047C66E /* ProfileInformationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C74749901C2B1CB90047C66E /* ProfileInformationBar.m */; };
@@ -548,6 +551,12 @@
 		C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentDevVC.m; sourceTree = "<group>"; };
 		C736C9FD1D1B2AE500535C7E /* PublishingProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PublishingProgressView.h; sourceTree = "<group>"; };
 		C736C9FE1D1B2AE500535C7E /* PublishingProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PublishingProgressView.m; sourceTree = "<group>"; };
+		C73766711D63C71F00933A81 /* Commenting_BackendObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Commenting_BackendObject.h; sourceTree = "<group>"; };
+		C73766721D63C71F00933A81 /* Commenting_BackendObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Commenting_BackendObject.m; sourceTree = "<group>"; };
+		C73766741D64D9D800933A81 /* CommentingKeyboardToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentingKeyboardToolbar.h; sourceTree = "<group>"; };
+		C73766751D64D9D800933A81 /* CommentingKeyboardToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentingKeyboardToolbar.m; sourceTree = "<group>"; };
+		C73766771D650B1900933A81 /* Comment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Comment.h; sourceTree = "<group>"; };
+		C73766781D650B1900933A81 /* Comment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Comment.m; sourceTree = "<group>"; };
 		C73B7C2D1CA8719200128926 /* Intro_Instruction_Notification_View.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Intro_Instruction_Notification_View.h; sourceTree = "<group>"; };
 		C73B7C2E1CA8719200128926 /* Intro_Instruction_Notification_View.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Intro_Instruction_Notification_View.m; sourceTree = "<group>"; };
 		C7469BF31B4874A600EA7B10 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -769,6 +778,8 @@
 				C71FA3211D474FAB003989F3 /* AdjustTextFontToolBar.m */,
 				C71FA3231D476D91003989F3 /* AdjustTextAVEBackgroundToolBar.h */,
 				C71FA3241D476D91003989F3 /* AdjustTextAVEBackgroundToolBar.m */,
+				C73766741D64D9D800933A81 /* CommentingKeyboardToolbar.h */,
+				C73766751D64D9D800933A81 /* CommentingKeyboardToolbar.m */,
 			);
 			name = "Keyboard tool bars";
 			sourceTree = "<group>";
@@ -802,6 +813,8 @@
 		A5337BC31CCDD99000551394 /* Social Network objects */ = {
 			isa = PBXGroup;
 			children = (
+				C73766711D63C71F00933A81 /* Commenting_BackendObject.h */,
+				C73766721D63C71F00933A81 /* Commenting_BackendObject.m */,
 				A56B5D1E1CA49B1E00A61D27 /* Post_Channel_RelationshipManager.h */,
 				A56B5D1F1CA49B1E00A61D27 /* Post_Channel_RelationshipManager.m */,
 				A56B5D211CA49D0E00A61D27 /* Like_BackendManager.h */,
@@ -810,6 +823,8 @@
 				A56B5D281CA4D39400A61D27 /* Share_BackendManager.m */,
 				C7D596391C66E47100161136 /* Follow_BackendManager.h */,
 				C7D5963A1C66E47100161136 /* Follow_BackendManager.m */,
+				C73766771D650B1900933A81 /* Comment.h */,
+				C73766781D650B1900933A81 /* Comment.m */,
 			);
 			name = "Social Network objects";
 			sourceTree = "<group>";
@@ -1322,13 +1337,13 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
-		C761727C1C4E0E7700AB0D84 /* Collection Cell Views */ = {
+		C761727C1C4E0E7700AB0D84 /* CollectionView Cells */ = {
 			isa = PBXGroup;
 			children = (
 				C761727D1C4E0EB600AB0D84 /* PostCollectionViewCell.h */,
 				C761727E1C4E0EB600AB0D84 /* PostCollectionViewCell.m */,
 			);
-			name = "Collection Cell Views";
+			name = "CollectionView Cells";
 			sourceTree = "<group>";
 		};
 		C78B681119CA6914003D0AC5 /* View Controllers */ = {
@@ -1361,7 +1376,7 @@
 				A56F68771B643EB200CE5744 /* Scroll Views */,
 				A56F68751B643D0E00CE5744 /* Camera Views */,
 				A56F686F1B643ADE00CE5744 /* Custom Bars */,
-				C761727C1C4E0E7700AB0D84 /* Collection Cell Views */,
+				C761727C1C4E0E7700AB0D84 /* CollectionView Cells */,
 				A59CC2861B6C2E2F00B4907C /* Table Cell Views */,
 				A5E860081B9919F500E148D0 /* Viewing Posts */,
 				C7540F751C09A48700DE1AA6 /* Channels */,
@@ -1909,6 +1924,7 @@
 				A5934B8F1C0FDFD6007C7830 /* VerbatmScrollView.m in Sources */,
 				C7AA49FB1D148A8C00A031C6 /* verbatmButton.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
+				C73766731D63C71F00933A81 /* Commenting_BackendObject.m in Sources */,
 				C716E9D21BD6C338001B769D /* Analytics.m in Sources */,
 				A5E73B911D16967A00527ECF /* GTLQuery.m in Sources */,
 				C7D5963B1C66E47100161136 /* Follow_BackendManager.m in Sources */,
@@ -1933,6 +1949,7 @@
 				C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */,
 				A51B85271D2F474F006E90CC /* OpenCollectionView.m in Sources */,
 				C7C69A071BF820FC006B5260 /* EditMediaContentView.m in Sources */,
+				C73766791D650B1900933A81 /* Comment.m in Sources */,
 				A5C38ACD1CC1D4120067D077 /* FeaturedContentChannelView.m in Sources */,
 				C71FA3281D477E16003989F3 /* TextPinchView.m in Sources */,
 				C763C1BC1CE4430B00929248 /* OnBoardingViewController.m in Sources */,
@@ -1950,6 +1967,7 @@
 				A5FB5D2C1BCB0B9700634A96 /* GMAlbumsViewCell.m in Sources */,
 				A5FB5D2D1BCB0B9700634A96 /* GMAlbumsViewController.m in Sources */,
 				A5E73BAC1D16982A00527ECF /* GTLFramework.m in Sources */,
+				C73766761D64D9D800933A81 /* CommentingKeyboardToolbar.m in Sources */,
 				A5E73BF91D1770B400527ECF /* GTLVerbatmAppResultsWithCursor.m in Sources */,
 				A5E73B821D16366E00527ECF /* GTLUtilities.m in Sources */,
 				A56B5D291CA4D39400A61D27 /* Share_BackendManager.m in Sources */,

@@ -25,6 +25,13 @@
 #define FOLLOW_CHANNEL_FOLLOWED_KEY @"ChannelFollowed"//channel being followed by above user
 #define FOLLOW_LATEST_POST_DATE @"LatestPostSeen"
 
+
+#define COMMENT_PFCLASS_KEY @"CommentClass"
+#define COMMENT_USER_KEY @"UserCommenting"//the user doing the commenting
+#define COMMENT_POSTCOMMENTED_KEY @"PostCommented"//post commented on by user
+#define COMMENT_STRING @"CommentString" //the actual comment
+
+
 #define LIKE_PFCLASS_KEY @"LikeClass"//we maintain all the like relationships in their own table
 #define LIKE_USER_KEY @"UserLiking"//the user doing the liking
 #define LIKE_POST_LIKED_KEY @"PostLiked"//post being liked by above user
@@ -66,9 +73,11 @@
 #define POST_SIZE_KEY @"PostSize" //number of pages on this post
 #define POST_ORIGINAL_CREATOR_KEY @"OriginalCreator" //Original creator or post
 #define POST_NUM_LIKES @"PostNumLikes"
+#define POST_NUM_COMMENTS @"PostNumComments"
 #define POST_NUM_REBLOGS @"PostNumReblogs"
 #define POST_SHARE_LINK @"PostSocialShareLink" //string url to share to social media
 #define POST_PAGES_PFRELATION @"PagesInPost"
+#define POST_FLAGGED_KEY  @"Post_Is_Flagged"
 
 #define POST_COMPLETED_SAVING @"PostDoneSaving"//we store
 
@@ -76,7 +85,7 @@
 #define POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO @"PostChannelActivityChannelPosted"//channel that post is posted in 
 #define POST_CHANNEL_ACTIVITY_POST @"PostChannelActivityPost"
 
-#define POST_FLAGGED_KEY  @"Post_Is_Flagged"
+
 #define FLAG_PFCLASS_KEY @"FlagClass"
 #define FLAG_USER_KEY @"FlagUser"
 #define FLAG_POST_FLAGGED_KEY @"FlagPost"

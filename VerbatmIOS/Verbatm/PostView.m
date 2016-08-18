@@ -204,7 +204,7 @@
 	[self.layer setBorderColor:[UIColor blackColor].CGColor];
 
 	self.lsBarDownFrame = CGRectMake(self.frame.size.width - (LIKE_SHARE_BAR_WIDTH + 3.f),
-                                     self.frame.size.height - LIKE_SHARE_BAR_HEIGHT,
+                                     (self.frame.size.height + 10.f) - LIKE_SHARE_BAR_HEIGHT,
                                      LIKE_SHARE_BAR_WIDTH, LIKE_SHARE_BAR_HEIGHT);
 }
 
@@ -249,7 +249,7 @@
                 if(weakSelf.inSmallMode){
                     weakSelf.liked = userLikedPost;
                     [weakSelf.delegate presentSmallLikeButton];
-                    [weakSelf updateLikeButton];
+                    [weakSelf.delegate startLikeButtonAsLiked:userLikedPost];
                 }else{
                     [weakSelf.likeShareBar shouldStartPostAsLiked:userLikedPost];
                 }
@@ -263,12 +263,12 @@
     [self.delegate updateSmallLikeButton:self.liked];
 }
 
--(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares
+-(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfComments:(NSNumber *) numComments
 								numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage
 									  startUp:(BOOL)up withDeleteButton: (BOOL)withDelete {
 
 	self.likeShareBar = [[PostLikeAndShareBar alloc] initWithFrame: self.lsBarDownFrame numberOfLikes:numLikes
-													numberOfShares:numShares numberOfPages:numPages andStartingPageNumber:startPage];
+                                                    numberOfShares:numShares numComments:numComments numberOfPages:numPages andStartingPageNumber:startPage];
 	self.likeShareBar.delegate = self;
 	if (withDelete) {
 		[self.likeShareBar createDeleteButton];
@@ -287,6 +287,11 @@
 
 -(void) showWhoLikesThePost {
     [self.delegate showWhoLikesThePost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
+}
+
+-(void)showWhoCommentedOnthePost{
+    [self.delegate showWhoCommentedOnPost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
+
 }
 
 -(void) showwhoHasSharedThePost{
@@ -351,6 +356,9 @@
 			[Share_BackendManager currentUserReblogPost:post toChannel:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO]];
 			[self.delegate shareOptionSelectedForParsePostObject:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
 			break;
+        case CommentListPresent:
+            [self showWhoCommentedOnthePost];
+            break;
 		default:
 			break;
 	}
@@ -434,6 +442,9 @@
     [self updateLikeButton];
 }
 
+-(void)commentButtonPressed{
+    [self userAction:CommentListPresent isPositive:YES];
+}
 
 -(void)muteAllVideos:(BOOL) shouldMute {
 	self.postMuted = shouldMute;
@@ -598,8 +609,10 @@
 }
 
 -(void)logAVEDoneViewing:(PageViewingExperience*) pve {
-	NSString * pageType = @"";
-	if ([pve isKindOfClass:[VideoPVE class]]) {
+	
+    NSString * pageType = @"";
+	
+    if ([pve isKindOfClass:[VideoPVE class]]) {
 		pageType = @"VideoPageView";
 	} else if([pve isKindOfClass:[PhotoVideoPVE class]]) {
 		pageType = @"PhotoVideoPageView";
@@ -608,6 +621,7 @@
 	}
 
 	[[Analytics getSharedInstance] pageEndedViewingWithIndex:self.currentPageIndex aveType:pageType];
+    
 }
 
 -(void)showPageUpIndicator {

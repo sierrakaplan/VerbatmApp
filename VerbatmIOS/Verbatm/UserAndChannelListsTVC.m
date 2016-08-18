@@ -6,10 +6,13 @@
 //  Copyright Â© 2016 Verbatm. All rights reserved.
 //
 
+
 #import "ChannelOrUsernameCV.h"
 #import "CustomNavigationBar.h"
-
 #import "Channel_BackendObject.h"
+#import "Commenting_BackendObject.h"
+#import "CommentingKeyboardToolbar.h"
+#import "Comment.h"
 
 #import "Like_BackendManager.h"
 
@@ -27,16 +30,19 @@
 
 #import "QuartzCore/QuartzCore.h"
 
-@interface UserAndChannelListsTVC () <CustomNavigationBarDelegate>
+@interface UserAndChannelListsTVC () <CustomNavigationBarDelegate, CommentingKeyboardToolbarProtocol>
 @property (nonatomic) Channel * channelOnDisplay;
 @property (nonatomic) PFObject * postObject;
+@property (nonatomic) CommentingKeyboardToolbar * commentingKeyboard;
+
 @property (nonatomic) UIView * navBar;
 
 @property (nonatomic) UIActivityIndicatorView *loadMoreSpinner;
 @property (nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic) NSMutableArray * channelsToDisplay;
-
 @property (nonatomic) NSMutableArray * usersToDisplay;//catch all array -- can be used for any of the usecases to store a list of users
+
+@property (nonatomic) NSMutableArray * commentObjectList;
 
 @property (nonatomic) BOOL shouldDisplayFollowers;
 
@@ -52,9 +58,18 @@
 #define CUSTOM_CHANNEL_LIST_BAR_HEIGHT 50.f
 #define LIKERS_TEXT @"Likes"
 #define FOLLOWING_TEXT @"Following"
+#define COMMENTING_TEXT @"Comments"
+
 #define FOLLOWERS_TEXT @"Followers"
 #define LIST_BAR_Y_OFFSET -15.f
 
+
+#define COMMENTING_KEYBOARD_HEIGHT 50.f
+#define TOP_INSET (LIST_BAR_Y_OFFSET+ STATUS_BAR_HEIGHT + CUSTOM_CHANNEL_LIST_BAR_HEIGHT)
+#define BOTTOM_INSET CUSTOM_CHANNEL_LIST_BAR_HEIGHT
+
+
+#define KEYBOARD_BAR_START_YPOS (self.view.frame.size.height - (COMMENTING_KEYBOARD_HEIGHT + TOP_INSET))
 @end
 
 
@@ -75,7 +90,7 @@
 	[self setNeedsStatusBarAppearanceUpdate];
 
 	//avoid covering last item in uitableview
-	UIEdgeInsets inset = UIEdgeInsetsMake((LIST_BAR_Y_OFFSET+ STATUS_BAR_HEIGHT + CUSTOM_CHANNEL_LIST_BAR_HEIGHT), 0, CUSTOM_CHANNEL_LIST_BAR_HEIGHT, 0);
+	UIEdgeInsets inset = UIEdgeInsetsMake(TOP_INSET, 0, BOTTOM_INSET, 0);
 	self.tableView.contentInset = inset;
 	self.tableView.scrollIndicatorInsets = inset;
 }
@@ -153,18 +168,82 @@
 	[self presentList:self.currentListType forChannel:self.channelOnDisplay orPost:self.postObject];
 }
 
+
+
+-(void)putCommentingKeyboardBarOnScreen{
+    
+    CGFloat yPos = KEYBOARD_BAR_START_YPOS;
+    
+    
+    self.commentingKeyboard = [[CommentingKeyboardToolbar alloc] initWithFrame:CGRectMake(0.f, yPos, self.view.frame.size.width, COMMENTING_KEYBOARD_HEIGHT)];
+    self.commentingKeyboard.delegate = self;
+    [self.tableView addSubview:self.commentingKeyboard];
+    
+    // create hooks for keyboard
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardDidShowOrHide:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardDidShowOrHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+}
+
+
+-(void)keyboardDidShowOrHide:(NSNotification *)notification
+{
+    NSDictionary *userInfo = [notification userInfo];
+    NSTimeInterval animationDuration;
+    UIViewAnimationCurve animationCurve;
+    CGRect keyboardEndFrame;
+    
+    [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
+    [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
+    [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] getValue:&keyboardEndFrame];
+    
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:animationDuration];
+    [UIView setAnimationCurve:animationCurve];
+    
+    
+    CGFloat yPosKeyboardWithTableViewCord = keyboardEndFrame.origin.y + self.tableView.contentOffset.y;
+    
+    CGRect newFrame = self.commentingKeyboard.frame;
+    newFrame.origin.y =  yPosKeyboardWithTableViewCord - (self.commentingKeyboard.frame.size.height);
+    self.commentingKeyboard.frame = newFrame;
+    
+    [UIView commitAnimations];
+}
+
+
+
+-(void)doneButtonSelectedWithFinalString:(NSString *) commentString{
+    Comment * newComment  = [[Comment alloc] initWithString:commentString andPostObject:self.postObject];
+    [self.commentObjectList addObject:newComment];
+    [self.tableView reloadData];
+}
+
 - (void)didReceiveMemoryWarning {
-	[super didReceiveMemoryWarning];
-	// Dispose of any resources that can be recreated.
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
 }
 
 #pragma mark - Table View Delegate methods (view customization) -
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-	return CHANNEL_USER_LIST_CELL_HEIGHT;
+	
+    if(self.currentListType == CommentList){
+        NSInteger objectIndex = indexPath.row;
+        Comment * comment = [self.commentObjectList objectAtIndex:objectIndex];
+        return [ChannelOrUsernameCV getHeightForCellFromCommentObject:comment];
+    }
+    
+    
+    return CHANNEL_USER_LIST_CELL_HEIGHT;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	if(self.channelsToDisplay){
+	if(self.channelsToDisplay && (self.currentListType != CommentList)){
 		//this is some list of channels
 
 		NSInteger objectIndex = indexPath.row - self.presentAllChannels;
@@ -221,7 +300,15 @@
 				block();
 			}];
 			break;
-		}
+        } case CommentList: {
+            
+            [Commenting_BackendObject getCommentsForObject:post withCompletionBlock:^(NSArray * parseCommentObjects) {
+                    self.commentObjectList = (parseCommentObjects == nil) ? [[NSMutableArray alloc] init] : [NSMutableArray arrayWithArray:parseCommentObjects];
+                    block();
+                [self putCommentingKeyboardBarOnScreen];
+            }];
+            
+        }
 	}
 }
 
@@ -257,7 +344,9 @@
 		navBarMiddleText = LIKERS_TEXT;
 	}else if (self.currentListType == FollowingList){
 		navBarMiddleText = FOLLOWING_TEXT;
-	}
+	}else if (self.currentListType == CommentList){
+        navBarMiddleText = COMMENTING_TEXT;
+    }
 
 	[customNavBar createMiddleButtonWithTitle:navBarMiddleText blackText:YES largeSize:YES];
 
@@ -310,12 +399,21 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return (self.channelsToDisplay.count + self.presentAllChannels);
+    
+    if(self.currentListType == CommentList) return self.commentObjectList.count;
+    
+    return (self.channelsToDisplay.count + self.presentAllChannels);
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	[scrollView bringSubviewToFront:self.navBar];
-	self.navBar.frame = CGRectMake(0.f, scrollView.contentOffset.y, self.navBar.frame.size.width, self.navBar.frame.size.height);
+    CGRect newNavBarFrame = CGRectMake(0.f, scrollView.contentOffset.y, self.navBar.frame.size.width, self.navBar.frame.size.height);;
+    if(self.currentListType == CommentList){
+        CGFloat navBar_CommentBarDiff = self.commentingKeyboard.frame.origin.y - self.navBar.frame.origin.y;
+        self.commentingKeyboard.frame = CGRectMake(0.f, newNavBarFrame.origin.y + navBar_CommentBarDiff, self.commentingKeyboard.frame.size.width, self.commentingKeyboard.frame.size.height);
+    }
+    self.navBar.frame = newNavBarFrame;
+    
 
 }
 
@@ -331,12 +429,23 @@
 	}
 
 	if(self.presentAllChannels && indexPath.row == 0) {
-		[cell setHeaderTitle];
-	} else {
-		NSInteger objectIndex = self.presentAllChannels ? (indexPath.row - 1) : indexPath.row;
+		
+        [cell setHeaderTitle];
+        
+    } else if(self.commentObjectList) {
+        
+        NSInteger objectIndex = indexPath.row;
+        Comment * comment = [self.commentObjectList objectAtIndex:objectIndex];
+        [cell presentComment:comment];
+        
+    } else {
+		
+        NSInteger objectIndex = self.presentAllChannels ? (indexPath.row - 1) : indexPath.row;
 		Channel *channel = [self.channelsToDisplay objectAtIndex:objectIndex];
 		[cell presentChannel:channel];
+        
 	}
+    
 	if(self.navBar)[self.view bringSubviewToFront:self.navBar];
 	return cell;
 }

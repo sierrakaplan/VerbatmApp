@@ -18,6 +18,7 @@
 							 reblogged:(BOOL)reblogged;
 -(void) flagOrBlockButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post;
 -(void) showWhoLikesThePost:(PFObject *) post;
+-(void)showWhoCommentedOnPost:(PFObject *) post;
 -(void)justRemovedTapToExitNotification;
 -(void)removePostViewSelected;
 @end

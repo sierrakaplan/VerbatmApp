@@ -20,6 +20,7 @@
 @interface PostCollectionViewCell () <PostViewDelegate>
 
 @property (nonatomic, readwrite) PFObject *currentPostActivityObject;
+@property (nonatomic, readwrite) PFObject *currentPostObject;//the post in the post activity object
 @property (nonatomic, readwrite) PostView *currentPostView;
 
 @property (nonatomic) PFObject *postBeingPresented;
@@ -37,11 +38,15 @@
 
 @property (nonatomic) UIButton *smallLikeButton;
 @property (nonatomic) UIButton *smallShareButton;
+@property (nonatomic) UIButton *smallCommentButton;
+
 @property (nonatomic) UILabel * numLikeLabel;
 @property (nonatomic) UILabel * numSharesLabel;
+@property (nonatomic) UILabel * numCommentsLabel;
 
 @property (nonatomic) NSNumber * numLikes;
 @property (nonatomic) NSNumber * numShares;
+@property (nonatomic) NSNumber * numComments;
 
 #define POSTVIEW_FRAME ((self.inSmallMode) ? CGRectMake(0.f, SMALL_SQUARE_LIKESHAREBAR_HEIGHT, self.frame.size.width, self.frame.size.height - SMALL_SQUARE_LIKESHAREBAR_HEIGHT) : self.bounds)
 
@@ -50,6 +55,8 @@
 
 #define LIKE_BUTTON_WALL_OFFSET 5.f
 #define SMALL_ICON_SPACING 5.f
+
+#define SMALL_NUMBER_TEXT_COLOR whiteColor
 @end
 
 @implementation PostCollectionViewCell
@@ -74,6 +81,23 @@
 
 	if (self.currentPostView) {
 		[self.currentPostView removeFromSuperview];
+	}
+
+	[self removePublishingProgress];
+    
+	@autoreleasepool {
+        [self.numSharesLabel removeFromSuperview];
+        [self.smallShareButton removeFromSuperview];
+        [self.numLikeLabel removeFromSuperview];
+        [self.smallLikeButton removeFromSuperview];
+        [self.numCommentsLabel removeFromSuperview];
+        [self.smallCommentButton removeFromSuperview];
+        self.numCommentsLabel = nil;
+        self.smallCommentButton = nil;
+        self.numSharesLabel = nil;
+        self.smallShareButton = nil;
+        self.numLikeLabel = nil;
+        self.smallLikeButton = nil;
 		self.currentPostView = nil;
 	}
 	[self removePublishingProgress];
@@ -130,59 +154,63 @@
 	self.hasPublishingView = NO;
 	self.footerUp = up;
 	self.currentPostActivityObject = pfActivityObj;
-	PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
+    PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
+    self.currentPostObject = post;
+    
+    __weak PostCollectionViewCell *weakSelf = self;
+    
+    [post fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+        
+        weakSelf.numLikes = object[POST_NUM_LIKES];
+        weakSelf.numShares = object[POST_NUM_REBLOGS];
+        weakSelf.numComments = object[POST_NUM_COMMENTS];
+        
+        [Page_BackendObject getPagesFromPost:object andCompletionBlock:^(NSArray * pages) {
+            
+            weakSelf.currentPostView = [[PostView alloc] initWithFrame:POSTVIEW_FRAME
+                                          andPostChannelActivityObject:pfActivityObj small:weakSelf.inSmallMode andPageObjects:pages];
+            
+            if(weakSelf.inSmallMode)[weakSelf.currentPostView muteAllVideos:YES];
+            NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
+            if (weakSelf.isOnScreen) {
+                [weakSelf.currentPostView postOnScreen];
+            } else if (weakSelf.isAlmostOnScreen) {
+                [weakSelf.currentPostView postAlmostOnScreen];
+            } else {
+                [weakSelf.currentPostView postOffScreen];
+            }
+            weakSelf.currentPostView.delegate = weakSelf;
+            weakSelf.currentPostView.listChannel = channelForList;
+            
+            if(self.tapToExitNotification){
+                [weakSelf insertSubview:weakSelf.currentPostView belowSubview:self.tapToExitNotification];
+            }else{
+                [weakSelf addSubview: weakSelf.currentPostView];
+            }
+            weakSelf.currentPostView.inSmallMode = weakSelf.inSmallMode;
+            
+            
+            
+            if(weakSelf.inSmallMode){
+                [weakSelf.currentPostView checkIfUserHasLikedThePost];
+            }else{
+                
+                [weakSelf.currentPostView createLikeAndShareBarWithNumberOfLikes:weakSelf.numLikes numberOfShares:weakSelf.numShares numberOfComments:weakSelf.numComments numberOfPages:numberOfPages andStartingPageNumber:@(1) startUp:up withDeleteButton:withDelete];
+                [weakSelf.currentPostView addCreatorInfo];
+                
+            }
+            [weakSelf bringSubviewToFront:weakSelf.dot];
+        }];
+    }];
 
-	[post fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-		if (self.currentPostActivityObject != nil && ![self.currentPostActivityObject.objectId isEqualToString:pfActivityObj.objectId]) {
-			return;
-		}
-		self.numLikes = object[POST_NUM_LIKES];
-		self.numShares = object[POST_NUM_REBLOGS];
-
-		[Page_BackendObject getPagesFromPost:object andCompletionBlock:^(NSArray * pages) {
-
-			if (self.currentPostActivityObject != nil && ![self.currentPostActivityObject.objectId isEqualToString:pfActivityObj.objectId]) {
-				return;
-			}
-			self.currentPostView = [[PostView alloc] initWithFrame:POSTVIEW_FRAME
-									  andPostChannelActivityObject:pfActivityObj small:self.inSmallMode andPageObjects:pages];
-			if(self.inSmallMode)[self.currentPostView muteAllVideos:YES];
-			NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
-			if (self.isOnScreen) {
-				[self.currentPostView postOnScreen];
-			} else if (self.isAlmostOnScreen) {
-				[self.currentPostView postAlmostOnScreen];
-			} else {
-				[self.currentPostView postAlmostOnScreen];
-			}
-			self.currentPostView.delegate = self;
-			self.currentPostView.listChannel = channelForList;
-
-			if(self.tapToExitNotification) {
-				[self insertSubview: self.currentPostView belowSubview: self.tapToExitNotification];
-			} else {
-				[self addSubview: self.currentPostView];
-			}
-			self.currentPostView.inSmallMode = self.inSmallMode;
-
-			if (self.inSmallMode){
-				[self.currentPostView checkIfUserHasLikedThePost];
-			} else {
-				[self.currentPostView createLikeAndShareBarWithNumberOfLikes: self.numLikes numberOfShares: self.numShares
-															   numberOfPages:numberOfPages
-													   andStartingPageNumber:@(1)
-																	 startUp:up
-															withDeleteButton:withDelete];
-				[self.currentPostView addCreatorInfo];
-
-			}
-			[self bringSubviewToFront: self.dot];
-		}];
-	}];
 }
 
 -(void) showWhoLikesThePost:(PFObject *) post{
 	[self.cellDelegate showWhoLikesThePost:post];
+}
+
+-(void)showWhoCommentedOnPost:(PFObject *) post{
+    [self.cellDelegate showWhoCommentedOnPost:post];
 }
 
 
@@ -252,6 +280,9 @@
 	}
 }
 
+-(void)commentButtonPressed{
+    [self.currentPostView commentButtonPressed];
+}
 -(void)likeButtonPressed{
 	[self.currentPostView likeButtonPressed];
 }
@@ -263,47 +294,82 @@
 #pragma mark - Post view delegate -
 
 -(void)presentSmallLikeButton{
-	//create LikeButton
-	CGFloat likeButtonY =  2.5;
-	CGFloat shareButtonY = 5.f;
-	CGRect likeButtonFrame =  CGRectMake(LIKE_BUTTON_WALL_OFFSET,
-										 likeButtonY,
-										 LIKE_BUTTION_SIZE, LIKE_BUTTION_SIZE);
-	if(!self.smallLikeButton){
-		self.smallLikeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		self.smallLikeButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-		[self.smallLikeButton setFrame:likeButtonFrame];
-		[self.smallLikeButton setImage:[UIImage imageNamed:LIKE_ICON_UNPRESSED] forState:UIControlStateNormal];
-		[self.smallLikeButton addTarget:self action:@selector(likeButtonPressed) forControlEvents:UIControlEventTouchDown];
-		[self addSubview:self.smallLikeButton];
-	}
-
-	if(!self.numLikeLabel){
-		self.numLikeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.smallLikeButton.frame.origin.x + self.smallLikeButton.frame.size.width + SMALL_ICON_SPACING, likeButtonY, LIKE_BUTTION_SIZE, LIKE_BUTTION_SIZE)];
-		[self.numLikeLabel setTextColor:[UIColor whiteColor]];
-		[self addSubview:self.numLikeLabel];
-	}
-
-	[self.numLikeLabel setText:[self.numLikes stringValue]];
-
-	if(!self.smallShareButton){
-		self.smallShareButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		self.smallShareButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-		[self.smallShareButton setFrame:CGRectMake(self.numLikeLabel.frame.origin.x + self.numLikeLabel.frame.size.width + SMALL_ICON_SPACING, shareButtonY, SHARE_BUTTION_SIZE, SHARE_BUTTION_SIZE)];
-		[self.smallShareButton setImage:[UIImage imageNamed:SMALL_SHARE_ICON] forState:UIControlStateNormal];
-		[self.smallShareButton addTarget:self action:@selector(shareButtonPressed) forControlEvents:UIControlEventTouchDown];
-		[self addSubview:self.smallShareButton];
-	}
-
-	if(!self.numSharesLabel){
-		self.numSharesLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.smallShareButton.frame.origin.x + self.smallShareButton.frame.size.width + SMALL_ICON_SPACING, shareButtonY, LIKE_BUTTION_SIZE, LIKE_BUTTION_SIZE)];
-		[self.numSharesLabel setTextColor:[UIColor whiteColor]];
-		[self addSubview:self.numSharesLabel];
-	}
-
-	[self.numSharesLabel setText:[self.numLikes stringValue]];
-
+    self.numLikes = self.currentPostObject[POST_NUM_LIKES];
+    self.numShares = self.currentPostObject[POST_NUM_REBLOGS];
+    self.numComments = self.currentPostObject[POST_NUM_COMMENTS];
+    if(self.numComments == nil){
+        self.numComments = @(0);
+    }
+    
+    //create LikeButton
+    CGFloat likeButtonY =  2.5;
+    CGFloat shareButtonY = 5.f;
+    CGRect likeButtonFrame =  CGRectMake(LIKE_BUTTON_WALL_OFFSET,
+                                         likeButtonY,
+                                         LIKE_BUTTION_SIZE, LIKE_BUTTION_SIZE);
+    if(!self.smallLikeButton){
+        self.smallLikeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        self.smallLikeButton.contentMode = UIViewContentModeScaleAspectFit;
+        [self.smallLikeButton setFrame:likeButtonFrame];
+        [self.smallLikeButton setImage:[UIImage imageNamed:LIKE_ICON_UNPRESSED] forState:UIControlStateNormal];
+        [self.smallLikeButton addTarget:self action:@selector(likeButtonPressed) forControlEvents:UIControlEventTouchDown];
+        [self addSubview:self.smallLikeButton];
+    }
+    
+    if(!self.numLikeLabel){
+        self.numLikeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.smallLikeButton.frame.origin.x + self.smallLikeButton.frame.size.width + SMALL_ICON_SPACING, likeButtonY, LIKE_BUTTION_SIZE, LIKE_BUTTION_SIZE)];
+        [self.numLikeLabel setTextColor:[UIColor SMALL_NUMBER_TEXT_COLOR]];
+        [self addSubview:self.numLikeLabel];
+    }
+    
+    [self.numLikeLabel setText:[self.numLikes stringValue]];
+    
+    
+    //create share button
+    if(!self.smallShareButton){
+        self.smallShareButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        self.smallShareButton.contentMode = UIViewContentModeScaleAspectFit;
+        [self.smallShareButton setFrame:CGRectMake(self.numLikeLabel.frame.origin.x + self.numLikeLabel.frame.size.width + SMALL_ICON_SPACING, shareButtonY, SHARE_BUTTION_SIZE, SHARE_BUTTION_SIZE)];
+        [self.smallShareButton setImage:[UIImage imageNamed:SMALL_SHARE_ICON] forState:UIControlStateNormal];
+        [self.smallShareButton addTarget:self action:@selector(shareButtonPressed) forControlEvents:UIControlEventTouchDown];
+        [self addSubview:self.smallShareButton];
+    }
+    
+    if(!self.numSharesLabel){
+        self.numSharesLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.smallShareButton.frame.origin.x + self.smallShareButton.frame.size.width + SMALL_ICON_SPACING, shareButtonY, LIKE_BUTTION_SIZE, LIKE_BUTTION_SIZE)];
+        [self.numSharesLabel setTextColor:[UIColor SMALL_NUMBER_TEXT_COLOR]];
+        [self addSubview:self.numSharesLabel];
+    }
+    
+    [self.numSharesLabel setText:[self.numShares stringValue]];
+    
+    //create comment button
+    if(!self.smallCommentButton){
+        self.smallCommentButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        self.smallCommentButton.contentMode = UIViewContentModeScaleAspectFit;
+        [self.smallCommentButton setFrame:CGRectMake(self.numSharesLabel.frame.origin.x + self.numSharesLabel.frame.size.width + SMALL_ICON_SPACING, shareButtonY, SHARE_BUTTION_SIZE, SHARE_BUTTION_SIZE)];
+        [self.smallCommentButton setImage:[UIImage imageNamed:SMALL_COMMENT_ICON] forState:UIControlStateNormal];
+        [self.smallCommentButton addTarget:self action:@selector(commentButtonPressed) forControlEvents:UIControlEventTouchDown];
+        [self addSubview:self.smallCommentButton];
+    }
+    
+    if(!self.numCommentsLabel){
+        self.numCommentsLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.smallCommentButton.frame.origin.x + self.smallCommentButton.frame.size.width + SMALL_ICON_SPACING, shareButtonY, LIKE_BUTTION_SIZE, LIKE_BUTTION_SIZE)];
+        [self.numCommentsLabel setTextColor:[UIColor SMALL_NUMBER_TEXT_COLOR]];
+        [self addSubview:self.numCommentsLabel];
+    }
+    
+    [self.numCommentsLabel setText:[self.numComments stringValue]];
 }
+//set the start state of the like button
+-(void)startLikeButtonAsLiked:(BOOL)isLiked{
+    if(isLiked){
+        [self.smallLikeButton setImage:[UIImage imageNamed:LIKE_ICON_PRESSED ] forState:UIControlStateNormal];
+    }else{
+        [self.smallLikeButton setImage:[UIImage imageNamed:LIKE_ICON_UNPRESSED] forState:UIControlStateNormal];
+    }
+}
+
 -(void)updateSmallLikeButton:(BOOL)isLiked{
 	NSInteger numLikes;
 	if(isLiked){

@@ -20,6 +20,7 @@
 #import "NotificationPostPreview.h"
 #import "Durations.h"
 #import "Icons.h"
+#import "UserAndChannelListsTVC.h"
 
 @interface NotificationsListTVC () <NotificationPostPreviewProtocol>
 
@@ -189,6 +190,11 @@
 -(void)exitPreview{
 	[self removePreview];
 }
+-(void)presentCommentListForPost:(PFObject *)post{
+    UserAndChannelListsTVC *likersListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    [likersListVC presentList:CommentList forChannel:nil orPost:post];
+    [self presentViewController:likersListVC animated:YES completion:nil];
+}
 
 -(void)getMoreNotifications{
 	PFObject * lastObject =[self.parseNotificationObjects lastObject];
@@ -296,7 +302,7 @@
     NotificationTableCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if(!self.cellSelected){
         self.cellSelected = YES;
-        if(cell.notificationType & (Like|Reblog|FriendsFirstPost|Share)){
+        if(cell.notificationType & (Like|Reblog|FriendsFirstPost|Share|NewComment)){
              self.tableView.scrollEnabled = NO;
              [self presentPost:[cell parseObject] andChannel:cell.channel];
         }else{

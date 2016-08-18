@@ -138,13 +138,16 @@
 
 #pragma mark Like Share Bar
 
+#define COMMENT_ICON @"Comment icon"
+#define SMALL_COMMENT_ICON COMMENT_ICON
+
 #define LIKE_ICON_UNPRESSED @"Gray Heart"
 #define LIKE_ICON_PRESSED @"Red Heart"
 
 
 #define SMALL_SHARE_ICON @"Gray Share icon"
-
 #define SHARE_ICON @"Blue Share icon"
+
 #define UNMUTED_ICON @"sound_unmuted"
 #define MUTED_ICON @"sound_muted"
 #define DELETE_POST_ICON @"trash_icon_dark"

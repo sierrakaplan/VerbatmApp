@@ -13,6 +13,7 @@
 @protocol NotificationPostPreviewProtocol <NSObject>
 
 -(void)exitPreview;
+-(void)presentCommentListForPost:(PFObject *)post;
 
 @end
 
