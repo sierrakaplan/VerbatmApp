@@ -1036,6 +1036,12 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	[self presentViewController:likersListVC animated:YES completion:nil];
 }
 
+-(void)showWhoCommentedOnPost:(PFObject *) post{
+    UserAndChannelListsTVC *likersListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    [likersListVC presentList:CommentList forChannel:nil orPost:post];
+    [self presentViewController:likersListVC animated:YES completion:nil];
+}
+
 #pragma mark - Lazy instantiation -
 
 -(UIImageView *)reblogSucessful {

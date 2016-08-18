@@ -7,6 +7,7 @@
 //
 
 #import "Commenting_BackendObject.h"
+#import "Comment.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
 #import <Parse/PFQuery.h>
@@ -22,7 +23,13 @@
     [commentQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                   NSError * _Nullable error) {
         if(objects && !error) {
-            block(objects);
+            NSMutableArray * finalComments = [[NSMutableArray alloc] initWithCapacity:objects.count];
+            
+            for(PFObject * parseComment in objects){
+                [finalComments addObject:[[Comment alloc] initWithParseCommentObject:parseComment]];
+            }
+            block(finalComments);
+            
         } else {
             block(nil);
         }

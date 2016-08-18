@@ -28,7 +28,7 @@ typedef enum BarActivityOptions{
 -(void)showwhoHasSharedThePost;
 -(void)muteButtonSelected:(BOOL)shouldMute;
 -(void)deleteButtonPressed;
-
+-(void)showWhoCommentedOnthePost;
 -(void)flagButtonPressed;
 
 

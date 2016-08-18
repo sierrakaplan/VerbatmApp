@@ -76,6 +76,7 @@
 #define POST_NUM_REBLOGS @"PostNumReblogs"
 #define POST_SHARE_LINK @"PostSocialShareLink" //string url to share to social media
 #define POST_PAGES_PFRELATION @"PagesInPost"
+#define POST_FLAGGED_KEY  @"Post_Is_Flagged"
 
 #define POST_COMPLETED_SAVING @"PostDoneSaving"//we store
 
@@ -83,7 +84,7 @@
 #define POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO @"PostChannelActivityChannelPosted"//channel that post is posted in 
 #define POST_CHANNEL_ACTIVITY_POST @"PostChannelActivityPost"
 
-#define POST_FLAGGED_KEY  @"Post_Is_Flagged"
+
 #define FLAG_PFCLASS_KEY @"FlagClass"
 #define FLAG_USER_KEY @"FlagUser"
 #define FLAG_POST_FLAGGED_KEY @"FlagPost"

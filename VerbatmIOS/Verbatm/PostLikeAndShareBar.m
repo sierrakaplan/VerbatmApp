@@ -78,6 +78,9 @@
 
 -(void)formatView{
     self.backgroundColor = LIKE_SHARE_BAR_BACKGROUND_COLOR;
+    
+    self.layer.cornerRadius = 1.f;
+    
 }
 
 -(void) createCounterLabelStartingAtPage:(NSNumber *) startPage outOf:(NSNumber *) totalPages{
@@ -176,7 +179,7 @@
     self.commentButon.contentMode = UIViewContentModeScaleAspectFit;
     [self.commentButon setFrame:commentButtonFrame];
     [self.commentButon setImage:[UIImage imageNamed:COMMENT_ICON] forState:UIControlStateNormal];
-    [self.commentButon addTarget:self action:@selector(likeButtonPressed) forControlEvents:UIControlEventTouchDown];
+    [self.commentButon addTarget:self action:@selector(numCommentsButtonSelected) forControlEvents:UIControlEventTouchDown];
     
     [self addSubview:self.commentButon];
 }
@@ -214,7 +217,7 @@
     [self addSubview:self.numLikesButton];
 }
 
-//
+
 -(void)createCommentButtonNumbers:(NSNumber *) numComments {
     if(self.numCommentsButton){
         [self.numCommentsButton removeFromSuperview];
@@ -222,7 +225,7 @@
     }
     self.numCommentsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     
-    NSString * commentsText = numComments.integerValue > 1 ? @" comments" : @" comment";
+    NSString * commentsText = numComments.integerValue > 1 ? @" comm" : @" comms";
     
     NSAttributedString * commentAttrText = [[NSAttributedString alloc] initWithString:[numComments.stringValue stringByAppendingString:commentsText] attributes:self.likeNumberTextAttributes];
     
@@ -353,11 +356,8 @@
         if(currentLikes < 0) currentLikes = 0;
     }
     self.totalNumberOfLikes = [NSNumber numberWithInteger:currentLikes];
-    if (currentLikes >= 1) {
-		[self createLikeButtonNumbers: self.totalNumberOfLikes];
-	} else {
-		[self.numLikesButton removeFromSuperview];
-	}
+    [self createLikeButtonNumbers: self.totalNumberOfLikes];
+	
 }
 
 #pragma mark - Display likes and shares -
@@ -368,7 +368,7 @@
 }
 
 -(void) numCommentsButtonSelected {
-    //[self.delegate showWhoLikesThePost];
+    [self.delegate showWhoCommentedOnthePost];
 }
 
 //todo:

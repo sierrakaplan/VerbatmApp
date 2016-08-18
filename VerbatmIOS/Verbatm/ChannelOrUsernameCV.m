@@ -7,7 +7,6 @@
 //
 
 #import "ChannelOrUsernameCV.h"
-
 #import "Follow_BackendManager.h"
 
 #import "Notifications.h"
@@ -54,7 +53,7 @@
 @property (nonatomic) BOOL currentUserFollowingChannelUser;
 
 
-
+#define MAX_WIDTH (self.followButton.frame.origin.x - (TAB_BUTTON_PADDING_X * 2))
 @end
 
 @implementation ChannelOrUsernameCV
@@ -101,17 +100,29 @@
     }
 }
 
+
+
++(CGFloat)getHeightForCellFromCommentObject:(Comment *) commentObject{
+    
+    CGFloat maxWidth = [[UIScreen mainScreen] bounds].size.width - (TAB_BUTTON_PADDING_X * 2);
+    
+    UILabel * heightFinder = [ChannelOrUsernameCV getTextView:[commentObject commentString] withOrigin:CGPointMake(0.f, 0.f) andAttributes:[ChannelOrUsernameCV getAttrForCommentString] withMaxWidth:maxWidth];
+    
+    return heightFinder.frame.size.height + (CHANNEL_USER_LIST_CELL_HEIGHT/2.f );
+}
+
+
++(NSDictionary *) getAttrForCommentString{
+    NSMutableParagraphStyle *usernameAlignment = NSMutableParagraphStyle.new;
+    usernameAlignment.alignment  = NSTextAlignmentLeft;
+    return @{NSForegroundColorAttributeName:[UIColor blackColor],NSFontAttributeName:[UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:CHANNEL_USER_LIST_USER_NAME_FONT_SIZE],NSParagraphStyleAttributeName:usernameAlignment};
+}
+
 #pragma mark - Edit Cell formatting -
 
--(void)presentComment:(PFObject *) commentObject{
-    PFUser * commentCreator = [commentObject valueForKey:COMMENT_USER_KEY];
-    [commentCreator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable user, NSError * _Nullable error) {
-            NSString * commentString = [commentObject valueForKey:COMMENT_STRING];
-            NSString * creatorName = [user valueForKey:VERBATM_USER_NAME_KEY];
-            dispatch_async(dispatch_get_main_queue() , ^{
-                [self setLabelsForComment:commentString andUserName:creatorName];
-            });
-        
+-(void)presentComment:(Comment *) commentObject{
+    [commentObject getCommentCreatorWithCompletionBlock:^(NSString * creatorName) {
+        [self setLabelsForComment:[commentObject commentString] andUserName:creatorName];
     }];
 }
 
@@ -228,8 +239,7 @@
     }
 }
 
--(void) setLabelsForChannel{
-
+-(void)clearView{
     if(self.channelNameLabel){
         [self.channelNameLabel removeFromSuperview];
         
@@ -239,24 +249,6 @@
         [self.usernameLabel removeFromSuperview];
         self.usernameLabel = nil;
     }
-
-    CGPoint nameLabelOrigin = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y);
-	CGPoint channelNameLabelOrigin  = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y + self.frame.size.height/3.f);
-    
-    CGFloat maxWidth=self.followButton.frame.origin.x - (TAB_BUTTON_PADDING_X * 2);
-    
-	self.channelNameLabel = [self getLabel:self.channelName withOrigin:channelNameLabelOrigin andAttributes:self.channelNameLabelAttributes withMaxWidth:maxWidth];
-	self.usernameLabel = [self getLabel:self.userName withOrigin:nameLabelOrigin andAttributes:self.userNameLabelAttributes withMaxWidth:maxWidth];
-    
-    
-	[self addSubview: self.channelNameLabel];
-	[self addSubview: self.usernameLabel];
-    
-}
-
-
--(void)setLabelsForComment:(NSString *) comment andUserName:(NSString *) userName{
-    
     if(self.commentLabel){
         [self.commentLabel removeFromSuperview];
         
@@ -267,15 +259,41 @@
         [self.commentUserNameLabel removeFromSuperview];
         self.commentUserNameLabel = nil;
     }
+}
+
+-(void) setLabelsForChannel{
+
+    [self clearView];
+
+    CGPoint nameLabelOrigin = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y);
+	CGPoint channelNameLabelOrigin  = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y + self.frame.size.height/3.f);
+    
+	self.channelNameLabel = [self getLabel:self.channelName withOrigin:channelNameLabelOrigin andAttributes:self.channelNameLabelAttributes withMaxWidth:MAX_WIDTH];
+	self.usernameLabel = [self getLabel:self.userName withOrigin:nameLabelOrigin andAttributes:self.userNameLabelAttributes withMaxWidth:MAX_WIDTH];
+    
+    
+	[self addSubview: self.channelNameLabel];
+	[self addSubview: self.usernameLabel];
+    
+}
+
+
+-(void)setLabelsForComment:(NSString *) comment andUserName:(NSString *) userName{
+    
+    [self clearView];
+    
+    CGFloat maxWidth = [[UIScreen mainScreen] bounds].size.width - (TAB_BUTTON_PADDING_X * 2);
+
     
     CGPoint userNameLabelOrigin = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y);
-    CGPoint commentStringLabelOrigin  = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y + self.frame.size.height/3.f);
+   
     
-    CGFloat maxWidth = self.frame.size.width - (TAB_BUTTON_PADDING_X * 2);
+    self.commentUserNameLabel = [self getLabel:userName withOrigin:userNameLabelOrigin andAttributes:self.userNameCommentLabelAttributes withMaxWidth:maxWidth];
     
-    self.commentUserNameLabel = [self getLabel:userName withOrigin:commentStringLabelOrigin andAttributes:self.userNameCommentLabelAttributes withMaxWidth:maxWidth];
     
-    self.commentLabel = [self getLabel:comment withOrigin:userNameLabelOrigin andAttributes:self.commentStringLabelAttributes withMaxWidth:maxWidth];
+     CGPoint  commentStringLabelOrigin = CGPointMake(TAB_BUTTON_PADDING_X,self.commentUserNameLabel.frame.origin.y + self.commentUserNameLabel.frame.size.height);
+    
+    self.commentLabel = [ChannelOrUsernameCV getTextView:comment withOrigin:commentStringLabelOrigin andAttributes:self.commentStringLabelAttributes withMaxWidth:maxWidth];
     
     
     [self addSubview: self.commentLabel];
@@ -290,12 +308,17 @@
     
     if(title && nameLabelAttribute){
         NSAttributedString* tabAttributedTitle = [[NSAttributedString alloc] initWithString:title attributes:nameLabelAttribute];
-        CGSize textSize = [title sizeWithAttributes:nameLabelAttribute];
-
-        CGFloat height = (textSize.height <= (self.frame.size.height/2.f) - 2.f) ?
-        textSize.height : self.frame.size.height/2.f;
+        CGRect textSize = [title boundingRectWithSize:CGSizeMake(maxWidth, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:nameLabelAttribute context:nil];
         
-        CGFloat width = (maxWidth > 0 && textSize.width > maxWidth) ? maxWidth : textSize.width;
+           CGFloat height;
+        if(self.channel){
+            height= (textSize.size.height <= (self.frame.size.height/2.f) - 2.f) ?
+            textSize.size.height : self.frame.size.height/2.f;
+        }else{
+            height = textSize.size.height;
+        }
+        
+        CGFloat width = (maxWidth > 0 && textSize.size.width > maxWidth) ? maxWidth : textSize.size.width;
         
         CGRect labelFrame = CGRectMake(origin.x, origin.y, width, height +7.f);
         
@@ -306,6 +329,32 @@
         [nameLabel setAttributedText:tabAttributedTitle];
     }
 	return nameLabel;
+}
+
++(UILabel *) getTextView:(NSString *) title withOrigin:(CGPoint) origin andAttributes:(NSDictionary *) nameLabelAttribute withMaxWidth:(CGFloat) maxWidth {
+    UILabel * textLabel = [[UILabel alloc] init];
+    
+    if(title && nameLabelAttribute){
+        NSAttributedString* tabAttributedTitle = [[NSAttributedString alloc] initWithString:title attributes:nameLabelAttribute];
+        CGRect textSize = [title boundingRectWithSize:CGSizeMake(maxWidth, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:nameLabelAttribute context:nil];
+        
+        
+        CGFloat height;
+
+        CGFloat extraHeight = textSize.size.width - maxWidth;
+        
+        height = textSize.size.height + ((extraHeight > 0.f) ? extraHeight : 0.f);
+        CGFloat width = ((maxWidth > 0) && (textSize.size.width > maxWidth)) ? maxWidth : textSize.size.width;
+        
+        CGRect labelFrame = CGRectMake(origin.x, origin.y, width, height +7.f);
+        
+        textLabel.frame = labelFrame;
+        textLabel.backgroundColor = [UIColor clearColor];
+        textLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        textLabel.numberOfLines = 0.f;
+        [textLabel setAttributedText:tabAttributedTitle];
+    }
+    return textLabel;
 }
 
 
@@ -321,13 +370,15 @@
 	self.userNameLabelAttributes =@{NSForegroundColorAttributeName: [UIColor blackColor],
 									NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:CHANNEL_USER_LIST_USER_NAME_FONT_SIZE]};
     
-    
+    NSMutableParagraphStyle *usernameAlignment = NSMutableParagraphStyle.new;
+    usernameAlignment.alignment  = NSTextAlignmentLeft;
     self.userNameCommentLabelAttributes = @{NSForegroundColorAttributeName: [UIColor blackColor],
-                                            NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT size: CHANNEL_USER_LIST_USER_NAME_FONT_SIZE]};
+                                            NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT size: CHANNEL_USER_LIST_USER_NAME_FONT_SIZE],
+                                            NSParagraphStyleAttributeName:usernameAlignment};
 
     
     self.commentStringLabelAttributes = @{NSForegroundColorAttributeName: [UIColor blackColor],
-                                          NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:CHANNEL_USER_LIST_USER_NAME_FONT_SIZE], NSParagraphStyleAttributeName:paragraphStyle};
+                                          NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:CHANNEL_USER_LIST_USER_NAME_FONT_SIZE], NSParagraphStyleAttributeName:usernameAlignment};
 }
 
 

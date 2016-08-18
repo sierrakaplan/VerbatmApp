@@ -188,6 +188,10 @@
 	[self.cellDelegate showWhoLikesThePost:post];
 }
 
+-(void)showWhoCommentedOnPost:(PFObject *) post{
+    [self.cellDelegate showWhoCommentedOnPost:post];
+}
+
 
 -(void)setInSmallMode:(BOOL)inSmallMode{
 	_inSmallMode = inSmallMode;

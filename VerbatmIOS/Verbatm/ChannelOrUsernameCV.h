@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "Channel.h"
+#import "Comment.h"
+
 @interface ChannelOrUsernameCV : UITableViewCell
 
 
@@ -16,8 +18,8 @@
 -(void)setChannelName:(NSString *)channelName andUserName:(NSString *) userName ;
 -(void)setHeaderTitle;
 -(void)presentChannel:(Channel *) channel;
+-(void)presentComment:(Comment *) commentObject;
+-(void)clearView;
 
--(void)presentComment:(PFObject *) commentObject;
-
-
++(CGFloat)getHeightForCellFromCommentObject:(Comment *) commentObject;
 @end

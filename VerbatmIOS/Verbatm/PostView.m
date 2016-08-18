@@ -289,6 +289,11 @@
     [self.delegate showWhoLikesThePost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
 }
 
+-(void)showWhoCommentedOnthePost{
+    [self.delegate showWhoCommentedOnPost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
+
+}
+
 -(void) showwhoHasSharedThePost{
 	//todo:
 }

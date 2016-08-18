@@ -74,6 +74,6 @@
 -(void)removePostViewSelected;
 -(void)presentSmallLikeButton;
 -(void)updateSmallLikeButton:(BOOL)isLiked;
-
+-(void)showWhoCommentedOnPost:(PFObject *) post;
 @end
 
