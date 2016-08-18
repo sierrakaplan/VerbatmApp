@@ -36,9 +36,9 @@
 -(void) addCreatorInfo;
 
 //called by presenter of the POVView with access to the postinformation
--(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares
-								numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage
-									  startUp:(BOOL)up withDeleteButton: (BOOL)withDelete;
+-(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfComments:(NSNumber *) numComments
+                                numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage
+                                      startUp:(BOOL)up withDeleteButton: (BOOL)withDelete;
 
 //Scrolls POV to a specific page
 -(void) scrollToPageAtIndex:(NSInteger) pageIndex;
@@ -74,6 +74,7 @@
 -(void)removePostViewSelected;
 -(void)presentSmallLikeButton;
 -(void)updateSmallLikeButton:(BOOL)isLiked;
+-(void)startLikeButtonAsLiked:(BOOL)isLiked;
 -(void)showWhoCommentedOnPost:(PFObject *) post;
 @end
 

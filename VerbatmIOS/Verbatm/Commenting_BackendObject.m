@@ -8,6 +8,8 @@
 
 #import "Commenting_BackendObject.h"
 #import "Comment.h"
+#import "Notification_BackendManager.h"
+
 #import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
 #import <Parse/PFQuery.h>
@@ -34,8 +36,6 @@
             block(nil);
         }
     }];
-
-
 }
 
 
@@ -48,9 +48,9 @@
     // Will return error if comment already existed - ignore
     [newComment saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if(succeeded) {
-            //            [postParseObject incrementKey:POST_NUM_LIKES];
-            //            [postParseObject saveInBackground];
-            //            [Notification_BackendManager createNotificationWithType:Like receivingUser:[postParseObject valueForKey:POST_ORIGINAL_CREATOR_KEY] relevantPostObject:postParseObject];
+            [postParseObject incrementKey:POST_NUM_COMMENTS];
+            [postParseObject saveInBackground];
+            [Notification_BackendManager createNotificationWithType:NewComment receivingUser:[postParseObject valueForKey:POST_ORIGINAL_CREATOR_KEY] relevantPostObject:postParseObject];
         }
     }];
 }

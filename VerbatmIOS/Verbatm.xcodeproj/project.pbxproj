@@ -1337,13 +1337,13 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
-		C761727C1C4E0E7700AB0D84 /* Collection Cell Views */ = {
+		C761727C1C4E0E7700AB0D84 /* CollectionView Cells */ = {
 			isa = PBXGroup;
 			children = (
 				C761727D1C4E0EB600AB0D84 /* PostCollectionViewCell.h */,
 				C761727E1C4E0EB600AB0D84 /* PostCollectionViewCell.m */,
 			);
-			name = "Collection Cell Views";
+			name = "CollectionView Cells";
 			sourceTree = "<group>";
 		};
 		C78B681119CA6914003D0AC5 /* View Controllers */ = {
@@ -1376,7 +1376,7 @@
 				A56F68771B643EB200CE5744 /* Scroll Views */,
 				A56F68751B643D0E00CE5744 /* Camera Views */,
 				A56F686F1B643ADE00CE5744 /* Custom Bars */,
-				C761727C1C4E0E7700AB0D84 /* Collection Cell Views */,
+				C761727C1C4E0E7700AB0D84 /* CollectionView Cells */,
 				A59CC2861B6C2E2F00B4907C /* Table Cell Views */,
 				A5E860081B9919F500E148D0 /* Viewing Posts */,
 				C7540F751C09A48700DE1AA6 /* Channels */,

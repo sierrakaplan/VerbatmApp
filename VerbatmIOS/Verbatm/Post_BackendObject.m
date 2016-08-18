@@ -45,6 +45,7 @@
 	PFObject * newPostObject = [PFObject objectWithClassName:POST_PFCLASS_KEY];
 	[newPostObject setObject:channel.parseChannelObject forKey:POST_CHANNEL_KEY];
 	[newPostObject setObject:[NSNumber numberWithInteger:0] forKey:POST_NUM_LIKES];
+    [newPostObject setObject:[NSNumber numberWithInteger:0] forKey:POST_NUM_COMMENTS];
 	[newPostObject setObject:[NSNumber numberWithInteger:0] forKey:POST_NUM_REBLOGS];
 	[newPostObject setObject:[PFUser currentUser] forKey:POST_ORIGINAL_CREATOR_KEY];
 	[newPostObject setObject:[NSNumber numberWithInteger:pinchViews.count] forKey:POST_SIZE_KEY];

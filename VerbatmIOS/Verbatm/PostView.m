@@ -249,7 +249,7 @@
                 if(weakSelf.inSmallMode){
                     weakSelf.liked = userLikedPost;
                     [weakSelf.delegate presentSmallLikeButton];
-                    [weakSelf updateLikeButton];
+                    [weakSelf.delegate startLikeButtonAsLiked:userLikedPost];
                 }else{
                     [weakSelf.likeShareBar shouldStartPostAsLiked:userLikedPost];
                 }
@@ -263,12 +263,12 @@
     [self.delegate updateSmallLikeButton:self.liked];
 }
 
--(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares
+-(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfComments:(NSNumber *) numComments
 								numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage
 									  startUp:(BOOL)up withDeleteButton: (BOOL)withDelete {
 
 	self.likeShareBar = [[PostLikeAndShareBar alloc] initWithFrame: self.lsBarDownFrame numberOfLikes:numLikes
-													numberOfShares:numShares numberOfPages:numPages andStartingPageNumber:startPage];
+                                                    numberOfShares:numShares numComments:numComments numberOfPages:numPages andStartingPageNumber:startPage];
 	self.likeShareBar.delegate = self;
 	if (withDelete) {
 		[self.likeShareBar createDeleteButton];

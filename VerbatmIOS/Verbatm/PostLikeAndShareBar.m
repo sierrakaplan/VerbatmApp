@@ -39,6 +39,7 @@
 @property (nonatomic) NSNumber * totalNumberOfPages;
 
 @property (nonatomic) NSNumber * totalNumberOfLikes;//number of likes on our related AVE
+@property (nonatomic) NSNumber * totalNumberOfComments;//number of comments on our related AVE
 
 @property (nonatomic) NSDictionary * likeNumberTextAttributes;
 
@@ -62,14 +63,15 @@
 
 @implementation PostLikeAndShareBar
 
--(instancetype) initWithFrame:(CGRect)frame numberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage {
+-(instancetype) initWithFrame:(CGRect)frame numberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numComments:(NSNumber *) numComments numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage {
     
     self = [super initWithFrame:frame];
     if(self){
         
-        [self creatButtonsWithNumLike:numLikes andNumShare:numShares];
+        [self creatButtonsWithNumLike:numLikes numComments:numComments andNumShare:numShares];
         self.totalNumberOfPages = numPages;
         self.totalNumberOfLikes = numLikes;
+        self.totalNumberOfComments = numComments;
         [self formatView];
         self.isMuted = NO;
     }
@@ -116,9 +118,13 @@
     return pageWeAreOn;
 }
 
--(void) creatButtonsWithNumLike:(NSNumber *) numLikes andNumShare:(NSNumber *) numShares {
+-(void) creatButtonsWithNumLike:(NSNumber *) numLikes numComments:(NSNumber *)numComments andNumShare:(NSNumber *) numShares {
     
-    [self createCommentButtonNumbers:@(0)];
+    if(!numComments){
+        numComments = @(0);
+    }
+    
+    [self createCommentButtonNumbers:numComments];
     [self createCommentButton];
     
     if (numLikes && numLikes.integerValue >= 0) {

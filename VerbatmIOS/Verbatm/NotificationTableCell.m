@@ -32,6 +32,8 @@
 #define FRIENDS_FIRST_POST @" just created their first "
 #define POST_SHARED_APPEND_TEXT @" shared your "
 #define REBLOG_APPEND_TEXT @" reblogged your "
+#define COMMENT_APPEND_TEXT @" commented on your "
+
 #define FOLLOW_TEXT_BUTTON_GAP (3.f)
 #define FOLLOW_BUTTON_X_POS (self.frame.size.width - PROFILE_HEADER_XOFFSET - LARGE_FOLLOW_BUTTON_WIDTH)
 
@@ -88,7 +90,7 @@
     NSString * notifcation = [self getNotificationStringWithNotifcationType:notificationType andChannel:channel];
     [self createNotificationLabelWithAttributedString:[self getAttributedStringFromString:notifcation andNotificationType:notificationType andChannel:channel]];
     
-    if(notificationType & (FriendsFirstPost|Like|Share|Reblog)){
+    if(notificationType & (FriendsFirstPost|Like|Share|Reblog|NewComment)){
         [self createPostTextLabel];
     }
 }
@@ -153,6 +155,9 @@
             break;
         case Reblog:
             finalString = [[channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY] stringByAppendingString:REBLOG_APPEND_TEXT];
+            break;
+        case NewComment:
+            finalString = [[channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY] stringByAppendingString:COMMENT_APPEND_TEXT];
             break;
     }
 

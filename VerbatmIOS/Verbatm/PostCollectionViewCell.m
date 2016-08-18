@@ -20,6 +20,7 @@
 @interface PostCollectionViewCell () <PostViewDelegate>
 
 @property (nonatomic, readwrite) PFObject *currentPostActivityObject;
+@property (nonatomic, readwrite) PFObject *currentPostObject;//the post in the post activity object
 @property (nonatomic, readwrite) PostView *currentPostView;
 
 @property (nonatomic) PFObject *postBeingPresented;
@@ -42,6 +43,7 @@
 
 @property (nonatomic) NSNumber * numLikes;
 @property (nonatomic) NSNumber * numShares;
+@property (nonatomic) NSNumber * numComments;
 
 #define POSTVIEW_FRAME ((self.inSmallMode) ? CGRectMake(0.f, SMALL_SQUARE_LIKESHAREBAR_HEIGHT, self.frame.size.width, self.frame.size.height - SMALL_SQUARE_LIKESHAREBAR_HEIGHT) : self.bounds)
 
@@ -131,13 +133,15 @@
 	self.currentPostActivityObject = pfActivityObj;
     
     PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
+    self.currentPostObject = post;
+    
     __weak PostCollectionViewCell *weakSelf = self;
     
     [post fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
         
         weakSelf.numLikes = object[POST_NUM_LIKES];
         weakSelf.numShares = object[POST_NUM_REBLOGS];
-        
+        weakSelf.numComments = object[POST_NUM_COMMENTS];
         
         [Page_BackendObject getPagesFromPost:object andCompletionBlock:^(NSArray * pages) {
             
@@ -169,11 +173,7 @@
                 [weakSelf.currentPostView checkIfUserHasLikedThePost];
             }else{
                 
-                [weakSelf.currentPostView createLikeAndShareBarWithNumberOfLikes:weakSelf.numLikes numberOfShares:weakSelf.numShares
-                                                                   numberOfPages:numberOfPages
-                                                           andStartingPageNumber:@(1)
-                                                                         startUp:up
-                                                                withDeleteButton:withDelete];
+                [weakSelf.currentPostView createLikeAndShareBarWithNumberOfLikes:weakSelf.numLikes numberOfShares:weakSelf.numShares numberOfComments:weakSelf.numComments numberOfPages:numberOfPages andStartingPageNumber:@(1) startUp:up withDeleteButton:withDelete];
                 [weakSelf.currentPostView addCreatorInfo];
                 
             }
@@ -271,6 +271,11 @@
 #pragma mark - Post view delegate -
 
 -(void)presentSmallLikeButton{
+    
+    self.numLikes = self.currentPostObject[POST_NUM_LIKES];
+    self.numShares = self.currentPostObject[POST_NUM_REBLOGS];
+    self.numComments = self.currentPostObject[POST_NUM_COMMENTS];
+    
     //create LikeButton
     CGFloat likeButtonY =  2.5;
     CGFloat shareButtonY = 5.f;
@@ -294,6 +299,8 @@
     
     [self.numLikeLabel setText:[self.numLikes stringValue]];
     
+    
+    //create share button
     if(!self.smallShareButton){
         self.smallShareButton = [UIButton buttonWithType:UIButtonTypeCustom];
         self.smallShareButton.contentMode = UIViewContentModeScaleAspectFit;
@@ -309,9 +316,18 @@
         [self addSubview:self.numSharesLabel];
     }
     
-    [self.numSharesLabel setText:[self.numLikes stringValue]];
+    [self.numSharesLabel setText:[self.numShares stringValue]];
 
 }
+//set the start state of the like button
+-(void)startLikeButtonAsLiked:(BOOL)isLiked{
+    if(isLiked){
+        [self.smallLikeButton setImage:[UIImage imageNamed:LIKE_ICON_PRESSED ] forState:UIControlStateNormal];
+    }else{
+        [self.smallLikeButton setImage:[UIImage imageNamed:LIKE_ICON_UNPRESSED] forState:UIControlStateNormal];
+    }
+}
+
 -(void)updateSmallLikeButton:(BOOL)isLiked{
     NSInteger numLikes;
     if(isLiked){

@@ -73,11 +73,8 @@
                 self.currentPostView.inSmallMode = NO;
                 NSNumber *numLikes = object[POST_NUM_LIKES];
                 NSNumber *numShares = object[POST_NUM_REBLOGS];
-                [self.currentPostView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
-                                                               numberOfPages:numberOfPages
-                                                       andStartingPageNumber:@(1)
-                                                                     startUp:NO
-                                                            withDeleteButton:NO];
+                NSNumber *numComments = object[POST_NUM_COMMENTS];
+                [self.currentPostView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares numberOfComments:numComments numberOfPages:numberOfPages andStartingPageNumber:@(1) startUp:NO withDeleteButton:NO];
                 [self.currentPostView addCreatorInfo];
                 
                 [self.currentPostView postOnScreen];
