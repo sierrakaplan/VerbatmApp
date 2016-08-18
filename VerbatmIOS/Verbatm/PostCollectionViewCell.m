@@ -73,6 +73,7 @@
 -(void) clearViews {
 	if (self.currentPostView) {
 		[self.currentPostView removeFromSuperview];
+		self.currentPostView = nil;
 	}
 
 	[self removePublishingProgress];
@@ -97,7 +98,9 @@
 }
 
 -(void) layoutSubviews {
-	self.currentPostView.frame = POSTVIEW_FRAME;
+	if (self.currentPostView) {
+		self.currentPostView.frame = POSTVIEW_FRAME;
+	}
 	if(!self.hasShadow){
 		//[self addShadowToView];
 		self.hasShadow = YES;
@@ -129,55 +132,63 @@
 	self.hasPublishingView = NO;
 	self.footerUp = up;
 	self.currentPostActivityObject = pfActivityObj;
-    
     PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
-    __weak PostCollectionViewCell *weakSelf = self;
-    
+
     [post fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+		if (self.currentPostActivityObject != nil && self.currentPostActivityObject != pfActivityObj) {
+			return;
+		}
+		if (self.currentPostView) {
+			[self.currentPostView removeFromSuperview];
+			self.currentPostView = nil;
+		}
         
-        weakSelf.numLikes = object[POST_NUM_LIKES];
-        weakSelf.numShares = object[POST_NUM_REBLOGS];
-        
-        
+        self.numLikes = object[POST_NUM_LIKES];
+        self.numShares = object[POST_NUM_REBLOGS];
+
         [Page_BackendObject getPagesFromPost:object andCompletionBlock:^(NSArray * pages) {
+
+			if (self.currentPostActivityObject != nil && self.currentPostActivityObject != pfActivityObj) {
+				return;
+			}
+
+			if (self.currentPostView) {
+				[self.currentPostView removeFromSuperview];
+			}
+            self.currentPostView = [[PostView alloc] initWithFrame:POSTVIEW_FRAME
+                                          andPostChannelActivityObject:pfActivityObj small:self.inSmallMode andPageObjects:pages];
             
-            weakSelf.currentPostView = [[PostView alloc] initWithFrame:POSTVIEW_FRAME
-                                          andPostChannelActivityObject:pfActivityObj small:weakSelf.inSmallMode andPageObjects:pages];
-            
-            if(weakSelf.inSmallMode)[weakSelf.currentPostView muteAllVideos:YES];
+            if(self.inSmallMode)[self.currentPostView muteAllVideos:YES];
             NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
-            if (weakSelf.isOnScreen) {
-                [weakSelf.currentPostView postOnScreen];
-            } else if (weakSelf.isAlmostOnScreen) {
-                [weakSelf.currentPostView postAlmostOnScreen];
+            if (self.isOnScreen) {
+                [self.currentPostView postOnScreen];
+            } else if (self.isAlmostOnScreen) {
+                [self.currentPostView postAlmostOnScreen];
             } else {
-                [weakSelf.currentPostView postOffScreen];
+                [self.currentPostView postOffScreen];
             }
-            weakSelf.currentPostView.delegate = weakSelf;
-            weakSelf.currentPostView.listChannel = channelForList;
+            self.currentPostView.delegate = self;
+            self.currentPostView.listChannel = channelForList;
             
-            if(self.tapToExitNotification){
-                [weakSelf insertSubview:weakSelf.currentPostView belowSubview:self.tapToExitNotification];
-            }else{
-                [weakSelf addSubview: weakSelf.currentPostView];
+            if(self.tapToExitNotification) {
+                [self insertSubview: self.currentPostView belowSubview: self.tapToExitNotification];
+            } else {
+                [self addSubview: self.currentPostView];
             }
-            weakSelf.currentPostView.inSmallMode = weakSelf.inSmallMode;
-            
-            
-            
-            if(weakSelf.inSmallMode){
-                [weakSelf.currentPostView checkIfUserHasLikedThePost];
-            }else{
-                
-                [weakSelf.currentPostView createLikeAndShareBarWithNumberOfLikes:weakSelf.numLikes numberOfShares:weakSelf.numShares
+            self.currentPostView.inSmallMode = self.inSmallMode;
+
+            if (self.inSmallMode){
+                [self.currentPostView checkIfUserHasLikedThePost];
+            } else {
+                [self.currentPostView createLikeAndShareBarWithNumberOfLikes: self.numLikes numberOfShares: self.numShares
                                                                    numberOfPages:numberOfPages
                                                            andStartingPageNumber:@(1)
                                                                          startUp:up
                                                                 withDeleteButton:withDelete];
-                [weakSelf.currentPostView addCreatorInfo];
+                [self.currentPostView addCreatorInfo];
                 
             }
-            [weakSelf bringSubviewToFront:weakSelf.dot];
+            [self bringSubviewToFront: self.dot];
         }];
     }];
     
