@@ -227,21 +227,17 @@
 -(void)presentPost:(PFObject *)postObject andChannel:(Channel *) channel{
 
 	if(postObject && channel){
-		PFQuery * query = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
-		[query whereKey:POST_CHANNEL_ACTIVITY_POST equalTo:postObject];
-		[query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-                if(!self.postPreview && objects && objects.count){
-                    self.postPreview = [[NotificationPostPreview alloc] initWithFrame:CGRectMake(self.view.frame.size.width,self.tableView.contentOffset.y, self.view.frame.size.width, self.view.frame.size.height)];
-                    self.postPreview.delegate = self;
-                    [self.postPreview presentPost:[objects firstObject] andChannel:channel];
-                    [self.view addSubview:self.postPreview];
-                    [self.view bringSubviewToFront:self.postPreview];
-                    [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-                        self.postPreview.frame = CGRectMake(0.f, self.tableView.contentOffset.y, self.view.frame.size.width, self.view.frame.size.height);
-                    }];
-                    [self.delegate notificationListHideTabBar:YES];
-                }
-		}];
+        if(!self.postPreview){
+            self.postPreview = [[NotificationPostPreview alloc] initWithFrame:CGRectMake(0.f,self.tableView.contentOffset.y + self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height)];
+            self.postPreview.delegate = self;
+            [self.postPreview presentPost:postObject andChannel:channel];
+            [self.view addSubview:self.postPreview];
+            [self.view bringSubviewToFront:self.postPreview];
+            [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
+                self.postPreview.frame = CGRectMake(0.f, self.tableView.contentOffset.y, self.view.frame.size.width, self.view.frame.size.height);
+            }];
+            [self.delegate notificationListHideTabBar:YES];
+        }
 	}
 
 }
@@ -249,15 +245,15 @@
 -(void)removePreview{
 	self.cellSelected = NO;
 	if(self.postPreview){
-		[UIView animateWithDuration:PINCHVIEW_DROP_ANIMATION_DURATION animations:^{
-			self.postPreview.frame = CGRectMake(self.view.frame.size.width,self.tableView.contentOffset.y, self.view.frame.size.width, self.view.frame.size.height);
+		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
+			self.postPreview.frame = CGRectMake(0.f,self.tableView.contentOffset.y + self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height);
 		}completion:^(BOOL finished) {
 			if(finished){
 				[self.postPreview clearViews];
-				self.postPreview = nil;
 				[self.postPreview removeFromSuperview];
 				self.tableView.scrollEnabled = YES;
 				[self.delegate notificationListHideTabBar:NO];
+                self.postPreview = nil;
 			}
 		}];
 	}

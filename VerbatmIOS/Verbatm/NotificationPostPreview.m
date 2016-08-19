@@ -15,6 +15,8 @@
 #import "Styles.h"
 #import "SizesAndPositions.h"
 #import "ParseBackendKeys.h"
+#import <Parse/PFQuery.h>
+#import "LoadingIndicator.h"
 
 @interface NotificationPostPreview () <CustomNavigationBarDelegate, PostViewDelegate>
 @property (nonatomic, readwrite) PFObject *currentPostActivityObject;
@@ -23,14 +25,21 @@
 @property (nonatomic) PFObject *postBeingPresented;
 
 @property (nonatomic) UIView * customNavBar;
+@property (nonatomic) UIActivityIndicatorView *loadingIndicator;
 
 #define HEADER_HEIGHT 40.f
-
+@property (nonatomic) UIButton * tempCancelButton;
 @end
 
 
 @implementation NotificationPostPreview
-
+-(instancetype)initWithFrame:(CGRect)frame{
+    self = [super initWithFrame: frame];
+    if(self){
+        self.backgroundColor = [UIColor blackColor];
+    }
+    return self;
+}
 
 -(void)createNavBar{
 	CGRect customBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, HEADER_HEIGHT);
@@ -53,11 +62,9 @@
 	self.customNavBar = nil;
 }
 
-
-
--(void)presentPost:(PFObject *) pfActivityObj andChannel:(Channel *) channel{
-	self.postBeingPresented = pfActivityObj;
-	PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
+-(void)getAndPresentPost:(PFObject *) pfActivityObj andChannel:(Channel *) channel{
+    self.postBeingPresented = pfActivityObj;
+    PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
     [post fetchInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
         if(object){
             [Page_BackendObject getPagesFromPost:object andCompletionBlock:^(NSArray * pages) {
@@ -77,10 +84,19 @@
                 
                 [self.currentPostView postOnScreen];
                 [self bringSubviewToFront:self.customNavBar];
+                [self.loadingIndicator stopAnimating];
             }];
         }
     }];
-	
+}
+
+-(void)presentPost:(PFObject *) postObject andChannel:(Channel *) channel{
+    [self.loadingIndicator startAnimating];
+    PFQuery * query = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
+    [query whereKey:POST_CHANNEL_ACTIVITY_POST equalTo:postObject];
+    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+        [self getAndPresentPost:[objects firstObject] andChannel:channel];
+    }];
 }
 
 #pragma mark -POVDelegate-
@@ -124,16 +140,16 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
+-(UIActivityIndicatorView *) loadingIndicator {
+    if(!_loadingIndicator) {
+        _loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhiteLarge];
+        _loadingIndicator.center = self.center;
+        _loadingIndicator.hidesWhenStopped = YES;
+        [self addSubview:_loadingIndicator];
+    }
+    [self bringSubviewToFront:_loadingIndicator];
+    return _loadingIndicator;
+}
 
 
 

@@ -168,12 +168,14 @@
     return finalString;
 }
 
-
-
-
 -(void)createPostTextLabel{
     
-    CGRect frame = CGRectMake(self.notificationTextLabel.frame.origin.x + self.notificationTextLabel.frame.size.width, self.notificationTextLabel.frame.origin.y, POST_TEXT_WIDTH, self.notificationTextLabel.frame.size.height);
+    
+    CGFloat centerOfNotificationTextLabel = self.notificationTextLabel.frame.origin.y + (self.notificationTextLabel.frame.size.height/2.f);
+    CGFloat yPosPostLine = centerOfNotificationTextLabel - (self.notificationTextLabel.frame.size.height/2.f);
+    CGFloat xPosPostLine = self.notificationTextLabel.frame.origin.x + self.notificationTextLabel.frame.size.width;
+    
+    CGRect frame = CGRectMake(xPosPostLine, yPosPostLine, POST_TEXT_WIDTH, self.notificationTextLabel.frame.size.height);
     
     self.postLine = [[UILabel alloc] initWithFrame:frame];
     NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
