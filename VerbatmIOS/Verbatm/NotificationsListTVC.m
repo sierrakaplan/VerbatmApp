@@ -302,7 +302,7 @@
     NotificationTableCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if(!self.cellSelected){
         self.cellSelected = YES;
-        if(cell.notificationType & (Like|Reblog|FriendsFirstPost|Share|NewComment)){
+        if(!(cell.notificationType & (NewFollower|FriendJoinedVerbatm))){
              self.tableView.scrollEnabled = NO;
              [self presentPost:[cell parseObject] andChannel:cell.channel];
         }else{

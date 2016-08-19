@@ -6719,7 +6719,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "593"
             endingLineNumber = "593"
-            landmarkName = "-stopAllVideos"
+            landmarkName = "-removePageUpIndicatorFromView"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
