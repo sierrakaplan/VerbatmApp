@@ -60,7 +60,8 @@
     [[pageRelation query] findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (!error) {
             for(PFUser * user in objects){
-                [Notification_BackendManager createNotificationWithType:CommentReply receivingUser:user relevantPostObject:postParseObject];
+                [Notification_BackendManager createNotificationWithType:NotificationTypeCommentReply
+														  receivingUser:user relevantPostObject:postParseObject];
             }
         }
     }];
@@ -78,9 +79,11 @@
         if(succeeded) {
             [postParseObject incrementKey:POST_NUM_COMMENTS];
             [postParseObject saveInBackground];
-            [Commenting_BackendObject sendNotificationToOtherCommentorsOfPost:postParseObject];
-            [Commenting_BackendObject addUserToConversationList:[PFUser currentUser] toPost:postParseObject];
-            [Notification_BackendManager createNotificationWithType:NewComment receivingUser:[postParseObject valueForKey:POST_ORIGINAL_CREATOR_KEY] relevantPostObject:postParseObject];
+			[Commenting_BackendObject sendNotificationToOtherCommentorsOfPost:postParseObject];
+			[Commenting_BackendObject addUserToConversationList:[PFUser currentUser] toPost:postParseObject];
+            [Notification_BackendManager createNotificationWithType:NotificationTypeNewComment
+													  receivingUser:[postParseObject valueForKey:POST_ORIGINAL_CREATOR_KEY]
+												 relevantPostObject:postParseObject];
         }
     }];
 }

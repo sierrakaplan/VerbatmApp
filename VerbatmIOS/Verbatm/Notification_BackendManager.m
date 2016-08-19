@@ -37,7 +37,6 @@
 }
 
 +(void)getNotificationsForUserAfterDate:(NSDate *) afterDate withCompletionBlock:(void(^)(NSArray*)) block {
-
     PFQuery * query = [PFQuery queryWithClassName:NOTIFICATION_PFCLASS_KEY];
     [query whereKey:NOTIFICATION_RECEIVER equalTo:[PFUser currentUser]];
     [query orderByDescending:@"createdAt"];
@@ -51,7 +50,8 @@
 		NSMutableArray *finalObjects = [[NSMutableArray alloc] initWithCapacity:objects.count];
 		for (PFObject* notificationObject in objects) {
 			PFUser *notificationSender = [notificationObject valueForKey:NOTIFICATION_SENDER];
-			if (notificationSender != nil) {
+			NSNumber *notificationType = notificationObject[NOTIFICATION_TYPE];
+			if (notificationSender != nil && (notificationType.integerValue & VALID_NOTIFICATION_TYPE)) {
 				[finalObjects addObject:notificationObject];
 			}
 		}

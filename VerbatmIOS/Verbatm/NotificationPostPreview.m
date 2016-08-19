@@ -91,12 +91,12 @@
 }
 
 -(void)presentPost:(PFObject *) postObject andChannel:(Channel *) channel{
-    [self.loadingIndicator startAnimating];
     PFQuery * query = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
     [query whereKey:POST_CHANNEL_ACTIVITY_POST equalTo:postObject];
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
         [self getAndPresentPost:[objects firstObject] andChannel:channel];
     }];
+    [self.loadingIndicator startAnimating];
 }
 
 #pragma mark -POVDelegate-
