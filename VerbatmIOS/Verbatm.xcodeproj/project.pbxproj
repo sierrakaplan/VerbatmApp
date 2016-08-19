@@ -110,6 +110,7 @@
 		A5C38ACA1CC1D1B80067D077 /* ExploreChannelCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38AC91CC1D1B80067D077 /* ExploreChannelCellView.m */; };
 		A5C38ACD1CC1D4120067D077 /* FeaturedContentChannelView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38ACC1CC1D4120067D077 /* FeaturedContentChannelView.m */; };
 		A5CA61151B9A013E009D9D11 /* AdjustableBlurEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CA61141B9A013E009D9D11 /* AdjustableBlurEffect.m */; };
+		A5D893731D667A0E007B33B9 /* OnboardingADK.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D893721D667A0E007B33B9 /* OnboardingADK.m */; };
 		A5E73B761D1634D300527ECF /* UserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73B751D1634D300527ECF /* UserManager.m */; };
 		A5E73B7A1D1635C200527ECF /* GTLServiceVerbatmApp.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73B791D1635C200527ECF /* GTLServiceVerbatmApp.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A5E73B7F1D16365400527ECF /* GTLObject.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73B7E1D16365400527ECF /* GTLObject.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -426,6 +427,8 @@
 		A5C38ACC1CC1D4120067D077 /* FeaturedContentChannelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeaturedContentChannelView.m; sourceTree = "<group>"; };
 		A5CA61131B9A013E009D9D11 /* AdjustableBlurEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdjustableBlurEffect.h; sourceTree = "<group>"; };
 		A5CA61141B9A013E009D9D11 /* AdjustableBlurEffect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdjustableBlurEffect.m; sourceTree = "<group>"; };
+		A5D893711D667A0E007B33B9 /* OnboardingADK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnboardingADK.h; sourceTree = "<group>"; };
+		A5D893721D667A0E007B33B9 /* OnboardingADK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnboardingADK.m; sourceTree = "<group>"; };
 		A5E73B741D1634D300527ECF /* UserManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserManager.h; sourceTree = "<group>"; };
 		A5E73B751D1634D300527ECF /* UserManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserManager.m; sourceTree = "<group>"; };
 		A5E73B781D1635C200527ECF /* GTLServiceVerbatmApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLServiceVerbatmApp.h; sourceTree = "<group>"; };
@@ -889,6 +892,8 @@
 			children = (
 				C734FD9A19B14B8D00B2C370 /* ContentDevVC.h */,
 				C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */,
+				A5D893711D667A0E007B33B9 /* OnboardingADK.h */,
+				A5D893721D667A0E007B33B9 /* OnboardingADK.m */,
 			);
 			name = Creation;
 			sourceTree = "<group>";
@@ -1906,6 +1911,7 @@
 				C7BC4386199D97F5004B91A1 /* VerbatmAppDelegate.m in Sources */,
 				C70E1C541C3BF74C00346A25 /* TermsAndConditionsVC.m in Sources */,
 				C76172771C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m in Sources */,
+				A5D893731D667A0E007B33B9 /* OnboardingADK.m in Sources */,
 				A5934B8F1C0FDFD6007C7830 /* VerbatmScrollView.m in Sources */,
 				C7AA49FB1D148A8C00A031C6 /* verbatmButton.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,

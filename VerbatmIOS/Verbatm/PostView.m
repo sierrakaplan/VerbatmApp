@@ -449,14 +449,10 @@
 
 	UIImage * instructionImage = [UIImage imageNamed:SWIPE_UP_DOWN_INSTRUCTION];
 
-	CGFloat frameHeight = 200.f;
-	CGFloat frameWidth = ((frameHeight * 117.f)/284.f);
-
-	CGFloat frameOriginX = self.frame.size.width - frameWidth - 10.f;
-	CGFloat frameOriginY = (self.frame.size.height/2.f) + 50.f;
-
-	CGRect instructionFrame = CGRectMake(frameOriginX,frameOriginY, frameWidth,frameHeight);
-
+	CGFloat frameHeight = 300.f;
+	CGFloat frameOriginX = self.frame.size.width - frameHeight - 10.f;
+	CGFloat frameOriginY = (self.frame.size.height/2.f) - frameHeight/2.f;
+	CGRect instructionFrame = CGRectMake(frameOriginX, frameOriginY, frameHeight, frameHeight);
 	self.swipeUpAndDownInstruction = [[UIImageView alloc] initWithImage:instructionImage];
 	self.swipeUpAndDownInstruction.frame = instructionFrame;
 	self.swipeUpAndDownInstruction.contentMode =  UIViewContentModeScaleAspectFit;

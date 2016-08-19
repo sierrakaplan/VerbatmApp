@@ -44,6 +44,8 @@
 
 #import "MediaSelectTile.h"
 
+#import "OnboardingADK.h"
+
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 #import "StringsAndAppConstants.h"
@@ -81,12 +83,6 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 @property (nonatomic) BOOL posted;
 @property (nonatomic) BOOL externalPost;
 
-#pragma mark Pinch Views
-
-//keeps track of ContentPageElementScrollViews
-@property (strong, nonatomic) NSMutableArray *pageElementScrollViews;
-@property (nonatomic) NSInteger numPinchViews;
-
 #pragma mark Keyboard related properties
 
 @property (atomic) NSInteger keyboardHeight;
@@ -106,8 +102,7 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 
 #pragma mark Text input outlets
 
-@property (weak, atomic) IBOutlet UITextView *firstContentPageTextBox;
-@property (strong, atomic) IBOutlet UIPinchGestureRecognizer *pinchGesture;
+@property (strong, atomic) UIPinchGestureRecognizer *pinchGesture;
 
 #pragma mark Camera View
 
@@ -160,15 +155,9 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 @property (nonatomic) NSString* fbCaption;
 @property (nonatomic) BOOL postToFB;
 
-@property (strong, nonatomic) UIScrollView * adkOnboarding;
-
-@property (weak, nonatomic) IBOutlet UIPageControl *onBoardingPageIndicator;
-
-@property (nonatomic) SharingLinkView * shareLinkView;
-@property (nonatomic) NSMutableArray * pinchViewsToPublish;
+@property (nonatomic) SharingLinkView *shareLinkView;
 
 @property (nonatomic)BOOL screenInCameraMode;
-@property (nonatomic)BOOL currentlyPresentingInstruction;
 
 #define INSTRUCTION_VIEW_ALPHA 0.7f
 #define MAX_MEDIA 8
@@ -206,35 +195,9 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 
 -(void)checkAdkSlideShowOnboarding {
 	if(![[UserSetupParameters sharedInstance] checkAdkOnboardingShown]) {
-		NSArray * images = @[@"ADK onboarding slide 1B",@"ADK onboarding slide 2B",@"ADK onboarding slide 3B",
-							 @"ADK onboarding slide 4B",@"ADK onboarding slide 5B"];
-		self.adkOnboarding = [[UIScrollView alloc] initWithFrame:self.view.bounds];
-		self.adkOnboarding.contentSize = CGSizeMake(self.view.frame.size.width * (NUM_ADK_SLIDESHOW_SLIDES + 1), 0);
-		self.adkOnboarding.showsVerticalScrollIndicator = NO;
-		self.adkOnboarding.showsHorizontalScrollIndicator = NO;
-		self.adkOnboarding.delegate = self;
-		self.adkOnboarding.pagingEnabled = YES;
-		self.adkOnboarding.bounces = NO;
-
-		for(int i = 0; i < images.count; i++){
-			NSString * imageName   = images[i];
-			UIImageView * view = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName]];
-			CGRect viewFrame = CGRectMake(self.view.frame.size.width * i, 0, self.view.frame.size.width, self.view.frame.size.height);
-			[view setFrame:viewFrame];
-			[self.adkOnboarding addSubview:view];
-		}
-
-		self.onBoardingPageIndicator.frame = CGRectMake(self.view.frame.size.width/2 - self.onBoardingPageIndicator.frame.size.width/2, self.view.frame.size.height - (self.onBoardingPageIndicator.frame.size.height + 5), self.onBoardingPageIndicator.frame.size.width, self.onBoardingPageIndicator.frame.size.height);
-		self.onBoardingPageIndicator.currentPage = 0;
-		self.onBoardingPageIndicator.numberOfPages = NUM_ADK_SLIDESHOW_SLIDES + 1;
-		self.onBoardingPageIndicator.defersCurrentPageDisplay = YES;
-
-		[self.view addSubview:self.onBoardingPageIndicator];
-		[self.view addSubview:self.adkOnboarding];
-		[self.view bringSubviewToFront:self.adkOnboarding];
-		[self.view bringSubviewToFront:self.onBoardingPageIndicator];
-	} else {
-		[self.onBoardingPageIndicator removeFromSuperview];
+		OnboardingADK* onboardingViewController = [[OnboardingADK alloc] init];
+		onboardingViewController.mainADK = self;
+		[self presentViewController:onboardingViewController animated:YES completion:nil];
 	}
 }
 
@@ -253,18 +216,19 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear: animated];
-	[self checkIntroNotification];
-//	[self checkAdkSlideShowOnboarding];
+//	[self checkIntroNotification];
+	[self checkAdkSlideShowOnboarding];
 }
 
--(void) checkIntroNotification {
-	if(![[UserSetupParameters sharedInstance] checkAndSetADKInstructionShown]) {
-		self.introInstruction = [[Intro_Instruction_Notification_View alloc] initWithCenter:self.view.center andType:ADK];
-		self.introInstruction.custom_delegate = self;
-		[self.view addSubview:self.introInstruction];
-		[self.view bringSubviewToFront:self.introInstruction];
-	}
-}
+//don't want anymore
+//-(void) checkIntroNotification {
+//	if(![[UserSetupParameters sharedInstance] checkAndSetADKInstructionShown]) {
+//		self.introInstruction = [[Intro_Instruction_Notification_View alloc] initWithCenter:self.view.center andType:ADK];
+//		self.introInstruction.custom_delegate = self;
+//		[self.view addSubview:self.introInstruction];
+//		[self.view bringSubviewToFront:self.introInstruction];
+//	}
+//}
 
 -(void) notificationDoneAnimatingOut {
 	if(self.introInstruction){
@@ -274,6 +238,11 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 }
 
 -(void) initializeVariables {
+	self.pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
+	UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]
+													  initWithTarget:self action:@selector(longPressSensed:)];
+	[self.view addGestureRecognizer: self.pinchGesture];
+	[self.view addGestureRecognizer: longPressGesture];
 	self.pinchingMode = PinchingModeNone;
 	self.numPinchViews = 0;
 	self.pinchObject_HasBeenAdded_ForTheFirstTime = NO;
@@ -282,6 +251,8 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 }
 
 -(void) setFrameMainScrollView {
+	self.mainScrollView = [[VerbatmScrollView alloc] init];
+	[self.view addSubview: self.mainScrollView];
 	self.mainScrollView.frame = CGRectMake(0.f, CUSTOM_NAV_BAR_HEIGHT,
 										   self.view.frame.size.width, self.view.frame.size.height - CUSTOM_NAV_BAR_HEIGHT);
 	self.mainScrollView.scrollEnabled = YES;
@@ -422,7 +393,6 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 	if(pinchViews.count)[self publishOurStoryWithPinchViews:pinchViews];
 }
 
-
 #pragma mark - Configure Text Fields -
 
 
@@ -446,16 +416,7 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 
 - (void) scrollViewDidScroll:(UIScrollView *)scrollView {
 
-	if(scrollView == self.adkOnboarding){
-		self.onBoardingPageIndicator.currentPage = scrollView.contentOffset.x/self.view.bounds.size.width;
-
-		if((self.adkOnboarding.contentOffset.x/self.view.frame.size.width) == NUM_ADK_SLIDESHOW_SLIDES){
-			[self.adkOnboarding removeFromSuperview];
-			self.adkOnboarding = nil;
-			[self.onBoardingPageIndicator removeFromSuperview];
-		}
-
-	}else if([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
+	if([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
 		ContentPageElementScrollView* pageElementScrollView = (ContentPageElementScrollView*)scrollView;
 		if(pageElementScrollView.collectionIsOpen) {
 			return;
@@ -604,14 +565,15 @@ andSaveInUserDefaults:(BOOL)save {
 
 	} completion:^(BOOL finished) {
 		// includes default media tile
-		if(finished && !self.currentlyPresentingInstruction && self.numPinchViews < 2
-           && ![[UserSetupParameters sharedInstance]
-												   checkAndSetEditPinchViewInstructionShown]) {
-			[self presentEditPinchViewInstruction];
-		} else if(finished && !self.currentlyPresentingInstruction &&
-                  ![[UserSetupParameters sharedInstance] checkAndSetPinchInstructionShown]) {
-			[self presentPinchInstruction];
-		}
+		//todo:
+//		if(finished && !self.currentlyPresentingInstruction && self.numPinchViews < 2
+//           && ![[UserSetupParameters sharedInstance]
+//												   checkAndSetEditPinchViewInstructionShown]) {
+//			[self presentEditPinchViewInstruction];
+//		} else if(finished && !self.currentlyPresentingInstruction &&
+//                  ![[UserSetupParameters sharedInstance] checkAndSetPinchInstructionShown]) {
+//			[self presentPinchInstruction];
+//		}
 	}];
 }
 
@@ -725,7 +687,7 @@ andSaveInUserDefaults:(BOOL)save {
 
 #pragma mark  Sensing Pinch
 
-- (IBAction)handlePinchGesture:(UIPinchGestureRecognizer *)sender {
+-(void) handlePinchGesture:(UIPinchGestureRecognizer *)sender {
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan: {
 			[self handlePinchGestureBegan:sender];
@@ -771,6 +733,11 @@ andSaveInUserDefaults:(BOOL)save {
 
 	[self shiftElementsBelowView: nil];
 	self.pinchingMode = PinchingModeNone;
+	[self pinchingHasEnded];
+}
+
+-(void) pinchingHasEnded {
+	//do nothing (this is in onboarding)
 }
 
 -(void) animateRemoveNewMediaTile {
@@ -1234,14 +1201,14 @@ andSaveInUserDefaults:(BOOL)save {
 	[self.cameraView removeFromSuperview];
 	[self.view addSubview:self.cameraView];
 	[self.cameraView createAndInstantiateGestures];
-	self.selectedView_PAN = (ContentPageElementScrollView *)tile.superview;//should be a contentpagescrollview
+	self.selectedView_PAN = (ContentPageElementScrollView *)tile.superview;
     self.screenInCameraMode = YES;
 }
 
 #pragma mark - Change position of elements on screen by dragging
 
 // Handle users moving elements around on the screen using long press
-- (IBAction)longPressSensed:(UILongPressGestureRecognizer *)sender {
+-(void) longPressSensed:(UILongPressGestureRecognizer *)sender {
 	switch (sender.state) {
 		case UIGestureRecognizerStateEnded: {
 			[self finishMovingSelectedItem];
@@ -1826,7 +1793,7 @@ andSaveInUserDefaults:(BOOL)save {
 
 #pragma mark -remove excess mediatiles-
 
--(void)removeExcessMediaTiles{
+-(void)removeExcessMediaTiles {
 	for(int i = 0; i < self.pageElementScrollViews.count; i++){
 		if(i < self.pageElementScrollViews.count) {
 			ContentPageElementScrollView *  contentPageSV = self.pageElementScrollViews[i];
@@ -1879,13 +1846,7 @@ andSaveInUserDefaults:(BOOL)save {
 	[[PublishingProgressManager sharedInstance] storeProgressBackgroundImage:screenShotImage];
 }
 
-
-
--(void) publishWithTitle:(NSString *)title andPinchViews:(NSMutableArray *)pinchViews {
-	if(pinchViews) [self publishOurStoryWithPinchViews:pinchViews];
-}
-
--(void) publishOurStoryWithPinchViews:(NSMutableArray *)pinchViews{
+-(void) publishOurStoryWithPinchViews:(NSMutableArray *)pinchViews {
 	self.pinchViewsToPublish = pinchViews;
 	[self capturePublishingProgressImageWithPinchViews:pinchViews];
 	[self presentShareLinkView];
@@ -1902,7 +1863,6 @@ andSaveInUserDefaults:(BOOL)save {
 	[self.shareLinkView removeFromSuperview];
 	self.shareLinkView = nil;
 }
-
 
 -(void) continueToPublish{
 
@@ -1991,12 +1951,6 @@ andSaveInUserDefaults:(BOOL)save {
 				   andBackgroundColor:ADK_NAV_BAR_COLOR];
 	}
 	return _navBar;
-}
-
-
--(UITextView *) activeTextView {
-	if(!_activeTextView)_activeTextView = self.firstContentPageTextBox;
-	return _activeTextView;
 }
 
 -(UIView*) instructionView {

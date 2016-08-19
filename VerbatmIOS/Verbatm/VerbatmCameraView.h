@@ -29,4 +29,7 @@ IB_DESIGNABLE
 
 -(void) createAndInstantiateGestures;
 
+-(void) enableCapturingPhoto: (BOOL)enable;
+-(void) enableCapturingVideo: (BOOL)enable;
+
 @end

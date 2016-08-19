@@ -51,8 +51,6 @@
 	float plusIconSize = size / 4.f;
 	float plusIconOffset = 0.f;
     
-    
-    
     //camera button
     self.cameraButton.frame = CGRectMake((self.frame.size.width - size)/2.f, buttonOffset, size, size);
     self.cameraButtonPlus.frame = CGRectMake(self.cameraButton.frame.origin.x + self.cameraButton.frame.size.width + plusIconOffset,
@@ -84,7 +82,33 @@
     self.textButton.layer.cornerRadius = self.textButton.frame.size.width/2;
     self.textButton.layer.shadowRadius = buttonOffset;
 
-    
+}
+
+-(void) enableGalleryButton:(BOOL)enable {
+	self.galleryButton.enabled = enable;
+	if (!enable) {
+		self.galleryButton.layer.opacity = 0.5;
+	} else {
+		self.galleryButton.layer.opacity = 1.f;
+	}
+}
+
+-(void) enableCameraButton:(BOOL)enable {
+	self.cameraButton.enabled = enable;
+	if (!enable) {
+		self.cameraButton.layer.opacity = 0.5;
+	} else {
+		self.cameraButton.layer.opacity = 1.f;
+	}
+}
+
+-(void) enableTextButton:(BOOL)enable {
+	self.textButton.enabled = enable;
+	if (!enable) {
+		self.textButton.layer.opacity = 0.5;
+	} else {
+		self.textButton.layer.opacity = 1.f;
+	}
 }
 
 -(void) buttonGlow {
