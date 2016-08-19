@@ -6,6 +6,7 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+#import <Crashlytics/Crashlytics.h>
 #import "Commenting_BackendObject.h"
 #import "Comment.h"
 #import "Notification_BackendManager.h"
@@ -13,6 +14,7 @@
 #import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
 #import <Parse/PFQuery.h>
+#import <Parse/PFRelation.h>
 
 @implementation Commenting_BackendObject
 
@@ -39,6 +41,32 @@
 }
 
 
++(void)addCommentor:(PFUser *)commentor toPost:(PFObject *)postParseObject{
+    NSString * postOwnerId = [[postParseObject valueForKey:POST_ORIGINAL_CREATOR_KEY] objectId];
+    if(![postOwnerId isEqualToString:[commentor objectId]]){
+        //PFRelations don't store duplicates
+        PFRelation * pageRelation = [postParseObject relationForKey:POST_COMMENTORS_PFRELATION];
+        [pageRelation addObject:commentor];
+        [postParseObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+            if(error) {
+                [[Crashlytics sharedInstance] recordError:error];
+            }
+        }];
+    }
+}
+
++(void)sendNotificationToOtherCommentorsOfPost:(PFObject *)postParseObject{
+    PFRelation * pageRelation = [postParseObject relationForKey:POST_COMMENTORS_PFRELATION];
+    [[pageRelation query] findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            for(PFUser * user in objects){
+                [Notification_BackendManager createNotificationWithType:CommentReply receivingUser:user relevantPostObject:postParseObject];
+            }
+        }
+    }];
+}
+
+
 +(void)storeComment:(NSString *) commentString forPost:(PFObject *) postParseObject{
     PFObject *newComment = [PFObject objectWithClassName:COMMENT_PFCLASS_KEY];
     [newComment setObject:[PFUser currentUser]forKey:COMMENT_USER_KEY];
@@ -50,6 +78,8 @@
         if(succeeded) {
             [postParseObject incrementKey:POST_NUM_COMMENTS];
             [postParseObject saveInBackground];
+            [Commenting_BackendObject sendNotificationToOtherCommentorsOfPost:postParseObject];
+            [Commenting_BackendObject addCommentor:[PFUser currentUser] toPost:postParseObject];
             [Notification_BackendManager createNotificationWithType:NewComment receivingUser:[postParseObject valueForKey:POST_ORIGINAL_CREATOR_KEY] relevantPostObject:postParseObject];
         }
     }];
