@@ -10,4 +10,10 @@
 
 @implementation FollowFriendsVC
 
+-(void) viewDidLoad {
+	
+}
+
+
+
 @end

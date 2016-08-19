@@ -512,10 +512,18 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void)cellTapped:(UIGestureRecognizer *) tap {
-	PostCollectionViewCell * cellTapped = (PostCollectionViewCell *) tap.view;
-	if([cellTapped presentingTapToExitNotification]){
+	PostCollectionViewCell *cellTapped = (PostCollectionViewCell *) tap.view;
+	CGPoint touchPoint=[tap locationInView: cellTapped];
+	CGFloat touchRegionPadding = 20.f;
+	CGRect likeShareBarFrame = CGRectMake(cellTapped.frame.size.width - LIKE_SHARE_BAR_WIDTH - touchRegionPadding,
+										  cellTapped.frame.size.height - LIKE_SHARE_BAR_HEIGHT - touchRegionPadding,
+										  LIKE_SHARE_BAR_WIDTH + touchRegionPadding, LIKE_SHARE_BAR_HEIGHT + touchRegionPadding);
+	if (CGRectContainsPoint(likeShareBarFrame, touchPoint)) {
+		return;
+	}
+	if([cellTapped presentingTapToExitNotification]) {
 		[cellTapped removeTapToExitNotification];
-	}else{
+	} else {
 		[self.postListDelegate cellSelectedAtPostIndex:[self.collectionView indexPathForCell:cellTapped]];
 	}
 }

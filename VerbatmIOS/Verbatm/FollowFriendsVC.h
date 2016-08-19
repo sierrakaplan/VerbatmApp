@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FollowFriendsVC : UIViewController
+@interface FollowFriendsVC : UITableViewController
 
 @end

@@ -324,8 +324,7 @@
     }
     
     [self.numLikeLabel setText:[self.numLikes stringValue]];
-    
-    
+
     //create share button
     if(!self.smallShareButton){
         self.smallShareButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -363,7 +362,7 @@
     [self.numCommentsLabel setText:[self.numComments stringValue]];
 }
 //set the start state of the like button
--(void)startLikeButtonAsLiked:(BOOL)isLiked{
+-(void)startLikeButtonAsLiked:(BOOL)isLiked {
     if(isLiked){
         [self.smallLikeButton setImage:[UIImage imageNamed:LIKE_ICON_PRESSED ] forState:UIControlStateNormal];
     }else{
@@ -371,7 +370,7 @@
     }
 }
 
--(void)updateSmallLikeButton:(BOOL)isLiked{
+-(void)updateSmallLikeButton:(BOOL)isLiked {
 	NSInteger numLikes;
 	if(isLiked){
 		[self.smallLikeButton setImage:[UIImage imageNamed:LIKE_ICON_PRESSED ] forState:UIControlStateNormal];
@@ -380,16 +379,13 @@
 		[self.smallLikeButton setImage:[UIImage imageNamed:LIKE_ICON_UNPRESSED] forState:UIControlStateNormal];
 		numLikes = (([self.numLikes integerValue]-1) < 0) ? 0 : ([self.numLikes integerValue]-1);
 	}
-
 	self.numLikes = [NSNumber numberWithInteger:numLikes];
 	if(self.numLikeLabel)[self.numLikeLabel setText:[self.numLikes stringValue]];
 }
 
-
 -(void) shareOptionSelectedForParsePostObject: (PFObject* ) post {
 	[self.cellDelegate shareOptionSelectedForParsePostObject:post];
 }
-
 
 -(void)removePostViewSelected{
 	[self.cellDelegate removePostViewSelected];
