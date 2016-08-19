@@ -404,7 +404,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 #pragma mark - Feed VC Delegate -
 
 
--(void)goToDiscover{
+-(void) goToDiscover{
     [self.tabBarController setSelectedIndex:1];
 }
 
@@ -458,13 +458,14 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	[self presentViewController:newAlert animated:YES completion:nil];
 }
 
--(void)followingSuccessfulNotification:(NSNotification *) notification{
+-(void)followingSuccessfulNotification:(NSNotification *) notification {
 }
 
 -(void) newPushNotification:(NSNotification *) notification {
 	NSDictionary *notificationInfo = notification.userInfo;
 	NSNumber *notificationType = notificationInfo[@"notificationType"];
-	if (notificationType.integerValue & VALID_NOTIFICATION_TYPE) {
+	NSInteger type = notificationType.integerValue;
+	if (type != NOTIFICATION_NEW_POST && (type & VALID_NOTIFICATION_TYPE)) {
 		[self.notificationVC refreshNotifications];
 		[self showIndicator];
 	} else {

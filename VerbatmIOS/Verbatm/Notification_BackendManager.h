@@ -29,6 +29,8 @@ NSInteger const VALID_NOTIFICATION_TYPE = (NotificationTypeNewFollower | Notific
 NSInteger const NOTIFICATION_TYPE_WITH_POST = (NotificationTypeLike | NotificationTypeShare | NotificationTypeFriendsFirstPost | NotificationTypeReblog |
 											   NotificationTypeNewComment | NotificationTypeCommentReply);
 
+NSInteger const NOTIFICATION_NEW_POST = 20;
+
 @interface Notification_BackendManager : NSObject
 
 +(void)createNotificationWithType:(NotificationType) notType receivingUser:(PFUser *) receivingUser relevantPostObject:(PFObject *) post;
