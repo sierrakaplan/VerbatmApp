@@ -423,8 +423,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
         if(self.notificationIndicatorPresent){
             [self removeIndicator];
             self.notificationIndicatorPresent = YES;
-        }else{
-            [self removeIndicator];
         }
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			[self setNeedsStatusBarAppearanceUpdate];

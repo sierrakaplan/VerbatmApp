@@ -719,7 +719,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
 													handler:^(UIAlertAction * action) {}];
 
-	UIAlertAction* action2 = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDefault
+	UIAlertAction* action2 = [UIAlertAction actionWithTitle:@"Confirm"
+													  style:UIAlertActionStyleDefault
 													handler:^(UIAlertAction * action) {
 
 														NSMutableArray *channels = [[NSMutableArray alloc] init];
@@ -728,7 +729,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 														[Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
 
-															[Notification_BackendManager createNotificationWithType:Reblog receivingUser:[self.postToShare valueForKey:POST_ORIGINAL_CREATOR_KEY] relevantPostObject:self.postToShare];
+															[Notification_BackendManager createNotificationWithType:NotificationTypeReblog
+																									  receivingUser:[self.postToShare valueForKey:POST_ORIGINAL_CREATOR_KEY]
+																								 relevantPostObject:self.postToShare];
 
 															dispatch_async(dispatch_get_main_queue(), ^{
 																[self successfullyReblogged];
@@ -857,7 +860,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark FBSDKShareViewDelegate
 
 - (void)sharer:(id<FBSDKSharing>)sharer didCompleteWithResults:(NSDictionary *)results {
-	[Notification_BackendManager createNotificationWithType:Share receivingUser:self.postToShare[POST_ORIGINAL_CREATOR_KEY] relevantPostObject:self.postToShare];
+	[Notification_BackendManager createNotificationWithType:NotificationTypeShare
+											  receivingUser:self.postToShare[POST_ORIGINAL_CREATOR_KEY]
+										 relevantPostObject:self.postToShare];
 }
 
 /*!
