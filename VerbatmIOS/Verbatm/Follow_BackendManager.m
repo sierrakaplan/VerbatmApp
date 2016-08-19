@@ -37,7 +37,9 @@
 			[[UserInfoCache sharedInstance] storeCurrentUserNowFollowingChannel:channelToFollow];
 			[Follow_BackendManager NotifyNewFollowingActionOnChannel:channelToFollow isFollowing:YES];
 
-			[Notification_BackendManager createNotificationWithType:NewFollower receivingUser:channelToFollow.channelCreator relevantPostObject:nil];
+			[Notification_BackendManager createNotificationWithType:NotificationTypeNewFollower
+													  receivingUser:channelToFollow.channelCreator
+												 relevantPostObject:nil];
 		}
 	}];
 }

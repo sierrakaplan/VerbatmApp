@@ -26,7 +26,9 @@
 		if(succeeded) {
 			[postParseObject incrementKey:POST_NUM_LIKES];
 			[postParseObject saveInBackground];
-			[Notification_BackendManager createNotificationWithType:Like receivingUser:[postParseObject valueForKey:POST_ORIGINAL_CREATOR_KEY] relevantPostObject:postParseObject];
+			[Notification_BackendManager createNotificationWithType:NotificationTypeLike
+													  receivingUser:[postParseObject valueForKey:POST_ORIGINAL_CREATOR_KEY]
+												 relevantPostObject:postParseObject];
 		}
 	}];
 }

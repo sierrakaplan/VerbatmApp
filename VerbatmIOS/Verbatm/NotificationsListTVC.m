@@ -196,7 +196,7 @@
     [self presentViewController:likersListVC animated:YES completion:nil];
 }
 
--(void)getMoreNotifications{
+-(void)getMoreNotifications {
 	PFObject * lastObject =[self.parseNotificationObjects lastObject];
 	NSDate * lastDate = [lastObject createdAt];
 	if(self.refreshing) return;
@@ -296,16 +296,16 @@
 
 }
 
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NotificationTableCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if(!self.cellSelected){
         self.cellSelected = YES;
-        if(cell.notificationType & (Like|Reblog|FriendsFirstPost|Share|NewComment)){
+		// Notification type that shows post
+        if(cell.notificationType & (NotificationTypeLike | NotificationTypeReblog | NotificationTypeFriendsFirstPost |
+									NotificationTypeShare | NotificationTypeNewComment)){
              self.tableView.scrollEnabled = NO;
              [self presentPost:[cell parseObject] andChannel:cell.channel];
-        }else{
+        } else {
             [self presentBlogFromCell: cell];
         }
     }

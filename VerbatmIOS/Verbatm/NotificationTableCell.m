@@ -80,9 +80,9 @@
     self.parseObject = parseObject;
     self.notificationType = notificationType;
     self.channel = channel;
-    if(notificationType & Like){
+    if(notificationType & NotificationTypeLike){
          [self createHeartIcon];
-    }else if(notificationType & (NewFollower|FriendJoinedVerbatm)) {
+    }else if(notificationType & (NotificationTypeNewFollower | NotificationTypeFriendJoinedVerbatm)) {
         [self createFollowButton];
         [self registerForFollowNotification];
     }
@@ -90,7 +90,7 @@
     NSString * notifcation = [self getNotificationStringWithNotifcationType:notificationType andChannel:channel];
     [self createNotificationLabelWithAttributedString:[self getAttributedStringFromString:notifcation andNotificationType:notificationType andChannel:channel]];
     
-    if(notificationType & (FriendsFirstPost|Like|Share|Reblog|NewComment)){
+    if(notificationType & (NotificationTypeFriendsFirstPost|NotificationTypeLike|NotificationTypeShare|NotificationTypeReblog|NotificationTypeNewComment)){
         [self createPostTextLabel];
     }
 }
@@ -135,28 +135,28 @@
     NSString * finalString = @"";
     
     switch (notificationType) {
-        case NewFollower:
+        case NotificationTypeNewFollower:
             finalString = [[channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY] stringByAppendingString:NEW_FOLLOWER_APPEND_TEXT];
             break;
             
-        case FriendJoinedVerbatm:
+        case NotificationTypeFriendJoinedVerbatm:
             finalString = [[channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY] stringByAppendingString:FRIEND_JOINED_V_APPEND_TEXT];
             break;
             
-        case Like:
+        case NotificationTypeLike:
             finalString = [[channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY] stringByAppendingString:LIKE_APPEND_TEXT];
             break;
             
-        case FriendsFirstPost:
+        case NotificationTypeFriendsFirstPost:
             finalString = [[channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY] stringByAppendingString:FRIENDS_FIRST_POST];
             break;
-        case Share:
+        case NotificationTypeShare:
             finalString = [[channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY] stringByAppendingString:POST_SHARED_APPEND_TEXT];
             break;
-        case Reblog:
+        case NotificationTypeReblog:
             finalString = [[channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY] stringByAppendingString:REBLOG_APPEND_TEXT];
             break;
-        case NewComment:
+        case NotificationTypeNewComment:
             finalString = [[channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY] stringByAppendingString:COMMENT_APPEND_TEXT];
             break;
     }

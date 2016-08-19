@@ -50,7 +50,9 @@
         if(succeeded) {
             [postParseObject incrementKey:POST_NUM_COMMENTS];
             [postParseObject saveInBackground];
-            [Notification_BackendManager createNotificationWithType:NewComment receivingUser:[postParseObject valueForKey:POST_ORIGINAL_CREATOR_KEY] relevantPostObject:postParseObject];
+            [Notification_BackendManager createNotificationWithType:NotificationTypeNewComment
+													  receivingUser:[postParseObject valueForKey:POST_ORIGINAL_CREATOR_KEY]
+												 relevantPostObject:postParseObject];
         }
     }];
 }

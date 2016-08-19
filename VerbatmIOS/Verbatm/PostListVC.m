@@ -154,6 +154,13 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate, FBSDKSharingDelegate>
 	[super viewDidDisappear:animated];
 }
 
+-(void) offScreen {
+	self.exitedView = YES;
+	for (PostCollectionViewCell *cellView in [self.collectionView visibleCells]) {
+		[cellView offScreen];
+	}
+}
+
 -(BOOL) prefersStatusBarHidden {
 	return YES;
 }
@@ -202,13 +209,6 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	}
 	self.footerBarIsUp = self.isCurrentUserProfile;
 	self.isInitiated = YES;
-}
-
--(void) offScreen {
-	self.exitedView = YES;
-	for (PostCollectionViewCell *cellView in [self.collectionView visibleCells]) {
-		[cellView offScreen];
-	}
 }
 
 -(void) updateInSmallMode: (BOOL) smallMode {

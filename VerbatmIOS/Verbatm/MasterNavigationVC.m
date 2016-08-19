@@ -22,6 +22,7 @@
 
 #import "Notifications.h"
 #import "NotificationsListTVC.h"
+#import "Notification_BackendManager.h"
 
 #import "ParseBackendKeys.h"
 #import "ProfileVC.h"
@@ -462,8 +463,14 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 }
 
 -(void) newPushNotification:(NSNotification *) notification {
-	[self.notificationVC refreshNotifications];
-	[self showIndicator];
+	NSDictionary *notificationInfo = notification.userInfo;
+	NSNumber *notificationType = notificationInfo[@"notificationType"];
+	if (notificationType.integerValue & VALID_NOTIFICATION_TYPE) {
+		[self.notificationVC refreshNotifications];
+		[self showIndicator];
+	} else {
+		NSLog(@"Received push notiication that cannot be shown in notifications tab.");
+	}
 }
 
 - (UIInterfaceOrientationMask) supportedInterfaceOrientations {
