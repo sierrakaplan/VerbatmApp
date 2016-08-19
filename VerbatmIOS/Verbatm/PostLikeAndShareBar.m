@@ -51,14 +51,12 @@
 #define OF_TEXT_FONT CHANNEL_TAB_BAR_FOLLOWERS_FONT
 #define OF_TEXT_FONT_SIZE 18.f
 
-#define BIG_ICON_SPACING 10.f
+#define BIG_ICON_SPACING 18.f
 #define BIG_ICON_SIZE (self.frame.size.width - (BIG_ICON_SPACING*2))
-
-
-
 
 #define DELETE_FLAG_BUTTON_HEIGHT (self.frame.size.width - (ICON_SPACING_GAP*3.f))
 #define DELETE_FLAG_BUTTON_Y  (self.frame.size.height - DELETE_FLAG_BUTTON_HEIGHT - ICON_SPACING_GAP - 10.f)
+
 @end
 
 @implementation PostLikeAndShareBar
@@ -152,6 +150,8 @@
     self.shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	self.shareButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
     [self.shareButton setFrame:shareButtonFrame];
+	//todo: this is a hack until we get a better like icon from Aish
+	[self.shareButton setImageEdgeInsets:UIEdgeInsetsMake(3.f, 3.f, 3.f, 3.f)];
     [self.shareButton setImage:[UIImage imageNamed:SHARE_ICON] forState:UIControlStateNormal];
     [self.shareButton addTarget:self action:@selector(shareButtonPressed) forControlEvents:UIControlEventTouchDown];
     

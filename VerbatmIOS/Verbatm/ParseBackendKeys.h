@@ -78,6 +78,7 @@
 #define POST_SHARE_LINK @"PostSocialShareLink" //string url to share to social media
 #define POST_PAGES_PFRELATION @"PagesInPost"
 #define POST_FLAGGED_KEY  @"Post_Is_Flagged"
+#define POST_COMMENTORS_PFRELATION @"CommentorsOnPost"
 
 #define POST_COMPLETED_SAVING @"PostDoneSaving"//we store
 

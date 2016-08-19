@@ -145,10 +145,20 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate, FBSDKSharingDelegate>
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	self.exitedView = NO;
+	for (PostCollectionViewCell *currentCell in [self.collectionView visibleCells]) {
+		[currentCell onScreen];
+	}
 }
 
 -(void) viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
+}
+
+-(void) offScreen {
+	self.exitedView = YES;
+	for (PostCollectionViewCell *cellView in [self.collectionView visibleCells]) {
+		[cellView offScreen];
+	}
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -199,13 +209,6 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	}
 	self.footerBarIsUp = self.isCurrentUserProfile;
 	self.isInitiated = YES;
-}
-
--(void) offScreen {
-	self.exitedView = YES;
-	for (PostCollectionViewCell *cellView in [self.collectionView visibleCells]) {
-		[cellView offScreen];
-	}
 }
 
 -(void) updateInSmallMode: (BOOL) smallMode {
@@ -492,8 +495,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 			[cell clearViews];
 			[cell presentPostFromPCActivityObj:postActivityObject andChannel:self.channelForList
 							  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:NO];
-		} else {
-			NSLog(@"same");
 		}
 	}
 	[self addTapGestureToCell:cell];
@@ -718,7 +719,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
 													handler:^(UIAlertAction * action) {}];
 
-	UIAlertAction* action2 = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDefault
+	UIAlertAction* action2 = [UIAlertAction actionWithTitle:@"Confirm"
+													  style:UIAlertActionStyleDefault
 													handler:^(UIAlertAction * action) {
 
 														NSMutableArray *channels = [[NSMutableArray alloc] init];
@@ -727,7 +729,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 														[Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
 
-															[Notification_BackendManager createNotificationWithType:Reblog receivingUser:[self.postToShare valueForKey:POST_ORIGINAL_CREATOR_KEY] relevantPostObject:self.postToShare];
+															[Notification_BackendManager createNotificationWithType:NotificationTypeReblog
+																									  receivingUser:[self.postToShare valueForKey:POST_ORIGINAL_CREATOR_KEY]
+																								 relevantPostObject:self.postToShare];
 
 															dispatch_async(dispatch_get_main_queue(), ^{
 																[self successfullyReblogged];
@@ -856,7 +860,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark FBSDKShareViewDelegate
 
 - (void)sharer:(id<FBSDKSharing>)sharer didCompleteWithResults:(NSDictionary *)results {
-	[Notification_BackendManager createNotificationWithType:Share receivingUser:self.postToShare[POST_ORIGINAL_CREATOR_KEY] relevantPostObject:self.postToShare];
+	[Notification_BackendManager createNotificationWithType:NotificationTypeShare
+											  receivingUser:self.postToShare[POST_ORIGINAL_CREATOR_KEY]
+										 relevantPostObject:self.postToShare];
 }
 
 /*!
