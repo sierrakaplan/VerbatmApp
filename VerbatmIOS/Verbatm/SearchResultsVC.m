@@ -101,10 +101,10 @@
 
 -(void)presentNoSearchResultsIcon{
     if(!self.noSearchResults){
-        CGFloat width = self.view.frame.size.width - (2*NOTIFICATION_XOFFSET);
-        CGFloat height = width * EMTPY_SEARCH_ICON_HeightWidth_RATIO;
+        CGFloat width = self.view.frame.size.width - (2 * NOTIFICATION_XOFFSET);
         self.noSearchResults = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EMPTY_SEARCH_RESULTS_ICON]];
-        self.noSearchResults.frame = CGRectMake(NOTIFICATION_XOFFSET, NOTIFICATION_YOFFSET, width, height);
+		self.noSearchResults.contentMode = UIViewContentModeScaleAspectFit;
+        self.noSearchResults.frame = CGRectMake(NOTIFICATION_XOFFSET, NOTIFICATION_YOFFSET, width, width);
         [self.view addSubview:self.noSearchResults];
     }
 }

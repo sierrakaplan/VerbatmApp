@@ -13,7 +13,6 @@
 
 @protocol PreviewDisplayDelegate <NSObject>
 
--(void) publishWithTitle: (NSString*)title andPinchViews: (NSMutableArray*) pinchViews;
 -(void) aboutToShowPreview;
 -(void) aboutToRemovePreview;
 

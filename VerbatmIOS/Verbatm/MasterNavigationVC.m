@@ -114,6 +114,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 											 selector:@selector(loginFailed:)
 												 name:NOTIFICATION_USER_LOGIN_FAILED
 											   object:nil];
+
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(loginSucceeded:)
 												 name:NOTIFICATION_USER_LOGIN_SUCCEEDED
