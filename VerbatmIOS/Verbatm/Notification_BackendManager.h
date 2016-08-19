@@ -18,12 +18,16 @@ typedef enum {
     NotificationTypeShare = 1 << 3, 				// 8
 	NotificationTypeFriendsFirstPost = 1 << 4, 		// 16
 	NotificationTypeReblog = 1 << 5, 				// 32
-    NotificationTypeNewComment = 1 << 6             // 64
+    NotificationTypeNewComment = 1 << 6,            // 64
+	NotificationTypeCommentReply = 1 << 7           // 128
 } NotificationType;
 
 NSInteger const VALID_NOTIFICATION_TYPE = (NotificationTypeNewFollower | NotificationTypeLike | NotificationTypeFriendJoinedVerbatm |
 										   NotificationTypeShare | NotificationTypeFriendsFirstPost | NotificationTypeReblog |
-										   NotificationTypeNewComment);
+										   NotificationTypeNewComment | NotificationTypeCommentReply);
+
+NSInteger const NOTIFICATION_TYPE_WITH_POST = (NotificationTypeLike | NotificationTypeShare | NotificationTypeFriendsFirstPost | NotificationTypeReblog |
+											   NotificationTypeNewComment | NotificationTypeCommentReply);
 
 @interface Notification_BackendManager : NSObject
 

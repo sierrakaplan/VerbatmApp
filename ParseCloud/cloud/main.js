@@ -54,11 +54,12 @@ Parse.Cloud.beforeSave("NotificationClass", function(request, response) {
 	var notificationType = request.object.get("NotificationType");
 	query.equalTo("NotificationType", notificationType);
 	// If this is a like or a share notification
-	if (notificationType == 2 || notificationType == 8 || notificationType == 32 || notificationType == 64) {
+	if (notificationType == 2) {
 		query.equalTo("NotificationPost", request.object.get("NotificationPost"));
 	}
 	query.first().then(function(existingObject) {
-	    if (existingObject) {
+	    if (existingObject && (notificationType == 1 || notificationType == 2 
+	    	|| notificationType == 4 || notificationType == 16)) {
 	        response.error("Existing notification");
 	    } else { 
 	      	// Send a push notification
@@ -84,6 +85,8 @@ Parse.Cloud.beforeSave("NotificationClass", function(request, response) {
 			    	notificationText = notificationSenderName + " reblogged your post!";
 			    } else if (notificationType == 64) {
 			    	notificationText = notificationSenderName + " commented on your post!";
+			    } else if (notificationType == 128) {
+			    	notificationText = notificationSenderName + " replied to your comment!";
 			    }
 				Parse.Push.send({
 				    where: pushQuery, // Set our Installation query
