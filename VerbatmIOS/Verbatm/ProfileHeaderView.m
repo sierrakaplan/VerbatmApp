@@ -114,25 +114,23 @@
     
 }
 
--(void)askForFeedback{
+-(void)askForFeedback {
     if(self.isCurrentUser && [[UserManager sharedInstance] shouldRequestForUserFeedback] &&
        !self.feedbackRequestNotification &&
        [[UserSetupParameters sharedInstance] checkAndSetProfileInstructionShown]){
         self.feedbackRequestNotification = [[UIImageView alloc] initWithImage:[UIImage imageNamed:FEEDBACK_NOTIFICATION_ICON]];
-        
-        
+		self.feedbackRequestNotification.contentMode = UIViewContentModeScaleAspectFit;
+		self.feedbackRequestNotification.center = self.center;
         CGFloat height = 150.f;
-        CGFloat width = FEEDBACK_NOTIFICATION_WidthHeight_RATIO * height;
-        CGFloat xOffset =self.frame.size.width - (width);
-        CGFloat yOffset = self.userInformationBar.frame.origin.y + 5.f +self.userInformationBar.frame.size.height/2.f;
+        CGFloat yOffset = self.userInformationBar.frame.origin.y + 5.f + self.userInformationBar.frame.size.height/2.f;
            
-        [self.feedbackRequestNotification setFrame:CGRectMake(xOffset, yOffset, width, height)];
+        [self.feedbackRequestNotification setFrame:CGRectMake(self.feedbackRequestNotification.frame.origin.x,
+															  yOffset, height, height)];
         [self addSubview:self.feedbackRequestNotification];
         [self.feedbackRequestNotification addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeFeedbackNotification)]];
         [self.feedbackRequestNotification setUserInteractionEnabled:YES];
     }
 }
-
 
 -(void)removeFeedbackNotification{
     if(self.feedbackRequestNotification){

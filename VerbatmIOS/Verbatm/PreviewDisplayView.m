@@ -143,9 +143,10 @@
 #pragma mark - Navigation Bar Delegate methods -
 
 #pragma mark Publish Button
+
 -(void) rightButtonPressed {
 	[self revealPreview:NO];
-	[self.delegate publishWithTitle:self.title andPinchViews:self.pinchViews];
+//	[self.delegate publishWithTitle:self.title andPinchViews:self.pinchViews];
 }
 
 #pragma mark Back Button

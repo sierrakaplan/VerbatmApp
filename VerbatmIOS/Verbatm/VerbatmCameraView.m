@@ -15,6 +15,7 @@
 #import "VerbatmCameraView.h"
 
 @interface VerbatmCameraView() <MediaSessionManagerDelegate>
+
 #pragma mark - Capture Media -
 
 @property (strong, nonatomic) MediaSessionManager* sessionManager;
@@ -28,12 +29,16 @@
 @property (nonatomic) BOOL mediaPreviewPaused;
 
 #pragma  mark - Camera Customization -
+
 @property (strong, nonatomic) CameraFocusSquare* focusSquare;
 @property (strong, nonatomic) UIButton* switchCameraButton;
 @property (strong, nonatomic) UIButton* switchFlashButton;
 @property (strong, nonatomic) UIImage* flashOnIcon;
 @property (strong, nonatomic) UIImage* flashOffIcon;
 @property (nonatomic) BOOL flashOn;
+
+@property (nonatomic) BOOL photoEnabled;
+@property (nonatomic) BOOL videoEnabled;
 
 #pragma mark - Close camera -
 
@@ -46,6 +51,8 @@
 - (id)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.photoEnabled = YES;
+		self.videoEnabled = YES;
 		self.backgroundColor = [UIColor blackColor];
 		self.effectiveScale = 1.0f;
 		[self setDelegates];
@@ -71,6 +78,14 @@
 										  CLOSE_CAMERA_BUTTON_SIZE, CLOSE_CAMERA_BUTTON_SIZE)];
 	[self.closeButton addTarget:self action:@selector(closeButtonTapped) forControlEvents:UIControlEventTouchUpInside];
 	[self addSubview:self.closeButton];
+}
+
+-(void) enableCapturingPhoto: (BOOL)enable {
+	self.photoEnabled = enable;
+}
+
+-(void) enableCapturingVideo: (BOOL)enable {
+	self.videoEnabled = enable;
 }
 
 -(void)createCapturePicButton {
@@ -222,11 +237,13 @@
 }
 
 - (void) takePhoto:(id)sender {
+	if (!self.photoEnabled) return;
 	[self.sessionManager captureImage];
 	[self freezeFrame];
 }
 
 -(void) takeVideo:(UILongPressGestureRecognizer*)sender {
+	if (!self.videoEnabled) return;
 	if(!self.isTakingVideo && sender.state == UIGestureRecognizerStateBegan){
 		self.isTakingVideo = YES;
 		[self.sessionManager startVideoRecordingInOrientation:[UIDevice currentDevice].orientation];
@@ -240,7 +257,6 @@
 }
 
 -(void) endVideoRecordingSession {
-
 	if(!self.videoProgressCircle) return;
 	self.isTakingVideo = NO;
 	[self.sessionManager stopVideoRecording];

@@ -315,45 +315,15 @@
                     <view key="view" contentMode="scaleToFill" id="NN2-7a-wCP">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <subviews>
-                            <scrollView autoresizesSubviews="NO" clearsContextBeforeDrawing="NO" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="ChT-rO-Rpn" customClass="VerbatmScrollView">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
-                                <gestureRecognizers/>
-                                <connections>
-                                    <outletCollection property="gestureRecognizers" destination="WDj-eM-uvF" appends="YES" id="qqz-CK-rEn"/>
-                                    <outletCollection property="gestureRecognizers" destination="33n-Bh-1X3" appends="YES" id="8s6-31-bFc"/>
-                                    <outletCollection property="gestureRecognizers" destination="vkp-cu-SCl" appends="YES" id="01E-4x-04M"/>
-                                </connections>
-                            </scrollView>
-                            <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" id="wYB-i9-JTz">
-                                <rect key="frame" x="10" y="10" width="39" height="37"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </pageControl>
-                        </subviews>
                         <gestureRecognizers/>
                     </view>
                     <navigationItem key="navigationItem" id="sqn-EE-Emp"/>
                     <connections>
-                        <outlet property="mainScrollView" destination="ChT-rO-Rpn" id="yN6-Fp-Fpp"/>
-                        <outlet property="onBoardingPageIndicator" destination="wYB-i9-JTz" id="TvV-rf-idi"/>
                         <segue destination="C4V-vK-ZzO" kind="unwind" identifier="unwind_to_master_vc_from_adk" unwindAction="unwindToMasterNavVC:" id="fcv-AG-35S"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qHO-Sg-QFP" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="C4V-vK-ZzO" userLabel="Exit" sceneMemberID="exit"/>
-                <pinchGestureRecognizer id="WDj-eM-uvF">
-                    <connections>
-                        <action selector="handlePinchGesture:" destination="0lh-hP-Opv" id="93r-9H-LPJ"/>
-                    </connections>
-                </pinchGestureRecognizer>
-                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.20000000000000004" id="33n-Bh-1X3">
-                    <connections>
-                        <action selector="longPressSensed:" destination="0lh-hP-Opv" id="cAV-T5-CEW"/>
-                    </connections>
-                </pongPressGestureRecognizer>
-                <tapGestureRecognizer id="vkp-cu-SCl"/>
             </objects>
             <point key="canvasLocation" x="-4205" y="-153"/>
         </scene>

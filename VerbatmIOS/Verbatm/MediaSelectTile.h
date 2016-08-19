@@ -12,11 +12,10 @@
 @class MediaSelectTile;
 
 @protocol MediaSelectTileDelegate <NSObject>
-@required
 
 -(void) cameraButtonPressedOnTile: (MediaSelectTile*) tile;
 -(void) galleryButtonPressedOnTile: (MediaSelectTile*) tile;
--(void)textButtonPressedOnTile:(MediaSelectTile*) tile;
+-(void) textButtonPressedOnTile:(MediaSelectTile*) tile;
 @end
 
 @interface MediaSelectTile : UIView<ContentDevElementDelegate>
@@ -36,5 +35,9 @@
 
 // Animates adding background and shadow to buttons
 -(void) buttonGlow;
+
+-(void) enableGalleryButton:(BOOL)enable;
+-(void) enableCameraButton:(BOOL)enable;
+-(void) enableTextButton:(BOOL)enable;
 
 @end

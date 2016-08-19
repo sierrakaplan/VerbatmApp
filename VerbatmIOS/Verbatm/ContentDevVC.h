@@ -16,6 +16,7 @@
 #import "VerbatmScrollView.h"
 
 @class PinchView;
+@class MediaSelectTile;
 @class SingleMediaAndTextPinchView;
 @import Photos;
 
@@ -28,7 +29,7 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 	PinchingModeHorizontal
 };
 
-@property (weak, nonatomic) IBOutlet VerbatmScrollView *mainScrollView;
+@property (nonatomic) VerbatmScrollView *mainScrollView;
 
 @property (nonatomic) NSInteger startChannelIndex;
 @property (nonatomic) NSUInteger currentPresentedPickerRow;
@@ -37,9 +38,41 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 
 //view that is currently being filled in
 @property (weak, nonatomic) UITextView * activeTextView;
+
 @property(nonatomic) NSInteger pullBarHeight;
+
 // The pinch view that the user has opened and is currently editing
 @property (nonatomic, strong) SingleMediaAndTextPinchView* editingPinchView;
+
+//keeps track of ContentPageElementScrollViews
+@property (strong, nonatomic) NSMutableArray *pageElementScrollViews;
+
+#pragma mark Pinch Views
+
+@property (nonatomic) NSInteger numPinchViews;
+@property (nonatomic) BOOL currentlyPresentingInstruction;
+@property (nonatomic) NSMutableArray *pinchViewsToPublish;
+
+-(void) initializeVariables;
+-(void) setFrameMainScrollView;
+-(void) setElementDefaultFrames;
+-(void) addBackgroundImage;
+-(void) adjustMainScrollViewContentSize;
+-(void) placeNewMediaAtBottomOfDeck;
+
+-(void) getImageFromAsset: (PHAsset *)asset;
+-(void) getVideoFromAsset: (PHAsset *) asset;
+
+-(void) removeExcessMediaTiles;
+-(void) aboutToRemovePreview;
+
+-(void) presentPinchInstruction;
+
+-(void) publishOurStoryWithPinchViews:(NSMutableArray *)pinchViews;
+-(void) continueToPublish;
+
+-(void) textButtonPressedOnTile:(MediaSelectTile*) tile;
+-(void) galleryButtonPressedOnTile: (MediaSelectTile *)tile;
 
 @end
 
