@@ -145,6 +145,9 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate, FBSDKSharingDelegate>
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	self.exitedView = NO;
+	for (PostCollectionViewCell *currentCell in [self.collectionView visibleCells]) {
+		[currentCell onScreen];
+	}
 }
 
 -(void) viewDidDisappear:(BOOL)animated {
