@@ -492,8 +492,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 			[cell clearViews];
 			[cell presentPostFromPCActivityObj:postActivityObject andChannel:self.channelForList
 							  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:NO];
-		} else {
-			NSLog(@"same");
 		}
 	}
 	[self addTapGestureToCell:cell];

@@ -17,7 +17,7 @@ typedef enum {
     Share = 1 << 3, 				// 8
 	FriendsFirstPost = 1 << 4, 		// 16
 	Reblog = 1 << 5, 				// 32
-    NewComment = 1<<6                  //64
+    NewComment = 1 << 6             // 64
 } NotificationType;
 
 @interface Notification_BackendManager : NSObject
