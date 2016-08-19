@@ -137,7 +137,7 @@
         case NotificationTypeNewFollower:
             finalString = [[channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY] stringByAppendingString:NEW_FOLLOWER_APPEND_TEXT];
             break;
-            
+
         case NotificationTypeFriendJoinedVerbatm:
             finalString = [[channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY] stringByAppendingString:FRIEND_JOINED_V_APPEND_TEXT];
             break;
@@ -145,19 +145,23 @@
         case NotificationTypeLike:
             finalString = [[channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY] stringByAppendingString:LIKE_APPEND_TEXT];
             break;
-            
+
         case NotificationTypeFriendsFirstPost:
             finalString = [[channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY] stringByAppendingString:FRIENDS_FIRST_POST];
             break;
+
         case NotificationTypeShare:
             finalString = [[channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY] stringByAppendingString:POST_SHARED_APPEND_TEXT];
             break;
+
         case NotificationTypeReblog:
             finalString = [[channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY] stringByAppendingString:REBLOG_APPEND_TEXT];
             break;
+
         case NotificationTypeNewComment:
             finalString = [[channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY] stringByAppendingString:COMMENT_APPEND_TEXT];
             break;
+
         case NotificationTypeCommentReply:
             finalString = [[channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY] stringByAppendingString:COMMENTREPLY_APPEND_TEXT];
             break;

@@ -311,8 +311,9 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
     [self.notificationIndicator removeFromSuperview];
 }
 
--(void)showIndicator{
+-(void)showIndicator {
     self.notificationIndicatorPresent = YES;
+	if (self.tabBarHidden) return;
     CGFloat tabBarItemWidth = self.view.frame.size.width/5.f;
 	CGFloat xpos = 1.f + (self.view.frame.size.width - (tabBarItemWidth *2)) + tabBarItemWidth/2.f;
 
@@ -409,11 +410,11 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 
 -(void) showTabBar:(BOOL)show {
 	if (show) {
+		self.tabBarHidden = NO;
         if (self.notificationIndicatorPresent) {
             [self showIndicator];
         }
-        
-		self.tabBarHidden = NO;
+
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			[self setNeedsStatusBarAppearanceUpdate];
 			self.tabBarController.tabBar.frame = self.tabBarFrameOnScreen;
