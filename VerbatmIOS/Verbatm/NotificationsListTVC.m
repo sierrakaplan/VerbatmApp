@@ -81,8 +81,6 @@
 -(void)viewWillAppear:(BOOL)animated{
 	if(self.isFirstLoad){
 		self.isFirstLoad = NO;
-	}else{
-		[self refreshNotifications];
 	}
 	[self.delegate removeNotificationIndicator];
 	self.currentlyBeingViewed = YES;
