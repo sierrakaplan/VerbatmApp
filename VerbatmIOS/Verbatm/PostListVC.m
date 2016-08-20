@@ -1067,7 +1067,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	if(!_reblogSucessful){
 		_reblogSucessful = [[UIImageView alloc] init];
 		[_reblogSucessful setImage:[UIImage imageNamed:REBLOG_IMAGE]];
-		[_reblogSucessful setFrame:CGRectMake((self.view.frame.size.width/2.f)-REBLOG_IMAGE_SIZE/2.f, (self.view.frame.size.height/2.f) -REBLOG_IMAGE_SIZE/2.f, REBLOG_IMAGE_SIZE, REBLOG_IMAGE_SIZE)];
+		[_reblogSucessful setFrame:CGRectMake((self.view.frame.size.width/2.f) - REBLOG_IMAGE_SIZE/2.f,
+											  (self.view.frame.size.height/2.f) - REBLOG_IMAGE_SIZE/2.f,
+											  REBLOG_IMAGE_SIZE, REBLOG_IMAGE_SIZE)];
 	}
 	return _reblogSucessful;
 }
