@@ -191,8 +191,13 @@
 	[self removePreview];
 }
 -(void)presentCommentListForPost:(PFObject *)post{
+    UserAndChannelListsTVC *commentorsListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    [commentorsListVC presentList:CommentList forChannel:nil orPost:post];
+    [self presentViewController:commentorsListVC animated:YES completion:nil];
+}
+-(void) showWhoLikesThePostFromNotifications:(PFObject *) post{
     UserAndChannelListsTVC *likersListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
-    [likersListVC presentList:CommentList forChannel:nil orPost:post];
+    [likersListVC presentList:LikersList forChannel:nil orPost:post];
     [self presentViewController:likersListVC animated:YES completion:nil];
 }
 

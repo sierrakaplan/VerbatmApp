@@ -116,7 +116,7 @@
     
 }
 -(void) showWhoLikesThePost:(PFObject *) post{
-    
+    [self.delegate showWhoLikesThePostFromNotifications:post];
 }
 
 -(void)removePostViewSelected{
