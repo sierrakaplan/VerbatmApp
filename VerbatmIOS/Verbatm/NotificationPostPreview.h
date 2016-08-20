@@ -14,7 +14,7 @@
 
 -(void)exitPreview;
 -(void)presentCommentListForPost:(PFObject *)post;
-
+-(void)showWhoLikesThePostFromNotifications:(PFObject *) post;
 @end
 
 @interface NotificationPostPreview : UIView

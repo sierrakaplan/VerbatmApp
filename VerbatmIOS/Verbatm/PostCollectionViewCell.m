@@ -99,21 +99,10 @@
         self.numLikeLabel = nil;
         self.smallLikeButton = nil;
 		self.currentPostView = nil;
+        self.currentPostActivityObject = nil;
+        self.postBeingPresented = nil;
 	}
-	[self removePublishingProgress];
-
-	[self.numSharesLabel removeFromSuperview];
-	[self.smallShareButton removeFromSuperview];
-	[self.numLikeLabel removeFromSuperview];
-	[self.smallLikeButton removeFromSuperview];
-
-	self.numSharesLabel = nil;
-	self.smallShareButton = nil;
-	self.numLikeLabel = nil;
-	self.smallLikeButton = nil;
-	self.currentPostView = nil;
-	self.currentPostActivityObject = nil;
-	self.postBeingPresented = nil;
+	
 
 	self.isOnScreen = NO;
 	self.isAlmostOnScreen = NO;
@@ -295,9 +284,6 @@
 #pragma mark - Post view delegate -
 
 -(void)presentSmallLikeButton{
-    self.numLikes = self.currentPostObject[POST_NUM_LIKES];
-    self.numShares = self.currentPostObject[POST_NUM_REBLOGS];
-    self.numComments = self.currentPostObject[POST_NUM_COMMENTS];
     if(self.numComments == nil){
         self.numComments = @(0);
     }
