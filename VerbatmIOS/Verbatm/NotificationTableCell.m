@@ -222,12 +222,11 @@
     [self.notificationTextLabel sizeToFit];
 	frame = self.notificationTextLabel.frame;
 	frame.origin.y = self.frame.size.height/2.f - self.notificationTextLabel.frame.size.height/2.f;
+	if(labelWidth < self.notificationTextLabel.frame.size.width) {
+		frame.size.width = labelWidth;
+		[self.notificationTextLabel setAdjustsFontSizeToFitWidth:YES];
+	}
 	self.notificationTextLabel.frame = frame;
-
-    if(labelWidth < self.notificationTextLabel.frame.size.width) {
-        self.notificationTextLabel.frame = frame;
-        [self.notificationTextLabel setAdjustsFontSizeToFitWidth:YES];
-    }
     
     [self addSubview:self.notificationTextLabel];
 }
