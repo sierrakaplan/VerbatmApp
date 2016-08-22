@@ -41,7 +41,7 @@
 
 
 @interface SignInVC () <UIScrollViewDelegate,CreateAccountProtocol,
-                        ChooseLoginOrSignupProtocol, ConfirmationCodeSignUpDelegate, LogIntoAccountProtocol>
+ChooseLoginOrSignupProtocol, ConfirmationCodeSignUpDelegate, LogIntoAccountProtocol>
 
 @property (nonatomic) BOOL loginFirstTimeDone;
 @property (strong, nonatomic) UIView* animationView;
@@ -87,7 +87,7 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	[self.backgroundImageView setFrame:self.view.bounds];
-    [self centerViews];
+	[self centerViews];
 	[self registerForNotifications];
 	//[self addFacebookLoginButton];
 	self.loginFirstTimeDone = NO;
@@ -96,117 +96,117 @@
 																		  action:@selector(keyboardDidHide:)];
 
 	[self.view addGestureRecognizer:tap];
-    [self presentLoginSignUpOption];
-    if(![[UserSetupParameters sharedInstance] checkOnboardingShown]){
-        [self createOnBoarding];
-    }else{
-      [self.pageControlView removeFromSuperview];
-    }
-    
-    [self.view sendSubviewToBack:self.backgroundImageView];
+	[self presentLoginSignUpOption];
+	if(![[UserSetupParameters sharedInstance] checkOnboardingShown]){
+		[self createOnBoarding];
+	}else{
+		[self.pageControlView removeFromSuperview];
+	}
+
+	[self.view sendSubviewToBack:self.backgroundImageView];
 }
 
 
 -(void) centerViews {
-    self.verbatmLogoImageView.center = CGPointMake(self.view.center.x, self.verbatmLogoImageView.center.y);
-    self.welcomeLabel.center = CGPointMake(self.view.center.x, self.welcomeLabel.center.y + 4);
-    self.mobileBloggingLabel.center = CGPointMake(self.view.center.x, self.mobileBloggingLabel.center.y);
-    self.orLabel.center = CGPointMake(self.view.center.x, self.orLabel.center.y);
-    self.phoneLoginField.center = CGPointMake(self.view.center.x, self.phoneLoginField.center.y);
-    self.originalPhoneTextFrame = self.phoneLoginField.frame;
+	self.verbatmLogoImageView.center = CGPointMake(self.view.center.x, self.verbatmLogoImageView.center.y);
+	self.welcomeLabel.center = CGPointMake(self.view.center.x, self.welcomeLabel.center.y + 4);
+	self.mobileBloggingLabel.center = CGPointMake(self.view.center.x, self.mobileBloggingLabel.center.y);
+	self.orLabel.center = CGPointMake(self.view.center.x, self.orLabel.center.y);
+	self.phoneLoginField.center = CGPointMake(self.view.center.x, self.phoneLoginField.center.y);
+	self.originalPhoneTextFrame = self.phoneLoginField.frame;
 }
 
 //forward == yes means that animation should go right to left (advancing to next screen)
 -(void)replaceView:(UIView *) currentView withView:(UIView *)nextView goingForward:(BOOL) forward{
-    
-    if(currentView && nextView){
 
-        if(forward){
-            nextView.frame = CGRectMake(self.view.frame.size.width, 0.f, nextView.frame.size.width, nextView.frame.size.height);
-            [self.view addSubview:nextView];
-        }else{
-            nextView.frame = CGRectMake(-self.view.frame.size.width, 0.f, nextView.frame.size.width, nextView.frame.size.height);
-            [self.view addSubview:nextView];
-        }
-        
-        [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-            
-            if(forward){
-                currentView.frame = CGRectMake(- self.view.frame.size.width, 0.f, currentView.frame.size.width, currentView.frame.size.height);
-                nextView.frame = self.view.bounds;
-            }else{
-                currentView.frame = CGRectMake(self.view.frame.size.width, 0.f, currentView.frame.size.width, currentView.frame.size.height);
-                
-                nextView.frame = self.view.bounds;
-            }
-            
-        }];
-    }
+	if(currentView && nextView){
+
+		if(forward){
+			nextView.frame = CGRectMake(self.view.frame.size.width, 0.f, nextView.frame.size.width, nextView.frame.size.height);
+			[self.view addSubview:nextView];
+		}else{
+			nextView.frame = CGRectMake(-self.view.frame.size.width, 0.f, nextView.frame.size.width, nextView.frame.size.height);
+			[self.view addSubview:nextView];
+		}
+
+		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
+
+			if(forward){
+				currentView.frame = CGRectMake(- self.view.frame.size.width, 0.f, currentView.frame.size.width, currentView.frame.size.height);
+				nextView.frame = self.view.bounds;
+			}else{
+				currentView.frame = CGRectMake(self.view.frame.size.width, 0.f, currentView.frame.size.width, currentView.frame.size.height);
+
+				nextView.frame = self.view.bounds;
+			}
+
+		}];
+	}
 }
 
 -(void)presentLoginSignUpOption{
-    self.chooseLoginOrSignUpView = [[ChooseLoginOrSignup alloc] initWithFrame:self.view.bounds];
-    self.chooseLoginOrSignUpView.delegate = self;
-    [self.view addSubview:self.chooseLoginOrSignUpView];
+	self.chooseLoginOrSignUpView = [[ChooseLoginOrSignup alloc] initWithFrame:self.view.bounds];
+	self.chooseLoginOrSignUpView.delegate = self;
+	[self.view addSubview:self.chooseLoginOrSignUpView];
 }
 
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
-    
-    if(scrollView == self.onBoardingView){
-        self.pageControlView.currentPage = scrollView.contentOffset.x/self.view.bounds.size.width;
-        
-        if(scrollView.contentOffset.x == self.view.bounds.size.width *3){
-            [scrollView removeFromSuperview];
-            [self.pageControlView removeFromSuperview];
-            [[UserSetupParameters sharedInstance] setOnboardingShown];
-        }
-        
-    }else if (scrollView == self.contentOnboardingPage){
-        if(scrollView.contentOffset.y == self.view.bounds.size.height){
-            self.pageControlView.numberOfPages = 4;
-            self.onBoardingView.contentSize = CGSizeMake(self.view.bounds.size.width *4, 0);
-        }
-    }
+
+	if(scrollView == self.onBoardingView){
+		self.pageControlView.currentPage = scrollView.contentOffset.x/self.view.bounds.size.width;
+
+		if(scrollView.contentOffset.x == self.view.bounds.size.width *3){
+			[scrollView removeFromSuperview];
+			[self.pageControlView removeFromSuperview];
+			[[UserSetupParameters sharedInstance] setOnboardingShown];
+		}
+
+	}else if (scrollView == self.contentOnboardingPage){
+		if(scrollView.contentOffset.y == self.view.bounds.size.height){
+			self.pageControlView.numberOfPages = 4;
+			self.onBoardingView.contentSize = CGSizeMake(self.view.bounds.size.width *4, 0);
+		}
+	}
 }
 
 -(void)createOnBoarding{
-    [self.view bringSubviewToFront:self.pageControlView];
-    
-    NSArray * planeNames = @[@"Welcome D6", @"Post"];
-    NSArray * subSVNames= @[@"Content", @"Content Page 2"];
-    
-    
-    for(int i = 0; i < planeNames.count; i ++){
-        NSString * name =  planeNames[i];
-        CGRect frame = CGRectMake(self.view.bounds.size.width * i, 0, self.view.bounds.size.width, self.view.bounds.size.height);
-        UIImageView * iv = [[UIImageView alloc] initWithFrame:frame];
-        iv.image = [UIImage imageNamed:name];
-        [self.onBoardingView addSubview:iv];
-    }
-    
-    for(int i = 0; i < planeNames.count; i ++){
-        NSString * name =  subSVNames[i];
-        CGRect frame = CGRectMake(0, self.view.bounds.size.height * i, self.view.bounds.size.width, self.view.bounds.size.height);
-        UIImageView * iv = [[UIImageView alloc] initWithFrame:frame];
-        iv.image = [UIImage imageNamed:name];
-        [self.contentOnboardingPage addSubview:iv];
-    }
-    [self.onBoardingView addSubview:self.contentOnboardingPage];
-    
-    [self.view addSubview:self.onBoardingView];
-    [self.view bringSubviewToFront:self.onBoardingView];
-    [self.view bringSubviewToFront:self.pageControlView];
-    self.pageControlView.currentPage = 0;
-    self.pageControlView.numberOfPages = 3;
-    self.pageControlView.defersCurrentPageDisplay = YES;
-    
-    self.onBoardingView.delegate = self;
-    self.contentOnboardingPage.delegate = self;
-    
-    CGRect pageControllViewFrame = CGRectMake((self.view.bounds.size.width/2.f)-(self.pageControlView.frame.size.width/2.f), self.view.bounds.size.height -  (self.pageControlView.frame.size.height + 10), self.pageControlView.frame.size.width, self.pageControlView.frame.size.height);
-    self.pageControlView.frame = pageControllViewFrame;
-    
+	[self.view bringSubviewToFront:self.pageControlView];
+
+	NSArray * planeNames = @[@"Welcome D6", @"Post"];
+	NSArray * subSVNames= @[@"Content", @"Content Page 2"];
+
+
+	for(int i = 0; i < planeNames.count; i ++){
+		NSString * name =  planeNames[i];
+		CGRect frame = CGRectMake(self.view.bounds.size.width * i, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+		UIImageView * iv = [[UIImageView alloc] initWithFrame:frame];
+		iv.image = [UIImage imageNamed:name];
+		[self.onBoardingView addSubview:iv];
+	}
+
+	for(int i = 0; i < planeNames.count; i ++){
+		NSString * name =  subSVNames[i];
+		CGRect frame = CGRectMake(0, self.view.bounds.size.height * i, self.view.bounds.size.width, self.view.bounds.size.height);
+		UIImageView * iv = [[UIImageView alloc] initWithFrame:frame];
+		iv.image = [UIImage imageNamed:name];
+		[self.contentOnboardingPage addSubview:iv];
+	}
+	[self.onBoardingView addSubview:self.contentOnboardingPage];
+
+	[self.view addSubview:self.onBoardingView];
+	[self.view bringSubviewToFront:self.onBoardingView];
+	[self.view bringSubviewToFront:self.pageControlView];
+	self.pageControlView.currentPage = 0;
+	self.pageControlView.numberOfPages = 3;
+	self.pageControlView.defersCurrentPageDisplay = YES;
+
+	self.onBoardingView.delegate = self;
+	self.contentOnboardingPage.delegate = self;
+
+	CGRect pageControllViewFrame = CGRectMake((self.view.bounds.size.width/2.f)-(self.pageControlView.frame.size.width/2.f), self.view.bounds.size.height -  (self.pageControlView.frame.size.height + 10), self.pageControlView.frame.size.width, self.pageControlView.frame.size.height);
+	self.pageControlView.frame = pageControllViewFrame;
+
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -227,16 +227,16 @@
 
 
 -(void)textNotAlphaNumericaCreateAccount{
-    [self alertTextNotAcceptable];
+	[self alertTextNotAcceptable];
 }
 
 -(void)alertTextNotAcceptable{
-    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Text Must Be Alphanumeric and you must create a name" message:@"" preferredStyle:UIAlertControllerStyleAlert];
-    
-    UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
-                                                    handler:^(UIAlertAction * action) {}];
-    [newAlert addAction:action1];
-    [self presentViewController:newAlert animated:YES completion:nil];
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Text Must Be Alphanumeric and you must create a name" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+
+	UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+													handler:^(UIAlertAction * action) {}];
+	[newAlert addAction:action1];
+	[self presentViewController:newAlert animated:YES completion:nil];
 }
 
 
@@ -275,7 +275,7 @@
 -(void) sendCodeToUser {
 	[self.phoneLoginField resignFirstResponder];
 	NSString *simplePhoneNumber = self.phoneNumber;
-	
+
 
 	self.nextButtonEnabled = NO;
 
@@ -283,35 +283,34 @@
 	[findUserQuery whereKey:@"username" equalTo:simplePhoneNumber];
 	[findUserQuery getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable user, NSError * _Nullable error) {
 		if (user && !error) {
-            [self showAlertWithTitle:@"An account with this phone already exists." andMessage:@"Use a different number."];
-             [self goBackFromEnteringConfirmation];
-        }else{
-            
-            self.firstTimeLoggingIn = YES;
-            self.phoneNumber = simplePhoneNumber;
+			[self showAlertWithTitle:@"An account with this phone already exists." andMessage:@"Use a different number."];
+			[self goBackFromEnteringConfirmation];
+		}else{
 
-            //todo: include more languages
-            NSDictionary *params = @{@"phoneNumber" : simplePhoneNumber, @"language" : @"en"};
-            [PFCloud callFunctionInBackground:@"sendCode" withParameters:params block:^(id  _Nullable response, NSError * _Nullable error) {
-                if (error) {
-                    [[Crashlytics sharedInstance] recordError: error];
-                    [self showAlertWithTitle:@"Error sending code" andMessage:@"Something went wrong. Please verify your phone number is correct."];
-                } else {
-                    self.createdUserWithLoginCode = YES;
-                    // Parse has now created an account with this phone number and generated a random code,
-                    // user must enter the correct code to be logged in
-                }
-            }];
-        }
+			self.firstTimeLoggingIn = YES;
+			self.phoneNumber = simplePhoneNumber;
+
+			//todo: include more languages
+			NSDictionary *params = @{@"phoneNumber" : simplePhoneNumber, @"language" : @"en"};
+			[PFCloud callFunctionInBackground:@"sendCode" withParameters:params block:^(id  _Nullable response, NSError * _Nullable error) {
+				if (error) {
+					[[Crashlytics sharedInstance] recordError: error];
+					[self showAlertWithTitle:@"Error sending code" andMessage:@"Something went wrong. Please verify your phone number is correct."];
+				} else {
+					self.createdUserWithLoginCode = YES;
+					// Parse has now created an account with this phone number and generated a random code,
+					// user must enter the correct code to be logged in
+				}
+			}];
+		}
 
 	}];
 }
 
-
 -(void)deleteCreatedUser {
-    if (self.createdUserWithLoginCode) {
-        self.createdUserWithLoginCode = NO;
-        NSString * userNameToDelete = self.phoneNumber;
+	if (self.createdUserWithLoginCode) {
+		self.createdUserWithLoginCode = NO;
+		NSString * userNameToDelete = self.phoneNumber;
 		NSDictionary *params = @{@"phoneNumber" : userNameToDelete};
 		[PFCloud callFunctionInBackground:@"deleteCreatedUser" withParameters:params block:^(id  _Nullable response, NSError * _Nullable error) {
 			if (error) {
@@ -320,34 +319,31 @@
 				NSLog(@"Success deleting created user.");
 			}
 		}];
-    }
+	}
 }
-
 
 -(void) wrongConfirmationNumberAlert:(NSString*)title andMessage:(NSString*)message {
-    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:title message:message
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction* defaultAction1 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
-                                                          handler:^(UIAlertAction * action) {
-                                                    
-                                                              [self goBackFromEnteringConfirmation];
-                                                              [self deleteCreatedUser];
-                                                          
-                                                          }];
-    UIAlertAction* defaultAction2 = [UIAlertAction actionWithTitle:@"Resend" style:UIAlertActionStyleDefault
-                                                          handler:^(UIAlertAction * action) {
-                                                              
-                                                              [self sendCodeToUser];
-                                                              
-                                                          }];
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:title message:message
+																preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* defaultAction1 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
+														   handler:^(UIAlertAction * action) {
 
-    
-    [newAlert addAction:defaultAction1];
-    [newAlert addAction:defaultAction2];
-    [self presentViewController:newAlert animated:YES completion:nil];
+															   [self goBackFromEnteringConfirmation];
+															   [self deleteCreatedUser];
+
+														   }];
+	UIAlertAction* defaultAction2 = [UIAlertAction actionWithTitle:@"Resend" style:UIAlertActionStyleDefault
+														   handler:^(UIAlertAction * action) {
+
+															   [self sendCodeToUser];
+
+														   }];
+
+
+	[newAlert addAction:defaultAction1];
+	[newAlert addAction:defaultAction2];
+	[self presentViewController:newAlert animated:YES completion:nil];
 }
-
-
 
 -(void) codeEnteredWithPhoneNumber:(NSString *)number andCode:(NSString *)code{
 	self.nextButtonEnabled = NO;
@@ -360,13 +356,13 @@
 	}
 
 	NSDictionary *params = @{@"phoneNumber": number, @"codeEntry": code};
-    
-    __weak SignInVC * weakSelf = self;
-    
+
+	__weak SignInVC * weakSelf = self;
+
 	[PFCloud callFunctionInBackground:@"logIn" withParameters:params block:^(id  _Nullable object, NSError * _Nullable error) {
 		if (error) {
-            
-             [weakSelf wrongConfirmationNumberAlert:@"Wrong Confirmation Code" andMessage:@"You can choose to resend it."];
+
+			[weakSelf wrongConfirmationNumberAlert:@"Wrong Confirmation Code" andMessage:@"You can choose to resend it."];
 		} else {
 			// This is the session token for the user
 			NSString *token = (NSString*)object;
@@ -375,15 +371,15 @@
 				if (error) {
 					[weakSelf showAlertWithTitle:@"Login Error" andMessage:error.localizedDescription];
 				} else {
-                    user.username = number;
-                    user.password = self.password;
-                    [user setObject:self.verbatmName forKey:VERBATM_USER_NAME_KEY];
-                    [user setObject:[NSNumber numberWithBool:NO] forKey:USER_FTUE];
-                    [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-                        if(succeeded){
-                            [self loginUpWithPhoneNumberSelectedWithNumber:number andPassword:self.password];
-                        }
-                    }];
+					user.username = number;
+					user.password = self.password;
+					[user setObject:self.verbatmName forKey:VERBATM_USER_NAME_KEY];
+					[user setObject:[NSNumber numberWithBool:NO] forKey:USER_FTUE];
+					[user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+						if(succeeded){
+							[self loginUpWithPhoneNumberSelectedWithNumber:number andPassword:self.password];
+						}
+					}];
 				}
 			}];
 		}
@@ -427,94 +423,94 @@
 #pragma mark - CreateAccount Protocol-
 
 -(void)errorInSignInWithError:(NSString *)error{
-    [self errorInSignInAnimation: error.description];
+	[self errorInSignInAnimation: error.description];
 }
 
 -(void)signUpWithPhoneNumberSelectedWithNumber:(NSString *) phoneNumber
-                                   andPassword:(NSString *)password andName:(NSString *) verbatmName {
+								   andPassword:(NSString *)password andName:(NSString *) verbatmName {
 
-    self.phoneNumber = phoneNumber;
-    self.verbatmName = verbatmName;
-    self.password = password;
-    self.confirmationCodeEntry.phoneNumberEntered = phoneNumber;
-    [self sendCodeToUser];
-    [self replaceView:self.createAccountView withView:self.confirmationCodeEntry goingForward:YES];
-    
+	self.phoneNumber = phoneNumber;
+	self.verbatmName = verbatmName;
+	self.password = password;
+	self.confirmationCodeEntry.phoneNumberEntered = phoneNumber;
+	[self sendCodeToUser];
+	[self replaceView:self.createAccountView withView:self.confirmationCodeEntry goingForward:YES];
+
 }
 
 -(void)phoneNumberWrongFormatCreateAccount{
-    [self showAlertWithTitle:@"Phone Login" andMessage:@"You must enter a 10-digit US phone number including area code."];
+	[self showAlertWithTitle:@"Phone Login" andMessage:@"You must enter a 10-digit US phone number including area code."];
 }
 
 -(void)verbatmNameWrongFormatCreateAccount{
-    [self showAlertWithTitle:@"Your name can only be letters, numbers and an underscore." andMessage:@""];
+	[self showAlertWithTitle:@"Your name can only be letters, numbers and an underscore." andMessage:@""];
 }
 -(void)noPasswordEnteredCreateAccount{
-    [self showAlertWithTitle:@"Please enter characters for your password." andMessage:@""];
+	[self showAlertWithTitle:@"Please enter characters for your password." andMessage:@""];
 }
 
 -(void)goBackSelectedCreateAccount{
-    [self replaceView:self.createAccountView withView:self.chooseLoginOrSignUpView goingForward:NO];
-    
+	[self replaceView:self.createAccountView withView:self.chooseLoginOrSignUpView goingForward:NO];
+
 }
 
 -(void)codeSubmitted:(NSString *) enteredCode{
-    [self codeEnteredWithPhoneNumber:self.phoneNumber andCode:enteredCode];
+	[self codeEnteredWithPhoneNumber:self.phoneNumber andCode:enteredCode];
 }
 
 #pragma mark -LogIntoAccount Protocol-
 -(void)goBackSelectedLoginAccount{
-    [self replaceView:self.loginToAccountView withView:self.chooseLoginOrSignUpView goingForward:NO];
+	[self replaceView:self.loginToAccountView withView:self.chooseLoginOrSignUpView goingForward:NO];
 }
 
 -(void)textNotAlphaNumericaLoginAccount{
-     [self alertTextNotAcceptable];
+	[self alertTextNotAcceptable];
 }
 
 -(void)passwordIsOnlySpaces{
-    [self showAlertWithTitle:@"Please insert characters into the password field." andMessage: @""];
+	[self showAlertWithTitle:@"Please insert characters into the password field." andMessage: @""];
 }
 
 -(void)loginUpWithPhoneNumberSelectedWithNumber:(NSString *) phoneNumber andPassword:(NSString *)password{
-    [PFUser logInWithUsernameInBackground:phoneNumber password:password block:^(PFUser * _Nullable user, NSError * _Nullable error) {
-        if (error || !user) {
-            [self showAlertWithTitle:@"Incorrect password" andMessage: @"Please try again"];
-        } else {
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
-        }
-    }];
+	[PFUser logInWithUsernameInBackground:phoneNumber password:password block:^(PFUser * _Nullable user, NSError * _Nullable error) {
+		if (error || !user) {
+			[self showAlertWithTitle:@"Incorrect password" andMessage: @"Please try again"];
+		} else {
+			[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
+		}
+	}];
 }
 
 -(void)goBackFromEnteringConfirmation{
-    
-    if(self.createdUserWithLoginCode){
-        [self deleteCreatedUser];
-    }
-    [self replaceView:self.confirmationCodeEntry  withView:self.createAccountView goingForward:NO];
+
+	if(self.createdUserWithLoginCode){
+		[self deleteCreatedUser];
+	}
+	[self replaceView:self.confirmationCodeEntry  withView:self.createAccountView goingForward:NO];
 }
 
 #pragma mark -ConfirmationCodeSignup Protocol-
 
 -(void)goBackSelectedConfirmationCode{
-    [self goBackFromEnteringConfirmation];
+	[self goBackFromEnteringConfirmation];
 }
 
 -(void)resendCodeSelectedConfirmationCode{
-    
+
 }
 
 -(void)codeSubmittedConfirmationCode:(NSString *) enteredCode{
-    [self codeEnteredWithPhoneNumber:self.phoneNumber andCode:enteredCode];
+	[self codeEnteredWithPhoneNumber:self.phoneNumber andCode:enteredCode];
 }
 
 
 #pragma mark -ChooseLoginOrSignUp Protocol-
 
 -(void)signUpChosen{
-    [self replaceView:self.chooseLoginOrSignUpView withView:self.createAccountView goingForward:YES];
+	[self replaceView:self.chooseLoginOrSignUpView withView:self.createAccountView goingForward:YES];
 }
 -(void)loginChosen{
-    [self replaceView:self.chooseLoginOrSignUpView withView:self.loginToAccountView goingForward:YES];
+	[self replaceView:self.chooseLoginOrSignUpView withView:self.loginToAccountView goingForward:YES];
 }
 
 
@@ -580,93 +576,89 @@
 
 
 -(UIScrollView *)onBoardingView{
-    if(!_onBoardingView){
-        _onBoardingView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
-        _onBoardingView.contentSize = CGSizeMake(self.view.bounds.size.width * 3, 0);
-        _onBoardingView.pagingEnabled = YES;
-        _onBoardingView.bounces = NO;
-        _onBoardingView.showsHorizontalScrollIndicator = NO;
-        _onBoardingView.showsVerticalScrollIndicator = NO;
-    }
-    return _onBoardingView;
+	if(!_onBoardingView){
+		_onBoardingView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
+		_onBoardingView.contentSize = CGSizeMake(self.view.bounds.size.width * 3, 0);
+		_onBoardingView.pagingEnabled = YES;
+		_onBoardingView.bounces = NO;
+		_onBoardingView.showsHorizontalScrollIndicator = NO;
+		_onBoardingView.showsVerticalScrollIndicator = NO;
+	}
+	return _onBoardingView;
 }
 
 -(UIScrollView *)contentOnboardingPage{
-    if(!_contentOnboardingPage){
-        _contentOnboardingPage = [[UIScrollView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width * 2, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
-        _contentOnboardingPage.contentSize = CGSizeMake(0, self.view.bounds.size.height * 2);
-        _contentOnboardingPage.pagingEnabled = YES;
-        _contentOnboardingPage.bounces = NO;
-        _contentOnboardingPage.showsHorizontalScrollIndicator = NO;
-        _contentOnboardingPage.showsVerticalScrollIndicator = NO;
-    }
-    return _contentOnboardingPage;
+	if(!_contentOnboardingPage){
+		_contentOnboardingPage = [[UIScrollView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width * 2, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
+		_contentOnboardingPage.contentSize = CGSizeMake(0, self.view.bounds.size.height * 2);
+		_contentOnboardingPage.pagingEnabled = YES;
+		_contentOnboardingPage.bounces = NO;
+		_contentOnboardingPage.showsHorizontalScrollIndicator = NO;
+		_contentOnboardingPage.showsVerticalScrollIndicator = NO;
+	}
+	return _contentOnboardingPage;
 }
 
 //lazy instantiation
 -(UILabel *)animationLabel {
-    if(!_animationLabel){
-            _animationLabel = [[UILabel alloc] init];
+	if(!_animationLabel){
+		_animationLabel = [[UILabel alloc] init];
 
-        _animationLabel.frame = CGRectMake(0, self.view.bounds.size.height/2.f - SIGN_IN_ERROR_VIEW_HEIGHT/2.f,
-                                           self.view.bounds.size.width, SIGN_IN_ERROR_VIEW_HEIGHT);
-        _animationLabel.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
-        _animationLabel.font = [UIFont fontWithName:REGULAR_FONT size:ERROR_ANIMATION_FONT_SIZE];
-        _animationLabel.textColor = [UIColor ERROR_ANIMATION_TEXT_COLOR];
-        _animationLabel.numberOfLines = 0;
-        _animationLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        [_animationLabel setTextAlignment:NSTextAlignmentCenter];
-    }
+		_animationLabel.frame = CGRectMake(0, self.view.bounds.size.height/2.f - SIGN_IN_ERROR_VIEW_HEIGHT/2.f,
+										   self.view.bounds.size.width, SIGN_IN_ERROR_VIEW_HEIGHT);
+		_animationLabel.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+		_animationLabel.font = [UIFont fontWithName:REGULAR_FONT size:ERROR_ANIMATION_FONT_SIZE];
+		_animationLabel.textColor = [UIColor ERROR_ANIMATION_TEXT_COLOR];
+		_animationLabel.numberOfLines = 0;
+		_animationLabel.lineBreakMode = NSLineBreakByWordWrapping;
+		[_animationLabel setTextAlignment:NSTextAlignmentCenter];
+	}
 	return _animationLabel;
 }
 
 -(LogIntoAccount *)loginToAccountView{
-    if(!_loginToAccountView){
-        _loginToAccountView = [[LogIntoAccount alloc] initWithFrame:self.view.bounds];
-        _loginToAccountView.delegate = self;
-    }
-    return _loginToAccountView;
+	if(!_loginToAccountView){
+		_loginToAccountView = [[LogIntoAccount alloc] initWithFrame:self.view.bounds];
+		_loginToAccountView.delegate = self;
+	}
+	return _loginToAccountView;
 }
 
 -(CreateAccount *)createAccountView {
-    if(!_createAccountView){
-        _createAccountView = [[CreateAccount alloc] initWithFrame:self.view.bounds];
-        _createAccountView.delegate = self;
-    }
-    return _createAccountView;
+	if(!_createAccountView){
+		_createAccountView = [[CreateAccount alloc] initWithFrame:self.view.bounds];
+		_createAccountView.delegate = self;
+	}
+	return _createAccountView;
 }
 
 
 -(ConfirmationCodeSignUp *)confirmationCodeEntry{
-    if(!_confirmationCodeEntry){
-        _confirmationCodeEntry = [[ConfirmationCodeSignUp alloc] initWithFrame:self.view.bounds];
-        _confirmationCodeEntry.delagate = self;
-    }
-    return _confirmationCodeEntry;
+	if(!_confirmationCodeEntry){
+		_confirmationCodeEntry = [[ConfirmationCodeSignUp alloc] initWithFrame:self.view.bounds];
+		_confirmationCodeEntry.delagate = self;
+	}
+	return _confirmationCodeEntry;
 }
 
-
-
-
--(void)keyboardDidHide:(UITapGestureRecognizer *)gesture
-{
-    if(self.onBoardingView.contentOffset.x == 0){
-        [UIView animateWithDuration:0.7 animations:^{
-            self.onBoardingView.contentOffset = CGPointMake(self.view.frame.size.width, 0);
-        }completion:^(BOOL finished) {
-            if(finished){
-                self.pageControlView.currentPage = self.onBoardingView.contentOffset.x/self.view.bounds.size.width;
-            }
-        }];
-    }else if (self.onBoardingView.contentOffset.x == self.view.frame.size.width * 3){
-        [self.phoneLoginField resignFirstResponder];
-    }
+-(void)keyboardDidHide:(UITapGestureRecognizer *)gesture {
+	if(self.onBoardingView.contentOffset.x == 0){
+		[UIView animateWithDuration:0.7 animations:^{
+			self.onBoardingView.contentOffset = CGPointMake(self.view.frame.size.width, 0);
+		}completion:^(BOOL finished) {
+			if(finished){
+				self.pageControlView.currentPage = self.onBoardingView.contentOffset.x/self.view.bounds.size.width;
+			}
+		}];
+	}else if (self.onBoardingView.contentOffset.x == self.view.frame.size.width * 3){
+		[self.phoneLoginField resignFirstResponder];
+	}
 
 }
 
 - (UIInterfaceOrientationMask) supportedInterfaceOrientations {
-    //return supported orientation masks
-    return UIInterfaceOrientationMaskPortrait;
+	//return supported orientation masks
+	return UIInterfaceOrientationMaskPortrait;
 }
 
 - (void)dealloc {

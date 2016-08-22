@@ -217,6 +217,7 @@
     CGRect frame = CGRectMake(PROFILE_HEADER_XOFFSET, yposition,
 							  labelWidth, LARGE_FOLLOW_BUTTON_HEIGHT);
     self.notificationTextLabel = [[UILabel alloc] initWithFrame:frame];
+	[self.notificationTextLabel setAdjustsFontSizeToFitWidth:YES];
     [self.notificationTextLabel setAttributedText:notification];
     [self.notificationTextLabel setNumberOfLines:1];
     [self.notificationTextLabel sizeToFit];
@@ -224,7 +225,7 @@
 	frame.origin.y = self.frame.size.height/2.f - self.notificationTextLabel.frame.size.height/2.f;
 	if(labelWidth < self.notificationTextLabel.frame.size.width) {
 		frame.size.width = labelWidth;
-		[self.notificationTextLabel setAdjustsFontSizeToFitWidth:YES];
+		frame.size.height = frame.size.height + 2.f;
 	}
 	self.notificationTextLabel.frame = frame;
     
