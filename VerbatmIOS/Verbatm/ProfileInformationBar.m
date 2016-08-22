@@ -205,6 +205,7 @@
 -(void) createEditButton {
 	[self createFollowOrEditButton];
 	[self changeFollowButtonTitle:@"edit" toColor:[UIColor whiteColor]];
+	self.followOrEditButton.layer.borderWidth = 0.f;
 }
 
 -(void) createFollowOrEditButton {

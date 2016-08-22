@@ -55,7 +55,7 @@
 #define DEFAULT_TEXT_BACKGROUND_IMAGE TEXTAVE_BACKGROUND_FULLSCREEN_OPTIONS[0]
 
 #define MINIMIZE_ICON @"minimize_icon"
-#define ADK_BACKGROUND @"background_adk"
+#define ADK_BACKGROUND DISCOVER_BACKGROUND
 
 #define CHANNEL_SELECTOR_ARROW_LEFT @"white_selector_arrow_left"
 #define CHANNEL_SELECTOR_ARROW_RIGHT @"white_selector_arrow_right"
@@ -205,7 +205,7 @@
 #define NOTIFICATIONS_EMPTY_ICON @"NotificationsEmptyIcon"
 #define LIKE_NOTIFICATION_IMAGE_ICON @"HeartIcon"
 
-#define NOTIFICATIONS_LIST_BACKGROUND @"notifications_background"
+#define NOTIFICATIONS_LIST_BACKGROUND DISCOVER_BACKGROUND
 
 #define NOTIFICATION_POPUP_ICON @"notifications_alert"
 

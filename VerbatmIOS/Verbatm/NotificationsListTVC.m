@@ -27,8 +27,7 @@
 @property (nonatomic) BOOL shouldAnimateViews;
 @property (nonatomic) NSMutableArray *parseNotificationObjects;
 @property (nonatomic) BOOL refreshing;
-@property (nonatomic) UIImageView * backgroundView;
-@property (nonatomic)  CustomNavigationBar * headerBar;
+@property (nonatomic) CustomNavigationBar * headerBar;
 @property (nonatomic) UIRefreshControl *refreshControl;
 
 @property (nonatomic) UIActivityIndicatorView *loadMoreSpinner;
@@ -61,18 +60,18 @@
 	self.tableView.allowsSelection = YES;
 	self.tableView.showsHorizontalScrollIndicator = NO;
 	self.tableView.showsVerticalScrollIndicator = NO;
+
+	UIImageView * backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:NOTIFICATIONS_LIST_BACKGROUND]];
+	[self.tableView setBackgroundView:backgroundView];
+	self.tableView.backgroundView.layer.zPosition -= 1;
+	[self.view setBackgroundColor:[UIColor clearColor]];
+
 	[self addRefreshFeature];
 	[self refreshNotifications];
-
-	self.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:NOTIFICATIONS_LIST_BACKGROUND]];
-	self.backgroundView.contentMode = UIViewContentModeScaleAspectFill;
-	self.backgroundView.frame = self.view.bounds;
 
 	UIEdgeInsets inset = UIEdgeInsetsMake((LIST_BAR_Y_OFFSET+ STATUS_BAR_HEIGHT + CUSTOM_BAR_HEIGHT), 0, CUSTOM_BAR_HEIGHT, 0);
 	self.tableView.contentInset = inset;
 	self.tableView.scrollIndicatorInsets = inset;
-	[self.tableView setBackgroundView: self.backgroundView];
-	self.tableView.backgroundView.layer.zPosition -= 1;
 
 	[self createHeader];
 }
