@@ -49,11 +49,13 @@
 	@synchronized(self) {
 		PFUser *currentUser = [PFUser currentUser];
 		self.ftue = [[currentUser objectForKey:USER_FTUE] boolValue];
+		//todo
+		self.ftue = NO;
 		if (self.ftue) return;
 
 		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 		//because they are all saved together we can just check if one exists
-		if(![defaults objectForKey:FEED_INTRO_INSTRUCTION_KEY]) {
+//		if(![defaults objectForKey:FEED_INTRO_INSTRUCTION_KEY]) {
 			[defaults setBool:NO forKey:FEED_INTRO_INSTRUCTION_KEY];
 			[defaults setBool:NO forKey:FILTER_SWIPE_INSTRUCTION_KEY];
 			[defaults setBool:NO forKey:PINCH_INSTRUCTION_KEY];
@@ -67,7 +69,7 @@
             [defaults setBool:NO forKey:EDIT_PROFILE_PROMPT];
             [defaults setBool:NO forKey:TAP_TO_EXIT_FULLSCREEN];
 			[defaults synchronize];
-		}
+//		}
 	}
 }
 

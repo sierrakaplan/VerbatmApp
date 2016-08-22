@@ -91,7 +91,9 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	[super viewDidAppear:animated];
 	if (![PFUser currentUser].isAuthenticated) {
 		[self bringUpLogin];
-    }
+    } else if(![[UserSetupParameters sharedInstance] checkFirstTimeFollowBlogShown]){
+		[self performSegueWithIdentifier:SEGUE_ONBOARDING_BLOG_SELECT sender:self];
+	}
 }
 
 -(void)viewDidDisappear:(BOOL)animated {
@@ -164,9 +166,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
 		[self setUpTabBarController];
 	}];
-	if(![[UserSetupParameters sharedInstance] checkFirstTimeFollowBlogShown]){
-		[self performSegueWithIdentifier:SEGUE_ONBOARDING_BLOG_SELECT sender:self];
-	}
 }
 
 #pragma mark - User Manager Delegate -
@@ -177,6 +176,9 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	[[Crashlytics sharedInstance] setUserName: [user objectForKey:VERBATM_USER_NAME_KEY]];
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[self setUpStartUpEnvironment];
+		if(![[UserSetupParameters sharedInstance] checkFirstTimeFollowBlogShown]){
+			[self performSegueWithIdentifier:SEGUE_ONBOARDING_BLOG_SELECT sender:self];
+		}
 	});
 }
 

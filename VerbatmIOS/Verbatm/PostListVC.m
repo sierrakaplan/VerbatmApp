@@ -360,7 +360,7 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 #pragma mark - Table view methods -
 
 //register our custom cell class
--(void)registerClassForCustomCells{
+-(void)registerClassForCustomCells {
 	[self.collectionView registerClass:[PostCollectionViewCell class] forCellWithReuseIdentifier:POST_CELL_ID];
 }
 
@@ -383,7 +383,6 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	 numberOfItemsInSection:(NSInteger)section {
 	return self.parsePostObjects.count;
 }
-
 
 - (BOOL)collectionView: (UICollectionView *)collectionView
 shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {

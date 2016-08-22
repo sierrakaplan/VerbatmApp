@@ -25,6 +25,8 @@
 #define HEADER_TEXT_FONT REGULAR_FONT
 #define HEADER_TEXT_SIZE 20.f
 
+#define FOLLOW_TEXT_FONT_SIZE 12.f
+
 #pragma mark - Sign In -
 
 #define SIGNUP_PHONE_INFO_BACKGROUND_COLOR [UIColor whiteColor]

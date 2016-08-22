@@ -245,6 +245,10 @@
 
 // resolves to channels of friends (as pfobjects), friend ids
 -(void) loadFriendsChannelsWithCompletionHandler:(void(^)(NSArray *, NSArray *))completionBlock {
+	if (self.friendChannels) {
+		completionBlock(self.friendChannels, self.friendUsers);
+		return;
+	}
 	BOOL isLinkedToFacebook = [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]];
 	// Logged in with phone number
 	if (!isLinkedToFacebook) {
@@ -254,10 +258,6 @@
 	}
 	if (![[FBSDKAccessToken currentAccessToken] hasGranted:@"user_friends"]) {
 		completionBlock(@[], @[]);
-		return;
-	}
-	if (self.friendChannels) {
-		completionBlock(self.friendChannels, self.friendUsers);
 		return;
 	}
 
@@ -290,7 +290,8 @@
 						 PFQuery *channelsForFriends = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
 						 [channelsForFriends whereKey:CHANNEL_CREATOR_KEY containedIn:friendUsers];
 						 [channelsForFriends whereKey:CHANNEL_CREATOR_KEY notContainedIn: self.usersWhoHaveBlockedUser];
-						 [channelsForFriends whereKey:@"objectId" notContainedIn: self.channelsFollowedIds];
+						 //todo: bring back
+//						 [channelsForFriends whereKey:@"objectId" notContainedIn: self.channelsFollowedIds];
 						 [channelsForFriends whereKeyExists:CHANNEL_LATEST_POST_DATE];
 						 [channelsForFriends orderByDescending:@"createdAt"];
 						 channelsForFriends.limit = 1000;

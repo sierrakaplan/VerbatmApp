@@ -170,9 +170,8 @@
     return finalString;
 }
 
--(void)createPostTextLabel{
-    
-    
+-(void)createPostTextLabel {
+
     CGFloat centerOfNotificationTextLabel = self.notificationTextLabel.frame.origin.y + (self.notificationTextLabel.frame.size.height/2.f);
     CGFloat yPosPostLine = centerOfNotificationTextLabel - (self.notificationTextLabel.frame.size.height/2.f);
     CGFloat xPosPostLine = self.notificationTextLabel.frame.origin.x + self.notificationTextLabel.frame.size.width;
@@ -187,18 +186,15 @@
                                         NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT size:CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE],
                                         NSParagraphStyleAttributeName:paragraphStyle};
     
-
     NSAttributedString * attrString = [[NSAttributedString alloc] initWithString:@"post!" attributes:textAttributes];
     
     [self.postLine setAttributedText:attrString];
     [self.postLine sizeToFit];
     [self addSubview:self.postLine];
-    
 }
 
--(NSAttributedString *)getAttributedStringFromString:(NSString *) notificaitonText andNotificationType:(NotificationType)notificationType andChannel:(Channel *) channel{
-    
-    
+-(NSAttributedString *)getAttributedStringFromString:(NSString *) notificaitonText andNotificationType:(NotificationType)notificationType andChannel:(Channel *) channel {
+
     NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
     paragraphStyle.alignment                = NSTextAlignmentLeft;
    NSDictionary * baseTextAttributes=@{NSForegroundColorAttributeName: [UIColor whiteColor],
@@ -206,8 +202,7 @@
                                        NSParagraphStyleAttributeName:paragraphStyle};
     
     NSMutableAttributedString * finalString = [[NSMutableAttributedString alloc] initWithString:notificaitonText attributes:baseTextAttributes];
-    
-    
+
     //make creator name bold
     NSString * creatorName = [channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY];
     NSRange rangeOfPostText = [notificaitonText rangeOfString:creatorName];
@@ -216,16 +211,17 @@
     return finalString;
 }
 
--(void)createNotificationLabelWithAttributedString:(NSAttributedString *) notification{
+-(void)createNotificationLabelWithAttributedString:(NSAttributedString *) notification {
     CGFloat labelWidth = FOLLOW_BUTTON_X_POS - PROFILE_HEADER_XOFFSET - FOLLOW_TEXT_BUTTON_GAP - POST_TEXT_WIDTH;
     CGFloat yposition = (self.frame.size.height - LARGE_FOLLOW_BUTTON_HEIGHT)/2.f;
-    CGRect frame = CGRectMake(PROFILE_HEADER_XOFFSET,yposition, labelWidth, LARGE_FOLLOW_BUTTON_HEIGHT);
+    CGRect frame = CGRectMake(PROFILE_HEADER_XOFFSET, yposition,
+							  labelWidth, LARGE_FOLLOW_BUTTON_HEIGHT);
     self.notificationTextLabel = [[UILabel alloc] initWithFrame:frame];
     [self.notificationTextLabel setAttributedText:notification];
     [self.notificationTextLabel setNumberOfLines:1];
     [self.notificationTextLabel sizeToFit];
     
-    if(labelWidth < self.notificationTextLabel.frame.size.width){
+    if(labelWidth < self.notificationTextLabel.frame.size.width) {
         self.notificationTextLabel.frame = frame;
         [self.notificationTextLabel setAdjustsFontSizeToFitWidth:YES];
     }
@@ -234,7 +230,7 @@
 }
 
 -(void)createHeartIcon {
-    CGFloat x_pos = (FOLLOW_BUTTON_X_POS) + ((LARGE_FOLLOW_BUTTON_WIDTH -LARGE_FOLLOW_BUTTON_HEIGHT) /2.f);
+    CGFloat x_pos = (FOLLOW_BUTTON_X_POS) + ((LARGE_FOLLOW_BUTTON_WIDTH -LARGE_FOLLOW_BUTTON_HEIGHT) / 2.f);
     CGFloat y_pos = (self.frame.size.height - LARGE_FOLLOW_BUTTON_HEIGHT)/2.f;
     CGRect frame = CGRectMake(x_pos, y_pos, LARGE_FOLLOW_BUTTON_HEIGHT, LARGE_FOLLOW_BUTTON_HEIGHT);
     self.likeImage = [[UIImageView alloc] initWithFrame:frame];
@@ -243,7 +239,7 @@
     [self addSubview:self.likeImage];
 }
 
--(void)getFollowInformation{
+-(void)getFollowInformation {
 	self.currentUserFollowingChannelUser = [[UserInfoCache sharedInstance] checkUserFollowsChannel: self.channel];
 	[self updateUserFollowingChannel];
 }
@@ -297,7 +293,6 @@
     NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:titleAttributes];
     [self.followButton setAttributedTitle:attributedTitle forState:UIControlStateNormal];
 }
-
 
 - (void)awakeFromNib {
     [super awakeFromNib];

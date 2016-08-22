@@ -164,8 +164,6 @@
         [self updateFollowIcon];
         [self.mainView addSubview:self.followButton];
     }
-    
-    
 	
 	[self.mainView addSubview:self.userNameLabel];
 	[self.mainView addSubview:self.channelNameLabel];
@@ -220,7 +218,6 @@
     NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:titleAttributes];
     [self.followButton setAttributedTitle:attributedTitle forState:UIControlStateNormal];
 }
-
 
 -(void) changeNumFollowersLabel {
 	[self.numFollowersLabel setText:[self.numFollowers stringValue]];

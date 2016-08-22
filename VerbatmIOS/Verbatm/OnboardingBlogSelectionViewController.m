@@ -20,6 +20,7 @@
 #define BLOG_LIST_TOP_OFFSET STATUS_BAR_HEIGHT + 20
 
 @interface OnboardingBlogSelectionViewController ()
+
 @property (weak, nonatomic) IBOutlet UIView *tableContainerView;
 
 @end
@@ -29,28 +30,28 @@
 -(void) viewDidLoad {
     [super viewDidLoad];
     [self addBackgroundImage];
-    
-  
     CGFloat headerViewHeight = BLOG_LIST_TOP_OFFSET;
-    
     self.tableContainerView.frame = CGRectMake(0.f, headerViewHeight,
                                                self.view.frame.size.width, self.view.frame.size.height);
-    
     self.tableContainerView.backgroundColor = [UIColor clearColor];
-    
     [self addListVC];
-    
+}
+
+-(void) viewDidAppear:(BOOL)animated {
+	[super viewDidAppear:animated];
+}
+
+-(void) viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
 }
 
 -(void)addListVC{
-    DiscoverVC * fvc = [self.storyboard instantiateViewControllerWithIdentifier:FEATURED_CONTENT_VC_ID];
-    fvc.onboardingBlogSelection = YES;
-    [self.tableContainerView addSubview:fvc.view];
-    [self addChildViewController:fvc];
-    [fvc didMoveToParentViewController:self];
+    DiscoverVC *followingScreen = [self.storyboard instantiateViewControllerWithIdentifier:FEATURED_CONTENT_VC_ID];
+    followingScreen.onboardingBlogSelection = YES;
+    [self.tableContainerView addSubview:followingScreen.view];
+    [self addChildViewController:followingScreen];
+    [followingScreen didMoveToParentViewController:self];
     [self addDoneButton];
-    
-    
 }
 
 -(void)addDoneButton{
@@ -63,7 +64,6 @@
     [self.view bringSubviewToFront:done];
 }
 
-
 -(void)exitDiscover{
     [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
 		[[PFUser currentUser] setObject:[NSNumber numberWithBool:YES] forKey:USER_FTUE];
@@ -75,10 +75,6 @@
     }];
 }
 
--(void) viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-}
-
 -(void) addBackgroundImage {
     UIImageView * backgroundView = [[UIImageView alloc] initWithFrame:self.view.bounds];
     backgroundView.image =[UIImage imageNamed:DISCOVER_BACKGROUND];
@@ -86,21 +82,9 @@
     [self.view insertSubview:backgroundView belowSubview:self.tableContainerView];
 }
 
-
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
