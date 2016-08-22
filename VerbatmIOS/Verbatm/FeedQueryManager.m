@@ -19,6 +19,8 @@
 #import <ParseFacebookutilsV4/PFFacebookUtils.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 
+@import Contacts;
+
 @interface FeedQueryManager ()
 
 @property (nonatomic) NSInteger postsInFeed;
@@ -243,7 +245,7 @@
 	}];
 }
 
-// resolves to channels of friends (as pfobjects), friend ids
+// resolves to channels of friends (as pfobjects), friend users
 -(void) loadFriendsChannelsWithCompletionHandler:(void(^)(NSArray *, NSArray *))completionBlock {
 	if (self.friendChannels) {
 		completionBlock(self.friendChannels, self.friendUsers);
@@ -252,63 +254,113 @@
 	BOOL isLinkedToFacebook = [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]];
 	// Logged in with phone number
 	if (!isLinkedToFacebook) {
-		completionBlock(@[], @[]);
-		//todo: get phone contacts
-		return;
-	}
-	if (![[FBSDKAccessToken currentAccessToken] hasGranted:@"user_friends"]) {
-		completionBlock(@[], @[]);
-		return;
-	}
+		[self getPhoneContactsWithCompletionHandler:^(NSArray *contactChannels, NSArray *contactUsers) {
+			completionBlock(contactChannels, contactUsers);
+		}];
+	} else {
+		if (![[FBSDKAccessToken currentAccessToken] hasGranted:@"user_friends"]) {
+			completionBlock(@[], @[]);
+			return;
+		}
 
-	FBSDKGraphRequestConnection *connection = [[FBSDKGraphRequestConnection alloc] init];
-	FBSDKGraphRequest *requestMe = [[FBSDKGraphRequest alloc]
-									initWithGraphPath:@"me/friends" parameters:@{@"fields": @"id, name"}];
-	[connection addRequest:requestMe
-		 completionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
-			 if (error) {
-				 completionBlock(@[], @[]);
-			 } else {
-				 NSArray *friendObjects = [result objectForKey:@"data"];
-				 NSMutableArray *friendIds = [NSMutableArray arrayWithCapacity:friendObjects.count];
-				 // Create a list of friends' Facebook IDs
-				 for (NSDictionary *friendObject in friendObjects) {
-					 [friendIds addObject:[friendObject objectForKey:@"id"]];
-					 //						 NSString *userName = [friendObject objectForKey:@"name"];
-					 //						 NSLog(@"friend: %@", userName);
-				 }
-				 PFQuery *friendQuery = [PFUser query];
-				 [friendQuery whereKey:USER_FB_ID containedIn:friendIds];
-
-				 // findObjects will return a list of PFUsers that are friends
-				 // with the current user
-				 [friendQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable friendUsers, NSError * _Nullable error) {
-					 if (error || !friendUsers.count) {
-						 completionBlock(@[], @[]);
-					 } else {
-						 self.friendUsers = friendUsers;
-						 PFQuery *channelsForFriends = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
-						 [channelsForFriends whereKey:CHANNEL_CREATOR_KEY containedIn:friendUsers];
-						 [channelsForFriends whereKey:CHANNEL_CREATOR_KEY notContainedIn: self.usersWhoHaveBlockedUser];
-						 //todo: comment out this line for testing
-//						 [channelsForFriends whereKey:@"objectId" notContainedIn: self.channelsFollowedIds];
-						 [channelsForFriends whereKeyExists:CHANNEL_LATEST_POST_DATE];
-						 [channelsForFriends orderByDescending:@"createdAt"];
-						 channelsForFriends.limit = 1000;
-						 [channelsForFriends findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
-							 if (error) {
-								 completionBlock(@[], friendUsers);
-							 } else {
-								 self.friendChannels = channels;
-								 completionBlock(channels, friendUsers);
-							 }
-						 }];
+		FBSDKGraphRequestConnection *connection = [[FBSDKGraphRequestConnection alloc] init];
+		FBSDKGraphRequest *requestMe = [[FBSDKGraphRequest alloc]
+										initWithGraphPath:@"me/friends" parameters:@{@"fields": @"id, name"}];
+		[connection addRequest:requestMe
+			 completionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+				 if (error) {
+					 completionBlock(@[], @[]);
+				 } else {
+					 NSArray *friendObjects = [result objectForKey:@"data"];
+					 NSMutableArray *friendIds = [NSMutableArray arrayWithCapacity:friendObjects.count];
+					 // Create a list of friends' Facebook IDs
+					 for (NSDictionary *friendObject in friendObjects) {
+						 [friendIds addObject:[friendObject objectForKey:@"id"]];
+						 //						 NSString *userName = [friendObject objectForKey:@"name"];
+						 //						 NSLog(@"friend: %@", userName);
 					 }
-				 }];
-			 }
-		 }];
-	[connection start];
+					 PFQuery *friendQuery = [PFUser query];
+					 [friendQuery whereKey:USER_FB_ID containedIn:friendIds];
 
+					 // findObjects will return a list of PFUsers that are friends
+					 // with the current user
+					 [friendQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable friendUsers, NSError * _Nullable error) {
+						 if (error || !friendUsers.count) {
+							 completionBlock(@[], @[]);
+						 } else {
+							 [self getChannelsForFriends:friendUsers withCompletionHandler:^(NSArray *channels) {
+								 completionBlock(channels, friendUsers);
+							 }];
+						 }
+					 }];
+				 }
+			 }];
+		[connection start];
+	}
+}
+
+-(void) getPhoneContactsWithCompletionHandler:(void(^)(NSArray *, NSArray *))completionBlock {
+	CNContactStore *store = [[CNContactStore alloc] init];
+	[store requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted, NSError * _Nullable error) {
+		if (granted == YES) {
+			//keys with fetching properties
+			NSArray *keys = @[CNContactPhoneNumbersKey];
+			NSString *containerId = store.defaultContainerIdentifier;
+			NSPredicate *predicate = [CNContact predicateForContactsInContainerWithIdentifier:containerId];
+			NSError *error;
+			NSArray *cnContacts = [store unifiedContactsMatchingPredicate:predicate keysToFetch:keys error:&error];
+			if (error) {
+				NSLog(@"error fetching contacts %@", error);
+				[[Crashlytics sharedInstance] recordError: error];
+				completionBlock(@[], @[]);
+			} else {
+				NSMutableArray *phoneNumbers = [[NSMutableArray alloc] init];
+				for (CNContact *contact in cnContacts) {
+					// copy data to my custom Contacts class.
+					for (CNLabeledValue *phoneNumberKey in contact.phoneNumbers) {
+						CNPhoneNumber *phoneNumber = phoneNumberKey.value;
+						[phoneNumbers addObject: phoneNumber.stringValue];
+					}
+				}
+				PFQuery *friendQuery = [PFUser query];
+				[friendQuery whereKey:@"username" containedIn: phoneNumbers];
+				// findObjects will return a list of PFUsers that are friends
+				// with the current user
+				[friendQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable friendUsers, NSError * _Nullable error) {
+					if (error || !friendUsers.count) {
+						completionBlock(@[], @[]);
+					} else {
+						[self getChannelsForFriends:friendUsers withCompletionHandler:^(NSArray *friendChannels) {
+							completionBlock(friendChannels, friendUsers);
+						}];
+					}
+				}];
+			}
+		} else {
+			completionBlock(@[], @[]);
+		}
+	}];
+}
+
+//Returns the channels that the current user is not following associated with their friends
+-(void) getChannelsForFriends:(NSArray*)friendUsers withCompletionHandler:(void(^)(NSArray *))completionBlock {
+	self.friendUsers = friendUsers;
+	PFQuery *channelsForFriends = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
+	[channelsForFriends whereKey:CHANNEL_CREATOR_KEY containedIn:friendUsers];
+	[channelsForFriends whereKey:CHANNEL_CREATOR_KEY notContainedIn: self.usersWhoHaveBlockedUser];
+	//todo: comment out this line for testing
+//	[channelsForFriends whereKey:@"objectId" notContainedIn: self.channelsFollowedIds];
+	[channelsForFriends whereKeyExists:CHANNEL_LATEST_POST_DATE];
+	[channelsForFriends orderByDescending:@"createdAt"];
+	channelsForFriends.limit = 1000;
+	[channelsForFriends findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
+		if (error) {
+			completionBlock(@[]);
+		} else {
+			self.friendChannels = channels;
+			completionBlock(channels);
+		}
+	}];
 }
 
 -(void) loadFeaturedChannelsWithCompletionHandler:(void(^)(NSArray *))completionBlock {

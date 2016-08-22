@@ -226,7 +226,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 									   self.tabBarController.tabBarHeight);
 	// Sets background of unselected UITabBarItem
 	[self.tabBarController.tabBar setBackgroundImage: [self getUnselectedTabBarItemImageWithSize: tabBarItemSize]];
-	[self.tabBarController.tabBar setBackgroundColor:[UIColor colorWithWhite:0.f alpha:0.8]];
+	[self.tabBarController.tabBar setBackgroundColor:[UIColor colorWithWhite:0.15f alpha:1.f]];
 	// Sets the background color of the selected UITabBarItem
 	[self.tabBarController.tabBar setSelectionIndicatorImage: [self getSelectedTabBarItemImageWithSize: tabBarItemSize]];
 
