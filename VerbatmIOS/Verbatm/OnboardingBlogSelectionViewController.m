@@ -14,14 +14,18 @@
 #import "Icons.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
+#import "Styles.h"
 
-#define DONE_BUTTON_WIDTH 100
-#define DONE_BUTTON_HEIGHT 50
-#define BLOG_LIST_TOP_OFFSET STATUS_BAR_HEIGHT + 20
-
-@interface OnboardingBlogSelectionViewController ()
+@interface OnboardingBlogSelectionViewController () <OnboardingBlogsDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *tableContainerView;
+@property (nonatomic) UIView *headerView;
+@property (nonatomic) UILabel *headerLabel;
+
+#define HEADER_VIEW_HEIGHT STATUS_BAR_HEIGHT + 60.f
+#define DONE_BUTTON_WIDTH 70.f
+#define HEADER_Y_OFFSET 10.f
+#define HEADER_X_OFFSET 5.f
 
 @end
 
@@ -30,8 +34,8 @@
 -(void) viewDidLoad {
     [super viewDidLoad];
     [self addBackgroundImage];
-    CGFloat headerViewHeight = BLOG_LIST_TOP_OFFSET;
-    self.tableContainerView.frame = CGRectMake(0.f, headerViewHeight,
+	[self.view addSubview: self.headerView];
+    self.tableContainerView.frame = CGRectMake(0.f, HEADER_VIEW_HEIGHT,
                                                self.view.frame.size.width, self.view.frame.size.height);
     self.tableContainerView.backgroundColor = [UIColor clearColor];
     [self addListVC];
@@ -48,20 +52,43 @@
 -(void)addListVC{
     DiscoverVC *followingScreen = [self.storyboard instantiateViewControllerWithIdentifier:FEATURED_CONTENT_VC_ID];
     followingScreen.onboardingBlogSelection = YES;
+	followingScreen.onboardingDelegate = self;
     [self.tableContainerView addSubview:followingScreen.view];
     [self addChildViewController:followingScreen];
     [followingScreen didMoveToParentViewController:self];
     [self addDoneButton];
+	[self addHeaderLabel];
 }
 
--(void)addDoneButton{
-    CGRect buttomFrame = CGRectMake(self.view.frame.size.width - (DONE_BUTTON_WIDTH + 2), 15, DONE_BUTTON_WIDTH, DONE_BUTTON_HEIGHT);
+-(void)addDoneButton {
+    CGRect buttomFrame = CGRectMake(self.view.frame.size.width - (DONE_BUTTON_WIDTH + HEADER_X_OFFSET), HEADER_Y_OFFSET + STATUS_BAR_HEIGHT,
+									DONE_BUTTON_WIDTH, HEADER_VIEW_HEIGHT - (HEADER_Y_OFFSET*2) - STATUS_BAR_HEIGHT);
     
     UIButton * done = [[UIButton alloc] initWithFrame:buttomFrame];
     [done addTarget:self action:@selector(exitDiscover) forControlEvents:UIControlEventTouchUpInside];
-    [done setTitle:@"done" forState:UIControlStateNormal];
-    [self.view addSubview:done];
-    [self.view bringSubviewToFront:done];
+    [done setTitle:@"DONE" forState:UIControlStateNormal];
+	done.layer.borderColor = VERBATM_GOLD_COLOR.CGColor;
+	done.layer.borderWidth = 3.f;
+	done.layer.cornerRadius = 3.f;
+	[done.titleLabel setFont:[UIFont fontWithName:BOLD_FONT size: 14.f]]; //todo
+    [self.headerView addSubview:done];
+}
+
+-(void) addHeaderLabel {
+	CGFloat headerLabelWidth = self.view.frame.size.width - (DONE_BUTTON_WIDTH + HEADER_X_OFFSET)*2;
+	self.headerLabel = [[UILabel alloc] initWithFrame:CGRectMake((DONE_BUTTON_WIDTH + HEADER_X_OFFSET),
+																	 HEADER_Y_OFFSET + STATUS_BAR_HEIGHT, headerLabelWidth,
+																	 HEADER_VIEW_HEIGHT - (HEADER_Y_OFFSET*2) - STATUS_BAR_HEIGHT)];
+	self.headerLabel.text = @"Discover";
+	[self.headerLabel setFont:[UIFont fontWithName:BOLD_FONT size: 20.f]]; //todo
+	[self.headerLabel setTextColor:[UIColor whiteColor]];
+	[self.headerLabel setTextAlignment:NSTextAlignmentCenter];
+	[self.headerView addSubview: self.headerLabel];
+}
+
+// Onboarding delegate method
+-(void) followingFriends {
+	self.headerLabel.text = @"Follow your friends!";
 }
 
 -(void)exitDiscover{
@@ -85,6 +112,16 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - Lazy Instantiation -
+
+-(UIView*) headerView {
+	if (!_headerView) {
+		_headerView = [[UIView alloc] initWithFrame: CGRectMake(0.f, 0.f, self.view.frame.size.width, HEADER_VIEW_HEIGHT)];
+		[_headerView setBackgroundColor:[UIColor colorWithRed:0.13 green:0.34 blue:0.6 alpha:1.f]];
+	}
+	return _headerView;
 }
 
 @end

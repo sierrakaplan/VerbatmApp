@@ -41,9 +41,6 @@
 
 #define LOAD_MORE_CUTOFF 3
 
-#define ONBOARDING_TEXT @"Start Following Some Blogs!"
-#define FOLLOW_FRIENDS_TEXT @"Follow Your Friends!"
-
 #define MIN_FRIEND_CHANNELS 0
 
 @end
@@ -158,6 +155,7 @@
 			NSArray *friendChannels = [Channel_BackendObject channelsFromParseChannelObjects: friendChannelObjects];
 			if (friendChannels.count > MIN_FRIEND_CHANNELS) {
 				self.followingFriends = YES;
+				if (self.onboardingDelegate) [self.onboardingDelegate followingFriends];
 				self.exploreChannels = nil;
 				[self.refreshControl endRefreshing];
 				[self.loadMoreSpinner stopAnimating];
@@ -234,17 +232,21 @@
 	return 1;
 }
 
--(NSString*) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-	if (self.followingFriends) {
-		return FOLLOW_FRIENDS_TEXT;
-	} else if (self.onboardingBlogSelection){
-		return ONBOARDING_TEXT;
-	} else {
-		return @"Discover";
-	}
-}
+//-(NSString*) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+//	if (self.followingFriends) {
+////		return FOLLOW_FRIENDS_TEXT;
+//	} else if (self.onboardingBlogSelection){
+////		return ONBOARDING_TEXT;
+//	} else {
+//		return @"Discover";
+//	}
+//
+//}
 
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+	if (self.onboardingBlogSelection) {
+		return 0.f;
+	}
 	return HEADER_HEIGHT;
 }
 
@@ -253,6 +255,9 @@
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
+	if (self.onboardingBlogSelection) {
+		return;
+	}
 	// Background color
 	view.tintColor = [UIColor clearColor];
 	// Text Color
@@ -260,13 +265,7 @@
 	[header.textLabel setTextColor:[UIColor whiteColor]];
 	[header.textLabel setFont:[UIFont fontWithName:BOLD_FONT size:HEADER_FONT_SIZE]];
 
-	if (self.followingFriends) {
-		[header.textLabel setText:FOLLOW_FRIENDS_TEXT];
-	} else if (self.onboardingBlogSelection){
-		[header.textLabel setText:ONBOARDING_TEXT];
-	} else {
-		[header.textLabel setText:@"Discover"];
-	}
+	[header.textLabel setText:@"Discover"];
 	[header.textLabel setTextAlignment:NSTextAlignmentCenter];
 	[header.textLabel setLineBreakMode:NSLineBreakByClipping];
 
