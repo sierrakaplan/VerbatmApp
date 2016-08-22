@@ -18,8 +18,6 @@
 #define NOTIFICATION_POST_PUBLISHED @"notification_pov_published"
 #define NOTIFICATION_POST_FAILED_TO_PUBLISH @"notification_pov_failed_to_publish"
 
-#define NOTIFICATION_REFRESH_FEEDS @"notification_refresh_feeds"
-
 #define NOTIFICATION_USER_LOGIN_SUCCEEDED @"notification_login_succeeded" 
 #define NOTIFICATION_USER_LOGIN_FAILED @"notification_login_failed" // includes NSError object
 
