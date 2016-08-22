@@ -24,7 +24,7 @@
 
 #define HEADER_VIEW_HEIGHT STATUS_BAR_HEIGHT + 60.f
 #define DONE_BUTTON_WIDTH 70.f
-#define HEADER_Y_OFFSET 10.f
+#define HEADER_Y_OFFSET 15.f
 #define HEADER_X_OFFSET 5.f
 
 @end
