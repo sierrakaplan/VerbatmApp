@@ -171,12 +171,9 @@
 }
 
 -(void)createPostTextLabel {
-
-    CGFloat centerOfNotificationTextLabel = self.notificationTextLabel.frame.origin.y + (self.notificationTextLabel.frame.size.height/2.f);
-    CGFloat yPosPostLine = centerOfNotificationTextLabel - (self.notificationTextLabel.frame.size.height/2.f);
     CGFloat xPosPostLine = self.notificationTextLabel.frame.origin.x + self.notificationTextLabel.frame.size.width;
-    
-    CGRect frame = CGRectMake(xPosPostLine, yPosPostLine, POST_TEXT_WIDTH, self.notificationTextLabel.frame.size.height);
+    CGRect frame = CGRectMake(xPosPostLine, self.notificationTextLabel.frame.origin.y, POST_TEXT_WIDTH,
+							  self.notificationTextLabel.frame.size.height);
     
     self.postLine = [[UILabel alloc] initWithFrame:frame];
     NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
@@ -190,6 +187,9 @@
     
     [self.postLine setAttributedText:attrString];
     [self.postLine sizeToFit];
+	frame = self.postLine.frame;
+	frame.origin.y = self.frame.size.height/2.f - self.postLine.frame.size.height/2.f;
+	self.postLine.frame = frame;
     [self addSubview:self.postLine];
 }
 
@@ -213,14 +213,17 @@
 
 -(void)createNotificationLabelWithAttributedString:(NSAttributedString *) notification {
     CGFloat labelWidth = FOLLOW_BUTTON_X_POS - PROFILE_HEADER_XOFFSET - FOLLOW_TEXT_BUTTON_GAP - POST_TEXT_WIDTH;
-    CGFloat yposition = (self.frame.size.height - LARGE_FOLLOW_BUTTON_HEIGHT)/2.f;
+    CGFloat yposition = self.frame.size.height/2.f - LARGE_FOLLOW_BUTTON_HEIGHT/2.f;
     CGRect frame = CGRectMake(PROFILE_HEADER_XOFFSET, yposition,
 							  labelWidth, LARGE_FOLLOW_BUTTON_HEIGHT);
     self.notificationTextLabel = [[UILabel alloc] initWithFrame:frame];
     [self.notificationTextLabel setAttributedText:notification];
     [self.notificationTextLabel setNumberOfLines:1];
     [self.notificationTextLabel sizeToFit];
-    
+	frame = self.notificationTextLabel.frame;
+	frame.origin.y = self.frame.size.height/2.f - self.notificationTextLabel.frame.size.height/2.f;
+	self.notificationTextLabel.frame = frame;
+
     if(labelWidth < self.notificationTextLabel.frame.size.width) {
         self.notificationTextLabel.frame = frame;
         [self.notificationTextLabel setAdjustsFontSizeToFitWidth:YES];

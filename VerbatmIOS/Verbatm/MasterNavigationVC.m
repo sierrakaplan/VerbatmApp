@@ -251,6 +251,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 //the view controllers that will be tabbed
 -(void)createViewControllers {
 	self.discoverVC = [self.storyboard instantiateViewControllerWithIdentifier:FEATURED_CONTENT_VC_ID];
+	self.discoverVC.onboardingBlogSelection = NO;
 	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
 	self.profileVC.delegate = self;
 	self.profileVC.ownerOfProfile = [PFUser currentUser];

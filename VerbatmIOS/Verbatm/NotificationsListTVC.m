@@ -40,7 +40,6 @@
 @property (nonatomic) BOOL cellSelected;
 
 #define CUSTOM_BAR_HEIGHT 35.f
-#define LIST_BAR_Y_OFFSET -15.f
 
 @end
 
@@ -69,9 +68,8 @@
 	[self addRefreshFeature];
 	[self refreshNotifications];
 
-	UIEdgeInsets inset = UIEdgeInsetsMake((LIST_BAR_Y_OFFSET+ STATUS_BAR_HEIGHT + CUSTOM_BAR_HEIGHT), 0, CUSTOM_BAR_HEIGHT, 0);
+	UIEdgeInsets inset = UIEdgeInsetsMake(CUSTOM_BAR_HEIGHT + STATUS_BAR_HEIGHT, 0, CUSTOM_BAR_HEIGHT, 0);
 	self.tableView.contentInset = inset;
-	self.tableView.scrollIndicatorInsets = inset;
 
 	[self createHeader];
 }
@@ -93,13 +91,12 @@
 	return YES;
 }
 
--(void)createHeader{
-	CGRect navBarFrame = CGRectMake(0.f, -(LIST_BAR_Y_OFFSET + STATUS_BAR_HEIGHT + CUSTOM_BAR_HEIGHT),
-									self.view.frame.size.width, STATUS_BAR_HEIGHT+ CUSTOM_BAR_HEIGHT);
+-(void)createHeader {
+	CGRect navBarFrame = CGRectMake(0.f, self.tableView.contentOffset.y, self.view.frame.size.width, STATUS_BAR_HEIGHT + CUSTOM_BAR_HEIGHT);
 
 	self.headerBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:CHANNEL_LIST_HEADER_BACKGROUND_COLOR];
 	[self.headerBar createMiddleButtonWithTitle:@"Notifications" blackText:YES largeSize:YES];
-	[self.tableView addSubview:self.headerBar];
+	[self.view addSubview: self.headerBar];
 
 	self.loadMoreSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
 	self.loadMoreSpinner.hidesWhenStopped = YES;
@@ -123,8 +120,7 @@
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	if(scrollView == self.tableView){
-		self.headerBar.frame = CGRectMake(0.f, scrollView.contentOffset.y, self.view.frame.size.width, STATUS_BAR_HEIGHT+ CUSTOM_BAR_HEIGHT);
-		[self.tableView bringSubviewToFront:self.headerBar];
+		self.headerBar.frame = CGRectMake(0.f, scrollView.contentOffset.y, self.headerBar.frame.size.width, self.headerBar.frame.size.height);
 	}
 }
 
