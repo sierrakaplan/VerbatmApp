@@ -176,9 +176,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	[[Crashlytics sharedInstance] setUserName: [user objectForKey:VERBATM_USER_NAME_KEY]];
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[self setUpStartUpEnvironment];
-		if(![[UserSetupParameters sharedInstance] checkFirstTimeFollowBlogShown]){
-			[self performSegueWithIdentifier:SEGUE_ONBOARDING_BLOG_SELECT sender:self];
-		}
 	});
 }
 
@@ -394,6 +391,9 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 		[[Analytics getSharedInstance] endOfADKSession];
 	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_USER_SETTINGS_TO_LOGIN] ||
                [segue.identifier isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]) {
+		if(![[UserSetupParameters sharedInstance] checkFirstTimeFollowBlogShown]){
+			[self performSegueWithIdentifier:SEGUE_ONBOARDING_BLOG_SELECT sender:self];
+		}
 	}
 }
 

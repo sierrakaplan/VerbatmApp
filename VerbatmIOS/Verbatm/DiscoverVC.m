@@ -127,8 +127,10 @@
 
 -(void) clearViews {
 	for (UITableViewCell *cellView in [self.tableView visibleCells]) {
-		[(ExploreChannelCellView*)cellView offScreen];
-		[(ExploreChannelCellView*)cellView clearViews];
+		if (!self.followingFriends) {
+			[(ExploreChannelCellView*)cellView offScreen];
+			[(ExploreChannelCellView*)cellView clearViews];
+		}
 	}
 	self.loadingMoreChannels = NO;
 	self.refreshing = NO;
@@ -139,7 +141,9 @@
 
 -(void) offScreen {
 	for (UITableViewCell *cellView in [self.tableView visibleCells]) {
-		[(ExploreChannelCellView*)cellView offScreen];
+		if (!self.followingFriends) {
+			[(ExploreChannelCellView*)cellView offScreen];
+		}
 	}
 }
 
