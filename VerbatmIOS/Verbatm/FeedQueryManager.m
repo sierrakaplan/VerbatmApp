@@ -319,7 +319,12 @@
 					// copy data to my custom Contacts class.
 					for (CNLabeledValue *phoneNumberKey in contact.phoneNumbers) {
 						CNPhoneNumber *phoneNumber = phoneNumberKey.value;
-						[phoneNumbers addObject: phoneNumber.stringValue];
+						NSString *plainPhoneNumber = [[phoneNumber.stringValue componentsSeparatedByCharactersInSet:
+																			  [[NSCharacterSet decimalDigitCharacterSet] invertedSet]]
+																			 componentsJoinedByString:@""];
+						if (![plainPhoneNumber isEqualToString:[PFUser currentUser].username]) {
+							[phoneNumbers addObject: plainPhoneNumber];
+						}
 					}
 				}
 				PFQuery *friendQuery = [PFUser query];
@@ -349,7 +354,7 @@
 	[channelsForFriends whereKey:CHANNEL_CREATOR_KEY containedIn:friendUsers];
 	[channelsForFriends whereKey:CHANNEL_CREATOR_KEY notContainedIn: self.usersWhoHaveBlockedUser];
 	//todo: comment out this line for testing
-//	[channelsForFriends whereKey:@"objectId" notContainedIn: self.channelsFollowedIds];
+	[channelsForFriends whereKey:@"objectId" notContainedIn: self.channelsFollowedIds];
 	[channelsForFriends whereKeyExists:CHANNEL_LATEST_POST_DATE];
 	[channelsForFriends orderByDescending:@"createdAt"];
 	channelsForFriends.limit = 1000;
