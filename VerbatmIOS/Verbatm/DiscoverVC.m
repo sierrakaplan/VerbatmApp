@@ -130,6 +130,8 @@
 	}
 	self.loadingMoreChannels = NO;
 	self.refreshing = NO;
+	_exploreChannels = nil;
+	[self.tableView reloadData];
 }
 
 -(void) offScreen {

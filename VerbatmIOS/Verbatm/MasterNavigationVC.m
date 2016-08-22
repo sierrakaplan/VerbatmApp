@@ -226,7 +226,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 									   self.tabBarController.tabBarHeight);
 	// Sets background of unselected UITabBarItem
 	[self.tabBarController.tabBar setBackgroundImage: [self getUnselectedTabBarItemImageWithSize: tabBarItemSize]];
-	[self.tabBarController.tabBar setBackgroundColor:[UIColor blackColor]];
+	[self.tabBarController.tabBar setBackgroundColor:[UIColor colorWithWhite:0.f alpha:0.8]];
 	// Sets the background color of the selected UITabBarItem
 	[self.tabBarController.tabBar setSelectionIndicatorImage: [self getSelectedTabBarItemImageWithSize: tabBarItemSize]];
 
@@ -362,9 +362,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 }
 
 -(void) revealADK {
-	//Clear memory from discover when bring up adk
-	NSNotification * not = [[NSNotification alloc]initWithName:NOTIFICATION_FREE_MEMORY_DISCOVER object:nil userInfo:nil];
-	[[NSNotificationCenter defaultCenter] postNotification:not];
 	[[Analytics getSharedInstance] newADKSession];
 	[self performSegueWithIdentifier:ADK_SEGUE sender:self];
 }
