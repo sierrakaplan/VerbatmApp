@@ -50,7 +50,7 @@
 		PFUser *currentUser = [PFUser currentUser];
 		self.ftue = [[currentUser objectForKey:USER_FTUE] boolValue];
 		//todo
-		self.ftue = NO;
+//		self.ftue = NO;
 		if (self.ftue) return;
 
 		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];

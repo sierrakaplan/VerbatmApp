@@ -118,8 +118,6 @@
 #define Pinch Views
 
 #define PLAY_VIDEO_ICON @"play_video_icon"
-#define PLAY_VIDEO_ICON_HALF_CIRCLE @"play_video_icon_half_circle"
-#define PLAY_VIDEO_ICON_QUARTER_CIRCLE @"play_video_icon_quarter_circle"
 
 #pragma mark Media Tile
 #define TEXT_BUTTON_ICON @"add_text_icon_pencil"

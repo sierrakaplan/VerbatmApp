@@ -228,7 +228,7 @@
 						NSArray *exploreChannels = [Channel_BackendObject channelsFromParseChannelObjects: channels];
 						exploreChannels = [UtilityFunctions shuffleArray: exploreChannels];
 						NSMutableArray *finalChannels = [NSMutableArray arrayWithArray:exploreChannels];
-						if (skip == 0) {
+						if (skip == 0 && friendChannels.count > 0) {
 							[finalChannels insertObjects:friendChannels atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, friendChannels.count)]];
 						}
 						self.exploreChannelsLoaded += finalChannels.count;

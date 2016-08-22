@@ -34,7 +34,6 @@
 @property (nonatomic) BOOL refreshing;
 @property (nonatomic) BOOL followingFriends;
 
-#define HEADER_HEIGHT 50.f
 #define HEADER_FONT_SIZE 25.f
 #define CELL_HEIGHT_EXPLORE 350.f
 #define CELL_HEIGHT_FRIEND 100.f
@@ -131,9 +130,6 @@
 	}
 	self.loadingMoreChannels = NO;
 	self.refreshing = NO;
-	self.exploreChannels = nil;
-	[self.tableView reloadData];
-	self.exploreChannels = nil;
 }
 
 -(void) offScreen {
@@ -156,7 +152,7 @@
 			if (friendChannels.count > MIN_FRIEND_CHANNELS) {
 				self.followingFriends = YES;
 				if (self.onboardingDelegate) [self.onboardingDelegate followingFriends];
-				self.exploreChannels = nil;
+				[self.exploreChannels removeAllObjects];
 				[self.refreshControl endRefreshing];
 				[self.loadMoreSpinner stopAnimating];
 				[self.exploreChannels addObjectsFromArray: friendChannels];
@@ -165,7 +161,7 @@
 			} else {
 				self.followingFriends = NO;
 				[[FeedQueryManager sharedInstance] refreshExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
-					self.exploreChannels = nil;
+					[self.exploreChannels removeAllObjects];
 					[self.refreshControl endRefreshing];
 					[self.loadMoreSpinner stopAnimating];
 					[self.exploreChannels addObjectsFromArray: exploreChannels];
@@ -177,7 +173,7 @@
 	} else {
 		self.followingFriends = NO;
 		[[FeedQueryManager sharedInstance] refreshExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
-			self.exploreChannels = nil;
+			[self.exploreChannels removeAllObjects];
 			[self.refreshControl endRefreshing];
 			[self.loadMoreSpinner stopAnimating];
 			[self.exploreChannels addObjectsFromArray: exploreChannels];
@@ -244,37 +240,11 @@
 //}
 
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-	if (self.onboardingBlogSelection) {
-		return 0.f;
-	}
-	return HEADER_HEIGHT;
+	return 0.f;
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
 	return 1.f;
-}
-
-- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
-	if (self.onboardingBlogSelection) {
-		return;
-	}
-	// Background color
-	view.tintColor = [UIColor clearColor];
-	// Text Color
-	UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
-	[header.textLabel setTextColor:[UIColor whiteColor]];
-	[header.textLabel setFont:[UIFont fontWithName:BOLD_FONT size:HEADER_FONT_SIZE]];
-
-	[header.textLabel setText:@"Discover"];
-	[header.textLabel setTextAlignment:NSTextAlignmentCenter];
-	[header.textLabel setLineBreakMode:NSLineBreakByClipping];
-
-	for (UIView *subview in header.subviews) {
-		if ([subview isKindOfClass:[UIImageView class]]) {
-			CGRect frame = CGRectMake(10.f, 0.f, header.bounds.size.width - 20.f, header.bounds.size.height);
-			subview.frame = frame;
-		}
-	}
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
