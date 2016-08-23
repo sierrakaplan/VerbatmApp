@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UserInfoVC : UIViewController
+@interface SignUpVC : UIViewController
 
 @property (weak, nonatomic) NSString *phoneNumber;
 @property (nonatomic) BOOL firstTimeLoggingIn;

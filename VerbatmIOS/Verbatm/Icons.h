@@ -14,7 +14,7 @@
 
 #pragma mark - Sign in -
 
-#define SIGN_IN_BACKGROUND @"background_sign_in"
+#define SIGN_IN_BACKGROUND @"window_pane"
 
 #pragma mark - Bottom Tab Bar -
 
@@ -39,7 +39,7 @@
 
 #pragma mark - Feed -
 
-#define EXIT_POST_FULLSCREEN @"White X_ Exit"
+#define EXIT_POST_FULLSCREEN @"white_x"
 #define VIDEO_LOADING_ICON @"white_spin_icon"
 #define FOLLOWED_BY_ICON @"followed_by_icon"
 #define FOLLOW_ICON_LIGHT @"follow_icon_light"
@@ -84,16 +84,16 @@
 #define TEXT_FONT_COLOR_BLACK @"text_toolbar_black_font_icon"
 #define TEXT_FONT_COLOR_WHITE @"text_toolbar_white_font_icon"
 
-#define CHANGE_FONT_SIZE_ICON_UNSELECTED @"Change Font size icon_unselected"
-#define CHANGE_FONT_SIZE_ICON_SELECTED @"Change Font size icon_selected"
+#define CHANGE_FONT_SIZE_ICON_UNSELECTED @"text_toolbar_change_size_unselected"
+#define CHANGE_FONT_SIZE_ICON_SELECTED @"text_toolbar_change_size_selected"
 
 #define CHANGE_TEXT_ALIGNMENT_ICON @"text_toolbar_alignment_icon"
 
 #define CHANGE_TEXT_COLOR_ICON_SELECTED @"text_toolbar_color_icon_selected"
 #define CHANGE_TEXT_COLOR_ICON_UNSELECTED @"text_toolbar_color_icon_unselected"
 
-#define CHANGE_FONT_TYPE_ICON_UNSELECTED @"Font type icon_unselected"
-#define CHANGE_FONT_TYPE_ICON_SELECTED @"Font type icon_selected"
+#define CHANGE_FONT_TYPE_ICON_UNSELECTED @"text_toolbar_change_font_unselected"
+#define CHANGE_FONT_TYPE_ICON_SELECTED @"text_toolbar_change_font_selected"
 
 #define CHANGE_TEXT_VIEW_BACKGROUND_SELECTED @"text_toolbar_change_background_selected"
 #define CHANGE_TEXT_VIEW_BACKGROUND_UNSELECTED @"text_toolbar_change_background_unselected"
@@ -136,15 +136,14 @@
 
 #pragma mark Like Share Bar
 
-#define COMMENT_ICON @"Comment icon"
+#define COMMENT_ICON @"comment_icon"
 #define SMALL_COMMENT_ICON COMMENT_ICON
 
-#define LIKE_ICON_UNPRESSED @"Gray Heart"
-#define LIKE_ICON_PRESSED @"Red Heart"
+#define LIKE_ICON_UNPRESSED @"gray_heart"
+#define LIKE_ICON_PRESSED @"red_heart"
 
-
-#define SMALL_SHARE_ICON @"Gray Share icon"
-#define SHARE_ICON @"Blue Share icon"
+#define SMALL_SHARE_ICON @"gray_share_icon"
+#define SHARE_ICON @"blue_share_icon"
 
 #define UNMUTED_ICON @"sound_unmuted"
 #define MUTED_ICON @"sound_muted"
@@ -156,9 +155,8 @@
 
 #define FACEBOOK_LOGO @"facebook_logo"
 #define TWITTER_LOGO @"twitter_logo"
-
-#define SMS_ICON @"SMS icon"
-#define COPY_LINK_ICON @"Copy link"
+#define SMS_ICON @"sms_icon"
+#define COPY_LINK_ICON @"copy_link_icon"
 
 #pragma mark Edit Content View
 
@@ -186,7 +184,7 @@
 
 #pragma mark - Profile Information Header -
 
-#define ADD_COVER_PHOTO_ICON @"Add cover photo"
+#define ADD_COVER_PHOTO_ICON @"add_cover_photo_icon"
 #define FEEDBACK_NOTIFICATION_ICON @"FeedbackNotification"
 
 #define PROFILE_UNDER_CONSTRUCTION_ICON @"ProfileUnderConstruction"
@@ -195,7 +193,7 @@
 #define PROFILE_BACK_BUTTON_ICON @"back_arrow_white"
 
 #define LOGIN_ICON @"Log In"
-#define CREATE_ACCOUNT @"Create Account"
+#define CREATE_ACCOUNT @"create_account_text"
 
 
 #pragma mark - Notifications View Controller -

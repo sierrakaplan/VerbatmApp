@@ -45,8 +45,7 @@
 #import <Crashlytics/Crashlytics.h>
 
 
-@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedTableViewDelegate,
-ProfileVCDelegate, NotificationsListTVCProtocol>
+@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedTableViewDelegate, ProfileVCDelegate, NotificationsListTVCProtocol>
 
 #pragma mark - Tab Bar Controller -
 
@@ -54,8 +53,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 
 @property (nonatomic) BOOL notificationIndicatorPresent;
 
-@property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
-@property (strong, nonatomic) CustomTabBarController* tabBarController;
 @property (nonatomic) BOOL tabBarHidden;
 @property (nonatomic) CGRect tabBarFrameOnScreen;
 @property (nonatomic) CGRect tabBarFrameOffScreen;
@@ -98,6 +95,13 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 
 -(void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
+}
+
+- (void)viewWillLayoutSubviews {
+	CGRect tabFrame = self.tabBar.frame;
+	tabFrame.size.height = self.tabBarHeight ? self.tabBarHeight : 80;
+	tabFrame.origin.y = self.view.frame.size.height - tabFrame.size.height;
+	self.tabBar.frame = tabFrame;
 }
 
 - (UIStatusBarAnimation) preferredStatusBarUpdateAnimation {

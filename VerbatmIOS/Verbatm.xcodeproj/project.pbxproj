@@ -25,7 +25,7 @@
 		A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */ = {isa = PBXBuildFile; fileRef = A52919751B5DD24F00233712 /* UIView+Glow.m */; };
 		A52B960A1CFE193800EFA7EB /* ProfileHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = A52B96091CFE193800EFA7EB /* ProfileHeaderView.m */; };
 		A5337BBA1CCD60CF00551394 /* LoginKeyboardToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A5337BB91CCD60CF00551394 /* LoginKeyboardToolBar.m */; };
-		A5337BBD1CCD99D600551394 /* UserInfoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5337BBC1CCD99D600551394 /* UserInfoVC.m */; };
+		A5337BBD1CCD99D600551394 /* SignUpVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5337BBC1CCD99D600551394 /* SignUpVC.m */; };
 		A5337BC11CCDD96E00551394 /* PostsQueryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A5337BC01CCDD96E00551394 /* PostsQueryManager.m */; };
 		A535E4FD1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m in Sources */ = {isa = PBXBuildFile; fileRef = A535E4FC1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m */; };
 		A535E5001BC4459800A087D1 /* UIView+Effects.m in Sources */ = {isa = PBXBuildFile; fileRef = A535E4FF1BC4459800A087D1 /* UIView+Effects.m */; };
@@ -66,7 +66,6 @@
 		A5934BAD1C10F2C8007C7830 /* Quicksand-LightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = A5934BA61C10F2C8007C7830 /* Quicksand-LightItalic.otf */; };
 		A5934BAE1C10F2C8007C7830 /* Quicksand-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = A5934BA71C10F2C8007C7830 /* Quicksand-Regular.otf */; };
 		A5934BFD1C10F349007C7830 /* Roboto-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A5934BEB1C10F349007C7830 /* Roboto-Italic.ttf */; };
-		A5934C171C11EFBD007C7830 /* CustomTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5934C161C11EFBD007C7830 /* CustomTabBarController.m */; };
 		A5B0A81B1C0E63D60062D7BF /* PageViewingExperience.m in Sources */ = {isa = PBXBuildFile; fileRef = A5B0A81A1C0E63D60062D7BF /* PageViewingExperience.m */; };
 		A5BFA5AA1CA8C506002C3884 /* Raleway-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A5BFA5981CA8C506002C3884 /* Raleway-Black.ttf */; };
 		A5BFA5AB1CA8C506002C3884 /* Raleway-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A5BFA5981CA8C506002C3884 /* Raleway-Black.ttf */; };
@@ -249,7 +248,7 @@
 		C7F22B311C38408E00E56EA7 /* SharePostView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F22B301C38408E00E56EA7 /* SharePostView.m */; };
 		C7F22B381C3841AD00E56EA7 /* SelectSharingOption.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F22B371C3841AD00E56EA7 /* SelectSharingOption.m */; };
 		C7F22B3B1C38B2A600E56EA7 /* SelectOptionButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F22B3A1C38B2A600E56EA7 /* SelectOptionButton.m */; };
-		C7F3D46B1A4F84C000B43238 /* SignInVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46A1A4F84C000B43238 /* SignInVC.m */; };
+		C7F3D46B1A4F84C000B43238 /* LoginVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46A1A4F84C000B43238 /* LoginVC.m */; };
 		C7F3EBCC1C814313007D23DF /* VideoDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3EBCB1C814313007D23DF /* VideoDownloadManager.m */; };
 		C7F3EBCE1C859B8C007D23DF /* libbz2.1.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C7F3EBCD1C859B8C007D23DF /* libbz2.1.0.tbd */; };
 		C7F3EBD01C86249E007D23DF /* libcompression.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C7F3EBCF1C86249E007D23DF /* libcompression.tbd */; };
@@ -326,8 +325,8 @@
 		A52B96091CFE193800EFA7EB /* ProfileHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileHeaderView.m; sourceTree = "<group>"; };
 		A5337BB81CCD60CF00551394 /* LoginKeyboardToolBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginKeyboardToolBar.h; sourceTree = "<group>"; };
 		A5337BB91CCD60CF00551394 /* LoginKeyboardToolBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginKeyboardToolBar.m; sourceTree = "<group>"; };
-		A5337BBB1CCD99D600551394 /* UserInfoVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfoVC.h; sourceTree = "<group>"; };
-		A5337BBC1CCD99D600551394 /* UserInfoVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfoVC.m; sourceTree = "<group>"; };
+		A5337BBB1CCD99D600551394 /* SignUpVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignUpVC.h; sourceTree = "<group>"; };
+		A5337BBC1CCD99D600551394 /* SignUpVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignUpVC.m; sourceTree = "<group>"; };
 		A5337BBF1CCDD96E00551394 /* PostsQueryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostsQueryManager.h; sourceTree = "<group>"; };
 		A5337BC01CCDD96E00551394 /* PostsQueryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostsQueryManager.m; sourceTree = "<group>"; };
 		A535E4FB1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffectsAndTransforms.h"; sourceTree = "<group>"; };
@@ -397,8 +396,6 @@
 		A5934BA61C10F2C8007C7830 /* Quicksand-LightItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Quicksand-LightItalic.otf"; sourceTree = "<group>"; };
 		A5934BA71C10F2C8007C7830 /* Quicksand-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Quicksand-Regular.otf"; sourceTree = "<group>"; };
 		A5934BEB1C10F349007C7830 /* Roboto-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Italic.ttf"; sourceTree = "<group>"; };
-		A5934C151C11EFBD007C7830 /* CustomTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomTabBarController.h; sourceTree = "<group>"; };
-		A5934C161C11EFBD007C7830 /* CustomTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomTabBarController.m; sourceTree = "<group>"; };
 		A5B0A8191C0E63D60062D7BF /* PageViewingExperience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PageViewingExperience.h; sourceTree = "<group>"; };
 		A5B0A81A1C0E63D60062D7BF /* PageViewingExperience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PageViewingExperience.m; sourceTree = "<group>"; };
 		A5BFA5981CA8C506002C3884 /* Raleway-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Raleway-Black.ttf"; sourceTree = "<group>"; };
@@ -676,8 +673,8 @@
 		C7F22B371C3841AD00E56EA7 /* SelectSharingOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectSharingOption.m; sourceTree = "<group>"; };
 		C7F22B391C38B2A600E56EA7 /* SelectOptionButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectOptionButton.h; sourceTree = "<group>"; };
 		C7F22B3A1C38B2A600E56EA7 /* SelectOptionButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectOptionButton.m; sourceTree = "<group>"; };
-		C7F3D4691A4F84C000B43238 /* SignInVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignInVC.h; sourceTree = "<group>"; };
-		C7F3D46A1A4F84C000B43238 /* SignInVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignInVC.m; sourceTree = "<group>"; };
+		C7F3D4691A4F84C000B43238 /* LoginVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginVC.h; sourceTree = "<group>"; };
+		C7F3D46A1A4F84C000B43238 /* LoginVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginVC.m; sourceTree = "<group>"; };
 		C7F3EBCA1C814313007D23DF /* VideoDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoDownloadManager.h; sourceTree = "<group>"; };
 		C7F3EBCB1C814313007D23DF /* VideoDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoDownloadManager.m; sourceTree = "<group>"; };
 		C7F3EBCD1C859B8C007D23DF /* libbz2.1.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.1.0.tbd; path = usr/lib/libbz2.1.0.tbd; sourceTree = SDKROOT; };
@@ -897,10 +894,10 @@
 		A560EFAF1BB09AF8003FB041 /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				C7F3D4691A4F84C000B43238 /* SignInVC.h */,
-				C7F3D46A1A4F84C000B43238 /* SignInVC.m */,
-				A5337BBB1CCD99D600551394 /* UserInfoVC.h */,
-				A5337BBC1CCD99D600551394 /* UserInfoVC.m */,
+				C7F3D4691A4F84C000B43238 /* LoginVC.h */,
+				C7F3D46A1A4F84C000B43238 /* LoginVC.m */,
+				A5337BBB1CCD99D600551394 /* SignUpVC.h */,
+				A5337BBC1CCD99D600551394 /* SignUpVC.m */,
 			);
 			name = Login;
 			sourceTree = "<group>";
@@ -1185,15 +1182,13 @@
 			name = "Viewing Posts";
 			sourceTree = "<group>";
 		};
-		A5F986121D480C5B001179FA /* Root view controllers */ = {
+		A5F986121D480C5B001179FA /* Root view controller */ = {
 			isa = PBXGroup;
 			children = (
 				C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */,
 				C7EF5BB41B0CD5E500E7915B /* MasterNavigationVC.h */,
-				A5934C151C11EFBD007C7830 /* CustomTabBarController.h */,
-				A5934C161C11EFBD007C7830 /* CustomTabBarController.m */,
 			);
-			name = "Root view controllers";
+			name = "Root view controller";
 			sourceTree = "<group>";
 		};
 		A5F986131D480C7B001179FA /* Onboarding */ = {
@@ -1359,7 +1354,7 @@
 		C78B681119CA6914003D0AC5 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				A5F986121D480C5B001179FA /* Root view controllers */,
+				A5F986121D480C5B001179FA /* Root view controller */,
 				A560EFAF1BB09AF8003FB041 /* Login */,
 				A5F986131D480C7B001179FA /* Onboarding */,
 				A560EFB11BB09B36003FB041 /* Feed */,
@@ -1482,6 +1477,7 @@
 			isa = PBXGroup;
 			children = (
 				C774040E19BE6538004C50EA /* Images.xcassets */,
+				A5D8937D1D6B6D62007B33B9 /* Main.storyboard */,
 				A51E74521C897EFC00CF8DEA /* UI Things */,
 				A51E74511C897E2F00CF8DEA /* Downloaded Libraries */,
 				C716E9D31BD6CAAA001B769D /* Analytics */,
@@ -1505,7 +1501,6 @@
 		C7BC437C199D97F5004B91A1 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				A5D8937D1D6B6D62007B33B9 /* Main.storyboard */,
 				C7BC4384199D97F5004B91A1 /* VerbatmAppDelegate.h */,
 				C7BC4385199D97F5004B91A1 /* VerbatmAppDelegate.m */,
 				C716E9CD1BD6BBB5001B769D /* GoogleService-Info.plist */,
@@ -1894,10 +1889,9 @@
 				C7E65F691B9245200042AD99 /* ProfileVC.m in Sources */,
 				C75C4FAC1D30A96A009EE3CF /* CreateAccount.m in Sources */,
 				C7E2C88F1BB7E97600D83668 /* UtilityFunctions.m in Sources */,
-				A5934C171C11EFBD007C7830 /* CustomTabBarController.m in Sources */,
 				A5E73BF61D1770B400527ECF /* GTLVerbatmAppPageListWrapper.m in Sources */,
 				C77205801D318BE600D626FE /* LogIntoAccount.m in Sources */,
-				C7F3D46B1A4F84C000B43238 /* SignInVC.m in Sources */,
+				C7F3D46B1A4F84C000B43238 /* LoginVC.m in Sources */,
 				12A06D9A1CD37B1A001800C9 /* Followers.m in Sources */,
 				A5E73BA31D1697AE00527ECF /* GTLBatchQuery.m in Sources */,
 				A52B960A1CFE193800EFA7EB /* ProfileHeaderView.m in Sources */,
@@ -1940,7 +1934,7 @@
 				A5E73B911D16967A00527ECF /* GTLQuery.m in Sources */,
 				C7D5963B1C66E47100161136 /* Follow_BackendManager.m in Sources */,
 				C75C4FA91D308F8F009EE3CF /* ChooseLoginOrSignup.m in Sources */,
-				A5337BBD1CCD99D600551394 /* UserInfoVC.m in Sources */,
+				A5337BBD1CCD99D600551394 /* SignUpVC.m in Sources */,
 				C7F3EBCC1C814313007D23DF /* VideoDownloadManager.m in Sources */,
 				A5D893791D6908D4007B33B9 /* FollowFriendCell.m in Sources */,
 				A5E73B851D16368400527ECF /* GTLDateTime.m in Sources */,

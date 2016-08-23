@@ -10,13 +10,13 @@
 #import "Icons.h"
 #import "Notifications.h"
 #import "SegueIDs.h"
-#import "UserInfoVC.h"
+#import "SignUpVC.h"
 #import "ParseBackendKeys.h"
 #import "Parse/PFUser.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
-@interface UserInfoVC() <UITextFieldDelegate, CustomNavigationBarDelegate>
+@interface SignUpVC() <UITextFieldDelegate, CustomNavigationBarDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *logoImageView;

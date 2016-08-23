@@ -102,9 +102,9 @@
 
 -(void)viewDidAppear:(BOOL)animated{
 	[super viewDidAppear:animated];
-	if(self.navBar){
+	if(self.navBar) {
 		[self.view bringSubviewToFront:self.navBar];
-	}else{
+	} else {
 		[self setTableViewHeader];
 	}
 }

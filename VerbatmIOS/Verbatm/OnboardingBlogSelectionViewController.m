@@ -9,6 +9,7 @@
 #import <Crashlytics/Crashlytics.h>
 #import "OnboardingBlogSelectionViewController.h"
 #import "DiscoverVC.h"
+#import "Notifications.h"
 #import "SizesAndPositions.h"
 #import "StoryboardVCIdentifiers.h"
 #import "Icons.h"
@@ -47,9 +48,10 @@
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
+	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_REFRESH_DISCOVER object:nil userInfo:nil];
 }
 
--(void)addListVC{
+-(void)addListVC {
     DiscoverVC *followingScreen = [self.storyboard instantiateViewControllerWithIdentifier:FEATURED_CONTENT_VC_ID];
     followingScreen.onboardingBlogSelection = YES;
 	followingScreen.onboardingDelegate = self;
@@ -91,7 +93,8 @@
 	self.headerLabel.text = @"Follow your friends!";
 }
 
--(void)exitDiscover{
+-(void)exitDiscover {
+	todo
     [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
 		[[PFUser currentUser] setObject:[NSNumber numberWithBool:YES] forKey:USER_FTUE];
 		[[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {

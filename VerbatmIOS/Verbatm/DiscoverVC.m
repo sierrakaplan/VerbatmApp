@@ -68,12 +68,14 @@
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearViews)
 												 name:NOTIFICATION_FREE_MEMORY_DISCOVER object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshChannels)
+												 name:NOTIFICATION_REFRESH_DISCOVER object:nil];
 	[self setNeedsStatusBarAppearanceUpdate];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-	if (!_exploreChannels) {
+	if (!_exploreChannels || !self.exploreChannels.count) {
 		[self refreshChannels];
 	}
 }
@@ -147,7 +149,6 @@
 	self.refreshing = YES;
 	self.loadingMoreChannels = NO;
 	if (![self.refreshControl isRefreshing]) [self.loadMoreSpinner startAnimating];
-	//todo: clean up code
 	if (self.onboardingBlogSelection) {
 		[[FeedQueryManager sharedInstance] loadFriendsChannelsWithCompletionHandler:^(NSArray *friendChannelObjects, NSArray *friendObjects) {
 			NSArray *friendChannels = [Channel_BackendObject channelsFromParseChannelObjects: friendChannelObjects];
@@ -161,32 +162,28 @@
 				[self.tableView reloadData];
 				self.refreshing = NO;
 			} else {
-				self.followingFriends = NO;
-				[[FeedQueryManager sharedInstance] refreshExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
-					[self.exploreChannels removeAllObjects];
-					[self.refreshControl endRefreshing];
-					[self.loadMoreSpinner stopAnimating];
-					[self.exploreChannels addObjectsFromArray: exploreChannels];
-					[self.tableView reloadData];
-					self.refreshing = NO;
-				}];
+				[self loadExploreChannels];
 			}
 		}];
 	} else {
-		self.followingFriends = NO;
-		[[FeedQueryManager sharedInstance] refreshExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
-			[self.exploreChannels removeAllObjects];
-			[self.refreshControl endRefreshing];
-			[self.loadMoreSpinner stopAnimating];
-			[self.exploreChannels addObjectsFromArray: exploreChannels];
-			[self.tableView reloadData];
-			self.refreshing = NO;
-		}];
+		[self loadExploreChannels];
 	}
 }
 
+-(void) loadExploreChannels {
+	self.followingFriends = NO;
+	[[FeedQueryManager sharedInstance] refreshExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
+		[self.exploreChannels removeAllObjects];
+		[self.refreshControl endRefreshing];
+		[self.loadMoreSpinner stopAnimating];
+		[self.exploreChannels addObjectsFromArray: exploreChannels];
+		[self.tableView reloadData];
+		self.refreshing = NO;
+	}];
+}
+
 -(void) loadMoreChannels {
-	if (self.followingFriends) return;
+	if (self.refreshing || self.followingFriends) return;
 	self.loadingMoreChannels = YES;
 	[self.loadMoreSpinner startAnimating];
 	[[FeedQueryManager sharedInstance] loadMoreExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {

@@ -11,6 +11,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SignInVC : UIViewController
+@interface LoginVC : UIViewController
 
 @end

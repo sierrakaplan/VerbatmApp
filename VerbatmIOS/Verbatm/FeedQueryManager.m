@@ -354,7 +354,7 @@
 	[channelsForFriends whereKey:CHANNEL_CREATOR_KEY containedIn:friendUsers];
 	[channelsForFriends whereKey:CHANNEL_CREATOR_KEY notContainedIn: self.usersWhoHaveBlockedUser];
 	//todo: comment out this line for testing
-	[channelsForFriends whereKey:@"objectId" notContainedIn: self.channelsFollowedIds];
+//	[channelsForFriends whereKey:@"objectId" notContainedIn: self.channelsFollowedIds];
 	[channelsForFriends whereKeyExists:CHANNEL_LATEST_POST_DATE];
 	[channelsForFriends orderByDescending:@"createdAt"];
 	channelsForFriends.limit = 1000;

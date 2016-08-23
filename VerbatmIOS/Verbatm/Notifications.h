@@ -28,6 +28,7 @@
 #define NOTIFICATION_NOW_FOLLOWING_USER @"following_user"
 
 #define NOTIFICATION_FREE_MEMORY_DISCOVER @"free_memory_discover"
+#define NOTIFICATION_REFRESH_DISCOVER @"refresh_discover"
 
 
 #define USER_FOLLOWING_NOTIFICATION_USERINFO_KEY @"UserFollowing"

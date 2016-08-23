@@ -16,7 +16,7 @@
 #import "LogIntoAccount.h"
 
 #import "SegueIDs.h"
-#import "SignInVC.h"
+#import "LoginVC.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
@@ -31,7 +31,7 @@
 
 #import "TermsAndConditionsVC.h"
 
-#import "UserInfoVC.h"
+#import "SignUpVC.h"
 #import "UserSetupParameters.h"
 #import "UserManager.h"
 
@@ -40,7 +40,7 @@
 #import "ConfirmationCodeSignUp.h"
 
 
-@interface SignInVC () <UIScrollViewDelegate,CreateAccountProtocol,
+@interface LoginVC () <UIScrollViewDelegate,CreateAccountProtocol,
 ChooseLoginOrSignupProtocol, ConfirmationCodeSignUpDelegate, LogIntoAccountProtocol>
 
 @property (nonatomic) BOOL loginFirstTimeDone;
@@ -357,7 +357,7 @@ ChooseLoginOrSignupProtocol, ConfirmationCodeSignUpDelegate, LogIntoAccountProto
 
 	NSDictionary *params = @{@"phoneNumber": number, @"codeEntry": code};
 
-	__weak SignInVC * weakSelf = self;
+	__weak LoginVC * weakSelf = self;
 
 	[PFCloud callFunctionInBackground:@"logIn" withParameters:params block:^(id  _Nullable object, NSError * _Nullable error) {
 		if (error) {
@@ -541,7 +541,7 @@ ChooseLoginOrSignupProtocol, ConfirmationCodeSignUpDelegate, LogIntoAccountProto
 // Set data on segue to user settings vc
 -(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
 	if ([[segue identifier] isEqualToString:USER_SETTINGS_SEGUE]) {
-		UserInfoVC* userViewController = [segue destinationViewController];
+		SignUpVC* userViewController = [segue destinationViewController];
 		userViewController.phoneNumber = self.phoneNumber;
 		userViewController.firstTimeLoggingIn = self.firstTimeLoggingIn;
 	} else {
@@ -555,8 +555,8 @@ ChooseLoginOrSignupProtocol, ConfirmationCodeSignUpDelegate, LogIntoAccountProto
 
 - (IBAction) unwindToSignIn: (UIStoryboardSegue *)segue {
 	UIViewController *sourceViewController = [segue sourceViewController];
-	if ([sourceViewController isKindOfClass:[UserInfoVC class]]) {
-		UserInfoVC* userInfoVC = (UserInfoVC*)sourceViewController;
+	if ([sourceViewController isKindOfClass:[SignUpVC class]]) {
+		SignUpVC* userInfoVC = (SignUpVC*)sourceViewController;
 		if (userInfoVC.successfullyLoggedIn) {
 			[self unwindToMasterVC];
 		}
