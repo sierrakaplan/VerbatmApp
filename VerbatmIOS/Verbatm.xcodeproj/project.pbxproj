@@ -7,10 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		127EA6DC1CDF90FE000BEBAD /* FollowingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 127EA6DB1CDF90FE000BEBAD /* FollowingView.m */; };
 		1281BBE21CFB878C00161ECC /* ExternalShare.m in Sources */ = {isa = PBXBuildFile; fileRef = 1281BBE11CFB878C00161ECC /* ExternalShare.m */; };
-		12A06D971CD3762B001800C9 /* BlogPopupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 12A06D961CD3762B001800C9 /* BlogPopupView.m */; };
-		12A06D9A1CD37B1A001800C9 /* Followers.m in Sources */ = {isa = PBXBuildFile; fileRef = 12A06D991CD37B1A001800C9 /* Followers.m */; };
 		9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995719BA7EBD005EBC8A /* MediaSessionManager.m */; };
 		A5076D0E1BED6EF000303746 /* SingleMediaAndTextPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5076D0D1BED6EF000303746 /* SingleMediaAndTextPinchView.m */; };
 		A5076D141BF2B25100303746 /* TextOverMediaView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5076D131BF2B25100303746 /* TextOverMediaView.m */; };
@@ -281,14 +278,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		127EA6DA1CDF90FE000BEBAD /* FollowingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowingView.h; sourceTree = "<group>"; };
-		127EA6DB1CDF90FE000BEBAD /* FollowingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FollowingView.m; sourceTree = "<group>"; };
 		1281BBE01CFB878C00161ECC /* ExternalShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExternalShare.h; sourceTree = "<group>"; };
 		1281BBE11CFB878C00161ECC /* ExternalShare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExternalShare.m; sourceTree = "<group>"; };
-		12A06D951CD3762B001800C9 /* BlogPopupView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlogPopupView.h; sourceTree = "<group>"; };
-		12A06D961CD3762B001800C9 /* BlogPopupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlogPopupView.m; sourceTree = "<group>"; };
-		12A06D981CD37B1A001800C9 /* Followers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Followers.h; sourceTree = "<group>"; };
-		12A06D991CD37B1A001800C9 /* Followers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Followers.m; sourceTree = "<group>"; };
 		12BB62867FE0278819799AEA /* Pods-Verbatm.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Verbatm.release.xcconfig"; path = "Pods/Target Support Files/Pods-Verbatm/Pods-Verbatm.release.xcconfig"; sourceTree = "<group>"; };
 		4B8CF14696507DCD7A9480E1 /* Pods_Verbatm.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Verbatm.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		79B55107E7F59691D000D116 /* Pods-Verbatm.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Verbatm.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Verbatm/Pods-Verbatm.debug.xcconfig"; sourceTree = "<group>"; };
@@ -735,11 +726,18 @@
 		A51A0ACF1D6CEFC2009D7CDD /* ADK */ = {
 			isa = PBXGroup;
 			children = (
-				C750A35919D768BD0006FA88 /* Media Capture Classes */,
-				C748836A1B489AE300E64ED9 /* GMImagePicker */,
 				C734FD9A19B14B8D00B2C370 /* ContentDevVC.h */,
 				C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */,
-				A51A0AE11D6CF4A4009D7CDD /* Custom Views */,
+				A51E74621C898C4E00CF8DEA /* PostInProgress.h */,
+				A51E74631C898C4E00CF8DEA /* PostInProgress.m */,
+				A5934B8D1C0FDFD6007C7830 /* VerbatmScrollView.h */,
+				A5934B8E1C0FDFD6007C7830 /* VerbatmScrollView.m */,
+				C78B682219CA6C01003D0AC5 /* MediaSelectTile.h */,
+				C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */,
+				C748836B1B48A9E200E64ED9 /* Pinch Views */,
+				A51A0AE81D6CF72E009D7CDD /* Gallery */,
+				A51A0AE71D6CF6FC009D7CDD /* Camera view */,
+				A51A0AEA1D6CF752009D7CDD /* Preview/EditMode */,
 			);
 			name = ADK;
 			sourceTree = "<group>";
@@ -758,7 +756,8 @@
 				A5D893781D6908D4007B33B9 /* FollowFriendCell.m */,
 				A51A0ACC1D6CE847009D7CDD /* WelcomeVC.h */,
 				A51A0ACD1D6CE847009D7CDD /* WelcomeVC.m */,
-				A51A0AE01D6CF44A009D7CDD /* Custom Views */,
+				C73B7C2D1CA8719200128926 /* Intro_Instruction_Notification_View.h */,
+				C73B7C2E1CA8719200128926 /* Intro_Instruction_Notification_View.m */,
 			);
 			name = Login/Onboarding;
 			sourceTree = "<group>";
@@ -770,7 +769,6 @@
 				C7E65F681B9245200042AD99 /* ProfileVC.m */,
 				C7178E061D21101900B90643 /* FeedTableViewController.h */,
 				C7178E071D21101900B90643 /* FeedTableViewController.m */,
-				A51A0ADB1D6CF1E2009D7CDD /* PostList */,
 				A51A0ADF1D6CF418009D7CDD /* Custom Views */,
 			);
 			name = Profile/ProfileList;
@@ -779,9 +777,10 @@
 		A51A0AD31D6CEFEB009D7CDD /* Discover */ = {
 			isa = PBXGroup;
 			children = (
-				A51A0AD81D6CF0AC009D7CDD /* Search */,
 				A5C38ABF1CC1B67B0067D077 /* DiscoverVC.h */,
 				A5C38AC01CC1B67B0067D077 /* DiscoverVC.m */,
+				A51A0AEB1D6CF7A1009D7CDD /* Table Cell Views */,
+				A51A0AD81D6CF0AC009D7CDD /* Search */,
 			);
 			name = Discover;
 			sourceTree = "<group>";
@@ -791,6 +790,10 @@
 			children = (
 				C723C9841D2B3DAA00E87D58 /* NotificationsListTVC.h */,
 				C723C9851D2B3DAA00E87D58 /* NotificationsListTVC.m */,
+				C723C9871D2B4E9400E87D58 /* NotificationTableCell.h */,
+				C723C9881D2B4E9400E87D58 /* NotificationTableCell.m */,
+				C7FB91991D2DC624005B25A1 /* NotificationPostPreview.h */,
+				C7FB919A1D2DC624005B25A1 /* NotificationPostPreview.m */,
 			);
 			name = Notifications;
 			sourceTree = "<group>";
@@ -813,18 +816,16 @@
 			isa = PBXGroup;
 			children = (
 				A51A0ADD1D6CF326009D7CDD /* Common */,
-				A58EE8841BA8771700B7B396 /* NoAnimationUnwindSegue.h */,
-				A58EE8851BA8771700B7B396 /* NoAnimationUnwindSegue.m */,
 				A560EF991BA88F8B003FB041 /* User App Preferences */,
-				A51A0ADA1D6CF1D6009D7CDD /* UserList */,
-				A51A0AD91D6CF0D6009D7CDD /* MainTabController */,
-				A51A0AD41D6CEFF0009D7CDD /* Notifications */,
-				A51A0AD31D6CEFEB009D7CDD /* Discover */,
-				C70E1C551C3BF76200346A25 /* Settings Page */,
-				A51A0AD21D6CEFDB009D7CDD /* Profile/ProfileList */,
 				A51A0AD01D6CEFCC009D7CDD /* Login/Onboarding */,
+				A51A0AD91D6CF0D6009D7CDD /* MainTabController */,
+				A51A0ADB1D6CF1E2009D7CDD /* PostList/Posts */,
 				A51A0ACF1D6CEFC2009D7CDD /* ADK */,
-				A560EF9E1BA8DFCC003FB041 /* Page Type Analyzer */,
+				A51A0AD21D6CEFDB009D7CDD /* Profile/ProfileList */,
+				A51A0AD31D6CEFEB009D7CDD /* Discover */,
+				A51A0AD41D6CEFF0009D7CDD /* Notifications */,
+				C70E1C551C3BF76200346A25 /* Settings Page */,
+				A51A0ADA1D6CF1D6009D7CDD /* UserList */,
 			);
 			name = FrontEnd;
 			sourceTree = "<group>";
@@ -836,6 +837,7 @@
 				C7F3D46A1A4F84C000B43238 /* LoginVC.m */,
 				A5337BBB1CCD99D600551394 /* SignUpVC.h */,
 				A5337BBC1CCD99D600551394 /* SignUpVC.m */,
+				A51A0AE01D6CF44A009D7CDD /* Custom Views */,
 			);
 			name = UserAuth;
 			sourceTree = "<group>";
@@ -861,19 +863,26 @@
 		A51A0ADA1D6CF1D6009D7CDD /* UserList */ = {
 			isa = PBXGroup;
 			children = (
+				C76172751C4C9FCE00AB0D84 /* ChannelOrUsernameCV.h */,
+				C76172761C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m */,
 				C76172721C4C8B1300AB0D84 /* UserAndChannelListsTVC.h */,
 				C76172731C4C8B1300AB0D84 /* UserAndChannelListsTVC.m */,
 			);
 			name = UserList;
 			sourceTree = "<group>";
 		};
-		A51A0ADB1D6CF1E2009D7CDD /* PostList */ = {
+		A51A0ADB1D6CF1E2009D7CDD /* PostList/Posts */ = {
 			isa = PBXGroup;
 			children = (
 				C76172791C4DFB7700AB0D84 /* PostListVC.h */,
 				C761727A1C4DFB7700AB0D84 /* PostListVC.m */,
+				C761727D1C4E0EB600AB0D84 /* PostCollectionViewCell.h */,
+				C761727E1C4E0EB600AB0D84 /* PostCollectionViewCell.m */,
+				A51A0AE61D6CF64F009D7CDD /* Post custom views */,
+				A51A0AEE1D6CF8A7009D7CDD /* LikeShareBar */,
+				A51A0AEF1D6CF8E3009D7CDD /* ChannelCreatorBar */,
 			);
-			name = PostList;
+			name = PostList/Posts;
 			sourceTree = "<group>";
 		};
 		A51A0ADC1D6CF2C7009D7CDD /* Resources */ = {
@@ -888,6 +897,12 @@
 		A51A0ADD1D6CF326009D7CDD /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				A58EE8841BA8771700B7B396 /* NoAnimationUnwindSegue.h */,
+				A58EE8851BA8771700B7B396 /* NoAnimationUnwindSegue.m */,
+				C7996CC21C8FCF74002E5DA6 /* LoadingIndicator.m */,
+				C7996CC11C8FCF74002E5DA6 /* LoadingIndicator.h */,
+				A56F686F1B643ADE00CE5744 /* Custom Bars */,
+				C7AA49FC1D148A9100A031C6 /* Custom Button */,
 				C7BD53C61B5B790B00EE6241 /* Constants  */,
 				A5CB82A41B5744B800195A2E /* Categories and Effects */,
 				C75985F91B85577900FE77F7 /* Internet Connectivity Monitor */,
@@ -912,10 +927,9 @@
 		A51A0ADF1D6CF418009D7CDD /* Custom Views */ = {
 			isa = PBXGroup;
 			children = (
-				A52B96081CFE193800EFA7EB /* ProfileHeaderView.h */,
-				A52B96091CFE193800EFA7EB /* ProfileHeaderView.m */,
-				C747498F1C2B1CB90047C66E /* ProfileInformationBar.h */,
-				C74749901C2B1CB90047C66E /* ProfileInformationBar.m */,
+				A51A0AEC1D6CF7CD009D7CDD /* Feed Cell View */,
+				A51A0AE51D6CF5F4009D7CDD /* Profile */,
+				A51A0AE41D6CF5D7009D7CDD /* Commenting */,
 			);
 			name = "Custom Views";
 			sourceTree = "<group>";
@@ -925,24 +939,16 @@
 			children = (
 				A5337BB81CCD60CF00551394 /* LoginKeyboardToolBar.h */,
 				A5337BB91CCD60CF00551394 /* LoginKeyboardToolBar.m */,
+				C75C4FA71D308F8F009EE3CF /* ChooseLoginOrSignup.h */,
+				C75C4FA81D308F8F009EE3CF /* ChooseLoginOrSignup.m */,
+				C75C4FAA1D30A96A009EE3CF /* CreateAccount.h */,
+				C75C4FAB1D30A96A009EE3CF /* CreateAccount.m */,
+				C772057B1D30DBFA00D626FE /* ConfirmationCodeSignUp.h */,
+				C772057C1D30DBFA00D626FE /* ConfirmationCodeSignUp.m */,
+				C772057E1D318BE600D626FE /* LogIntoAccount.h */,
+				C772057F1D318BE600D626FE /* LogIntoAccount.m */,
 			);
 			name = "Custom Views";
-			sourceTree = "<group>";
-		};
-		A51A0AE11D6CF4A4009D7CDD /* Custom Views */ = {
-			isa = PBXGroup;
-			children = (
-				A51A0AE21D6CF4CD009D7CDD /* TextAVE */,
-			);
-			name = "Custom Views";
-			sourceTree = "<group>";
-		};
-		A51A0AE21D6CF4CD009D7CDD /* TextAVE */ = {
-			isa = PBXGroup;
-			children = (
-				A51A0AE31D6CF4E6009D7CDD /* Toolbars */,
-			);
-			name = TextAVE;
 			sourceTree = "<group>";
 		};
 		A51A0AE31D6CF4E6009D7CDD /* Toolbars */ = {
@@ -962,13 +968,123 @@
 			name = Toolbars;
 			sourceTree = "<group>";
 		};
-		A5337BB71CCD60AA00551394 /* Keyboard tool bars */ = {
+		A51A0AE41D6CF5D7009D7CDD /* Commenting */ = {
 			isa = PBXGroup;
 			children = (
 				C73766741D64D9D800933A81 /* CommentingKeyboardToolbar.h */,
 				C73766751D64D9D800933A81 /* CommentingKeyboardToolbar.m */,
 			);
-			name = "Keyboard tool bars";
+			name = Commenting;
+			sourceTree = "<group>";
+		};
+		A51A0AE51D6CF5F4009D7CDD /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				A52B96081CFE193800EFA7EB /* ProfileHeaderView.h */,
+				A52B96091CFE193800EFA7EB /* ProfileHeaderView.m */,
+				C747498F1C2B1CB90047C66E /* ProfileInformationBar.h */,
+				C74749901C2B1CB90047C66E /* ProfileInformationBar.m */,
+				C736C9FD1D1B2AE500535C7E /* PublishingProgressView.h */,
+				C736C9FE1D1B2AE500535C7E /* PublishingProgressView.m */,
+			);
+			name = Profile;
+			sourceTree = "<group>";
+		};
+		A51A0AE61D6CF64F009D7CDD /* Post custom views */ = {
+			isa = PBXGroup;
+			children = (
+				C7E65F6D1B92EB650042AD99 /* PostView.h */,
+				C7E65F6E1B92EB650042AD99 /* PostView.m */,
+				F26894441A43641C00B1D4DB /* Page Viewing Experiences */,
+			);
+			name = "Post custom views";
+			sourceTree = "<group>";
+		};
+		A51A0AE71D6CF6FC009D7CDD /* Camera view */ = {
+			isa = PBXGroup;
+			children = (
+				A57A93031B55E835006C2597 /* VerbatmCameraView.h */,
+				A57A93041B55E835006C2597 /* VerbatmCameraView.m */,
+				A57A93061B55E95B006C2597 /* VerbatmCameraView.xib */,
+				A57A92FD1B55A551006C2597 /* CameraFocusSquare.h */,
+				A57A92FE1B55A551006C2597 /* CameraFocusSquare.m */,
+				C750A35919D768BD0006FA88 /* Media Capture Classes */,
+			);
+			name = "Camera view";
+			sourceTree = "<group>";
+		};
+		A51A0AE81D6CF72E009D7CDD /* Gallery */ = {
+			isa = PBXGroup;
+			children = (
+				C748836A1B489AE300E64ED9 /* GMImagePicker */,
+			);
+			name = Gallery;
+			sourceTree = "<group>";
+		};
+		A51A0AEA1D6CF752009D7CDD /* Preview/EditMode */ = {
+			isa = PBXGroup;
+			children = (
+				A5E860051B97CC3C00E148D0 /* PreviewDisplayView.h */,
+				A5E860061B97CC3C00E148D0 /* PreviewDisplayView.m */,
+				A560EF9E1BA8DFCC003FB041 /* Page Type Analyzer */,
+				A51A0AED1D6CF81B009D7CDD /* Edit Views */,
+				A51A0AE31D6CF4E6009D7CDD /* Toolbars */,
+			);
+			name = Preview/EditMode;
+			sourceTree = "<group>";
+		};
+		A51A0AEB1D6CF7A1009D7CDD /* Table Cell Views */ = {
+			isa = PBXGroup;
+			children = (
+				A5C38AC51CC1D1970067D077 /* FeaturedContentCellView.h */,
+				A5C38AC61CC1D1970067D077 /* FeaturedContentCellView.m */,
+				A5C38AC81CC1D1B80067D077 /* ExploreChannelCellView.h */,
+				A5C38AC91CC1D1B80067D077 /* ExploreChannelCellView.m */,
+				A5C38ACB1CC1D4120067D077 /* FeaturedContentChannelView.h */,
+				A5C38ACC1CC1D4120067D077 /* FeaturedContentChannelView.m */,
+			);
+			name = "Table Cell Views";
+			sourceTree = "<group>";
+		};
+		A51A0AEC1D6CF7CD009D7CDD /* Feed Cell View */ = {
+			isa = PBXGroup;
+			children = (
+				C7178E091D21A12000B90643 /* FeedTableCell.h */,
+				C7178E0A1D21A12000B90643 /* FeedTableCell.m */,
+			);
+			name = "Feed Cell View";
+			sourceTree = "<group>";
+		};
+		A51A0AED1D6CF81B009D7CDD /* Edit Views */ = {
+			isa = PBXGroup;
+			children = (
+				A50E62441D542060007FD5AD /* GridView.h */,
+				A50E62451D542060007FD5AD /* GridView.m */,
+				C7C69A051BF820FC006B5260 /* EditMediaContentView.h */,
+				C7C69A061BF820FC006B5260 /* EditMediaContentView.m */,
+				A51B85251D2F474F006E90CC /* OpenCollectionView.h */,
+				A51B85261D2F474F006E90CC /* OpenCollectionView.m */,
+			);
+			name = "Edit Views";
+			sourceTree = "<group>";
+		};
+		A51A0AEE1D6CF8A7009D7CDD /* LikeShareBar */ = {
+			isa = PBXGroup;
+			children = (
+				C788745A1C334AE80048B66E /* PostLikeAndShareBar.h */,
+				C788745B1C334AE80048B66E /* PostLikeAndShareBar.m */,
+				C7F22B321C38415000E56EA7 /* Sharing  */,
+			);
+			name = LikeShareBar;
+			sourceTree = "<group>";
+		};
+		A51A0AEF1D6CF8E3009D7CDD /* ChannelCreatorBar */ = {
+			isa = PBXGroup;
+			children = (
+				C78204EC1C32EAC500F56A63 /* CreatorAndChannelBar.h */,
+				C78204ED1C32EAC500F56A63 /* CreatorAndChannelBar.m */,
+			);
+			name = ChannelCreatorBar;
 			sourceTree = "<group>";
 		};
 		A5337BBE1CCDD95700551394 /* Feed Query Managers */ = {
@@ -1033,20 +1149,11 @@
 			name = "User Info + channels";
 			sourceTree = "<group>";
 		};
-		A5337BC51CCDD9FA00551394 /* Video Download Manager */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = "Video Download Manager";
-			sourceTree = "<group>";
-		};
 		A560EF991BA88F8B003FB041 /* User App Preferences */ = {
 			isa = PBXGroup;
 			children = (
 				C719A4081BA615B50075CA80 /* UserSetupParameters.h */,
 				C719A4091BA615B50075CA80 /* UserSetupParameters.m */,
-				A51E74621C898C4E00CF8DEA /* PostInProgress.h */,
-				A51E74631C898C4E00CF8DEA /* PostInProgress.m */,
 			);
 			name = "User App Preferences";
 			sourceTree = "<group>";
@@ -1060,21 +1167,6 @@
 			name = "Page Type Analyzer";
 			sourceTree = "<group>";
 		};
-		A560EFB21BB0AF42003FB041 /* Login */ = {
-			isa = PBXGroup;
-			children = (
-				C75C4FA71D308F8F009EE3CF /* ChooseLoginOrSignup.h */,
-				C75C4FA81D308F8F009EE3CF /* ChooseLoginOrSignup.m */,
-				C75C4FAA1D30A96A009EE3CF /* CreateAccount.h */,
-				C75C4FAB1D30A96A009EE3CF /* CreateAccount.m */,
-				C772057B1D30DBFA00D626FE /* ConfirmationCodeSignUp.h */,
-				C772057C1D30DBFA00D626FE /* ConfirmationCodeSignUp.m */,
-				C772057E1D318BE600D626FE /* LogIntoAccount.h */,
-				C772057F1D318BE600D626FE /* LogIntoAccount.m */,
-			);
-			name = Login;
-			sourceTree = "<group>";
-		};
 		A56F686F1B643ADE00CE5744 /* Custom Bars */ = {
 			isa = PBXGroup;
 			children = (
@@ -1082,42 +1174,8 @@
 				A5446C951BBA3C33002177F4 /* CustomNavigationBar.m */,
 				A5934B9C1C10E4C8007C7830 /* CustomTab.h */,
 				A5934B9D1C10E4C8007C7830 /* CustomTab.m */,
-				C788745A1C334AE80048B66E /* PostLikeAndShareBar.h */,
-				C788745B1C334AE80048B66E /* PostLikeAndShareBar.m */,
 			);
 			name = "Custom Bars";
-			sourceTree = "<group>";
-		};
-		A56F68751B643D0E00CE5744 /* Camera Views */ = {
-			isa = PBXGroup;
-			children = (
-				A57A93031B55E835006C2597 /* VerbatmCameraView.h */,
-				A57A93041B55E835006C2597 /* VerbatmCameraView.m */,
-				A57A93061B55E95B006C2597 /* VerbatmCameraView.xib */,
-				A57A92FD1B55A551006C2597 /* CameraFocusSquare.h */,
-				A57A92FE1B55A551006C2597 /* CameraFocusSquare.m */,
-			);
-			name = "Camera Views";
-			sourceTree = "<group>";
-		};
-		A56F68761B643D4B00CE5744 /* Video Player */ = {
-			isa = PBXGroup;
-			children = (
-				A562D50E1B506D4500F566F4 /* VideoPlayerView.h */,
-				A562D50C1B506D2800F566F4 /* VideoPlayerView.m */,
-			);
-			name = "Video Player";
-			sourceTree = "<group>";
-		};
-		A56F68771B643EB200CE5744 /* Scroll Views */ = {
-			isa = PBXGroup;
-			children = (
-				A5934B8D1C0FDFD6007C7830 /* VerbatmScrollView.h */,
-				A5934B8E1C0FDFD6007C7830 /* VerbatmScrollView.m */,
-				A56F68851B66FED900CE5744 /* ContentPageElementScrollView.h */,
-				A56F68861B66FED900CE5744 /* ContentPageElementScrollView.m */,
-			);
-			name = "Scroll Views";
 			sourceTree = "<group>";
 		};
 		A5934B9F1C10F044007C7830 /* Fonts */ = {
@@ -1151,25 +1209,6 @@
 				A5BFA5A91CA8C506002C3884 /* Raleway-ThinItalic.ttf */,
 			);
 			path = Fonts;
-			sourceTree = "<group>";
-		};
-		A59CC2861B6C2E2F00B4907C /* Table Cell Views */ = {
-			isa = PBXGroup;
-			children = (
-				C76172751C4C9FCE00AB0D84 /* ChannelOrUsernameCV.h */,
-				C76172761C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m */,
-				A5C38AC51CC1D1970067D077 /* FeaturedContentCellView.h */,
-				A5C38AC61CC1D1970067D077 /* FeaturedContentCellView.m */,
-				A5C38AC81CC1D1B80067D077 /* ExploreChannelCellView.h */,
-				A5C38AC91CC1D1B80067D077 /* ExploreChannelCellView.m */,
-				A5C38ACB1CC1D4120067D077 /* FeaturedContentChannelView.h */,
-				A5C38ACC1CC1D4120067D077 /* FeaturedContentChannelView.m */,
-				C7178E091D21A12000B90643 /* FeedTableCell.h */,
-				C7178E0A1D21A12000B90643 /* FeedTableCell.m */,
-				C723C9871D2B4E9400E87D58 /* NotificationTableCell.h */,
-				C723C9881D2B4E9400E87D58 /* NotificationTableCell.m */,
-			);
-			name = "Table Cell Views";
 			sourceTree = "<group>";
 		};
 		A5BFA5971CA89A90002C3884 /* Publishing */ = {
@@ -1283,21 +1322,6 @@
 			name = "GTL files";
 			sourceTree = "<group>";
 		};
-		A5E860081B9919F500E148D0 /* Viewing Posts */ = {
-			isa = PBXGroup;
-			children = (
-				C7E65F6D1B92EB650042AD99 /* PostView.h */,
-				C7E65F6E1B92EB650042AD99 /* PostView.m */,
-				A5E860051B97CC3C00E148D0 /* PreviewDisplayView.h */,
-				A5E860061B97CC3C00E148D0 /* PreviewDisplayView.m */,
-				C78204EC1C32EAC500F56A63 /* CreatorAndChannelBar.h */,
-				C78204ED1C32EAC500F56A63 /* CreatorAndChannelBar.m */,
-				C7FB91991D2DC624005B25A1 /* NotificationPostPreview.h */,
-				C7FB919A1D2DC624005B25A1 /* NotificationPostPreview.m */,
-			);
-			name = "Viewing Posts";
-			sourceTree = "<group>";
-		};
 		A5FB5D4F1BCB11DF00634A96 /* Strings */ = {
 			isa = PBXGroup;
 			children = (
@@ -1368,6 +1392,8 @@
 		C748836B1B48A9E200E64ED9 /* Pinch Views */ = {
 			isa = PBXGroup;
 			children = (
+				A56F68851B66FED900CE5744 /* ContentPageElementScrollView.h */,
+				A56F68861B66FED900CE5744 /* ContentPageElementScrollView.m */,
 				C77C7D361A22E9FC00694B20 /* PinchView.h */,
 				C77C7D371A22E9FC00694B20 /* PinchView.m */,
 				A56F687F1B65B43D00CE5744 /* ImagePinchView.h */,
@@ -1402,19 +1428,6 @@
 			name = "Media Capture Classes";
 			sourceTree = "<group>";
 		};
-		C7540F751C09A48700DE1AA6 /* Channels */ = {
-			isa = PBXGroup;
-			children = (
-				12A06D951CD3762B001800C9 /* BlogPopupView.h */,
-				12A06D961CD3762B001800C9 /* BlogPopupView.m */,
-				12A06D981CD37B1A001800C9 /* Followers.h */,
-				12A06D991CD37B1A001800C9 /* Followers.m */,
-				127EA6DA1CDF90FE000BEBAD /* FollowingView.h */,
-				127EA6DB1CDF90FE000BEBAD /* FollowingView.m */,
-			);
-			name = Channels;
-			sourceTree = "<group>";
-		};
 		C75985F91B85577900FE77F7 /* Internet Connectivity Monitor */ = {
 			isa = PBXGroup;
 			children = (
@@ -1425,46 +1438,6 @@
 			);
 			name = "Internet Connectivity Monitor";
 			path = ..;
-			sourceTree = "<group>";
-		};
-		C761727C1C4E0E7700AB0D84 /* CollectionView Cells */ = {
-			isa = PBXGroup;
-			children = (
-				C761727D1C4E0EB600AB0D84 /* PostCollectionViewCell.h */,
-				C761727E1C4E0EB600AB0D84 /* PostCollectionViewCell.m */,
-			);
-			name = "CollectionView Cells";
-			sourceTree = "<group>";
-		};
-		C78B682719CA6C0A003D0AC5 /* Custom Views */ = {
-			isa = PBXGroup;
-			children = (
-				A5337BB71CCD60AA00551394 /* Keyboard tool bars */,
-				A560EFB21BB0AF42003FB041 /* Login */,
-				A56F68761B643D4B00CE5744 /* Video Player */,
-				F26894441A43641C00B1D4DB /* Page Viewing Experiences */,
-				C748836B1B48A9E200E64ED9 /* Pinch Views */,
-				A56F68771B643EB200CE5744 /* Scroll Views */,
-				A56F68751B643D0E00CE5744 /* Camera Views */,
-				A56F686F1B643ADE00CE5744 /* Custom Bars */,
-				C761727C1C4E0E7700AB0D84 /* CollectionView Cells */,
-				A59CC2861B6C2E2F00B4907C /* Table Cell Views */,
-				A5E860081B9919F500E148D0 /* Viewing Posts */,
-				C7540F751C09A48700DE1AA6 /* Channels */,
-				C7F22B321C38415000E56EA7 /* Sharing  */,
-				C7996CC21C8FCF74002E5DA6 /* LoadingIndicator.m */,
-				C73B7C2D1CA8719200128926 /* Intro_Instruction_Notification_View.h */,
-				C73B7C2E1CA8719200128926 /* Intro_Instruction_Notification_View.m */,
-				C7AA49FC1D148A9100A031C6 /* Custom Button */,
-				C736C9FD1D1B2AE500535C7E /* PublishingProgressView.h */,
-				C736C9FE1D1B2AE500535C7E /* PublishingProgressView.m */,
-				C7996CC11C8FCF74002E5DA6 /* LoadingIndicator.h */,
-				C78B682219CA6C01003D0AC5 /* MediaSelectTile.h */,
-				C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */,
-				A50E62441D542060007FD5AD /* GridView.h */,
-				A50E62451D542060007FD5AD /* GridView.m */,
-			);
-			name = "Custom Views";
 			sourceTree = "<group>";
 		};
 		C7AA49FC1D148A9100A031C6 /* Custom Button */ = {
@@ -1548,8 +1521,6 @@
 				A51A0AD51D6CF036009D7CDD /* Framedation/Model */,
 				C7BC437C199D97F5004B91A1 /* Supporting Files */,
 				C716E9D31BD6CAAA001B769D /* Analytics */,
-				A5337BC51CCDD9FA00551394 /* Video Download Manager */,
-				C78B682719CA6C0A003D0AC5 /* Custom Views */,
 			);
 			path = Verbatm;
 			sourceTree = "<group>";
@@ -1623,6 +1594,8 @@
 		F26894441A43641C00B1D4DB /* Page Viewing Experiences */ = {
 			isa = PBXGroup;
 			children = (
+				A562D50E1B506D4500F566F4 /* VideoPlayerView.h */,
+				A562D50C1B506D2800F566F4 /* VideoPlayerView.m */,
 				A5076D121BF2B25100303746 /* TextOverMediaView.h */,
 				A5076D131BF2B25100303746 /* TextOverMediaView.m */,
 				C7E6C12F1A4E394600863893 /* PhotoVideoPVE.h */,
@@ -1633,10 +1606,6 @@
 				C7E6C13E1A4E394600863893 /* VideoPVE.m */,
 				A5B0A8191C0E63D60062D7BF /* PageViewingExperience.h */,
 				A5B0A81A1C0E63D60062D7BF /* PageViewingExperience.m */,
-				C7C69A051BF820FC006B5260 /* EditMediaContentView.h */,
-				C7C69A061BF820FC006B5260 /* EditMediaContentView.m */,
-				A51B85251D2F474F006E90CC /* OpenCollectionView.h */,
-				A51B85261D2F474F006E90CC /* OpenCollectionView.m */,
 			);
 			name = "Page Viewing Experiences";
 			sourceTree = "<group>";
@@ -1916,7 +1885,6 @@
 				C7BF1AA51C57EFC000CEDE4B /* Post_BackendObject.m in Sources */,
 				9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */,
 				A5E73B9D1D16972400527ECF /* GTMHTTPFetcherService.m in Sources */,
-				127EA6DC1CDF90FE000BEBAD /* FollowingView.m in Sources */,
 				C78204EE1C32EAC500F56A63 /* CreatorAndChannelBar.m in Sources */,
 				A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */,
 				A56F68721B643B1400CE5744 /* TextAveKeyboardToolbar.m in Sources */,
@@ -1937,7 +1905,6 @@
 				A5E73BF61D1770B400527ECF /* GTLVerbatmAppPageListWrapper.m in Sources */,
 				C77205801D318BE600D626FE /* LogIntoAccount.m in Sources */,
 				C7F3D46B1A4F84C000B43238 /* LoginVC.m in Sources */,
-				12A06D9A1CD37B1A001800C9 /* Followers.m in Sources */,
 				A5E73BA31D1697AE00527ECF /* GTLBatchQuery.m in Sources */,
 				A52B960A1CFE193800EFA7EB /* ProfileHeaderView.m in Sources */,
 				C7BF1AB21C59D6BF00CEDE4B /* Channel_BackendObject.m in Sources */,
@@ -2008,7 +1975,6 @@
 				A51B851A1D2F39B1006E90CC /* UIView+DTDebug.m in Sources */,
 				A51B85201D2F3C43006E90CC /* DTLog.m in Sources */,
 				C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */,
-				12A06D971CD3762B001800C9 /* BlogPopupView.m in Sources */,
 				A5E73B7F1D16365400527ECF /* GTLObject.m in Sources */,
 				A5E73BFB1D1770B400527ECF /* GTLVerbatmAppVerbatmUser.m in Sources */,
 				A5E73C031D177DBF00527ECF /* Reachability.m in Sources */,

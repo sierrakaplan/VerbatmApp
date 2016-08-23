@@ -94,7 +94,7 @@
 }
 
 -(void)exitDiscover {
-	todo
+	//todo
     [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
 		[[PFUser currentUser] setObject:[NSNumber numberWithBool:YES] forKey:USER_FTUE];
 		[[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {

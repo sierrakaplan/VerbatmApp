@@ -18,7 +18,6 @@
 
 #import "SizesAndPositions.h"
 #import "Styles.h"
-#import "FollowingView.h"
 
 #import "UserInfoCache.h"
 
