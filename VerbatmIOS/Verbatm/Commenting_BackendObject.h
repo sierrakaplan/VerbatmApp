@@ -15,4 +15,5 @@
 @interface Commenting_BackendObject : NSObject
 +(void)getCommentsForObject:(PFObject *) postParseObject withCompletionBlock:(void(^)(NSArray *))block;
 +(void)storeComment:(NSString *) commentString forPost:(PFObject *) postParseObject;
++(void)addUserToConversationList:(PFUser *)user toPost:(PFObject *)postParseObject;
 @end

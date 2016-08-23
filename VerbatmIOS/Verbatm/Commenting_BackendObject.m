@@ -41,12 +41,12 @@
 }
 
 
-+(void)addCommentor:(PFUser *)commentor toPost:(PFObject *)postParseObject{
++(void)addUserToConversationList:(PFUser *)user toPost:(PFObject *)postParseObject{
     NSString * postOwnerId = [[postParseObject valueForKey:POST_ORIGINAL_CREATOR_KEY] objectId];
-    if(![postOwnerId isEqualToString:[commentor objectId]]){
+    if(![postOwnerId isEqualToString:[user objectId]]){
         //PFRelations don't store duplicates
         PFRelation * pageRelation = [postParseObject relationForKey:POST_COMMENTORS_PFRELATION];
-        [pageRelation addObject:commentor];
+        [pageRelation addObject:user];
         [postParseObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
             if(error) {
                 [[Crashlytics sharedInstance] recordError:error];
@@ -60,7 +60,8 @@
     [[pageRelation query] findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (!error) {
             for(PFUser * user in objects){
-                [Notification_BackendManager createNotificationWithType:CommentReply receivingUser:user relevantPostObject:postParseObject];
+                [Notification_BackendManager createNotificationWithType:NotificationTypeCommentReply
+														  receivingUser:user relevantPostObject:postParseObject];
             }
         }
     }];
@@ -78,9 +79,11 @@
         if(succeeded) {
             [postParseObject incrementKey:POST_NUM_COMMENTS];
             [postParseObject saveInBackground];
-            [Commenting_BackendObject sendNotificationToOtherCommentorsOfPost:postParseObject];
-            [Commenting_BackendObject addCommentor:[PFUser currentUser] toPost:postParseObject];
-            [Notification_BackendManager createNotificationWithType:NewComment receivingUser:[postParseObject valueForKey:POST_ORIGINAL_CREATOR_KEY] relevantPostObject:postParseObject];
+			[Commenting_BackendObject sendNotificationToOtherCommentorsOfPost:postParseObject];
+			[Commenting_BackendObject addUserToConversationList:[PFUser currentUser] toPost:postParseObject];
+            [Notification_BackendManager createNotificationWithType:NotificationTypeNewComment
+													  receivingUser:[postParseObject valueForKey:POST_ORIGINAL_CREATOR_KEY]
+												 relevantPostObject:postParseObject];
         }
     }];
 }

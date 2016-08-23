@@ -191,12 +191,17 @@
 	[self removePreview];
 }
 -(void)presentCommentListForPost:(PFObject *)post{
+    UserAndChannelListsTVC *commentorsListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    [commentorsListVC presentList:CommentList forChannel:nil orPost:post];
+    [self presentViewController:commentorsListVC animated:YES completion:nil];
+}
+-(void) showWhoLikesThePostFromNotifications:(PFObject *) post{
     UserAndChannelListsTVC *likersListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
-    [likersListVC presentList:CommentList forChannel:nil orPost:post];
+    [likersListVC presentList:LikersList forChannel:nil orPost:post];
     [self presentViewController:likersListVC animated:YES completion:nil];
 }
 
--(void)getMoreNotifications{
+-(void) getMoreNotifications {
 	PFObject * lastObject =[self.parseNotificationObjects lastObject];
 	NSDate * lastDate = [lastObject createdAt];
 	if(self.refreshing) return;
@@ -227,37 +232,32 @@
 -(void)presentPost:(PFObject *)postObject andChannel:(Channel *) channel{
 
 	if(postObject && channel){
-		PFQuery * query = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
-		[query whereKey:POST_CHANNEL_ACTIVITY_POST equalTo:postObject];
-		[query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-                if(!self.postPreview && objects && objects.count){
-                    self.postPreview = [[NotificationPostPreview alloc] initWithFrame:CGRectMake(self.view.frame.size.width,self.tableView.contentOffset.y, self.view.frame.size.width, self.view.frame.size.height)];
-                    self.postPreview.delegate = self;
-                    [self.postPreview presentPost:[objects firstObject] andChannel:channel];
-                    [self.view addSubview:self.postPreview];
-                    [self.view bringSubviewToFront:self.postPreview];
-                    [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-                        self.postPreview.frame = CGRectMake(0.f, self.tableView.contentOffset.y, self.view.frame.size.width, self.view.frame.size.height);
-                    }];
-                    [self.delegate notificationListHideTabBar:YES];
-                }
-		}];
+        if(!self.postPreview){
+            self.postPreview = [[NotificationPostPreview alloc] initWithFrame:CGRectMake(0.f,self.tableView.contentOffset.y + self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height)];
+            self.postPreview.delegate = self;
+            [self.postPreview presentPost:postObject andChannel:channel];
+            [self.view addSubview:self.postPreview];
+            [self.view bringSubviewToFront:self.postPreview];
+            [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
+                self.postPreview.frame = CGRectMake(0.f, self.tableView.contentOffset.y, self.view.frame.size.width, self.view.frame.size.height);
+            }];
+            [self.delegate notificationListHideTabBar:YES];
+        }
 	}
-
 }
 
 -(void)removePreview{
 	self.cellSelected = NO;
 	if(self.postPreview){
-		[UIView animateWithDuration:PINCHVIEW_DROP_ANIMATION_DURATION animations:^{
-			self.postPreview.frame = CGRectMake(self.view.frame.size.width,self.tableView.contentOffset.y, self.view.frame.size.width, self.view.frame.size.height);
+		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
+			self.postPreview.frame = CGRectMake(0.f,self.tableView.contentOffset.y + self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height);
 		}completion:^(BOOL finished) {
 			if(finished){
 				[self.postPreview clearViews];
-				self.postPreview = nil;
 				[self.postPreview removeFromSuperview];
 				self.tableView.scrollEnabled = YES;
 				[self.delegate notificationListHideTabBar:NO];
+                self.postPreview = nil;
 			}
 		}];
 	}
@@ -293,19 +293,16 @@
 		userProfile.channel = startChannel;
 		[self presentViewController:userProfile animated:YES completion:nil];
 	}
-
 }
 
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NotificationTableCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if(!self.cellSelected){
         self.cellSelected = YES;
-        if(cell.notificationType & (Like|Reblog|FriendsFirstPost|Share|NewComment)){
+        if(!(cell.notificationType & (NotificationTypeNewFollower|NotificationTypeFriendJoinedVerbatm))){
              self.tableView.scrollEnabled = NO;
              [self presentPost:[cell parseObject] andChannel:cell.channel];
-        }else{
+        } else {
             [self presentBlogFromCell: cell];
         }
     }
@@ -360,8 +357,7 @@
 	return cell;
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (self.shouldAnimateViews) {
 		CGFloat direction = (YES) ? 1 : -1;
 		cell.transform = CGAffineTransformMakeTranslation(0, cell.bounds.size.height * direction);
@@ -380,49 +376,5 @@
 	if(!_parseNotificationObjects)_parseNotificationObjects = [[NSMutableArray alloc] init];
 	return _parseNotificationObjects;
 }
-
-/*
- // Override to support conditional editing of the table view.
- - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
- // Return NO if you do not want the specified item to be editable.
- return YES;
- }
- */
-
-/*
- // Override to support editing the table view.
- - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
- if (editingStyle == UITableViewCellEditingStyleDelete) {
- // Delete the row from the data source
- [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
- } else if (editingStyle == UITableViewCellEditingStyleInsert) {
- // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
- }
- }
- */
-
-/*
- // Override to support rearranging the table view.
- - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
- }
- */
-
-/*
- // Override to support conditional rearranging of the table view.
- - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
- // Return NO if you do not want the item to be re-orderable.
- return YES;
- }
- */
-
-/*
- #pragma mark - Navigation
-
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
 
 @end

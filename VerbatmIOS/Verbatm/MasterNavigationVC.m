@@ -22,6 +22,7 @@
 
 #import "Notifications.h"
 #import "NotificationsListTVC.h"
+#import "Notification_BackendManager.h"
 
 #import "ParseBackendKeys.h"
 #import "ProfileVC.h"
@@ -310,8 +311,9 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
     [self.notificationIndicator removeFromSuperview];
 }
 
--(void)showIndicator{
+-(void)showIndicator {
     self.notificationIndicatorPresent = YES;
+	if (self.tabBarHidden) return;
     CGFloat tabBarItemWidth = self.view.frame.size.width/5.f;
 	CGFloat xpos = 1.f + (self.view.frame.size.width - (tabBarItemWidth *2)) + tabBarItemWidth/2.f;
 
@@ -402,17 +404,17 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 #pragma mark - Feed VC Delegate -
 
 
--(void)goToDiscover{
+-(void) goToDiscover{
     [self.tabBarController setSelectedIndex:1];
 }
 
 -(void) showTabBar:(BOOL)show {
 	if (show) {
+		self.tabBarHidden = NO;
         if (self.notificationIndicatorPresent) {
             [self showIndicator];
         }
-        
-		self.tabBarHidden = NO;
+
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			[self setNeedsStatusBarAppearanceUpdate];
 			self.tabBarController.tabBar.frame = self.tabBarFrameOnScreen;
@@ -422,8 +424,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
         if(self.notificationIndicatorPresent){
             [self removeIndicator];
             self.notificationIndicatorPresent = YES;
-        }else{
-            [self removeIndicator];
         }
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			[self setNeedsStatusBarAppearanceUpdate];
@@ -458,12 +458,19 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	[self presentViewController:newAlert animated:YES completion:nil];
 }
 
--(void)followingSuccessfulNotification:(NSNotification *) notification{
+-(void)followingSuccessfulNotification:(NSNotification *) notification {
 }
 
 -(void) newPushNotification:(NSNotification *) notification {
-	[self.notificationVC refreshNotifications];
-	[self showIndicator];
+	NSDictionary *notificationInfo = notification.userInfo;
+	NSNumber *notificationType = notificationInfo[@"notificationType"];
+	NSInteger type = notificationType.integerValue;
+	if (type != NOTIFICATION_NEW_POST && (type & VALID_NOTIFICATION_TYPE)) {
+		[self.notificationVC refreshNotifications];
+		[self showIndicator];
+	} else {
+		NSLog(@"Received push notiication that cannot be shown in notifications tab.");
+	}
 }
 
 - (UIInterfaceOrientationMask) supportedInterfaceOrientations {

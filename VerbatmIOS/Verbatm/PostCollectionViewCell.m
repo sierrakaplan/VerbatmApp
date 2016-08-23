@@ -99,21 +99,10 @@
         self.numLikeLabel = nil;
         self.smallLikeButton = nil;
 		self.currentPostView = nil;
+        self.currentPostActivityObject = nil;
+        self.postBeingPresented = nil;
 	}
-	[self removePublishingProgress];
-
-	[self.numSharesLabel removeFromSuperview];
-	[self.smallShareButton removeFromSuperview];
-	[self.numLikeLabel removeFromSuperview];
-	[self.smallLikeButton removeFromSuperview];
-
-	self.numSharesLabel = nil;
-	self.smallShareButton = nil;
-	self.numLikeLabel = nil;
-	self.smallLikeButton = nil;
-	self.currentPostView = nil;
-	self.currentPostActivityObject = nil;
-	self.postBeingPresented = nil;
+	
 
 	self.isOnScreen = NO;
 	self.isAlmostOnScreen = NO;
@@ -154,56 +143,57 @@
 	self.hasPublishingView = NO;
 	self.footerUp = up;
 	self.currentPostActivityObject = pfActivityObj;
-    PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
-    self.currentPostObject = post;
-    
-    __weak PostCollectionViewCell *weakSelf = self;
-    
-    [post fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-        
-        weakSelf.numLikes = object[POST_NUM_LIKES];
-        weakSelf.numShares = object[POST_NUM_REBLOGS];
-        weakSelf.numComments = object[POST_NUM_COMMENTS];
-        
-        [Page_BackendObject getPagesFromPost:object andCompletionBlock:^(NSArray * pages) {
-            
-            weakSelf.currentPostView = [[PostView alloc] initWithFrame:POSTVIEW_FRAME
-                                          andPostChannelActivityObject:pfActivityObj small:weakSelf.inSmallMode andPageObjects:pages];
-            
-            if(weakSelf.inSmallMode)[weakSelf.currentPostView muteAllVideos:YES];
-            NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
-            if (weakSelf.isOnScreen) {
-                [weakSelf.currentPostView postOnScreen];
-            } else if (weakSelf.isAlmostOnScreen) {
-                [weakSelf.currentPostView postAlmostOnScreen];
-            } else {
-                [weakSelf.currentPostView postOffScreen];
-            }
-            weakSelf.currentPostView.delegate = weakSelf;
-            weakSelf.currentPostView.listChannel = channelForList;
-            
-            if(self.tapToExitNotification){
-                [weakSelf insertSubview:weakSelf.currentPostView belowSubview:self.tapToExitNotification];
-            }else{
-                [weakSelf addSubview: weakSelf.currentPostView];
-            }
-            weakSelf.currentPostView.inSmallMode = weakSelf.inSmallMode;
-            
-            
-            
-            if(weakSelf.inSmallMode){
-                [weakSelf.currentPostView checkIfUserHasLikedThePost];
-            }else{
-                
-                [weakSelf.currentPostView createLikeAndShareBarWithNumberOfLikes:weakSelf.numLikes numberOfShares:weakSelf.numShares numberOfComments:weakSelf.numComments numberOfPages:numberOfPages andStartingPageNumber:@(1) startUp:up withDeleteButton:withDelete];
-                [weakSelf.currentPostView addCreatorInfo];
-                
-            }
-            [weakSelf bringSubviewToFront:weakSelf.dot];
-        }];
-    }];
+	PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
 
+	[post fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+		if (self.currentPostActivityObject != nil && ![self.currentPostActivityObject.objectId isEqualToString:pfActivityObj.objectId]) {
+			return;
+		}
+		self.numLikes = object[POST_NUM_LIKES];
+		self.numShares = object[POST_NUM_REBLOGS];
+		self.numComments = object[POST_NUM_COMMENTS];
+
+		[Page_BackendObject getPagesFromPost:object andCompletionBlock:^(NSArray * pages) {
+
+			if (self.currentPostActivityObject != nil && ![self.currentPostActivityObject.objectId isEqualToString:pfActivityObj.objectId]) {
+				return;
+			}
+			self.currentPostView = [[PostView alloc] initWithFrame:POSTVIEW_FRAME
+									  andPostChannelActivityObject:pfActivityObj small:self.inSmallMode andPageObjects:pages];
+			if(self.inSmallMode)[self.currentPostView muteAllVideos:YES];
+			NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
+			if (self.isOnScreen) {
+				[self.currentPostView postOnScreen];
+			} else if (self.isAlmostOnScreen) {
+				[self.currentPostView postAlmostOnScreen];
+			} else {
+				[self.currentPostView postAlmostOnScreen];
+			}
+			self.currentPostView.delegate = self;
+			self.currentPostView.listChannel = channelForList;
+
+			if(self.tapToExitNotification) {
+				[self insertSubview: self.currentPostView belowSubview: self.tapToExitNotification];
+			} else {
+				[self addSubview: self.currentPostView];
+			}
+			self.currentPostView.inSmallMode = self.inSmallMode;
+
+			if (self.inSmallMode){
+				[self.currentPostView checkIfUserHasLikedThePost];
+			} else {
+				[self.currentPostView createLikeAndShareBarWithNumberOfLikes: self.numLikes
+															  numberOfShares: self.numShares numberOfComments: self.numComments
+															   numberOfPages:numberOfPages andStartingPageNumber:@(1) startUp:up
+															withDeleteButton:withDelete];
+				[self.currentPostView addCreatorInfo];
+
+			}
+			[self bringSubviewToFront: self.dot];
+		}];
+	}];
 }
+
 
 -(void) showWhoLikesThePost:(PFObject *) post{
 	[self.cellDelegate showWhoLikesThePost:post];
@@ -294,9 +284,6 @@
 #pragma mark - Post view delegate -
 
 -(void)presentSmallLikeButton{
-    self.numLikes = self.currentPostObject[POST_NUM_LIKES];
-    self.numShares = self.currentPostObject[POST_NUM_REBLOGS];
-    self.numComments = self.currentPostObject[POST_NUM_COMMENTS];
     if(self.numComments == nil){
         self.numComments = @(0);
     }
@@ -323,8 +310,7 @@
     }
     
     [self.numLikeLabel setText:[self.numLikes stringValue]];
-    
-    
+
     //create share button
     if(!self.smallShareButton){
         self.smallShareButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -362,7 +348,7 @@
     [self.numCommentsLabel setText:[self.numComments stringValue]];
 }
 //set the start state of the like button
--(void)startLikeButtonAsLiked:(BOOL)isLiked{
+-(void)startLikeButtonAsLiked:(BOOL)isLiked {
     if(isLiked){
         [self.smallLikeButton setImage:[UIImage imageNamed:LIKE_ICON_PRESSED ] forState:UIControlStateNormal];
     }else{
@@ -370,7 +356,7 @@
     }
 }
 
--(void)updateSmallLikeButton:(BOOL)isLiked{
+-(void)updateSmallLikeButton:(BOOL)isLiked {
 	NSInteger numLikes;
 	if(isLiked){
 		[self.smallLikeButton setImage:[UIImage imageNamed:LIKE_ICON_PRESSED ] forState:UIControlStateNormal];
@@ -379,16 +365,13 @@
 		[self.smallLikeButton setImage:[UIImage imageNamed:LIKE_ICON_UNPRESSED] forState:UIControlStateNormal];
 		numLikes = (([self.numLikes integerValue]-1) < 0) ? 0 : ([self.numLikes integerValue]-1);
 	}
-
 	self.numLikes = [NSNumber numberWithInteger:numLikes];
 	if(self.numLikeLabel)[self.numLikeLabel setText:[self.numLikes stringValue]];
 }
 
-
 -(void) shareOptionSelectedForParsePostObject: (PFObject* ) post {
 	[self.cellDelegate shareOptionSelectedForParsePostObject:post];
 }
-
 
 -(void)removePostViewSelected{
 	[self.cellDelegate removePostViewSelected];

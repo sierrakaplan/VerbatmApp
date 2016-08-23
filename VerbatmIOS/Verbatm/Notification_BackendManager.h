@@ -10,17 +10,26 @@
 #import <Parse/PFUser.h>
 #import <Parse/PFObject.h>
 
+// Make sure you VALID_NOTIFICATION_TYPE when updating enum
 typedef enum {
-	NewFollower = 1 << 0, 			// 1
-    Like = 1 << 1, 					// 2
-	FriendJoinedVerbatm = 1 << 2, 	// 4
-    Share = 1 << 3, 				// 8
-	FriendsFirstPost = 1 << 4, 		// 16
-	Reblog = 1 << 5, 				// 32
-    NewComment = 1<<6,                  //64
-    CommentReply = 1<<7                  //128 /**/
-
+	NotificationTypeNewFollower = 1 << 0, 			// 1
+    NotificationTypeLike = 1 << 1, 					// 2
+	NotificationTypeFriendJoinedVerbatm = 1 << 2, 	// 4
+    NotificationTypeShare = 1 << 3, 				// 8
+	NotificationTypeFriendsFirstPost = 1 << 4, 		// 16
+	NotificationTypeReblog = 1 << 5, 				// 32
+    NotificationTypeNewComment = 1 << 6,            // 64
+	NotificationTypeCommentReply = 1 << 7           // 128
 } NotificationType;
+
+NSInteger const VALID_NOTIFICATION_TYPE = (NotificationTypeNewFollower | NotificationTypeLike | NotificationTypeFriendJoinedVerbatm |
+										   NotificationTypeShare | NotificationTypeFriendsFirstPost | NotificationTypeReblog |
+										   NotificationTypeNewComment | NotificationTypeCommentReply);
+
+NSInteger const NOTIFICATION_TYPE_WITH_POST = (NotificationTypeLike | NotificationTypeShare | NotificationTypeFriendsFirstPost | NotificationTypeReblog |
+											   NotificationTypeNewComment | NotificationTypeCommentReply);
+
+NSInteger const NOTIFICATION_NEW_POST = 20;
 
 @interface Notification_BackendManager : NSObject
 

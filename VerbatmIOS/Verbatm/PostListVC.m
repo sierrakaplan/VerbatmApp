@@ -145,10 +145,20 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate, FBSDKSharingDelegate>
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	self.exitedView = NO;
+	for (PostCollectionViewCell *currentCell in [self.collectionView visibleCells]) {
+		[currentCell onScreen];
+	}
 }
 
 -(void) viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
+}
+
+-(void) offScreen {
+	self.exitedView = YES;
+	for (PostCollectionViewCell *cellView in [self.collectionView visibleCells]) {
+		[cellView offScreen];
+	}
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -199,13 +209,6 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	}
 	self.footerBarIsUp = self.isCurrentUserProfile;
 	self.isInitiated = YES;
-}
-
--(void) offScreen {
-	self.exitedView = YES;
-	for (PostCollectionViewCell *cellView in [self.collectionView visibleCells]) {
-		[cellView offScreen];
-	}
 }
 
 -(void) updateInSmallMode: (BOOL) smallMode {
@@ -492,8 +495,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 			[cell clearViews];
 			[cell presentPostFromPCActivityObj:postActivityObject andChannel:self.channelForList
 							  withDeleteButton:self.isCurrentUserProfile andLikeShareBarUp:NO];
-		} else {
-			NSLog(@"same");
 		}
 	}
 	[self addTapGestureToCell:cell];
@@ -511,10 +512,18 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void)cellTapped:(UIGestureRecognizer *) tap {
-	PostCollectionViewCell * cellTapped = (PostCollectionViewCell *) tap.view;
-	if([cellTapped presentingTapToExitNotification]){
+	PostCollectionViewCell *cellTapped = (PostCollectionViewCell *) tap.view;
+	CGPoint touchPoint=[tap locationInView: cellTapped];
+	CGFloat touchRegionPadding = 20.f;
+	CGRect likeShareBarFrame = CGRectMake(cellTapped.frame.size.width - LIKE_SHARE_BAR_WIDTH - touchRegionPadding,
+										  cellTapped.frame.size.height - LIKE_SHARE_BAR_HEIGHT - touchRegionPadding,
+										  LIKE_SHARE_BAR_WIDTH + touchRegionPadding, LIKE_SHARE_BAR_HEIGHT + touchRegionPadding);
+	if (CGRectContainsPoint(likeShareBarFrame, touchPoint)) {
+		return;
+	}
+	if([cellTapped presentingTapToExitNotification]) {
 		[cellTapped removeTapToExitNotification];
-	}else{
+	} else {
 		[self.postListDelegate cellSelectedAtPostIndex:[self.collectionView indexPathForCell:cellTapped]];
 	}
 }
@@ -718,7 +727,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
 													handler:^(UIAlertAction * action) {}];
 
-	UIAlertAction* action2 = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDefault
+	UIAlertAction* action2 = [UIAlertAction actionWithTitle:@"Confirm"
+													  style:UIAlertActionStyleDefault
 													handler:^(UIAlertAction * action) {
 
 														NSMutableArray *channels = [[NSMutableArray alloc] init];
@@ -727,7 +737,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 														[Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
 
-															[Notification_BackendManager createNotificationWithType:Reblog receivingUser:[self.postToShare valueForKey:POST_ORIGINAL_CREATOR_KEY] relevantPostObject:self.postToShare];
+															[Notification_BackendManager createNotificationWithType:NotificationTypeReblog
+																									  receivingUser:[self.postToShare valueForKey:POST_ORIGINAL_CREATOR_KEY]
+																								 relevantPostObject:self.postToShare];
 
 															dispatch_async(dispatch_get_main_queue(), ^{
 																[self successfullyReblogged];
@@ -856,7 +868,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark FBSDKShareViewDelegate
 
 - (void)sharer:(id<FBSDKSharing>)sharer didCompleteWithResults:(NSDictionary *)results {
-	[Notification_BackendManager createNotificationWithType:Share receivingUser:self.postToShare[POST_ORIGINAL_CREATOR_KEY] relevantPostObject:self.postToShare];
+	[Notification_BackendManager createNotificationWithType:NotificationTypeShare
+											  receivingUser:self.postToShare[POST_ORIGINAL_CREATOR_KEY]
+										 relevantPostObject:self.postToShare];
 }
 
 /*!
@@ -1053,7 +1067,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	if(!_reblogSucessful){
 		_reblogSucessful = [[UIImageView alloc] init];
 		[_reblogSucessful setImage:[UIImage imageNamed:REBLOG_IMAGE]];
-		[_reblogSucessful setFrame:CGRectMake((self.view.frame.size.width/2.f)-REBLOG_IMAGE_SIZE/2.f, (self.view.frame.size.height/2.f) -REBLOG_IMAGE_SIZE/2.f, REBLOG_IMAGE_SIZE, REBLOG_IMAGE_SIZE)];
+		[_reblogSucessful setFrame:CGRectMake((self.view.frame.size.width/2.f) - REBLOG_IMAGE_SIZE/2.f,
+											  (self.view.frame.size.height/2.f) - REBLOG_IMAGE_SIZE/2.f,
+											  REBLOG_IMAGE_SIZE, REBLOG_IMAGE_SIZE)];
 	}
 	return _reblogSucessful;
 }

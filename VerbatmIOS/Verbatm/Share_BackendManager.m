@@ -11,6 +11,7 @@
 #import <Parse/PFQuery.h>
 
 #import "Share_BackendManager.h"
+#import "Commenting_BackendObject.h"
 
 /*
  CLASS_KEY @"ShareClass"
@@ -29,8 +30,14 @@
 	[newShareObject setObject:postParseObject forKey:SHARE_POST_SHARED_KEY];
 	[newShareObject setObject:SHARE_TYPE_REBLOG forKey:SHARE_TYPE];
 	[newShareObject setObject:channelObject forKey:SHARE_REBLOG_CHANNEL];
+    
+    
 	[newShareObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 		if (succeeded) {
+            //make sure that the this user also gets comment notifications
+            [Commenting_BackendObject addUserToConversationList:[PFUser currentUser] toPost:postParseObject];
+            
+            //increase num reblog count
 			[postParseObject incrementKey:POST_NUM_REBLOGS];
 			[postParseObject saveInBackground];
 		}
