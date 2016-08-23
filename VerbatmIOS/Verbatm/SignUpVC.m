@@ -27,7 +27,7 @@
 
 @end
 
-@implementation UserInfoVC
+@implementation SignUpVC
 
 -(void) viewDidLoad {
     [super viewDidLoad];

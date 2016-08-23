@@ -15,6 +15,7 @@
 		A5076D0E1BED6EF000303746 /* SingleMediaAndTextPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5076D0D1BED6EF000303746 /* SingleMediaAndTextPinchView.m */; };
 		A5076D141BF2B25100303746 /* TextOverMediaView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5076D131BF2B25100303746 /* TextOverMediaView.m */; };
 		A50E62461D542060007FD5AD /* GridView.m in Sources */ = {isa = PBXBuildFile; fileRef = A50E62451D542060007FD5AD /* GridView.m */; };
+		A51A0ACE1D6CE847009D7CDD /* WelcomeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A51A0ACD1D6CE847009D7CDD /* WelcomeVC.m */; };
 		A51B851A1D2F39B1006E90CC /* UIView+DTDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = A51B85191D2F39B1006E90CC /* UIView+DTDebug.m */; };
 		A51B851E1D2F3B79006E90CC /* NSObject+DTRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = A51B851D1D2F3B79006E90CC /* NSObject+DTRuntime.m */; };
 		A51B85201D2F3C43006E90CC /* DTLog.m in Sources */ = {isa = PBXBuildFile; fileRef = A51B851F1D2F3C43006E90CC /* DTLog.m */; };
@@ -44,7 +45,7 @@
 		A56B5D231CA49D0E00A61D27 /* Like_BackendManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A56B5D221CA49D0E00A61D27 /* Like_BackendManager.m */; };
 		A56B5D261CA4A24300A61D27 /* User_BackendObject.m in Sources */ = {isa = PBXBuildFile; fileRef = A56B5D251CA4A24300A61D27 /* User_BackendObject.m */; };
 		A56B5D291CA4D39400A61D27 /* Share_BackendManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A56B5D281CA4D39400A61D27 /* Share_BackendManager.m */; };
-		A56F68721B643B1400CE5744 /* VerbatmKeyboardToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68711B643B1400CE5744 /* VerbatmKeyboardToolBar.m */; };
+		A56F68721B643B1400CE5744 /* TextAveKeyboardToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68711B643B1400CE5744 /* TextAveKeyboardToolbar.m */; };
 		A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F687A1B65B25700CE5744 /* CollectionPinchView.m */; };
 		A56F68811B65B43D00CE5744 /* ImagePinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68801B65B43D00CE5744 /* ImagePinchView.m */; };
 		A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68831B65B44C00CE5744 /* VideoPinchView.m */; };
@@ -212,7 +213,7 @@
 		C7A58ABA1D46AB08006C3607 /* AdjustTextSizeToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A58AB91D46AB08006C3607 /* AdjustTextSizeToolBar.m */; };
 		C7A58ABD1D471789006C3607 /* AdjustTextAlignmentToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A58ABC1D471789006C3607 /* AdjustTextAlignmentToolBar.m */; };
 		C7AA49F81D14739A00A031C6 /* SharingLinkView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7AA49F71D14739A00A031C6 /* SharingLinkView.m */; };
-		C7AA49FB1D148A8C00A031C6 /* verbatmButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C7AA49FA1D148A8C00A031C6 /* verbatmButton.m */; };
+		C7AA49FB1D148A8C00A031C6 /* VerbatmButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C7AA49FA1D148A8C00A031C6 /* VerbatmButton.m */; };
 		C7AA49FF1D149B8C00A031C6 /* SharingLinkActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7AA49FE1D149B8C00A031C6 /* SharingLinkActionView.m */; };
 		C7BC4376199D97F5004B91A1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4375199D97F5004B91A1 /* Foundation.framework */; };
 		C7BC4378199D97F5004B91A1 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4377199D97F5004B91A1 /* CoreGraphics.framework */; };
@@ -299,6 +300,8 @@
 		A5076D131BF2B25100303746 /* TextOverMediaView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextOverMediaView.m; sourceTree = "<group>"; };
 		A50E62441D542060007FD5AD /* GridView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GridView.h; sourceTree = "<group>"; };
 		A50E62451D542060007FD5AD /* GridView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GridView.m; sourceTree = "<group>"; };
+		A51A0ACC1D6CE847009D7CDD /* WelcomeVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WelcomeVC.h; sourceTree = "<group>"; };
+		A51A0ACD1D6CE847009D7CDD /* WelcomeVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomeVC.m; sourceTree = "<group>"; };
 		A51B85181D2F39B1006E90CC /* UIView+DTDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+DTDebug.h"; sourceTree = "<group>"; };
 		A51B85191D2F39B1006E90CC /* UIView+DTDebug.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+DTDebug.m"; sourceTree = "<group>"; };
 		A51B851C1D2F3B79006E90CC /* NSObject+DTRuntime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+DTRuntime.h"; sourceTree = "<group>"; };
@@ -361,8 +364,8 @@
 		A56B5D251CA4A24300A61D27 /* User_BackendObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User_BackendObject.m; sourceTree = "<group>"; };
 		A56B5D271CA4D39400A61D27 /* Share_BackendManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Share_BackendManager.h; sourceTree = "<group>"; };
 		A56B5D281CA4D39400A61D27 /* Share_BackendManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Share_BackendManager.m; sourceTree = "<group>"; };
-		A56F68701B643B1400CE5744 /* VerbatmKeyboardToolBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmKeyboardToolBar.h; sourceTree = "<group>"; };
-		A56F68711B643B1400CE5744 /* VerbatmKeyboardToolBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmKeyboardToolBar.m; sourceTree = "<group>"; };
+		A56F68701B643B1400CE5744 /* TextAveKeyboardToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextAveKeyboardToolbar.h; sourceTree = "<group>"; };
+		A56F68711B643B1400CE5744 /* TextAveKeyboardToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextAveKeyboardToolbar.m; sourceTree = "<group>"; };
 		A56F68791B65B25700CE5744 /* CollectionPinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollectionPinchView.h; sourceTree = "<group>"; };
 		A56F687A1B65B25700CE5744 /* CollectionPinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollectionPinchView.m; sourceTree = "<group>"; };
 		A56F687F1B65B43D00CE5744 /* ImagePinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePinchView.h; sourceTree = "<group>"; };
@@ -614,8 +617,8 @@
 		C7A58ABC1D471789006C3607 /* AdjustTextAlignmentToolBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdjustTextAlignmentToolBar.m; sourceTree = "<group>"; };
 		C7AA49F61D14739A00A031C6 /* SharingLinkView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharingLinkView.h; sourceTree = "<group>"; };
 		C7AA49F71D14739A00A031C6 /* SharingLinkView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharingLinkView.m; sourceTree = "<group>"; };
-		C7AA49F91D148A8C00A031C6 /* verbatmButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmButton.h; sourceTree = "<group>"; };
-		C7AA49FA1D148A8C00A031C6 /* verbatmButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmButton.m; sourceTree = "<group>"; };
+		C7AA49F91D148A8C00A031C6 /* VerbatmButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmButton.h; sourceTree = "<group>"; };
+		C7AA49FA1D148A8C00A031C6 /* VerbatmButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmButton.m; sourceTree = "<group>"; };
 		C7AA49FD1D149B8C00A031C6 /* SharingLinkActionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharingLinkActionView.h; sourceTree = "<group>"; };
 		C7AA49FE1D149B8C00A031C6 /* SharingLinkActionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharingLinkActionView.m; sourceTree = "<group>"; };
 		C7BC4372199D97F5004B91A1 /* Verbatm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Verbatm.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -729,33 +732,184 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A5076D051BE999E900303746 /* Profile */ = {
+		A51A0ACF1D6CEFC2009D7CDD /* ADK */ = {
 			isa = PBXGroup;
 			children = (
-				C70E1C551C3BF76200346A25 /* Settings Page */,
+				C750A35919D768BD0006FA88 /* Media Capture Classes */,
+				C748836A1B489AE300E64ED9 /* GMImagePicker */,
+				C734FD9A19B14B8D00B2C370 /* ContentDevVC.h */,
+				C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */,
+				A51A0AE11D6CF4A4009D7CDD /* Custom Views */,
+			);
+			name = ADK;
+			sourceTree = "<group>";
+		};
+		A51A0AD01D6CEFCC009D7CDD /* Login/Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				A51A0AD71D6CF084009D7CDD /* UserAuth */,
+				A5D893711D667A0E007B33B9 /* OnboardingADK.h */,
+				A5D893721D667A0E007B33B9 /* OnboardingADK.m */,
+				C75690A61D0891FF002C9402 /* OnboardingBlogSelectionViewController.h */,
+				C75690A71D0891FF002C9402 /* OnboardingBlogSelectionViewController.m */,
+				A5D893741D67BB83007B33B9 /* FollowFriendsVC.h */,
+				A5D893751D67BB83007B33B9 /* FollowFriendsVC.m */,
+				A5D893771D6908D4007B33B9 /* FollowFriendCell.h */,
+				A5D893781D6908D4007B33B9 /* FollowFriendCell.m */,
+				A51A0ACC1D6CE847009D7CDD /* WelcomeVC.h */,
+				A51A0ACD1D6CE847009D7CDD /* WelcomeVC.m */,
+				A51A0AE01D6CF44A009D7CDD /* Custom Views */,
+			);
+			name = Login/Onboarding;
+			sourceTree = "<group>";
+		};
+		A51A0AD21D6CEFDB009D7CDD /* Profile/ProfileList */ = {
+			isa = PBXGroup;
+			children = (
 				C7E65F671B9245200042AD99 /* ProfileVC.h */,
 				C7E65F681B9245200042AD99 /* ProfileVC.m */,
+				C7178E061D21101900B90643 /* FeedTableViewController.h */,
+				C7178E071D21101900B90643 /* FeedTableViewController.m */,
+				A51A0ADB1D6CF1E2009D7CDD /* PostList */,
+				A51A0ADF1D6CF418009D7CDD /* Custom Views */,
 			);
-			name = Profile;
+			name = Profile/ProfileList;
 			sourceTree = "<group>";
 		};
-		A51E74511C897E2F00CF8DEA /* Downloaded Libraries */ = {
+		A51A0AD31D6CEFEB009D7CDD /* Discover */ = {
 			isa = PBXGroup;
 			children = (
-				C748836A1B489AE300E64ED9 /* GMImagePicker */,
+				A51A0AD81D6CF0AC009D7CDD /* Search */,
+				A5C38ABF1CC1B67B0067D077 /* DiscoverVC.h */,
+				A5C38AC01CC1B67B0067D077 /* DiscoverVC.m */,
 			);
-			name = "Downloaded Libraries";
+			name = Discover;
 			sourceTree = "<group>";
 		};
-		A51E74521C897EFC00CF8DEA /* UI Things */ = {
+		A51A0AD41D6CEFF0009D7CDD /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				C723C9841D2B3DAA00E87D58 /* NotificationsListTVC.h */,
+				C723C9851D2B3DAA00E87D58 /* NotificationsListTVC.m */,
+			);
+			name = Notifications;
+			sourceTree = "<group>";
+		};
+		A51A0AD51D6CF036009D7CDD /* Framedation/Model */ = {
+			isa = PBXGroup;
+			children = (
+				A5BFA5971CA89A90002C3884 /* Publishing */,
+				A5E73B771D1635B500527ECF /* GTL files */,
+				A5337BC41CCDD9B800551394 /* User Info + channels */,
+				A5337BC31CCDD99000551394 /* Social Network objects */,
+				A5337BC21CCDD97A00551394 /* Elements of post */,
+				A5337BBE1CCDD95700551394 /* Feed Query Managers */,
+				C74BC2911D2CDD2C00C1FD80 /* Notifications */,
+			);
+			name = Framedation/Model;
+			sourceTree = "<group>";
+		};
+		A51A0AD61D6CF03F009D7CDD /* FrontEnd */ = {
+			isa = PBXGroup;
+			children = (
+				A51A0ADD1D6CF326009D7CDD /* Common */,
+				A58EE8841BA8771700B7B396 /* NoAnimationUnwindSegue.h */,
+				A58EE8851BA8771700B7B396 /* NoAnimationUnwindSegue.m */,
+				A560EF991BA88F8B003FB041 /* User App Preferences */,
+				A51A0ADA1D6CF1D6009D7CDD /* UserList */,
+				A51A0AD91D6CF0D6009D7CDD /* MainTabController */,
+				A51A0AD41D6CEFF0009D7CDD /* Notifications */,
+				A51A0AD31D6CEFEB009D7CDD /* Discover */,
+				C70E1C551C3BF76200346A25 /* Settings Page */,
+				A51A0AD21D6CEFDB009D7CDD /* Profile/ProfileList */,
+				A51A0AD01D6CEFCC009D7CDD /* Login/Onboarding */,
+				A51A0ACF1D6CEFC2009D7CDD /* ADK */,
+				A560EF9E1BA8DFCC003FB041 /* Page Type Analyzer */,
+			);
+			name = FrontEnd;
+			sourceTree = "<group>";
+		};
+		A51A0AD71D6CF084009D7CDD /* UserAuth */ = {
+			isa = PBXGroup;
+			children = (
+				C7F3D4691A4F84C000B43238 /* LoginVC.h */,
+				C7F3D46A1A4F84C000B43238 /* LoginVC.m */,
+				A5337BBB1CCD99D600551394 /* SignUpVC.h */,
+				A5337BBC1CCD99D600551394 /* SignUpVC.m */,
+			);
+			name = UserAuth;
+			sourceTree = "<group>";
+		};
+		A51A0AD81D6CF0AC009D7CDD /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				A51BB2A61D2657D00020D529 /* SearchResultsVC.h */,
+				A51BB2A71D2657D00020D529 /* SearchResultsVC.m */,
+			);
+			name = Search;
+			sourceTree = "<group>";
+		};
+		A51A0AD91D6CF0D6009D7CDD /* MainTabController */ = {
+			isa = PBXGroup;
+			children = (
+				C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */,
+				C7EF5BB41B0CD5E500E7915B /* MasterNavigationVC.h */,
+			);
+			name = MainTabController;
+			sourceTree = "<group>";
+		};
+		A51A0ADA1D6CF1D6009D7CDD /* UserList */ = {
+			isa = PBXGroup;
+			children = (
+				C76172721C4C8B1300AB0D84 /* UserAndChannelListsTVC.h */,
+				C76172731C4C8B1300AB0D84 /* UserAndChannelListsTVC.m */,
+			);
+			name = UserList;
+			sourceTree = "<group>";
+		};
+		A51A0ADB1D6CF1E2009D7CDD /* PostList */ = {
+			isa = PBXGroup;
+			children = (
+				C76172791C4DFB7700AB0D84 /* PostListVC.h */,
+				C761727A1C4DFB7700AB0D84 /* PostListVC.m */,
+			);
+			name = PostList;
+			sourceTree = "<group>";
+		};
+		A51A0ADC1D6CF2C7009D7CDD /* Resources */ = {
 			isa = PBXGroup;
 			children = (
 				A5934B9F1C10F044007C7830 /* Fonts */,
+				C774040E19BE6538004C50EA /* Images.xcassets */,
 			);
-			name = "UI Things";
+			name = Resources;
 			sourceTree = "<group>";
 		};
-		A52B96071CFE18EA00EFA7EB /* Profile */ = {
+		A51A0ADD1D6CF326009D7CDD /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				C7BD53C61B5B790B00EE6241 /* Constants  */,
+				A5CB82A41B5744B800195A2E /* Categories and Effects */,
+				C75985F91B85577900FE77F7 /* Internet Connectivity Monitor */,
+				A51A0ADE1D6CF3AB009D7CDD /* Utility Functions */,
+			);
+			name = Common;
+			sourceTree = "<group>";
+		};
+		A51A0ADE1D6CF3AB009D7CDD /* Utility Functions */ = {
+			isa = PBXGroup;
+			children = (
+				C7F3EBCA1C814313007D23DF /* VideoDownloadManager.h */,
+				C7F3EBCB1C814313007D23DF /* VideoDownloadManager.m */,
+				A586566F1B621CA4008E358C /* MathOperations.h */,
+				A58656701B621CA4008E358C /* MathOperations.m */,
+				C7E2C88D1BB7E97600D83668 /* UtilityFunctions.h */,
+				C7E2C88E1BB7E97600D83668 /* UtilityFunctions.m */,
+			);
+			name = "Utility Functions";
+			sourceTree = "<group>";
+		};
+		A51A0ADF1D6CF418009D7CDD /* Custom Views */ = {
 			isa = PBXGroup;
 			children = (
 				A52B96081CFE193800EFA7EB /* ProfileHeaderView.h */,
@@ -763,16 +917,39 @@
 				C747498F1C2B1CB90047C66E /* ProfileInformationBar.h */,
 				C74749901C2B1CB90047C66E /* ProfileInformationBar.m */,
 			);
-			name = Profile;
+			name = "Custom Views";
 			sourceTree = "<group>";
 		};
-		A5337BB71CCD60AA00551394 /* Keyboard tool bars */ = {
+		A51A0AE01D6CF44A009D7CDD /* Custom Views */ = {
 			isa = PBXGroup;
 			children = (
-				A56F68701B643B1400CE5744 /* VerbatmKeyboardToolBar.h */,
-				A56F68711B643B1400CE5744 /* VerbatmKeyboardToolBar.m */,
 				A5337BB81CCD60CF00551394 /* LoginKeyboardToolBar.h */,
 				A5337BB91CCD60CF00551394 /* LoginKeyboardToolBar.m */,
+			);
+			name = "Custom Views";
+			sourceTree = "<group>";
+		};
+		A51A0AE11D6CF4A4009D7CDD /* Custom Views */ = {
+			isa = PBXGroup;
+			children = (
+				A51A0AE21D6CF4CD009D7CDD /* TextAVE */,
+			);
+			name = "Custom Views";
+			sourceTree = "<group>";
+		};
+		A51A0AE21D6CF4CD009D7CDD /* TextAVE */ = {
+			isa = PBXGroup;
+			children = (
+				A51A0AE31D6CF4E6009D7CDD /* Toolbars */,
+			);
+			name = TextAVE;
+			sourceTree = "<group>";
+		};
+		A51A0AE31D6CF4E6009D7CDD /* Toolbars */ = {
+			isa = PBXGroup;
+			children = (
+				A56F68701B643B1400CE5744 /* TextAveKeyboardToolbar.h */,
+				A56F68711B643B1400CE5744 /* TextAveKeyboardToolbar.m */,
 				C7A58AB81D46AB08006C3607 /* AdjustTextSizeToolBar.h */,
 				C7A58AB91D46AB08006C3607 /* AdjustTextSizeToolBar.m */,
 				C7A58ABB1D471789006C3607 /* AdjustTextAlignmentToolBar.h */,
@@ -781,6 +958,13 @@
 				C71FA3211D474FAB003989F3 /* AdjustTextFontToolBar.m */,
 				C71FA3231D476D91003989F3 /* AdjustTextAVEBackgroundToolBar.h */,
 				C71FA3241D476D91003989F3 /* AdjustTextAVEBackgroundToolBar.m */,
+			);
+			name = Toolbars;
+			sourceTree = "<group>";
+		};
+		A5337BB71CCD60AA00551394 /* Keyboard tool bars */ = {
+			isa = PBXGroup;
+			children = (
 				C73766741D64D9D800933A81 /* CommentingKeyboardToolbar.h */,
 				C73766751D64D9D800933A81 /* CommentingKeyboardToolbar.m */,
 			);
@@ -852,8 +1036,6 @@
 		A5337BC51CCDD9FA00551394 /* Video Download Manager */ = {
 			isa = PBXGroup;
 			children = (
-				C7F3EBCA1C814313007D23DF /* VideoDownloadManager.h */,
-				C7F3EBCB1C814313007D23DF /* VideoDownloadManager.m */,
 			);
 			name = "Video Download Manager";
 			sourceTree = "<group>";
@@ -869,19 +1051,6 @@
 			name = "User App Preferences";
 			sourceTree = "<group>";
 		};
-		A560EF9A1BA89552003FB041 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				A5E73B771D1635B500527ECF /* GTL files */,
-				A5337BC41CCDD9B800551394 /* User Info + channels */,
-				A5337BC31CCDD99000551394 /* Social Network objects */,
-				A5337BC21CCDD97A00551394 /* Elements of post */,
-				A5337BBE1CCDD95700551394 /* Feed Query Managers */,
-				C74BC2911D2CDD2C00C1FD80 /* Notifications */,
-			);
-			name = Model;
-			sourceTree = "<group>";
-		};
 		A560EF9E1BA8DFCC003FB041 /* Page Type Analyzer */ = {
 			isa = PBXGroup;
 			children = (
@@ -889,37 +1058,6 @@
 				F266F3F01A4A6AE200EA0327 /* PageTypeAnalyzer.m */,
 			);
 			name = "Page Type Analyzer";
-			sourceTree = "<group>";
-		};
-		A560EFAF1BB09AF8003FB041 /* Login */ = {
-			isa = PBXGroup;
-			children = (
-				C7F3D4691A4F84C000B43238 /* LoginVC.h */,
-				C7F3D46A1A4F84C000B43238 /* LoginVC.m */,
-				A5337BBB1CCD99D600551394 /* SignUpVC.h */,
-				A5337BBC1CCD99D600551394 /* SignUpVC.m */,
-			);
-			name = Login;
-			sourceTree = "<group>";
-		};
-		A560EFB01BB09B21003FB041 /* Creation */ = {
-			isa = PBXGroup;
-			children = (
-				C734FD9A19B14B8D00B2C370 /* ContentDevVC.h */,
-				C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */,
-				A5D893711D667A0E007B33B9 /* OnboardingADK.h */,
-				A5D893721D667A0E007B33B9 /* OnboardingADK.m */,
-			);
-			name = Creation;
-			sourceTree = "<group>";
-		};
-		A560EFB11BB09B36003FB041 /* Feed */ = {
-			isa = PBXGroup;
-			children = (
-				C7178E061D21101900B90643 /* FeedTableViewController.h */,
-				C7178E071D21101900B90643 /* FeedTableViewController.m */,
-			);
-			name = Feed;
 			sourceTree = "<group>";
 		};
 		A560EFB21BB0AF42003FB041 /* Login */ = {
@@ -980,15 +1118,6 @@
 				A56F68861B66FED900CE5744 /* ContentPageElementScrollView.m */,
 			);
 			name = "Scroll Views";
-			sourceTree = "<group>";
-		};
-		A58EE8831BA876FA00B7B396 /* Segues */ = {
-			isa = PBXGroup;
-			children = (
-				A58EE8841BA8771700B7B396 /* NoAnimationUnwindSegue.h */,
-				A58EE8851BA8771700B7B396 /* NoAnimationUnwindSegue.m */,
-			);
-			name = Segues;
 			sourceTree = "<group>";
 		};
 		A5934B9F1C10F044007C7830 /* Fonts */ = {
@@ -1056,19 +1185,6 @@
 				1281BBE11CFB878C00161ECC /* ExternalShare.m */,
 			);
 			name = Publishing;
-			sourceTree = "<group>";
-		};
-		A5C38ABB1CC1B35D0067D077 /* Discover */ = {
-			isa = PBXGroup;
-			children = (
-				C76172721C4C8B1300AB0D84 /* UserAndChannelListsTVC.h */,
-				C76172731C4C8B1300AB0D84 /* UserAndChannelListsTVC.m */,
-				A5C38ABF1CC1B67B0067D077 /* DiscoverVC.h */,
-				A5C38AC01CC1B67B0067D077 /* DiscoverVC.m */,
-				A51BB2A61D2657D00020D529 /* SearchResultsVC.h */,
-				A51BB2A71D2657D00020D529 /* SearchResultsVC.m */,
-			);
-			name = Discover;
 			sourceTree = "<group>";
 		};
 		A5CB82A41B5744B800195A2E /* Categories and Effects */ = {
@@ -1180,37 +1296,6 @@
 				C7FB919A1D2DC624005B25A1 /* NotificationPostPreview.m */,
 			);
 			name = "Viewing Posts";
-			sourceTree = "<group>";
-		};
-		A5F986121D480C5B001179FA /* Root view controller */ = {
-			isa = PBXGroup;
-			children = (
-				C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */,
-				C7EF5BB41B0CD5E500E7915B /* MasterNavigationVC.h */,
-			);
-			name = "Root view controller";
-			sourceTree = "<group>";
-		};
-		A5F986131D480C7B001179FA /* Onboarding */ = {
-			isa = PBXGroup;
-			children = (
-				C75690A61D0891FF002C9402 /* OnboardingBlogSelectionViewController.h */,
-				C75690A71D0891FF002C9402 /* OnboardingBlogSelectionViewController.m */,
-				A5D893741D67BB83007B33B9 /* FollowFriendsVC.h */,
-				A5D893751D67BB83007B33B9 /* FollowFriendsVC.m */,
-				A5D893771D6908D4007B33B9 /* FollowFriendCell.h */,
-				A5D893781D6908D4007B33B9 /* FollowFriendCell.m */,
-			);
-			name = Onboarding;
-			sourceTree = "<group>";
-		};
-		A5F986141D480C97001179FA /* Notifications */ = {
-			isa = PBXGroup;
-			children = (
-				C723C9841D2B3DAA00E87D58 /* NotificationsListTVC.h */,
-				C723C9851D2B3DAA00E87D58 /* NotificationsListTVC.m */,
-			);
-			name = Notifications;
 			sourceTree = "<group>";
 		};
 		A5FB5D4F1BCB11DF00634A96 /* Strings */ = {
@@ -1351,28 +1436,9 @@
 			name = "CollectionView Cells";
 			sourceTree = "<group>";
 		};
-		C78B681119CA6914003D0AC5 /* View Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				A5F986121D480C5B001179FA /* Root view controller */,
-				A560EFAF1BB09AF8003FB041 /* Login */,
-				A5F986131D480C7B001179FA /* Onboarding */,
-				A560EFB11BB09B36003FB041 /* Feed */,
-				A5C38ABB1CC1B35D0067D077 /* Discover */,
-				A560EFB01BB09B21003FB041 /* Creation */,
-				A5076D051BE999E900303746 /* Profile */,
-				A5F986141D480C97001179FA /* Notifications */,
-				A58EE8831BA876FA00B7B396 /* Segues */,
-				C76172791C4DFB7700AB0D84 /* PostListVC.h */,
-				C761727A1C4DFB7700AB0D84 /* PostListVC.m */,
-			);
-			name = "View Controllers";
-			sourceTree = "<group>";
-		};
 		C78B682719CA6C0A003D0AC5 /* Custom Views */ = {
 			isa = PBXGroup;
 			children = (
-				A52B96071CFE18EA00EFA7EB /* Profile */,
 				A5337BB71CCD60AA00551394 /* Keyboard tool bars */,
 				A560EFB21BB0AF42003FB041 /* Login */,
 				A56F68761B643D4B00CE5744 /* Video Player */,
@@ -1404,8 +1470,8 @@
 		C7AA49FC1D148A9100A031C6 /* Custom Button */ = {
 			isa = PBXGroup;
 			children = (
-				C7AA49F91D148A8C00A031C6 /* verbatmButton.h */,
-				C7AA49FA1D148A8C00A031C6 /* verbatmButton.m */,
+				C7AA49F91D148A8C00A031C6 /* VerbatmButton.h */,
+				C7AA49FA1D148A8C00A031C6 /* VerbatmButton.m */,
 			);
 			name = "Custom Button";
 			sourceTree = "<group>";
@@ -1476,24 +1542,14 @@
 		C7BC437B199D97F5004B91A1 /* Verbatm */ = {
 			isa = PBXGroup;
 			children = (
-				C774040E19BE6538004C50EA /* Images.xcassets */,
+				A51A0ADC1D6CF2C7009D7CDD /* Resources */,
 				A5D8937D1D6B6D62007B33B9 /* Main.storyboard */,
-				A51E74521C897EFC00CF8DEA /* UI Things */,
-				A51E74511C897E2F00CF8DEA /* Downloaded Libraries */,
-				C716E9D31BD6CAAA001B769D /* Analytics */,
-				C7BD53C61B5B790B00EE6241 /* Constants  */,
-				C7E2C8901BB7E97F00D83668 /* Utility Functions */,
-				A560EF991BA88F8B003FB041 /* User App Preferences */,
-				C75985F91B85577900FE77F7 /* Internet Connectivity Monitor */,
-				A5CB82A41B5744B800195A2E /* Categories and Effects */,
-				C750A35919D768BD0006FA88 /* Media Capture Classes */,
-				A5337BC51CCDD9FA00551394 /* Video Download Manager */,
-				A560EF9E1BA8DFCC003FB041 /* Page Type Analyzer */,
-				C78B682719CA6C0A003D0AC5 /* Custom Views */,
-				C78B681119CA6914003D0AC5 /* View Controllers */,
-				A5BFA5971CA89A90002C3884 /* Publishing */,
-				A560EF9A1BA89552003FB041 /* Model */,
+				A51A0AD61D6CF03F009D7CDD /* FrontEnd */,
+				A51A0AD51D6CF036009D7CDD /* Framedation/Model */,
 				C7BC437C199D97F5004B91A1 /* Supporting Files */,
+				C716E9D31BD6CAAA001B769D /* Analytics */,
+				A5337BC51CCDD9FA00551394 /* Video Download Manager */,
+				C78B682719CA6C0A003D0AC5 /* Custom Views */,
 			);
 			path = Verbatm;
 			sourceTree = "<group>";
@@ -1546,17 +1602,6 @@
 				C7BF1AAF1C59C7D200CEDE4B /* ParseBackendKeys.h */,
 			);
 			name = "Constants ";
-			sourceTree = "<group>";
-		};
-		C7E2C8901BB7E97F00D83668 /* Utility Functions */ = {
-			isa = PBXGroup;
-			children = (
-				A586566F1B621CA4008E358C /* MathOperations.h */,
-				A58656701B621CA4008E358C /* MathOperations.m */,
-				C7E2C88D1BB7E97600D83668 /* UtilityFunctions.h */,
-				C7E2C88E1BB7E97600D83668 /* UtilityFunctions.m */,
-			);
-			name = "Utility Functions";
 			sourceTree = "<group>";
 		};
 		C7F22B321C38415000E56EA7 /* Sharing  */ = {
@@ -1874,7 +1919,7 @@
 				127EA6DC1CDF90FE000BEBAD /* FollowingView.m in Sources */,
 				C78204EE1C32EAC500F56A63 /* CreatorAndChannelBar.m in Sources */,
 				A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */,
-				A56F68721B643B1400CE5744 /* VerbatmKeyboardToolBar.m in Sources */,
+				A56F68721B643B1400CE5744 /* TextAveKeyboardToolbar.m in Sources */,
 				A5E860071B97CC3C00E148D0 /* PreviewDisplayView.m in Sources */,
 				C7AA49F81D14739A00A031C6 /* SharingLinkView.m in Sources */,
 				A535E5001BC4459800A087D1 /* UIView+Effects.m in Sources */,
@@ -1918,6 +1963,7 @@
 				C755DB0C1C74619200136F6E /* PublishingProgressManager.m in Sources */,
 				A56B5D201CA49B1E00A61D27 /* Post_Channel_RelationshipManager.m in Sources */,
 				A5B0A81B1C0E63D60062D7BF /* PageViewingExperience.m in Sources */,
+				A51A0ACE1D6CE847009D7CDD /* WelcomeVC.m in Sources */,
 				F266F3F11A4A6AE200EA0327 /* PageTypeAnalyzer.m in Sources */,
 				A5CA61151B9A013E009D9D11 /* AdjustableBlurEffect.m in Sources */,
 				A5934B9E1C10E4C8007C7830 /* CustomTab.m in Sources */,
@@ -1927,7 +1973,7 @@
 				C76172771C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m in Sources */,
 				A5D893731D667A0E007B33B9 /* OnboardingADK.m in Sources */,
 				A5934B8F1C0FDFD6007C7830 /* VerbatmScrollView.m in Sources */,
-				C7AA49FB1D148A8C00A031C6 /* verbatmButton.m in Sources */,
+				C7AA49FB1D148A8C00A031C6 /* VerbatmButton.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
 				C73766731D63C71F00933A81 /* Commenting_BackendObject.m in Sources */,
 				C716E9D21BD6C338001B769D /* Analytics.m in Sources */,

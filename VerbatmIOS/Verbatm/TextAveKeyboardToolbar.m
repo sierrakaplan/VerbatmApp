@@ -11,7 +11,7 @@
 #import "AdjustTextFontToolBar.h"
 #import "AdjustTextAVEBackgroundToolBar.h"
 #import "Icons.h"
-#import "VerbatmKeyboardToolBar.h"
+#import "TextAveKeyboardToolbar.h"
 #import "Styles.h"
 #import "SizesAndPositions.h"
 #import "UtilityFunctions.h"
@@ -26,7 +26,7 @@ typedef enum {
 	photoPosition = 6
 } ToolBarOptions;
 
-@interface VerbatmKeyboardToolBar()<AdjustTextSizeDelegate, AdjustTextAlignmentToolBarDelegate, AdjustTextFontToolBarDelegate, AdjustTextAVEBackgroundToolBarDelegate>
+@interface TextAveKeyboardToolbar()<AdjustTextSizeDelegate, AdjustTextAlignmentToolBarDelegate, AdjustTextFontToolBarDelegate, AdjustTextAVEBackgroundToolBarDelegate>
 
 @property (nonatomic) BOOL textIsBlack;
 @property (nonatomic) BOOL onTextAve;
@@ -67,7 +67,7 @@ typedef enum {
 
 @end
 
-@implementation VerbatmKeyboardToolBar
+@implementation TextAveKeyboardToolbar
 
 -(instancetype)initWithFrame:(CGRect)frame andTextColorBlack:(BOOL)textColorBlack
 				 isOnTextAve:(BOOL)onTextAve isOnScreenPermanently:(BOOL)onScreen {

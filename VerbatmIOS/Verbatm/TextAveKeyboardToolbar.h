@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol KeyboardToolBarDelegate <NSObject>
+@protocol TextAveKeyboardToolbarDelegate <NSObject>
 
 /* If black, text color changed to black, else changed to white */
 -(void) textColorChangedToBlack:(BOOL)black;
@@ -34,9 +34,9 @@
 
 
 
-@interface VerbatmKeyboardToolBar : UIView
+@interface TextAveKeyboardToolbar : UIView
 
-@property (nonatomic, weak) id<KeyboardToolBarDelegate> delegate;
+@property (nonatomic, weak) id<TextAveKeyboardToolbarDelegate> delegate;
 
 -(instancetype)initWithFrame:(CGRect)frame andTextColorBlack:(BOOL)textColorBlack
 				 isOnTextAve:(BOOL)onTextAve isOnScreenPermanently:(BOOL) onScreen;

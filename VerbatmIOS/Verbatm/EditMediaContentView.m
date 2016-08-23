@@ -21,15 +21,15 @@
 #import "TextOverMediaView.h"
 #import "TextPinchView.h"
 
-#import "VerbatmKeyboardToolBar.h"
+#import "TextAveKeyboardToolbar.h"
 
 #import "UserSetupParameters.h"
 #import "UITextView+Utilities.h"
 
-@interface EditMediaContentView () <KeyboardToolBarDelegate, UITextViewDelegate, UIGestureRecognizerDelegate>
+@interface EditMediaContentView () <TextAveKeyboardToolbarDelegate, UITextViewDelegate, UIGestureRecognizerDelegate>
 
 //keyboard that appears when the user has text on the screen
-@property (nonatomic) VerbatmKeyboardToolBar *permanentOnScreenKeyboard;
+@property (nonatomic) TextAveKeyboardToolbar *permanentOnScreenKeyboard;
 
 @property (nonatomic, strong) TextOverMediaView *textAndImageView;
 @property (nonatomic) UITapGestureRecognizer *editTextGesture;
@@ -147,7 +147,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 -(void)addToolBarToViewWithTextColorBlack:(BOOL)textColorBlack {
 	CGRect toolBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
 	BOOL onTextAve = [self.pinchView isKindOfClass:[TextPinchView class]];
-	VerbatmKeyboardToolBar* toolBar = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
+	TextAveKeyboardToolbar* toolBar = [[TextAveKeyboardToolbar alloc] initWithFrame:toolBarFrame
                                                                   andTextColorBlack: textColorBlack
 																		isOnTextAve:onTextAve
 															  isOnScreenPermanently:NO];
@@ -158,7 +158,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	if(!self.permanentOnScreenKeyboard && self.textAndImageView) {
 		toolBarFrame.origin.y = self.frame.size.height - TEXT_TOOLBAR_HEIGHT;
 		toolBarFrame.size.height = TEXT_TOOLBAR_HEIGHT;
-		self.permanentOnScreenKeyboard = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame
+		self.permanentOnScreenKeyboard = [[TextAveKeyboardToolbar alloc] initWithFrame:toolBarFrame
 																	 andTextColorBlack:textColorBlack
 																		   isOnTextAve:onTextAve
 																 isOnScreenPermanently:YES];

@@ -6,9 +6,9 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
-#import "verbatmButton.h"
+#import "VerbatmButton.h"
 
-@interface verbatmButton ()
+@interface VerbatmButton ()
 
 @property (nonatomic) UIImage * selectedImage;
 @property (nonatomic) UIImage * unselectedImage;
@@ -16,7 +16,7 @@
 @end
 
 
-@implementation verbatmButton
+@implementation VerbatmButton
 
 
 -(void)setButtonInSelectedState:(ButtonSelectionState)buttonInSelectedState {

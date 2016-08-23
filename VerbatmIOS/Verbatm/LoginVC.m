@@ -44,8 +44,6 @@
 ChooseLoginOrSignupProtocol, ConfirmationCodeSignUpDelegate, LogIntoAccountProtocol>
 
 @property (nonatomic) BOOL loginFirstTimeDone;
-@property (strong, nonatomic) UIView* animationView;
-@property (strong, nonatomic) UILabel* animationLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *verbatmLogoImageView;
 @property (weak, nonatomic) IBOutlet UILabel *welcomeLabel;
@@ -65,11 +63,6 @@ ChooseLoginOrSignupProtocol, ConfirmationCodeSignUpDelegate, LogIntoAccountProto
 
 @property (nonatomic) BOOL createdUserWithLoginCode;
 
-
-@property (nonatomic) UIScrollView * onBoardingView;
-@property (nonatomic) UIScrollView * contentOnboardingPage;
-
-
 @property (nonatomic) LogIntoAccount * loginToAccountView;
 @property (nonatomic) ConfirmationCodeSignUp * confirmationCodeEntry;
 
@@ -78,18 +71,15 @@ ChooseLoginOrSignupProtocol, ConfirmationCodeSignUpDelegate, LogIntoAccountProto
 
 #define BRING_UP_CREATE_ACCOUNT_SEGUE @"create_account_segue"
 
-@property (weak, nonatomic) IBOutlet UIPageControl *pageControlView;
-
 @end
 
-@implementation SignInVC
+@implementation LoginVC
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	[self.backgroundImageView setFrame:self.view.bounds];
 	[self centerViews];
 	[self registerForNotifications];
-	//[self addFacebookLoginButton];
 	self.loginFirstTimeDone = NO;
 	self.enteringPhoneNumber = YES;
 	UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
@@ -97,15 +87,8 @@ ChooseLoginOrSignupProtocol, ConfirmationCodeSignUpDelegate, LogIntoAccountProto
 
 	[self.view addGestureRecognizer:tap];
 	[self presentLoginSignUpOption];
-	if(![[UserSetupParameters sharedInstance] checkOnboardingShown]){
-		[self createOnBoarding];
-	}else{
-		[self.pageControlView removeFromSuperview];
-	}
-
 	[self.view sendSubviewToBack:self.backgroundImageView];
 }
-
 
 -(void) centerViews {
 	self.verbatmLogoImageView.center = CGPointMake(self.view.center.x, self.verbatmLogoImageView.center.y);
@@ -116,97 +99,30 @@ ChooseLoginOrSignupProtocol, ConfirmationCodeSignUpDelegate, LogIntoAccountProto
 	self.originalPhoneTextFrame = self.phoneLoginField.frame;
 }
 
-//forward == yes means that animation should go right to left (advancing to next screen)
--(void)replaceView:(UIView *) currentView withView:(UIView *)nextView goingForward:(BOOL) forward{
-
-	if(currentView && nextView){
-
-		if(forward){
-			nextView.frame = CGRectMake(self.view.frame.size.width, 0.f, nextView.frame.size.width, nextView.frame.size.height);
-			[self.view addSubview:nextView];
-		}else{
-			nextView.frame = CGRectMake(-self.view.frame.size.width, 0.f, nextView.frame.size.width, nextView.frame.size.height);
-			[self.view addSubview:nextView];
-		}
-
-		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-
-			if(forward){
-				currentView.frame = CGRectMake(- self.view.frame.size.width, 0.f, currentView.frame.size.width, currentView.frame.size.height);
-				nextView.frame = self.view.bounds;
-			}else{
-				currentView.frame = CGRectMake(self.view.frame.size.width, 0.f, currentView.frame.size.width, currentView.frame.size.height);
-
-				nextView.frame = self.view.bounds;
-			}
-
-		}];
+//forward means animation should go right to left (next view is coming on to right)
+-(void)replaceView:(UIView *) currentView withView:(UIView *)nextView goingForward:(BOOL) forward {
+	CGRect nextFrame = self.view.frame;
+	CGRect newCurrentFrame = self.view.frame;
+	if(forward) {
+		nextFrame.origin.x = self.view.frame.size.width;
+		newCurrentFrame.origin.x = -self.view.frame.size.width;
+	} else {
+		nextFrame.origin.x = -self.view.frame.size.width;
+		newCurrentFrame.origin.x = self.view.frame.size.width;
 	}
+	nextView.frame = nextFrame;
+	[self.view addSubview:nextView];
+
+	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
+		currentView.frame = newCurrentFrame;
+		nextView.frame = self.view.bounds;
+	}];
 }
 
 -(void)presentLoginSignUpOption{
 	self.chooseLoginOrSignUpView = [[ChooseLoginOrSignup alloc] initWithFrame:self.view.bounds];
 	self.chooseLoginOrSignUpView.delegate = self;
 	[self.view addSubview:self.chooseLoginOrSignUpView];
-}
-
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
-
-	if(scrollView == self.onBoardingView){
-		self.pageControlView.currentPage = scrollView.contentOffset.x/self.view.bounds.size.width;
-
-		if(scrollView.contentOffset.x == self.view.bounds.size.width *3){
-			[scrollView removeFromSuperview];
-			[self.pageControlView removeFromSuperview];
-			[[UserSetupParameters sharedInstance] setOnboardingShown];
-		}
-
-	}else if (scrollView == self.contentOnboardingPage){
-		if(scrollView.contentOffset.y == self.view.bounds.size.height){
-			self.pageControlView.numberOfPages = 4;
-			self.onBoardingView.contentSize = CGSizeMake(self.view.bounds.size.width *4, 0);
-		}
-	}
-}
-
--(void)createOnBoarding{
-	[self.view bringSubviewToFront:self.pageControlView];
-
-	NSArray * planeNames = @[@"Welcome D6", @"Post"];
-	NSArray * subSVNames= @[@"Content", @"Content Page 2"];
-
-
-	for(int i = 0; i < planeNames.count; i ++){
-		NSString * name =  planeNames[i];
-		CGRect frame = CGRectMake(self.view.bounds.size.width * i, 0, self.view.bounds.size.width, self.view.bounds.size.height);
-		UIImageView * iv = [[UIImageView alloc] initWithFrame:frame];
-		iv.image = [UIImage imageNamed:name];
-		[self.onBoardingView addSubview:iv];
-	}
-
-	for(int i = 0; i < planeNames.count; i ++){
-		NSString * name =  subSVNames[i];
-		CGRect frame = CGRectMake(0, self.view.bounds.size.height * i, self.view.bounds.size.width, self.view.bounds.size.height);
-		UIImageView * iv = [[UIImageView alloc] initWithFrame:frame];
-		iv.image = [UIImage imageNamed:name];
-		[self.contentOnboardingPage addSubview:iv];
-	}
-	[self.onBoardingView addSubview:self.contentOnboardingPage];
-
-	[self.view addSubview:self.onBoardingView];
-	[self.view bringSubviewToFront:self.onBoardingView];
-	[self.view bringSubviewToFront:self.pageControlView];
-	self.pageControlView.currentPage = 0;
-	self.pageControlView.numberOfPages = 3;
-	self.pageControlView.defersCurrentPageDisplay = YES;
-
-	self.onBoardingView.delegate = self;
-	self.contentOnboardingPage.delegate = self;
-
-	CGRect pageControllViewFrame = CGRectMake((self.view.bounds.size.width/2.f)-(self.pageControlView.frame.size.width/2.f), self.view.bounds.size.height -  (self.pageControlView.frame.size.height + 10), self.pageControlView.frame.size.width, self.pageControlView.frame.size.height);
-	self.pageControlView.frame = pageControllViewFrame;
-
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -224,7 +140,6 @@ ChooseLoginOrSignupProtocol, ConfirmationCodeSignUpDelegate, LogIntoAccountProto
 -(BOOL) prefersStatusBarHidden {
 	return YES;
 }
-
 
 -(void)textNotAlphaNumericaCreateAccount{
 	[self alertTextNotAcceptable];
@@ -250,9 +165,6 @@ ChooseLoginOrSignupProtocol, ConfirmationCodeSignUpDelegate, LogIntoAccountProto
 												 name:NOTIFICATION_USER_LOGIN_SUCCEEDED
 											   object:nil];
 }
-
-
-
 
 # pragma mark - Format views -
 

@@ -16,7 +16,7 @@
 #import "Styles.h"
 #import "SizesAndPositions.h"
 
-#import "verbatmButton.h"
+#import "VerbatmButton.h"
 #import "UIImage+ImageEffectsAndTransforms.h"
 @interface SharingLinkActionView ()<UITextViewDelegate>
 
@@ -29,8 +29,8 @@
 @property (nonatomic) NSMutableArray * selectedButtonImageList;
 @property (nonatomic) NSMutableArray * unselectedButtonImageList;
 
-@property (nonatomic) verbatmButton * facebookButton;
-@property (nonatomic) verbatmButton * twitterButton;
+@property (nonatomic) VerbatmButton * facebookButton;
+@property (nonatomic) VerbatmButton * twitterButton;
 
 @property (nonatomic) UIButton * continueButton;
 @property (nonatomic) UIButton * cancelButton;
@@ -224,7 +224,7 @@
     }
     
     
-   self.facebookButton = [[verbatmButton alloc] initWithFrame:CGRectMake((self.frame.size.width/2) - (buttonWidthHeight + SHARE_BUTTON_GAP), (self.frame.size.height - buttonWidthHeight)/2 , buttonWidthHeight, buttonWidthHeight)];
+   self.facebookButton = [[VerbatmButton alloc] initWithFrame:CGRectMake((self.frame.size.width/2) - (buttonWidthHeight + SHARE_BUTTON_GAP), (self.frame.size.height - buttonWidthHeight)/2 , buttonWidthHeight, buttonWidthHeight)];
     
     [self.facebookButton addTarget:self action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -233,7 +233,7 @@
     
     //[self addSubview:self.facebookButton];
     
-    self.twitterButton = [[verbatmButton alloc] initWithFrame:CGRectMake((self.frame.size.width - buttonWidthHeight)/2 , (self.frame.size.height - buttonWidthHeight)/2, buttonWidthHeight, buttonWidthHeight)];
+    self.twitterButton = [[VerbatmButton alloc] initWithFrame:CGRectMake((self.frame.size.width - buttonWidthHeight)/2 , (self.frame.size.height - buttonWidthHeight)/2, buttonWidthHeight, buttonWidthHeight)];
     
     [self.twitterButton addTarget:self action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -245,7 +245,7 @@
     
 }
 
-- (void)buttonClicked:(verbatmButton *)sender{
+- (void)buttonClicked:(VerbatmButton *)sender{
     
     if(sender.buttonInSelectedState == ButtonSelected){
         self.numberOfSelectedButtons --;

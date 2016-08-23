@@ -21,6 +21,7 @@
 @property (nonatomic) NotificationType notificationType;
 
 -(void)presentNotification:(NotificationType) notificationType withChannel:(Channel *) channel andParseObject:(PFObject *)objectId;
+
 @end
 
 

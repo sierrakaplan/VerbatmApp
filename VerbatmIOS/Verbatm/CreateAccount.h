@@ -12,12 +12,13 @@
 @protocol CreateAccountProtocol <NSObject>
 -(void)phoneNumberWrongFormatCreateAccount;
 -(void)verbatmNameWrongFormatCreateAccount;
--(void)noPasswordEnteredCreateAccount;
 
--(void)signUpWithPhoneNumberSelectedWithNumber:(NSString *) phoneNumber andPassword:(NSString *)password andName:(NSString *) verbatmName;
+-(void)signUpWithPhoneNumberSelectedWithNumber:(NSString *) phoneNumber andName:(NSString *) verbatmName;
 -(void)errorInSignInWithError:(NSString *)error;
 -(void)goBackSelectedCreateAccount;
+
 @end
+
 @interface CreateAccount : UIView
 
 @property (nonatomic,weak) id<CreateAccountProtocol> delegate;
