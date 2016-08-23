@@ -517,7 +517,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	CGRect likeShareBarFrame = CGRectMake(cellTapped.frame.size.width - LIKE_SHARE_BAR_WIDTH - touchRegionPadding,
 										  cellTapped.frame.size.height - LIKE_SHARE_BAR_HEIGHT - touchRegionPadding,
 										  LIKE_SHARE_BAR_WIDTH + touchRegionPadding, LIKE_SHARE_BAR_HEIGHT + touchRegionPadding);
-	if (CGRectContainsPoint(likeShareBarFrame, touchPoint)) {
+	if (CGRectContainsPoint(likeShareBarFrame, touchPoint) && !self.inSmallMode) {
 		return;
 	}
 	if([cellTapped presentingTapToExitNotification]) {
