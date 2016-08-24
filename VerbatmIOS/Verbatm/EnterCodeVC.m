@@ -11,9 +11,12 @@
 #import "LoginKeyboardToolBar.h"
 #import <Parse/PFCloud.h>
 #import "UtilityFunctions.h"
+#import "SegueIDs.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "UIView+Effects.h"
+#import <Parse/PFUser.h>
+#import "ParseBackendKeys.h"
 
 @interface EnterCodeVC() <UITextFieldDelegate, LoginKeyboardToolBarDelegate>
 
@@ -27,15 +30,16 @@
 @property (nonatomic) UILabel *codeSentToNumberLabel;
 
 @property (nonatomic) UIButton *resendCodeButton;
+@property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 
 #define CODE_TEXT_FIELD_Y_OFFSET 100.f
 #define CODE_TEXT_FIELD_WIDTH 50.f
 #define CODE_SPACING 10.f
-#define VERTICAL_SPACING 10.f
+#define VERTICAL_SPACING 5.f
 #define ZERO_WIDTH_CHARACTER @"\u200B"
 
-#define RESEND_CODE_BUTTON_WIDTH 200.f
-#define RESEND_CODE_BUTTON_HEIGHT 100.f
+#define RESEND_CODE_BUTTON_WIDTH 150.f
+#define RESEND_CODE_BUTTON_HEIGHT 50.f
 
 @end
 
@@ -50,6 +54,8 @@
 	[self.view addSubview: self.digitFourField];
 	[self.view addSubview: self.codeSentToNumberLabel];
 	[self.view addSubview: self.resendCodeButton];
+	self.backgroundImageView.frame = self.view.bounds;
+	[self.view sendSubviewToBack:self.backgroundImageView];
 	[self.digitOneField becomeFirstResponder];
 	[self formatNavigationBar];
 }
@@ -86,8 +92,46 @@
 	if (code.length != 4) {
 		[self showWrongCode];
 	} else {
-		//todo: verify code
+		//todo: show something's happening
+		NSDictionary *params = @{@"phoneNumber": self.simplePhoneNumber, @"codeEntry": code};
+		[PFCloud callFunctionInBackground:@"logIn" withParameters:params
+									block:^(id  _Nullable object, NSError * _Nullable error) {
+			if (error) {
+				[self showWrongCode];
+			} else {
+				// This is the session token for the user
+				NSString *token = (NSString*)object;
+
+				[PFUser becomeInBackground:token block:^(PFUser * _Nullable user, NSError * _Nullable error) {
+					if (error) {
+						[self showAlertWithTitle:@"Login Error" andMessage:error.localizedDescription];
+					} else {
+						if (self.creatingAccount) {
+							//todo: enter name
+							//						[user setObject:self.verbatmName forKey:VERBATM_USER_NAME_KEY];
+							[user setObject:[NSNumber numberWithBool:NO] forKey:USER_FTUE];
+							[user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+								if(succeeded){
+//									[self loginUpWithPhoneNumberSelectedWithNumber:number];
+								}
+							}];
+						} else {
+							[self performSegueWithIdentifier:UNWIND_SEGUE_PHONE_LOGIN_TO_MASTER sender:self];
+						}
+					}
+				}];
+			}
+		}];
 	}
+}
+
+-(void) showAlertWithTitle:(NSString*)title andMessage:(NSString*)message {
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:title message:message
+																preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+														  handler:^(UIAlertAction * action) {}];
+	[newAlert addAction:defaultAction];
+	[self presentViewController:newAlert animated:YES completion:nil];
 }
 
 -(NSString*) getCode {
@@ -107,7 +151,7 @@
 	for (NSInteger tag = 1; tag <= 4; tag++) {
 		UITextField *field = [self.view viewWithTag: tag];
 		field.textColor = color;
-		field.layer.borderColor = color.CGColor;
+		[field addBottomBorderWithColor:color andWidth:2.f];
 	}
 }
 
@@ -125,7 +169,7 @@
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
 	if (textField.textColor == [UIColor redColor]) {
-		[self setTextColor:[UIColor blackColor]];
+		[self setTextColor:[UIColor whiteColor]];
 	}
 	// Inputting value - add it then set next responder
 	if (textField.text.length < 2  && string.length > 0) {
@@ -145,10 +189,13 @@
 	}
 	// Deleting value -
 	else if (string.length == 0) {
+		if (textField.text.length >= 1) {
+			return YES;
+		}
 		NSInteger previousTag = textField.tag - 1;
 		// get next responder
 		UITextField *previousResponder = [textField.superview viewWithTag:previousTag];
-		if (previousResponder == nil) {
+		if (previousTag < 1) {
 			previousResponder = self.digitOneField;
 		}
 		[previousResponder becomeFirstResponder];
@@ -202,10 +249,11 @@
 	CGRect frame = CGRectMake(xPos, CODE_TEXT_FIELD_Y_OFFSET, CODE_TEXT_FIELD_WIDTH, CODE_TEXT_FIELD_WIDTH);
 	UITextField *textField = [[UITextField alloc] initWithFrame: frame];
 	textField.delegate = self;
+	textField.textColor = [UIColor whiteColor];
 	textField.textAlignment = NSTextAlignmentCenter;
-	textField.backgroundColor = [UIColor whiteColor];
+	textField.backgroundColor = [UIColor colorWithWhite:1.f alpha:0.2];
 	textField.font = [UIFont fontWithName:BOLD_FONT size:40.f]; //todo
-	[textField addBottomBorderWithColor:[UIColor blackColor] andWidth:2.f];
+	[textField addBottomBorderWithColor:[UIColor whiteColor] andWidth:2.f];
 	textField.keyboardType = UIKeyboardTypeNumberPad;
 	textField.text = ZERO_WIDTH_CHARACTER;
 
@@ -221,11 +269,13 @@
 
 -(UILabel*) codeSentToNumberLabel {
 	if (!_codeSentToNumberLabel) {
-		CGFloat xPos = 50.f; //todo
+		CGFloat xPos = 20.f; //todo
 		CGRect frame = CGRectMake(xPos, self.digitOneField.frame.origin.y + self.digitOneField.frame.size.height + VERTICAL_SPACING,
 								  self.view.frame.size.width - xPos*2, 50.f);
 		_codeSentToNumberLabel = [[UILabel alloc] initWithFrame:frame];
-		_codeSentToNumberLabel.font = [UIFont fontWithName:REGULAR_FONT size:18.f]; //todo
+		_codeSentToNumberLabel.textColor = [UIColor whiteColor];
+		_codeSentToNumberLabel.font = [UIFont fontWithName:REGULAR_FONT size:14.f]; //todo
+		_codeSentToNumberLabel.textAlignment = NSTextAlignmentCenter;
 		_codeSentToNumberLabel.text = @"Enter the code sent to +1 ";
 		_codeSentToNumberLabel.text = [_codeSentToNumberLabel.text stringByAppendingString: self.phoneNumber];
 	}
@@ -240,9 +290,10 @@
 								  RESEND_CODE_BUTTON_WIDTH, RESEND_CODE_BUTTON_HEIGHT);
 		_resendCodeButton = [[UIButton alloc] initWithFrame:frame];
 		_resendCodeButton.layer.cornerRadius = 5.f;
-		_resendCodeButton.layer.borderColor = [UIColor blackColor].CGColor;
+		_resendCodeButton.layer.borderColor = [UIColor whiteColor].CGColor;
 		_resendCodeButton.layer.borderWidth = 1.f;
-		NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: [UIColor blackColor],
+		_resendCodeButton.backgroundColor = [UIColor colorWithWhite:1.f alpha:0.2];
+		NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
 										  NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size:20.f]}; //todo
 		NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:@"Resend code" attributes:titleAttributes];
 		[_resendCodeButton setAttributedTitle:attributedTitle forState: UIControlStateNormal];

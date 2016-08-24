@@ -47,6 +47,7 @@
 	[self.view addSubview: self.phoneLoginField];
 	[self.view addSubview: self.sendTextLabel];
 	[self.view sendSubviewToBack:self.backgroundImageView];
+	//todo: if creating account make them enter a name
 	[self registerForNotifications];
 }
 
