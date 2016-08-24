@@ -10,4 +10,8 @@
 
 @implementation EnterCodeVC
 
+-(BOOL) prefersStatusBarHidden {
+	return YES;
+}
+
 @end

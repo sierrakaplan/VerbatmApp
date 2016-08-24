@@ -73,7 +73,6 @@
 
 
 -(void) keyboardWillShow:(NSNotification*)notification {
-
     [UIView animateWithDuration:0.2 animations:^{
         [self shiftPhoneFieldUp:YES];
     }completion:^(BOOL finished) {

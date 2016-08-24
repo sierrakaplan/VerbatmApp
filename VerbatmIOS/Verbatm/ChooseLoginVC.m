@@ -22,12 +22,14 @@
 @property (strong, nonatomic) FBSDKLoginButton *facebookLoginButton;
 @property (nonatomic) UILabel *orLabel;
 @property (strong, nonatomic) UITextField *phoneLoginField;
+@property (nonatomic) UILabel *sendTextLabel;
 @property (nonatomic) CGRect originalPhoneTextFrame;
 
 #define PHONE_FIELD_WIDTH 200.f
 #define PHONE_FIELD_HEIGHT 50.f
 #define VERTICAL_SPACING 25.f
-#define OR_TEXT_WIDTH 250.f
+#define OR_TEXT_WIDTH 280.f
+#define KEYBOARD_HEIGHT 100.f
 
 @end
 
@@ -40,14 +42,23 @@
 	[self.view addSubview: self.facebookLoginButton];
 	[self.view addSubview: self.orLabel];
 	[self.view addSubview: self.phoneLoginField];
+	[self.view addSubview: self.sendTextLabel];
 	[self.view sendSubviewToBack:self.backgroundImageView];
-	[self registerForKeyboardNotifications];
+}
+
+-(BOOL) prefersStatusBarHidden {
+	return YES;
 }
 
 -(void) formatNavigationBar {
 //	self.navigationController.navigationBar.hidden = NO;
 //	self.navigationController.navigationBar.left
 //	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
+	if (self.creatingAccount) {
+		self.navigationItem.title = @"Sign Up";
+	} else {
+		self.navigationItem.title = @"Log In";
+	}
 }
 
 -(NSString*) getSimpleNumberFromFormattedPhoneNumber:(NSString*)formattedPhoneNumber {
@@ -58,57 +69,6 @@
 	return simpleNumber;
 }
 
-#pragma mark - Keyboard moving up and down -
-
-- (void)registerForKeyboardNotifications {
-
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(keyboardWillShow:)
-												 name:UIKeyboardWillShowNotification
-											   object:nil];
-
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(keyboardWillHide:)
-												 name:UIKeyboardWillHideNotification
-											   object:nil];
-	
-}
-
--(void) keyboardWillShow:(NSNotification*)notification {
-	[self.facebookLoginButton setHidden:YES];
-	[self.orLabel setHidden:YES];
-	CGRect keyboardBounds;
-	[[notification.userInfo valueForKey:UIKeyboardFrameBeginUserInfoKey] getValue:&keyboardBounds];
-	CGFloat keyboardOffset = 0.f;
-	CGFloat padding = 20.f;
-	CGFloat newYOrigin = (self.view.frame.size.height - keyboardBounds.size.height -
-						  self.phoneLoginField.frame.size.height - LOGIN_TOOLBAR_HEIGHT - padding);
-	if (newYOrigin < self.phoneLoginField.frame.origin.y) {
-		keyboardOffset = self.phoneLoginField.frame.origin.y - newYOrigin;
-	}
-
-	[UIView animateWithDuration:0.2 animations:^{
-		[self shiftPhoneFieldUp:YES];
-	}completion:^(BOOL finished) {}];
-}
-
--(void)shiftPhoneFieldUp:(BOOL) up{
-	if(up) {
-		self.phoneLoginField.frame = CGRectOffset(self.phoneLoginField.frame, 0.f, self.facebookLoginButton.frame.origin.y -
-												   self.phoneLoginField.frame.origin.y - LOGIN_TOOLBAR_HEIGHT); // make room for next button
-	}else{
-		self.phoneLoginField.frame = self.originalPhoneTextFrame;
-		[self.orLabel setHidden:NO];
-	}
-}
-
--(void) keyboardWillHide:(NSNotification*)notification {
-	[self.facebookLoginButton setHidden:NO];
-
-	[UIView animateWithDuration:0.2 animations:^{
-		[self shiftPhoneFieldUp:NO];
-	}];
-}
 
 #pragma mark - Formatting phone number -
 
@@ -248,31 +208,51 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 -(FBSDKLoginButton*) facebookLoginButton {
 	if (!_facebookLoginButton) {
-		CGFloat yPosition = (self.view.frame.size.height - PHONE_FIELD_HEIGHT*2 - VERTICAL_SPACING*2 - OR_LABEL_WIDTH)/2.f;
+		CGFloat yPosition = (self.view.frame.size.height - PHONE_FIELD_HEIGHT*2 - VERTICAL_SPACING*2 - OR_LABEL_WIDTH)/2.f - KEYBOARD_HEIGHT;
 		CGRect frame = CGRectMake(self.view.center.x - PHONE_FIELD_WIDTH/2.f, yPosition, PHONE_FIELD_WIDTH, PHONE_FIELD_HEIGHT);
 		_facebookLoginButton = [[FBSDKLoginButton alloc] initWithFrame:frame];
 	}
 	return _facebookLoginButton;
 }
 
--(UILabel *)orLabel{
+-(UILabel *)orLabel {
 	if(!_orLabel) {
 		CGFloat yPos = self.facebookLoginButton.frame.origin.y + self.facebookLoginButton.frame.size.height + VERTICAL_SPACING;
 		_orLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.center.x - OR_TEXT_WIDTH/2.f, yPos,
-															 OR_TEXT_WIDTH, OR_LABEL_WIDTH)];
-		[_orLabel setText:@"Or, log in with phone number"];
+															 OR_TEXT_WIDTH, 30.f)];
+		if (self.creatingAccount) {
+			[_orLabel setText:@"Or, sign up with phone number"];
+		} else {
+			[_orLabel setText:@"Or, log in with phone number"];
+		}
+		_orLabel.textAlignment = NSTextAlignmentCenter;
 		[_orLabel setBackgroundColor:[UIColor clearColor]];
 		[_orLabel setTextColor:[UIColor whiteColor]];
-		[_orLabel setFont:[UIFont fontWithName:REGULAR_FONT size:18.f]];
+		[_orLabel setFont:[UIFont fontWithName:REGULAR_FONT size:16.f]];
 	}
 	return _orLabel;
 }
 
+-(UILabel*)sendTextLabel {
+	if(!_sendTextLabel) {
+		CGFloat yPos = self.phoneLoginField.frame.origin.y + self.phoneLoginField.frame.size.height;
+		_sendTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.center.x - OR_TEXT_WIDTH/2.f, yPos,
+																   OR_TEXT_WIDTH, 30.f)];
+		_sendTextLabel.text = @"We'll send a text to verify your phone.";
+		_sendTextLabel.textAlignment = NSTextAlignmentCenter;
+		[_sendTextLabel setBackgroundColor:[UIColor clearColor]];
+		[_sendTextLabel setTextColor:[UIColor whiteColor]];
+		[_sendTextLabel setFont:[UIFont fontWithName:REGULAR_FONT size:16.f]];
+
+	}
+	return _sendTextLabel;
+}
+
 -(UITextField*) phoneLoginField {
 	if (!_phoneLoginField) {
-		CGFloat yPosition = self.orLabel.frame.origin.y + self.orLabel.frame.size.height + VERTICAL_SPACING;
-		CGRect frame = CGRectMake(self.view.center.x - PHONE_FIELD_WIDTH/2.f, yPosition, PHONE_FIELD_WIDTH, PHONE_FIELD_HEIGHT);
-		_phoneLoginField = [[UITextField alloc] initWithFrame: frame];
+		CGFloat yPosition = self.orLabel.frame.origin.y + self.orLabel.frame.size.height;
+		self.originalPhoneTextFrame = CGRectMake(self.view.center.x - PHONE_FIELD_WIDTH/2.f, yPosition, PHONE_FIELD_WIDTH, PHONE_FIELD_HEIGHT);
+		_phoneLoginField = [[UITextField alloc] initWithFrame: self.originalPhoneTextFrame];
 		_phoneLoginField.backgroundColor = [UIColor whiteColor];
 		_phoneLoginField.layer.borderColor = [UIColor blackColor].CGColor;
 		_phoneLoginField.layer.borderWidth = 1.f;

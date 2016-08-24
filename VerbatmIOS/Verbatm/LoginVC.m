@@ -103,6 +103,7 @@
 	self.navigationController.navigationBar.translucent = YES;
 	self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
 	[self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+																	 [UIColor whiteColor], NSForegroundColorAttributeName,
 																	 [UIFont fontWithName:BOLD_FONT size:21.0], NSFontAttributeName, nil]];
 	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 

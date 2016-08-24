@@ -28,7 +28,6 @@
 
 #import "GMImagePickerController.h"
 
-#import "Intro_Instruction_Notification_View.h"
 #import "ImagePinchView.h"
 #import "Icons.h"
 
@@ -65,12 +64,10 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 
-@interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,
-Intro_Notification_Delegate, GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate,
+@interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate, GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate,
 CustomNavigationBarDelegate,PreviewDisplayDelegate, VerbatmCameraViewDelegate,
 UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 
-@property (nonatomic) Intro_Instruction_Notification_View * introInstruction;
 
 @property (nonatomic) NSInteger totalPiecesOfMedia;
 
@@ -208,13 +205,6 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear: animated];
-}
-
--(void) notificationDoneAnimatingOut {
-	if(self.introInstruction){
-		[self.introInstruction removeFromSuperview];
-		self.introInstruction = nil;
-	}
 }
 
 -(void) initializeVariables {
