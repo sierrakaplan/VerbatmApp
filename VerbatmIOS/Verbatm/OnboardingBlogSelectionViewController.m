@@ -15,6 +15,7 @@
 #import "Icons.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
+#import "SegueIDs.h"
 #import "Styles.h"
 
 @interface OnboardingBlogSelectionViewController () <OnboardingBlogsDelegate>
@@ -22,6 +23,7 @@
 @property (weak, nonatomic) IBOutlet UIView *tableContainerView;
 @property (nonatomic) UIView *headerView;
 @property (nonatomic) UILabel *headerLabel;
+@property (nonatomic) UIButton *doneButton;
 
 #define HEADER_VIEW_HEIGHT STATUS_BAR_HEIGHT + 60.f
 #define DONE_BUTTON_WIDTH 70.f
@@ -44,6 +46,8 @@
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
+	[self addDoneButton];
+	[self addHeaderLabel];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
@@ -58,22 +62,22 @@
     [self.tableContainerView addSubview:followingScreen.view];
     [self addChildViewController:followingScreen];
     [followingScreen didMoveToParentViewController:self];
-    [self addDoneButton];
-	[self addHeaderLabel];
 }
 
 -(void)addDoneButton {
-    CGRect buttomFrame = CGRectMake(self.view.frame.size.width - (DONE_BUTTON_WIDTH + HEADER_X_OFFSET), HEADER_Y_OFFSET + STATUS_BAR_HEIGHT,
+    CGRect buttomFrame = CGRectMake(self.view.frame.size.width - (DONE_BUTTON_WIDTH + HEADER_X_OFFSET),  STATUS_BAR_HEIGHT,
 									DONE_BUTTON_WIDTH, HEADER_VIEW_HEIGHT - (HEADER_Y_OFFSET*2) - STATUS_BAR_HEIGHT);
     
     UIButton * done = [[UIButton alloc] initWithFrame:buttomFrame];
+	self.doneButton = done;
     [done addTarget:self action:@selector(exitDiscover) forControlEvents:UIControlEventTouchUpInside];
     [done setTitle:@"DONE" forState:UIControlStateNormal];
 	done.layer.borderColor = VERBATM_GOLD_COLOR.CGColor;
+	done.userInteractionEnabled = YES;
 	done.layer.borderWidth = 3.f;
 	done.layer.cornerRadius = 3.f;
 	[done.titleLabel setFont:[UIFont fontWithName:BOLD_FONT size: 14.f]]; //todo
-    [self.headerView addSubview:done];
+    [self.navigationController.navigationBar addSubview:done];
 }
 
 -(void) addHeaderLabel {
@@ -81,8 +85,8 @@
 	self.headerLabel = [[UILabel alloc] initWithFrame:CGRectMake((DONE_BUTTON_WIDTH + HEADER_X_OFFSET),
 																	 HEADER_Y_OFFSET + STATUS_BAR_HEIGHT, headerLabelWidth,
 																	 HEADER_VIEW_HEIGHT - (HEADER_Y_OFFSET*2) - STATUS_BAR_HEIGHT)];
-	self.headerLabel.text = @"Discover";
-	[self.headerLabel setFont:[UIFont fontWithName:BOLD_FONT size: 20.f]]; //todo
+	self.headerLabel.text = @"Follow a few profiles";
+	[self.headerLabel setFont:[UIFont fontWithName:BOLD_FONT size: 16.f]]; //todo
 	[self.headerLabel setTextColor:[UIColor whiteColor]];
 	[self.headerLabel setTextAlignment:NSTextAlignmentCenter];
 	[self.headerView addSubview: self.headerLabel];
@@ -94,15 +98,8 @@
 }
 
 -(void)exitDiscover {
-	//todo
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
-		[[PFUser currentUser] setObject:[NSNumber numberWithBool:YES] forKey:USER_FTUE];
-		[[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-			if(error) {
-				[[Crashlytics sharedInstance] recordError:error];
-			}
-		}];
-    }];
+	[self.doneButton removeFromSuperview];
+	[self performSegueWithIdentifier:SEGUE_CREATE_FIRST_POST sender: self];
 }
 
 -(void) addBackgroundImage {

@@ -21,6 +21,7 @@
 #define SEGUE_WELCOME @"welcome_to_verbatm_segue"
 #define SEGUE_TERMS_AND_CONDITIONS @"terms_and_conditions_segue"
 #define SEGUE_CREATE_ACCOUNT @"create_account_segue"
+#define SEGUE_FOLLOW_FRIENDS_FROM_FACEBOOK_LOGIN @"follow_friends_from_facebook"
 #define SEGUE_ENTER_PHONE_CONFIRMATION_CODE @"enter_phone_code_segue" //from either login or create account nav
 #define SEGUE_FOLLOW_FRIENDS @"follow_friends_segue"
 #define SEGUE_CREATE_FIRST_POST @"first_post_segue"

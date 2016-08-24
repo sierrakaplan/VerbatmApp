@@ -176,9 +176,13 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 }
 
 -(void) loginSucceeded: (NSNotification*) notification {
+	// viewController is visible
 	if (self.isViewLoaded && self.view.window) {
-		// viewController is visible
-		[self performSegueWithIdentifier:UNWIND_SEGUE_FACEBOOK_LOGIN_TO_MASTER sender:self];
+		if (self.creatingAccount) {
+			[self performSegueWithIdentifier:SEGUE_FOLLOW_FRIENDS_FROM_FACEBOOK_LOGIN sender:self];
+		} else {
+ 			[self performSegueWithIdentifier:UNWIND_SEGUE_FACEBOOK_LOGIN_TO_MASTER sender:self];
+		}
 	}
 }
 

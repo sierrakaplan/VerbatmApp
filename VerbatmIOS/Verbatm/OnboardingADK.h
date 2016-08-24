@@ -10,6 +10,4 @@
 
 @interface OnboardingADK : ContentDevVC
 
-@property (nonatomic) ContentDevVC *mainADK;
-
 @end

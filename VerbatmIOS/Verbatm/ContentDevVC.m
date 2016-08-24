@@ -71,8 +71,6 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 
 @property (nonatomic) NSInteger totalPiecesOfMedia;
 
-@property (nonatomic) Channel *userChannel;
-
 #pragma mark Image Manager
 
 @property (strong, nonatomic) PHImageManager *imageManager;
