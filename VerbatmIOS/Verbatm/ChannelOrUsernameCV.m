@@ -360,6 +360,7 @@
     
     NSMutableParagraphStyle *usernameAlignment = NSMutableParagraphStyle.new;
     usernameAlignment.alignment  = NSTextAlignmentLeft;
+    
     self.userNameCommentLabelAttributes = @{NSForegroundColorAttributeName: [UIColor blackColor],
                                             NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT size: CHANNEL_USER_LIST_USER_NAME_FONT_SIZE],
                                             NSParagraphStyleAttributeName:usernameAlignment};

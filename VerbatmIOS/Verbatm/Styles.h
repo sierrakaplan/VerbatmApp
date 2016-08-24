@@ -73,6 +73,7 @@
 
 
 #pragma mark - Feed - 
+#define SELECTION_DOT_COLOR colorWithRed:0.f green:174.f/255.f blue:239.f/255.f alpha:1.f
 
 #define REPOST_BUTTON_TEXT_FONT_SIZE 15.f
 #define REPOST_VIEW_BACKGROUND_COLOR [UIColor colorWithWhite:0.f alpha:0.8]

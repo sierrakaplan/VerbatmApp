@@ -15,6 +15,8 @@
 
 #import "DiscoverVC.h"
 #import "FeedTableViewController.h"
+#import "FeedProfileListTVC.h"
+
 #import "Icons.h"
 #import "InstallationVariables.h"
 
@@ -46,7 +48,7 @@
 
 
 @interface MasterNavigationVC () <UITabBarControllerDelegate, FeedTableViewDelegate,
-ProfileVCDelegate, NotificationsListTVCProtocol>
+ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 
 #pragma mark - Tab Bar Controller -
 
@@ -63,10 +65,10 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 #pragma mark View Controllers in tab bar Controller
 
 @property (strong,nonatomic) ProfileVC *profileVC;
-@property (strong,nonatomic) FeedTableViewController *feedVC;
+//@property (strong,nonatomic) FeedTableViewController *feedVC;
 @property (strong,nonatomic) DiscoverVC *discoverVC;
 @property (strong, nonatomic) NotificationsListTVC * notificationVC;
-
+@property (strong, nonatomic) FeedProfileListTVC * feedProfileList;
 @property(strong,nonatomic) UIImageView * notificationIndicator;
 
 #define ANIMATION_NOTIFICATION_DURATION 0.5
@@ -201,12 +203,12 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	deadView.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:deadViewTabImage selectedImage:deadViewTabImage];
 	deadView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 
-	self.tabBarController.viewControllers = @[self.feedVC, self.discoverVC, deadView,self.notificationVC, self.profileVC];
+	self.tabBarController.viewControllers = @[self.feedProfileList, self.discoverVC, deadView,self.notificationVC, self.profileVC];
 
 	if ([[InstallationVariables sharedInstance] launchedFromNotification]) {
 		self.tabBarController.selectedIndex = 3;
 	} else {
-		self.tabBarController.selectedIndex = 1;
+		self.tabBarController.selectedIndex = 0;
 	}
 
 	[self addTabBarCenterButtonOverDeadView];
@@ -259,19 +261,25 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	self.profileVC.channel = [[UserInfoCache sharedInstance] getUserChannel];
 	self.profileVC.isProfileTab = YES;
 
-    self.feedVC = [[FeedTableViewController alloc] init];
-    self.feedVC.view.frame = self.view.bounds;
-	self.feedVC.delegate = self;
     
+    self.feedProfileList = [[FeedProfileListTVC alloc] init];
+    self.feedProfileList.view.frame = self.view.bounds;
+    self.feedProfileList.delegate = self;
+
     self.notificationVC = [[NotificationsListTVC alloc] init];
     self.notificationVC.view.frame = self.view.bounds;
     self.notificationVC.delegate = self;
 	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															  image:[UIImage imageNamed:PROFILE_NAV_ICON]
 													  selectedImage:[UIImage imageNamed:PROFILE_NAV_ICON]];
-	self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
-															  image:[UIImage imageNamed:HOME_NAV_ICON]
-													  selectedImage:[UIImage imageNamed:HOME_NAV_ICON]];
+	
+    
+    self.feedProfileList.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
+                                                           image:[UIImage imageNamed:HOME_NAV_ICON]
+                                                   selectedImage:[UIImage imageNamed:HOME_NAV_ICON]];
+//    self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
+//															  image:[UIImage imageNamed:HOME_NAV_ICON]
+//													  selectedImage:[UIImage imageNamed:HOME_NAV_ICON]];
 	self.discoverVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															   image:[UIImage imageNamed:DISCOVER_NAV_ICON]
 													   selectedImage:[UIImage imageNamed:DISCOVER_NAV_ICON]];
@@ -291,7 +299,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
     self.notificationVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
     
 	self.profileVC.tabBarItem.imageInsets = self.discoverVC.tabBarItem.imageInsets =
-    self.feedVC.tabBarItem.imageInsets =  UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+    self.feedProfileList.tabBarItem.imageInsets =  UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 }
 
 -(void)notificationListHideTabBar:(BOOL) shouldHide{
@@ -355,8 +363,8 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 - (BOOL)tabBarController:(UITabBarController *)tabBarController
  shouldSelectViewController:(UIViewController *)viewController {
 	// Refresh feed if they tap the feed icon while on the feed
-	if (viewController == self.feedVC && self.tabBarController.selectedViewController == self.feedVC) {
-		[self.feedVC refreshListOfContent];
+	if (viewController == self.feedProfileList && self.tabBarController.selectedViewController == self.feedProfileList) {
+		//[self.feedProfileList refreshListOfContent];
 	}
 	return YES;
 }
@@ -407,6 +415,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 -(void) goToDiscover{
     [self.tabBarController setSelectedIndex:1];
 }
+
 
 -(void) showTabBar:(BOOL)show {
 	if (show) {

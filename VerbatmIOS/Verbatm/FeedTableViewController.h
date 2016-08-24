@@ -14,13 +14,13 @@
 -(void) showTabBar: (BOOL) show;
 
 -(void)goToDiscover;
-
+-(void) refreshListOfContent;
+-(void)exitProfileList;
 @end
 
 @interface FeedTableViewController : UITableViewController
 
 @property (nonatomic, weak) id<FeedTableViewDelegate> delegate;
 
--(void) refreshListOfContent;
-
+-(void)setAndRefreshWithList:(NSMutableArray *) channelList withStartIndex:(NSInteger) startIndex;
 @end

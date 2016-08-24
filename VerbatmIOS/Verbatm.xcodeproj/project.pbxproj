@@ -177,6 +177,10 @@
 		C71FA3281D477E16003989F3 /* TextPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = C71FA3271D477E16003989F3 /* TextPinchView.m */; };
 		C723C9861D2B3DAA00E87D58 /* NotificationsListTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C723C9851D2B3DAA00E87D58 /* NotificationsListTVC.m */; };
 		C723C9891D2B4E9400E87D58 /* NotificationTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C723C9881D2B4E9400E87D58 /* NotificationTableCell.m */; };
+		C72F60E41D6CE24400FF5C4E /* FeedProfileListTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C72F60E31D6CE24400FF5C4E /* FeedProfileListTVC.m */; };
+		C72F60E71D6CE61900FF5C4E /* FeedListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C72F60E61D6CE61900FF5C4E /* FeedListTableViewCell.m */; };
+		C72F60EA1D6D92D800FF5C4E /* ProfileListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = C72F60E91D6D92D800FF5C4E /* ProfileListHeader.m */; };
+		C72F60ED1D6D9AE600FF5C4E /* ProfileVerbatmLogoBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C72F60EC1D6D9AE600FF5C4E /* ProfileVerbatmLogoBar.m */; };
 		C734FD9519B13D5F00B2C370 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9419B13D5F00B2C370 /* ImageIO.framework */; };
 		C734FD9719B13D7700B2C370 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9619B13D7700B2C370 /* CoreVideo.framework */; };
 		C734FD9919B13D8600B2C370 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9819B13D8600B2C370 /* CoreMedia.framework */; };
@@ -550,6 +554,14 @@
 		C723C9851D2B3DAA00E87D58 /* NotificationsListTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsListTVC.m; sourceTree = "<group>"; };
 		C723C9871D2B4E9400E87D58 /* NotificationTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationTableCell.h; sourceTree = "<group>"; };
 		C723C9881D2B4E9400E87D58 /* NotificationTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationTableCell.m; sourceTree = "<group>"; };
+		C72F60E21D6CE24400FF5C4E /* FeedProfileListTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedProfileListTVC.h; sourceTree = "<group>"; };
+		C72F60E31D6CE24400FF5C4E /* FeedProfileListTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedProfileListTVC.m; sourceTree = "<group>"; };
+		C72F60E51D6CE61900FF5C4E /* FeedListTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedListTableViewCell.h; sourceTree = "<group>"; };
+		C72F60E61D6CE61900FF5C4E /* FeedListTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedListTableViewCell.m; sourceTree = "<group>"; };
+		C72F60E81D6D92D800FF5C4E /* ProfileListHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileListHeader.h; sourceTree = "<group>"; };
+		C72F60E91D6D92D800FF5C4E /* ProfileListHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileListHeader.m; sourceTree = "<group>"; };
+		C72F60EB1D6D9AE600FF5C4E /* ProfileVerbatmLogoBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileVerbatmLogoBar.h; sourceTree = "<group>"; };
+		C72F60EC1D6D9AE600FF5C4E /* ProfileVerbatmLogoBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileVerbatmLogoBar.m; sourceTree = "<group>"; };
 		C734FD9419B13D5F00B2C370 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		C734FD9619B13D7700B2C370 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		C734FD9819B13D8600B2C370 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -921,6 +933,8 @@
 			children = (
 				C7178E061D21101900B90643 /* FeedTableViewController.h */,
 				C7178E071D21101900B90643 /* FeedTableViewController.m */,
+				C72F60E21D6CE24400FF5C4E /* FeedProfileListTVC.h */,
+				C72F60E31D6CE24400FF5C4E /* FeedProfileListTVC.m */,
 			);
 			name = Feed;
 			sourceTree = "<group>";
@@ -1042,6 +1056,8 @@
 				C7178E0A1D21A12000B90643 /* FeedTableCell.m */,
 				C723C9871D2B4E9400E87D58 /* NotificationTableCell.h */,
 				C723C9881D2B4E9400E87D58 /* NotificationTableCell.m */,
+				C72F60E51D6CE61900FF5C4E /* FeedListTableViewCell.h */,
+				C72F60E61D6CE61900FF5C4E /* FeedListTableViewCell.m */,
 			);
 			name = "Table Cell Views";
 			sourceTree = "<group>";
@@ -1064,8 +1080,6 @@
 		A5C38ABB1CC1B35D0067D077 /* Discover */ = {
 			isa = PBXGroup;
 			children = (
-				C76172721C4C8B1300AB0D84 /* UserAndChannelListsTVC.h */,
-				C76172731C4C8B1300AB0D84 /* UserAndChannelListsTVC.m */,
 				A5C38ABF1CC1B67B0067D077 /* DiscoverVC.h */,
 				A5C38AC01CC1B67B0067D077 /* DiscoverVC.m */,
 				C75690A61D0891FF002C9402 /* OnboardingBlogSelectionViewController.h */,
@@ -1370,6 +1384,8 @@
 				A58EE8831BA876FA00B7B396 /* Segues */,
 				C76172791C4DFB7700AB0D84 /* PostListVC.h */,
 				C761727A1C4DFB7700AB0D84 /* PostListVC.m */,
+				C76172721C4C8B1300AB0D84 /* UserAndChannelListsTVC.h */,
+				C76172731C4C8B1300AB0D84 /* UserAndChannelListsTVC.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -1402,6 +1418,10 @@
 				C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */,
 				A50E62441D542060007FD5AD /* GridView.h */,
 				A50E62451D542060007FD5AD /* GridView.m */,
+				C72F60E81D6D92D800FF5C4E /* ProfileListHeader.h */,
+				C72F60E91D6D92D800FF5C4E /* ProfileListHeader.m */,
+				C72F60EB1D6D9AE600FF5C4E /* ProfileVerbatmLogoBar.h */,
+				C72F60EC1D6D9AE600FF5C4E /* ProfileVerbatmLogoBar.m */,
 			);
 			name = "Custom Views";
 			sourceTree = "<group>";
@@ -1875,6 +1895,7 @@
 				C7F22B3B1C38B2A600E56EA7 /* SelectOptionButton.m in Sources */,
 				C7BF1AA51C57EFC000CEDE4B /* Post_BackendObject.m in Sources */,
 				9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */,
+				C72F60ED1D6D9AE600FF5C4E /* ProfileVerbatmLogoBar.m in Sources */,
 				A5E73B9D1D16972400527ECF /* GTMHTTPFetcherService.m in Sources */,
 				127EA6DC1CDF90FE000BEBAD /* FollowingView.m in Sources */,
 				C78204EE1C32EAC500F56A63 /* CreatorAndChannelBar.m in Sources */,
@@ -1883,6 +1904,7 @@
 				A5E860071B97CC3C00E148D0 /* PreviewDisplayView.m in Sources */,
 				C7AA49F81D14739A00A031C6 /* SharingLinkView.m in Sources */,
 				A535E5001BC4459800A087D1 /* UIView+Effects.m in Sources */,
+				C72F60E41D6CE24400FF5C4E /* FeedProfileListTVC.m in Sources */,
 				A58656711B621CA4008E358C /* MathOperations.m in Sources */,
 				A535E5061BC44BF100A087D1 /* UIScrollView+Effects.m in Sources */,
 				C75985F51B8553DF00FE77F7 /* InternetConnectionMonitor.m in Sources */,
@@ -1935,6 +1957,7 @@
 				A5934B8F1C0FDFD6007C7830 /* VerbatmScrollView.m in Sources */,
 				C7AA49FB1D148A8C00A031C6 /* verbatmButton.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
+				C72F60E71D6CE61900FF5C4E /* FeedListTableViewCell.m in Sources */,
 				C73766731D63C71F00933A81 /* Commenting_BackendObject.m in Sources */,
 				C716E9D21BD6C338001B769D /* Analytics.m in Sources */,
 				A5E73B911D16967A00527ECF /* GTLQuery.m in Sources */,
@@ -1990,6 +2013,7 @@
 				A51B85241D2F3CEE006E90CC /* DTObjectBlockExecutor.m in Sources */,
 				A51BB2A81D2657D00020D529 /* SearchResultsVC.m in Sources */,
 				A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */,
+				C72F60EA1D6D92D800FF5C4E /* ProfileListHeader.m in Sources */,
 				A535E4FD1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m in Sources */,
 				A5FB5D3A1BCB0B9700634A96 /* GMImagePickerController.m in Sources */,
 				C7D596381C66DC3A00161136 /* FeedQueryManager.m in Sources */,

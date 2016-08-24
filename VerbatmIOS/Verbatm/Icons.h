@@ -194,7 +194,7 @@
 #define PROFILE_UNDER_CONSTRUCTION_ICON @"ProfileUnderConstruction"
 
 #define NO_COVER_PHOTO_IMAGE @"Empty_Cover_Photo_Image"
-#define PROFILE_BACK_BUTTON_ICON @"back_arrow_white"
+#define PROFILE_BACK_BUTTON_ICON @"White X_ Exit"
 
 #define LOGIN_ICON @"Log In"
 #define CREATE_ACCOUNT @"Create Account"
