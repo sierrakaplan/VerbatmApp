@@ -207,7 +207,9 @@
 	[self changeFollowButtonTitle:@"edit" toColor:[UIColor whiteColor]];
 }
 
+
 -(void) createFollowOrEditButton {
+    
     CGFloat frame_x = self.settingsButton.frame.origin.x - PROFILE_HEADER_XOFFSET - FOLLOW_OR_EDIT_BUTTON_SIZE -5.f;
     CGRect followButtonFrame = CGRectMake(frame_x, STATUS_BAR_HEIGHT + EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET, FOLLOW_OR_EDIT_BUTTON_SIZE, PROFILE_INFO_BAR_HEIGHT - (EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET * 2.f));
     self.followOrEditButton = [[UIButton alloc] initWithFrame: followButtonFrame];
