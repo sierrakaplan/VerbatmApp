@@ -89,6 +89,7 @@
 -(void) verifyCode {
 	NSString *code = [self getCode];
 	code = [UtilityFunctions removeAllNonNumbersFromString: code];
+	code = [code stringByReplacingOccurrencesOfString:ZERO_WIDTH_CHARACTER withString:@""];
 	if (code.length != 4) {
 		[self showWrongCode];
 	} else {
@@ -190,7 +191,8 @@
 	// Deleting value -
 	else if (string.length == 0) {
 		if (textField.text.length >= 1) {
-			return YES;
+			textField.text = ZERO_WIDTH_CHARACTER;
+			return NO;
 		}
 		NSInteger previousTag = textField.tag - 1;
 		// get next responder

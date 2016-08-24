@@ -97,6 +97,10 @@
 	[self.view sendSubviewToBack:self.backgroundImageView];
 }
 
+-(BOOL) prefersStatusBarHidden {
+	return YES;
+}
+
 -(void) formatNavigationBar {
 	[self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
 	self.navigationController.navigationBar.shadowImage = [UIImage new];
