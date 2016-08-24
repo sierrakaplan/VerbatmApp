@@ -58,7 +58,6 @@
 
 -(void)exitSettingsPage{
     [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
-        //No code
     }];
 }
 

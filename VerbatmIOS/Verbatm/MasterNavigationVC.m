@@ -462,7 +462,7 @@
 		[self.notificationVC refreshNotifications];
 		[self showIndicator];
 	} else {
-		NSLog(@"Received push notiication that cannot be shown in notifications tab.");
+//		NSLog(@"Received push notification that cannot be shown in notifications tab.");
 	}
 }
 

@@ -135,8 +135,7 @@
 							[user setObject:[NSNumber numberWithBool:NO] forKey:USER_FTUE];
 							[user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 								if(succeeded) {
-
-									//todo: onboarding
+									[self performSegueWithIdentifier:SEGUE_FOLLOW_FRIENDS sender:self];
 								}
 							}];
 						} else {
