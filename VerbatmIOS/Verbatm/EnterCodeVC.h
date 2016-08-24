@@ -10,4 +10,7 @@
 
 @interface EnterCodeVC : UIViewController
 
+@property (nonatomic) BOOL creatingAccount;
+@property (nonatomic) NSString *phoneNumber;
+
 @end

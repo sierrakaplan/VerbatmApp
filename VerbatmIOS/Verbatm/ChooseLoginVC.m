@@ -6,17 +6,20 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
-
+#import "EnterCodeVC.h"
 #import "ChooseLoginVC.h"
 #import <Crashlytics/Crashlytics.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import "LoginKeyboardToolBar.h"
+#import "Notifications.h"
 #import "Styles.h"
+#import "SegueIDs.h"
 #import "SizesAndPositions.h"
 #import "UserManager.h"
+#import "UtilityFunctions.h"
 
-@interface ChooseLoginVC() <UITextFieldDelegate, LoginKeyboardToolBarDelegate>
+@interface ChooseLoginVC() <UITextFieldDelegate, LoginKeyboardToolBarDelegate, FBSDKLoginButtonDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 @property (strong, nonatomic) FBSDKLoginButton *facebookLoginButton;
@@ -44,6 +47,7 @@
 	[self.view addSubview: self.phoneLoginField];
 	[self.view addSubview: self.sendTextLabel];
 	[self.view sendSubviewToBack:self.backgroundImageView];
+	[self registerForNotifications];
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -59,14 +63,7 @@
 	} else {
 		self.navigationItem.title = @"Log In";
 	}
-}
-
--(NSString*) getSimpleNumberFromFormattedPhoneNumber:(NSString*)formattedPhoneNumber {
-	// use regex to remove non-digits(including spaces) so we are left with just the numbers
-	NSError *error = NULL;
-	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[\\s-\\(\\)]" options:NSRegularExpressionCaseInsensitive error:&error];
-	NSString* simpleNumber = [regex stringByReplacingMatchesInString:formattedPhoneNumber options:0 range:NSMakeRange(0, [formattedPhoneNumber length]) withTemplate:@""];
-	return simpleNumber;
+	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 }
 
 
@@ -91,7 +88,7 @@
 -(NSString*) formatPhoneNumber:(NSString*) number deleteLastChar:(BOOL)deleteLastChar {
 
 	if(number.length==0) return @"";
-	NSString *simpleNumber = [self getSimpleNumberFromFormattedPhoneNumber:number];
+	NSString *simpleNumber = [UtilityFunctions removeAllNonNumbersFromString: number];
 
 	// check if the number is too long
 	if(simpleNumber.length > 10) {
@@ -122,6 +119,7 @@
 
 #pragma mark - Facebook Button Delegate  -
 
+
 - (void)  loginButton:(FBSDKLoginButton *)loginButton
 didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 				error:(NSError *)error {
@@ -147,9 +145,19 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 #pragma mark - TOOLBAR NEXT BUTTON -
 
 -(void) nextButtonPressed {
-	NSString *simplePhoneNumber = [self getSimpleNumberFromFormattedPhoneNumber: self.phoneLoginField.text];
+	NSString *simplePhoneNumber = [UtilityFunctions removeAllNonNumbersFromString: self.phoneLoginField.text];
+	if (simplePhoneNumber.length < 10) return;
 	[self.phoneLoginField resignFirstResponder];
-	//todo: send code
+	[self performSegueWithIdentifier:SEGUE_ENTER_PHONE_CONFIRMATION_CODE sender:self];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+	if ([[segue identifier] isEqualToString:SEGUE_ENTER_PHONE_CONFIRMATION_CODE]) {
+		// Get reference to the destination view controller
+		EnterCodeVC *enterCodeVC = [segue destinationViewController];
+		enterCodeVC.phoneNumber = self.phoneLoginField.text;
+		enterCodeVC.creatingAccount = self.creatingAccount;
+	}
 }
 
 -(NSString *)removeSpaces:(NSString *)text{
@@ -158,8 +166,19 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 #pragma mark - Login Succeeded/Failed -
 
+-(void) registerForNotifications {
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(loginFailed:)
+												 name:NOTIFICATION_USER_LOGIN_FAILED
+											   object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(loginSucceeded:)
+												 name:NOTIFICATION_USER_LOGIN_SUCCEEDED
+											   object:nil];
+}
+
 -(void) loginSucceeded: (NSNotification*) notification {
-//	[self unwindToMasterVC];
+	[self performSegueWithIdentifier:UNWIND_SEGUE_FACEBOOK_LOGIN_TO_MASTER sender:self];
 }
 
 // Only called for fb login errors now
@@ -211,6 +230,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 		CGFloat yPosition = (self.view.frame.size.height - PHONE_FIELD_HEIGHT*2 - VERTICAL_SPACING*2 - OR_LABEL_WIDTH)/2.f - KEYBOARD_HEIGHT;
 		CGRect frame = CGRectMake(self.view.center.x - PHONE_FIELD_WIDTH/2.f, yPosition, PHONE_FIELD_WIDTH, PHONE_FIELD_HEIGHT);
 		_facebookLoginButton = [[FBSDKLoginButton alloc] initWithFrame:frame];
+		_facebookLoginButton.delegate = self;
 	}
 	return _facebookLoginButton;
 }
