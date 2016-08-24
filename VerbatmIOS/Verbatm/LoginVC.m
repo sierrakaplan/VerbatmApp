@@ -82,7 +82,7 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-	self.navigationController.navigationBar.hidden = YES;
+	[self formatNavigationBar];
 	[self.backgroundImageView setFrame:self.view.bounds];
 	[self createActionButtions];
 	[self centerViews];
@@ -95,6 +95,17 @@
 //	[self.view addGestureRecognizer:tap];
 //	[self presentLoginSignUpOption];
 	[self.view sendSubviewToBack:self.backgroundImageView];
+}
+
+-(void) formatNavigationBar {
+	[self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+	self.navigationController.navigationBar.shadowImage = [UIImage new];
+	self.navigationController.navigationBar.translucent = YES;
+	self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+	[self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+																	 [UIFont fontWithName:BOLD_FONT size:21.0], NSFontAttributeName, nil]];
+	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
+
 }
 
 -(void) centerViews {

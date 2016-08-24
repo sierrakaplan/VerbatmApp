@@ -83,24 +83,16 @@
 #pragma mark - TOOLBAR NEXT BUTTON -
 
 -(void) nextButtonPressed {
-	NSString *simplePhoneNumber = [self getSimpleNumberFromFormattedPhoneNumber: self.phoneNumber.text];
-    if([self sanityCheckPhoneNumberString: simplePhoneNumber]) {
-        [self.delegate loginUpWithPhoneNumberSelectedWithNumber:[self removeSpaces: simplePhoneNumber]];
-        [self removeKeyBoardOnScreen];
-    }
+//	NSString *simplePhoneNumber = [self getSimpleNumberFromFormattedPhoneNumber: self.phoneNumber.text];
+//    if([self sanityCheckPhoneNumberString: simplePhoneNumber]) {
+//        [self.delegate loginUpWithPhoneNumberSelectedWithNumber:[self removeSpaces: simplePhoneNumber]];
+//        [self removeKeyBoardOnScreen];
+//    }
 }
 
 
 -(void)removeKeyBoardOnScreen{
     [self.phoneNumber resignFirstResponder];
-}
-
--(NSString*) getSimpleNumberFromFormattedPhoneNumber:(NSString*)formattedPhoneNumber {
-    // use regex to remove non-digits(including spaces) so we are left with just the numbers
-    NSError *error = NULL;
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[\\s-\\(\\)]" options:NSRegularExpressionCaseInsensitive error:&error];
-    NSString* simpleNumber = [regex stringByReplacingMatchesInString:formattedPhoneNumber options:0 range:NSMakeRange(0, [formattedPhoneNumber length]) withTemplate:@""];
-    return simpleNumber;
 }
 
 // no need - phone number is being formatted
@@ -229,7 +221,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 -(NSString*) formatPhoneNumber:(NSString*) number deleteLastChar:(BOOL)deleteLastChar {
     
     if(number.length==0) return @"";
-    NSString *simpleNumber = [self getSimpleNumberFromFormattedPhoneNumber:number];
+	NSString *simpleNumber = @"";//[self getSimpleNumberFromFormattedPhoneNumber:number];
     
     // check if the number is too long
     if(simpleNumber.length > 10) {

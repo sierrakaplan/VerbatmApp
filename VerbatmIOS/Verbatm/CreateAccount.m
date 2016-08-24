@@ -200,6 +200,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
         [self.orLabel setHidden:NO];
     }
 }
+
 -(void) keyboardWillHide:(NSNotification*)notification {
     [self.facebookLoginButton setHidden:NO];
     
