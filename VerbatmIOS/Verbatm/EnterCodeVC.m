@@ -167,15 +167,17 @@
 
 -(void) showWrongCode {
 	//todo:
-	[self setTextColor: [UIColor redColor]];
-
+	[self setTextColor: [UIColor redColor] andShakeView:YES];
 }
 
--(void) setTextColor:(UIColor*)color {
+-(void) setTextColor:(UIColor*)color andShakeView:(BOOL)shake {
 	for (NSInteger tag = 1; tag <= 4; tag++) {
 		UITextField *field = [self.view viewWithTag: tag];
 		field.textColor = color;
 		[field addBottomBorderWithColor:color andWidth:2.f];
+		if (shake) {
+			[field shake];
+		}
 	}
 }
 
@@ -193,7 +195,7 @@
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
 	if (textField.textColor == [UIColor redColor]) {
-		[self setTextColor:[UIColor whiteColor]];
+		[self setTextColor:[UIColor whiteColor] andShakeView:NO];
 	}
 	// Inputting value - add it then set next responder
 	if (textField.text.length < 2  && string.length > 0) {
