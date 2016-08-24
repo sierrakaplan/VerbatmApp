@@ -25,8 +25,6 @@
 #pragma mark - Log In/Sign Up -
 
 #define LOGIN_TOOLBAR_HEIGHT 50.f
-#define LOGIN_BUTTON_HEIGHT 100.f
-#define LOGIN_BUTTON_WIDTH 400.f
 
 #pragma mark - Main Tab bar -
 

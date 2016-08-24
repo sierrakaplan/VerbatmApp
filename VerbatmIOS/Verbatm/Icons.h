@@ -11,10 +11,12 @@
 
 #define LOAD_ICON_IMAGE @"spinner_5"
 #define VERBATM_LOGO @"verbatm_logo"
+#define VERBATM_LOGO_TEXT @"verbatm_logo_text"
+
+#define BACKGROUND_IMAGE @"background_image"
 
 #pragma mark - Sign in -
 
-#define SIGN_IN_BACKGROUND @"window_pane"
 
 #pragma mark - Bottom Tab Bar -
 

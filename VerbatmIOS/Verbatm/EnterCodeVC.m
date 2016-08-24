@@ -71,20 +71,40 @@
 }
 
 -(void) sendCodeToUser:(NSString*) simplePhoneNumber {
-	//todo: show sending code
+	[self changeToSendingCode: YES];
 	//todo: include more languages
 	NSDictionary *params = @{@"phoneNumber" : simplePhoneNumber, @"language" : @"en"};
 	[PFCloud callFunctionInBackground:@"sendCode" withParameters:params block:^(id  _Nullable response, NSError * _Nullable error) {
+		[self changeToSendingCode: NO];
 		if (error) {
 			[[Crashlytics sharedInstance] recordError: error];
-//			[self showAlertWithTitle:@"Error sending code" andMessage:@"Something went wrong. Please verify your phone number is correct."];
+			[self showAlertWithTitle:@"Error sending code" andMessage:@"Something went wrong. Please verify your phone number is correct."];
+			self.codeSentToNumberLabel.text = @"Attempted to send code to ";
 		} else {
-			//			self.createdUserWithLoginCode = YES;
-			// Parse has now created an account with this phone number and generated a random code,
-			// user must enter the correct code to be logged in
+			self.codeSentToNumberLabel.text = @"Enter the code sent to +1 ";
 		}
+		self.codeSentToNumberLabel.text = [_codeSentToNumberLabel.text stringByAppendingString: self.phoneNumber];
 	}];
 	
+}
+
+-(void) changeToSendingCode:(BOOL) sending {
+	NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
+									  NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size:20.f]}; //todo
+	NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:@"Resend code" attributes:titleAttributes];
+	if (sending) {
+		NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: [UIColor grayColor],
+										  NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size:20.f]};
+		attributedTitle = [[NSAttributedString alloc] initWithString:@"Sending code..." attributes:titleAttributes];
+		self.resendCodeButton.enabled = NO;
+		self.resendCodeButton.layer.borderColor = [UIColor grayColor].CGColor;
+		self.codeSentToNumberLabel.hidden = YES;
+	} else {
+		self.resendCodeButton.enabled = YES;
+		self.resendCodeButton.layer.borderColor = [UIColor whiteColor].CGColor;
+		self.codeSentToNumberLabel.hidden = NO;
+	}
+	[self.resendCodeButton setAttributedTitle:attributedTitle forState: UIControlStateNormal];
 }
 
 -(void) verifyCode {
@@ -299,10 +319,6 @@
 		_resendCodeButton.layer.borderColor = [UIColor whiteColor].CGColor;
 		_resendCodeButton.layer.borderWidth = 1.f;
 		_resendCodeButton.backgroundColor = [UIColor colorWithWhite:1.f alpha:0.2];
-		NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
-										  NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size:20.f]}; //todo
-		NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:@"Resend code" attributes:titleAttributes];
-		[_resendCodeButton setAttributedTitle:attributedTitle forState: UIControlStateNormal];
 		[_resendCodeButton addTarget:self action:@selector(resendCodeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 	}
 	return _resendCodeButton;

@@ -263,7 +263,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 		_sendTextLabel.textAlignment = NSTextAlignmentCenter;
 		[_sendTextLabel setBackgroundColor:[UIColor clearColor]];
 		[_sendTextLabel setTextColor:[UIColor whiteColor]];
-		[_sendTextLabel setFont:[UIFont fontWithName:REGULAR_FONT size:16.f]];
+		[_sendTextLabel setFont:[UIFont fontWithName:REGULAR_FONT size:16.f]]; //todo
 
 	}
 	return _sendTextLabel;
@@ -277,7 +277,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 		_phoneLoginField.backgroundColor = [UIColor whiteColor];
 		_phoneLoginField.layer.borderColor = [UIColor blackColor].CGColor;
 		_phoneLoginField.layer.borderWidth = 1.f;
-		_phoneLoginField.font = [UIFont fontWithName:REGULAR_FONT size:16.f];
+		_phoneLoginField.font = [UIFont fontWithName:REGULAR_FONT size:24.f]; //todo:
 		_phoneLoginField.layer.cornerRadius = 5.f;
 		_phoneLoginField.layer.sublayerTransform = CATransform3DMakeTranslation(20.f, 0, 0);
 		_phoneLoginField.keyboardType = UIKeyboardTypePhonePad;

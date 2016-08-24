@@ -15,6 +15,7 @@
 #define STANDARD_VIEW_CORNER_RADIUS 10.f
 
 #define VERBATM_GOLD_COLOR [UIColor colorWithRed:1.0 green:0.85 blue:0.20 alpha:1.0]
+#define VERBATM_GOLD_COLOR_TRANSLUCENT [UIColor colorWithRed:1.0 green:0.5 blue:0.10 alpha:0.5]
 #define ORANGE_COLOR [UIColor colorWithRed:0.8 green:0.4 blue:0.01 alpha:1.0]
 
 #define REGULAR_FONT @"Raleway-Regular"//@"Quicksand-Regular"
