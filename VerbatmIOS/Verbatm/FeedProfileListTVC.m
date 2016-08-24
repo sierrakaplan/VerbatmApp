@@ -56,6 +56,9 @@
     if(self.logoBar)[self.view bringSubviewToFront:self.logoBar];
 }
 
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
