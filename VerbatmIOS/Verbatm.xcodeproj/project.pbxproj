@@ -741,6 +741,8 @@
 				A51A0AF11D6CFAD6009D7CDD /* Create First Post */,
 				A51A0ACC1D6CE847009D7CDD /* WelcomeVC.h */,
 				A51A0ACD1D6CE847009D7CDD /* WelcomeVC.m */,
+				C70E1C521C3BF74C00346A25 /* TermsAndConditionsVC.h */,
+				C70E1C531C3BF74C00346A25 /* TermsAndConditionsVC.m */,
 				C73B7C2D1CA8719200128926 /* Intro_Instruction_Notification_View.h */,
 				C73B7C2E1CA8719200128926 /* Intro_Instruction_Notification_View.m */,
 			);
@@ -1356,8 +1358,6 @@
 			children = (
 				C70E1C4C1C3BC06100346A25 /* SettingsVC.h */,
 				C70E1C4D1C3BC06100346A25 /* SettingsVC.m */,
-				C70E1C521C3BF74C00346A25 /* TermsAndConditionsVC.h */,
-				C70E1C531C3BF74C00346A25 /* TermsAndConditionsVC.m */,
 			);
 			name = "Settings Page";
 			sourceTree = "<group>";

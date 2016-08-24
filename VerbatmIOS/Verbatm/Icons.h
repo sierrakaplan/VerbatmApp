@@ -17,6 +17,7 @@
 
 #pragma mark - Sign in -
 
+#define TERMS_AND_CONDITIONS @"terms_and_conditions"
 
 #pragma mark - Bottom Tab Bar -
 
