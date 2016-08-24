@@ -164,6 +164,7 @@
 		[UserManager setFbId];
 	}
 	self.view.backgroundColor = [UIColor blackColor];
+	//todo: show loading while this happens
 	[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
 		[self setUpTabBarController];
 	}];
@@ -207,7 +208,7 @@
 	if ([[InstallationVariables sharedInstance] launchedFromNotification]) {
 		self.selectedIndex = 3;
 	} else {
-		self.selectedIndex = 1;
+		self.selectedIndex = 0;
 	}
 
 	[self addTabBarCenterButtonOverDeadView];
@@ -397,7 +398,7 @@
 
 
 -(void) goToDiscover{
-    [self setSelectedIndex:1];
+    [self setSelectedIndex: 1];
 }
 
 -(void) showTabBar:(BOOL)show {

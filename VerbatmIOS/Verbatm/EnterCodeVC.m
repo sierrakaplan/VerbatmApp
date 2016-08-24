@@ -10,6 +10,7 @@
 #import "EnterCodeVC.h"
 #import "LoginKeyboardToolBar.h"
 #import <Parse/PFCloud.h>
+#import "Notifications.h"
 #import "UtilityFunctions.h"
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
@@ -107,13 +108,15 @@
 					if (error) {
 						[self showAlertWithTitle:@"Login Error" andMessage:error.localizedDescription];
 					} else {
+						[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
 						if (self.creatingAccount) {
 							//todo: enter name
 							//						[user setObject:self.verbatmName forKey:VERBATM_USER_NAME_KEY];
 							[user setObject:[NSNumber numberWithBool:NO] forKey:USER_FTUE];
 							[user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-								if(succeeded){
-//									[self loginUpWithPhoneNumberSelectedWithNumber:number];
+								if(succeeded) {
+
+									//todo: onboarding
 								}
 							}];
 						} else {
@@ -177,7 +180,7 @@
 		NSInteger nextTag = textField.tag + 1;
 
 		UITextField *nextResponder = [textField.superview viewWithTag:nextTag];
-		if (nextResponder == nil) {
+		if (nextTag == 5) {
 			nextResponder = self.digitOneField;
 		}
 		textField.text = string;
@@ -190,10 +193,7 @@
 	}
 	// Deleting value -
 	else if (string.length == 0) {
-		if (textField.text.length >= 1) {
-			textField.text = ZERO_WIDTH_CHARACTER;
-			return NO;
-		}
+
 		NSInteger previousTag = textField.tag - 1;
 		// get next responder
 		UITextField *previousResponder = [textField.superview viewWithTag:previousTag];
@@ -201,7 +201,11 @@
 			previousResponder = self.digitOneField;
 		}
 		[previousResponder becomeFirstResponder];
-		previousResponder.text = ZERO_WIDTH_CHARACTER;
+		if (textField.text.length >= 1) {
+			textField.text = ZERO_WIDTH_CHARACTER;
+		} else {
+			previousResponder.text = ZERO_WIDTH_CHARACTER;
+		}
 		return NO;
 	}
 	return YES;
