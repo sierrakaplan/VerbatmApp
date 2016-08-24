@@ -11,9 +11,7 @@
 
 -(void)textNotAlphaNumericaLoginAccount;
 
--(void)passwordIsOnlySpaces;
-
--(void)loginUpWithPhoneNumberSelectedWithNumber:(NSString *) phoneNumber andPassword:(NSString *)password;
+-(void)loginUpWithPhoneNumberSelectedWithNumber:(NSString *) phoneNumber;
 
 -(void)goBackSelectedLoginAccount;
 

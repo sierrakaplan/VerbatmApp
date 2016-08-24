@@ -32,7 +32,7 @@
     return self;
 }
 
--(void)createActionButtions{
+-(void)createActionButtions {
 
     CGRect topFrame = CGRectMake((self.frame.size.width - LOGIN_BUTTON_WIDTH)/2.f,
 								 TOP_BUTTON_YOFFSET, LOGIN_BUTTON_WIDTH, LOGIN_BUTTON_HEIGHT);
@@ -56,6 +56,7 @@
 -(void)loginButtonPressed{
     [self.delegate loginChosen];
 }
+
 -(void)signUpButtonPressed{
     [self.delegate signUpChosen];
 }
@@ -75,15 +76,5 @@
     }
     return _orLabel;
 }
-
-
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 
 @end

@@ -21,7 +21,6 @@
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *logoImageView;
 @property (weak, nonatomic) IBOutlet UITextField *nameTextField;
-@property (weak, nonatomic) IBOutlet UITextField *passwordTextField;
 @property (weak, nonatomic) IBOutlet UIButton *logInButton;
 @property (nonatomic) CustomNavigationBar * navigationBar;
 
@@ -38,9 +37,6 @@
 	[self createNavigationBar];
 	[self.nameTextField setReturnKeyType:UIReturnKeyNext];
 	self.nameTextField.delegate = self;
-	[self.passwordTextField setReturnKeyType:UIReturnKeyDone];
-	self.passwordTextField.delegate = self;
-	self.passwordTextField.secureTextEntry = YES;
 	[self.logInButton addTarget:self action:@selector(loginButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 }
 
@@ -48,7 +44,6 @@
 	[super viewWillAppear:animated];
 	if (!self.firstTimeLoggingIn) {
 		[self.nameTextField removeFromSuperview];
-		[self.passwordTextField setPlaceholder:@"Please enter your password."];
 	}
     [self.view sendSubviewToBack:self.backgroundImageView];
 }
@@ -60,7 +55,6 @@
 -(void) centerViews {
 	self.logoImageView.center = CGPointMake(self.view.center.x, self.logoImageView.center.y);
 	self.nameTextField.center = CGPointMake(self.view.center.x, self.nameTextField.center.y);
-	self.passwordTextField.center = CGPointMake(self.view.center.x, self.passwordTextField.center.y);
 	self.logInButton.center = CGPointMake(self.view.center.x, self.logInButton.center.y);
 }
 
@@ -73,7 +67,8 @@
 }
 
 -(void) leftButtonPressed {
-	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_USER_SETTINGS_TO_LOGIN sender:self];
+	//todo:
+//	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_USER_SETTINGS_TO_LOGIN sender:self];
 }
 
 -(void) loginButtonPressed {
@@ -82,18 +77,12 @@
 		return;
 	}
 	NSString *name = self.nameTextField.text;
-	NSString *password = self.passwordTextField.text;
 	if (name.length < 1) {
 		[self showAlertWithTitle:@"Enter name" andMessage:@"Please enter a name for yourself on Verbatm."];
 		return;
 	}
-	if (password.length < 6) {
-		[self showAlertWithTitle:@"Enter password" andMessage:@"Your password must be at least 6 characters long."];
-		return;
-	}
 	PFUser *newUser = [PFUser user];
 	newUser.username = self.phoneNumber;
-	newUser.password = password;
 	[newUser setObject:name forKey:VERBATM_USER_NAME_KEY];
 	[newUser setObject:[NSNumber numberWithBool:NO] forKey:USER_FTUE];
 	[newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
@@ -106,14 +95,13 @@
 }
 
 -(void) logInCurrentUser {
-	NSString *password = self.passwordTextField.text;
-	[PFUser logInWithUsernameInBackground:self.phoneNumber password:password block:^(PFUser * _Nullable user, NSError * _Nullable error) {
-		if (error || !user) {
-			[self showAlertWithTitle:@"Error logging in" andMessage: @"Incorrect passoword. Please contact us if you need to reset it at feedback@verbatm.io"];
-		} else {
-			[self successfullyLoggedInAndUnwind];
-		}
-	}];
+//	[PFUser logInWithUsernameInBackground:self.phoneNumber  block:^(PFUser * _Nullable user, NSError * _Nullable error) {
+//		if (error || !user) {
+//			[self showAlertWithTitle:@"Error logging in" andMessage: @"Incorrect passoword. Please contact us if you need to reset it at feedback@verbatm.io"];
+//		} else {
+//			[self successfullyLoggedInAndUnwind];
+//		}
+//	}];
 }
 
 -(void) showAlertWithTitle:(NSString*)title andMessage:(NSString*)message {
@@ -126,13 +114,14 @@
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-	if (textField == self.nameTextField) {
-		[textField resignFirstResponder];
-		[self.passwordTextField becomeFirstResponder];
-	} else if(textField == self.passwordTextField) {
-		[self.passwordTextField resignFirstResponder];
-		[self loginButtonPressed];
-	}
+//	if (textField == self.nameTextField) {
+//		[textField resignFirstResponder];
+//		[self.passwordTextField becomeFirstResponder];
+//	} else if(textField == self.passwordTextField) {
+//		[self.passwordTextField resignFirstResponder];
+//		[self loginButtonPressed];
+//	}
+//todo
 	return NO;
 }
 
@@ -140,7 +129,8 @@
 -(void) successfullyLoggedInAndUnwind {
 	self.successfullyLoggedIn = YES;
 	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
-	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_USER_SETTINGS_TO_LOGIN sender:self];
+	//todo
+//	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_USER_SETTINGS_TO_LOGIN sender:self];
 }
 
 - (void)dealloc {

@@ -256,9 +256,9 @@
 	}
 }
 
-#pragma mark - Notifications Cell protocol -
+#pragma mark - Notifications Cell Protocol -
 
--(void)presentBlogFromCell:(NotificationTableCell *)cell{
+-(void)presentBlogFromCell:(NotificationTableCell *)cell {
 	Channel * channel = cell.channel;
 	PFUser * user = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
 

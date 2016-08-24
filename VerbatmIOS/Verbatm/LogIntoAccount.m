@@ -29,15 +29,12 @@
 @property (nonatomic) BOOL enteringPhoneNumber;
 @property (nonatomic) BOOL nextButtonEnabled;
 
-@property (nonatomic) UITextField * firstPassword;
-
 @property (nonatomic) CGRect originalPhoneTextFrame;
 
 @property (nonatomic) UILabel * orLabel;
 
 
 #define ENTER_PHONE_NUMBER_PROMT @"Enter Phone Number"
-#define ENTER_PASSWORD_PROMPT @"Enter Password"
 
 @end
 
@@ -80,7 +77,6 @@
     self.toolBar.delegate = self;
     [self.toolBar setNextButtonText:@"Sign In"];
     self.nextButtonEnabled = YES;
-    self.firstPassword.inputAccessoryView = self.toolBar;
 }
 
 
@@ -88,16 +84,14 @@
 
 -(void) nextButtonPressed {
 	NSString *simplePhoneNumber = [self getSimpleNumberFromFormattedPhoneNumber: self.phoneNumber.text];
-    if([self sanityCheckPhoneNumberString: simplePhoneNumber] &&
-       [self sanityCheckPasswordString:self.firstPassword.text]){
-        [self.delegate loginUpWithPhoneNumberSelectedWithNumber:[self removeSpaces: simplePhoneNumber]  andPassword:self.firstPassword.text];
+    if([self sanityCheckPhoneNumberString: simplePhoneNumber]) {
+        [self.delegate loginUpWithPhoneNumberSelectedWithNumber:[self removeSpaces: simplePhoneNumber]];
         [self removeKeyBoardOnScreen];
     }
 }
 
 
 -(void)removeKeyBoardOnScreen{
-    [self.firstPassword resignFirstResponder];
     [self.phoneNumber resignFirstResponder];
 }
 
@@ -120,15 +114,6 @@
 
 -(NSString *)removeSpaces:(NSString *)text{
     return  [text stringByReplacingOccurrencesOfString:@" " withString:@""];
-}
-
--(BOOL)sanityCheckPasswordString:(NSString *)text{
-    if ([[self removeSpaces:text] isEqualToString:@""]) {
-        //string contains illegal characters
-        [self.delegate passwordIsOnlySpaces];
-        return NO;
-    }
-    return YES;
 }
 
 #pragma mark - Facebook Button Delegate  -
@@ -191,11 +176,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     [UIView animateWithDuration:0.2 animations:^{
         [self shiftPhoneFieldUp:YES];
     }completion:^(BOOL finished) {
-        if(finished){
-            [self.firstPassword setHidden:NO];
-            [self addSubview:self.firstPassword];
-            [self bringSubviewToFront:self.firstPassword];
-        }
+
     }];
 }
 
@@ -211,7 +192,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     [self.orLabel setHidden:NO];
     [UIView animateWithDuration:0.2 animations:^{
         [self shiftPhoneFieldUp:NO];
-        [self.firstPassword setHidden:YES];
     }];
 }
 
@@ -323,20 +303,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
         
     }
     return _phoneNumber;
-}
--(UITextField *)firstPassword{
-    if(!_firstPassword){
-        CGRect frame = CGRectMake(self.phoneNumber.frame.origin.x, self.facebookLoginButton.frame.origin.y + self.phoneNumber.frame.size.height + 5.f, self.phoneNumber.frame.size.width, self.phoneNumber.frame.size.height);
-        _firstPassword = [[UITextField alloc] initWithFrame:frame];
-        _firstPassword.backgroundColor = [UIColor whiteColor];
-        _firstPassword.delegate = self;
-        [_firstPassword setPlaceholder:ENTER_PASSWORD_PROMPT];
-        _firstPassword.layer.cornerRadius = TEXTFIELDS_CORNER_RADIUS;
-        _firstPassword.textAlignment = NSTextAlignmentCenter;
-        _firstPassword.secureTextEntry = YES;
-        [self createNextButton];
-    }
-    return _firstPassword;
 }
 
 -(UILabel *)orLabel{

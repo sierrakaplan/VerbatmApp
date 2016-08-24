@@ -11,7 +11,9 @@
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "LoginKeyboardToolBar.h"
-@interface ConfirmationCodeSignUp ()<UITextFieldDelegate,LoginKeyboardToolBarDelegate>
+
+@interface ConfirmationCodeSignUp ()<UITextFieldDelegate, LoginKeyboardToolBarDelegate>
+
 @property (nonatomic) UIButton * backButton;
 @property (nonatomic) UILabel * numberDispaly;
 @property (nonatomic) UITextField * confirmationCodeField;
@@ -20,8 +22,8 @@
 
 @end
 
-
 #define CODE_CONFIRM_PROMPT @"Enter Code"
+
 @implementation ConfirmationCodeSignUp
 
 
@@ -40,7 +42,6 @@
     
 }
 
-
 - (void)registerForKeyboardNotifications {
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -55,8 +56,6 @@
     
 }
 
-
-
 -(void)createNextButton {
     CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - LOGIN_TOOLBAR_HEIGHT,
                                      self.frame.size.width, LOGIN_TOOLBAR_HEIGHT);
@@ -65,6 +64,7 @@
     [self.toolBar setNextButtonText:@"Submit Code"];
     self.confirmationCodeField.inputAccessoryView = self.toolBar;
 }
+
 -(void) nextButtonPressed{
     [self.delagate codeSubmittedConfirmationCode:self.confirmationCodeField.text];
 }
@@ -74,7 +74,6 @@
 
 -(void) keyboardWillShow:(NSNotification*)notification {
 
-    
     [UIView animateWithDuration:0.2 animations:^{
         [self shiftPhoneFieldUp:YES];
     }completion:^(BOOL finished) {

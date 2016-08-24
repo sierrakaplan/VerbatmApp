@@ -91,8 +91,6 @@
 	[self.cameraView enableCapturingPhoto: NO];
 	[self.view bringSubviewToFront: self.topNavMessage];
 	self.topNavLabel.text = @"Press and hold to capture a short video of what you're doing.";
-//	self.selectedView_PAN = (ContentPageElementScrollView *)tile.superview;
-//	self.screenInCameraMode = YES;
 }
 
 // These should not be called, as the gallery button and text button are disabled

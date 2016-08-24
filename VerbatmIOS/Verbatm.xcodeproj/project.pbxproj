@@ -13,6 +13,8 @@
 		A5076D141BF2B25100303746 /* TextOverMediaView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5076D131BF2B25100303746 /* TextOverMediaView.m */; };
 		A50E62461D542060007FD5AD /* GridView.m in Sources */ = {isa = PBXBuildFile; fileRef = A50E62451D542060007FD5AD /* GridView.m */; };
 		A51A0ACE1D6CE847009D7CDD /* WelcomeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A51A0ACD1D6CE847009D7CDD /* WelcomeVC.m */; };
+		A51A0AF41D6D130B009D7CDD /* EnterCodeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A51A0AF31D6D130B009D7CDD /* EnterCodeVC.m */; };
+		A51A0AF71D6D135A009D7CDD /* ChooseLoginVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A51A0AF61D6D135A009D7CDD /* ChooseLoginVC.m */; };
 		A51B851A1D2F39B1006E90CC /* UIView+DTDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = A51B85191D2F39B1006E90CC /* UIView+DTDebug.m */; };
 		A51B851E1D2F3B79006E90CC /* NSObject+DTRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = A51B851D1D2F3B79006E90CC /* NSObject+DTRuntime.m */; };
 		A51B85201D2F3C43006E90CC /* DTLog.m in Sources */ = {isa = PBXBuildFile; fileRef = A51B851F1D2F3C43006E90CC /* DTLog.m */; };
@@ -293,6 +295,10 @@
 		A50E62451D542060007FD5AD /* GridView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GridView.m; sourceTree = "<group>"; };
 		A51A0ACC1D6CE847009D7CDD /* WelcomeVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WelcomeVC.h; sourceTree = "<group>"; };
 		A51A0ACD1D6CE847009D7CDD /* WelcomeVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomeVC.m; sourceTree = "<group>"; };
+		A51A0AF21D6D130B009D7CDD /* EnterCodeVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnterCodeVC.h; sourceTree = "<group>"; };
+		A51A0AF31D6D130B009D7CDD /* EnterCodeVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EnterCodeVC.m; sourceTree = "<group>"; };
+		A51A0AF51D6D135A009D7CDD /* ChooseLoginVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseLoginVC.h; sourceTree = "<group>"; };
+		A51A0AF61D6D135A009D7CDD /* ChooseLoginVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseLoginVC.m; sourceTree = "<group>"; };
 		A51B85181D2F39B1006E90CC /* UIView+DTDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+DTDebug.h"; sourceTree = "<group>"; };
 		A51B85191D2F39B1006E90CC /* UIView+DTDebug.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+DTDebug.m"; sourceTree = "<group>"; };
 		A51B851C1D2F3B79006E90CC /* NSObject+DTRuntime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+DTRuntime.h"; sourceTree = "<group>"; };
@@ -746,14 +752,8 @@
 			isa = PBXGroup;
 			children = (
 				A51A0AD71D6CF084009D7CDD /* UserAuth */,
-				A5D893711D667A0E007B33B9 /* OnboardingADK.h */,
-				A5D893721D667A0E007B33B9 /* OnboardingADK.m */,
-				C75690A61D0891FF002C9402 /* OnboardingBlogSelectionViewController.h */,
-				C75690A71D0891FF002C9402 /* OnboardingBlogSelectionViewController.m */,
-				A5D893741D67BB83007B33B9 /* FollowFriendsVC.h */,
-				A5D893751D67BB83007B33B9 /* FollowFriendsVC.m */,
-				A5D893771D6908D4007B33B9 /* FollowFriendCell.h */,
-				A5D893781D6908D4007B33B9 /* FollowFriendCell.m */,
+				A51A0AF01D6CFAC5009D7CDD /* Follow Friends */,
+				A51A0AF11D6CFAD6009D7CDD /* Create First Post */,
 				A51A0ACC1D6CE847009D7CDD /* WelcomeVC.h */,
 				A51A0ACD1D6CE847009D7CDD /* WelcomeVC.m */,
 				C73B7C2D1CA8719200128926 /* Intro_Instruction_Notification_View.h */,
@@ -819,8 +819,8 @@
 				A560EF991BA88F8B003FB041 /* User App Preferences */,
 				A51A0AD01D6CEFCC009D7CDD /* Login/Onboarding */,
 				A51A0AD91D6CF0D6009D7CDD /* MainTabController */,
-				A51A0ADB1D6CF1E2009D7CDD /* PostList/Posts */,
 				A51A0ACF1D6CEFC2009D7CDD /* ADK */,
+				A51A0ADB1D6CF1E2009D7CDD /* PostList/Posts */,
 				A51A0AD21D6CEFDB009D7CDD /* Profile/ProfileList */,
 				A51A0AD31D6CEFEB009D7CDD /* Discover */,
 				A51A0AD41D6CEFF0009D7CDD /* Notifications */,
@@ -835,9 +835,13 @@
 			children = (
 				C7F3D4691A4F84C000B43238 /* LoginVC.h */,
 				C7F3D46A1A4F84C000B43238 /* LoginVC.m */,
+				A51A0AF21D6D130B009D7CDD /* EnterCodeVC.h */,
+				A51A0AF31D6D130B009D7CDD /* EnterCodeVC.m */,
+				A51A0AF51D6D135A009D7CDD /* ChooseLoginVC.h */,
+				A51A0AF61D6D135A009D7CDD /* ChooseLoginVC.m */,
+				A51A0AE01D6CF44A009D7CDD /* Custom Views */,
 				A5337BBB1CCD99D600551394 /* SignUpVC.h */,
 				A5337BBC1CCD99D600551394 /* SignUpVC.m */,
-				A51A0AE01D6CF44A009D7CDD /* Custom Views */,
 			);
 			name = UserAuth;
 			sourceTree = "<group>";
@@ -1085,6 +1089,28 @@
 				C78204ED1C32EAC500F56A63 /* CreatorAndChannelBar.m */,
 			);
 			name = ChannelCreatorBar;
+			sourceTree = "<group>";
+		};
+		A51A0AF01D6CFAC5009D7CDD /* Follow Friends */ = {
+			isa = PBXGroup;
+			children = (
+				C75690A61D0891FF002C9402 /* OnboardingBlogSelectionViewController.h */,
+				C75690A71D0891FF002C9402 /* OnboardingBlogSelectionViewController.m */,
+				A5D893741D67BB83007B33B9 /* FollowFriendsVC.h */,
+				A5D893751D67BB83007B33B9 /* FollowFriendsVC.m */,
+				A5D893771D6908D4007B33B9 /* FollowFriendCell.h */,
+				A5D893781D6908D4007B33B9 /* FollowFriendCell.m */,
+			);
+			name = "Follow Friends";
+			sourceTree = "<group>";
+		};
+		A51A0AF11D6CFAD6009D7CDD /* Create First Post */ = {
+			isa = PBXGroup;
+			children = (
+				A5D893711D667A0E007B33B9 /* OnboardingADK.h */,
+				A5D893721D667A0E007B33B9 /* OnboardingADK.m */,
+			);
+			name = "Create First Post";
 			sourceTree = "<group>";
 		};
 		A5337BBE1CCDD95700551394 /* Feed Query Managers */ = {
@@ -1968,6 +1994,7 @@
 				C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */,
 				A51B85271D2F474F006E90CC /* OpenCollectionView.m in Sources */,
 				C7C69A071BF820FC006B5260 /* EditMediaContentView.m in Sources */,
+				A51A0AF71D6D135A009D7CDD /* ChooseLoginVC.m in Sources */,
 				C73766791D650B1900933A81 /* Comment.m in Sources */,
 				A5C38ACD1CC1D4120067D077 /* FeaturedContentChannelView.m in Sources */,
 				C71FA3281D477E16003989F3 /* TextPinchView.m in Sources */,
@@ -2009,6 +2036,7 @@
 				A5E73B8E1D16965700527ECF /* GTLQueryVerbatmApp.m in Sources */,
 				A5C09BE61BA1F43600C0AD86 /* MediaUploader.m in Sources */,
 				C73B7C2F1CA8719200128926 /* Intro_Instruction_Notification_View.m in Sources */,
+				A51A0AF41D6D130B009D7CDD /* EnterCodeVC.m in Sources */,
 				C736C9FF1D1B2AE500535C7E /* PublishingProgressView.m in Sources */,
 				C75F155F1C2B4A1B0092912D /* Channel.m in Sources */,
 				A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */,

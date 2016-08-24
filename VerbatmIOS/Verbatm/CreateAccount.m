@@ -29,14 +29,12 @@
 @property (nonatomic) BOOL enteringPhoneNumber;
 @property (nonatomic) BOOL nextButtonEnabled;
 
-@property (nonatomic) UITextField * firstPassword;
 @property (nonatomic) UITextField * createName;
 @property (nonatomic) CGRect originalPhoneTextFrame;
 
 @property (nonatomic) UILabel * orLabel;
 
 #define ENTER_PHONE_NUMBER_PROMT @"Enter Phone Number"
-#define ENTER_PASSWORD_PROMPT @"Create Password"
 #define CREATE_USERNAME @"Enter a Name"
 @end
 
@@ -81,18 +79,16 @@
     self.toolBar.delegate = self;
     [self.toolBar setNextButtonText:@"Next"];
     self.nextButtonEnabled = YES;
-    self.firstPassword.inputAccessoryView = self.toolBar;
 }
 
 #pragma mark - TOOLBAR NEXT BUTTON -
 
 -(void) nextButtonPressed {
 	NSString *simplePhoneNumber = [self getSimpleNumberFromFormattedPhoneNumber: self.phoneNumberField.text];
-	if([self sanityCheckPhoneNumberString: simplePhoneNumber] &&
-       [self sanityCheckPassword:self.firstPassword.text]
+	if([self sanityCheckPhoneNumberString: simplePhoneNumber]
        && [self sanityCheckName:self.createName.text] ) {
         [self.delegate signUpWithPhoneNumberSelectedWithNumber:[self removeSpaces:simplePhoneNumber]
-												   andPassword:self.firstPassword.text andName:self.createName.text];
+												   andName:self.createName.text];
         [self removeKeyBoardOnScreen];
     }
 }
@@ -126,17 +122,8 @@
 
 
 -(void)removeKeyBoardOnScreen {
-    [self.firstPassword resignFirstResponder];
     [self.phoneNumberField resignFirstResponder];
     [self.createName resignFirstResponder];
-}
-
--(BOOL)sanityCheckPassword:(NSString *)password {
-    if (password.length == 0 || [[self removeSpaces:password] isEqualToString:@""]) {
-        //string contains illegal characters
-        return NO;
-    }
-    return YES;
 }
 
 #pragma mark - Facebook Button Delegate  -
@@ -196,9 +183,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
         [self shiftPhoneFieldUp:YES];
     }completion:^(BOOL finished) {
         if(finished){
-             [self.firstPassword setHidden:NO];
             [self.createName setHidden:NO];
-            [self bringSubviewToFront:self.firstPassword];
             [self bringSubviewToFront:self.createName];
         }
     }];
@@ -208,11 +193,9 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     if(up) {
         self.phoneNumberField.frame = CGRectOffset(self.phoneNumberField.frame, 0, self.facebookLoginButton.frame.origin.y -
 												   self.phoneNumberField.frame.origin.y - LOGIN_TOOLBAR_HEIGHT); // make room for next button
-        [self.firstPassword setHidden:NO];
         [self.createName setHidden:NO];
     }else{
         self.phoneNumberField.frame = self.originalPhoneTextFrame;
-        [self.firstPassword setHidden:YES];
         [self.createName setHidden:YES];
         [self.orLabel setHidden:NO];
     }
@@ -222,7 +205,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     
     [UIView animateWithDuration:0.2 animations:^{
         [self shiftPhoneFieldUp:NO];
-        [self.firstPassword setHidden:YES];
         [self.createName setHidden:YES];
     }];
 }
@@ -352,24 +334,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     }
     return _createName;
 }
-
--(UITextField *)firstPassword{
-    if(!_firstPassword){
-        CGRect frame = CGRectMake(self.createName.frame.origin.x, self.createName.frame.origin.y +
-								  self.createName.frame.size.height + 5.f, self.createName.frame.size.width,
-								  self.createName.frame.size.height);
-        _firstPassword = [[UITextField alloc] initWithFrame:frame];
-        _firstPassword.backgroundColor = [UIColor whiteColor];
-        _firstPassword.delegate = self;
-        [_firstPassword setPlaceholder:ENTER_PASSWORD_PROMPT];
-        _firstPassword.layer.cornerRadius = TEXTFIELDS_CORNER_RADIUS;
-        _firstPassword.textAlignment = NSTextAlignmentCenter;
-        [self addSubview:_firstPassword];
-        [self createNextButton];
-    }
-    return _firstPassword;
-}
-
 
 -(UILabel *)orLabel{
     if(!_orLabel){

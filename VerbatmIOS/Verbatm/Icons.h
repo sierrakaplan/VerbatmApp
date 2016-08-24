@@ -192,7 +192,7 @@
 #define NO_COVER_PHOTO_IMAGE @"Empty_Cover_Photo_Image"
 #define PROFILE_BACK_BUTTON_ICON @"back_arrow_white"
 
-#define LOGIN_ICON @"Log In"
+#define LOGIN_ICON @"log_in_text"
 #define CREATE_ACCOUNT @"create_account_text"
 
 
