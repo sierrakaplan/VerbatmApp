@@ -917,7 +917,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	NSString *channelName = [channelObj valueForKey:CHANNEL_NAME_KEY];
 
 	BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:postId];
-	branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName];
+	branchUniversalObject.title = @"Hey! Checkout this post on Verbatm!";
 	branchUniversalObject.contentDescription = VERBATM_DESCRIPTION;
 	branchUniversalObject.imageUrl = shareLink;
 
