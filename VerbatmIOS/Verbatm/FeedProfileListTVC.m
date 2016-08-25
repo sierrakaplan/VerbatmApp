@@ -155,8 +155,6 @@
     return cell;
 }
 
-
-
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
@@ -167,6 +165,7 @@
         [cell setLayoutMargins:UIEdgeInsetsZero];
     }
 }
+
 -(void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
