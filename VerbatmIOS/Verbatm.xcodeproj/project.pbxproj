@@ -71,6 +71,7 @@
 		A5BB653F1D6E9E6800F5B01B /* FeedProfileListTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5BB653E1D6E9E6800F5B01B /* FeedProfileListTVC.m */; };
 		A5BB65421D6E9E8B00F5B01B /* FeedListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5BB65411D6E9E8B00F5B01B /* FeedListTableViewCell.m */; };
 		A5BB65451D6E9EB000F5B01B /* ProfileListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = A5BB65441D6E9EB000F5B01B /* ProfileListHeader.m */; };
+		A5BB65471D6F804000F5B01B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5BB65461D6F804000F5B01B /* Main.storyboard */; };
 		A5BFA5AA1CA8C506002C3884 /* Raleway-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A5BFA5981CA8C506002C3884 /* Raleway-Black.ttf */; };
 		A5BFA5AB1CA8C506002C3884 /* Raleway-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A5BFA5981CA8C506002C3884 /* Raleway-Black.ttf */; };
 		A5BFA5AC1CA8C506002C3884 /* Raleway-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A5BFA5991CA8C506002C3884 /* Raleway-BlackItalic.ttf */; };
@@ -114,7 +115,6 @@
 		A5C38ACD1CC1D4120067D077 /* FeaturedContentChannelView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38ACC1CC1D4120067D077 /* FeaturedContentChannelView.m */; };
 		A5CA61151B9A013E009D9D11 /* AdjustableBlurEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CA61141B9A013E009D9D11 /* AdjustableBlurEffect.m */; };
 		A5D893731D667A0E007B33B9 /* OnboardingADK.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D893721D667A0E007B33B9 /* OnboardingADK.m */; };
-		A5D8937E1D6B6D62007B33B9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5D8937D1D6B6D62007B33B9 /* Main.storyboard */; };
 		A5E73B761D1634D300527ECF /* UserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73B751D1634D300527ECF /* UserManager.m */; };
 		A5E73B7A1D1635C200527ECF /* GTLServiceVerbatmApp.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73B791D1635C200527ECF /* GTLServiceVerbatmApp.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A5E73B7F1D16365400527ECF /* GTLObject.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73B7E1D16365400527ECF /* GTLObject.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -403,6 +403,7 @@
 		A5BB65411D6E9E8B00F5B01B /* FeedListTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedListTableViewCell.m; sourceTree = "<group>"; };
 		A5BB65431D6E9EB000F5B01B /* ProfileListHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileListHeader.h; sourceTree = "<group>"; };
 		A5BB65441D6E9EB000F5B01B /* ProfileListHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileListHeader.m; sourceTree = "<group>"; };
+		A5BB65461D6F804000F5B01B /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		A5BFA5981CA8C506002C3884 /* Raleway-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Raleway-Black.ttf"; sourceTree = "<group>"; };
 		A5BFA5991CA8C506002C3884 /* Raleway-BlackItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Raleway-BlackItalic.ttf"; sourceTree = "<group>"; };
 		A5BFA59A1CA8C506002C3884 /* Raleway-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Raleway-Bold.ttf"; sourceTree = "<group>"; };
@@ -435,7 +436,6 @@
 		A5CA61141B9A013E009D9D11 /* AdjustableBlurEffect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdjustableBlurEffect.m; sourceTree = "<group>"; };
 		A5D893711D667A0E007B33B9 /* OnboardingADK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnboardingADK.h; sourceTree = "<group>"; };
 		A5D893721D667A0E007B33B9 /* OnboardingADK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnboardingADK.m; sourceTree = "<group>"; };
-		A5D8937D1D6B6D62007B33B9 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = ../../../../../.Trash/Main.storyboard; sourceTree = "<group>"; };
 		A5E73B741D1634D300527ECF /* UserManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserManager.h; sourceTree = "<group>"; };
 		A5E73B751D1634D300527ECF /* UserManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserManager.m; sourceTree = "<group>"; };
 		A5E73B781D1635C200527ECF /* GTLServiceVerbatmApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTLServiceVerbatmApp.h; sourceTree = "<group>"; };
@@ -1527,7 +1527,7 @@
 			isa = PBXGroup;
 			children = (
 				A51A0ADC1D6CF2C7009D7CDD /* Resources */,
-				A5D8937D1D6B6D62007B33B9 /* Main.storyboard */,
+				A5BB65461D6F804000F5B01B /* Main.storyboard */,
 				A51A0AD61D6CF03F009D7CDD /* FrontEnd */,
 				A51A0AD51D6CF036009D7CDD /* Framedation/Model */,
 				C7BC437C199D97F5004B91A1 /* Supporting Files */,
@@ -1764,7 +1764,7 @@
 				A5FB5D561BCB122300634A96 /* GMEmptyFolder@1x.png in Resources */,
 				C774040F19BE6538004C50EA /* Images.xcassets in Resources */,
 				A5934BFD1C10F349007C7830 /* Roboto-Italic.ttf in Resources */,
-				A5D8937E1D6B6D62007B33B9 /* Main.storyboard in Resources */,
+				A5BB65471D6F804000F5B01B /* Main.storyboard in Resources */,
 				A5FB5D5B1BCB122300634A96 /* GMVideoIcon@2x.png in Resources */,
 				A5FB5D401BCB11A900634A96 /* GMImagePicker.strings in Resources */,
 				A5BFA5C01CA8C506002C3884 /* Raleway-Medium.ttf in Resources */,
