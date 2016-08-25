@@ -43,6 +43,7 @@
 
 #define RESEND_CODE_BUTTON_WIDTH 150.f
 #define RESEND_CODE_BUTTON_HEIGHT 50.f
+#define RESEND_CODE_FONT_SIZE 20.f
 
 @end
 
@@ -74,11 +75,11 @@
 }
 
 -(void) sendCodeToUser:(NSString*) simplePhoneNumber {
-	[self changeToSendingCode: YES];
+	[self disableResendCodeButtonWithText:@"Sending code..."];
 	//todo: include more languages
 	NSDictionary *params = @{@"phoneNumber" : simplePhoneNumber, @"language" : @"en"};
 	[PFCloud callFunctionInBackground:@"sendCode" withParameters:params block:^(id  _Nullable response, NSError * _Nullable error) {
-		[self changeToSendingCode: NO];
+		[self enableResendCodeButton];
 		if (error) {
 			[[Crashlytics sharedInstance] recordError: error];
 			[self showAlertWithTitle:@"Error sending code" andMessage:@"Something went wrong. Please verify your phone number is correct."];
@@ -91,28 +92,35 @@
 	
 }
 
--(void) changeToSendingCode:(BOOL) sending {
-	NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
-									  NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size:20.f]}; //todo
-	NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:@"Resend code" attributes:titleAttributes];
-	if (sending) {
-		NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: [UIColor grayColor],
-										  NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size:20.f]};
-		attributedTitle = [[NSAttributedString alloc] initWithString:@"Sending code..." attributes:titleAttributes];
-		self.resendCodeButton.enabled = NO;
-		self.resendCodeButton.layer.borderColor = [UIColor grayColor].CGColor;
-		self.codeSentToNumberLabel.hidden = YES;
-	} else {
-		self.resendCodeButton.enabled = YES;
-		self.resendCodeButton.layer.borderColor = [UIColor whiteColor].CGColor;
-		self.codeSentToNumberLabel.hidden = NO;
-	}
+-(void) disableResendCodeButtonWithText:(NSString*)text {
+	self.resendCodeButton.enabled = NO;
+	self.resendCodeButton.layer.borderColor = [UIColor grayColor].CGColor;
+	self.codeSentToNumberLabel.hidden = YES;
+	NSAttributedString *attributedTitle = [self getAttributedTitleForResendCodeButtonWithText:text
+																				 andTextColor:[UIColor grayColor]];
 	[self.resendCodeButton setAttributedTitle:attributedTitle forState: UIControlStateNormal];
+}
+
+-(void) enableResendCodeButton {
+	self.resendCodeButton.enabled = YES;
+	self.resendCodeButton.layer.borderColor = [UIColor whiteColor].CGColor;
+	self.codeSentToNumberLabel.hidden = NO;
+	NSAttributedString *attributedTitle = [self getAttributedTitleForResendCodeButtonWithText:@"Resend code"
+																				 andTextColor:[UIColor whiteColor]];
+	[self.resendCodeButton setAttributedTitle:attributedTitle forState: UIControlStateNormal];
+}
+
+-(NSAttributedString*) getAttributedTitleForResendCodeButtonWithText:(NSString*)text andTextColor:(UIColor*)color {
+	NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: color,
+									  NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size: RESEND_CODE_FONT_SIZE]};
+	NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:text attributes:titleAttributes];
+	return attributedTitle;
 }
 
 -(void) verifyCode {
 	if (self.verifyingCode) return;
 	self.verifyingCode = YES;
+	[self disableResendCodeButtonWithText:@"Verifying code..."];
 	NSLog(@"verifying code");
 	NSString *code = [self getCode];
 	code = [UtilityFunctions removeAllNonNumbersFromString: code];
@@ -133,6 +141,7 @@
 				[PFUser becomeInBackground:token block:^(PFUser * _Nullable user, NSError * _Nullable error) {
 					if (error) {
 						[self showAlertWithTitle:@"Login Error" andMessage:error.localizedDescription];
+						[self enableResendCodeButton];
 						self.verifyingCode = NO;
 					} else {
 						[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
@@ -172,6 +181,7 @@
 }
 
 -(void) showWrongCode {
+	[self enableResendCodeButton];
 	self.verifyingCode = NO;
 	//todo:
 	[self setTextColor: [UIColor redColor] andShakeView:YES];

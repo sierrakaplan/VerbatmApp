@@ -500,11 +500,11 @@
 }
 
 -(void) addSubviewsToDescription {
-	UIImageView *editImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EDIT_PINCHVIEW_ICON]];
-	editImage.frame = CGRectMake(self.blogDescriptionEditable.frame.size.width - LABELS_OFFSET_X - 20.f,
-								 self.blogDescriptionEditable.frame.size.height - LABELS_OFFSET_X - 20.f,
-								 20.f, 20.f);
-	[self.blogDescriptionEditable addSubview: editImage];
+//	UIImageView *editImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EDIT_PINCHVIEW_ICON]];
+//	editImage.frame = CGRectMake(self.blogDescriptionEditable.frame.size.width - LABELS_OFFSET_X - 20.f,
+//								 self.blogDescriptionEditable.frame.size.height - LABELS_OFFSET_X - 20.f,
+//								 20.f, 20.f);
+//	[self.blogDescriptionEditable addSubview: editImage];
 	[self.blogDescriptionEditable addSubview: self.blogDescriptionPlaceholder];
 	if (self.blogDescription.text && self.blogDescription.text.length > 0) {
 		self.blogDescriptionPlaceholder.hidden = YES;
@@ -514,11 +514,11 @@
 }
 
 -(void) addSubviewsToTitle {
-	UIImageView *editImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EDIT_PINCHVIEW_ICON]];
-	editImage.frame = CGRectMake(self.blogTitleEditable.frame.size.width - LABELS_OFFSET_X - 20.f,
-								 self.blogTitleEditable.frame.size.height - LABELS_OFFSET_X - 20.f,
-								 20.f, 20.f);
-	[self.blogTitleEditable addSubview: editImage];
+//	UIImageView *editImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EDIT_PINCHVIEW_ICON]];
+//	editImage.frame = CGRectMake(self.blogTitleEditable.frame.size.width - LABELS_OFFSET_X - 20.f,
+//								 self.blogTitleEditable.frame.size.height - LABELS_OFFSET_X - 20.f,
+//								 20.f, 20.f);
+//	[self.blogTitleEditable addSubview: editImage];
 	[self.blogTitleEditable addSubview: self.blogTitlePlaceholder];
 	if (self.blogTitle.text && self.blogTitle.text.length > 0) {
 		self.blogTitlePlaceholder.hidden = YES;
