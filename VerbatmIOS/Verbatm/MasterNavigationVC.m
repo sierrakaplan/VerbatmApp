@@ -64,8 +64,8 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 @property (strong,nonatomic) ProfileVC *profileVC;
 //@property (strong,nonatomic) FeedTableViewController *feedVC;
 @property (strong,nonatomic) DiscoverVC *discoverVC;
-@property (strong, nonatomic) NotificationsListTVC * notificationVC;
-@property (strong, nonatomic) FeedProfileListTVC * feedProfileList;
+@property (strong, nonatomic) NotificationsListTVC *notificationVC;
+@property (strong, nonatomic) FeedProfileListTVC *feedProfileList;
 @property(strong,nonatomic) UIImageView * notificationIndicator;
 
 #define ANIMATION_NOTIFICATION_DURATION 0.5

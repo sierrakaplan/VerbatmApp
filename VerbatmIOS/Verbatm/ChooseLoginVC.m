@@ -26,7 +26,6 @@
 @property (nonatomic) UILabel *orLabel;
 @property (strong, nonatomic) UITextField *phoneLoginField;
 @property (nonatomic) UILabel *sendTextLabel;
-@property (nonatomic) CGRect originalPhoneTextFrame;
 
 #define PHONE_FIELD_WIDTH 200.f
 #define PHONE_FIELD_HEIGHT 50.f
@@ -262,8 +261,8 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 -(UITextField*) phoneLoginField {
 	if (!_phoneLoginField) {
 		CGFloat yPosition = self.orLabel.frame.origin.y + self.orLabel.frame.size.height;
-		self.originalPhoneTextFrame = CGRectMake(self.view.center.x - PHONE_FIELD_WIDTH/2.f, yPosition, PHONE_FIELD_WIDTH, PHONE_FIELD_HEIGHT);
-		_phoneLoginField = [[UITextField alloc] initWithFrame: self.originalPhoneTextFrame];
+		CGRect frame = CGRectMake(self.view.center.x - PHONE_FIELD_WIDTH/2.f, yPosition, PHONE_FIELD_WIDTH, PHONE_FIELD_HEIGHT);
+		_phoneLoginField = [[UITextField alloc] initWithFrame: frame];
 		_phoneLoginField.backgroundColor = [UIColor whiteColor];
 		_phoneLoginField.layer.borderColor = [UIColor blackColor].CGColor;
 		_phoneLoginField.layer.borderWidth = 1.f;

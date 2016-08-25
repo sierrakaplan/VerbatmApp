@@ -118,6 +118,10 @@
 }
 
 -(void) verifyCode {
+	//todo: these two lines allow testing create new accounts (use phone numbers no one has)
+	[self performSegueWithIdentifier:SEGUE_CREATE_NAME sender:self];
+	return;
+
 	if (self.verifyingCode) return;
 	self.verifyingCode = YES;
 	[self disableResendCodeButtonWithText:@"Verifying code..."];
@@ -151,7 +155,7 @@
 							[user setObject:[NSNumber numberWithBool:NO] forKey:USER_FTUE];
 							[user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 								if(succeeded) {
-									[self performSegueWithIdentifier:SEGUE_FOLLOW_FRIENDS sender:self];
+									[self performSegueWithIdentifier:SEGUE_CREATE_NAME sender:self];
 								}
 							}];
 						} else {
