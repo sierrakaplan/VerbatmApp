@@ -229,6 +229,7 @@
 		}
 	}
 
+	//todo: here is where bug happens when camera hasn't loaded
 	//start recording to file
 	[self.movieOutputFile startRecordingToOutputFileURL:outputURL recordingDelegate:self];
 }

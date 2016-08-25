@@ -27,7 +27,7 @@
 #define ENTER_NAME_FIELD_WIDTH 200.f
 #define ENTER_NAME_FIELD_HEIGHT 50.f
 
-#define ENTER_NAME_LABEL_WIDTH 250.f
+#define ENTER_NAME_LABEL_WIDTH 270.f
 #define ENTER_NAME_LABEL_HEIGHT 50.f
 
 #define MAX_LENGTH_NAME 20
@@ -53,7 +53,7 @@
 -(void) nextButtonPressed {
 	NSString *name = self.enterNameField.text;
 	if (name.length < 1) {
-		[self showAlertWithTitle:nil andMessage:@"Please enter a name"];
+		[self showAlertWithTitle:nil andMessage:@"Please enter a username"];
 	} else {
 		if (self.savingName) return;
 		self.savingName = YES;
@@ -129,7 +129,7 @@
 		_enterNameLabel.textAlignment = NSTextAlignmentCenter;
 		[_enterNameLabel setBackgroundColor:[UIColor clearColor]];
 		[_enterNameLabel setTextColor:[UIColor whiteColor]];
-		[_enterNameLabel setFont:[UIFont fontWithName:REGULAR_FONT size:24.f]]; //todo
+		[_enterNameLabel setFont:[UIFont fontWithName:REGULAR_FONT size:20.f]]; //todo
 
 	}
 	return _enterNameLabel;

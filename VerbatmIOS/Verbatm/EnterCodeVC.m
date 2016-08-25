@@ -118,15 +118,22 @@
 }
 
 -(void) verifyCode {
-	//todo: these two lines allow testing create new accounts (use phone numbers no one has)
-	[self performSegueWithIdentifier:SEGUE_CREATE_NAME sender:self];
-	return;
+	NSString *code = [self getCode];
+
+	//todo: these lines lines allow testing create new accounts (use phone numbers no one has)
+//	PFUser *newUser = [PFUser user];
+//	newUser.username = self.simplePhoneNumber;
+//	newUser.password = code;
+//	[newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+//		[self performSegueWithIdentifier:SEGUE_CREATE_NAME sender:self];
+//	}];
+//
+//	return;
 
 	if (self.verifyingCode) return;
 	self.verifyingCode = YES;
 	[self disableResendCodeButtonWithText:@"Verifying code..."];
 	NSLog(@"verifying code");
-	NSString *code = [self getCode];
 	code = [UtilityFunctions removeAllNonNumbersFromString: code];
 	code = [code stringByReplacingOccurrencesOfString:ZERO_WIDTH_CHARACTER withString:@""];
 	if (code.length != 4) {
