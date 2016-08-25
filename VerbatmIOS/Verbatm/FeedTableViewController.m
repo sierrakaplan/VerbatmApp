@@ -191,11 +191,13 @@
 		self.nextProfileToPresent.channel = nextChannel;
 	}
 }
+
 - (void)tableView:(UITableView *)tableView
 didEndDisplayingCell:(UITableViewCell *)cell
 forRowAtIndexPath:(NSIndexPath *)indexPath{
     
 	FeedTableCell *feedCell = (FeedTableCell *) cell;
+    [feedCell updateDateOfLastPostSeen];
 	[feedCell clearProfile];
 
 }

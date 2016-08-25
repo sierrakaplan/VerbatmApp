@@ -91,6 +91,16 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	[self loadContentToPostList];
 }
 
+
+
+-(void)updateDateOfLastPostSeen{
+    if(!self.isCurrentUserProfile && self.profileInFeed && [self.channel latestPostDate]){
+        [self.channel.followObject setValue:[self.channel latestPostDate] forKey:FOLLOW_LATEST_POST_DATE];
+        [self.channel.followObject saveInBackground];
+    }
+}
+
+
 -(void)loadContentToPostList {
 	if (!self.channel.followObject) {
 		PFObject *followObject = [[UserInfoCache sharedInstance] userFollowsChannel:self.channel];
@@ -123,6 +133,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+    
 }
 
 -(void)clearOurViews {
