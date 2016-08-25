@@ -115,9 +115,9 @@
 }
 
 -(void)askForFeedback {
-    if(self.isCurrentUser /*&& [[UserManager sharedInstance] shouldRequestForUserFeedback] &&
+    if(self.isCurrentUser && [[UserManager sharedInstance] shouldRequestForUserFeedback] &&
        !self.feedbackRequestNotification &&
-       [[UserSetupParameters sharedInstance] checkAndSetProfileInstructionShown]*/){
+       [[UserSetupParameters sharedInstance] checkAndSetProfileInstructionShown]){
         self.feedbackRequestNotification = [[UIImageView alloc] initWithImage:[UIImage imageNamed:FEEDBACK_NOTIFICATION_ICON]];
 		self.feedbackRequestNotification.contentMode = UIViewContentModeScaleAspectFit;
 		self.feedbackRequestNotification.center = self.center;
