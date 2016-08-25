@@ -405,7 +405,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 
 #pragma mark - Feed VC Delegate -
 
-
 -(void) goToDiscover{
     [self setSelectedIndex: 1];
 }

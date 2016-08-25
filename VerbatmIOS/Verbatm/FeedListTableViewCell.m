@@ -24,7 +24,7 @@
 
 #define SELECTION_DOT_SIZE  12.f
 #define XOFFSET 15.f
-
+#define SEPERATOR_HEIGHT 0.3
 @end
 
 @implementation FeedListTableViewCell
@@ -35,9 +35,8 @@
 }
 
 -(void)presentCellSeperator{
-    
     if(!self.cellSeperator){
-        self.cellSeperator = [[UIView alloc] initWithFrame:CGRectMake(-4.f, self.frame.size.height - 0.3, self.frame.size.width + 6.f, 0.3)];
+        self.cellSeperator = [[UIView alloc] initWithFrame:CGRectMake(-4.f, self.frame.size.height - SEPERATOR_HEIGHT, self.frame.size.width + 6.f, SEPERATOR_HEIGHT)];
         self.cellSeperator.backgroundColor = [UIColor darkGrayColor];
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         [self addSubview:self.cellSeperator];
