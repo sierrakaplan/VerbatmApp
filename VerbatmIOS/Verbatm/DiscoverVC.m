@@ -223,20 +223,8 @@
 #pragma mark - Table View delegate methods -
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-	if(self.onboardingBlogSelection) return 1;
 	return 1;
 }
-
-//-(NSString*) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-//	if (self.followingFriends) {
-////		return FOLLOW_FRIENDS_TEXT;
-//	} else if (self.onboardingBlogSelection){
-////		return ONBOARDING_TEXT;
-//	} else {
-//		return @"Discover";
-//	}
-//
-//}
 
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
 	return 0.f;

@@ -26,6 +26,9 @@
 #define SEGUE_FOLLOW_FRIENDS @"follow_friends_segue"
 #define SEGUE_CREATE_FIRST_POST @"first_post_segue"
 
+// segue from master vc to onboarding
+#define SEGUE_ONBOARDING_ALREADY_LOGGED_IN @"logged_in_onboarding_segue"
+
 // unwind segues back to master from login/onboarding
 #define UNWIND_SEGUE_PHONE_LOGIN_TO_MASTER @"phone_login_to_master_segue"
 #define UNWIND_SEGUE_FACEBOOK_LOGIN_TO_MASTER @"facebook_login_to_master_segue"

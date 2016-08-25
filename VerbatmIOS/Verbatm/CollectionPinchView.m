@@ -30,6 +30,7 @@
 #pragma mark Encoding Keys
 
 #define PINCHVIEWS_KEY @"child_pinchviews"
+#define TAP_TO_EDIT_OFFSET 20.f
 
 @end
 
@@ -168,7 +169,7 @@
 					  self.videoView.bounds.origin.y + self.videoView.bounds.size.height/4.f,
 					  self.videoView.bounds.size.width/2.f, self.videoView.bounds.size.height/2.f);
 	if (self.numTypesOfMedia > 1) {
-		frame = CGRectOffset(frame, 0.f, 20.f);
+		frame = CGRectOffset(frame, 0.f, TAP_TO_EDIT_OFFSET);
 	}
 	return frame;
 }

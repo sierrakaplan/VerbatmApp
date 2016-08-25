@@ -184,7 +184,6 @@
 		C73766731D63C71F00933A81 /* Commenting_BackendObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C73766721D63C71F00933A81 /* Commenting_BackendObject.m */; };
 		C73766761D64D9D800933A81 /* CommentingKeyboardToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = C73766751D64D9D800933A81 /* CommentingKeyboardToolbar.m */; };
 		C73766791D650B1900933A81 /* Comment.m in Sources */ = {isa = PBXBuildFile; fileRef = C73766781D650B1900933A81 /* Comment.m */; };
-		C73B7C2F1CA8719200128926 /* Intro_Instruction_Notification_View.m in Sources */ = {isa = PBXBuildFile; fileRef = C73B7C2E1CA8719200128926 /* Intro_Instruction_Notification_View.m */; };
 		C74749911C2B1CB90047C66E /* ProfileInformationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C74749901C2B1CB90047C66E /* ProfileInformationBar.m */; };
 		C74BC2901D2CDD2800C1FD80 /* Notification_BackendManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C74BC28F1D2CDD2800C1FD80 /* Notification_BackendManager.m */; };
 		C755DB0C1C74619200136F6E /* PublishingProgressManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C755DB0B1C74619200136F6E /* PublishingProgressManager.m */; };
@@ -553,8 +552,6 @@
 		C73766751D64D9D800933A81 /* CommentingKeyboardToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentingKeyboardToolbar.m; sourceTree = "<group>"; };
 		C73766771D650B1900933A81 /* Comment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Comment.h; sourceTree = "<group>"; };
 		C73766781D650B1900933A81 /* Comment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Comment.m; sourceTree = "<group>"; };
-		C73B7C2D1CA8719200128926 /* Intro_Instruction_Notification_View.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Intro_Instruction_Notification_View.h; sourceTree = "<group>"; };
-		C73B7C2E1CA8719200128926 /* Intro_Instruction_Notification_View.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Intro_Instruction_Notification_View.m; sourceTree = "<group>"; };
 		C747498F1C2B1CB90047C66E /* ProfileInformationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileInformationBar.h; sourceTree = "<group>"; };
 		C74749901C2B1CB90047C66E /* ProfileInformationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileInformationBar.m; sourceTree = "<group>"; };
 		C74BC28E1D2CDD2800C1FD80 /* Notification_BackendManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Notification_BackendManager.h; sourceTree = "<group>"; };
@@ -740,8 +737,6 @@
 				A51A0ACD1D6CE847009D7CDD /* WelcomeVC.m */,
 				C70E1C521C3BF74C00346A25 /* TermsAndConditionsVC.h */,
 				C70E1C531C3BF74C00346A25 /* TermsAndConditionsVC.m */,
-				C73B7C2D1CA8719200128926 /* Intro_Instruction_Notification_View.h */,
-				C73B7C2E1CA8719200128926 /* Intro_Instruction_Notification_View.m */,
 			);
 			name = Login/Onboarding;
 			sourceTree = "<group>";
@@ -1070,6 +1065,8 @@
 			children = (
 				C75690A61D0891FF002C9402 /* OnboardingBlogSelectionViewController.h */,
 				C75690A71D0891FF002C9402 /* OnboardingBlogSelectionViewController.m */,
+				A51A0AF81D6E82DB009D7CDD /* FollowFriendCell.h */,
+				A51A0AF91D6E82DB009D7CDD /* FollowFriendCell.m */,
 			);
 			name = "Follow Friends";
 			sourceTree = "<group>";
@@ -1079,8 +1076,6 @@
 			children = (
 				A5D893711D667A0E007B33B9 /* OnboardingADK.h */,
 				A5D893721D667A0E007B33B9 /* OnboardingADK.m */,
-				A51A0AF81D6E82DB009D7CDD /* FollowFriendCell.h */,
-				A51A0AF91D6E82DB009D7CDD /* FollowFriendCell.m */,
 			);
 			name = "Create First Post";
 			sourceTree = "<group>";
@@ -1999,7 +1994,6 @@
 				A5E73BA91D16981500527ECF /* GTLErrorObject.m in Sources */,
 				A5E73B8E1D16965700527ECF /* GTLQueryVerbatmApp.m in Sources */,
 				A5C09BE61BA1F43600C0AD86 /* MediaUploader.m in Sources */,
-				C73B7C2F1CA8719200128926 /* Intro_Instruction_Notification_View.m in Sources */,
 				A51A0AF41D6D130B009D7CDD /* EnterCodeVC.m in Sources */,
 				C736C9FF1D1B2AE500535C7E /* PublishingProgressView.m in Sources */,
 				C75F155F1C2B4A1B0092912D /* Channel.m in Sources */,

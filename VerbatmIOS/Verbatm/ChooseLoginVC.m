@@ -189,21 +189,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 // Only called for fb login errors now
 -(void) loginFailed: (NSNotification*) notification {
 	NSError* error = notification.object;
-	NSString* errorMessage;
-	switch ([error code]) {
-		case kPFErrorUserWithEmailNotFound: {
-			errorMessage = @"We're sorry we couldn't find an account with that email.";
-			break;
-		}
-		case kPFErrorObjectNotFound: {
-			errorMessage = @"We're sorry either the email or password is incorrect.";
-			break;
-		}
-		default: {
-			errorMessage = @"We're sorry, something went wrong!";
-		}
-	}
-	[self errorInSignInAnimation:errorMessage];
+	[self errorInSignInAnimation: @"We're sorry, something went wrong!"];
 }
 
 #pragma mark - Error message animation -
