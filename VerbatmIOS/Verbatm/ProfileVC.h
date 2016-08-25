@@ -16,8 +16,9 @@
 @protocol ProfileVCDelegate <NSObject>
 
 -(void) showTabBar: (BOOL) show;
--(void)exitProfile;
+
 @optional
+-(void)exitProfile;
 -(void) userCreateFirstPost;
 
 @end
