@@ -7,6 +7,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MasterNavigationVC : UIViewController
+@interface MasterNavigationVC : UITabBarController
+
+@property (nonatomic) CGFloat tabBarHeight;
 
 @end

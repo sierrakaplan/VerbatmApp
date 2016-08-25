@@ -11,10 +11,8 @@
 #import "Durations.h"
 
 #import "Icons.h"
-#import "Intro_Instruction_Notification_View.h"
 
 #import "Follow_BackendManager.h"
-#import "FollowingView.h"
 
 #import "GMImagePickerController.h"
 
@@ -46,7 +44,7 @@
 #import "UtilityFunctions.h"
 #import <PromiseKit/PromiseKit.h>
 
-@interface ProfileVC() <ProfileHeaderViewDelegate, Intro_Notification_Delegate,
+@interface ProfileVC() <ProfileHeaderViewDelegate,
 UIScrollViewDelegate, PostListVCProtocol,
 UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeViewControllerDelegate>
 
@@ -55,7 +53,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 @property (nonatomic) BOOL currentlyCreatingNewChannel;
 
 @property (strong, nonatomic) PostListVC * postListVC;
-@property (nonatomic) Intro_Instruction_Notification_View * introInstruction;
 
 @property (nonatomic, strong) ProfileHeaderView *profileHeaderView;
 @property (nonatomic) BOOL headerViewOnScreen;
@@ -92,7 +89,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	self.view.backgroundColor = [UIColor colorWithWhite:0.90 alpha:1.f];
 	[self buildHeaderView];
 	[self loadContentToPostList];
-	[self checkIntroNotification];
 }
 
 -(void)loadContentToPostList {
@@ -220,35 +216,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 									}];
 }
 
-
--(void)checkEditProfileNotification{
-	if(![[UserSetupParameters sharedInstance] checkEditButtonNotification] &&
-       [[UserSetupParameters sharedInstance] checkAndSetProfileInstructionShown] &&
-	   self.isCurrentUserProfile) {
-		self.introInstruction = [[Intro_Instruction_Notification_View alloc] initWithCenter:self.view.center andType:Profile];
-		self.introInstruction.custom_delegate = self;
-		[self.view addSubview:self.introInstruction];
-		[self.view bringSubviewToFront:self.introInstruction];
-	}
-}
-
--(void)checkIntroNotification{
-	if(![[UserSetupParameters sharedInstance] checkAndSetProfileInstructionShown] &&
-	   self.isCurrentUserProfile) {
-		self.introInstruction = [[Intro_Instruction_Notification_View alloc] initWithCenter:self.view.center andType:Profile];
-		self.introInstruction.custom_delegate = self;
-		[self.view addSubview:self.introInstruction];
-		[self.view bringSubviewToFront:self.introInstruction];
-	}
-}
-
--(void) notificationDoneAnimatingOut {
-	if(self.introInstruction){
-		[self.introInstruction removeFromSuperview];
-		self.introInstruction = nil;
-	}
-}
-
 -(void)addClearScreenGesture{
 	UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clearScreen:)];
 	singleTap.numberOfTapsRequired = 1;
@@ -259,11 +226,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
 	return YES;
 }
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-	return  (![touch.view isKindOfClass:[Intro_Instruction_Notification_View class]]);
-}
-
 
 -(void)exitCurrentPostView{
     [self createNewPostViewFromCellIndexPath:nil];
@@ -629,11 +591,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 											 self.view.frame.size.width, postHeight);
 		self.postListLargeFrame = self.view.bounds;
 		[_postListVC.view setFrame:self.postListSmallFrame];
-        if(self.introInstruction){
-            [self.view insertSubview:_postListVC.view belowSubview:self.introInstruction];
-        }else{
-           [self.view addSubview:_postListVC.view];
-        }
+        [self.view addSubview:_postListVC.view];
     }
     
 	return _postListVC;

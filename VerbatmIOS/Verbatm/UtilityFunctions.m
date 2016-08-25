@@ -300,6 +300,13 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
     else return nil;
 }
 
++(NSString*) removeAllNonNumbersFromString:(NSString*)string {
+	NSError *error = NULL;
+	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[\\s-\\(\\)]" options:NSRegularExpressionCaseInsensitive error:&error];
+	NSString* simpleNumber = [regex stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, [string length]) withTemplate:@""];
+	return simpleNumber;
+}
+
 
 #pragma mark - Parse Functions -
 
@@ -320,8 +327,6 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 	}
 	return nil;
 }
-
-
 
 -(NSMutableArray *)sessionTasks {
 	if (!_sessionTasks) {

@@ -18,7 +18,6 @@
 
 #import "SizesAndPositions.h"
 #import "Styles.h"
-#import "FollowingView.h"
 
 #import "UserInfoCache.h"
 
@@ -204,7 +203,10 @@
 
 -(void) createEditButton {
 	[self createFollowOrEditButton];
-	[self changeFollowButtonTitle:@"edit" toColor:[UIColor whiteColor]];
+	[self changeFollowButtonTitle:@"edit profile" toColor:[UIColor whiteColor]];
+	self.followOrEditButton.layer.borderWidth = 0.f;
+	self.followOrEditButton.frame = CGRectMake(self.followOrEditButton.frame.origin.x, self.followOrEditButton.frame.origin.y, 50.f,
+											   self.followOrEditButton.frame.size.height);
 }
 
 
@@ -272,7 +274,7 @@
 		[self changeFollowButtonTitle:@"done" toColor:[UIColor blackColor]];
 	} else {
 		self.followOrEditButton.backgroundColor = [UIColor blackColor];
-		[self changeFollowButtonTitle:@"edit" toColor:[UIColor whiteColor]];
+		[self changeFollowButtonTitle:@"edit profile" toColor:[UIColor whiteColor]];
 	}
 }
 

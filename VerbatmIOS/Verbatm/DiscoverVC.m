@@ -12,6 +12,7 @@
 #import "FeedQueryManager.h"
 #import "DiscoverVC.h"
 #import "FeaturedContentCellView.h"
+#import "FollowFriendCell.h"
 #import "Follow_BackendManager.h"
 #import "Notifications.h"
 #import "ProfileVC.h"
@@ -19,29 +20,27 @@
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
-@interface DiscoverVC() <UIScrollViewDelegate, FeaturedContentCellViewDelegate,
-ExploreChannelCellViewDelegate>
+@interface DiscoverVC() <UIScrollViewDelegate, ExploreChannelCellViewDelegate>
 
 @property (strong, nonatomic) UISearchController *searchController;
 @property (strong, nonatomic) SearchResultsVC *searchResultsController;
 
 @property (strong, nonatomic) NSMutableArray *exploreChannels;
-@property (strong, nonatomic) NSMutableArray *featuredChannels;
 
 @property (nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic) UIActivityIndicatorView *loadMoreSpinner;
 
 @property (nonatomic) BOOL loadingMoreChannels;
 @property (nonatomic) BOOL refreshing;
+@property (nonatomic) BOOL followingFriends;
 
-
-#define HEADER_HEIGHT 50.f
 #define HEADER_FONT_SIZE 25.f
-#define CELL_HEIGHT 350.f
+#define CELL_HEIGHT_EXPLORE 350.f
+#define CELL_HEIGHT_FRIEND 100.f
 
 #define LOAD_MORE_CUTOFF 3
 
-#define ONBOARDING_TEXT @"Start Following Some Blogs!"
+#define MIN_FRIEND_CHANNELS 0
 
 @end
 
@@ -69,12 +68,14 @@ ExploreChannelCellViewDelegate>
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearViews)
 												 name:NOTIFICATION_FREE_MEMORY_DISCOVER object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshChannels)
+												 name:NOTIFICATION_REFRESH_DISCOVER object:nil];
 	[self setNeedsStatusBarAppearanceUpdate];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-	if (!_featuredChannels || !_exploreChannels) {
+	if (!_exploreChannels || !self.exploreChannels.count) {
 		[self refreshChannels];
 	}
 }
@@ -103,7 +104,7 @@ ExploreChannelCellViewDelegate>
 	self.tableView.backgroundView.layer.zPosition -= 1;
 	[self.view setBackgroundColor:[UIColor clearColor]];
 	//avoid covering status bar and last item in uitableview
-	UIEdgeInsets inset = UIEdgeInsetsMake(STATUS_BAR_HEIGHT, 0, TAB_BAR_HEIGHT + STATUS_BAR_HEIGHT + 50.f, 0);
+	UIEdgeInsets inset = UIEdgeInsetsMake(STATUS_BAR_HEIGHT, 0, TAB_BAR_HEIGHT + STATUS_BAR_HEIGHT, 0);
 	self.tableView.contentInset = inset;
 	self.tableView.scrollIndicatorInsets = inset;
 }
@@ -124,21 +125,22 @@ ExploreChannelCellViewDelegate>
 
 -(void) clearViews {
 	for (UITableViewCell *cellView in [self.tableView visibleCells]) {
-		[(ExploreChannelCellView*)cellView offScreen];
-		[(ExploreChannelCellView*)cellView clearViews];
+		if (!self.followingFriends) {
+			[(ExploreChannelCellView*)cellView offScreen];
+			[(ExploreChannelCellView*)cellView clearViews];
+		}
 	}
 	self.loadingMoreChannels = NO;
 	self.refreshing = NO;
-	self.exploreChannels = nil;
-	self.featuredChannels = nil;
+	_exploreChannels = nil;
 	[self.tableView reloadData];
-	self.exploreChannels = nil;
-	self.featuredChannels = nil;
 }
 
 -(void) offScreen {
 	for (UITableViewCell *cellView in [self.tableView visibleCells]) {
-		[(ExploreChannelCellView*)cellView offScreen];
+		if (!self.followingFriends) {
+			[(ExploreChannelCellView*)cellView offScreen];
+		}
 	}
 }
 
@@ -147,14 +149,31 @@ ExploreChannelCellViewDelegate>
 	self.refreshing = YES;
 	self.loadingMoreChannels = NO;
 	if (![self.refreshControl isRefreshing]) [self.loadMoreSpinner startAnimating];
-	[[FeedQueryManager sharedInstance] loadFeaturedChannelsWithCompletionHandler:^(NSArray *featuredChannels) {
-		self.featuredChannels = nil;
-		[self.featuredChannels addObjectsFromArray:featuredChannels];
-		[self.tableView reloadData];
-		self.refreshing = NO;
-	}];
+	if (self.onboardingBlogSelection) {
+		[[FeedQueryManager sharedInstance] loadFriendsChannelsWithCompletionHandler:^(NSArray *friendChannelObjects, NSArray *friendObjects) {
+			NSArray *friendChannels = [Channel_BackendObject channelsFromParseChannelObjects: friendChannelObjects];
+			if (friendChannels.count > MIN_FRIEND_CHANNELS) {
+				self.followingFriends = YES;
+				if (self.onboardingDelegate) [self.onboardingDelegate followingFriends];
+				[self.exploreChannels removeAllObjects];
+				[self.refreshControl endRefreshing];
+				[self.loadMoreSpinner stopAnimating];
+				[self.exploreChannels addObjectsFromArray: friendChannels];
+				[self.tableView reloadData];
+				self.refreshing = NO;
+			} else {
+				[self loadExploreChannels];
+			}
+		}];
+	} else {
+		[self loadExploreChannels];
+	}
+}
+
+-(void) loadExploreChannels {
+	self.followingFriends = NO;
 	[[FeedQueryManager sharedInstance] refreshExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
-		self.exploreChannels = nil;
+		[self.exploreChannels removeAllObjects];
 		[self.refreshControl endRefreshing];
 		[self.loadMoreSpinner stopAnimating];
 		[self.exploreChannels addObjectsFromArray: exploreChannels];
@@ -164,6 +183,7 @@ ExploreChannelCellViewDelegate>
 }
 
 -(void) loadMoreChannels {
+	if (self.refreshing || self.followingFriends) return;
 	self.loadingMoreChannels = YES;
 	[self.loadMoreSpinner startAnimating];
 	[[FeedQueryManager sharedInstance] loadMoreExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
@@ -203,78 +223,27 @@ ExploreChannelCellViewDelegate>
 #pragma mark - Table View delegate methods -
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-	if(self.onboardingBlogSelection) return 1;
-//	return 2;
 	return 1;
 }
 
--(NSString*) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-
-	if(self.onboardingBlogSelection){
-		return ONBOARDING_TEXT;
-	} else {
-
-//		if (section == 0) {
-//			return @"Featured";
-//		} else {
-//			return @"Discover";
-//		}
-		return @"Discover";
-	}
-}
-
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-	return HEADER_HEIGHT;
+	return 0.f;
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
 	return 1.f;
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
-	// Background color
-	view.tintColor = [UIColor clearColor];
-	// Text Color
-	UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
-	[header.textLabel setTextColor:[UIColor whiteColor]];
-	[header.textLabel setFont:[UIFont fontWithName:BOLD_FONT size:HEADER_FONT_SIZE]];
-
-	if(self.onboardingBlogSelection){
-		[header.textLabel setText:ONBOARDING_TEXT];
-	}else{
-//		if (section == 0) {
-//			[header.textLabel setText:@"Featured"];
-//		} else {
-			[header.textLabel setText:@"Discover"];
-//		}
-	}
-	[header.textLabel setTextAlignment:NSTextAlignmentCenter];
-	[header.textLabel setLineBreakMode:NSLineBreakByClipping];
-
-	for (UIView *subview in header.subviews) {
-		if ([subview isKindOfClass:[UIImageView class]]) {
-			CGRect frame = CGRectMake(10.f, 0.f, header.bounds.size.width - 20.f, header.bounds.size.height);
-			subview.frame = frame;
-		}
-	}
-}
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	return self.exploreChannels.count;
-//	}else{
-//		switch (section) {
-//			case 0:
-//				return 1;
-//			case 1:
-//				return self.exploreChannels.count;
-//			default:
-//				return 0;
-//		}
-//	}
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-	return CELL_HEIGHT;
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+	if (self.followingFriends) {
+		return CELL_HEIGHT_FRIEND;
+	} else {
+		return CELL_HEIGHT_EXPLORE;
+	}
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -284,7 +253,17 @@ ExploreChannelCellViewDelegate>
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSString *identifier = [NSString stringWithFormat:@"cell,%ld%ld", (long)indexPath.section, (long)indexPath.row % 10]; // reuse cells every 10
-//	if (indexPath.section == 1 || self.onboardingBlogSelection) {
+
+	if (self.followingFriends) {
+		FollowFriendCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+		if (cell == nil) {
+			cell = [[FollowFriendCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+			[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+		}
+		Channel *channel = [self.exploreChannels objectAtIndex: indexPath.row];
+		[cell presentFriendChannel: channel];
+		return cell;
+	} else {
 		ExploreChannelCellView *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
 		if(cell == nil) {
 			cell = [[ExploreChannelCellView alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
@@ -303,21 +282,7 @@ ExploreChannelCellViewDelegate>
 			[self loadMoreChannels];
 		}
 		return cell;
-//	} else {
-//		FeaturedContentCellView *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-//		if(cell == nil) {
-//			cell = [[FeaturedContentCellView alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
-//			[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-//			cell.delegate = self;
-//		}
-//		if (!cell.alreadyPresented && self.featuredChannels.count > 0) {
-//			//Only one featured content cell
-//			[cell presentChannels: self.featuredChannels];
-//		}
-//
-//		[cell onScreen];
-//		return cell;
-//	}
+	}
 }
 
 //todo: Stop videos (to make scrolling smooth)
@@ -333,17 +298,21 @@ ExploreChannelCellViewDelegate>
 - (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
 	// If the indexpath is not within visible objects then it is offscreen
 	if ([tableView.indexPathsForVisibleRows indexOfObject:indexPath] == NSNotFound) {
-		if (indexPath.section == 1 || self.onboardingBlogSelection) {
+		if (!self.followingFriends) {
 			[(ExploreChannelCellView*)cell offScreen];
-
-		} else {
-			[(FeaturedContentCellView*)cell offScreen];
 		}
 	}
 }
 
--(CGFloat) getVisibileCellIndex{
-	return self.tableView.contentOffset.y / CELL_HEIGHT;
+-(CGFloat) getVisibileCellIndex {
+	CGFloat cellHeight = self.followingFriends ? CELL_HEIGHT_FRIEND : CELL_HEIGHT_EXPLORE;
+	return self.tableView.contentOffset.y / cellHeight;
+}
+
+-(void) followAllBlogs {
+	for (Channel* channel in self.exploreChannels) {
+		[Follow_BackendManager currentUserFollowChannel:channel];
+	}
 }
 
 #pragma mark - Lazy Instantiation -
@@ -354,14 +323,6 @@ ExploreChannelCellViewDelegate>
 	}
 	return _exploreChannels;
 }
-
--(NSMutableArray *) featuredChannels {
-	if (!_featuredChannels) {
-		_featuredChannels = [[NSMutableArray alloc] init];
-	}
-	return _featuredChannels;
-}
-
 
 -(void) dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];

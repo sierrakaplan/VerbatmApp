@@ -27,8 +27,7 @@
 @property (nonatomic) BOOL shouldAnimateViews;
 @property (nonatomic) NSMutableArray *parseNotificationObjects;
 @property (nonatomic) BOOL refreshing;
-@property (nonatomic) UIImageView * backgroundView;
-@property (nonatomic)  CustomNavigationBar * headerBar;
+@property (nonatomic) CustomNavigationBar * headerBar;
 @property (nonatomic) UIRefreshControl *refreshControl;
 
 @property (nonatomic) UIActivityIndicatorView *loadMoreSpinner;
@@ -41,7 +40,7 @@
 @property (nonatomic) BOOL cellSelected;
 
 #define CUSTOM_BAR_HEIGHT 35.f
-#define LIST_BAR_Y_OFFSET -15.f
+
 @end
 
 @implementation NotificationsListTVC
@@ -60,36 +59,31 @@
 	self.tableView.allowsSelection = YES;
 	self.tableView.showsHorizontalScrollIndicator = NO;
 	self.tableView.showsVerticalScrollIndicator = NO;
+
+	UIImageView * backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:NOTIFICATIONS_LIST_BACKGROUND]];
+	[self.tableView setBackgroundView:backgroundView];
+	self.tableView.backgroundView.layer.zPosition -= 1;
+	[self.view setBackgroundColor:[UIColor clearColor]];
+
 	[self addRefreshFeature];
 	[self refreshNotifications];
 
-	self.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:NOTIFICATIONS_LIST_BACKGROUND]];
-	self.backgroundView.contentMode = UIViewContentModeScaleAspectFill;
-	self.backgroundView.frame = self.view.bounds;
-
-	UIEdgeInsets inset = UIEdgeInsetsMake((LIST_BAR_Y_OFFSET+ STATUS_BAR_HEIGHT + CUSTOM_BAR_HEIGHT), 0, CUSTOM_BAR_HEIGHT, 0);
+	UIEdgeInsets inset = UIEdgeInsetsMake(CUSTOM_BAR_HEIGHT + STATUS_BAR_HEIGHT, 0, CUSTOM_BAR_HEIGHT, 0);
 	self.tableView.contentInset = inset;
-	self.tableView.scrollIndicatorInsets = inset;
-
-
-	[self.tableView setBackgroundView:self.backgroundView];
-	self.tableView.backgroundView.layer.zPosition -= 1;
 
 	[self createHeader];
 }
 
--(void)viewWillAppear:(BOOL)animated{
-	if(self.isFirstLoad){
+-(void)viewWillAppear:(BOOL)animated {
+	if(self.isFirstLoad) {
 		self.isFirstLoad = NO;
-	}else{
-		[self refreshNotifications];
 	}
 	[self.delegate removeNotificationIndicator];
 	self.currentlyBeingViewed = YES;
 	self.cellSelected = NO;
 }
 
--(void)viewWillDisappear:(BOOL)animated{
+-(void)viewWillDisappear:(BOOL)animated {
 	self.currentlyBeingViewed = NO;
 }
 
@@ -97,38 +91,36 @@
 	return YES;
 }
 
--(void)createHeader{
-	CGRect navBarFrame = CGRectMake(0.f, -(LIST_BAR_Y_OFFSET + STATUS_BAR_HEIGHT + CUSTOM_BAR_HEIGHT),
-									self.view.frame.size.width, STATUS_BAR_HEIGHT+ CUSTOM_BAR_HEIGHT);
+-(void)createHeader {
+	CGRect navBarFrame = CGRectMake(0.f, self.tableView.contentOffset.y, self.view.frame.size.width, STATUS_BAR_HEIGHT + CUSTOM_BAR_HEIGHT);
 
 	self.headerBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:CHANNEL_LIST_HEADER_BACKGROUND_COLOR];
 	[self.headerBar createMiddleButtonWithTitle:@"Notifications" blackText:YES largeSize:YES];
-	[self.tableView addSubview:self.headerBar];
+	[self.view addSubview: self.headerBar];
 
 	self.loadMoreSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
 	self.loadMoreSpinner.hidesWhenStopped = YES;
 	self.tableView.tableFooterView = self.loadMoreSpinner;
 }
 
--(void)presentNoNotificationView{
-	if(!self.noNotificationsNotification){
+-(void)presentNoNotificationView {
+	if(!self.noNotificationsNotification) {
 		self.noNotificationsNotification = [[UIImageView alloc]initWithImage:[UIImage imageNamed:NOTIFICATIONS_EMPTY_ICON]];
 		[self.noNotificationsNotification setFrame:self.view.bounds];
 		[self.view addSubview:self.noNotificationsNotification];
 	}
 }
 
--(void)removeNoNotificationView{
+-(void)removeNoNotificationView {
 	if(self.noNotificationsNotification){
 		[self.noNotificationsNotification removeFromSuperview];
 		self.noNotificationsNotification = nil;
 	}
 }
 
--(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	if(scrollView == self.tableView){
-		self.headerBar.frame = CGRectMake(0.f, scrollView.contentOffset.y, self.view.frame.size.width, STATUS_BAR_HEIGHT+ CUSTOM_BAR_HEIGHT);
-		[self.tableView bringSubviewToFront:self.headerBar];
+		self.headerBar.frame = CGRectMake(0.f, scrollView.contentOffset.y, self.headerBar.frame.size.width, self.headerBar.frame.size.height);
 	}
 }
 
@@ -157,9 +149,9 @@
 	}];
 }
 
--(void)findNewNotifications{
+-(void)findNewNotifications {
 	BOOL foundNewNotification = NO;
-	for(PFObject * notification in self.parseNotificationObjects){
+	for(PFObject * notification in self.parseNotificationObjects) {
 		NSNumber * isNew = [notification valueForKey:NOTIFICATION_IS_NEW];
 		if([isNew boolValue]){
 			if(!foundNewNotification){
@@ -172,13 +164,13 @@
 	}
 }
 
--(void)addRefreshFeature{
+-(void)addRefreshFeature {
 	self.refreshControl = [[UIRefreshControl alloc] init];
 	[self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
 	[self.tableView addSubview: self.refreshControl];
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 	return CHANNEL_USER_LIST_CELL_HEIGHT;
 }
 
@@ -187,15 +179,17 @@
 	// Dispose of any resources that can be recreated.
 }
 
--(void)exitPreview{
+-(void)exitPreview {
 	[self removePreview];
 }
--(void)presentCommentListForPost:(PFObject *)post{
+
+-(void)presentCommentListForPost:(PFObject *)post {
     UserAndChannelListsTVC *commentorsListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
     [commentorsListVC presentList:CommentList forChannel:nil orPost:post];
     [self presentViewController:commentorsListVC animated:YES completion:nil];
 }
--(void) showWhoLikesThePostFromNotifications:(PFObject *) post{
+
+-(void) showWhoLikesThePostFromNotifications:(PFObject *) post {
     UserAndChannelListsTVC *likersListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
     [likersListVC presentList:LikersList forChannel:nil orPost:post];
     [self presentViewController:likersListVC animated:YES completion:nil];
@@ -227,7 +221,6 @@
 		}
 	}];
 }
-
 
 -(void)presentPost:(PFObject *)postObject andChannel:(Channel *) channel{
 
@@ -263,9 +256,9 @@
 	}
 }
 
-#pragma mark - Notifications Cell protocol -
+#pragma mark - Notifications Cell Protocol -
 
--(void)presentBlogFromCell:(NotificationTableCell *)cell{
+-(void)presentBlogFromCell:(NotificationTableCell *)cell {
 	Channel * channel = cell.channel;
 	PFUser * user = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
 
@@ -318,25 +311,6 @@
 	return self.parseNotificationObjects.count;
 }
 
--(void)setNotificationOnCell:( NotificationTableCell *)cell notificationObject:(PFObject *)notification{
-    NotificationType notType = [(NSNumber *)[notification valueForKey:NOTIFICATION_TYPE] intValue];
-    PFUser * notificationSender = [notification valueForKey:NOTIFICATION_SENDER];
-    PFObject * postActivityObject = [notification valueForKey:NOTIFICATION_POST];
-    [postActivityObject fetchInBackground];
-
-    [Channel_BackendObject getChannelsForUser:notificationSender withCompletionBlock:^(NSMutableArray * userChannels) {
-        if(userChannels && userChannels.count){
-            dispatch_async(dispatch_get_main_queue(), ^{
-                Channel * channel = [userChannels firstObject];
-                [cell presentNotification:notType withChannel:channel andParseObject:postActivityObject];
-            });
-        } else {
-			//Error where user doesn't have channel
-
-		}
-    }];
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
 	if(indexPath.row >= self.parseNotificationObjects.count) return nil;
@@ -344,7 +318,7 @@
 	NSString *identifier = [NSString stringWithFormat:@"cell,%ld", (long)indexPath.row];
 	NotificationTableCell *cell =  (NotificationTableCell *)[tableView dequeueReusableCellWithIdentifier:identifier];
 
-	if(!cell){
+	if(cell == nil) {
 		cell = [[NotificationTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	}
@@ -352,9 +326,29 @@
 	if(indexPath.row >= (self.parseNotificationObjects.count - 5.f)){
 		[self getMoreNotifications];
 	}
+
 	[self setNotificationOnCell:cell notificationObject:self.parseNotificationObjects[indexPath.row]];
 	[self removeNoNotificationView];
 	return cell;
+}
+
+-(void)setNotificationOnCell:( NotificationTableCell *)cell notificationObject:(PFObject *)notification {
+	NotificationType notType = [(NSNumber *)[notification valueForKey:NOTIFICATION_TYPE] intValue];
+	PFUser *notificationSender = [notification valueForKey:NOTIFICATION_SENDER];
+	PFObject *postActivityObject = [notification valueForKey:NOTIFICATION_POST];
+	[postActivityObject fetchInBackground];
+
+	[Channel_BackendObject getChannelsForUser:notificationSender withCompletionBlock:^(NSMutableArray * userChannels) {
+		if(userChannels && userChannels.count){
+			dispatch_async(dispatch_get_main_queue(), ^{
+				Channel * channel = [userChannels firstObject];
+				[cell presentNotification:notType withChannel:channel andParseObject:postActivityObject];
+			});
+		} else {
+			//Error where user doesn't have channel
+
+		}
+	}];
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -365,14 +359,13 @@
 			cell.transform = CGAffineTransformIdentity;
 		}];
 
-
-		if(cell.bounds.size.height * indexPath.row >= self.view.frame.size.height){
+		if(cell.bounds.size.height * indexPath.row >= self.view.frame.size.height) {
 			self.shouldAnimateViews = NO;
 		}
 	}
 }
 
--(NSMutableArray *)parseNotificationObjects{
+-(NSMutableArray *)parseNotificationObjects {
 	if(!_parseNotificationObjects)_parseNotificationObjects = [[NSMutableArray alloc] init];
 	return _parseNotificationObjects;
 }

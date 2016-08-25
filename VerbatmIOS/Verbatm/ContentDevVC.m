@@ -28,7 +28,6 @@
 
 #import "GMImagePickerController.h"
 
-#import "Intro_Instruction_Notification_View.h"
 #import "ImagePinchView.h"
 #import "Icons.h"
 
@@ -65,16 +64,12 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 
-@interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,
-Intro_Notification_Delegate, GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate,
+@interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate, GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate,
 CustomNavigationBarDelegate,PreviewDisplayDelegate, VerbatmCameraViewDelegate,
 UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 
-@property (nonatomic) Intro_Instruction_Notification_View * introInstruction;
 
 @property (nonatomic) NSInteger totalPiecesOfMedia;
-
-@property (nonatomic) Channel *userChannel;
 
 #pragma mark Image Manager
 
@@ -193,14 +188,6 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 	return YES;
 }
 
--(void)checkAdkSlideShowOnboarding {
-	if(![[UserSetupParameters sharedInstance] checkAdkOnboardingShown]) {
-		OnboardingADK* onboardingViewController = [[OnboardingADK alloc] init];
-		onboardingViewController.mainADK = self;
-		[self presentViewController:onboardingViewController animated:YES completion:nil];
-	}
-}
-
 -(void) addBackgroundImage {
 	UIImageView * backgroundView = [[UIImageView alloc] initWithFrame:self.view.bounds];
 	backgroundView.image =[UIImage imageNamed:ADK_BACKGROUND];
@@ -216,25 +203,6 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear: animated];
-//	[self checkIntroNotification];
-	[self checkAdkSlideShowOnboarding];
-}
-
-//don't want anymore
-//-(void) checkIntroNotification {
-//	if(![[UserSetupParameters sharedInstance] checkAndSetADKInstructionShown]) {
-//		self.introInstruction = [[Intro_Instruction_Notification_View alloc] initWithCenter:self.view.center andType:ADK];
-//		self.introInstruction.custom_delegate = self;
-//		[self.view addSubview:self.introInstruction];
-//		[self.view bringSubviewToFront:self.introInstruction];
-//	}
-//}
-
--(void) notificationDoneAnimatingOut {
-	if(self.introInstruction){
-		[self.introInstruction removeFromSuperview];
-		self.introInstruction = nil;
-	}
 }
 
 -(void) initializeVariables {

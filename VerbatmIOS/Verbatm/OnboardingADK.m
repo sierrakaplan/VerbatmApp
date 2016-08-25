@@ -10,10 +10,13 @@
 #import "PinchView.h"
 #import "OnboardingADK.h"
 #import "MediaSelectTile.h"
+#import "PublishingProgressManager.h"
+#import "SegueIDs.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "VerbatmCameraView.h"
 #import "VerbatmScrollView.h"
+#import "UserInfoCache.h"
 #import "UserSetupParameters.h"
 
 @interface OnboardingADK() <MediaSelectTileDelegate, UIScrollViewDelegate, ContentPageElementScrollViewDelegate, VerbatmCameraViewDelegate>
@@ -39,6 +42,7 @@
 @implementation OnboardingADK
 
 -(void) viewDidLoad {
+	self.navigationItem.hidesBackButton = YES;
 	self.captureMediaInstructionShown = NO;
 	self.pinchInstructionShown = NO;
 	[self initializeVariables];
@@ -48,6 +52,7 @@
 	self.firstSlideBackground.image = [UIImage imageNamed:@"ADK_slide_1"];
 	self.firstSlideBackground.contentMode = UIViewContentModeScaleAspectFill;
 	[self.view addSubview: self.firstSlideBackground];
+	self.navigationController.navigationBar.hidden = YES;
 }
 
 -(void) viewWillAppear:(BOOL)animated {
@@ -91,8 +96,6 @@
 	[self.cameraView enableCapturingPhoto: NO];
 	[self.view bringSubviewToFront: self.topNavMessage];
 	self.topNavLabel.text = @"Press and hold to capture a short video of what you're doing.";
-//	self.selectedView_PAN = (ContentPageElementScrollView *)tile.superview;
-//	self.screenInCameraMode = YES;
 }
 
 // These should not be called, as the gallery button and text button are disabled
@@ -133,10 +136,6 @@
 -(void) minimizeCameraViewButtonTapped {
 	[self.cameraView removeFromSuperview];
 	[self removeExcessMediaTiles];
-//	if(self.numPinchViews > 1.f && !self.currentlyPresentingInstruction &&
-//	   ![[UserSetupParameters sharedInstance] checkAndSetPinchInstructionShown]){
-//		[self presentPinchInstruction];
-//	}
 }
 
 //not called
@@ -167,14 +166,33 @@
 	}
 
 	if(pinchViews.count){
-		self.mainADK.pinchViewsToPublish = pinchViews;
 		[self publishOurStoryWithPinchViews:pinchViews];
 	}
 }
 
 -(void) continueToPublish {
-	[self dismissViewControllerAnimated:YES completion:^{
-		[self.mainADK continueToPublish];
+	[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
+		//todo: make sure not creating two
+		self.userChannel = [[UserInfoCache sharedInstance] getUserChannel];
+		[[PublishingProgressManager sharedInstance] publishPostToChannel:self.userChannel andFacebook:TRUE withCaption:@"" withPinchViews:self.pinchViewsToPublish
+													 withCompletionBlock:^(BOOL isAlreadyPublishing, BOOL noNetwork) {
+														 NSString *errorMessage;
+														 if(isAlreadyPublishing) {
+															 errorMessage = @"Please wait until the previous post has finished publishing.";
+														 } else if (noNetwork) {
+															 errorMessage = @"Something went wrong - please check your network connection and try again.";
+														 } else {
+															 //Everything went ok
+															 [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ONBOARDING_TO_MASTER sender:self];
+															 //														 [self cleanUp];
+															 return;
+														 }
+														 UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Couldn't Publish" message:errorMessage preferredStyle:UIAlertControllerStyleAlert];
+														 UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+																											   handler:^(UIAlertAction * action) {}];
+														 [newAlert addAction:defaultAction];
+														 [self presentViewController:newAlert animated:YES completion:nil];
+													 }];
 	}];
 }
 
@@ -204,6 +222,7 @@
 		_topNavLabel.lineBreakMode = NSLineBreakByWordWrapping;
 		_topNavLabel.numberOfLines = 3;
 		_topNavLabel.textAlignment = NSTextAlignmentCenter;
+		_topNavLabel.adjustsFontSizeToFitWidth = YES;
 		_topNavLabel.font = [UIFont fontWithName:BOLD_FONT size:20.f];
 	}
 	return _topNavLabel;

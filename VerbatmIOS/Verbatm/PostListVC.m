@@ -360,7 +360,7 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 #pragma mark - Table view methods -
 
 //register our custom cell class
--(void)registerClassForCustomCells{
+-(void)registerClassForCustomCells {
 	[self.collectionView registerClass:[PostCollectionViewCell class] forCellWithReuseIdentifier:POST_CELL_ID];
 }
 
@@ -383,7 +383,6 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	 numberOfItemsInSection:(NSInteger)section {
 	return self.parsePostObjects.count;
 }
-
 
 - (BOOL)collectionView: (UICollectionView *)collectionView
 shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -518,7 +517,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	CGRect likeShareBarFrame = CGRectMake(cellTapped.frame.size.width - LIKE_SHARE_BAR_WIDTH - touchRegionPadding,
 										  cellTapped.frame.size.height - LIKE_SHARE_BAR_HEIGHT - touchRegionPadding,
 										  LIKE_SHARE_BAR_WIDTH + touchRegionPadding, LIKE_SHARE_BAR_HEIGHT + touchRegionPadding);
-	if (CGRectContainsPoint(likeShareBarFrame, touchPoint)) {
+	if (CGRectContainsPoint(likeShareBarFrame, touchPoint) && !self.inSmallMode) {
 		return;
 	}
 	if([cellTapped presentingTapToExitNotification]) {
@@ -912,13 +911,13 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void) postToFacebookWithShareLink:(NSString*)shareLink {
 	NSString *postId = self.postToShare.objectId;
-	PFUser *user = [PFUser currentUser];
-	NSString *name = [user valueForKey:VERBATM_USER_NAME_KEY];
-	Channel_BackendObject *channelObj = [self.postToShare valueForKey:POST_CHANNEL_KEY];
-	NSString *channelName = [channelObj valueForKey:CHANNEL_NAME_KEY];
+//	PFUser *user = [PFUser currentUser];
+//	NSString *name = [user valueForKey:VERBATM_USER_NAME_KEY];
+//	Channel_BackendObject *channelObj = [self.postToShare valueForKey:POST_CHANNEL_KEY];
+//	NSString *channelName = [channelObj valueForKey:CHANNEL_NAME_KEY];
 
 	BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:postId];
-	branchUniversalObject.title = [NSString stringWithFormat:@"%@ shared a post from '%@' Verbatm blog", name, channelName];
+	branchUniversalObject.title = @"Hey! Checkout this post on Verbatm!";
 	branchUniversalObject.contentDescription = VERBATM_DESCRIPTION;
 	branchUniversalObject.imageUrl = shareLink;
 

@@ -25,8 +25,6 @@
 #pragma mark - Log In/Sign Up -
 
 #define LOGIN_TOOLBAR_HEIGHT 50.f
-#define LOGIN_BUTTON_HEIGHT 100.f
-#define LOGIN_BUTTON_WIDTH 400.f
 
 #pragma mark - Main Tab bar -
 
@@ -57,7 +55,7 @@
 #define SIGN_UP_BUTTON_GAP 20.f
 #define OR_LABEL_WIDTH 50.f
 
-#define TOP_BUTTON_YOFFSET 200.f
+#define TOP_BUTTON_YOFFSET 250.f
 
 #define SIGNUP_BACK_BUTTON_SIZE 40.f
 
@@ -201,8 +199,6 @@
 #define DISCOVER_USERNAME_AND_FOLLOW_HEIGHT 20.f
 #define DISCOVER_USERNAME_LABEL_WIDTH (self.frame.size.width - (FOLLOW_BUTTON_WIDTH + OFFSET*2))
 #define DISCOVER_CHANNEL_NAME_HEIGHT 25.f
-
-#define FOLLOW_TEXT_FONT_SIZE 12.f
 
 #define PAGE_UP_ICON_SIZE 45.f
 

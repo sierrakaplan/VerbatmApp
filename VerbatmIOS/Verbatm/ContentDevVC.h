@@ -19,6 +19,7 @@
 @class MediaSelectTile;
 @class SingleMediaAndTextPinchView;
 @import Photos;
+@class Channel;
 
 @interface ContentDevVC : UIViewController
 
@@ -35,6 +36,8 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 @property (nonatomic) NSUInteger currentPresentedPickerRow;
 
 @property (strong, nonatomic) CustomNavigationBar* navBar;
+
+@property (nonatomic) Channel *userChannel;
 
 //view that is currently being filled in
 @property (weak, nonatomic) UITextView * activeTextView;
