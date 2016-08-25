@@ -47,11 +47,15 @@
 #define FONT_SIZE 12.f
 #define NUMBER_FONT_SIZE 15.f
 #define SETTINGS_BUTTON_SIZE (PROFILE_INFO_BAR_HEIGHT - (EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET * 2))
-#define FOLLOW_OR_EDIT_BUTTON_SIZE 65.f
+#define FOLLOW_OR_EDIT_BUTTON_SIZE 70.f
 #define FOLLOWING_LABEL_WIDTH 60.f
 #define NUM_FOLLOWING_WIDTH 25.f
 #define EXIT_BUTTON_SIZE 25.f
 #define EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET 2.f // how much buffer between button and top and bottom of self
+#define NUMBER_SPACING 4.f
+
+#define EDIT_PROFILE_TEXT @"edit profile"
+#define DONE_EDITING_TEXT @"done"
 
 @end
 
@@ -126,10 +130,10 @@
 									  NSFontAttributeName: [UIFont fontWithName:BOLD_FONT size:FOLLOW_TEXT_FONT_SIZE]};
 
     CGFloat following_x = (self.frame.size.width - SETTINGS_BUTTON_SIZE - PROFILE_HEADER_XOFFSET*3
-    						   - FOLLOW_OR_EDIT_BUTTON_SIZE - FOLLOWING_LABEL_WIDTH -5.f);
-    CGFloat following_num_x = following_x - NUM_FOLLOWING_WIDTH - 4.f;
+    						   - FOLLOW_OR_EDIT_BUTTON_SIZE - FOLLOWING_LABEL_WIDTH);
+    CGFloat following_num_x = following_x - NUM_FOLLOWING_WIDTH - NUMBER_SPACING;
     CGFloat followers_x = following_num_x - PROFILE_HEADER_XOFFSET - FOLLOWING_LABEL_WIDTH;
-    CGFloat followers_num_x = followers_x - NUM_FOLLOWING_WIDTH - 3.f;
+    CGFloat followers_num_x = followers_x - NUM_FOLLOWING_WIDTH - NUMBER_SPACING;
     CGRect followingFrame = CGRectMake(following_x, STATUS_BAR_HEIGHT, FOLLOWING_LABEL_WIDTH, PROFILE_INFO_BAR_HEIGHT);
     CGRect followersFrame = CGRectMake(followers_x, STATUS_BAR_HEIGHT, FOLLOWING_LABEL_WIDTH, PROFILE_INFO_BAR_HEIGHT);
     CGRect numFollowersFrame = CGRectMake(followers_num_x, STATUS_BAR_HEIGHT, NUM_FOLLOWING_WIDTH, PROFILE_INFO_BAR_HEIGHT);
@@ -203,17 +207,18 @@
 
 -(void) createEditButton {
 	[self createFollowOrEditButton];
-	[self changeFollowButtonTitle:@"edit profile" toColor:[UIColor whiteColor]];
+	[self changeFollowButtonTitle:EDIT_PROFILE_TEXT toColor:[UIColor whiteColor]];
 	self.followOrEditButton.layer.borderWidth = 0.f;
-	self.followOrEditButton.frame = CGRectMake(self.followOrEditButton.frame.origin.x, self.followOrEditButton.frame.origin.y, 50.f,
-											   self.followOrEditButton.frame.size.height);
+	self.followOrEditButton.frame = CGRectMake(self.followOrEditButton.frame.origin.x, self.followOrEditButton.frame.origin.y,
+											   FOLLOW_OR_EDIT_BUTTON_SIZE, self.followOrEditButton.frame.size.height);
 }
 
 
 -(void) createFollowOrEditButton {
     
-    CGFloat frame_x = self.settingsButton.frame.origin.x - PROFILE_HEADER_XOFFSET - FOLLOW_OR_EDIT_BUTTON_SIZE -5.f;
-    CGRect followButtonFrame = CGRectMake(frame_x, STATUS_BAR_HEIGHT + EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET, FOLLOW_OR_EDIT_BUTTON_SIZE, PROFILE_INFO_BAR_HEIGHT - (EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET * 2.f));
+    CGFloat frame_x = self.settingsButton.frame.origin.x - PROFILE_HEADER_XOFFSET - FOLLOW_OR_EDIT_BUTTON_SIZE - PROFILE_HEADER_XOFFSET;
+    CGRect followButtonFrame = CGRectMake(frame_x, STATUS_BAR_HEIGHT + EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET,
+										  FOLLOW_OR_EDIT_BUTTON_SIZE, PROFILE_INFO_BAR_HEIGHT - (EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET * 2.f));
     self.followOrEditButton = [[UIButton alloc] initWithFrame: followButtonFrame];
     self.followOrEditButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
     self.followOrEditButton.clipsToBounds = YES;
@@ -271,10 +276,10 @@
 	self.editMode = editMode;
 	if (self.editMode) {
 		self.followOrEditButton.backgroundColor = [UIColor whiteColor];
-		[self changeFollowButtonTitle:@"done" toColor:[UIColor blackColor]];
+		[self changeFollowButtonTitle:DONE_EDITING_TEXT toColor:[UIColor blackColor]];
 	} else {
 		self.followOrEditButton.backgroundColor = [UIColor blackColor];
-		[self changeFollowButtonTitle:@"edit profile" toColor:[UIColor whiteColor]];
+		[self changeFollowButtonTitle:EDIT_PROFILE_TEXT toColor:[UIColor whiteColor]];
 	}
 }
 

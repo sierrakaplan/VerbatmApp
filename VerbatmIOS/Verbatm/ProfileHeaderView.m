@@ -68,8 +68,6 @@
 
 #define CHANGE_COVER_PHOTO_HEIGHT 25.f
 
-#define COVER_PHOTO_IMAGE_RATIO (351.f/106.f)
-
 
 #define COVER_PHOTO_DIRECTORY_PATH [NSHomeDirectory() stringByAppendingString:@"/Library/Caches/verbatmCoverPhoto.png"]
 #define COVER_PHOTO_URL_KEY @"CoverPhotoUrlKey"
@@ -334,13 +332,15 @@
 
 -(void)addChangeCoverPhotoButton {
 	self.changeCoverPhoto = [[UIButton alloc] init];
-	[self.changeCoverPhoto setImage:[UIImage imageNamed:ADD_COVER_PHOTO_ICON] forState:UIControlStateNormal];
+	UIImage *changeCoverPhotoImage = [UIImage imageNamed:ADD_COVER_PHOTO_ICON];
+	[self.changeCoverPhoto setImage:changeCoverPhotoImage forState:UIControlStateNormal];
+	self.changeCoverPhoto.imageView.contentMode = UIViewContentModeScaleAspectFit;
 
-	CGFloat coverPhotoIconWidth = COVER_PHOTO_IMAGE_RATIO * CHANGE_COVER_PHOTO_HEIGHT;
+	CGFloat coverPhotoIconWidth = changeCoverPhotoImage.size.width / changeCoverPhotoImage.size.height * CHANGE_COVER_PHOTO_HEIGHT;
     CGFloat y_position = COVER_PHOTO_WALL_OFFSET_Y + COVER_PHOTO_HEIGHT -  (CHANGE_COVER_PHOTO_HEIGHT);
-    CGFloat x_position = self.frame.size.width - (coverPhotoIconWidth+LABELS_OFFSET_X + COVER_PHOTO_WALL_OFFSET_X);
+    CGFloat x_position = self.frame.size.width - (coverPhotoIconWidth + LABELS_OFFSET_X + COVER_PHOTO_WALL_OFFSET_X);
     
-	self.changeCoverPhoto.frame = CGRectMake(x_position, y_position,coverPhotoIconWidth, CHANGE_COVER_PHOTO_HEIGHT);
+	self.changeCoverPhoto.frame = CGRectMake(x_position, y_position, coverPhotoIconWidth, CHANGE_COVER_PHOTO_HEIGHT);
 	[self addSubview:self.changeCoverPhoto];
 	[self.changeCoverPhoto addTarget:self action:@selector(coverPhotoButtonSelected) forControlEvents:UIControlEventTouchUpInside];
 }
