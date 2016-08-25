@@ -185,7 +185,7 @@
 }
 
 -(void) loadMoreExploreChannelsWithCompletionHandler:(void(^)(NSArray *))completionBlock {
- 	[self loadExploreChannelsWithSkip:self.exploreChannelsLoaded andCompletionHandler:^(NSArray *channels) {
+	[self loadExploreChannelsWithSkip:self.exploreChannelsLoaded andCompletionHandler:^(NSArray *channels) {
 		completionBlock(channels);
 	}];
 }
@@ -276,8 +276,8 @@
 					 // Create a list of friends' Facebook IDs
 					 for (NSDictionary *friendObject in friendObjects) {
 						 [friendIds addObject:[friendObject objectForKey:@"id"]];
-						 //						 NSString *userName = [friendObject objectForKey:@"name"];
-						 //						 NSLog(@"friend: %@", userName);
+						 NSString *userName = [friendObject objectForKey:@"name"];
+						 NSLog(@"friend: %@", userName);
 					 }
 					 PFQuery *friendQuery = [PFUser query];
 					 [friendQuery whereKey:USER_FB_ID containedIn:friendIds];
@@ -320,8 +320,8 @@
 					for (CNLabeledValue *phoneNumberKey in contact.phoneNumbers) {
 						CNPhoneNumber *phoneNumber = phoneNumberKey.value;
 						NSString *plainPhoneNumber = [[phoneNumber.stringValue componentsSeparatedByCharactersInSet:
-																			  [[NSCharacterSet decimalDigitCharacterSet] invertedSet]]
-																			 componentsJoinedByString:@""];
+													   [[NSCharacterSet decimalDigitCharacterSet] invertedSet]]
+													  componentsJoinedByString:@""];
 						if (![plainPhoneNumber isEqualToString:[PFUser currentUser].username]) {
 							[phoneNumbers addObject: plainPhoneNumber];
 						}
@@ -402,6 +402,27 @@
 			completionBlock([UtilityFunctions shuffleArray: finalChannels]);
 		}];
 	}];
+}
+
+-(NSMutableArray*) usersWhoHaveBlockedUser {
+	if (!_usersWhoHaveBlockedUser) {
+		_usersWhoHaveBlockedUser = [[NSMutableArray alloc] init];
+	}
+	return _usersWhoHaveBlockedUser;
+}
+
+-(NSMutableArray*) channelsFollowed {
+	if (!_channelsFollowed) {
+		_channelsFollowed = [[NSMutableArray alloc] init];
+	}
+	return _channelsFollowed;
+}
+
+-(NSMutableArray*) channelsFollowedIds {
+	if (!_channelsFollowedIds) {
+		_channelsFollowedIds = [[NSMutableArray alloc] init];
+	}
+	return _channelsFollowedIds;
 }
 
 @end
