@@ -38,15 +38,14 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	[self.tableView registerClass:[FeedTableCell class] forCellReuseIdentifier:@"FeedTableCell"];
-	[self refreshListOfContent];
 	self.view.backgroundColor = [UIColor blackColor];
 	self.tableView.pagingEnabled = YES;
 	self.tableView.allowsSelection = NO;
 	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 	[self setNeedsStatusBarAppearanceUpdate];
-	self.refreshControl = [[UIRefreshControl alloc] init];
-	[self.refreshControl addTarget:self action:@selector(refreshListOfContent) forControlEvents:UIControlEventValueChanged];
-	[self.tableView addSubview:self.refreshControl];
+//self.refreshControl = [[UIRefreshControl alloc] init];
+//[self.refreshControl addTarget:self action:@selector(refreshListOfContent) forControlEvents:UIControlEventValueChanged];
+//[self.tableView addSubview:self.refreshControl];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -79,76 +78,92 @@
 	if (self.tableView.contentOffset.y > (self.view.frame.size.height - REFRESH_DISTANCE)) {
 		[self.tableView setContentOffset:CGPointZero animated:YES];
 	}
-	self.currentUserChannel = [[UserInfoCache sharedInstance] getUserChannel];
+    [self.delegate refreshListOfContent];
+    
+//	self.currentUserChannel = [[UserInfoCache sharedInstance] getUserChannel];
+//
+//	//todo: change how getfollowersandfollowing is used everywhere (also make sure one instance of updating followers is used)
+//	[self.currentUserChannel getChannelsFollowingWithCompletionBlock:^{
+//		[self.refreshControl endRefreshing];
+//		if ([self.currentUserChannel channelsUserFollowing].count > 0) {
+//			[self removeEmptyFeedNotification];
+//		} else {
+//			[self notifyNotFollowingAnyone];
+//			return;
+//		}
+//
+//		//No channels have been previously loaded
+//		if (!self.followingProfileList || !self.followingProfileList.count) {
+//			self.followingProfileList = [NSMutableArray arrayWithArray: [self.currentUserChannel channelsUserFollowing]];
+//			[self.tableView reloadData];
+//			return;
+//		}
+//
+//		//Only update indices that have changed (remove channels not followed and add channels user is newly following)
+//		NSMutableArray *newChannels = [NSMutableArray arrayWithArray: [self.currentUserChannel channelsUserFollowing]];
+//		NSMutableArray *removedChannels = [NSMutableArray arrayWithArray: self.followingProfileList];
+//
+//		// First remove channels user is no longer following
+//		[self removeObjectsFromArrayOfChannels:removedChannels inArray:newChannels];
+//		NSMutableArray *removedIndices = [[NSMutableArray alloc] init];
+//		NSMutableIndexSet *removedIndexSet = [[NSMutableIndexSet alloc] init];
+//		//Note: this is slow but there will probably be few removed indices and alternatives are too complex
+//		for (Channel *channel in removedChannels) {
+//			NSUInteger removedIndex = [self indexOfChannel:channel inArray:self.followingProfileList];
+//			[removedIndices addObject:[NSIndexPath indexPathForRow:removedIndex inSection:0]];
+//			[removedIndexSet addIndex: removedIndex];
+//		}
+//
+//		//Load newer channels that user is following
+//		NSArray *remainingChannels = [self removeObjectsFromArrayOfChannels:newChannels inArray:self.followingProfileList];
+//		NSMutableArray *addedIndices = [[NSMutableArray alloc] init];
+//		NSMutableIndexSet *addedIndexSet = [[NSMutableIndexSet alloc] init];
+//        
+//		//Note: this is slow but there will probably be few removed indices and alternatives are too complex
+//		for (Channel *channel in newChannels) {
+//			NSUInteger addedIndex = [self indexOfChannel:channel inArray:[self.currentUserChannel channelsUserFollowing]];
+//			[addedIndices addObject:[NSIndexPath indexPathForRow:addedIndex inSection:0]];
+//			[addedIndexSet addIndex: addedIndex];
+//		}
+//
+//		if ([removedIndices count]) {
+//			[self.followingProfileList removeObjectsAtIndexes: removedIndexSet];
+//			[self.tableView deleteRowsAtIndexPaths:removedIndices withRowAnimation:UITableViewRowAnimationTop];
+//		}
+//		if ([addedIndices count]) {
+//			[self.followingProfileList insertObjects:newChannels atIndexes: addedIndexSet];
+//			[self.tableView insertRowsAtIndexPaths:addedIndices withRowAnimation:UITableViewRowAnimationTop];
+//		}
+//
+//		// Reordering channels
+//		for (Channel *channel in remainingChannels) {
+//			NSUInteger newIndex = [self indexOfChannel:channel inArray:[self.currentUserChannel channelsUserFollowing]];
+//			NSUInteger oldIndex = [self indexOfChannel:channel inArray:self.followingProfileList];
+//
+//			// Only need to move the channels that have moved up
+//			if (newIndex < oldIndex) {
+//				NSIndexPath *oldIndexPath = [NSIndexPath indexPathForRow:oldIndex inSection:0];
+//				NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:newIndex inSection:0];
+//				[self.followingProfileList removeObjectAtIndex: oldIndex];
+//				[self.followingProfileList insertObject:channel atIndex:newIndex];
+//				[self.tableView moveRowAtIndexPath:oldIndexPath toIndexPath:newIndexPath];
+//			}
+//		}
+//
+//	}];
+}
 
-	//todo: change how getfollowersandfollowing is used everywhere (also make sure one instance of updating followers is used)
-	[self.currentUserChannel getChannelsFollowingWithCompletionBlock:^{
-		[self.refreshControl endRefreshing];
-		if ([self.currentUserChannel channelsUserFollowing].count > 0) {
-			[self removeEmptyFeedNotification];
-		} else {
-			[self notifyNotFollowingAnyone];
-			return;
-		}
 
-		//No channels have been previously loaded
-		if (!self.followingProfileList || !self.followingProfileList.count) {
-			self.followingProfileList = [NSMutableArray arrayWithArray: [self.currentUserChannel channelsUserFollowing]];
-			[self.tableView reloadData];
-			return;
-		}
-
-		//Only update indices that have changed (remove channels not followed and add channels user is newly following)
-		NSMutableArray *newChannels = [NSMutableArray arrayWithArray: [self.currentUserChannel channelsUserFollowing]];
-		NSMutableArray *removedChannels = [NSMutableArray arrayWithArray: self.followingProfileList];
-
-		// First remove channels user is no longer following
-		[self removeObjectsFromArrayOfChannels:removedChannels inArray:newChannels];
-		NSMutableArray *removedIndices = [[NSMutableArray alloc] init];
-		NSMutableIndexSet *removedIndexSet = [[NSMutableIndexSet alloc] init];
-		//Note: this is slow but there will probably be few removed indices and alternatives are too complex
-		for (Channel *channel in removedChannels) {
-			NSUInteger removedIndex = [self indexOfChannel:channel inArray:self.followingProfileList];
-			[removedIndices addObject:[NSIndexPath indexPathForRow:removedIndex inSection:0]];
-			[removedIndexSet addIndex: removedIndex];
-		}
-
-		//Load newer channels that user is following
-		NSArray *remainingChannels = [self removeObjectsFromArrayOfChannels:newChannels inArray:self.followingProfileList];
-		NSMutableArray *addedIndices = [[NSMutableArray alloc] init];
-		NSMutableIndexSet *addedIndexSet = [[NSMutableIndexSet alloc] init];
-		//Note: this is slow but there will probably be few removed indices and alternatives are too complex
-		for (Channel *channel in newChannels) {
-			NSUInteger addedIndex = [self indexOfChannel:channel inArray:[self.currentUserChannel channelsUserFollowing]];
-			[addedIndices addObject:[NSIndexPath indexPathForRow:addedIndex inSection:0]];
-			[addedIndexSet addIndex: addedIndex];
-		}
-
-		if ([removedIndices count]) {
-			[self.followingProfileList removeObjectsAtIndexes: removedIndexSet];
-			[self.tableView deleteRowsAtIndexPaths:removedIndices withRowAnimation:UITableViewRowAnimationTop];
-		}
-		if ([addedIndices count]) {
-			[self.followingProfileList insertObjects:newChannels atIndexes: addedIndexSet];
-			[self.tableView insertRowsAtIndexPaths:addedIndices withRowAnimation:UITableViewRowAnimationTop];
-		}
-
-		// Reordering channels
-		for (Channel *channel in remainingChannels) {
-			NSUInteger newIndex = [self indexOfChannel:channel inArray:[self.currentUserChannel channelsUserFollowing]];
-			NSUInteger oldIndex = [self indexOfChannel:channel inArray:self.followingProfileList];
-
-			// Only need to move the channels that have moved up
-			if (newIndex < oldIndex) {
-				NSIndexPath *oldIndexPath = [NSIndexPath indexPathForRow:oldIndex inSection:0];
-				NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:newIndex inSection:0];
-				[self.followingProfileList removeObjectAtIndex: oldIndex];
-				[self.followingProfileList insertObject:channel atIndex:newIndex];
-				[self.tableView moveRowAtIndexPath:oldIndexPath toIndexPath:newIndexPath];
-			}
-		}
-
-	}];
+-(void)setAndRefreshWithList:(NSMutableArray *) channelList withStartIndex:(NSInteger) startIndex{
+    [self.followingProfileList removeAllObjects];
+    self.followingProfileList = channelList;
+    if(startIndex >= 0){
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:startIndex inSection:0];
+        [self.tableView scrollToRowAtIndexPath:indexPath
+                             atScrollPosition:UITableViewScrollPositionTop
+                                     animated:NO];
+    }
+    [self.tableView reloadData];
 }
 
 //Compares Channel* objects by their PFObject ids
@@ -272,10 +287,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath{
 
 #pragma mark -Feed Cell Protocol-
 -(void)shouldHideTabBar:(BOOL) shouldHide{
-	[self.delegate showTabBar:!shouldHide];
 	self.tableView.scrollEnabled = !shouldHide;
 	self.contentInFullScreen = shouldHide;
 	[self setNeedsStatusBarAppearanceUpdate];
+}
+-(void)exitProfile{
+    [self.delegate exitProfileList];
 }
 
 @end

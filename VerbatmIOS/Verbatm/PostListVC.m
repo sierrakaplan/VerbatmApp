@@ -911,10 +911,10 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void) postToFacebookWithShareLink:(NSString*)shareLink {
 	NSString *postId = self.postToShare.objectId;
-	PFUser *user = [PFUser currentUser];
-	NSString *name = [user valueForKey:VERBATM_USER_NAME_KEY];
-	Channel_BackendObject *channelObj = [self.postToShare valueForKey:POST_CHANNEL_KEY];
-	NSString *channelName = [channelObj valueForKey:CHANNEL_NAME_KEY];
+//	PFUser *user = [PFUser currentUser];
+//	NSString *name = [user valueForKey:VERBATM_USER_NAME_KEY];
+//	Channel_BackendObject *channelObj = [self.postToShare valueForKey:POST_CHANNEL_KEY];
+//	NSString *channelName = [channelObj valueForKey:CHANNEL_NAME_KEY];
 
 	BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:postId];
 	branchUniversalObject.title = @"Hey! Checkout this post on Verbatm!";

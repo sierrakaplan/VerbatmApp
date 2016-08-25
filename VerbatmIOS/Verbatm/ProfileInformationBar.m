@@ -50,7 +50,7 @@
 #define FOLLOW_OR_EDIT_BUTTON_SIZE 65.f
 #define FOLLOWING_LABEL_WIDTH 60.f
 #define NUM_FOLLOWING_WIDTH 25.f
-
+#define EXIT_BUTTON_SIZE 25.f
 #define EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET 2.f // how much buffer between button and top and bottom of self
 
 @end
@@ -71,7 +71,7 @@
 			[self createSettingsButton];
 			[self createEditButton];
 		} else {
-			if(!inFeed)[self createBackButton];
+			[self createBackButton];
 			if (!self.isCurrentUser) {
 				// This allows a user to block another user
 				[self createSettingsButton];
@@ -231,7 +231,7 @@
 -(void) createBackButton {
 	UIImage *backButtonImage = [UIImage imageNamed:PROFILE_BACK_BUTTON_ICON];
 	CGRect iconFrame = CGRectMake(PROFILE_HEADER_XOFFSET, STATUS_BAR_HEIGHT,
-								  PROFILE_INFO_BAR_HEIGHT, PROFILE_INFO_BAR_HEIGHT);
+								  EXIT_BUTTON_SIZE, EXIT_BUTTON_SIZE);
 
 	self.backButton =  [[UIButton alloc] initWithFrame:iconFrame];
 	[self.backButton setImage:backButtonImage forState:UIControlStateNormal];
