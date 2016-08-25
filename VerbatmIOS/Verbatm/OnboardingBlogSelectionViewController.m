@@ -18,7 +18,7 @@
 #import "SegueIDs.h"
 #import "Styles.h"
 
-@interface OnboardingBlogSelectionViewController () <OnboardingBlogsDelegate>
+@interface OnboardingBlogSelectionViewController () <OnboardingBlogsDelegate, UIGestureRecognizerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *tableContainerView;
 @property (nonatomic) UIView *headerView;
@@ -36,6 +36,7 @@
 
 -(void) viewDidLoad {
     [super viewDidLoad];
+	self.navigationItem.hidesBackButton = YES;
     [self addBackgroundImage];
 	[self.view addSubview: self.headerView];
     self.tableContainerView.frame = CGRectMake(0.f, HEADER_VIEW_HEIGHT,
@@ -48,6 +49,12 @@
 	[super viewDidAppear:animated];
 	[self addDoneButton];
 	[self addHeaderLabel];
+	self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+	self.navigationController.interactivePopGestureRecognizer.delegate = self;
+}
+
+-(BOOL) gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+	return NO;
 }
 
 -(void) viewWillDisappear:(BOOL)animated {

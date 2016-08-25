@@ -42,6 +42,7 @@
 @implementation OnboardingADK
 
 -(void) viewDidLoad {
+	self.navigationItem.hidesBackButton = YES;
 	self.captureMediaInstructionShown = NO;
 	self.pinchInstructionShown = NO;
 	[self initializeVariables];
