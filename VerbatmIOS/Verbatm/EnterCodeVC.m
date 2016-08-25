@@ -30,6 +30,8 @@
 
 @property (nonatomic) UILabel *codeSentToNumberLabel;
 
+@property (nonatomic) BOOL verifyingCode;
+
 @property (nonatomic) UIButton *resendCodeButton;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 
@@ -47,6 +49,7 @@
 @implementation EnterCodeVC
 
 -(void) viewDidLoad {
+	self.verifyingCode = NO;
 	self.simplePhoneNumber = [UtilityFunctions removeAllNonNumbersFromString: self.phoneNumber];
 	[self sendCodeToUser: self.simplePhoneNumber];
 	[self.view addSubview: self.digitOneField];
@@ -108,6 +111,9 @@
 }
 
 -(void) verifyCode {
+	if (self.verifyingCode) return;
+	self.verifyingCode = YES;
+	NSLog(@"verifying code");
 	NSString *code = [self getCode];
 	code = [UtilityFunctions removeAllNonNumbersFromString: code];
 	code = [code stringByReplacingOccurrencesOfString:ZERO_WIDTH_CHARACTER withString:@""];
@@ -127,6 +133,7 @@
 				[PFUser becomeInBackground:token block:^(PFUser * _Nullable user, NSError * _Nullable error) {
 					if (error) {
 						[self showAlertWithTitle:@"Login Error" andMessage:error.localizedDescription];
+						self.verifyingCode = NO;
 					} else {
 						[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
 						if (self.creatingAccount) {
@@ -165,6 +172,7 @@
 }
 
 -(void) showWrongCode {
+	self.verifyingCode = NO;
 	//todo:
 	[self setTextColor: [UIColor redColor] andShakeView:YES];
 }
