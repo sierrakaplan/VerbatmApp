@@ -251,52 +251,56 @@
 		completionBlock(self.friendChannels, self.friendUsers);
 		return;
 	}
-	BOOL isLinkedToFacebook = [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]];
-	// Logged in with phone number
-	if (!isLinkedToFacebook) {
-		[self getPhoneContactsWithCompletionHandler:^(NSArray *contactChannels, NSArray *contactUsers) {
+	[self getPhoneContactsWithCompletionHandler:^(NSArray *contactChannels, NSArray *contactUsers) {
+		BOOL isLinkedToFacebook = [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]];
+		// Logged in with phone number
+		if (!isLinkedToFacebook) {
 			completionBlock(contactChannels, contactUsers);
-		}];
-	} else {
-		if (![[FBSDKAccessToken currentAccessToken] hasGranted:@"user_friends"]) {
-			completionBlock(@[], @[]);
-			return;
-		}
+		} else {
+			if (![[FBSDKAccessToken currentAccessToken] hasGranted:@"user_friends"]) {
+				completionBlock(contactChannels, contactUsers);
+				return;
+			}
 
-		FBSDKGraphRequestConnection *connection = [[FBSDKGraphRequestConnection alloc] init];
-		FBSDKGraphRequest *requestMe = [[FBSDKGraphRequest alloc]
-										initWithGraphPath:@"me/friends" parameters:@{@"fields": @"id, name"}];
-		[connection addRequest:requestMe
-			 completionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
-				 if (error) {
-					 completionBlock(@[], @[]);
-				 } else {
-					 NSArray *friendObjects = [result objectForKey:@"data"];
-					 NSMutableArray *friendIds = [NSMutableArray arrayWithCapacity:friendObjects.count];
-					 // Create a list of friends' Facebook IDs
-					 for (NSDictionary *friendObject in friendObjects) {
-						 [friendIds addObject:[friendObject objectForKey:@"id"]];
-						 NSString *userName = [friendObject objectForKey:@"name"];
-						 NSLog(@"friend: %@", userName);
-					 }
-					 PFQuery *friendQuery = [PFUser query];
-					 [friendQuery whereKey:USER_FB_ID containedIn:friendIds];
-
-					 // findObjects will return a list of PFUsers that are friends
-					 // with the current user
-					 [friendQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable friendUsers, NSError * _Nullable error) {
-						 if (error || !friendUsers.count) {
-							 completionBlock(@[], @[]);
-						 } else {
-							 [self getChannelsForFriends:friendUsers withCompletionHandler:^(NSArray *channels) {
-								 completionBlock(channels, friendUsers);
-							 }];
+			FBSDKGraphRequestConnection *connection = [[FBSDKGraphRequestConnection alloc] init];
+			FBSDKGraphRequest *requestMe = [[FBSDKGraphRequest alloc]
+											initWithGraphPath:@"me/friends" parameters:@{@"fields": @"id, name"}];
+			[connection addRequest:requestMe
+				 completionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+					 if (error) {
+						 completionBlock(contactChannels, contactUsers);
+					 } else {
+						 NSArray *friendObjects = [result objectForKey:@"data"];
+						 NSMutableArray *friendIds = [NSMutableArray arrayWithCapacity:friendObjects.count];
+						 // Create a list of friends' Facebook IDs
+						 for (NSDictionary *friendObject in friendObjects) {
+							 [friendIds addObject:[friendObject objectForKey:@"id"]];
+							 NSString *userName = [friendObject objectForKey:@"name"];
+							 NSLog(@"friend: %@", userName);
 						 }
-					 }];
-				 }
-			 }];
-		[connection start];
-	}
+						 PFQuery *friendQuery = [PFUser query];
+						 [friendQuery whereKey:USER_FB_ID containedIn:friendIds];
+
+						 // findObjects will return a list of PFUsers that are friends
+						 // with the current user
+						 [friendQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable friendUsers, NSError * _Nullable error) {
+							 if (error || !friendUsers.count) {
+								 completionBlock(contactChannels, contactUsers);
+							 } else {
+								 [self getChannelsForFriends:friendUsers withCompletionHandler:^(NSArray *channels) {
+									 NSMutableArray *combinedChannels = [NSMutableArray arrayWithArray: contactChannels];
+									 [combinedChannels addObjectsFromArray: channels];
+									 NSMutableArray *combinedUsers = [NSMutableArray arrayWithArray: contactUsers];
+									 [combinedUsers addObjectsFromArray: friendUsers];
+									 completionBlock(combinedChannels, combinedUsers);
+								 }];
+							 }
+						 }];
+					 }
+				 }];
+			[connection start];
+		}
+	}];
 }
 
 -(void) getPhoneContactsWithCompletionHandler:(void(^)(NSArray *, NSArray *))completionBlock {

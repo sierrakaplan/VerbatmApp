@@ -9,6 +9,7 @@
 #import "FollowFriendCell.h"
 #import "Channel.h"
 #import "Follow_BackendManager.h"
+#import "Notifications.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
@@ -31,9 +32,34 @@
 	if (self) {
 		self.backgroundColor = [UIColor clearColor];
 		self.isFollowed = NO;
+		[self registerForFollowNotification];
 	}
 	return self;
 }
+
+-(void)registerForFollowNotification{
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(userFollowStatusChanged:)
+												 name:NOTIFICATION_NOW_FOLLOWING_USER
+											   object:nil];
+}
+
+-(void)userFollowStatusChanged:(NSNotification *) notification{
+
+	NSDictionary * userInfo = [notification userInfo];
+	if(userInfo){
+		NSString * userId = userInfo[USER_FOLLOWING_NOTIFICATION_USERINFO_KEY];
+		NSNumber * isFollowingAction = userInfo[USER_FOLLOWING_NOTIFICATION_ISFOLLOWING_KEY];
+		//only update the follow icon if this is the correct user and also if the action was
+		//no registered on this view
+		if([userId isEqualToString:[self.channelBeingPresented.channelCreator objectId]]&&
+		   ([isFollowingAction boolValue] != self.isFollowed)) {
+			self.isFollowed = [isFollowingAction boolValue];
+			[self updateFollowIcon];
+		}
+	}
+}
+
 
 -(void) layoutSubviews {
 	CGFloat height = 40.f; //todo

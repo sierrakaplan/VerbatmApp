@@ -222,6 +222,7 @@
 		_topNavLabel.lineBreakMode = NSLineBreakByWordWrapping;
 		_topNavLabel.numberOfLines = 3;
 		_topNavLabel.textAlignment = NSTextAlignmentCenter;
+		_topNavLabel.adjustsFontSizeToFitWidth = YES;
 		_topNavLabel.font = [UIFont fontWithName:BOLD_FONT size:20.f];
 	}
 	return _topNavLabel;

@@ -22,4 +22,6 @@
 @property (nonatomic) BOOL onboardingBlogSelection;
 @property (nonatomic, weak) id<OnboardingBlogsDelegate> onboardingDelegate;
 
+-(void) followAllBlogs;
+
 @end

@@ -321,6 +321,12 @@
 	return self.tableView.contentOffset.y / cellHeight;
 }
 
+-(void) followAllBlogs {
+	for (Channel* channel in self.exploreChannels) {
+		[Follow_BackendManager currentUserFollowChannel:channel];
+	}
+}
+
 #pragma mark - Lazy Instantiation -
 
 -(NSMutableArray *) exploreChannels {

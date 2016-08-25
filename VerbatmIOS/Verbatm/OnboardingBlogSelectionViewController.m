@@ -24,6 +24,7 @@
 @property (nonatomic) UIView *headerView;
 @property (nonatomic) UILabel *headerLabel;
 @property (nonatomic) UIButton *doneButton;
+@property (nonatomic) DiscoverVC *discoverList;
 
 #define HEADER_VIEW_HEIGHT STATUS_BAR_HEIGHT + 60.f
 #define DONE_BUTTON_WIDTH 70.f
@@ -43,12 +44,12 @@
                                                self.view.frame.size.width, self.view.frame.size.height);
     self.tableContainerView.backgroundColor = [UIColor clearColor];
     [self addListVC];
+	[self addDoneButton];
+	[self addHeaderLabel];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-	[self addDoneButton];
-	[self addHeaderLabel];
 	self.navigationController.interactivePopGestureRecognizer.enabled = NO;
 	self.navigationController.interactivePopGestureRecognizer.delegate = self;
 }
@@ -63,12 +64,12 @@
 }
 
 -(void)addListVC {
-    DiscoverVC *followingScreen = [self.storyboard instantiateViewControllerWithIdentifier:FEATURED_CONTENT_VC_ID];
-    followingScreen.onboardingBlogSelection = YES;
-	followingScreen.onboardingDelegate = self;
-    [self.tableContainerView addSubview:followingScreen.view];
-    [self addChildViewController:followingScreen];
-    [followingScreen didMoveToParentViewController:self];
+    self.discoverList = [self.storyboard instantiateViewControllerWithIdentifier:FEATURED_CONTENT_VC_ID];
+    self.discoverList.onboardingBlogSelection = YES;
+	self.discoverList.onboardingDelegate = self;
+    [self.tableContainerView addSubview: self.discoverList.view];
+    [self addChildViewController: self.discoverList];
+    [self.discoverList didMoveToParentViewController:self];
 }
 
 -(void)addDoneButton {
@@ -102,6 +103,24 @@
 // Onboarding delegate method
 -(void) followingFriends {
 	self.headerLabel.text = @"Follow your friends!";
+	CGFloat followAllWidth = 150.f;
+	UIButton *followAllButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.center.x - followAllWidth/2.f,
+																		   self.headerView.frame.size.height + 15.f,
+																		   followAllWidth, 50.f)];
+	followAllButton.backgroundColor = [UIColor clearColor];
+	followAllButton.layer.borderColor = VERBATM_GOLD_COLOR.CGColor;
+	followAllButton.layer.borderWidth = 3.f;
+	followAllButton.layer.cornerRadius = 10.f;
+	NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: VERBATM_GOLD_COLOR,
+									  NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size:20.f]};
+	NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:@"Follow All" attributes:titleAttributes];
+	[followAllButton setAttributedTitle:attributedTitle forState:UIControlStateNormal];
+	[followAllButton addTarget:self action:@selector(followAll) forControlEvents:UIControlEventTouchUpInside];
+	[self.view addSubview: followAllButton];
+}
+
+-(void) followAll {
+	[self.discoverList followAllBlogs];
 }
 
 -(void)exitDiscover {
