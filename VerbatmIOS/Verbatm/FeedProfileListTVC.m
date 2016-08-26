@@ -42,15 +42,26 @@
     self.tableView.delegate = self;
     
     //avoid covering last item in uitableview
-    UIEdgeInsets inset = UIEdgeInsetsMake(CELL_HEIGHT, 0, 0, 0);
-    self.tableView.contentInset = inset;
-    self.tableView.scrollIndicatorInsets = inset;
-    [self createLogoBar];
-    
+//    UIEdgeInsets inset = UIEdgeInsetsMake(CELL_HEIGHT, 0, 0, 0);
+//    self.tableView.contentInset = inset;
+//    self.tableView.scrollIndicatorInsets = inset;
+//    [self createLogoBar];
+	[self formatNavigationBar];
+
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refreshListOfContent) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:self.refreshControl];
-    
+}
+
+-(void) formatNavigationBar {
+	[self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+	self.navigationController.navigationBar.shadowImage = [UIImage new];
+	self.navigationController.navigationBar.translucent = YES;
+	self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+	[self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+																	 [UIColor whiteColor], NSForegroundColorAttributeName,
+																	 [UIFont fontWithName:BOLD_FONT size:21.0], NSFontAttributeName, nil]];
+	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Blog List" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -92,7 +103,8 @@
 #pragma mark - Table view data source
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    ProfileListHeader *view = [[ProfileListHeader alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 18)];
+    ProfileListHeader *view = [[ProfileListHeader alloc] initWithFrame:CGRectMake(0, 0,
+																				  tableView.frame.size.width, HEADER_TITLE_HEIGHT)];
     [view setHeaderTitleWithSectionIndex:section];
     return view;
 }
@@ -224,7 +236,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 -(FeedTableViewController *)profileListFeed{
     if(!_profileListFeed){
         _profileListFeed = [[FeedTableViewController alloc] init];
-        _profileListFeed.view.frame = self.view.bounds;
         _profileListFeed.delegate = self;
     }
     return _profileListFeed;

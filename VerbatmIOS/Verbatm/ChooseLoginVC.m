@@ -39,7 +39,7 @@
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
-	[self formatNavigationBar];
+	[self formatNavigationItem];
 	[self.backgroundImageView setFrame: self.view.bounds];
 	[self.view addSubview: self.facebookLoginButton];
 	[self.view addSubview: self.orLabel];
@@ -54,7 +54,7 @@
 	return YES;
 }
 
--(void) formatNavigationBar {
+-(void) formatNavigationItem {
 	if (self.creatingAccount) {
 		self.navigationItem.title = @"Sign Up";
 	} else {

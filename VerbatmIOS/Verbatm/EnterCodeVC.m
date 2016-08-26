@@ -62,14 +62,14 @@
 	self.backgroundImageView.frame = self.view.bounds;
 	[self.view sendSubviewToBack:self.backgroundImageView];
 	[self.digitOneField becomeFirstResponder];
-	[self formatNavigationBar];
+	[self formatNavigationItem];
 }
 
 -(BOOL) prefersStatusBarHidden {
 	return YES;
 }
 
--(void) formatNavigationBar {
+-(void) formatNavigationItem {
 	self.navigationItem.title = @"Verify phone number";
 	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 }
