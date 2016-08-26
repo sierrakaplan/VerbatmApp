@@ -47,6 +47,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
 	[super viewWillAppear:animated];
+	[self.navigationController setNavigationBarHidden:NO];
 	[self.delegate showTabBar: NO];
 }
 
@@ -54,6 +55,7 @@
 	[super viewWillDisappear:animated];
 
 	if (self.isMovingFromParentViewController || self.isBeingDismissed) {
+		[self.navigationController setNavigationBarHidden:YES];
 		[self.delegate exitProfileList];
 	}
 }

@@ -10,9 +10,9 @@
 
 @implementation UINavigationBar (CustomHeight)
 
-- (CGSize)sizeThatFits:(CGSize)size {
-	CGRect screenRect = [[UIScreen mainScreen] bounds];
-	return CGSizeMake(screenRect.size.width, 30.f); //todo:
-}
+//- (CGSize)sizeThatFits:(CGSize)size {
+//	CGRect screenRect = [[UIScreen mainScreen] bounds];
+//	return CGSizeMake(screenRect.size.width, 30.f); //todo:
+//}
 
 @end

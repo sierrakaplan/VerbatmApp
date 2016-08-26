@@ -134,10 +134,10 @@
     CGFloat following_num_x = following_x - NUM_FOLLOWING_WIDTH - NUMBER_SPACING;
     CGFloat followers_x = following_num_x - PROFILE_HEADER_XOFFSET - FOLLOWING_LABEL_WIDTH;
     CGFloat followers_num_x = followers_x - NUM_FOLLOWING_WIDTH - NUMBER_SPACING;
-    CGRect followingFrame = CGRectMake(following_x, 0.f, FOLLOWING_LABEL_WIDTH, PROFILE_INFO_BAR_HEIGHT);
-    CGRect followersFrame = CGRectMake(followers_x, 0.f, FOLLOWING_LABEL_WIDTH, PROFILE_INFO_BAR_HEIGHT);
-    CGRect numFollowersFrame = CGRectMake(followers_num_x, 0.f, NUM_FOLLOWING_WIDTH, PROFILE_INFO_BAR_HEIGHT);
-    CGRect numFollowingFrame = CGRectMake(following_num_x, 0.f, NUM_FOLLOWING_WIDTH, PROFILE_INFO_BAR_HEIGHT);
+    CGRect followingFrame = CGRectMake(following_x, STATUS_BAR_HEIGHT, FOLLOWING_LABEL_WIDTH, PROFILE_INFO_BAR_HEIGHT);
+    CGRect followersFrame = CGRectMake(followers_x, STATUS_BAR_HEIGHT, FOLLOWING_LABEL_WIDTH, PROFILE_INFO_BAR_HEIGHT);
+    CGRect numFollowersFrame = CGRectMake(followers_num_x, STATUS_BAR_HEIGHT, NUM_FOLLOWING_WIDTH, PROFILE_INFO_BAR_HEIGHT);
+    CGRect numFollowingFrame = CGRectMake(following_num_x, STATUS_BAR_HEIGHT, NUM_FOLLOWING_WIDTH, PROFILE_INFO_BAR_HEIGHT);
     
     self.numFollowersLabel = [[UILabel alloc] initWithFrame: numFollowersFrame];
     self.numFollowingLabel = [[UILabel alloc] initWithFrame: numFollowingFrame];
@@ -179,7 +179,7 @@
 	if (self.isCurrentUser) image = [UIImage imageNamed:SETTINGS_BUTTON_ICON];
 	else image = [UIImage imageNamed:BLOCK_ICON];
 	CGFloat frame_x = self.frame.size.width - SETTINGS_BUTTON_SIZE - PROFILE_HEADER_XOFFSET;
-	CGRect iconFrame = CGRectMake(frame_x, 0.f, SETTINGS_BUTTON_SIZE, SETTINGS_BUTTON_SIZE);
+	CGRect iconFrame = CGRectMake(frame_x, STATUS_BAR_HEIGHT, SETTINGS_BUTTON_SIZE, SETTINGS_BUTTON_SIZE);
 	self.settingsButton =  [[UIButton alloc] initWithFrame:iconFrame];
 	[self.settingsButton setImage:image forState:UIControlStateNormal];
 	self.settingsButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
@@ -217,7 +217,7 @@
 -(void) createFollowOrEditButton {
     
     CGFloat frame_x = self.settingsButton.frame.origin.x - PROFILE_HEADER_XOFFSET - FOLLOW_OR_EDIT_BUTTON_SIZE - PROFILE_HEADER_XOFFSET;
-    CGRect followButtonFrame = CGRectMake(frame_x, 0.f + EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET,
+    CGRect followButtonFrame = CGRectMake(frame_x, STATUS_BAR_HEIGHT + EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET,
 										  FOLLOW_OR_EDIT_BUTTON_SIZE, PROFILE_INFO_BAR_HEIGHT - (EDIT_SETTINGS_BUTTON_HEIGHT_OFFSET * 2.f));
     self.followOrEditButton = [[UIButton alloc] initWithFrame: followButtonFrame];
     self.followOrEditButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
@@ -237,7 +237,7 @@
 
 -(void) createBackButton {
 	UIImage *backButtonImage = [UIImage imageNamed:PROFILE_BACK_BUTTON_ICON];
-	CGRect iconFrame = CGRectMake(PROFILE_HEADER_XOFFSET, 0.f,
+	CGRect iconFrame = CGRectMake(PROFILE_HEADER_XOFFSET, STATUS_BAR_HEIGHT,
 								  EXIT_BUTTON_SIZE, EXIT_BUTTON_SIZE);
 
 	self.backButton =  [[UIButton alloc] initWithFrame:iconFrame];

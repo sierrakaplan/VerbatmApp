@@ -43,30 +43,19 @@
     [self.tableView registerClass:[FeedListTableViewCell class] forCellReuseIdentifier:@"FeedListTableViewCell"];
     self.tableView.allowsSelection = YES;
     self.tableView.delegate = self;
+	[self formatNavigationItem];
     
     //avoid covering last item in uitableview
 //    UIEdgeInsets inset = UIEdgeInsetsMake(CELL_HEIGHT, 0, 0, 0);
 //    self.tableView.contentInset = inset;
 //    self.tableView.scrollIndicatorInsets = inset;
 //    [self createLogoBar];
-	[self formatNavigationBar];
-
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refreshListOfContent) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:self.refreshControl];
 }
 
--(void) formatNavigationBar {
-//	[self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-//	self.navigationController.navigationBar.shadowImage = [UIImage new];
-//	[self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.navigationController.navigationBar attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeHeight multiplier:1 constant:NAVIGATION_BAR_HEIGHT]];
-
-	self.navigationController.navigationBar.translucent = NO;
-	self.navigationController.navigationBar.barTintColor = [UIColor blackColor];
-	self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
-	[self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-																	 [UIColor whiteColor], NSForegroundColorAttributeName,
-																	 [UIFont fontWithName:BOLD_FONT size:21.0], NSFontAttributeName, nil]];
+-(void) formatNavigationItem {
 	self.navigationItem.title = @"Blog List";
 	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Blog List" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 }
