@@ -761,6 +761,7 @@
 		A51A0AD21D6CEFDB009D7CDD /* Profile/ProfileList */ = {
 			isa = PBXGroup;
 			children = (
+				A51A0ADB1D6CF1E2009D7CDD /* PostList/Posts */,
 				C7E65F671B9245200042AD99 /* ProfileVC.h */,
 				C7E65F681B9245200042AD99 /* ProfileVC.m */,
 				C7178E061D21101900B90643 /* FeedTableViewController.h */,
@@ -818,7 +819,6 @@
 				A51A0AD01D6CEFCC009D7CDD /* Login/Onboarding */,
 				A51A0AD91D6CF0D6009D7CDD /* MainTabController */,
 				A51A0ACF1D6CEFC2009D7CDD /* ADK */,
-				A51A0ADB1D6CF1E2009D7CDD /* PostList/Posts */,
 				A51A0AD21D6CEFDB009D7CDD /* Profile/ProfileList */,
 				A51A0AD31D6CEFEB009D7CDD /* Discover */,
 				A51A0AD41D6CEFF0009D7CDD /* Notifications */,

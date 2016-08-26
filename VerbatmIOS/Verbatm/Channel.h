@@ -16,7 +16,9 @@
 
 // Set to true if the user hasn't added their own blog yet
 @property (nonatomic) BOOL defaultBlogName;
-@property (nonatomic) NSDate *latestPostDate;
+//this definition must match the name of the lower NSDate value
+#define CHANNEL_MOST_RECENT_POST_DATE_NAME @"dateOfMostRecentChannelPost"
+@property (nonatomic, readonly) NSDate *dateOfMostRecentChannelPost;
 @property (nonatomic, readonly) NSString *name;
 @property (nonatomic, readonly) NSString *blogDescription;
 @property (nonatomic, readonly) PFObject *parseChannelObject;

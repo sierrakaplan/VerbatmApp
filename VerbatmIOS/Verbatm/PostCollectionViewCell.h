@@ -28,6 +28,7 @@
 @property (nonatomic, weak) id<PostCollectionViewCellDelegate> cellDelegate;
 @property (nonatomic, readonly) PostView *currentPostView;
 @property (nonatomic, readonly) PFObject *currentPostActivityObject;
+@property (nonatomic, readonly) PFObject *currentPostObject;//the post in the post activity object
 
 @property (nonatomic) BOOL cellHasTapGesture;
 @property (nonatomic) BOOL inSmallMode;

@@ -119,11 +119,11 @@
         self.feedbackRequestNotification = [[UIImageView alloc] initWithImage:[UIImage imageNamed:FEEDBACK_NOTIFICATION_ICON]];
 		self.feedbackRequestNotification.contentMode = UIViewContentModeScaleAspectFit;
 		self.feedbackRequestNotification.center = self.center;
-        CGFloat height = 150.f;
-        CGFloat yOffset = self.userInformationBar.frame.origin.y + 5.f + self.userInformationBar.frame.size.height/2.f;
-           
-        [self.feedbackRequestNotification setFrame:CGRectMake(self.feedbackRequestNotification.frame.origin.x,
-															  yOffset, height, height)];
+        CGFloat height = 120.f;
+        CGFloat yPos = self.userInformationBar.frame.origin.y + 10.f + self.userInformationBar.frame.size.height/2.f;
+           CGFloat xPos = self.frame.size.width - height;
+        [self.feedbackRequestNotification setFrame:CGRectMake(xPos,
+															  yPos, height, height)];
         [self addSubview:self.feedbackRequestNotification];
         [self.feedbackRequestNotification addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeFeedbackNotification)]];
         [self.feedbackRequestNotification setUserInteractionEnabled:YES];

@@ -27,5 +27,5 @@
 -(void)setProfileAlreadyLoaded:(ProfileVC *) newProfile;
 -(void)reloadProfile;
 -(void)clearProfile;
-
+-(void)updateDateOfLastPostSeen;
 @end

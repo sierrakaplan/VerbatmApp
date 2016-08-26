@@ -47,5 +47,8 @@
 
 //to be used sparingly
 -(void) refreshProfile;
+//notifies the profile that it's on the screen for the feed
+//and that it should update the cursor
+-(void)updateDateOfLastPostSeen;
 
 @end

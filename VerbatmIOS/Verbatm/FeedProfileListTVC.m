@@ -76,7 +76,7 @@
 -(void)findUpdatedPosts{
     [self.channelsRecentlyUpdated removeAllObjects];
     for(Channel * channel in self.channelsUserFollowing){
-        if([channel.followObject[FOLLOW_LATEST_POST_DATE]compare:[channel latestPostDate]] == NSOrderedAscending){
+        if([channel.followObject[FOLLOW_LATEST_POST_DATE]compare:[channel dateOfMostRecentChannelPost]] == NSOrderedAscending){
             [self.channelsRecentlyUpdated addObject:channel];
         }
     }
@@ -155,8 +155,6 @@
     return cell;
 }
 
-
-
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
@@ -167,6 +165,7 @@
         [cell setLayoutMargins:UIEdgeInsetsZero];
     }
 }
+
 -(void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];

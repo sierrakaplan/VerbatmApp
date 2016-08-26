@@ -91,6 +91,19 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	[self loadContentToPostList];
 }
 
+
+
+-(void)updateDateOfLastPostSeen{
+    if(!self.isCurrentUserProfile && self.profileInFeed && [self.channel dateOfMostRecentChannelPost]){
+        NSDate * finalDate = [self.postListVC creationDateOfLastPostObjectInPostList];
+        if(finalDate){
+            [self.channel.followObject setObject:finalDate forKey:FOLLOW_LATEST_POST_DATE];
+            [self.channel.followObject saveInBackground];
+        }
+    }
+}
+
+
 -(void)loadContentToPostList {
 	if (!self.channel.followObject) {
 		PFObject *followObject = [[UserInfoCache sharedInstance] userFollowsChannel:self.channel];
@@ -123,6 +136,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+    
 }
 
 -(void)clearOurViews {
@@ -321,7 +335,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 		NSDate *latestDate = self.postListVC.latestPostSeen;
 		NSTimeInterval timeSince = [latestDate timeIntervalSinceDate:self.channel.followObject[FOLLOW_LATEST_POST_DATE]];
 		if (latestDate && timeSince > 0) {
-			self.channel.followObject[FOLLOW_LATEST_POST_DATE] = latestDate;
+            [self.channel.followObject setObject:latestDate forKey:FOLLOW_LATEST_POST_DATE];
 			[self.channel.followObject saveInBackground];
 		}
 	}
@@ -333,7 +347,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
         newVC.postsQueryManager = self.postListVC.postsQueryManager;
         newVC.currentlyPublishing = self.postListVC.currentlyPublishing;
         [newVC display:self.channel withListOwner:self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile
-       andStartingDate:startingDate withOldParseObjects:self.postListVC.parsePostObjects];
+       andStartingDate:startingDate withOldParseObjects:self.postListVC.parsePostActivityObjects];
     }
 
     [self presentViewPostView:newVC inSmallMode:!self.inFullScreenMode shouldPage:self.inFullScreenMode fromCellPath:cellPath];
@@ -593,10 +607,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 		_postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
 		_postListVC.postListDelegate = self;
 		_postListVC.inSmallMode = YES;
-
-		NSDate *startingDate = self.channel.followObject ? self.channel.followObject[FOLLOW_LATEST_POST_DATE] : nil;
-		_postListVC.latestPostSeen = startingDate;
-        
 		self.postListSmallFrame = CGRectMake(0.f,postListSmallY,
 											 self.view.frame.size.width, postHeight);
 		self.postListLargeFrame = self.view.bounds;

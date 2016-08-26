@@ -61,7 +61,11 @@
 		});
 	});
 }
-
+-(void)updateDateOfLastPostSeen{
+    if(self.currentProfile){
+        [self.currentProfile updateDateOfLastPostSeen];
+    }
+}
 
 -(void)reloadProfile{
 	[self.currentProfile refreshProfile];

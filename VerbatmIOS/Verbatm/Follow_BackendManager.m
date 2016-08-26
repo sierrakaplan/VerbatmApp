@@ -17,15 +17,15 @@
 #import "Notification_BackendManager.h"
 #import "Notifications.h"
 #import "UserInfoCache.h"
-
+#import "Channel.h"
 @implementation Follow_BackendManager
 
 //this function should not be called for a channel that is already being followed
 +(void)currentUserFollowChannel:(Channel *) channelToFollow {
 	PFObject * newFollowObject = [PFObject objectWithClassName:FOLLOW_PFCLASS_KEY];
 	[newFollowObject setObject:[PFUser currentUser]forKey:FOLLOW_USER_KEY];
-	if (channelToFollow.latestPostDate) {
-		[newFollowObject setObject:channelToFollow.latestPostDate forKey:FOLLOW_LATEST_POST_DATE];
+	if (channelToFollow.dateOfMostRecentChannelPost) {
+		[newFollowObject setObject:channelToFollow.dateOfMostRecentChannelPost forKey:FOLLOW_LATEST_POST_DATE];
 	}
 	[newFollowObject setObject:channelToFollow.parseChannelObject forKey:FOLLOW_CHANNEL_FOLLOWED_KEY];
 	// Will return error if follow already existed - ignore
@@ -163,11 +163,10 @@
 														  andParseChannelObject:channelObject
 															  andChannelCreator:[channelObject valueForKey:CHANNEL_CREATOR_KEY]
 																andFollowObject: correspondingFollowObj];
-						channel.latestPostDate = channelObject[CHANNEL_LATEST_POST_DATE];
 						[channels addObject: channel];
 					}
 
-					NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"latestPostDate" ascending:NO];
+					NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:CHANNEL_MOST_RECENT_POST_DATE_NAME ascending:NO];
 					NSArray *sortedChannels = [channels sortedArrayUsingDescriptors:@[sort]];
 					block(sortedChannels);
 				}

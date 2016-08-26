@@ -43,14 +43,10 @@
 	self.tableView.allowsSelection = NO;
 	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 	[self setNeedsStatusBarAppearanceUpdate];
-//self.refreshControl = [[UIRefreshControl alloc] init];
-//[self.refreshControl addTarget:self action:@selector(refreshListOfContent) forControlEvents:UIControlEventValueChanged];
-//[self.tableView addSubview:self.refreshControl];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
 	[super viewWillAppear:animated];
-	[self refreshListOfContent];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
@@ -78,6 +74,7 @@
 	if (self.tableView.contentOffset.y > (self.view.frame.size.height - REFRESH_DISTANCE)) {
 		[self.tableView setContentOffset:CGPointZero animated:YES];
 	}
+    
     [self.delegate refreshListOfContent];
     
 }
@@ -86,13 +83,15 @@
 -(void)setAndRefreshWithList:(NSMutableArray *) channelList withStartIndex:(NSInteger) startIndex{
     [self.followingProfileList removeAllObjects];
     self.followingProfileList = channelList;
+    [self.tableView reloadData];
     if(startIndex >= 0){
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:startIndex inSection:0];
+        NSIndexPath * indexPath = [NSIndexPath indexPathForRow:startIndex inSection:0];
+        
         [self.tableView scrollToRowAtIndexPath:indexPath
-                             atScrollPosition:UITableViewScrollPositionTop
+                             atScrollPosition:UITableViewScrollPositionMiddle
                                      animated:NO];
     }
-    [self.tableView reloadData];
+    
 }
 
 //Compares Channel* objects by their PFObject ids
@@ -192,10 +191,12 @@
 		self.nextProfileToPresent.channel = nextChannel;
 	}
 }
+
 - (void)tableView:(UITableView *)tableView
 didEndDisplayingCell:(UITableViewCell *)cell
 forRowAtIndexPath:(NSIndexPath *)indexPath{
 	FeedTableCell *feedCell = (FeedTableCell *) cell;
+    [feedCell updateDateOfLastPostSeen];
 	[feedCell clearProfile];
 }
 
