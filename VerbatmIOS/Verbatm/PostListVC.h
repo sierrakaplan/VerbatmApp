@@ -27,6 +27,9 @@
 
 @interface PostListVC : UICollectionViewController
 
+@property (nonatomic, readonly) NSDate *latestPostSeen;
+
+
 @property (strong, nonatomic) PostsQueryManager *postsQueryManager;
 
 @property (nonatomic) BOOL isInitiated;
@@ -35,9 +38,7 @@
 
 @property (nonatomic) BOOL inSmallMode;
 
-@property (nonatomic) NSDate *latestPostSeen;
-
-@property (nonatomic, readonly) NSMutableArray * parsePostObjects;
+@property (nonatomic, readonly) NSMutableArray * parsePostActivityObjects;
 @property (nonatomic) BOOL currentlyPublishing;
 
 
@@ -63,5 +64,5 @@ withOldParseObjects:(NSMutableArray *)newParseObjects;
 -(void) footerShowing: (BOOL) showing;
 
 -(void) startMonitoringPublishing;
-
+-(NSDate *)creationDateOfLastPostObjectInPostList;
 @end

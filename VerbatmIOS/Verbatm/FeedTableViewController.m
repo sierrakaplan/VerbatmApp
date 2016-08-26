@@ -195,11 +195,9 @@
 - (void)tableView:(UITableView *)tableView
 didEndDisplayingCell:(UITableViewCell *)cell
 forRowAtIndexPath:(NSIndexPath *)indexPath{
-    
 	FeedTableCell *feedCell = (FeedTableCell *) cell;
     [feedCell updateDateOfLastPostSeen];
 	[feedCell clearProfile];
-
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

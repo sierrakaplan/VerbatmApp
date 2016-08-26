@@ -18,7 +18,7 @@
 #import "UtilityFunctions.h"
 
 @interface Channel ()
-
+@property (nonatomic, readwrite) NSDate *dateOfMostRecentChannelPost;
 @property (nonatomic, readwrite) NSString * name;
 @property (nonatomic, readwrite) NSString *blogDescription;
 @property (nonatomic, readwrite) PFObject * parseChannelObject;
@@ -189,11 +189,23 @@
     return ([[PFUser currentUser].objectId isEqualToString:self.channelCreator.objectId]);
 }
 
--(void)addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator{
-    self.parseChannelObject = object;
-	self.latestPostDate = self.parseChannelObject[CHANNEL_LATEST_POST_DATE];
+-(void)addParseChannelObject:(PFObject *)parseChannelObject andChannelCreator:(PFUser *)channelCreator{
+    self.parseChannelObject = parseChannelObject;
+	self.dateOfMostRecentChannelPost = parseChannelObject[CHANNEL_LATEST_POST_DATE];
+    
+    NSString * digiName = parseChannelObject[CHANNEL_NAME_KEY];
+    if([digiName isEqualToString:@"Adventures in Fatherhood"]){
+        NSLog(@"User: %@",digiName);
+        NSDate * date = parseChannelObject[CHANNEL_LATEST_POST_DATE];
+        
+        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+        [dateFormat setDateFormat:@"MMM dd, YYYY hh:mma"];
+        NSString *dateString = [dateFormat stringFromDate:date];
+        NSLog(@"date: %@", dateString);
+        NSLog(@"Latest Post Date: %@",dateString);
+    }
     self.channelCreator = channelCreator;
-    self.blogDescription = object[CHANNEL_DESCRIPTION_KEY];
+    self.blogDescription = parseChannelObject[CHANNEL_DESCRIPTION_KEY];
 }
 
 -(void)registerFollowingNewChannel:(Channel *)channel{

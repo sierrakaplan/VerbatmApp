@@ -94,9 +94,12 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 
 -(void)updateDateOfLastPostSeen{
-    if(!self.isCurrentUserProfile && self.profileInFeed && [self.channel latestPostDate]){
-        [self.channel.followObject setValue:[self.channel latestPostDate] forKey:FOLLOW_LATEST_POST_DATE];
-        [self.channel.followObject saveInBackground];
+    if(!self.isCurrentUserProfile && self.profileInFeed && [self.channel dateOfMostRecentChannelPost]){
+        NSDate * finalDate = [self.postListVC creationDateOfLastPostObjectInPostList];
+        if(finalDate){
+            [self.channel.followObject setObject:finalDate forKey:FOLLOW_LATEST_POST_DATE];
+            [self.channel.followObject saveInBackground];
+        }
     }
 }
 
@@ -294,7 +297,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 	[self.view addSubview:postList.view];
 	[self.view bringSubviewToFront:postList.view];
-	if(cellPath.row < self.postListVC.parsePostObjects.count)[postList.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
+	if(cellPath.row < self.postListVC.parsePostActivityObjects.count)[postList.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
 	[self.delegate showTabBar:!shouldPage];
 	[self.postListVC.view removeFromSuperview];
 	[self.postListVC clearViews];
@@ -326,19 +329,19 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 		NSDate *latestDate = self.postListVC.latestPostSeen;
 		NSTimeInterval timeSince = [latestDate timeIntervalSinceDate:self.channel.followObject[FOLLOW_LATEST_POST_DATE]];
 		if (latestDate && timeSince > 0) {
-			self.channel.followObject[FOLLOW_LATEST_POST_DATE] = latestDate;
+            [self.channel.followObject setObject:latestDate forKey:FOLLOW_LATEST_POST_DATE];
 			[self.channel.followObject saveInBackground];
 		}
 	}
 
 	//todo: redundant with passing in constructor right now
 	NSDate *startingDate = self.channel.followObject ? self.channel.followObject[FOLLOW_LATEST_POST_DATE] : nil;
-	newVC.latestPostSeen = startingDate;
-    if(self.postListVC.parsePostObjects && self.postListVC.parsePostObjects.count){
+    
+    if(self.postListVC.parsePostActivityObjects && self.postListVC.parsePostActivityObjects.count){
         newVC.postsQueryManager = self.postListVC.postsQueryManager;
         newVC.currentlyPublishing = self.postListVC.currentlyPublishing;
         [newVC display:self.channel withListOwner:self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile
-       andStartingDate:startingDate withOldParseObjects:self.postListVC.parsePostObjects];
+       andStartingDate:startingDate withOldParseObjects:self.postListVC.parsePostActivityObjects];
     }
     
     [self presentViewPostView:newVC inSmallMode:!self.inFullScreenMode shouldPage:self.inFullScreenMode fromCellPath:cellPath];
@@ -594,10 +597,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 		_postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
 		_postListVC.postListDelegate = self;
 		_postListVC.inSmallMode = YES;
-
-		NSDate *startingDate = self.channel.followObject ? self.channel.followObject[FOLLOW_LATEST_POST_DATE] : nil;
-		_postListVC.latestPostSeen = startingDate;
-        
 		self.postListSmallFrame = CGRectMake(0.f,postListSmallY,
 											 self.view.frame.size.width, postHeight);
 		self.postListLargeFrame = self.view.bounds;

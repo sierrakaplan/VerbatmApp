@@ -154,6 +154,7 @@
 + (void) updateLatestPostDateForChannel:(PFObject*)channel {
 	PFQuery *findLatestPostQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
 	[findLatestPostQuery orderByDescending:@"createdAt"];
+    findLatestPostQuery.limit = 1;
 	[findLatestPostQuery getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
 		if (!object || error) {
 			//No more posts exist

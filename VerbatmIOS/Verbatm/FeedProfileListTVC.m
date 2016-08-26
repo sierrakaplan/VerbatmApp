@@ -76,7 +76,7 @@
 -(void)findUpdatedPosts{
     [self.channelsRecentlyUpdated removeAllObjects];
     for(Channel * channel in self.channelsUserFollowing){
-        if([channel.followObject[FOLLOW_LATEST_POST_DATE]compare:[channel latestPostDate]] == NSOrderedAscending){
+        if([channel.followObject[FOLLOW_LATEST_POST_DATE]compare:[channel dateOfMostRecentChannelPost]] == NSOrderedAscending){
             [self.channelsRecentlyUpdated addObject:channel];
         }
     }
