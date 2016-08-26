@@ -326,6 +326,21 @@
             </objects>
             <point key="canvasLocation" x="-1973" y="-2737"/>
         </scene>
+        <!--Feed Profile ListTVC-->
+        <scene sceneID="9A1-Gh-r9h">
+            <objects>
+                <viewController storyboardIdentifier="feed_profile_list_vc" id="alm-cv-dxI" customClass="FeedProfileListTVC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="jhX-YO-ZGT" customClass="UITableView">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="qFp-XQ-yUq"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cfB-hI-BT9" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-4575" y="-250"/>
+        </scene>
         <!--Content Dev-->
         <scene sceneID="8XD-Tr-4db">
             <objects>
@@ -343,7 +358,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qHO-Sg-QFP" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="C4V-vK-ZzO" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="-4205" y="-153"/>
+            <point key="canvasLocation" x="-3673" y="-153"/>
         </scene>
         <!--Onboarding Blog Selection View Controller-->
         <scene sceneID="8qh-Xk-TQn">
@@ -446,6 +461,24 @@
                 </label>
             </objects>
             <point key="canvasLocation" x="-2958" y="-2110"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="CDs-9e-M4K">
+            <objects>
+                <navigationController storyboardIdentifier="feed_profile_list_navigation_controller" automaticallyAdjustsScrollViewInsets="NO" id="oti-Dl-YDb" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="dDV-xE-WDx">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="alm-cv-dxI" kind="relationship" relationship="rootViewController" id="iLJ-Af-lcs"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NV8-Gn-zaO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-5107" y="-250"/>
         </scene>
     </scenes>
     <resources>

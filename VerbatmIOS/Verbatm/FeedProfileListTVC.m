@@ -19,15 +19,17 @@
 #import "UserInfoCache.h"
 
 @interface FeedProfileListTVC ()<FeedTableViewDelegate,UITableViewDelegate>
-@property (nonatomic) FeedTableViewController * profileListFeed;
-@property (nonatomic) NSMutableArray * channelsUserFollowing;
-@property (nonatomic) NSMutableArray * channelsRecentlyUpdated;
-@property (nonatomic) Channel * currentUserChannel;
-@property (nonatomic) ProfileVerbatmLogoBar * logoBar;
+
+@property (nonatomic) FeedTableViewController *profileListFeed;
+@property (nonatomic) NSMutableArray *channelsUserFollowing;
+@property (nonatomic) NSMutableArray *channelsRecentlyUpdated;
+@property (nonatomic) Channel *currentUserChannel;
+
 @end
 
 #define CELL_HEIGHT 75.f
 #define HEADER_TITLE_HEIGHT 60.f
+#define FEED_LIST_CELL_ID @"FeedListTableViewCell"
 
 @implementation FeedProfileListTVC
 
@@ -53,7 +55,7 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     [self refreshListOfContent];
-    if(self.logoBar)[self.view bringSubviewToFront:self.logoBar];
+//    if(self.logoBar)[self.view bringSubviewToFront:self.logoBar];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -65,28 +67,25 @@
     // Dispose of any resources that can be recreated.
 }
 
-
-
-
--(void)createLogoBar{
-    self.logoBar = [[ProfileVerbatmLogoBar alloc] initWithFrame:CGRectMake(0.f, -1 * CELL_HEIGHT, self.view.frame.size.width, CELL_HEIGHT)];
-    [self.tableView addSubview:self.logoBar];
+-(void)createLogoBar {
+//    self.logoBar = [[ProfileVerbatmLogoBar alloc] initWithFrame:CGRectMake(0.f, -1 * CELL_HEIGHT, self.view.frame.size.width, CELL_HEIGHT)];
+//    [self.tableView addSubview:self.logoBar];
 }
 
 -(void)findUpdatedPosts{
     [self.channelsRecentlyUpdated removeAllObjects];
     for(Channel * channel in self.channelsUserFollowing){
-        if([channel.followObject[FOLLOW_LATEST_POST_DATE]compare:[channel dateOfMostRecentChannelPost]] == NSOrderedAscending){
+        if([channel.followObject[FOLLOW_LATEST_POST_DATE]
+			compare:[channel dateOfMostRecentChannelPost]] == NSOrderedAscending){
             [self.channelsRecentlyUpdated addObject:channel];
         }
     }
 }
 
-
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    [scrollView bringSubviewToFront:self.logoBar];
-    CGRect newNavBarFrame = CGRectMake(0.f, scrollView.contentOffset.y, self.logoBar.frame.size.width, self.logoBar.frame.size.height);;
-    self.logoBar.frame = newNavBarFrame;
+//    [scrollView bringSubviewToFront:self.logoBar];
+//    CGRect newNavBarFrame = CGRectMake(0.f, scrollView.contentOffset.y, self.logoBar.frame.size.width, self.logoBar.frame.size.height);;
+//    self.logoBar.frame = newNavBarFrame;
 }
 
 
@@ -102,10 +101,7 @@
     return HEADER_TITLE_HEIGHT;
 }
 
-
-
--(NSMutableArray *)getCombinedChannelList{
-    
+-(NSMutableArray *)getCombinedChannelList {
     NSMutableArray * newList = [[NSMutableArray alloc] init];
     [newList addObjectsFromArray:self.channelsRecentlyUpdated];
     [newList addObjectsFromArray:self.channelsUserFollowing];
@@ -113,25 +109,27 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self.logoBar removeFromSuperview];
-    
+//    [self.logoBar removeFromSuperview];
+
     NSInteger startIndex = (indexPath.section == 0) ? indexPath.row : indexPath.row + self.channelsRecentlyUpdated.count;
     
     [self.profileListFeed setAndRefreshWithList:[self getCombinedChannelList] withStartIndex:startIndex];
-    [self.view addSubview:self.profileListFeed.view];
+	[self.navigationController pushViewController:self.profileListFeed animated:YES];
     [self.tableView setScrollEnabled:NO];
     [self.delegate showTabBar:NO];
 }
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return CELL_HEIGHT;
 }
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    if(section == 0){
+    if(section == 0) {
         return self.channelsRecentlyUpdated.count;
     }
     
@@ -139,10 +137,10 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    FeedListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FeedListTableViewCell"];
+    FeedListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:FEED_LIST_CELL_ID];
     
     if(cell == nil) {
-        cell = [[FeedListTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"FeedListTableViewCell"];
+        cell = [[FeedListTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_LIST_CELL_ID];
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     } else {
         [cell removeFromSuperview];
@@ -155,8 +153,8 @@
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
         [cell setSeparatorInset:UIEdgeInsetsZero];
     }
@@ -166,8 +164,7 @@
     }
 }
 
--(void)viewDidLayoutSubviews
-{
+-(void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
         [self.tableView setSeparatorInset:UIEdgeInsetsZero];
@@ -176,27 +173,29 @@
     if ([self.tableView respondsToSelector:@selector(setLayoutMargins:)]) {
         [self.tableView setLayoutMargins:UIEdgeInsetsZero];
     }
-    if(self.logoBar){
-        [self.view bringSubviewToFront:self.logoBar];
-    }
+//    if(self.logoBar){
+//        [self.view bringSubviewToFront:self.logoBar];
+//    }
 }
 
 
-#pragma mark -ProfileTableList Protocol-
--(void)exitProfileList{
+#pragma mark - ProfileTableList Protocol -
+
+-(void)exitProfileList {
     [self findUpdatedPosts];
     [self.tableView reloadData];
-    [self.tableView insertSubview:self.logoBar belowSubview:self.profileListFeed.view];
+//    [self.tableView insertSubview:self.logoBar belowSubview:self.profileListFeed.view];
     [self.profileListFeed.view removeFromSuperview];
     self.profileListFeed = nil;
     [self.tableView setScrollEnabled:YES];
     [self.delegate showTabBar:YES];
 }
--(void) showTabBar: (BOOL) show{
+
+-(void) showTabBar: (BOOL)show {
     [self.delegate showTabBar:show];
 }
 
--(void)goToDiscover{
+-(void)goToDiscover {
     [self.delegate goToDiscover];
 }
 

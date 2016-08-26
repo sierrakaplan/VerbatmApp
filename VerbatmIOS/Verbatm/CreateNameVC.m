@@ -50,6 +50,10 @@
 	[self.enterNameField becomeFirstResponder];
 }
 
+-(BOOL) prefersStatusBarHidden {
+	return YES;
+}
+
 -(void) nextButtonPressed {
 	NSString *name = self.enterNameField.text;
 	if (name.length < 1) {

@@ -215,12 +215,14 @@ forRowAtIndexPath:(NSIndexPath *)indexPath{
 }
 
 
-#pragma mark -Feed Cell Protocol-
+#pragma mark - Feed Cell Protocol -
+
 -(void)shouldHideTabBar:(BOOL) shouldHide{
 	self.tableView.scrollEnabled = !shouldHide;
 	self.contentInFullScreen = shouldHide;
 	[self setNeedsStatusBarAppearanceUpdate];
 }
+
 -(void)exitProfile{
     [self.delegate exitProfileList];
 }
