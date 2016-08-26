@@ -199,6 +199,15 @@
 	[self.currentParsePostObject saveInBackground];
 	//register the relationship
 	[Post_Channel_RelationshipManager savePost:self.currentParsePostObject toChannels:[NSMutableArray arrayWithObject:self.currentPublishingChannel] withCompletionBlock:^{
+		self.progressAccountant.completedUnitCount = 0;
+		self.progressAccountant.totalUnitCount = 0;
+		self.currentlyPublishing = NO;
+		[[PostInProgress sharedInstance] clearPostInProgress];
+		self.currentParsePostObject = nil;
+		self.currentPublishingChannel = nil;
+		self.publishingProgressBackgroundImage = nil;
+		NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_POST_PUBLISHED object:nil userInfo:nil];
+		[[NSNotificationCenter defaultCenter] postNotification: notification];
         [self.externalShareObject storeShareLinkToPost:self.currentParsePostObject withCaption:self.captionToShare withCompletionBlock:^(bool savedSuccessfully, PFObject * postObject) {
             if(savedSuccessfully){
                 [self.externalShareObject sharePostLink:[postObject objectForKey:POST_SHARE_LINK] toPlatform:self.locationToShare];
@@ -208,16 +217,7 @@
 			[[UIApplication sharedApplication] endBackgroundTask: self.publishingTask];
 			self.publishingTask = UIBackgroundTaskInvalid;
         }];
-        
-		self.progressAccountant.completedUnitCount = 0;
-		self.progressAccountant.totalUnitCount = 0;
-		self.currentlyPublishing = NO;
-		[[PostInProgress sharedInstance] clearPostInProgress];
-		NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_POST_PUBLISHED object:nil userInfo:nil];
-		[[NSNotificationCenter defaultCenter] postNotification: notification];
-		self.currentParsePostObject = nil;
-		self.currentPublishingChannel = nil;
-        self.publishingProgressBackgroundImage = nil;
+
 	}];
 }
 

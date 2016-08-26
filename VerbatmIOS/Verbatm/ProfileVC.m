@@ -279,11 +279,16 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	return flowLayout;
 }
 
--(void)presentViewPostView:(PostListVC *) postList inSmallMode:(BOOL) inSmallMode shouldPage:(BOOL) shouldPage fromCellPath:(NSIndexPath *) cellPath{
+-(void)presentViewPostView:(PostListVC *) postList inSmallMode:(BOOL) inSmallMode shouldPage:(BOOL) shouldPage
+			  fromCellPath:(NSIndexPath *) cellPath{
 
 	[self.view addSubview:postList.view];
 	[self.view bringSubviewToFront:postList.view];
-	if(cellPath.row < self.postListVC.parsePostObjects.count)[postList.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
+	if (cellPath == nil) {
+
+	} else if(cellPath.row < self.postListVC.parsePostObjects.count) {
+		[postList.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
+	}
 	[self.delegate showTabBar:!shouldPage];
 	[self.postListVC.view removeFromSuperview];
 	[self.postListVC clearViews];
@@ -299,8 +304,9 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 -(void)createNewPostViewFromCellIndexPath:(NSIndexPath *) cellPath{
     self.inFullScreenMode = !self.inFullScreenMode;
 
-	PostCollectionViewCell* cell = (PostCollectionViewCell*)[[self.postListVC.collectionView visibleCells] firstObject];
-    if(cellPath == nil) {
+	NSArray *visibleCells = [self.postListVC.collectionView visibleCells];
+	if (cellPath == nil && visibleCells.count) {
+		PostCollectionViewCell* cell = (PostCollectionViewCell*)[visibleCells firstObject];
         cellPath = [self.postListVC.collectionView indexPathForCell:cell];
     }
     
@@ -323,13 +329,13 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	//todo: redundant with passing in constructor right now
 	NSDate *startingDate = self.channel.followObject ? self.channel.followObject[FOLLOW_LATEST_POST_DATE] : nil;
 	newVC.latestPostSeen = startingDate;
-    if(self.postListVC.parsePostObjects && self.postListVC.parsePostObjects.count){
+    if(self.postListVC.parsePostObjects) {
         newVC.postsQueryManager = self.postListVC.postsQueryManager;
         newVC.currentlyPublishing = self.postListVC.currentlyPublishing;
         [newVC display:self.channel withListOwner:self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile
        andStartingDate:startingDate withOldParseObjects:self.postListVC.parsePostObjects];
     }
-    
+
     [self presentViewPostView:newVC inSmallMode:!self.inFullScreenMode shouldPage:self.inFullScreenMode fromCellPath:cellPath];
 }
 
@@ -379,44 +385,48 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	}
 }
 
--(void)createPromptToPost{
-	self.postPrompt =  [[UIButton alloc] init];
-	[self.postPrompt setBackgroundImage:[UIImage imageNamed:CREATE_POST_PROMPT_ICON] forState:UIControlStateNormal];
-	[self.view addSubview:self.postPrompt];
-	[self.postPrompt addTarget:self action:@selector(createFirstPost) forControlEvents:UIControlEventTouchDown];
-	self.postPrompt.frame = CGRectMake(self.postListSmallFrame.origin.x, self.postListSmallFrame.origin.y,
-									   self.cellSmallFrameSize.width, self.cellSmallFrameSize.height);
-	self.postListVC.view.hidden = YES;
-	[self.delegate showTabBar:YES];
-}
+//-(void)createPromptToPost{
+//	self.postPrompt =  [[UIButton alloc] init];
+//	[self.postPrompt setBackgroundImage:[UIImage imageNamed:CREATE_POST_PROMPT_ICON] forState:UIControlStateNormal];
+//	[self.view addSubview:self.postPrompt];
+//	[self.postPrompt addTarget:self action:@selector(createFirstPost) forControlEvents:UIControlEventTouchDown];
+//	self.postPrompt.frame = CGRectMake(self.postListSmallFrame.origin.x, self.postListSmallFrame.origin.y,
+//									   self.cellSmallFrameSize.width, self.cellSmallFrameSize.height);
+//	self.postListVC.view.hidden = YES;
+//	[self.delegate showTabBar:YES];
+//}
 
--(void)createFirstPost {
-	if([self.delegate respondsToSelector:@selector(userCreateFirstPost)]){
-		[self.delegate userCreateFirstPost];
-	}
-}
+//-(void)createFirstPost {
+//	if([self.delegate respondsToSelector:@selector(userCreateFirstPost)]){
+//		[self.delegate userCreateFirstPost];
+//	}
+//}
 
 -(void)postsFound{
-	[self removePromptToPost];
+//	[self removePromptToPost];
     if(!self.isCurrentUserProfile){
         [self.profileHeaderView removeProfileConstructionNotification];
     }
 }
 
--(void)removePromptToPost{
-	if(self.isCurrentUserProfile){
-		if(self.postPrompt)[self.postPrompt removeFromSuperview];
-		self.postPrompt = nil;
-		self.postListVC.view.hidden = NO;
-	}
-}
+//todo: delete this prompt
+//-(void)removePromptToPost{
+//	if(self.isCurrentUserProfile){
+//		if(self.postPrompt)[self.postPrompt removeFromSuperview];
+//		self.postPrompt = nil;
+//		self.postListVC.view.hidden = NO;
+//	}
+//}
 
 -(void)noPostFound {
     if(self.isCurrentUserProfile){
-        [self createPromptToPost];
+//        [self createPromptToPost];
     }else{
         [self.profileHeaderView presentProfileUnderConstructionNotification];
     }
+	if (self.inFullScreenMode) {
+		[self exitCurrentPostView];
+	}
 }
 
 -(void) shareToSmsSelectedToUrl:(NSString *) url{

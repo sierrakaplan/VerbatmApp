@@ -75,6 +75,7 @@
 }
 
 -(void) sendCodeToUser:(NSString*) simplePhoneNumber {
+	return;
 	[self disableResendCodeButtonWithText:@"Sending code..."];
 	//todo: include more languages
 	NSDictionary *params = @{@"phoneNumber" : simplePhoneNumber, @"language" : @"en"};
@@ -120,15 +121,15 @@
 -(void) verifyCode {
 	NSString *code = [self getCode];
 
-	//todo: these lines lines allow testing create new accounts (use phone numbers no one has)
-//	PFUser *newUser = [PFUser user];
-//	newUser.username = self.simplePhoneNumber;
-//	newUser.password = code;
-//	[newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-//		[self performSegueWithIdentifier:SEGUE_CREATE_NAME sender:self];
-//	}];
-//
-//	return;
+//	//todo: these lines lines allow testing create new accounts (use phone numbers no one has)
+	PFUser *newUser = [PFUser user];
+	newUser.username = self.simplePhoneNumber;
+	newUser.password = code;
+	[newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+		[self performSegueWithIdentifier:SEGUE_CREATE_NAME sender:self];
+	}];
+
+	return;
 
 	if (self.verifyingCode) return;
 	self.verifyingCode = YES;
@@ -346,9 +347,9 @@
 								  RESEND_CODE_BUTTON_WIDTH, RESEND_CODE_BUTTON_HEIGHT);
 		_resendCodeButton = [[UIButton alloc] initWithFrame:frame];
 		_resendCodeButton.layer.cornerRadius = 5.f;
-		_resendCodeButton.layer.borderColor = [UIColor whiteColor].CGColor;
-		_resendCodeButton.layer.borderWidth = 1.f;
-		_resendCodeButton.backgroundColor = [UIColor colorWithWhite:1.f alpha:0.2];
+//		_resendCodeButton.layer.borderColor = [UIColor whiteColor].CGColor;
+//		_resendCodeButton.layer.borderWidth = 1.f;
+//		_resendCodeButton.backgroundColor = [UIColor colorWithWhite:1.f alpha:0.2];
 		[_resendCodeButton addTarget:self action:@selector(resendCodeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 	}
 	return _resendCodeButton;

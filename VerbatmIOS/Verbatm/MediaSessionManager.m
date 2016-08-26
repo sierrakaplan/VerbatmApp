@@ -79,6 +79,7 @@
 	}
 
 	//Getting audio
+	//todo: check if we are authorized to use mic AND camera
 	AVCaptureDevice* audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
 	self.audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioDevice error:&error];
 	if (!self.videoInput || !self.audioInput) {
@@ -109,19 +110,6 @@
 	_movieOutputFile.maxRecordedDuration = maxDuration;
 	[self.session addOutput: self.movieOutputFile];
 }
-
-/* NOT IN USE
- 
- NSDictionary* videoOutputSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
- AVVideoCodecH264, AVVideoCodecKey,
- [NSNumber numberWithInteger: VIDEO_RESOLUTION], AVVideoWidthKey,
- [NSNumber numberWithInteger: VIDEO_RESOLUTION], AVVideoHeightKey,
- AVVideoScalingModeResizeAspectFill, AVVideoScalingModeKey,
- [[NSDictionary alloc] initWithObjectsAndKeys:
- [NSNumber numberWithInteger: BITRATE], AVVideoAverageBitRateKey,
- nil], AVVideoCompressionPropertiesKey,
- nil];
- */
 
 #pragma mark - Verbatm Album Setup -
 

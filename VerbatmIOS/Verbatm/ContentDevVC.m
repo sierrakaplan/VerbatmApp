@@ -169,6 +169,8 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 	[super viewDidLoad];
 	self.totalPiecesOfMedia = 0;
 	self.ourPosts = [[NSMutableArray alloc] init];
+	self.cameraView = [[VerbatmCameraView alloc] initWithFrame:self.view.bounds];
+	self.cameraView.delegate = self;
 	[self initializeVariables];
 	[self setFrameMainScrollView];
 	[self setElementDefaultFrames];
@@ -1773,7 +1775,7 @@ andSaveInUserDefaults:(BOOL)save {
 	}
 }
 
-#pragma mark -Share Seletion View Protocol -
+#pragma mark - Share Seletion View Protocol -
 
 -(void)cancelButtonSelected{
 	[self removeSharePOVView];
@@ -1862,14 +1864,6 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 #pragma mark - Lazy Instantiation
-
--(VerbatmCameraView*) cameraView {
-	if (!_cameraView) {
-		_cameraView = [[VerbatmCameraView alloc] initWithFrame:self.view.bounds];
-		_cameraView.delegate = self;
-	}
-	return _cameraView;
-}
 
 -(PreviewDisplayView*) previewDisplayView {
 	if(!_previewDisplayView){
