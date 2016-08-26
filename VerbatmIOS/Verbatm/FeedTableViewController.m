@@ -47,10 +47,15 @@
 
 -(void)viewWillAppear:(BOOL)animated{
 	[super viewWillAppear:animated];
+	[self.delegate showTabBar: NO];
 }
 
--(void)viewWillDisappear:(BOOL)animated {
+- (void)viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
 
+	if (self.isMovingFromParentViewController || self.isBeingDismissed) {
+		[self.delegate exitProfileList];
+	}
 }
 
 -(UIStatusBarStyle) preferredStatusBarStyle {
@@ -221,10 +226,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath{
 	self.tableView.scrollEnabled = !shouldHide;
 	self.contentInFullScreen = shouldHide;
 	[self setNeedsStatusBarAppearanceUpdate];
-}
-
--(void)exitProfile{
-    [self.delegate exitProfileList];
 }
 
 @end

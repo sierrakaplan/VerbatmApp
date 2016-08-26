@@ -43,4 +43,5 @@
 -(void)setCoverPhotoImage:(UIImage *) coverPhotoImage;
 -(void)presentProfileUnderConstructionNotification;
 -(void)removeProfileConstructionNotification;
+
 @end

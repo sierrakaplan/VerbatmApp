@@ -75,10 +75,6 @@
 	[self.delegate shouldHideTabBar:!show];
 }
 
--(void)exitProfile{
-    [self.delegate exitProfile];
-}
-
 - (void)awakeFromNib {
 	[super awakeFromNib];
 	// Initialization code

@@ -14,7 +14,7 @@
 @protocol FeedCellDelegate <NSObject>
 
 -(void)shouldHideTabBar:(BOOL) shouldHide;
--(void)exitProfile;
+
 @end
 
 

@@ -91,8 +91,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	[self loadContentToPostList];
 }
 
-
-
 -(void)updateDateOfLastPostSeen{
     if(!self.isCurrentUserProfile && self.profileInFeed && [self.channel dateOfMostRecentChannelPost]){
         NSDate * finalDate = [self.postListVC creationDateOfLastPostObjectInPostList];
@@ -102,7 +100,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
         }
     }
 }
-
 
 -(void)loadContentToPostList {
 	if (!self.channel.followObject) {
@@ -145,8 +142,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	[self.profileHeaderView removeFromSuperview];
 	self.profileHeaderView = nil;
 }
-
-
 
 -(void)presentUserList:(ListType) listType{
 	UserAndChannelListsTVC *userList = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
@@ -594,7 +589,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	if(!_postListVC){
 		CGFloat postHeight = self.view.frame.size.height - (self.view.frame.size.width - SMALL_SQUARE_LIKESHAREBAR_HEIGHT);
 		CGFloat postWidth = (self.view.frame.size.width / self.view.frame.size.height ) * postHeight;//same ratio as screen
-        CGFloat postListSmallY = self.view.frame.size.height - postHeight - ((self.isCurrentUserProfile) ? (TAB_BAR_HEIGHT + 1.f): 1.f);
+        CGFloat postListSmallY = self.view.frame.size.height - postHeight - ((self.isCurrentUserProfile) ? (TAB_BAR_HEIGHT + 1.f): 1.f) - SMALL_SQUARE_LIKESHAREBAR_HEIGHT;
         
 		self.cellSmallFrameSize = CGSizeMake(postWidth, postHeight);
 		UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];

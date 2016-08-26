@@ -72,7 +72,7 @@
 #define COVER_PHOTO_DIRECTORY_PATH [NSHomeDirectory() stringByAppendingString:@"/Library/Caches/verbatmCoverPhoto.png"]
 #define COVER_PHOTO_URL_KEY @"CoverPhotoUrlKey"
 
-#define USERINFO_BAR_HEIGHT (STATUS_BAR_HEIGHT + PROFILE_INFO_BAR_HEIGHT)
+#define USERINFO_BAR_HEIGHT (PROFILE_INFO_BAR_HEIGHT)
 #define COVER_PHOTO_WALL_OFFSET_X 20.f
 #define COVER_PHOTO_WALL_OFFSET_Y (USERINFO_BAR_HEIGHT + COVER_PHOTO_WALL_OFFSET_X)
 
@@ -91,7 +91,7 @@
 		self.isCurrentUser = (user == nil);
 		self.editMode = NO;
 		self.backgroundColor = [UIColor blackColor];
-		CGRect userInfoBarFrame = CGRectMake(0.f, 0.f,frame.size.width,USERINFO_BAR_HEIGHT);
+		CGRect userInfoBarFrame = CGRectMake(0.f, 0.f, frame.size.width, USERINFO_BAR_HEIGHT);
 		self.userInformationBar = [[ProfileInformationBar alloc] initWithFrame:userInfoBarFrame andUser:user
 																	andChannel:channel inProfileTab:profileTab inFeed:inFeed];
 		self.userInformationBar.delegate = self;
@@ -105,11 +105,6 @@
         [self askForFeedback];
 	}
 	return self;
-}
-
-
--(void)regiserForNotification{
-    
 }
 
 -(void)askForFeedback {

@@ -11,6 +11,8 @@
 #import "FeedListTableViewCell.h"
 #import "FeedTableViewController.h"
 
+#import "UINavigationBar+CustomHeight.h"
+
 #import "ParseBackendKeys.h"
 #import "ProfileListHeader.h"
 #import "ProfileVerbatmLogoBar.h"
@@ -30,6 +32,7 @@
 #define CELL_HEIGHT 75.f
 #define HEADER_TITLE_HEIGHT 60.f
 #define FEED_LIST_CELL_ID @"FeedListTableViewCell"
+#define NAVIGATION_BAR_HEIGHT 15.f
 
 @implementation FeedProfileListTVC
 
@@ -54,13 +57,17 @@
 }
 
 -(void) formatNavigationBar {
-	[self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-	self.navigationController.navigationBar.shadowImage = [UIImage new];
-	self.navigationController.navigationBar.translucent = YES;
+//	[self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+//	self.navigationController.navigationBar.shadowImage = [UIImage new];
+//	[self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.navigationController.navigationBar attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeHeight multiplier:1 constant:NAVIGATION_BAR_HEIGHT]];
+
+	self.navigationController.navigationBar.translucent = NO;
+	self.navigationController.navigationBar.barTintColor = [UIColor blackColor];
 	self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
 	[self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
 																	 [UIColor whiteColor], NSForegroundColorAttributeName,
 																	 [UIFont fontWithName:BOLD_FONT size:21.0], NSFontAttributeName, nil]];
+	self.navigationItem.title = @"Blog List";
 	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Blog List" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 }
 
@@ -177,6 +184,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void)viewDidLayoutSubviews {
+//	self.navigationController.navigationBar.frame = CGRectMake(0.f, 0.f, self.view.frame.size.width, NAVIGATION_BAR_HEIGHT);
     [super viewDidLayoutSubviews];
     if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
         [self.tableView setSeparatorInset:UIEdgeInsetsZero];

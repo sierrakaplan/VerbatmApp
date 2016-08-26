@@ -73,6 +73,7 @@
 		A5BB65451D6E9EB000F5B01B /* ProfileListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = A5BB65441D6E9EB000F5B01B /* ProfileListHeader.m */; };
 		A5BB65471D6F804000F5B01B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5BB65461D6F804000F5B01B /* Main.storyboard */; };
 		A5BB654A1D6F9A9E00F5B01B /* CreateNameVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5BB65491D6F9A9E00F5B01B /* CreateNameVC.m */; };
+		A5BB654D1D70E57400F5B01B /* UINavigationBar+CustomHeight.m in Sources */ = {isa = PBXBuildFile; fileRef = A5BB654C1D70E57400F5B01B /* UINavigationBar+CustomHeight.m */; };
 		A5BFA5AA1CA8C506002C3884 /* Raleway-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A5BFA5981CA8C506002C3884 /* Raleway-Black.ttf */; };
 		A5BFA5AB1CA8C506002C3884 /* Raleway-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A5BFA5981CA8C506002C3884 /* Raleway-Black.ttf */; };
 		A5BFA5AC1CA8C506002C3884 /* Raleway-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A5BFA5991CA8C506002C3884 /* Raleway-BlackItalic.ttf */; };
@@ -407,6 +408,8 @@
 		A5BB65461D6F804000F5B01B /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		A5BB65481D6F9A9E00F5B01B /* CreateNameVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateNameVC.h; sourceTree = "<group>"; };
 		A5BB65491D6F9A9E00F5B01B /* CreateNameVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateNameVC.m; sourceTree = "<group>"; };
+		A5BB654B1D70E57400F5B01B /* UINavigationBar+CustomHeight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationBar+CustomHeight.h"; sourceTree = "<group>"; };
+		A5BB654C1D70E57400F5B01B /* UINavigationBar+CustomHeight.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationBar+CustomHeight.m"; sourceTree = "<group>"; };
 		A5BFA5981CA8C506002C3884 /* Raleway-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Raleway-Black.ttf"; sourceTree = "<group>"; };
 		A5BFA5991CA8C506002C3884 /* Raleway-BlackItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Raleway-BlackItalic.ttf"; sourceTree = "<group>"; };
 		A5BFA59A1CA8C506002C3884 /* Raleway-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Raleway-Bold.ttf"; sourceTree = "<group>"; };
@@ -1271,6 +1274,8 @@
 				A51B85211D2F3C6C006E90CC /* DTLog.h */,
 				A51B85221D2F3CEE006E90CC /* DTObjectBlockExecutor.h */,
 				A51B85231D2F3CEE006E90CC /* DTObjectBlockExecutor.m */,
+				A5BB654B1D70E57400F5B01B /* UINavigationBar+CustomHeight.h */,
+				A5BB654C1D70E57400F5B01B /* UINavigationBar+CustomHeight.m */,
 			);
 			name = "Categories and Effects";
 			sourceTree = "<group>";
@@ -2013,6 +2018,7 @@
 				A51BB2A81D2657D00020D529 /* SearchResultsVC.m in Sources */,
 				A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */,
 				A535E4FD1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m in Sources */,
+				A5BB654D1D70E57400F5B01B /* UINavigationBar+CustomHeight.m in Sources */,
 				A5FB5D3A1BCB0B9700634A96 /* GMImagePickerController.m in Sources */,
 				C7D596381C66DC3A00161136 /* FeedQueryManager.m in Sources */,
 				A56F68811B65B43D00CE5744 /* ImagePinchView.m in Sources */,
