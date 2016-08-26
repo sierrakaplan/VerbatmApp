@@ -202,8 +202,7 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	[self clearViews];
     self.latestPostSeen = date;
 	self.exitedView = NO;
-	//todo remove this?:
-	//	self.latestDate = date;
+	self.latestPostSeen = date;
 	self.channelForList = channelForList;
 	self.listOwner = listOwner;
 	self.isCurrentUserProfile = isCurrentUserProfile;

@@ -300,7 +300,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	[self.view bringSubviewToFront:postList.view];
 	if (cellPath == nil) {
 
-	} else if(cellPath.row < self.postListVC.parsePostObjects.count) {
+	} else if(cellPath.row < self.postListVC.parsePostActivityObjects.count) {
 		[postList.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
 	}
 	[self.delegate showTabBar:!shouldPage];
@@ -340,10 +340,8 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 		}
 	}
 
-	//todo: redundant with passing in constructor right now
 	NSDate *startingDate = self.channel.followObject ? self.channel.followObject[FOLLOW_LATEST_POST_DATE] : nil;
-	newVC.latestPostSeen = startingDate;
-    if(self.postListVC.parsePostObjects) {
+    if(self.postListVC.parsePostActivityObjects) {
         newVC.postsQueryManager = self.postListVC.postsQueryManager;
         newVC.currentlyPublishing = self.postListVC.currentlyPublishing;
         [newVC display:self.channel withListOwner:self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile
