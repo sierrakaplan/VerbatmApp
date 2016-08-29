@@ -21,6 +21,7 @@
 -(void)showWhoCommentedOnPost:(PFObject *) post;
 -(void)justRemovedTapToExitNotification;
 -(void)removePostViewSelected;
+-(void)createPostPromptSelected;
 @end
 
 

@@ -17,7 +17,7 @@
 -(void)noPostFound;
 -(void)postsFound;
 -(void)cellSelectedAtPostIndex:(NSIndexPath *) cellPath;
-
+-(void)createPostPromptSelected;
 -(void)hideNavBarIfPresent;
 -(void)channelSelected:(Channel *) channel;
 -(void)removePostViewSelected;

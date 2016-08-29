@@ -263,10 +263,11 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 			[weakSelf.postListDelegate postsFound];
 			[weakSelf.parsePostActivityObjects removeAllObjects];
 			[weakSelf.parsePostActivityObjects addObjectsFromArray:posts];
-            [weakSelf.parsePostActivityObjects addObject:weakSelf.publishingProgressViewPositionHolder];
+            if(weakSelf.isCurrentUserProfile)[weakSelf.parsePostActivityObjects addObject:weakSelf.publishingProgressViewPositionHolder];
 			[weakSelf.collectionView reloadData];
 			[weakSelf scrollToLastElementInList];
 		} else if (!weakSelf.currentlyPublishing) {
+            if(weakSelf.isCurrentUserProfile)[weakSelf.parsePostActivityObjects addObject:weakSelf.publishingProgressViewPositionHolder];
 			[weakSelf.postListDelegate noPostFound];
 		}
 	};
@@ -424,9 +425,11 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(NSDate *)creationDateOfLastPostObjectInPostList{
- 
-    PFObject * lastObj = [self.parsePostActivityObjects lastObject];
-    return [lastObj createdAt];
+    if(!self.isCurrentUserProfile){
+        PFObject * lastObj = [self.parsePostActivityObjects lastObject];
+        return [lastObj createdAt];
+    }
+    return [NSDate date];
 }
 
 -(void) updateCursor {
@@ -484,6 +487,10 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	self.nextNextIndex = indexPath.row + self.scrollDirection*2;
 	self.nextNextCell = [self postCellAtIndexPath:[NSIndexPath indexPathForRow:self.nextNextIndex inSection:indexPath.section]];
 	if (self.nextNextCell) [self.nextNextCell almostOnScreen];
+}
+
+-(void)createPostPromptSelected{
+    [self.postListDelegate createPostPromptSelected];
 }
 
 -(PostCollectionViewCell*) postCellAtIndexPath:(NSIndexPath *)indexPath {
@@ -708,7 +715,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void)removeSharePOVView{
-	if(self.sharePostView){
+	
+    if(self.sharePostView){
+        
 		CGRect offScreenFrame = CGRectMake(0.f, [UIApplication sharedApplication].keyWindow.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
         
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
@@ -720,6 +729,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 			}
 		}];
 	}
+    
 }
 
 #pragma mark - Share Selection View Protocol -
@@ -964,7 +974,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark - Publishing -
 
 -(void)clearPublishingView {
-    self.publishingProgressViewPositionHolder = [NSNumber numberWithInteger:CreateNewPostPrompt];
+    if(self.isCurrentUserProfile)self.publishingProgressViewPositionHolder = [NSNumber numberWithInteger:CreateNewPostPrompt];
     [self refreshPosts];
 }
 

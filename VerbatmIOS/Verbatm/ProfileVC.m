@@ -307,12 +307,14 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 // Switches between large and small post list
 -(void)cellSelectedAtPostIndex:(NSIndexPath *) cellPath{
+    
     [self createNewPostViewFromCellIndexPath:cellPath];
 }
 
 -(void)createNewPostViewFromCellIndexPath:(NSIndexPath *) cellPath{
+    
     self.inFullScreenMode = !self.inFullScreenMode;
-
+    
 	PostCollectionViewCell* cell = (PostCollectionViewCell*)[[self.postListVC.collectionView visibleCells] firstObject];
     if(cellPath == nil) {
         cellPath = [self.postListVC.collectionView indexPathForCell:cell];
@@ -393,22 +395,13 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	}
 }
 
--(void)createPromptToPost{
-	self.postPrompt =  [[UIButton alloc] init];
-	[self.postPrompt setBackgroundImage:[UIImage imageNamed:CREATE_POST_PROMPT_ICON] forState:UIControlStateNormal];
-	[self.view addSubview:self.postPrompt];
-	[self.postPrompt addTarget:self action:@selector(createFirstPost) forControlEvents:UIControlEventTouchDown];
-	self.postPrompt.frame = CGRectMake(self.postListSmallFrame.origin.x, self.postListSmallFrame.origin.y,
-									   self.cellSmallFrameSize.width, self.cellSmallFrameSize.height);
-	self.postListVC.view.hidden = YES;
-	[self.delegate showTabBar:YES];
+-(void)createPostPromptSelected{
+    if([self.delegate respondsToSelector:@selector(userCreateFirstPost)]){
+        if(self.inFullScreenMode)[self createNewPostViewFromCellIndexPath:nil];
+        [self.delegate userCreateFirstPost];
+    }
 }
 
--(void)createFirstPost {
-	if([self.delegate respondsToSelector:@selector(userCreateFirstPost)]){
-		[self.delegate userCreateFirstPost];
-	}
-}
 
 -(void)postsFound{
 	[self removePromptToPost];
@@ -426,9 +419,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 }
 
 -(void)noPostFound {
-    if(self.isCurrentUserProfile){
-        [self createPromptToPost];
-    }else{
+    if(!self.isCurrentUserProfile){
         [self.profileHeaderView presentProfileUnderConstructionNotification];
     }
 }

@@ -425,12 +425,19 @@
 }
 
 
+-(void)createPostPromptSelected{
+    [self.cellDelegate createPostPromptSelected];
+}
+
 -(UIButton *)createPostPrompt{
+    
     if(!_createPostPrompt){
         _createPostPrompt = [[UIButton alloc] initWithFrame:self.bounds];
         [_createPostPrompt setImage:[UIImage imageNamed:ADD_FIRST_POST_ICON] forState:UIControlStateNormal];
         _createPostPrompt.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        [_createPostPrompt addTarget:self action:@selector(createPostPromptSelected) forControlEvents:UIControlEventTouchDown];
     }
+    
     return _createPostPrompt;
     
 }
