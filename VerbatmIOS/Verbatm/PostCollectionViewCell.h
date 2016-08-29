@@ -23,6 +23,12 @@
 -(void)removePostViewSelected;
 @end
 
+
+typedef enum LastPostType : NSInteger{
+    CreateNewPostPrompt = 0,
+    PublishingPostPrompt = 1
+}LastPostType;
+
 @interface PostCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic, weak) id<PostCollectionViewCellDelegate> cellDelegate;
@@ -42,7 +48,7 @@
 -(void) offScreen;
 
 -(void) clearViews;
--(void)presentPublishingView;
+-(void)presentPromptView:(NSNumber *) promptType;
 -(void)presentTapToExitNotification;
 -(void)removeTapToExitNotification;
 
