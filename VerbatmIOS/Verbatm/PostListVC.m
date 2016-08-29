@@ -433,18 +433,22 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void) updateCursor {
 	if(!self.isCurrentUserProfile){
-		NSDate *postDate = self.currentDisplayCell.currentPostActivityObject.createdAt;
+        
+		NSDate * postDate = self.currentDisplayCell.currentPostActivityObject.createdAt;
 		NSTimeInterval timeSinceSeen = [postDate timeIntervalSinceDate:self.latestPostSeen];
 		if (timeSinceSeen > 0.f) {
-			if (!self.inSmallMode) {
+		
+            if (!self.inSmallMode) {
 				self.latestPostSeen = postDate;
 			} else {
                
 				[self.currentDisplayCell addDot];
             }
+        
         } else if (self.inSmallMode) {
 			[self.currentDisplayCell removeDot];
 		}
+        
 	}
 }
 

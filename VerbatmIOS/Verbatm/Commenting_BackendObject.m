@@ -9,7 +9,9 @@
 #import <Crashlytics/Crashlytics.h>
 #import "Commenting_BackendObject.h"
 #import "Comment.h"
+
 #import "Notification_BackendManager.h"
+#import "Notifications.h"
 
 #import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
@@ -84,8 +86,18 @@
             [Notification_BackendManager createNotificationWithType:NotificationTypeNewComment
 													  receivingUser:[postParseObject valueForKey:POST_ORIGINAL_CREATOR_KEY]
 												 relevantPostObject:postParseObject];
+            [Commenting_BackendObject NotifyNewCommentOnPost:postParseObject];
+            
         }
     }];
+}
+
+
++(void)NotifyNewCommentOnPost:(PFObject *)postParseObject{
+    NSDictionary * userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[postParseObject objectId],POST_COMMENTED_ON_NOTIFICATION_USERINFO_KEY,nil];
+    
+    NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_NEW_COMMENT_USER object:nil userInfo:userInfo];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 

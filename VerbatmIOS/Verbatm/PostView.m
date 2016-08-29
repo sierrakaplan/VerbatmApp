@@ -10,7 +10,7 @@
 
 #import "LoadingIndicator.h"
 #import "CreatorAndChannelBar.h"
-
+#import "Notifications.h"
 #import "Durations.h"
 
 #import "Icons.h"
@@ -95,7 +95,7 @@
 
 @implementation PostView
 
--(instancetype)initWithFrame:(CGRect)frame andPostChannelActivityObject:(PFObject*) postObject
+-(instancetype)initWithFrame:(CGRect)frame andPostChannelActivityObject:(PFObject*) postChannelActivityObject
 					   small:(BOOL) small andPageObjects:(NSArray*) pageObjects {
 	self = [self initWithFrame:frame];
 	if (self) {
@@ -103,13 +103,28 @@
 		//load all page views
 		self.pageObjects = pageObjects;
 		if (self.pageObjects) [self createPageViews];
-        if (postObject){
-            self.parsePostChannelActivityObject = postObject;
+        if (postChannelActivityObject){
+            self.parsePostChannelActivityObject = postChannelActivityObject;
         }
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(newCommentRegistered:)
+                                                     name:NOTIFICATION_NEW_COMMENT_USER
+                                                   object:nil];
 
 	}
 	return self;
 }
+
+-(void)newCommentRegistered:(NSNotification *)notification{
+    NSString * postCommentedOnObjectId = [[notification userInfo] objectForKey:POST_COMMENTED_ON_NOTIFICATION_USERINFO_KEY];
+    
+    PFObject * postObject = [self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST];
+    
+    if(postObject && [[postObject objectId] isEqualToString:postCommentedOnObjectId]){
+        [self.likeShareBar incrementComments];
+    }
+}
+
 
 -(instancetype)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
