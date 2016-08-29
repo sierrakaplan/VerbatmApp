@@ -17,6 +17,7 @@
 
 #define MEDIA_DEV_VC_ID @"media_dev_vc"
 #define PROFILE_VC_ID @"profile_vc"
+#define SETTINGS_VC_ID @"settings_vc"
 #define NOTIFICATIONS_VC_ID @"notifications_vc"
 #define FEATURED_CONTENT_VC_ID @"featured_content_vc"
 

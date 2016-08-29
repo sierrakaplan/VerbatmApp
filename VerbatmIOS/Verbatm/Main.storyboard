@@ -243,7 +243,7 @@
         <!--SettingsVC-->
         <scene sceneID="3ai-B6-NpV">
             <objects>
-                <viewController id="bK1-Rd-hCA" customClass="SettingsVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="settings_vc" id="bK1-Rd-hCA" customClass="SettingsVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="GSV-UB-YoW">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -260,11 +260,6 @@
                                     <action selector="signOutButtonSelected:" destination="bK1-Rd-hCA" eventType="touchUpInside" id="zlp-a0-6FB"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="profile_icon_2" id="Soj-93-cK2">
-                                <rect key="frame" x="20" y="66" width="23" height="31"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="tXt-K3-IoR">
                                 <rect key="frame" x="0.0" y="105" width="320" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -302,7 +297,6 @@
                     </view>
                     <connections>
                         <outlet property="contactUsButton" destination="tXt-K3-IoR" id="1ID-Um-lAe"/>
-                        <outlet property="profileIconImage" destination="Soj-93-cK2" id="A1H-z1-3YM"/>
                         <outlet property="signOutButton" destination="OIW-e5-B3V" id="jiH-7g-Zkh"/>
                         <outlet property="termsAndConditionsButton" destination="DMm-JS-Y99" id="pou-cm-6Nb"/>
                         <outlet property="userNameField" destination="q6H-1D-htl" id="Ym0-eG-fHd"/>
@@ -416,9 +410,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="lOE-gE-YBn"/>
                     <nil key="simulatedStatusBarMetrics"/>
-                    <connections>
-                        <segue destination="bK1-Rd-hCA" kind="modal" identifier="presentSettingsPage" id="Iif-HD-h1B"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kfn-r7-rVE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -539,12 +530,11 @@
     </scenes>
     <resources>
         <image name="background_image" width="279" height="480"/>
-        <image name="profile_icon_2" width="35" height="47"/>
         <image name="verbatm_logo_text" width="364" height="43"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="Ju6-jE-1sM"/>
-        <segue reference="HDC-3z-u8g"/>
+        <segue reference="Q88-7E-gAn"/>
         <segue reference="BFi-wQ-plH"/>
     </inferredMetricsTieBreakers>
 </document>

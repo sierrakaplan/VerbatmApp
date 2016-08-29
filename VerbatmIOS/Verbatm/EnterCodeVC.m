@@ -70,7 +70,7 @@
 }
 
 -(void) formatNavigationItem {
-	self.navigationItem.title = @"Verify phone number";
+	self.navigationItem.title = self.creatingAccount ? @"Verify phone number" : @"Enter code to log in";
 	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 }
 

@@ -172,25 +172,6 @@
 
 #pragma mark - Profile -
 
-#define POSTLIST_HEIGHT_EXTENSION 0.f //adds this as an extra buffer to increase post sizes
-
-#pragma mark Deprecated
-#define CHANNEL_CREATION_VIEW_HEIGHT 120.f
-#define CHANNEL_CREATION_VIEW_WIDTH 300.f
-#define CHANNEL_CREATION_VIEW_Y_OFFSET (PROFILE_NAV_BAR_HEIGHT + 140.f)
-#define USER_CELL_VIEW_HEIGHT 60.f
-#define CHANNEL_USER_LIST_CELL_HEIGHT 75.f
-#define PROFILE_NAV_BAR_HEIGHT (PROFILE_HEADER_HEIGHT + USER_CELL_VIEW_HEIGHT + STATUS_BAR_HEIGHT)
-#define THREAD_BAR_BUTTON_FONT_SIZE 17.f
-
-#pragma mark Profile Header
-#define PROFILE_INFO_BAR_HEIGHT 30.f
-#define PROFILE_HEADER_HEIGHT (self.view.frame.size.width)
-#define PROFILE_HEADER_XOFFSET 7.f
-
-#pragma mark Other profile
-#define NO_POSTS_LABEL_WIDTH 300.f
-
 
 #pragma mark - Discover/Search -
 
@@ -205,9 +186,11 @@
 #define LARGE_FOLLOW_BUTTON_WIDTH 100.f
 #define LARGE_FOLLOW_BUTTON_HEIGHT (LARGE_FOLLOW_BUTTON_WIDTH/3.f)
 
-#pragma mark -User and Channel List-
+#pragma mark - User and Channel List -
 
 #define CHANNEL_LIST_CELL_SEPERATOR_HEIGHT 0.6
+#define USER_CELL_VIEW_HEIGHT 60.f
+#define CHANNEL_USER_LIST_CELL_HEIGHT 75.f
 
 #endif
 

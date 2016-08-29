@@ -10,6 +10,7 @@
 #import "Icons.h"
 #import "ProfileHeaderView.h"
 #import "Styles.h"
+#import "UIView+Effects.h"
 
 @interface ProfileHeaderView()
 
@@ -18,10 +19,12 @@
 @property (nonatomic) NSString *userName;
 @property (nonatomic) UILabel *userNameLabel;
 @property (nonatomic) UIButton *moreInfoButton;
+@property (nonatomic) BOOL moreInfoButtonSelected;
+@property (nonatomic) CALayer *moreInfoButtonBorder;
 
 #define TEXT_X_OFFSET 10.f
 
-#define USERNAME_Y_OFFSET 50.f
+#define USERNAME_Y_OFFSET 80.f
 #define USERNAME_HEIGHT 40.f
 #define USERNAME_FONT_SIZE 24.f
 
@@ -35,6 +38,7 @@
 -(instancetype) initWithFrame:(CGRect)frame andChannel: (Channel*) channel {
 	self = [super initWithFrame: frame];
 	if (self) {
+		self.moreInfoButtonSelected = NO;
 		[channel loadCoverPhotoWithCompletionBlock:^(UIImage *coverPhoto, NSData *data) {
 			[self.coverPhotoImageView setImage: coverPhoto];
 		}];
@@ -50,6 +54,13 @@
 }
 
 -(void) moreInfoButtonTapped {
+	self.moreInfoButtonSelected = !self.moreInfoButtonSelected;
+	if (self.moreInfoButtonSelected) {
+		self.moreInfoButtonBorder = [self.moreInfoButton addBottomBorderWithColor:[UIColor whiteColor] andWidth:2.f];
+	} else {
+		[self.moreInfoButtonBorder removeFromSuperlayer];
+		self.moreInfoButtonBorder = nil;
+	}
 	[self.delegate moreInfoButtonTapped];
 }
 
@@ -75,9 +86,8 @@
 
 -(UILabel*) userNameLabel {
 	if (!_userNameLabel) {
-		CGFloat xOffset = TEXT_X_OFFSET + MORE_INFO_BUTTON_SIZE + MORE_INFO_BUTTON_SPACING;
-		CGFloat maxWidth = self.frame.size.width - xOffset*2;
-		CGRect frame = CGRectMake(xOffset, USERNAME_Y_OFFSET,
+		CGFloat maxWidth = self.frame.size.width - (TEXT_X_OFFSET + MORE_INFO_BUTTON_SIZE + MORE_INFO_BUTTON_SPACING);
+		CGRect frame = CGRectMake(TEXT_X_OFFSET, USERNAME_Y_OFFSET,
 								  maxWidth, USERNAME_HEIGHT);
 		_userNameLabel = [[UILabel alloc] initWithFrame:frame];
 		_userNameLabel.font = [UIFont fontWithName:BOLD_FONT size:USERNAME_FONT_SIZE];
@@ -90,7 +100,6 @@
 		if (frame.size.width > maxWidth) {
 			frame.size.width = maxWidth;
 		}
-		frame.origin.x = self.center.x - (frame.size.width + MORE_INFO_BUTTON_SIZE + MORE_INFO_BUTTON_SPACING)/2.f;
 		_userNameLabel.frame = frame;
 	}
 	return _userNameLabel;

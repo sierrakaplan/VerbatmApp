@@ -8,6 +8,18 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol ProfileMoreInfoViewDelegate <NSObject>
+
+-(void) followingButtonPressed;
+-(void) followersButtonPressed;
+
+@end
+
 @interface ProfileMoreInfoView : UIView
+
+@property (nonatomic, weak) id<ProfileMoreInfoViewDelegate> delegate;
+
+-(instancetype) initWithFrame:(CGRect)frame andNumFollowers:(NSNumber*)numFollowers
+			  andNumFollowing:(NSNumber*)numFollowing andDescription:(NSString*)description;
 
 @end

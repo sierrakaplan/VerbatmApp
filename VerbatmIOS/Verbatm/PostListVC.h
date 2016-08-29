@@ -18,11 +18,11 @@
 -(void)postsFound;
 -(void)cellSelectedAtPostIndex:(NSIndexPath *) cellPath;
 
--(void)hideNavBarIfPresent;
 -(void)channelSelected:(Channel *) channel;
 -(void)removePostViewSelected;
 -(void) shareToSmsSelectedToUrl:(NSString *) url;
 -(void)showWhoCommentedOnPost:(PFObject *) post;
+
 @end
 
 @interface PostListVC : UICollectionViewController

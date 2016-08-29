@@ -34,10 +34,10 @@
 }
 
 -(void) setNavigationBarStyleClearWithTextColor: (UIColor*)textColor {
-	[self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-	self.navigationController.navigationBar.shadowImage = [UIImage new];
-	self.navigationController.navigationBar.translucent = YES;
-	self.navigationController.navigationBar.tintColor = textColor;
+	[self.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+	self.navigationBar.shadowImage = [UIImage new];
+	self.navigationBar.translucent = YES;
+	self.navigationBar.tintColor = textColor;
 }
 
 -(UIStatusBarStyle) preferredStatusBarStyle {

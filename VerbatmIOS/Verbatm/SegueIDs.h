@@ -39,7 +39,4 @@
 #define ADK_SEGUE @"segue_id_adk"
 #define UNWIND_SEGUE_FROM_ADK_TO_MASTER @"unwind_to_master_vc_from_adk"
 
-// Settings
-#define SETTINGS_PAGE_MODAL_SEGUE @"presentSettingsPage"
-
 #endif /* SegueIDs_h */

@@ -23,8 +23,8 @@
 #import "ParseBackendKeys.h"
 
 #import "ProfileVC.h"
-#import "ProfileHeaderViewOld.h"
 #import "ProfileHeaderView.h"
+#import "ProfileMoreInfoView.h"
 #import "PostListVC.h"
 #import "PostCollectionViewCell.h"
 
@@ -45,7 +45,7 @@
 #import "UtilityFunctions.h"
 #import <PromiseKit/PromiseKit.h>
 
-@interface ProfileVC() <ProfileHeaderViewDelegate,
+@interface ProfileVC() <ProfileHeaderViewDelegate, ProfileMoreInfoViewDelegate,
 UIScrollViewDelegate, PostListVCProtocol,
 UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeViewControllerDelegate>
 
@@ -57,9 +57,8 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 //@property (nonatomic, strong) ProfileHeaderViewOld *profileHeaderView;
 @property (nonatomic) ProfileHeaderView *profileHeaderView;
-@property (nonatomic) BOOL headerViewOnScreen;
-
-@property (nonatomic) UIView * darkScreenCover;
+@property (nonatomic) ProfileMoreInfoView *moreInfoView;
+@property (nonatomic) BOOL moreInfoViewOnScreen;
 @property (nonatomic) SharePostView * sharePOVView;
 
 @property (nonatomic) BOOL inFullScreenMode;
@@ -86,6 +85,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
+	self.moreInfoViewOnScreen = NO;
 	self.automaticallyAdjustsScrollViewInsets = NO;
 	self.view.backgroundColor = [UIColor colorWithWhite:0.90 alpha:1.f];
 	[self buildHeaderView];
@@ -157,7 +157,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 -(void)buildHeaderView {
 	if(self.profileHeaderView){
 		[self.profileHeaderView removeFromSuperview];
-		self.headerViewOnScreen = NO;
 		self.profileHeaderView = nil;
 	}
 
@@ -166,11 +165,38 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	self.profileHeaderView.delegate = self;
 	[self.view addSubview: self.profileHeaderView];
 	[self.view sendSubviewToBack:self.profileHeaderView];
-	self.headerViewOnScreen = YES;
 }
 
 -(void) moreInfoButtonTapped {
-	//todo:
+	CGRect offScreenFrame = CGRectMake(0.f, HEADER_SIZE, self.view.frame.size.width, 1.f);
+	CGRect onScreenFrame = CGRectMake(0.f, HEADER_SIZE, self.view.frame.size.width,
+									  self.view.frame.size.height - HEADER_SIZE);
+	if (!_moreInfoView) {
+		self.moreInfoView = [[ProfileMoreInfoView alloc] initWithFrame:onScreenFrame
+												   andNumFollowers:self.channel.parseChannelObject[CHANNEL_NUM_FOLLOWS]
+												   andNumFollowing:self.channel.parseChannelObject[CHANNEL_NUM_FOLLOWING]
+													andDescription:self.channel.blogDescription];
+		self.moreInfoView.delegate = self;
+		self.moreInfoView.frame = offScreenFrame;
+		[self.view addSubview: self.moreInfoView];
+	}
+	self.moreInfoViewOnScreen = !self.moreInfoViewOnScreen;
+	[UIView animateWithDuration:1.f animations:^{
+		if (self.moreInfoViewOnScreen) {
+			self.moreInfoView.frame = onScreenFrame;
+		} else {
+			self.moreInfoView.frame = offScreenFrame;
+		}
+	} completion:^(BOOL finished) {
+	}];
+}
+
+-(void) followersButtonPressed {
+	[self showFollowers];
+}
+
+-(void) followingButtonPressed {
+	[self showChannelsFollowing];
 }
 
 #pragma mark - Profile Photo -
@@ -225,12 +251,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 //									}];
 //}
 
--(void)addClearScreenGesture{
-	UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clearScreen:)];
-	singleTap.numberOfTapsRequired = 1;
-	singleTap.delegate = self;
-	[self.postListVC.view addGestureRecognizer:singleTap];
-}
 
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
 	return YES;
@@ -350,7 +370,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 -(void) settingsButtonClicked {
 	//todo: push segue with back button
-	[self performSegueWithIdentifier:SETTINGS_PAGE_MODAL_SEGUE sender:self];
+//	[self performSegueWithIdentifier:SETTINGS_PAGE_MODAL_SEGUE sender:self];
 }
 
 -(void) editDoneButtonClickedWithoutName {
@@ -362,14 +382,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	[self presentViewController:newAlert animated:YES completion:nil];
 }
 
--(void)followersButtonSelected{
-	[self showFollowers];
-}
-
--(void)followingButtonSelected{
-	[self showChannelsFollowing];
-}
-
 -(void)showChannelsFollowing{
 	[self presentUserList: FollowingList];
 }
@@ -377,38 +389,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 -(void)showFollowers{
 	[self presentUserList: FollowersList];
 }
-
--(void)darkenScreen{
-	if(!self.darkScreenCover){
-		self.darkScreenCover = [[UIView alloc] initWithFrame:self.view.bounds];
-		self.darkScreenCover.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.5];
-		[self.view addSubview:self.darkScreenCover];
-	}
-}
-
--(void) removeScreenDarkener {
-	if(self.darkScreenCover) {
-		[self.darkScreenCover removeFromSuperview];
-		self.darkScreenCover = nil;
-	}
-}
-
-//-(void)createPromptToPost{
-//	self.postPrompt =  [[UIButton alloc] init];
-//	[self.postPrompt setBackgroundImage:[UIImage imageNamed:CREATE_POST_PROMPT_ICON] forState:UIControlStateNormal];
-//	[self.view addSubview:self.postPrompt];
-//	[self.postPrompt addTarget:self action:@selector(createFirstPost) forControlEvents:UIControlEventTouchDown];
-//	self.postPrompt.frame = CGRectMake(self.postListSmallFrame.origin.x, self.postListSmallFrame.origin.y,
-//									   self.cellSmallFrameSize.width, self.cellSmallFrameSize.height);
-//	self.postListVC.view.hidden = YES;
-//	[self.delegate showTabBar:YES];
-//}
-
-//-(void)createFirstPost {
-//	if([self.delegate respondsToSelector:@selector(userCreateFirstPost)]){
-//		[self.delegate userCreateFirstPost];
-//	}
-//}
 
 -(void)postsFound{
 //	[self removePromptToPost];
@@ -509,53 +489,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 	[alert addAction: cancelAction];
 	[self presentViewController:alert animated:YES completion:nil];
-}
-
-#pragma mark - POSTListVC Protocol -
-
--(void)hideNavBarIfPresent{
-	[self presentHeadAndFooter:NO];
-}
-
--(void) presentHeadAndFooter:(BOOL) shouldShow {
-	if(shouldShow && !self.headerViewOnScreen) {
-		self.headerViewOnScreen = YES;
-		CGRect onScreenFrame = CGRectOffset(self.profileHeaderView.frame, 0.f, self.profileHeaderView.frame.size.height);
-		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			[self.profileHeaderView setFrame: onScreenFrame];
-		}];
-		[self.delegate showTabBar:YES];
-		if(self.isProfileTab) [self.postListVC footerShowing:YES];
-
-	} else if (!shouldShow && self.headerViewOnScreen) {
-		self.headerViewOnScreen = NO;
-		CGRect offScreenFrame = CGRectOffset(self.profileHeaderView.frame, 0.f, -self.profileHeaderView.frame.size.height);
-		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			[self.profileHeaderView setFrame: offScreenFrame];
-		}];
-
-		[self.delegate showTabBar:NO];
-		if(self.isCurrentUserProfile) [self.postListVC footerShowing:NO];
-	}
-}
-
--(void)clearScreen:(UIGestureRecognizer *) tapGesture {
-	if (self.headerViewOnScreen) {
-		[self presentHeadAndFooter:NO];
-	} else {
-		[self presentHeadAndFooter:YES];
-	}
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-	// Make sure your segue name in storyboard is the same as this line
-	if ([[segue identifier] isEqualToString:SETTINGS_PAGE_MODAL_SEGUE]){
-		// Get reference to the destination view controller
-		SettingsVC * vc = [segue destinationViewController];
-
-		//set the username of the currently logged in user
-		vc.userName  = [[PFUser currentUser] valueForKey:VERBATM_USER_NAME_KEY];
-	}
 }
 
 #pragma mark - Lazy Instantiation -

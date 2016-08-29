@@ -169,7 +169,7 @@
         self.followButton = nil;
     }
     
-    CGFloat frame_x = self.frame.size.width - PROFILE_HEADER_XOFFSET - LARGE_FOLLOW_BUTTON_WIDTH;
+    CGFloat frame_x = self.frame.size.width - 5.f - LARGE_FOLLOW_BUTTON_WIDTH;
     CGRect followButtonFrame = CGRectMake(frame_x, TAB_BUTTON_PADDING_Y, LARGE_FOLLOW_BUTTON_WIDTH, LARGE_FOLLOW_BUTTON_HEIGHT);
     self.followButton = [[UIButton alloc] initWithFrame: followButtonFrame];
     self.followButton.imageView.contentMode = UIViewContentModeScaleAspectFit;

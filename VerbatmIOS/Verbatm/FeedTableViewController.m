@@ -13,7 +13,7 @@
 #import "ProfileVC.h"
 #import "UtilityFunctions.h"
 #import "Icons.h"
-
+#import "VerbatmNavigationController.h"
 
 @interface FeedTableViewController () <FeedCellDelegate>
 
@@ -48,6 +48,7 @@
 -(void)viewWillAppear:(BOOL)animated{
 	[super viewWillAppear:animated];
 	[self.navigationController setNavigationBarHidden:NO];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarStyleClearWithTextColor:[UIColor whiteColor]];
 	[self.delegate showTabBar: NO];
 }
 
