@@ -168,9 +168,10 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 }
 
 -(void) moreInfoButtonTapped {
-	CGRect offScreenFrame = CGRectMake(0.f, HEADER_SIZE, self.view.frame.size.width, 1.f);
-	CGRect onScreenFrame = CGRectMake(0.f, HEADER_SIZE, self.view.frame.size.width,
-									  self.view.frame.size.height - HEADER_SIZE);
+	CGFloat yPos = HEADER_SIZE;
+	CGFloat height = self.view.frame.size.height - yPos;
+	CGRect offScreenFrame = CGRectMake(0.f, yPos - height, self.view.frame.size.width, height);
+	CGRect onScreenFrame = CGRectMake(0.f, yPos, self.view.frame.size.width, height);
 	if (!_moreInfoView) {
 		self.moreInfoView = [[ProfileMoreInfoView alloc] initWithFrame:onScreenFrame
 												   andNumFollowers:self.channel.parseChannelObject[CHANNEL_NUM_FOLLOWS]
@@ -180,8 +181,10 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 		self.moreInfoView.frame = offScreenFrame;
 		[self.view addSubview: self.moreInfoView];
 	}
+	[self.view bringSubviewToFront: self.moreInfoView];
+	[self.view bringSubviewToFront: self.profileHeaderView];
 	self.moreInfoViewOnScreen = !self.moreInfoViewOnScreen;
-	[UIView animateWithDuration:1.f animations:^{
+	[UIView animateWithDuration:0.5f animations:^{
 		if (self.moreInfoViewOnScreen) {
 			self.moreInfoView.frame = onScreenFrame;
 		} else {

@@ -35,8 +35,6 @@
 @property (nonatomic) PFObject * postObject;
 @property (nonatomic) CommentingKeyboardToolbar * commentingKeyboard;
 
-@property (nonatomic) UIView * navBar;
-
 @property (nonatomic) UIActivityIndicatorView *loadMoreSpinner;
 @property (nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic) NSMutableArray * channelsToDisplay;
@@ -102,11 +100,6 @@
 
 -(void)viewDidAppear:(BOOL)animated{
 	[super viewDidAppear:animated];
-	if(self.navBar) {
-		[self.view bringSubviewToFront:self.navBar];
-	} else {
-		[self setTableViewHeader];
-	}
 }
 
 #pragma mark - Present List -
@@ -124,15 +117,11 @@
 		[self.loadMoreSpinner stopAnimating];
 		[self.refreshControl endRefreshing];
 		[self.tableView reloadData];
-		if(self.navBar)[self.view bringSubviewToFront:self.navBar];
 	}];
 }
 
 -(void)viewDidLayoutSubviews{
 	[super viewDidLayoutSubviews];
-	if(self.navBar){
-		[self.view bringSubviewToFront:self.navBar];
-	}
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -237,8 +226,7 @@
         Comment * comment = [self.commentObjectList objectAtIndex:objectIndex];
         return [ChannelOrUsernameCV getHeightForCellFromCommentObject:comment];
     }
-    
-    
+
     return CHANNEL_USER_LIST_CELL_HEIGHT;
 }
 
@@ -314,57 +302,8 @@
 	}
 }
 
-
-// NOT IN USE
--(void)presentAllVerbatmChannels{
-	//self.presentAllChannels = YES;
-	[Channel_BackendObject getAllChannelsWithCompletionBlock:^(NSMutableArray * channels) {
-		if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
-		[self.channelsToDisplay addObjectsFromArray:channels];
-		dispatch_async(dispatch_get_main_queue(), ^{
-			self.shouldAnimateViews = YES;
-			[self.tableView reloadData];
-		});
-	}];
-
-}
-
--(void)setTableViewHeader{
-	CGRect navBarFrame = CGRectMake(0.f, -(LIST_BAR_Y_OFFSET + STATUS_BAR_HEIGHT + CUSTOM_CHANNEL_LIST_BAR_HEIGHT), self.view.frame.size.width, STATUS_BAR_HEIGHT+ CUSTOM_CHANNEL_LIST_BAR_HEIGHT);
-
-	CGRect customBarFrame = CGRectMake(0.f, STATUS_BAR_HEIGHT, self.view.frame.size.width, CUSTOM_CHANNEL_LIST_BAR_HEIGHT);
-
-	self.navBar = [[UIView alloc]initWithFrame:navBarFrame];
-	self.navBar.backgroundColor = CHANNEL_LIST_HEADER_BACKGROUND_COLOR;
-
-	CustomNavigationBar * customNavBar =  [[CustomNavigationBar alloc] initWithFrame:customBarFrame andBackgroundColor:CHANNEL_LIST_HEADER_BACKGROUND_COLOR];
-
-	[customNavBar createLeftButtonWithTitle:nil orImage:[UIImage imageNamed:BACK_BUTTON_ICON]];
-
-	NSString * navBarMiddleText = FOLLOWERS_TEXT;
-	if(self.currentListType == LikersList){
-		navBarMiddleText = LIKERS_TEXT;
-	}else if (self.currentListType == FollowingList){
-		navBarMiddleText = FOLLOWING_TEXT;
-	}else if (self.currentListType == CommentList){
-        navBarMiddleText = COMMENTING_TEXT;
-    }
-
-	[customNavBar createMiddleButtonWithTitle:navBarMiddleText blackText:YES largeSize:YES];
-
-	customNavBar.delegate = self;
-	[self.navBar addSubview:customNavBar];
-	[self.navBar addShadowToView];
-	[self.view addSubview:self.navBar];
-	[self.view bringSubviewToFront:self.navBar];
-}
-
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-	return [[CustomNavigationBar alloc] initWithFrame:self.navBar.frame andBackgroundColor:[UIColor whiteColor]];;
-}
-
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-	return 0.f;
+	return 80.f;
 }
 
 // Exiting view
@@ -372,26 +311,16 @@
 	[self.presentingViewController dismissViewControllerAnimated:YES completion:^{}];
 }
 
--(UILabel *) getHeaderTitleForViewWithText:(NSString *) text{
-
-	CGRect labelFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width + 10, USER_CELL_VIEW_HEIGHT);
-	UILabel * titleLabel = [[UILabel alloc] initWithFrame:labelFrame];
-	titleLabel.backgroundColor = [UIColor whiteColor];
-
-	NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
-	paragraphStyle.alignment = NSTextAlignmentCenter;
-
-	NSDictionary * informationAttribute = @{NSForegroundColorAttributeName:
-												[UIColor clearColor],
-											NSFontAttributeName:
-												[UIFont fontWithName:INFO_LIST_HEADER_FONT size:INFO_LIST_HEADER_FONT_SIZE],
-											NSParagraphStyleAttributeName:paragraphStyle};
-
-	NSAttributedString * titleAttributed = [[NSAttributedString alloc] initWithString:text attributes:informationAttribute];
-
-	[titleLabel setAttributedText:titleAttributed];
-
-	return titleLabel;
+-(NSString*) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
+	NSString * navBarMiddleText = FOLLOWERS_TEXT;
+	if(self.currentListType == LikersList){
+		navBarMiddleText = LIKERS_TEXT;
+	}else if (self.currentListType == FollowingList){
+		navBarMiddleText = FOLLOWING_TEXT;
+	}else if (self.currentListType == CommentList){
+		navBarMiddleText = COMMENTING_TEXT;
+	}
+	return navBarMiddleText;
 }
 
 #pragma mark - Table view data source
@@ -407,18 +336,6 @@
     return (self.channelsToDisplay.count + self.presentAllChannels);
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	[scrollView bringSubviewToFront:self.navBar];
-    CGRect newNavBarFrame = CGRectMake(0.f, scrollView.contentOffset.y, self.navBar.frame.size.width, self.navBar.frame.size.height);;
-    if(self.currentListType == CommentList){
-        CGFloat navBar_CommentBarDiff = self.commentingKeyboard.frame.origin.y - self.navBar.frame.origin.y;
-        self.commentingKeyboard.frame = CGRectMake(0.f, newNavBarFrame.origin.y + navBar_CommentBarDiff, self.commentingKeyboard.frame.size.width, self.commentingKeyboard.frame.size.height);
-    }
-    self.navBar.frame = newNavBarFrame;
-    
-
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSString *identifier = [NSString stringWithFormat:@"cell,%ld", (long)indexPath.row];
 	ChannelOrUsernameCV *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
@@ -431,24 +348,16 @@
 	}
 
 	if(self.presentAllChannels && indexPath.row == 0) {
-		
         [cell setHeaderTitle];
-        
     } else if(self.commentObjectList) {
-        
         NSInteger objectIndex = indexPath.row;
         Comment * comment = [self.commentObjectList objectAtIndex:objectIndex];
         [cell presentComment:comment];
-        
     } else {
-		
         NSInteger objectIndex = self.presentAllChannels ? (indexPath.row - 1) : indexPath.row;
 		Channel *channel = [self.channelsToDisplay objectAtIndex:objectIndex];
 		[cell presentChannel:channel];
-        
 	}
-    
-	if(self.navBar)[self.view bringSubviewToFront:self.navBar];
 	return cell;
 }
 

@@ -56,7 +56,7 @@
 -(void) moreInfoButtonTapped {
 	self.moreInfoButtonSelected = !self.moreInfoButtonSelected;
 	if (self.moreInfoButtonSelected) {
-		self.moreInfoButtonBorder = [self.moreInfoButton addBottomBorderWithColor:[UIColor whiteColor] andWidth:2.f];
+		self.moreInfoButtonBorder = [self.moreInfoButton addBottomBorderWithColor:[UIColor whiteColor] andWidth:1.f];
 	} else {
 		[self.moreInfoButtonBorder removeFromSuperlayer];
 		self.moreInfoButtonBorder = nil;

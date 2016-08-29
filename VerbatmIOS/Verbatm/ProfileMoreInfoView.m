@@ -24,9 +24,9 @@
 #define FOLLOW_BUTTON_WIDTH 100.f
 #define FOLLOW_BUTTON_Y_POS 20.f
 
-#define DESCRIPTION_Y_POS (FOLLOW_BUTTON_Y_POS + FOLLOW_BUTTON_HEIGHT + 10.f)
-#define DESCRIPTION_FONT_SIZE 18.f
-#define DESCRIPTION_X_OFFSET 20.f
+#define DESCRIPTION_Y_POS (FOLLOW_BUTTON_Y_POS + FOLLOW_BUTTON_HEIGHT + 20.f)
+#define DESCRIPTION_FONT_SIZE 16.f
+#define DESCRIPTION_X_OFFSET 10.f
 
 @end
 
@@ -36,7 +36,8 @@
 			  andNumFollowing:(NSNumber*)numFollowing andDescription:(NSString*)description {
 	self = [super initWithFrame:frame];
 	if (self) {
-		self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.8];
+		self.clipsToBounds = YES;
+		self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.85];
 		self.numFollowersLabel.text = numFollowers.stringValue;
 		self.numFollowingLabel.text = numFollowing.stringValue;
 		self.blogDescription.text = description;
