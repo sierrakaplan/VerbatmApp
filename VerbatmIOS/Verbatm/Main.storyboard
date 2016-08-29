@@ -408,7 +408,7 @@
         <!--Profile-->
         <scene sceneID="Apv-cW-9iI">
             <objects>
-                <viewController storyboardIdentifier="profile_vc" title="Profile" id="3TM-NK-3ij" customClass="ProfileVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="profile_vc" title="Profile" id="3TM-NK-3ij" customClass="CurrentUserProfileVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="yT8-e9-31R">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -439,10 +439,10 @@
             </objects>
             <point key="canvasLocation" x="-3607" y="-1005"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Verbatm Navigation Controller-->
         <scene sceneID="eLV-H8-IEZ">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="oCF-PC-z2o" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="oCF-PC-z2o" customClass="VerbatmNavigationController" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="zsx-Ws-hd9">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -543,8 +543,8 @@
         <image name="verbatm_logo_text" width="364" height="43"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Q88-7E-gAn"/>
         <segue reference="Ju6-jE-1sM"/>
+        <segue reference="HDC-3z-u8g"/>
         <segue reference="BFi-wQ-plH"/>
     </inferredMetricsTieBreakers>
 </document>

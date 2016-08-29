@@ -23,6 +23,7 @@
 #import "ParseBackendKeys.h"
 
 #import "ProfileVC.h"
+#import "ProfileHeaderViewOld.h"
 #import "ProfileHeaderView.h"
 #import "PostListVC.h"
 #import "PostCollectionViewCell.h"
@@ -54,7 +55,8 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 @property (strong, nonatomic) PostListVC * postListVC;
 
-@property (nonatomic, strong) ProfileHeaderView *profileHeaderView;
+//@property (nonatomic, strong) ProfileHeaderViewOld *profileHeaderView;
+@property (nonatomic) ProfileHeaderView *profileHeaderView;
 @property (nonatomic) BOOL headerViewOnScreen;
 
 @property (nonatomic) UIView * darkScreenCover;
@@ -68,7 +70,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 @property (nonatomic, strong) NSProgress* publishingProgress;
 @property (nonatomic, strong) UIProgressView* progressBar;
 
-
 @property (nonatomic) CGRect  postListSmallFrame;
 @property (nonatomic) CGRect  postListLargeFrame;
 @property (nonatomic) CGSize  cellSmallFrameSize;
@@ -77,7 +78,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 #define CELL_SPACING_SMALL 5.f
 #define CELL_SPACING_LARGE 0.3
-#define POSTLISTVC_ISNOT_CREATED_YET (!_postListVC)
+#define HEADER_SIZE (self.view.frame.size.height / 3.f)
 
 @end
 
@@ -91,7 +92,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	[self loadContentToPostList];
 }
 
--(void)updateDateOfLastPostSeen{
+-(void)updateDateOfLastPostSeen {
     if(!self.isCurrentUserProfile && self.profileInFeed && [self.channel dateOfMostRecentChannelPost]){
         NSDate * finalDate = [self.postListVC creationDateOfLastPostObjectInPostList];
         if(finalDate){
@@ -146,7 +147,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 -(void)presentUserList:(ListType) listType{
 	UserAndChannelListsTVC *userList = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
 	[userList presentList:listType forChannel:self.channel orPost:nil];
-	[self presentViewController:userList animated:YES completion:nil];
+	[self.navigationController pushViewController:userList animated:YES];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -160,19 +161,17 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 		self.profileHeaderView = nil;
 	}
 
-	CGRect frame = self.view.bounds;
-	PFUser* user = self.isCurrentUserProfile ? nil : self.channel.channelCreator;
-
-	self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andUser:user
-														   andChannel:self.channel
-														 inProfileTab:self.isProfileTab inFeed:self.profileInFeed];
-
+	CGRect frame = CGRectMake(0.f, 0.f, self.view.frame.size.width, HEADER_SIZE);
+	self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andChannel:self.channel];
 	self.profileHeaderView.delegate = self;
 	[self.view addSubview: self.profileHeaderView];
 	[self.view sendSubviewToBack:self.profileHeaderView];
 	self.headerViewOnScreen = YES;
 }
 
+-(void) moreInfoButtonTapped {
+	//todo:
+}
 
 #pragma mark - Profile Photo -
 
@@ -202,7 +201,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	for(PHAsset * asset in assetArray) {
 		if(asset.mediaType==PHAssetMediaTypeImage) {
 			@autoreleasepool {
-				[self getImageFromAsset:asset];
+//				[self getImageFromAsset:asset];
 			}
 		}
 	}
@@ -213,17 +212,18 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	}];
 }
 
--(void) getImageFromAsset: (PHAsset *) asset {
-	PHImageRequestOptions *options = [PHImageRequestOptions new];
-	options.synchronous = YES;
-	[self.imageManager requestImageForAsset:asset targetSize:self.view.frame.size contentMode:PHImageContentModeAspectFill
-									options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
-										// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
-										dispatch_async(dispatch_get_main_queue(), ^{
-											[self.profileHeaderView setCoverPhotoImage:image];
-										});
-									}];
-}
+//todo: in edit mode
+//-(void) getImageFromAsset: (PHAsset *) asset {
+//	PHImageRequestOptions *options = [PHImageRequestOptions new];
+//	options.synchronous = YES;
+//	[self.imageManager requestImageForAsset:asset targetSize:self.view.frame.size contentMode:PHImageContentModeAspectFill
+//									options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
+//										// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+//										dispatch_async(dispatch_get_main_queue(), ^{
+//											[self.profileHeaderView setCoverPhotoImage:image];
+//										});
+//									}];
+//}
 
 -(void)addClearScreenGesture{
 	UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clearScreen:)];
@@ -247,9 +247,9 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 }
 
 -(void)showWhoCommentedOnPost:(PFObject *) post{
-    UserAndChannelListsTVC *likersListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
-    [likersListVC presentList:CommentList forChannel:nil orPost:post];
-    [self presentViewController:likersListVC animated:YES completion:nil];
+    UserAndChannelListsTVC *commentListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    [commentListVC presentList:CommentList forChannel:nil orPost:post];
+    [self.navigationController pushViewController:commentListVC animated:YES];
 }
 
 // Something in profile was reblogged so contains a header allowing user to navigate
@@ -259,14 +259,14 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
         //if the channel belongs to this profile then simply remove the large postlist view
         [self exitCurrentPostView];
     } else {
+		//todo: push segue
         ProfileVC *  userProfile = [[ProfileVC alloc] init];
 		BOOL isCurrentUserChannel = [[channel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
 		userProfile.isCurrentUserProfile = isCurrentUserChannel;
         userProfile.isProfileTab = NO;
         userProfile.ownerOfProfile = channel.channelCreator;
         userProfile.channel = channel;
-        [self presentViewController:userProfile animated:YES completion:^{
-        }];
+        [self.navigationController pushViewController:userProfile animated:YES];
     }
 }
 
@@ -349,6 +349,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 #pragma mark - Profile Nav Bar Delegate Methods -
 
 -(void) settingsButtonClicked {
+	//todo: push segue with back button
 	[self performSegueWithIdentifier:SETTINGS_PAGE_MODAL_SEGUE sender:self];
 }
 
@@ -412,7 +413,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 -(void)postsFound{
 //	[self removePromptToPost];
     if(!self.isCurrentUserProfile){
-        [self.profileHeaderView removeProfileConstructionNotification];
+//        [self.profileHeaderView removeProfileConstructionNotification];
     }
 }
 
@@ -429,7 +430,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
     if(self.isCurrentUserProfile){
 //        [self createPromptToPost];
     }else{
-        [self.profileHeaderView presentProfileUnderConstructionNotification];
+//        [self.profileHeaderView presentProfileUnderConstructionNotification];
     }
 	if (self.inFullScreenMode) {
 		[self exitCurrentPostView];
@@ -579,30 +580,26 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	return _publishingProgressView;
 }
 
--(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
+-(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change
+					   context:(void *)context {
 	if (object == self.publishingProgress && [keyPath isEqualToString:@"completedUnitCount"] ) {
 		[self.progressBar setProgress:self.publishingProgress.fractionCompleted animated:YES];
 	}
 }
 
 -(PostListVC *) postListVC{
-	if(!_postListVC){
-		CGFloat postHeight = self.view.frame.size.height - (self.view.frame.size.width - SMALL_SQUARE_LIKESHAREBAR_HEIGHT);
-		CGFloat postWidth = (self.view.frame.size.width / self.view.frame.size.height ) * postHeight;//same ratio as screen
-        CGFloat postListSmallY = self.view.frame.size.height - postHeight - ((self.isCurrentUserProfile) ? (TAB_BAR_HEIGHT + 1.f): 1.f) - SMALL_SQUARE_LIKESHAREBAR_HEIGHT;
-        
+	if(!_postListVC) {
+		self.postListLargeFrame = self.view.bounds;
+		self.postListSmallFrame = CGRectMake(0.f, HEADER_SIZE,
+											 self.view.frame.size.width, self.view.frame.size.height -
+											 HEADER_SIZE - TAB_BAR_HEIGHT);
+		CGFloat postHeight = self.postListSmallFrame.size.height - SMALL_SQUARE_LIKESHAREBAR_HEIGHT;
+		CGFloat postWidth = (self.view.frame.size.width / self.view.frame.size.height ) * postHeight;
 		self.cellSmallFrameSize = CGSizeMake(postWidth, postHeight);
-		UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
-		flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-		[flowLayout setMinimumInteritemSpacing:CELL_SPACING_SMALL];
-		[flowLayout setMinimumLineSpacing:CELL_SPACING_SMALL];
-		[flowLayout setItemSize:self.cellSmallFrameSize];
-		_postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
+
+		_postListVC = [[PostListVC alloc] initWithCollectionViewLayout:[self getFlowLayout]];
 		_postListVC.postListDelegate = self;
 		_postListVC.inSmallMode = YES;
-		self.postListSmallFrame = CGRectMake(0.f,postListSmallY,
-											 self.view.frame.size.width, postHeight);
-		self.postListLargeFrame = self.view.bounds;
 		[_postListVC.view setFrame:self.postListSmallFrame];
         [self.view addSubview:_postListVC.view];
     }

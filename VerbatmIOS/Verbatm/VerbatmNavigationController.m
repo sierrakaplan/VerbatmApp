@@ -13,7 +13,7 @@
 
 -(void) viewDidLoad {
 	[self formatNavigationBar];
-	[self setNavigationBarHidden:YES animated:YES];
+	[self setNavigationBarHidden:YES animated:NO];
 }
 
 -(void) setNavigationBarHidden:(BOOL)navigationBarHidden {
@@ -31,6 +31,13 @@
 	[self.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
 																	 [UIColor whiteColor], NSForegroundColorAttributeName,
 																	 [UIFont fontWithName:BOLD_FONT size:21.0], NSFontAttributeName, nil]];
+}
+
+-(void) setNavigationBarStyleClearWithTextColor: (UIColor*)textColor {
+	[self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+	self.navigationController.navigationBar.shadowImage = [UIImage new];
+	self.navigationController.navigationBar.translucent = YES;
+	self.navigationController.navigationBar.tintColor = textColor;
 }
 
 -(UIStatusBarStyle) preferredStatusBarStyle {

@@ -264,17 +264,19 @@
 
 -(void)presentProfileForUser:(PFUser *) user
 			withStartChannel:(Channel *) startChannel{
-	if(![[user objectId] isEqualToString:[[PFUser currentUser] objectId]]){
+	if(![[user objectId] isEqualToString:[[PFUser currentUser] objectId]]) {
+		//todo: push segue
 		ProfileVC *  userProfile = [[ProfileVC alloc] init];
 		BOOL isCurrentUserChannel = [[startChannel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
 		userProfile.isCurrentUserProfile = isCurrentUserChannel;
 		userProfile.isProfileTab = NO;
 		userProfile.ownerOfProfile = user;
 		userProfile.channel = startChannel;
-		[self presentViewController:userProfile animated:YES completion:nil];
+		[self.navigationController pushViewController:userProfile animated:YES];
 	}
 }
 
+//todo: fix this
 -(void) refreshDataForListType:(ListType)listType forChannel:(Channel *)channel orPost:(PFObject *)post
 		   withCompletionBlock:(void(^)(void))block {
 	switch (listType) {
