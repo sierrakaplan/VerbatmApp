@@ -34,7 +34,7 @@
 
 -(void) viewDidLoad {
 	self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-	self.view.backgroundColor = [UIColor clearColor];
+	self.view.backgroundColor = [UIColor whiteColor];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
