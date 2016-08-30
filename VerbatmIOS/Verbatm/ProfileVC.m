@@ -99,7 +99,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-	[self setNeedsStatusBarAppearanceUpdate];
 	if (self.navigationController) {
 		[(MasterNavigationVC*)self.tabBarController showTabBar:!self.inFullScreenMode];
 		[self.navigationController setNavigationBarHidden: self.inFullScreenMode];
@@ -121,7 +120,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 -(void)viewDidAppear:(BOOL)animated{
 	[super viewDidAppear:animated];
-
+	[self setNeedsStatusBarAppearanceUpdate];
 }
 
 -(BOOL) prefersStatusBarHidden {

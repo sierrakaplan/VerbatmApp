@@ -14,6 +14,8 @@
 #import <Parse/PFQuery.h>
 #import "ProfileVC.h"
 #import "Icons.h"
+#import "VerbatmNavigationController.h"
+
 #define SEARCH_RESULTS_LIMIT 50
 
 @interface SearchResultsVC ()
@@ -32,6 +34,11 @@
 
 -(void) viewDidLoad {
 	self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+	self.view.backgroundColor = [UIColor clearColor];
+}
+
+-(void) viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
@@ -51,15 +58,15 @@
 }
 
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
-	searchController.searchBar.placeholder = @"Search for blog names or usernames";
+	searchController.searchBar.placeholder = @"Search for usernames";
+	searchController.searchBar.barTintColor = [UIColor whiteColor];
+	searchController.searchBar.tintColor = [UIColor blueColor];
 	//set frame for activity indicator
 	NSString *searchText = searchController.searchBar.text;
 	if (!searchText.length) {
-		searchController.searchBar.tintColor = [UIColor whiteColor];
 		return;
 	}
 	[self setNeedsStatusBarAppearanceUpdate];
-	searchController.searchBar.tintColor = [UIColor blueColor];
 	if (![self.spinner isAnimating]) {
 		UITextField *searchField = [searchController.searchBar valueForKey:@"_searchField"];
 		self.spinner.center = CGPointMake(searchField.frame.size.width - self.spinner.frame.size.width - 10.f,
@@ -155,7 +162,9 @@
 	userProfile.isProfileTab = NO;
 	userProfile.ownerOfProfile = channel.channelCreator;
 	userProfile.channel = channel;
-	[self.navigationController pushViewController:userProfile animated:YES];
+	userProfile.verbatmNavigationController = self.verbatmNavigationController;
+	userProfile.verbatmTabBarController = self.verbatmTabBarController;
+	[self.verbatmNavigationController pushViewController:userProfile animated:YES];
 }
 
 @end
