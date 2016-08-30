@@ -266,7 +266,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 
 //the view controllers that will be tabbed
 -(void)createViewControllers {
-
 	self.discoverNavigationController = [self.storyboard instantiateViewControllerWithIdentifier:
 										 DISCOVER_NAVIGATION_CONTROLLER_ID];
 	self.discoverVC = self.discoverNavigationController.viewControllers[0];
@@ -399,7 +398,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 	if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER] ||
 		[segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ONBOARDING_TO_MASTER]) {
 		if ([[PublishingProgressManager sharedInstance] currentlyPublishing]) {
-			[self setSelectedViewController:self.profileVC];
+			[self setSelectedViewController: self.profileNavigationController];
 		}
 		[[Analytics getSharedInstance] endOfADKSession];
 	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FACEBOOK_LOGIN_TO_MASTER] ||
@@ -422,7 +421,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 
 
 -(void) showTabBar:(BOOL)show {
-	if (show) {
+	if (show && self.tabBarHidden) {
 		self.tabBarHidden = NO;
         if (self.notificationIndicatorPresent) {
             [self showIndicator];
@@ -432,7 +431,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 			[self setNeedsStatusBarAppearanceUpdate];
 			self.tabBar.frame = self.tabBarFrameOnScreen;
 		}];
-	} else {
+	} else if (!show && !self.tabBarHidden) {
 		self.tabBarHidden = YES;
         if(self.notificationIndicatorPresent){
             [self removeIndicator];

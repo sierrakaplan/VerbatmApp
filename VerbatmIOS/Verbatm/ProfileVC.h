@@ -13,13 +13,18 @@
 #import <Parse/PFUser.h>
 #import "Channel.h"
 
+@class VerbatmNavigationController;
+@class MasterNavigationVC;
+
 @protocol ProfileVCDelegate <NSObject>
 
 @optional
-
--(void) showNavBar:(BOOL)show;
--(void) pushViewController: (UIViewController*)viewController;
+//
+//-(void) showTabBar:(BOOL)show;
+//-(void) showNavBar:(BOOL)show;
+//-(void) pushViewController: (UIViewController*)viewController;
 -(void) userCreateFirstPost;
+
 @end
 
 @interface ProfileVC : UIViewController
@@ -27,6 +32,10 @@
 @property (nonatomic) BOOL profileInFeed;
 
 @property (weak, nonatomic) id<ProfileVCDelegate> delegate;
+
+// Only used in feed list
+@property (nonatomic) VerbatmNavigationController *verbatmNavigationController;
+@property (nonatomic) MasterNavigationVC *verbatmTabBarController;
 
 @property (weak, nonatomic) PFUser* ownerOfProfile;
 @property (nonatomic) Channel* channel; 

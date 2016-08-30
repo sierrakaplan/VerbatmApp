@@ -10,6 +10,8 @@
 #import "Channel.h"
 #import "ProfileVC.h"
 
+@class VerbatmNavigationController;
+@class MasterNavigationVC;
 
 @protocol FeedCellDelegate <NSObject>
 
@@ -22,6 +24,9 @@
 @interface FeedTableCell : UITableViewCell
 
 @property (nonatomic, weak) id<FeedCellDelegate> delegate;
+@property (nonatomic) VerbatmNavigationController *navigationController;
+@property (nonatomic) MasterNavigationVC *tabBarController;
+@property (nonatomic) ProfileVC * currentProfile;
 
 -(void)presentProfileForChannel:(Channel *) channel;
 

@@ -207,6 +207,10 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 	[super viewWillAppear: animated];
 }
 
+-(void) viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
+}
+
 -(void) initializeVariables {
 	self.pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
 	UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]
@@ -1834,7 +1838,7 @@ andSaveInUserDefaults:(BOOL)save {
 	self.shareLinkView = nil;
 }
 
--(void) continueToPublish{
+-(void) continueToPublish {
 
 	[[PublishingProgressManager sharedInstance] publishPostToChannel:self.userChannel andFacebook:TRUE withCaption:self.fbCaption withPinchViews:self.pinchViewsToPublish
 												 withCompletionBlock:^(BOOL isAlreadyPublishing, BOOL noNetwork) {

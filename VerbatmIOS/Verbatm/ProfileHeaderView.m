@@ -47,7 +47,9 @@
 		self.moreInfoButtonSelected = NO;
 		self.backgroundColor = [UIColor blackColor];
 		[channel loadCoverPhotoWithCompletionBlock:^(UIImage *coverPhoto, NSData *data) {
-			[self.coverPhotoImageView setImage: coverPhoto];
+			if (coverPhoto) {
+				[self.coverPhotoImageView setImage: coverPhoto];
+			}
 		}];
 		[self addSubview: self.coverPhotoImageView];
 		[channel getChannelOwnerNameWithCompletionBlock:^(NSString *username) {
@@ -63,11 +65,8 @@
 	self.moreInfoButtonSelected = !self.moreInfoButtonSelected;
 	if (self.moreInfoButtonSelected) {
 		self.moreInfoButton.backgroundColor = [UIColor colorWithWhite:1.f alpha:0.3];
-//		self.moreInfoButtonBorder = [self.moreInfoButton addBottomBorderWithColor:[UIColor whiteColor] andWidth:1.f];
 	} else {
 		self.moreInfoButton.backgroundColor = [UIColor clearColor];
-//		[self.moreInfoButtonBorder removeFromSuperlayer];
-//		self.moreInfoButtonBorder = nil;
 	}
 	[self.delegate moreInfoButtonTapped];
 }

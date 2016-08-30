@@ -23,9 +23,15 @@
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
-	[self.navigationController setNavigationBarHidden:NO];
-	[(VerbatmNavigationController*)self.navigationController setNavigationBarStyleClearWithTextColor:[UIColor whiteColor]];
 	[self setNavigationItem];
+}
+
+-(void) viewWillAppear:(BOOL)animated {
+	[super viewWillAppear: animated];
+}
+
+-(void) viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
 }
 
 -(void) setNavigationItem {

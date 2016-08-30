@@ -55,7 +55,7 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-	[self formatNavigationBar];
+	[self formatNavigationItem];
 	[self.backgroundImageView setFrame:self.view.bounds];
 	[self.view addSubview: self.loginButton];
 	[self.view addSubview: self.signUpButton];
@@ -64,15 +64,18 @@
 	[self.view sendSubviewToBack:self.backgroundImageView];
 }
 
+-(void) viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
+	[self.navigationController setNavigationBarHidden:NO];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundClear];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarTextColor:[UIColor whiteColor]];
+}
+
 -(BOOL) prefersStatusBarHidden {
 	return YES;
 }
 
--(void) formatNavigationBar {
-	[(VerbatmNavigationController*)self.navigationController setNavigationBarStyleClearWithTextColor:[UIColor whiteColor]];
-	[self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-																	 [UIColor whiteColor], NSForegroundColorAttributeName,
-																	 [UIFont fontWithName:BOLD_FONT size:21.0], NSFontAttributeName, nil]];
+-(void) formatNavigationItem {
 	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 }
 
