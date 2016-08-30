@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+@class VerbatmNavigationController;
+@class MasterNavigationVC;
+
 @interface SearchResultsVC : UITableViewController <UISearchResultsUpdating>
+
+@property (nonatomic) VerbatmNavigationController *verbatmNavigationController;
+@property (nonatomic) MasterNavigationVC *verbatmTabBarController;
 
 @end

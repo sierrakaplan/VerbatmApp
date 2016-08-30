@@ -29,7 +29,6 @@ typedef enum{
 	LikersList = 0,
     FollowersList = 1,
     FollowingList = 2,
-    CommentList = 3
 } ListType;
 
 @interface UserAndChannelListsTVC : UITableViewController

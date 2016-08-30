@@ -52,13 +52,20 @@
 -(void)viewWillAppear:(BOOL)animated{
 	[super viewWillAppear:animated];
 	[self.navigationController setNavigationBarHidden:NO];
-	[(VerbatmNavigationController*)self.navigationController setNavigationBarStyleClearWithTextColor:[UIColor whiteColor]];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundClear];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarTextColor:[UIColor whiteColor]];
 	if(self.startIndex >= 0) {
 		NSIndexPath * indexPath = [NSIndexPath indexPathForRow:self.startIndex inSection:0];
 		[self.tableView scrollToRowAtIndexPath:indexPath
 							  atScrollPosition:UITableViewScrollPositionTop
 									  animated:NO];
 	}
+	NSArray * visibleCell = [self.tableView visibleCells];
+	if(visibleCell && visibleCell.count) {
+		FeedTableCell *cell = [visibleCell firstObject];
+		[cell.currentProfile viewWillAppear:animated];
+	}
+
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -218,6 +225,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath{
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	FeedTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FeedTableCell" forIndexPath:indexPath];
 	cell.delegate = self;
+	cell.navigationController = (VerbatmNavigationController*)self.navigationController;
+	cell.tabBarController = (MasterNavigationVC*)self.tabBarController;
 	if(self.nextProfileToPresent && indexPath.row == self.nextProfileIndex){
 		[cell setProfileAlreadyLoaded:self.nextProfileToPresent];
 	} else {

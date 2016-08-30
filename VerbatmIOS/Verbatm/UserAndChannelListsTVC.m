@@ -30,20 +30,18 @@
 
 #import "QuartzCore/QuartzCore.h"
 
+#import "MasterNavigationVC.h"
 #import "VerbatmNavigationController.h"
 
-@interface UserAndChannelListsTVC () <CustomNavigationBarDelegate, CommentingKeyboardToolbarProtocol>
+@interface UserAndChannelListsTVC () <CustomNavigationBarDelegate>
 
-@property (nonatomic) Channel * channelOnDisplay;
-@property (nonatomic) PFObject * postObject;
-@property (nonatomic) CommentingKeyboardToolbar * commentingKeyboard;
+@property (nonatomic) Channel *channelOnDisplay;
+@property (nonatomic) PFObject *postObject;
 
 @property (nonatomic) UIActivityIndicatorView *loadMoreSpinner;
 @property (nonatomic) UIRefreshControl *refreshControl;
-@property (nonatomic) NSMutableArray * channelsToDisplay;
-@property (nonatomic) NSMutableArray * usersToDisplay;//catch all array -- can be used for any of the usecases to store a list of users
-
-@property (nonatomic) NSMutableArray * commentObjectList;
+@property (nonatomic) NSMutableArray *channelsToDisplay;
+@property (nonatomic) NSMutableArray *usersToDisplay;//catch all array -- can be used for any of the usecases to store a list of users
 
 @property (nonatomic) BOOL shouldDisplayFollowers;
 
@@ -54,19 +52,11 @@
 
 @property (nonatomic) BOOL shouldAnimateViews;
 
-@property (nonatomic) UIColor *oldNavigationBarTintColor;
-@property (nonatomic) UIColor *oldNavigationBarBackground;
-@property (nonatomic) BOOL oldNavigationBarHidden;
 
 #define CHANNEL_CELL_ID @"channel_cell_id"
 #define LIKERS_TEXT @"Likes"
 #define FOLLOWING_TEXT @"Following"
-#define COMMENTING_TEXT @"Comments"
 #define FOLLOWERS_TEXT @"Followers"
-
-
-#define COMMENTING_KEYBOARD_HEIGHT 50.f
-#define KEYBOARD_BAR_START_YPOS (self.view.frame.size.height - (COMMENTING_KEYBOARD_HEIGHT))
 
 @end
 
@@ -95,8 +85,6 @@
 		navBarMiddleText = LIKERS_TEXT;
 	}else if (self.currentListType == FollowingList){
 		navBarMiddleText = FOLLOWING_TEXT;
-	}else if (self.currentListType == CommentList){
-		navBarMiddleText = COMMENTING_TEXT;
 	}
 	self.navigationItem.title = navBarMiddleText;
 }
@@ -104,13 +92,10 @@
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	[self setNeedsStatusBarAppearanceUpdate];
-	self.oldNavigationBarHidden = self.navigationController.navigationBarHidden;
+	[(MasterNavigationVC*) self.tabBarController showTabBar:NO];
 	[self.navigationController setNavigationBarHidden:NO];
-	self.oldNavigationBarTintColor = self.navigationController.navigationBar.tintColor;
-	self.navigationController.navigationBar.tintColor = [UIColor blackColor];
-	[(VerbatmNavigationController*)self.navigationController setNavigationTitleColor: [UIColor blackColor]];
-	self.oldNavigationBarBackground = self.navigationController.navigationBar.backgroundColor;
-	self.navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundColor:[UIColor whiteColor]];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarTextColor:[UIColor blackColor]];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -119,12 +104,6 @@
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
-	if (self.isMovingFromParentViewController) {
-		[self.navigationController setNavigationBarHidden:self.oldNavigationBarHidden];
-	}
-	self.navigationController.navigationBar.tintColor = self.oldNavigationBarTintColor;
-	[(VerbatmNavigationController*)self.navigationController setNavigationTitleColor: self.oldNavigationBarTintColor];
-	self.navigationController.navigationBar.backgroundColor = self.oldNavigationBarBackground;
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -187,88 +166,32 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	[self presentList:self.currentListType forChannel:self.channelOnDisplay orPost:self.postObject];
 }
 
--(void)putCommentingKeyboardBarOnScreen{
-    self.commentingKeyboard = [[CommentingKeyboardToolbar alloc] initWithFrame:CGRectMake(0.f, KEYBOARD_BAR_START_YPOS,
-																						  self.view.frame.size.width, COMMENTING_KEYBOARD_HEIGHT)];
-    self.commentingKeyboard.delegate = self;
-    [self.tableView addSubview:self.commentingKeyboard];
-    
-    // create hooks for keyboard
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardDidShowOrHide:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardDidShowOrHide:)
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
-}
-
--(void)keyboardDidShowOrHide:(NSNotification *)notification {
-    NSDictionary *userInfo = [notification userInfo];
-    NSTimeInterval animationDuration;
-    UIViewAnimationCurve animationCurve;
-    CGRect keyboardEndFrame;
-    
-    [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
-    [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
-    [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] getValue:&keyboardEndFrame];
-    
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:animationDuration];
-    [UIView setAnimationCurve:animationCurve];
-    
-    
-    CGFloat yPosKeyboardWithTableViewCord = keyboardEndFrame.origin.y + self.tableView.contentOffset.y;
-    
-    CGRect newFrame = self.commentingKeyboard.frame;
-    newFrame.origin.y =  yPosKeyboardWithTableViewCord - (self.commentingKeyboard.frame.size.height);
-    self.commentingKeyboard.frame = newFrame;
-    
-    [UIView commitAnimations];
-}
-
--(void)doneButtonSelectedWithFinalString:(NSString *) commentString{
-    Comment * newComment  = [[Comment alloc] initWithString:commentString andPostObject:self.postObject];
-    [self.commentObjectList addObject:newComment];
-    [self.tableView reloadData];
-}
-
 - (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+	[super didReceiveMemoryWarning];
+	// Dispose of any resources that can be recreated.
 }
 
 #pragma mark - Table View Delegate methods (view customization) -
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-	
-    if(self.currentListType == CommentList){
-        NSInteger objectIndex = indexPath.row;
-        Comment * comment = [self.commentObjectList objectAtIndex:objectIndex];
-        return [ChannelOrUsernameCV getHeightForCellFromCommentObject:comment];
-    }
-
-    return CHANNEL_USER_LIST_CELL_HEIGHT;
+	return CHANNEL_USER_LIST_CELL_HEIGHT;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	if(self.channelsToDisplay && (self.currentListType != CommentList)){
-		//this is some list of channels
+	//this is some list of channels
 
-		NSInteger objectIndex = indexPath.row;
+	NSInteger objectIndex = indexPath.row;
 
-		Channel * channel = [self.channelsToDisplay objectAtIndex:objectIndex];
-		PFUser * user = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
-		[user fetchIfNeededInBackgroundWithBlock:^
-		 (PFObject * _Nullable object, NSError * _Nullable error) {
-			 if(object){
-				 dispatch_async(dispatch_get_main_queue(), ^{
-					 [self presentProfileForUser:(PFUser *)object withStartChannel:channel];
-				 });
-			 }
-		 }];
-	}
+	Channel * channel = [self.channelsToDisplay objectAtIndex:objectIndex];
+	PFUser * user = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
+	[user fetchIfNeededInBackgroundWithBlock:^
+	 (PFObject * _Nullable object, NSError * _Nullable error) {
+		 if(object){
+			 dispatch_async(dispatch_get_main_queue(), ^{
+				 [self presentProfileForUser:(PFUser *)object withStartChannel:channel];
+			 });
+		 }
+	 }];
 }
 
 -(void)presentProfileForUser:(PFUser *) user
@@ -285,7 +208,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	}
 }
 
-//todo: fix this
 -(void) refreshDataForListType:(ListType)listType forChannel:(Channel *)channel orPost:(PFObject *)post
 		   withCompletionBlock:(void(^)(void))block {
 	switch (listType) {
@@ -311,15 +233,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 				block();
 			}];
 			break;
-        } case CommentList: {
-            
-            [Commenting_BackendObject getCommentsForObject:post withCompletionBlock:^(NSArray * parseCommentObjects) {
-                    self.commentObjectList = (parseCommentObjects == nil) ? [[NSMutableArray alloc] init] : [NSMutableArray arrayWithArray:parseCommentObjects];
-                    block();
-                [self putCommentingKeyboardBarOnScreen];
-            }];
-            
-        }
+		}
 	}
 }
 
@@ -334,16 +248,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if(self.currentListType == CommentList) return self.commentObjectList.count;
-    return self.channelsToDisplay.count;
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	if(self.currentListType == CommentList){
-		CGFloat yPos = self.view.frame.size.height - self.commentingKeyboard.frame.size.height;
-		self.commentingKeyboard.frame = CGRectMake(0.f, yPos, self.commentingKeyboard.frame.size.width,
-												   self.commentingKeyboard.frame.size.height);
-	}
+	return self.channelsToDisplay.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -357,13 +262,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 		[cell removeFromSuperview];
 	}
 
-	if(self.commentObjectList) {
-        Comment * comment = [self.commentObjectList objectAtIndex: indexPath.row];
-        [cell presentComment:comment];
-    } else {
 		Channel *channel = [self.channelsToDisplay objectAtIndex: indexPath.row];
 		[cell presentChannel:channel];
-	}
+
 	return cell;
 }
 

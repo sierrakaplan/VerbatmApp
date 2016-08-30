@@ -202,10 +202,6 @@
 		self.progressAccountant.completedUnitCount = 0;
 		self.progressAccountant.totalUnitCount = 0;
 		self.currentlyPublishing = NO;
-		[[PostInProgress sharedInstance] clearPostInProgress];
-		self.currentParsePostObject = nil;
-		self.currentPublishingChannel = nil;
-		self.publishingProgressBackgroundImage = nil;
 		NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_POST_PUBLISHED object:nil userInfo:nil];
 		[[NSNotificationCenter defaultCenter] postNotification: notification];
         [self.externalShareObject storeShareLinkToPost:self.currentParsePostObject withCaption:self.captionToShare withCompletionBlock:^(bool savedSuccessfully, PFObject * postObject) {
@@ -214,6 +210,10 @@
             } else {
                 NSLog(@"Failed to get and save link to post :/");
             }
+			[[PostInProgress sharedInstance] clearPostInProgress];
+			self.currentParsePostObject = nil;
+			self.currentPublishingChannel = nil;
+			self.publishingProgressBackgroundImage = nil;
 			[[UIApplication sharedApplication] endBackgroundTask: self.publishingTask];
 			self.publishingTask = UIBackgroundTaskInvalid;
         }];
