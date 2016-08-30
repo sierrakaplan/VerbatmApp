@@ -81,7 +81,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 #define CELL_SPACING_SMALL 5.f
 #define CELL_SPACING_LARGE 0.3
-#define HEADER_SIZE (self.view.frame.size.height/2.f)
+#define HEADER_SIZE (self.view.frame.size.height * 3.f/7.f)
 
 @end
 

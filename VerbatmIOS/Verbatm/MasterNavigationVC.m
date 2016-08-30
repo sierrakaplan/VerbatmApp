@@ -398,7 +398,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 	if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER] ||
 		[segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ONBOARDING_TO_MASTER]) {
 		if ([[PublishingProgressManager sharedInstance] currentlyPublishing]) {
-			[self setSelectedViewController:self.profileVC];
+			[self setSelectedViewController: self.profileNavigationController];
 		}
 		[[Analytics getSharedInstance] endOfADKSession];
 	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FACEBOOK_LOGIN_TO_MASTER] ||
