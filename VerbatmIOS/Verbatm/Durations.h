@@ -21,7 +21,6 @@
 #define SNAP_ANIMATION_DURATION 0.1f
 
 #define ARTICLE_DISPLAY_REMOVAL_ANIMATION_DURATION 0.4f
-//the amount of space that must be pulled to exit
 #define ARTICLE_DISPLAY_EXIT_EPSILON 60
 
 #pragma mark - Media Dev VC -
@@ -35,12 +34,9 @@
 #define TIME_FOR_SESSION_TO_RESUME_POST_MEDIA_CAPTURE 0.2f
 
 #pragma mark - Content Dev VC -
-//time it take for a new media tile to come to alpha==1 when
-//two pinchviews are pinched apart
 #define REVEAL_NEW_MEDIA_TILE_ANIMATION_DURATION 1.f
-//time it takes to animate a pinch
 #define PINCHVIEW_ANIMATION_DURATION 0.5f
-#define PINCHVIEW_DROP_ANIMATION_DURATION 1.f //the speed at which pinch objects fall into place after gallery
+#define PINCHVIEW_DROP_ANIMATION_DURATION 1.f
 
 #define PINCHVIEW_DELETE_ANIMATION_DURATION 0.3f
 

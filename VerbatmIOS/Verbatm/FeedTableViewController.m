@@ -13,7 +13,7 @@
 #import "ProfileVC.h"
 #import "UtilityFunctions.h"
 #import "Icons.h"
-
+#import "VerbatmNavigationController.h"
 
 @interface FeedTableViewController () <FeedCellDelegate>
 
@@ -40,6 +40,7 @@
 	[self.tableView registerClass:[FeedTableCell class] forCellReuseIdentifier:@"FeedTableCell"];
 	self.view.backgroundColor = [UIColor blackColor];
 	self.tableView.pagingEnabled = YES;
+	self.automaticallyAdjustsScrollViewInsets = NO;
 	self.tableView.allowsSelection = NO;
 	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 	[self setNeedsStatusBarAppearanceUpdate];
@@ -47,10 +48,17 @@
 
 -(void)viewWillAppear:(BOOL)animated{
 	[super viewWillAppear:animated];
+	[self.navigationController setNavigationBarHidden:NO];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarStyleClearWithTextColor:[UIColor whiteColor]];
 }
 
--(void)viewWillDisappear:(BOOL)animated {
+- (void)viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
 
+	if (self.isMovingFromParentViewController || self.isBeingDismissed) {
+		[self.navigationController setNavigationBarHidden:YES];
+		[self.delegate exitProfileList];
+	}
 }
 
 -(UIStatusBarStyle) preferredStatusBarStyle {
@@ -70,15 +78,12 @@
 }
 
 -(void) refreshListOfContent {
-
 	if (self.tableView.contentOffset.y > (self.view.frame.size.height - REFRESH_DISTANCE)) {
 		[self.tableView setContentOffset:CGPointZero animated:YES];
 	}
     
     [self.delegate refreshListOfContent];
-    
 }
-
 
 -(void)setAndRefreshWithList:(NSMutableArray *) channelList withStartIndex:(NSInteger) startIndex{
     [self.followingProfileList removeAllObjects];
@@ -86,9 +91,8 @@
     [self.tableView reloadData];
     if(startIndex >= 0){
         NSIndexPath * indexPath = [NSIndexPath indexPathForRow:startIndex inSection:0];
-        
         [self.tableView scrollToRowAtIndexPath:indexPath
-                             atScrollPosition:UITableViewScrollPositionMiddle
+                             atScrollPosition:UITableViewScrollPositionTop
                                      animated:NO];
     }
     
@@ -166,9 +170,6 @@
 
 #pragma mark - Table view data source
 
--(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-	//[self.delegate showTabBar:YES];
-}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	return 1;
@@ -215,14 +216,14 @@ forRowAtIndexPath:(NSIndexPath *)indexPath{
 }
 
 
-#pragma mark -Feed Cell Protocol-
--(void)shouldHideTabBar:(BOOL) shouldHide{
-	self.tableView.scrollEnabled = !shouldHide;
-	self.contentInFullScreen = shouldHide;
-	[self setNeedsStatusBarAppearanceUpdate];
+#pragma mark - Feed Cell Protocol -
+
+-(void) showNavBar:(BOOL)show {
+	[self.navigationController setNavigationBarHidden: !show];
 }
--(void)exitProfile{
-    [self.delegate exitProfileList];
+
+-(void) pushViewController:(UIViewController *)viewController {
+	[self.navigationController pushViewController:viewController animated:YES];
 }
 
 @end

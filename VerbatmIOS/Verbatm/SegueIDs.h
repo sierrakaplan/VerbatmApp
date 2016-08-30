@@ -24,6 +24,7 @@
 #define SEGUE_FOLLOW_FRIENDS_FROM_FACEBOOK_LOGIN @"follow_friends_from_facebook"
 #define SEGUE_ENTER_PHONE_CONFIRMATION_CODE @"enter_phone_code_segue" //from either login or create account nav
 #define SEGUE_FOLLOW_FRIENDS @"follow_friends_segue"
+#define SEGUE_CREATE_NAME @"create_name_segue"
 #define SEGUE_CREATE_FIRST_POST @"first_post_segue"
 
 // segue from master vc to onboarding
@@ -37,8 +38,5 @@
 // ADK
 #define ADK_SEGUE @"segue_id_adk"
 #define UNWIND_SEGUE_FROM_ADK_TO_MASTER @"unwind_to_master_vc_from_adk"
-
-// Settings
-#define SETTINGS_PAGE_MODAL_SEGUE @"presentSettingsPage"
 
 #endif /* SegueIDs_h */

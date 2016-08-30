@@ -43,6 +43,7 @@
 
 #define RESEND_CODE_BUTTON_WIDTH 150.f
 #define RESEND_CODE_BUTTON_HEIGHT 50.f
+#define RESEND_CODE_FONT_SIZE 20.f
 
 @end
 
@@ -61,24 +62,25 @@
 	self.backgroundImageView.frame = self.view.bounds;
 	[self.view sendSubviewToBack:self.backgroundImageView];
 	[self.digitOneField becomeFirstResponder];
-	[self formatNavigationBar];
+	[self formatNavigationItem];
 }
 
 -(BOOL) prefersStatusBarHidden {
 	return YES;
 }
 
--(void) formatNavigationBar {
-	self.navigationItem.title = @"Verify phone number";
+-(void) formatNavigationItem {
+	self.navigationItem.title = self.creatingAccount ? @"Verify phone number" : @"Enter code to log in";
 	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 }
 
 -(void) sendCodeToUser:(NSString*) simplePhoneNumber {
-	[self changeToSendingCode: YES];
+//	return;
+	[self disableResendCodeButtonWithText:@"Sending code..."];
 	//todo: include more languages
 	NSDictionary *params = @{@"phoneNumber" : simplePhoneNumber, @"language" : @"en"};
 	[PFCloud callFunctionInBackground:@"sendCode" withParameters:params block:^(id  _Nullable response, NSError * _Nullable error) {
-		[self changeToSendingCode: NO];
+		[self enableResendCodeButton];
 		if (error) {
 			[[Crashlytics sharedInstance] recordError: error];
 			[self showAlertWithTitle:@"Error sending code" andMessage:@"Something went wrong. Please verify your phone number is correct."];
@@ -91,30 +93,48 @@
 	
 }
 
--(void) changeToSendingCode:(BOOL) sending {
-	NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
-									  NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size:20.f]}; //todo
-	NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:@"Resend code" attributes:titleAttributes];
-	if (sending) {
-		NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: [UIColor grayColor],
-										  NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size:20.f]};
-		attributedTitle = [[NSAttributedString alloc] initWithString:@"Sending code..." attributes:titleAttributes];
-		self.resendCodeButton.enabled = NO;
-		self.resendCodeButton.layer.borderColor = [UIColor grayColor].CGColor;
-		self.codeSentToNumberLabel.hidden = YES;
-	} else {
-		self.resendCodeButton.enabled = YES;
-		self.resendCodeButton.layer.borderColor = [UIColor whiteColor].CGColor;
-		self.codeSentToNumberLabel.hidden = NO;
-	}
+-(void) disableResendCodeButtonWithText:(NSString*)text {
+	self.resendCodeButton.enabled = NO;
+	self.resendCodeButton.layer.borderColor = [UIColor grayColor].CGColor;
+	self.codeSentToNumberLabel.hidden = YES;
+	NSAttributedString *attributedTitle = [self getAttributedTitleForResendCodeButtonWithText:text
+																				 andTextColor:[UIColor grayColor]];
 	[self.resendCodeButton setAttributedTitle:attributedTitle forState: UIControlStateNormal];
 }
 
+-(void) enableResendCodeButton {
+	self.resendCodeButton.enabled = YES;
+	self.resendCodeButton.layer.borderColor = [UIColor whiteColor].CGColor;
+	self.codeSentToNumberLabel.hidden = NO;
+	NSAttributedString *attributedTitle = [self getAttributedTitleForResendCodeButtonWithText:@"Resend code"
+																				 andTextColor:[UIColor whiteColor]];
+	[self.resendCodeButton setAttributedTitle:attributedTitle forState: UIControlStateNormal];
+}
+
+-(NSAttributedString*) getAttributedTitleForResendCodeButtonWithText:(NSString*)text andTextColor:(UIColor*)color {
+	NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: color,
+									  NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size: RESEND_CODE_FONT_SIZE]};
+	NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:text attributes:titleAttributes];
+	return attributedTitle;
+}
+
 -(void) verifyCode {
+	NSString *code = [self getCode];
+
+//	//todo: these lines lines allow testing create new accounts (use phone numbers no one has)
+//	PFUser *newUser = [PFUser user];
+//	newUser.username = self.simplePhoneNumber;
+//	newUser.password = code;
+//	[newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+//		[self performSegueWithIdentifier:SEGUE_CREATE_NAME sender:self];
+//	}];
+//
+//	return;
+
 	if (self.verifyingCode) return;
 	self.verifyingCode = YES;
+	[self disableResendCodeButtonWithText:@"Verifying code..."];
 	NSLog(@"verifying code");
-	NSString *code = [self getCode];
 	code = [UtilityFunctions removeAllNonNumbersFromString: code];
 	code = [code stringByReplacingOccurrencesOfString:ZERO_WIDTH_CHARACTER withString:@""];
 	if (code.length != 4) {
@@ -133,6 +153,7 @@
 				[PFUser becomeInBackground:token block:^(PFUser * _Nullable user, NSError * _Nullable error) {
 					if (error) {
 						[self showAlertWithTitle:@"Login Error" andMessage:error.localizedDescription];
+						[self enableResendCodeButton];
 						self.verifyingCode = NO;
 					} else {
 						[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
@@ -142,7 +163,7 @@
 							[user setObject:[NSNumber numberWithBool:NO] forKey:USER_FTUE];
 							[user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 								if(succeeded) {
-									[self performSegueWithIdentifier:SEGUE_FOLLOW_FRIENDS sender:self];
+									[self performSegueWithIdentifier:SEGUE_CREATE_NAME sender:self];
 								}
 							}];
 						} else {
@@ -172,6 +193,7 @@
 }
 
 -(void) showWrongCode {
+	[self enableResendCodeButton];
 	self.verifyingCode = NO;
 	//todo:
 	[self setTextColor: [UIColor redColor] andShakeView:YES];
@@ -325,9 +347,9 @@
 								  RESEND_CODE_BUTTON_WIDTH, RESEND_CODE_BUTTON_HEIGHT);
 		_resendCodeButton = [[UIButton alloc] initWithFrame:frame];
 		_resendCodeButton.layer.cornerRadius = 5.f;
-		_resendCodeButton.layer.borderColor = [UIColor whiteColor].CGColor;
-		_resendCodeButton.layer.borderWidth = 1.f;
-		_resendCodeButton.backgroundColor = [UIColor colorWithWhite:1.f alpha:0.2];
+//		_resendCodeButton.layer.borderColor = [UIColor whiteColor].CGColor;
+//		_resendCodeButton.layer.borderWidth = 1.f;
+//		_resendCodeButton.backgroundColor = [UIColor colorWithWhite:1.f alpha:0.2];
 		[_resendCodeButton addTarget:self action:@selector(resendCodeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 	}
 	return _resendCodeButton;

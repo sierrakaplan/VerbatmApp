@@ -13,8 +13,9 @@
 
 @protocol FeedCellDelegate <NSObject>
 
--(void)shouldHideTabBar:(BOOL) shouldHide;
--(void)exitProfile;
+-(void) showNavBar:(BOOL) show;
+-(void) pushViewController:(UIViewController*)viewController;
+
 @end
 
 
@@ -28,4 +29,5 @@
 -(void)reloadProfile;
 -(void)clearProfile;
 -(void)updateDateOfLastPostSeen;
+
 @end

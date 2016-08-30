@@ -25,6 +25,7 @@
 @property (nonatomic) UILabel *headerLabel;
 @property (nonatomic) UIButton *doneButton;
 @property (nonatomic) DiscoverVC *discoverList;
+@property (nonatomic) UIButton *followAllButton;
 
 #define HEADER_VIEW_HEIGHT STATUS_BAR_HEIGHT + 60.f
 #define DONE_BUTTON_WIDTH 70.f
@@ -104,23 +105,33 @@
 -(void) followingFriends {
 	self.headerLabel.text = @"Follow your friends!";
 	CGFloat followAllWidth = 150.f;
-	UIButton *followAllButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.center.x - followAllWidth/2.f,
+	self.followAllButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.center.x - followAllWidth/2.f,
 																		   self.headerView.frame.size.height + 15.f,
 																		   followAllWidth, 50.f)];
-	followAllButton.backgroundColor = [UIColor clearColor];
-	followAllButton.layer.borderColor = VERBATM_GOLD_COLOR.CGColor;
-	followAllButton.layer.borderWidth = 3.f;
-	followAllButton.layer.cornerRadius = 10.f;
+	self.followAllButton.backgroundColor = [UIColor clearColor];
+	self.followAllButton.layer.borderColor = VERBATM_GOLD_COLOR.CGColor;
+	self.followAllButton.layer.borderWidth = 3.f;
+	self.followAllButton.layer.cornerRadius = 10.f;
 	NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: VERBATM_GOLD_COLOR,
 									  NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size:20.f]};
 	NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:@"Follow All" attributes:titleAttributes];
-	[followAllButton setAttributedTitle:attributedTitle forState:UIControlStateNormal];
-	[followAllButton addTarget:self action:@selector(followAll) forControlEvents:UIControlEventTouchUpInside];
-	[self.view addSubview: followAllButton];
+	[self.followAllButton setAttributedTitle:attributedTitle forState:UIControlStateNormal];
+	[self.followAllButton addTarget:self action:@selector(followAll) forControlEvents:UIControlEventTouchUpInside];
+	[self.view addSubview: self.followAllButton];
+}
+
+-(void) setFollowButtonFollowingAll {
+	self.followAllButton.enabled = NO;
+	NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: [UIColor blackColor],
+									  NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size:20.f]};
+	NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:@"Following All" attributes:titleAttributes];
+	[self.followAllButton setAttributedTitle:attributedTitle forState:UIControlStateNormal];
+	self.followAllButton.backgroundColor = VERBATM_GOLD_COLOR;
 }
 
 -(void) followAll {
 	[self.discoverList followAllBlogs];
+	[self setFollowButtonFollowingAll];
 }
 
 -(void)exitDiscover {

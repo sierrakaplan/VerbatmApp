@@ -48,6 +48,8 @@
 	[self initializeVariables];
 	[self setFrameMainScrollView];
 	[self setElementDefaultFrames];
+	self.cameraView = [[VerbatmCameraView alloc] initWithFrame:self.view.bounds];
+	self.cameraView.delegate = self;
 	self.firstSlideBackground = [[UIImageView alloc] initWithFrame:self.view.bounds];
 	self.firstSlideBackground.image = [UIImage imageNamed:@"ADK_slide_1"];
 	self.firstSlideBackground.contentMode = UIViewContentModeScaleAspectFill;
@@ -198,13 +200,6 @@
 
 #pragma mark - Lazy Instantiation -
 
--(VerbatmCameraView*) cameraView {
-	if (!_cameraView) {
-		_cameraView = [[VerbatmCameraView alloc] initWithFrame:self.view.bounds];
-		_cameraView.delegate = self;
-	}
-	return _cameraView;
-}
 
 -(UIView*) topNavMessage {
 	if (!_topNavMessage) {

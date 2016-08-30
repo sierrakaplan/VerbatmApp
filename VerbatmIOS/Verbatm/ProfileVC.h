@@ -15,11 +15,10 @@
 
 @protocol ProfileVCDelegate <NSObject>
 
--(void) showTabBar: (BOOL) show;
-
 @optional
--(void)exitProfile;
--(void) userCreateFirstPost;
+
+-(void) showNavBar:(BOOL)show;
+-(void) pushViewController: (UIViewController*)viewController;
 
 @end
 
@@ -32,6 +31,7 @@
 @property (weak, nonatomic) PFUser* ownerOfProfile;
 @property (nonatomic) Channel* channel; 
 
+//todo: get rid of these properties
 //let us know if this is the profile of the logged in user
 @property (nonatomic) BOOL isCurrentUserProfile;
 

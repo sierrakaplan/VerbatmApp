@@ -27,13 +27,13 @@
 
 -(UIImage *)getViewScreenshot;
 
-- (void)addTopBorderWithColor:(UIColor *)color andWidth:(CGFloat) borderWidth;
+- (CALayer*)addTopBorderWithColor:(UIColor *)color andWidth:(CGFloat) borderWidth;
 
-- (void)addBottomBorderWithColor:(UIColor *)color andWidth:(CGFloat) borderWidth;
+- (CALayer*)addBottomBorderWithColor:(UIColor *)color andWidth:(CGFloat) borderWidth;
 
-- (void)addLeftBorderWithColor:(UIColor *)color andWidth:(CGFloat) borderWidth;
+- (CALayer*)addLeftBorderWithColor:(UIColor *)color andWidth:(CGFloat) borderWidth;
 
-- (void)addRightBorderWithColor:(UIColor *)color andWidth:(CGFloat) borderWidth;
+- (CALayer*)addRightBorderWithColor:(UIColor *)color andWidth:(CGFloat) borderWidth;
 
 - (void) shake;
 

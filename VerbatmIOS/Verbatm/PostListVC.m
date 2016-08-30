@@ -130,7 +130,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate, FBSDKSharingDelegate>
 	[self registerClassForCustomCells];
 	[self registerForNotifications];
 	[self clearViews];
-	self.collectionView.backgroundColor = (self.inSmallMode) ? [UIColor clearColor] : [UIColor blackColor];
+	self.collectionView.backgroundColor = [UIColor blackColor];
 	self.collectionView.bounces = YES;
 	[self.collectionView setClipsToBounds:NO];
 	[self.view setClipsToBounds:NO];
@@ -202,8 +202,7 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	[self clearViews];
     self.latestPostSeen = date;
 	self.exitedView = NO;
-	//todo remove this?:
-	//	self.latestDate = date;
+	self.latestPostSeen = date;
 	self.channelForList = channelForList;
 	self.listOwner = listOwner;
 	self.isCurrentUserProfile = isCurrentUserProfile;
@@ -1065,9 +1064,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void) showWhoLikesThePost:(PFObject *) post{
-	UserAndChannelListsTVC *likersListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
-	[likersListVC presentList:LikersList forChannel:nil orPost:post];
-	[self presentViewController:likersListVC animated:YES completion:nil];
+	[self.postListDelegate showWhoLikedPost:post];
 }
 
 -(void)showWhoCommentedOnPost:(PFObject *) post{

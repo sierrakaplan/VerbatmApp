@@ -11,13 +11,13 @@
 
 @protocol FeedTableViewDelegate <NSObject>
 
--(void) showTabBar: (BOOL) show;
--(void)goToDiscover;
-
+-(void) goToDiscover;
 
 @optional
+
 -(void) refreshListOfContent;
--(void)exitProfileList;
+-(void) exitProfileList;
+
 @end
 
 @interface FeedTableViewController : UITableViewController
