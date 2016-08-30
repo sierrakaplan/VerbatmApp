@@ -36,6 +36,7 @@
 
 @implementation TextOverMediaView
 
+
 // For published view
 -(instancetype) initWithFrame:(CGRect)frame andImageURL:(NSURL*)imageUrl
 			   withSmallImage: (UIImage*)smallImage asSmall:(BOOL) small {
