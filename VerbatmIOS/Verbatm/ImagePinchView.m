@@ -45,10 +45,10 @@
 -(instancetype)initWithRadius:(CGFloat)radius withCenter:(CGPoint)center andImage:(UIImage*)image
 	andPHAssetLocalIdentifier: (NSString*) localIdentifier {
 	self = [super initWithRadius:radius withCenter:center];
-	if (self) {
-		if(!image) return self;
+	if (self && image) {
 		self.phAssetLocalIdentifier = localIdentifier;
 		self.imageContentOffset = CGPointZero;
+        self.imageContentFrame = CGRectZero;
 		self.contentOffsetSet = NO;
 		[self initWithImage:image andSetFilteredImages:YES];
 	}
@@ -187,8 +187,13 @@
 	@autoreleasepool {
 		CGSize size = half ? HALF_SCREEN_SIZE : FULL_SCREEN_SIZE;
 		CGRect frame = CGRectMake(0.f, 0.f, size.width, size.height);
+        CGRect imageFrame = frame;
+        if(CGRectEqualToRect(self.imageContentFrame, CGRectZero)){
+            imageFrame = self.imageContentFrame;
+        }
         
 		TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:frame andImage:image
+                                                                        imageViewFrame:imageFrame
 																	  andContentOffset:self.imageContentOffset
 																			forTextAVE:[self isKindOfClass:[TextPinchView class]]];
 		BOOL textColorBlack = [self.textColor isEqual:[UIColor blackColor]];

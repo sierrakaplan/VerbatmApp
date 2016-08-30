@@ -79,6 +79,8 @@
 
 @property (nonatomic) UIImage * currentTextAVEBackground;
 
+@property (nonatomic) CGFloat lastScale;
+
 @end
 
 @implementation EditMediaContentView
@@ -86,6 +88,7 @@
 -(instancetype) initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if(self) {
+        self.lastScale = 1.f;
 		self.backgroundColor = [UIColor PAGE_BACKGROUND_COLOR];
 		[self registerForKeyboardNotifications];
 	}
@@ -202,7 +205,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	if (![mainScrollView isKindOfClass:[UIScrollView class]]) {
 		mainScrollView = mainScrollView.superview;
 	}
-	[((UIScrollView*)mainScrollView) setScrollEnabled: enable];
+    [((UIScrollView*)mainScrollView) setScrollEnabled: enable];
 }
 
 -(void)removeScreenToolbar {
@@ -240,7 +243,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
 // If not afterEdit, text is still being edited so positions text with last line above keyboard
 // if text is not already above it
 -(void) moveTextView:(UITextView *)textView afterEdit:(BOOL)after {
-
 	CGFloat contentHeight = [textView measureContentHeight];
 	CGRect newFrame;
 	CGFloat yPos = 0.f;
@@ -309,12 +311,25 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self.videoView prepareVideoFromAsset:videoAsset];
 }
 
+-(CGRect)getDefaultImageFrameFromImage:(UIImage *) image{
+    CGSize imageSize = image.size;
+    if (imageSize.width < self.frame.size.width) imageSize.width = self.frame.size.width;
+    if (imageSize.height < self.frame.size.height) imageSize.height = self.frame.size.height;
+    return CGRectMake(0.f, 0.f, imageSize.width, imageSize.height);
+}
+
 -(void)displayImage:(UIImage*)image isHalfScreen:(BOOL)isHalfScreen withContentOffset:(CGPoint) contentOffset {
 	self.image = image;
     self.isAtHalfScreen = isHalfScreen;
+    CGRect imageFrame = [self getDefaultImageFrameFromImage:image];
+    if([self.pinchView isKindOfClass:[ImagePinchView class]] &&
+       !CGRectEqualToRect(((ImagePinchView*)self.pinchView).imageContentFrame, CGRectZero)){
+        imageFrame = ((ImagePinchView*)self.pinchView).imageContentFrame;
+    }
+                                           
 	BOOL onTextAve = [self.pinchView isKindOfClass:[TextPinchView class]];
 	self.textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
-															andImage:image andContentOffset:contentOffset
+                                                            andImage:image imageViewFrame:imageFrame andContentOffset:contentOffset
 														  forTextAVE:onTextAve];
 
 	[self addSubview: self.textAndImageView];
@@ -379,8 +394,10 @@ andTextAlignment:(NSTextAlignment)textAlignment
 #pragma mark - Keyboard toolbar delegate methods -
 
 -(void)keyboardButtonPressed {
-	[self.delegate textIsEditing];
-    [self editText];
+    if(!self.isRepositioningPhoto){
+        [self.delegate textIsEditing];
+        [self editText];
+    }
 }
 
 -(void)changeTextBackgroundToImage:(NSString *) backgroundImageName{
@@ -447,12 +464,46 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	moveImageGesture.delegate = self;
 	[self.textAndImageView addGestureRecognizer: moveImageGesture];
 
+    
+    UIPinchGestureRecognizer * pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
+    [self.textAndImageView addGestureRecognizer:pinch];
+    
+    
 	self.editTextGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(keyboardButtonPressed)];
 	self.editTextGesture.delegate = self;
 	[self.textAndImageView addGestureRecognizer: self.editTextGesture];
 
 	[self.textAndImageView addGestureRecognizer:self.textViewPanGesture];
 }
+
+
+-(void) handlePinchGesture:(UIPinchGestureRecognizer *)gesture {
+    if(self.isRepositioningPhoto){
+            switch (gesture.state) {
+                case UIGestureRecognizerStateBegan: {
+                    self.lastScale = gesture.scale;
+                    break;
+                }
+                case UIGestureRecognizerStateChanged: {
+                    if([gesture numberOfTouches] != 2) return;
+                    [self scalePhotoToScale:gesture.scale andTransform:self.textAndImageView.imageView.transform];
+                    self.lastScale = gesture.scale;
+                    break;
+                }
+                case UIGestureRecognizerStateEnded: {
+                    self.lastScale = gesture.scale;
+                    break;
+                }
+                default: {
+                    return;
+                }
+            }
+    }
+}
+
+
+
+
 
 /* Handles pan gesture which could be horizontal to add a filter to an image,
  or vertical to change text position */
@@ -501,6 +552,11 @@ andTextAlignment:(NSTextAlignment)textAlignment
 		default:
 			break;
 	}
+}
+
+-(void)scalePhotoToScale:(CGFloat) scale andTransform:(CGAffineTransform) baseTransform{
+    CGFloat newScale = 1.f - (self.lastScale - scale);
+    [self.textAndImageView scaleImagewithTransform:CGAffineTransformScale(baseTransform, newScale, newScale)];
 }
 
 -(void) repositionPhoto: (CGPoint) location {
@@ -607,8 +663,8 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
     if([self.pinchView isKindOfClass:[TextPinchView class]]){
         [((TextPinchView *)self.pinchView) putNewImage:self.currentTextAVEBackground];
     }else if([self.pinchView isKindOfClass:[ImagePinchView class]]) {
-//		[((ImagePinchView *)self.pinchView) changeImageToFilterIndex:self.imageIndex];
 		((ImagePinchView *)self.pinchView).imageContentOffset = [self.textAndImageView getImageOffset];
+        ((ImagePinchView *)self.pinchView).imageContentFrame = self.textAndImageView.imageView.frame;
 	}
 	if([self.pinchView isKindOfClass:[SingleMediaAndTextPinchView class]]){
 		SingleMediaAndTextPinchView *mediaAndTextPinchView = (SingleMediaAndTextPinchView *)self.pinchView;

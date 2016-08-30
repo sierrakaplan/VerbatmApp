@@ -60,7 +60,7 @@
 }
 
 // For preview mode
--(instancetype) initWithFrame:(CGRect)frame andImage:(UIImage *)image
+-(instancetype) initWithFrame:(CGRect)frame andImage:(UIImage *)image imageViewFrame:(CGRect) imageViewFrame
 			 andContentOffset:(CGPoint)contentOffset forTextAVE:(BOOL)onTextAve {
 	self = [self initWithFrame: frame];
 	if (self) {
@@ -72,6 +72,7 @@
 			self.repositionPhotoScrollView.showsVerticalScrollIndicator = NO;
 			self.repositionPhotoScrollView.showsHorizontalScrollIndicator = NO;
 			[self.imageView removeFromSuperview];
+            [self.imageView setFrame:imageViewFrame];
 			[self.repositionPhotoScrollView addSubview:self.imageView];
 			[self setRepositionImageScrollViewFromImage: image];
 			[self setNewImageContentOffset:contentOffset.x andY:contentOffset.y];
@@ -105,11 +106,8 @@
 }
 
 -(void) setRepositionImageScrollViewFromImage: (UIImage *) image {
-	CGSize imageSize = image.size;
-	if (imageSize.width < self.frame.size.width) imageSize.width = self.frame.size.width;
-	if (imageSize.height < self.frame.size.height) imageSize.height = self.frame.size.height;
-	self.repositionPhotoScrollView.contentSize = imageSize;
-	self.imageView.frame = CGRectMake(0.f, 0.f, imageSize.width, imageSize.height);
+
+	self.repositionPhotoScrollView.contentSize = image.size;
 	[self.imageView setImage: image];
 }
 
@@ -126,6 +124,12 @@
 -(CGPoint)getImageOffset {
 	CGPoint contentOffset = self.repositionPhotoScrollView.contentOffset;
 	return contentOffset;
+}
+
+
+-(void)scaleImagewithTransform:(CGAffineTransform) transform{
+
+    [self.imageView setTransform:transform];
 }
 
 -(void) moveImageX:(CGFloat)xDiff andY:(CGFloat)yDiff {
@@ -312,7 +316,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 -(UIImageView*) imageView {
 	if (!_imageView) {
-		UIImageView *imageView = [[UIImageView alloc] initWithFrame: self.bounds];
+		UIImageView *imageView = [[UIImageView alloc] init];
 		[self insertSubview:imageView belowSubview:self.textView];
 		_imageView = imageView;
 		_imageView.clipsToBounds = YES;
