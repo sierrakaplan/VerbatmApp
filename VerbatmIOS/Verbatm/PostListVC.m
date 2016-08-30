@@ -367,7 +367,7 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 }
 
 //set the data source and delegate of the collection view
--(void)setDateSourceAndDelegate{
+-(void) setDateSourceAndDelegate {
 	self.collectionView.dataSource = self;
 	self.collectionView.delegate = self;
 	self.collectionView.pagingEnabled = NO;
@@ -423,7 +423,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	return self.currentDisplayCell;
 }
 
--(NSDate *)creationDateOfLastPostObjectInPostList{
+-(NSDate *) creationDateOfLastPostObjectInPostList {
     if(!self.isCurrentUserProfile){
         PFObject * lastObj = [self.parsePostActivityObjects lastObject];
         return [lastObj createdAt];
