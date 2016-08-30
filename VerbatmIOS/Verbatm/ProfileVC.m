@@ -99,6 +99,9 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
         if(finalDate){
             [self.channel.followObject setObject:finalDate forKey:FOLLOW_LATEST_POST_DATE];
             [self.channel.followObject saveInBackground];
+            if([finalDate compare:[self.channel dateOfMostRecentChannelPost]] != NSOrderedSame){
+                [self.channel resetLatestPostInfo];
+            }
         }
     }
 }
@@ -364,12 +367,13 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 // Switches between large and small post list
 -(void)cellSelectedAtPostIndex:(NSIndexPath *) cellPath{
+    
     [self createNewPostViewFromCellIndexPath:cellPath];
 }
 
 -(void)createNewPostViewFromCellIndexPath:(NSIndexPath *) cellPath{
+    
     self.inFullScreenMode = !self.inFullScreenMode;
-
 	NSArray *visibleCells = [self.postListVC.collectionView visibleCells];
 	if (cellPath == nil && visibleCells.count) {
 		PostCollectionViewCell* cell = (PostCollectionViewCell*)[visibleCells firstObject];
@@ -426,6 +430,15 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	[self presentUserList: FollowersList];
 }
 
+
+-(void)createPostPromptSelected{
+    if([self.delegate respondsToSelector:@selector(userCreateFirstPost)]){
+        if(self.inFullScreenMode)[self createNewPostViewFromCellIndexPath:nil];
+        [self.delegate userCreateFirstPost];
+    }
+}
+
+
 -(void)postsFound{
 //	[self removePromptToPost];
     if(!self.isCurrentUserProfile){
@@ -433,20 +446,10 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
     }
 }
 
-//todo: delete this prompt
-//-(void)removePromptToPost{
-//	if(self.isCurrentUserProfile){
-//		if(self.postPrompt)[self.postPrompt removeFromSuperview];
-//		self.postPrompt = nil;
-//		self.postListVC.view.hidden = NO;
-//	}
-//}
 
 -(void)noPostFound {
-    if(self.isCurrentUserProfile){
-//        [self createPromptToPost];
-    }else{
-//        [self.profileHeaderView presentProfileUnderConstructionNotification];
+    if(!self.isCurrentUserProfile){
+       // [self.profileHeaderView presentProfileUnderConstructionNotification];
     }
 	if (self.inFullScreenMode) {
 		[self exitCurrentPostView];

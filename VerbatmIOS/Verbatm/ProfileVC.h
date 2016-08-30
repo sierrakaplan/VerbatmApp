@@ -19,7 +19,7 @@
 
 -(void) showNavBar:(BOOL)show;
 -(void) pushViewController: (UIViewController*)viewController;
-
+-(void) userCreateFirstPost;
 @end
 
 @interface ProfileVC : UIViewController

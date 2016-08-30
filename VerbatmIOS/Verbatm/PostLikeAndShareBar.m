@@ -41,6 +41,8 @@
 @property (nonatomic) NSNumber * totalNumberOfLikes;//number of likes on our related AVE
 @property (nonatomic) NSNumber * totalNumberOfComments;//number of comments on our related AVE
 
+
+
 @property (nonatomic) NSDictionary * likeNumberTextAttributes;
 
 #define NUMBER_FONT_SIZE 10.f
@@ -75,6 +77,7 @@
     }
     return self;
 }
+
 
 -(void)formatView{
     self.backgroundColor = LIKE_SHARE_BAR_BACKGROUND_COLOR;
@@ -281,6 +284,11 @@
         self.isLiked = NO;
     }
 }
+-(void)incrementComments{
+    self.totalNumberOfComments = [NSNumber numberWithInteger:([self.totalNumberOfComments integerValue] +1) ];
+    [self createCommentButtonNumbers:self.totalNumberOfComments];
+}
+
 
 -(void)createDeleteButton {
     [self createDeleteOrFlagButtonIsFlag:NO];

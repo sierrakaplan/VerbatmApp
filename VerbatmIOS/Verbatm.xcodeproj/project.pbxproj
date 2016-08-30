@@ -881,11 +881,7 @@
 			children = (
 				C76172791C4DFB7700AB0D84 /* PostListVC.h */,
 				C761727A1C4DFB7700AB0D84 /* PostListVC.m */,
-				C761727D1C4E0EB600AB0D84 /* PostCollectionViewCell.h */,
-				C761727E1C4E0EB600AB0D84 /* PostCollectionViewCell.m */,
-				A51A0AE61D6CF64F009D7CDD /* Post custom views */,
-				A51A0AEE1D6CF8A7009D7CDD /* LikeShareBar */,
-				A51A0AEF1D6CF8E3009D7CDD /* ChannelCreatorBar */,
+				C73907491D74BD8900056509 /* Custom Views */,
 			);
 			name = PostList/Posts;
 			sourceTree = "<group>";
@@ -1402,6 +1398,26 @@
 				C716E9D11BD6C338001B769D /* Analytics.m */,
 			);
 			name = Analytics;
+			sourceTree = "<group>";
+		};
+		C73907491D74BD8900056509 /* Custom Views */ = {
+			isa = PBXGroup;
+			children = (
+				A51A0AE61D6CF64F009D7CDD /* Post custom views */,
+				A51A0AEE1D6CF8A7009D7CDD /* LikeShareBar */,
+				A51A0AEF1D6CF8E3009D7CDD /* ChannelCreatorBar */,
+				C739074A1D74BDA900056509 /* Collection View Cells */,
+			);
+			name = "Custom Views";
+			sourceTree = "<group>";
+		};
+		C739074A1D74BDA900056509 /* Collection View Cells */ = {
+			isa = PBXGroup;
+			children = (
+				C761727D1C4E0EB600AB0D84 /* PostCollectionViewCell.h */,
+				C761727E1C4E0EB600AB0D84 /* PostCollectionViewCell.m */,
+			);
+			name = "Collection View Cells";
 			sourceTree = "<group>";
 		};
 		C748836A1B489AE300E64ED9 /* GMImagePicker */ = {

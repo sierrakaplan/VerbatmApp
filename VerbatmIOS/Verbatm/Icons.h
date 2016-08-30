@@ -190,6 +190,8 @@
 #define ADD_COVER_PHOTO_ICON @"add_cover_photo_icon"
 #define FEEDBACK_NOTIFICATION_ICON @"FeedbackNotification"
 
+#define ADD_FIRST_POST_ICON @"Add First Post icon"
+
 #define PROFILE_UNDER_CONSTRUCTION_ICON @"ProfileUnderConstruction"
 
 #define NO_COVER_PHOTO_IMAGE @"Empty_Cover_Photo_Image"
