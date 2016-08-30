@@ -69,6 +69,7 @@
 -(UIImageView*) coverPhotoImageView {
 	if (!_coverPhotoImageView) {
 		_coverPhotoImageView = [[UIImageView alloc] initWithFrame: self.bounds];
+		[_coverPhotoImageView setImage:[UIImage imageNamed: NO_COVER_PHOTO_IMAGE]];
 		_coverPhotoImageView.backgroundColor = [UIColor lightGrayColor];
 		_coverPhotoImageView.clipsToBounds = YES;
 		_coverPhotoImageView.contentMode = UIViewContentModeScaleAspectFill;

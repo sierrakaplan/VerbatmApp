@@ -345,7 +345,11 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 		[postList.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
 	}
 	[self.delegate showTabBar:inSmallMode];
-	[self.delegate showNavBar:inSmallMode];
+	if (self.navigationController) {
+		[self.navigationController setNavigationBarHidden: !inSmallMode];
+	} else {
+		[self.delegate showNavBar:inSmallMode];
+	}
 	[self.postListVC.view removeFromSuperview];
 	[self.postListVC clearViews];
 	self.postListVC = nil;
@@ -389,11 +393,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
         [newVC display:self.channel withListOwner:self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile
        andStartingDate:startingDate withOldParseObjects:self.postListVC.parsePostActivityObjects];
     }
-	if (self.inFullScreenMode) {
-		[self.navigationController setNavigationBarHidden:YES];
-	} else {
-		[self.navigationController setNavigationBarHidden:NO];
-	}
     [self presentViewPostView:newVC inSmallMode:!self.inFullScreenMode shouldPage:self.inFullScreenMode fromCellPath:cellPath];
 }
 
