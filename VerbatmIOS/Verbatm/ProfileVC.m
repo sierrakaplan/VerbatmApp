@@ -99,6 +99,9 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
         if(finalDate){
             [self.channel.followObject setObject:finalDate forKey:FOLLOW_LATEST_POST_DATE];
             [self.channel.followObject saveInBackground];
+            if([finalDate compare:[self.channel dateOfMostRecentChannelPost]] != NSOrderedSame){
+                [self.channel resetLatestPostInfo];
+            }
         }
     }
 }

@@ -217,10 +217,12 @@
         }
     }
 }
-
+-(void)resetLatestPostInfo{
+    [Channel_BackendObject updateLatestPostDateForChannel:self.parseChannelObject];
+}
 -(void) updatePostDeleted:(PFObject*)post {
 	if ([(NSDate*)self.parseChannelObject[CHANNEL_LATEST_POST_DATE] compare: post.createdAt] == NSOrderedSame) {
-		[Channel_BackendObject updateLatestPostDateForChannel:self.parseChannelObject];
+        [self resetLatestPostInfo];
 	}
 }
 

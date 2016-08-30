@@ -433,7 +433,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void) updateCursor {
 	if(!self.isCurrentUserProfile){
-        
 		NSDate * postDate = self.currentDisplayCell.currentPostActivityObject.createdAt;
 		NSTimeInterval timeSinceSeen = [postDate timeIntervalSinceDate:self.latestPostSeen];
 		if (timeSinceSeen > 0.f) {
