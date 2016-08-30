@@ -58,6 +58,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 @property (nonatomic) BOOL currentlyCreatingNewChannel;
 
 @property (strong, nonatomic) PostListVC * postListVC;
+@property (nonatomic) UIImageView *noPostsView;
 
 //@property (nonatomic, strong) ProfileHeaderViewOld *profileHeaderView;
 @property (nonatomic) ProfileHeaderView *profileHeaderView;
@@ -461,18 +462,15 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	}
 }
 
-
 -(void)postsFound{
-	//	[self removePromptToPost];
-	if(!self.isCurrentUserProfile){
-		//        [self.profileHeaderView removeProfileConstructionNotification];
+	if(!self.isCurrentUserProfile) {
+		[self.noPostsView removeFromSuperview];
 	}
 }
 
-
 -(void)noPostFound {
 	if(!self.isCurrentUserProfile){
-		// [self.profileHeaderView presentProfileUnderConstructionNotification];
+		[self.view addSubview: self.noPostsView];
 	}
 	if (self.inFullScreenMode) {
 		[self exitCurrentPostView];
@@ -593,6 +591,15 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 		_imageManager = [[PHImageManager alloc] init];
 	}
 	return _imageManager;
+}
+
+-(UIImageView*) noPostsView {
+	if (!_noPostsView) {
+		_noPostsView = [[UIImageView alloc] initWithFrame: self.postListSmallFrame];
+		_noPostsView.contentMode = UIViewContentModeScaleAspectFit;
+		_noPostsView.image = [UIImage imageNamed: PROFILE_UNDER_CONSTRUCTION_ICON];
+	}
+	return _noPostsView;
 }
 
 -(void)dealloc {

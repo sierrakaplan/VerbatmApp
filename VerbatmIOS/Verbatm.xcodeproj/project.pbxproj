@@ -1571,9 +1571,9 @@
 			isa = PBXGroup;
 			children = (
 				A5BB65461D6F804000F5B01B /* Main.storyboard */,
+				A51A0ADC1D6CF2C7009D7CDD /* Resources */,
 				A51A0AD61D6CF03F009D7CDD /* FrontEnd */,
 				A51A0AD51D6CF036009D7CDD /* Framedation/Model */,
-				A51A0ADC1D6CF2C7009D7CDD /* Resources */,
 				C7BC437C199D97F5004B91A1 /* Supporting Files */,
 				C716E9D31BD6CAAA001B769D /* Analytics */,
 			);
