@@ -52,22 +52,18 @@
 @property (nonatomic) BOOL presentAllChannels;
 @property (nonatomic) BOOL shouldAnimateViews;
 
+@property (nonatomic) UIColor *oldNavigationBarTintColor;
+
 #define CHANNEL_CELL_ID @"channel_cell_id"
-#define CUSTOM_CHANNEL_LIST_BAR_HEIGHT 50.f
 #define LIKERS_TEXT @"Likes"
 #define FOLLOWING_TEXT @"Following"
 #define COMMENTING_TEXT @"Comments"
-
 #define FOLLOWERS_TEXT @"Followers"
-#define LIST_BAR_Y_OFFSET -15.f
 
 
 #define COMMENTING_KEYBOARD_HEIGHT 50.f
-#define TOP_INSET (LIST_BAR_Y_OFFSET+ STATUS_BAR_HEIGHT + CUSTOM_CHANNEL_LIST_BAR_HEIGHT)
-#define BOTTOM_INSET CUSTOM_CHANNEL_LIST_BAR_HEIGHT
+#define KEYBOARD_BAR_START_YPOS (self.view.frame.size.height - (COMMENTING_KEYBOARD_HEIGHT))
 
-
-#define KEYBOARD_BAR_START_YPOS (self.view.frame.size.height - (COMMENTING_KEYBOARD_HEIGHT + TOP_INSET))
 @end
 
 
@@ -86,20 +82,39 @@
 	self.tableView.showsVerticalScrollIndicator = NO;
 
 	[self setNeedsStatusBarAppearanceUpdate];
+	[self setNavigationItemTitle];
+}
 
-	//avoid covering last item in uitableview
-	UIEdgeInsets inset = UIEdgeInsetsMake(TOP_INSET, 0, BOTTOM_INSET, 0);
-	self.tableView.contentInset = inset;
-	self.tableView.scrollIndicatorInsets = inset;
+-(void) setNavigationItemTitle {
+	NSString * navBarMiddleText = FOLLOWERS_TEXT;
+	if(self.currentListType == LikersList){
+		navBarMiddleText = LIKERS_TEXT;
+	}else if (self.currentListType == FollowingList){
+		navBarMiddleText = FOLLOWING_TEXT;
+	}else if (self.currentListType == CommentList){
+		navBarMiddleText = COMMENTING_TEXT;
+	}
+	self.navigationItem.title = navBarMiddleText;
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	[self setNeedsStatusBarAppearanceUpdate];
+	self.oldNavigationBarTintColor = self.navigationController.navigationBar.tintColor;
+	self.navigationController.navigationBar.tintColor = [UIColor blackColor];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
 	[super viewDidAppear:animated];
+}
+
+-(void) viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
+	self.navigationController.navigationBar.tintColor = self.oldNavigationBarTintColor;
+}
+
+-(BOOL) prefersStatusBarHidden {
+	return YES;
 }
 
 #pragma mark - Present List -
@@ -120,7 +135,7 @@
 	}];
 }
 
--(void)viewDidLayoutSubviews{
+-(void)viewDidLayoutSubviews {
 	[super viewDidLayoutSubviews];
 }
 
@@ -157,12 +172,9 @@
 	[self presentList:self.currentListType forChannel:self.channelOnDisplay orPost:self.postObject];
 }
 
-
-
 -(void)putCommentingKeyboardBarOnScreen{
     
     CGFloat yPos = KEYBOARD_BAR_START_YPOS;
-    
     
     self.commentingKeyboard = [[CommentingKeyboardToolbar alloc] initWithFrame:CGRectMake(0.f, yPos, self.view.frame.size.width, COMMENTING_KEYBOARD_HEIGHT)];
     self.commentingKeyboard.delegate = self;
@@ -179,9 +191,7 @@
                                                object:nil];
 }
 
-
--(void)keyboardDidShowOrHide:(NSNotification *)notification
-{
+-(void)keyboardDidShowOrHide:(NSNotification *)notification {
     NSDictionary *userInfo = [notification userInfo];
     NSTimeInterval animationDuration;
     UIViewAnimationCurve animationCurve;
@@ -205,8 +215,6 @@
     [UIView commitAnimations];
 }
 
-
-
 -(void)doneButtonSelectedWithFinalString:(NSString *) commentString{
     Comment * newComment  = [[Comment alloc] initWithString:commentString andPostObject:self.postObject];
     [self.commentObjectList addObject:newComment];
@@ -219,6 +227,7 @@
 }
 
 #pragma mark - Table View Delegate methods (view customization) -
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
 	
     if(self.currentListType == CommentList){
@@ -246,7 +255,6 @@
 				 });
 			 }
 		 }];
-	}else {
 	}
 }
 
@@ -303,24 +311,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-	return 80.f;
-}
-
-// Exiting view
--(void) leftButtonPressed{
-	[self.presentingViewController dismissViewControllerAnimated:YES completion:^{}];
-}
-
--(NSString*) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-	NSString * navBarMiddleText = FOLLOWERS_TEXT;
-	if(self.currentListType == LikersList){
-		navBarMiddleText = LIKERS_TEXT;
-	}else if (self.currentListType == FollowingList){
-		navBarMiddleText = FOLLOWING_TEXT;
-	}else if (self.currentListType == CommentList){
-		navBarMiddleText = COMMENTING_TEXT;
-	}
-	return navBarMiddleText;
+	return 0.f;
 }
 
 #pragma mark - Table view data source
@@ -330,9 +321,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
     if(self.currentListType == CommentList) return self.commentObjectList.count;
-    
     return (self.channelsToDisplay.count + self.presentAllChannels);
 }
 

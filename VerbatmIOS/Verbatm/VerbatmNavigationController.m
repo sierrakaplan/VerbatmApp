@@ -40,8 +40,12 @@
 	self.navigationBar.tintColor = textColor;
 }
 
--(UIStatusBarStyle) preferredStatusBarStyle {
-	return UIStatusBarStyleLightContent;
+- (UIViewController *)childViewControllerForStatusBarHidden {
+	return self.visibleViewController;
+}
+
+- (UIViewController *)childViewControllerForStatusBarStyle {
+	return self.visibleViewController;
 }
 
 @end
