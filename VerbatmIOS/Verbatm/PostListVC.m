@@ -433,30 +433,22 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void) updateCursor {
 	if(!self.isCurrentUserProfile){
-		NSDate *postDate = self.currentDisplayCell.currentPostActivityObject.createdAt;
+        
+		NSDate * postDate = self.currentDisplayCell.currentPostActivityObject.createdAt;
 		NSTimeInterval timeSinceSeen = [postDate timeIntervalSinceDate:self.latestPostSeen];
 		if (timeSinceSeen > 0.f) {
-			// If in fullscreen mode update latest date
-            
-            NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-            [dateFormat setDateFormat:@"MMM dd, YYYY hh:mma"];
-            NSString *dateString = [dateFormat stringFromDate:self.latestPostSeen];
-            NSLog(@"Previous Last Seen value: %@",dateString);
-            
-			if (!self.inSmallMode) {
+		
+            if (!self.inSmallMode) {
 				self.latestPostSeen = postDate;
 			} else {
                
 				[self.currentDisplayCell addDot];
-			}
-            
-            [dateFormat setDateFormat:@"MMM dd, YYYY hh:mma"];
-            dateString = [dateFormat stringFromDate:postDate];
-            NSLog(@"New Last Seen Value: %@",dateString);
-            
-		} else if (self.inSmallMode) {
+            }
+        
+        } else if (self.inSmallMode) {
 			[self.currentDisplayCell removeDot];
 		}
+        
 	}
 }
 

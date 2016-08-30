@@ -7,6 +7,9 @@
 //
 
 #import "Like_BackendManager.h"
+
+#import "Notifications.h"
+
 #import <Parse/PFObject.h>
 #import "Page_BackendObject.h"
 #import "ParseBackendKeys.h"
@@ -70,6 +73,12 @@
 		[self clearViews];
 		[self setClipsToBounds:NO];
 		[self.layer setCornerRadius:POST_VIEW_CORNER_RADIUS];
+    
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(newCommentRegistered:)
+                                                     name:NOTIFICATION_NEW_COMMENT_USER
+                                                   object:nil];
+        
 
 	}
 
@@ -77,15 +86,18 @@
 
 }
 
--(void) clearViews {
 
-	if (self.currentPostView) {
-		[self.currentPostView removeFromSuperview];
-	}
 
-	[self removePublishingProgress];
-    
-	@autoreleasepool {
+-(void)newCommentRegistered:(NSNotification *)notification{
+    NSString * postCommentedOnObjectId = [[notification userInfo] objectForKey:POST_COMMENTED_ON_NOTIFICATION_USERINFO_KEY];
+    if(self.postBeingPresented && self.inSmallMode && [[self.postBeingPresented objectId] isEqualToString:postCommentedOnObjectId]){
+        self.numComments = [NSNumber numberWithInteger:([self.numComments integerValue]+1)];
+        [self clearLikeAndCommentInformation];
+        [self presentSmallLikeButton];
+    }
+}
+
+-(void)clearLikeAndCommentInformation{
         [self.numSharesLabel removeFromSuperview];
         [self.smallShareButton removeFromSuperview];
         [self.numLikeLabel removeFromSuperview];
@@ -98,10 +110,19 @@
         self.smallShareButton = nil;
         self.numLikeLabel = nil;
         self.smallLikeButton = nil;
-		self.currentPostView = nil;
-        self.currentPostActivityObject = nil;
-        self.postBeingPresented = nil;
+}
+
+-(void) clearViews {
+
+	if (self.currentPostView) {
+		[self.currentPostView removeFromSuperview];
 	}
+
+	[self removePublishingProgress];
+    [self clearLikeAndCommentInformation];
+    self.currentPostView = nil;
+    self.currentPostActivityObject = nil;
+    self.postBeingPresented = nil;
 	
 
 	self.isOnScreen = NO;
@@ -144,7 +165,7 @@
 	self.footerUp = up;
 	self.currentPostActivityObject = pfActivityObj;
 	PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
-
+    self.postBeingPresented = post;
 	[post fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
 		if (self.currentPostActivityObject != nil && ![self.currentPostActivityObject.objectId isEqualToString:pfActivityObj.objectId]) {
 			return;

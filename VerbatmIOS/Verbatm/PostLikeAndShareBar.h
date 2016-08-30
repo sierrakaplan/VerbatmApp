@@ -48,6 +48,8 @@ typedef enum BarActivityOptions{
 -(void)createDeleteButton;
 -(void)createFlagButton;
 
+-(void)incrementComments;
+
 @property (nonatomic, weak) id <PostLikeAndShareBarProtocol> delegate;
 
 @end
