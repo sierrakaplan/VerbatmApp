@@ -17,10 +17,12 @@
 #import "CustomNavigationBar.h"
 #import "ProfileVC.h"
 #import <Parse/PFQuery.h>
+#import "MasterNavigationVC.h"
 #import "NotificationPostPreview.h"
 #import "Durations.h"
 #import "Icons.h"
 #import "UserAndChannelListsTVC.h"
+#import "VerbatmNavigationController.h"
 
 @interface NotificationsListTVC () <NotificationPostPreviewProtocol>
 
@@ -72,6 +74,7 @@
 	self.tableView.contentInset = inset;
 
 	[self createHeader];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarStyleClearWithTextColor:[UIColor blackColor]];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -235,7 +238,7 @@
             [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
                 self.postPreview.frame = CGRectMake(0.f, self.tableView.contentOffset.y, self.view.frame.size.width, self.view.frame.size.height);
             }];
-            [self.delegate notificationListHideTabBar:YES];
+            [(MasterNavigationVC*)self.tabBarController showTabBar:NO];
         }
 	}
 }
@@ -250,7 +253,7 @@
 				[self.postPreview clearViews];
 				[self.postPreview removeFromSuperview];
 				self.tableView.scrollEnabled = YES;
-				[self.delegate notificationListHideTabBar:NO];
+				[(MasterNavigationVC*)self.tabBarController showTabBar:NO];
                 self.postPreview = nil;
 			}
 		}];

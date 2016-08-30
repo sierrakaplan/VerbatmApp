@@ -10,8 +10,6 @@
 
 @protocol FeedProfileListProtocol <NSObject>
 
--(void) showTabBar: (BOOL) show;
-
 -(void)goToDiscover;
 
 @end

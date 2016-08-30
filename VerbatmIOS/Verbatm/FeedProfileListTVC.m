@@ -204,10 +204,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.delegate goToDiscover];
 }
 
--(void) showTabBar:(BOOL)show {
-	[self.delegate showTabBar:show];
-}
-
 -(void) refreshListOfContent {
     self.currentUserChannel = [[UserInfoCache sharedInstance] getUserChannel];
     //todo: change how getfollowersandfollowing is used everywhere (also make sure one instance of updating followers is used)

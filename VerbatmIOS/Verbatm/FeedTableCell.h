@@ -13,7 +13,6 @@
 
 @protocol FeedCellDelegate <NSObject>
 
--(void) showTabBar:(BOOL) show;
 -(void) showNavBar:(BOOL) show;
 -(void) pushViewController:(UIViewController*)viewController;
 

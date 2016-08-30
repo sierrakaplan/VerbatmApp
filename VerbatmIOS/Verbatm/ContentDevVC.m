@@ -242,7 +242,7 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 -(void) formatNavBar {
 	[self.navBar createLeftButtonWithTitle:@"CLOSE" orImage:nil];
 	[self.navBar createRightButtonWithTitle:@"POST" orImage:nil];
-	[self.navBar createMiddleButtonWithTitle:@"UPDATE BLOG" blackText:YES largeSize:YES];
+	[self.navBar createMiddleButtonWithTitle:@"UPDATE BLOG" blackText:NO largeSize:YES];
 	self.navBar.delegate = self;
 	[self.view addSubview: self.navBar];
 }

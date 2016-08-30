@@ -321,10 +321,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
     self.feedProfileListNavigationController.tabBarItem.imageInsets =  UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 }
 
--(void)notificationListHideTabBar:(BOOL) shouldHide{
-    [self showTabBar:!shouldHide];
-}
-
 -(void)showNotificationIndicator{
     [self showIndicator];
 }

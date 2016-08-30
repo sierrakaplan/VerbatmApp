@@ -18,6 +18,7 @@
 
 #import "LoadingIndicator.h"
 
+#import "MasterNavigationVC.h"
 #import <MessageUI/MFMessageComposeViewController.h>
 
 #import "ParseBackendKeys.h"
@@ -126,6 +127,10 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	[self setNeedsStatusBarAppearanceUpdate];
+	if (!self.inFullScreenMode) {
+		[(MasterNavigationVC*)self.tabBarController showTabBar:YES];
+	}
+	[self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
@@ -133,8 +138,8 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 }
 
 -(void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
-    
+	[super viewDidAppear:animated];
+
 }
 
 -(void)clearOurViews {
@@ -344,7 +349,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	} else if(cellPath.row < self.postListVC.parsePostActivityObjects.count) {
 		[postList.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
 	}
-	[self.delegate showTabBar:inSmallMode];
+	[(MasterNavigationVC*)self.tabBarController showTabBar: inSmallMode];
 	if (self.navigationController) {
 		[self.navigationController setNavigationBarHidden: !inSmallMode];
 	} else {

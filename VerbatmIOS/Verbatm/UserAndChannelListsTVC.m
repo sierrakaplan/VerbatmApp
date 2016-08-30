@@ -118,7 +118,9 @@
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
-	[self.navigationController setNavigationBarHidden:self.oldNavigationBarHidden];
+	if (self.isMovingFromParentViewController) {
+		[self.navigationController setNavigationBarHidden:self.oldNavigationBarHidden];
+	}
 	self.navigationController.navigationBar.tintColor = self.oldNavigationBarTintColor;
 	[(VerbatmNavigationController*)self.navigationController setNavigationTitleColor: self.oldNavigationBarTintColor];
 	self.navigationController.navigationBar.backgroundColor = self.oldNavigationBarBackground;

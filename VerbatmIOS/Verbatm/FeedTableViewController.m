@@ -218,10 +218,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath{
 
 #pragma mark - Feed Cell Protocol -
 
--(void) showTabBar:(BOOL)show {
-	[self.delegate showTabBar: show];
-}
-
 -(void) showNavBar:(BOOL)show {
 	[self.navigationController setNavigationBarHidden: !show];
 }

@@ -88,10 +88,6 @@
 	[self.delegate pushViewController: viewController];
 }
 
--(void) showTabBar:(BOOL) show {
-	[self.delegate showTabBar: show];
-}
-
 -(void) showNavBar:(BOOL)show {
 	[self.delegate showNavBar: show];
 }
