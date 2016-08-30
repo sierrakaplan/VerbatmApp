@@ -242,7 +242,7 @@
 	}
 }
 
--(void)removePreview{
+-(void)removePreview {
 	self.cellSelected = NO;
 	if(self.postPreview){
 		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
@@ -252,7 +252,7 @@
 				[self.postPreview clearViews];
 				[self.postPreview removeFromSuperview];
 				self.tableView.scrollEnabled = YES;
-				[(MasterNavigationVC*)self.tabBarController showTabBar:NO];
+				[(MasterNavigationVC*)self.tabBarController showTabBar:YES];
                 self.postPreview = nil;
 			}
 		}];
