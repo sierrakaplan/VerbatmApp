@@ -12,7 +12,6 @@
 @protocol FeedTableViewDelegate <NSObject>
 
 -(void) goToDiscover;
-
 @optional
 
 -(void) refreshListOfContent;
