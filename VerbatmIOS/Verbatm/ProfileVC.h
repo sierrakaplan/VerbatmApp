@@ -19,10 +19,7 @@
 @protocol ProfileVCDelegate <NSObject>
 
 @optional
-//
-//-(void) showTabBar:(BOOL)show;
-//-(void) showNavBar:(BOOL)show;
-//-(void) pushViewController: (UIViewController*)viewController;
+-(void) lockFeedScrollView:(BOOL)lock;
 -(void) userCreateFirstPost;
 
 @end

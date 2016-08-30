@@ -987,6 +987,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void)clearPublishingView {
 	if(self.isCurrentUserProfile)self.publishingProgressViewPositionHolder = [NSNumber numberWithInteger:CreateNewPostPrompt];
+    self.currentlyPublishing = NO;
 	[self refreshPosts];
 }
 

@@ -10,10 +10,10 @@
 #import <UIKit/UIKit.h>
 #import "Channel.h"
 
+
+
 @interface FeedListTableViewCell : UITableViewCell
-
-@property (nonatomic) Channel * currentChannel;
-
--(void)presentChannel:(Channel *) channel isSelected:(BOOL) isSelected;
+    @property (nonatomic) Channel * currentChannel;
+    -(void)presentChannel:(Channel *) channel isSelected:(BOOL) isSelected;
 
 @end

@@ -78,6 +78,11 @@
 	// Initialization code
 }
 
+-(void) lockFeedScrollView:(BOOL)shouldLock{
+    [self.delegate lockFeedScrollView:shouldLock];
+}
+
+
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
 	[super setSelected:selected animated:animated];
 
@@ -90,8 +95,5 @@
 	[self.delegate pushViewController: viewController];
 }
 
--(void) showNavBar:(BOOL)show {
-	[self.delegate showNavBar: show];
-}
 
 @end

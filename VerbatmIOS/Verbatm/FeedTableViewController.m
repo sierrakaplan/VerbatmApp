@@ -241,9 +241,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath{
 
 #pragma mark - Feed Cell Protocol -
 
--(void) showNavBar:(BOOL)show {
-    [self.tableView setScrollEnabled:show];
-	[self.navigationController setNavigationBarHidden:show];
+-(void) lockFeedScrollView:(BOOL)shouldLock{
+    [self.tableView setScrollEnabled:!shouldLock];
 }
 
 -(void) pushViewController:(UIViewController *)viewController {

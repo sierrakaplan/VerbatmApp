@@ -193,7 +193,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 		[self.profileHeaderView removeFromSuperview];
 		self.profileHeaderView = nil;
 	}
-
+    
 	CGRect frame = CGRectMake(0.f, 0.f, self.view.frame.size.width, HEADER_SIZE);
 	self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andChannel:self.channel
 												 inCurrentUserProfile:NO];
@@ -378,12 +378,18 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	}
 
 	if (self.navigationController) {
+        
 		[self.navigationController setNavigationBarHidden: !inSmallMode];
 		[(MasterNavigationVC*)self.tabBarController showTabBar: inSmallMode];
+        
 	} else {
+        
+        //in feed
 		[self.verbatmNavigationController setNavigationBarHidden: !inSmallMode];
 		[self.verbatmTabBarController showTabBar: inSmallMode];
+        [self.delegate lockFeedScrollView:!inSmallMode];
 	}
+    
 	[self.postListVC.view removeFromSuperview];
 	[self.postListVC clearViews];
 	self.postListVC = nil;
