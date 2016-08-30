@@ -431,7 +431,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 			[self setNeedsStatusBarAppearanceUpdate];
 			self.tabBar.frame = self.tabBarFrameOnScreen;
 		}];
-	} else if (!self.tabBarHidden) {
+	} else if (!show && !self.tabBarHidden) {
 		self.tabBarHidden = YES;
         if(self.notificationIndicatorPresent){
             [self removeIndicator];

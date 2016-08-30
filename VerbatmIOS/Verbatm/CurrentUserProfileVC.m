@@ -23,19 +23,15 @@
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
+	[self setNavigationItem];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear: animated];
-	[self setNavigationItem];
-	[self.navigationController setNavigationBarHidden:NO];
-	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundClear];
-	[(VerbatmNavigationController*)self.navigationController setNavigationBarTextColor:[UIColor whiteColor]];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
-	self.navigationItem.rightBarButtonItem = nil;
 }
 
 -(void) setNavigationItem {

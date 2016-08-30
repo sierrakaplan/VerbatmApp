@@ -151,6 +151,11 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate, FBSDKSharingDelegate>
 	}
 }
 
+-(void) viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
+	[self offScreen];
+}
+
 -(void) viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
 }

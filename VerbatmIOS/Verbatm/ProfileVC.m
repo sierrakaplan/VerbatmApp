@@ -47,6 +47,8 @@
 #import "UtilityFunctions.h"
 #import <PromiseKit/PromiseKit.h>
 
+#import "VerbatmNavigationController.h"
+
 @interface ProfileVC() <ProfileHeaderViewDelegate, ProfileMoreInfoViewDelegate,
 UIScrollViewDelegate, PostListVCProtocol,
 UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeViewControllerDelegate>
@@ -100,8 +102,19 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	[self setNeedsStatusBarAppearanceUpdate];
 	if (!self.inFullScreenMode) {
 		[(MasterNavigationVC*)self.tabBarController showTabBar:YES];
+		if (self.navigationController) {
+			[self.navigationController setNavigationBarHidden:NO];
+		}
+	} else {
+		[(MasterNavigationVC*)self.tabBarController showTabBar:NO];
+		if (self.navigationController) {
+			[self.navigationController setNavigationBarHidden:YES];
+		}
 	}
-	[self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
+	if (self.navigationController) {
+		[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundClear];
+		[(VerbatmNavigationController*)self.navigationController setNavigationBarTextColor:[UIColor whiteColor]];
+	}
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
