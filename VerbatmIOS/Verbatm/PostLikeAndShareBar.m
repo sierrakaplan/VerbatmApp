@@ -119,7 +119,8 @@
     return pageWeAreOn;
 }
 
--(void) creatButtonsWithNumLike:(NSNumber *) numLikes numComments:(NSNumber *)numComments andNumShare:(NSNumber *) numShares {
+-(void) creatButtonsWithNumLike:(NSNumber *) numLikes numComments:(NSNumber *)numComments
+					andNumShare:(NSNumber *) numShares {
     
     if(!numComments){
         numComments = @(0);
@@ -211,14 +212,11 @@
     NSAttributedString * followersText = [[NSAttributedString alloc] initWithString:[numLikes.stringValue stringByAppendingString:likesText] attributes:self.likeNumberTextAttributes];
     [self.numLikesButton setAttributedTitle:followersText forState:UIControlStateNormal];
     CGSize textSize = [[numLikes.stringValue stringByAppendingString:likesText] sizeWithAttributes:self.likeNumberTextAttributes];
-    
-    CGRect likeNumberButtonFrame = CGRectMake((self.frame.size.width - textSize.width)/2.f,
-                                              self.commentButon.frame.origin.y - (BIG_ICON_SPACING + textSize.height),
-                                              textSize.width, textSize.height);
+	self.numLikesButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    CGRect likeNumberButtonFrame = CGRectMake(0.f, self.commentButon.frame.origin.y - (BIG_ICON_SPACING + textSize.height),
+                                              self.frame.size.width, textSize.width);
     
     [self.numLikesButton setFrame:likeNumberButtonFrame];
-    
-    
     [self.numLikesButton addTarget:self action:@selector(numLikesButtonSelected) forControlEvents:UIControlEventTouchDown];
     
     [self addSubview:self.numLikesButton];

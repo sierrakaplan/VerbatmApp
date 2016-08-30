@@ -54,12 +54,6 @@
 	[self.navigationController setNavigationBarHidden:NO];
 	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundClear];
 	[(VerbatmNavigationController*)self.navigationController setNavigationBarTextColor:[UIColor whiteColor]];
-	if(self.startIndex >= 0) {
-		NSIndexPath * indexPath = [NSIndexPath indexPathForRow:self.startIndex inSection:0];
-		[self.tableView scrollToRowAtIndexPath:indexPath
-							  atScrollPosition:UITableViewScrollPositionTop
-									  animated:NO];
-	}
 	NSArray * visibleCell = [self.tableView visibleCells];
 	if(visibleCell && visibleCell.count) {
 		FeedTableCell *cell = [visibleCell firstObject];
@@ -110,7 +104,12 @@
     self.followingProfileList = channelList;
 	self.startIndex = startIndex;
     [self.tableView reloadData];
-    
+	if(self.startIndex >= 0) {
+		NSIndexPath * indexPath = [NSIndexPath indexPathForRow:self.startIndex inSection:0];
+		[self.tableView scrollToRowAtIndexPath:indexPath
+							  atScrollPosition:UITableViewScrollPositionTop
+									  animated:NO];
+	}
 }
 
 //Compares Channel* objects by their PFObject ids

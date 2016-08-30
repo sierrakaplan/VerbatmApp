@@ -827,6 +827,7 @@
 				A51A0ACF1D6CEFC2009D7CDD /* ADK */,
 				A51A0ADB1D6CF1E2009D7CDD /* PostList/Posts */,
 				A56D19EC1D74BC50003B6907 /* Profile */,
+				A51A0AD21D6CEFDB009D7CDD /* ProfileList */,
 				A51A0AD31D6CEFEB009D7CDD /* Discover */,
 				A51A0AD41D6CEFF0009D7CDD /* Notifications */,
 				C70E1C551C3BF76200346A25 /* Settings Page */,
@@ -1192,7 +1193,6 @@
 		A56D19EC1D74BC50003B6907 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
-				A51A0AD21D6CEFDB009D7CDD /* ProfileList */,
 				A56D19ED1D74BC94003B6907 /* CurrentUserProfileVC.h */,
 				A56D19EE1D74BC94003B6907 /* CurrentUserProfileVC.m */,
 				C7E65F671B9245200042AD99 /* ProfileVC.h */,
