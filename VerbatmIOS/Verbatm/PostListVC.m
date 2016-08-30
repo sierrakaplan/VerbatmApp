@@ -456,7 +456,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		} else if (self.inSmallMode) {
 			[self.currentDisplayCell removeDot];
 		}
-
 	}
 }
 
