@@ -266,7 +266,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 
 //the view controllers that will be tabbed
 -(void)createViewControllers {
-
 	self.discoverNavigationController = [self.storyboard instantiateViewControllerWithIdentifier:
 										 DISCOVER_NAVIGATION_CONTROLLER_ID];
 	self.discoverVC = self.discoverNavigationController.viewControllers[0];
@@ -422,7 +421,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 
 
 -(void) showTabBar:(BOOL)show {
-	if (show) {
+	if (show && self.tabBarHidden) {
 		self.tabBarHidden = NO;
         if (self.notificationIndicatorPresent) {
             [self showIndicator];
@@ -432,7 +431,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 			[self setNeedsStatusBarAppearanceUpdate];
 			self.tabBar.frame = self.tabBarFrameOnScreen;
 		}];
-	} else {
+	} else if (!self.tabBarHidden) {
 		self.tabBarHidden = YES;
         if(self.notificationIndicatorPresent){
             [self removeIndicator];

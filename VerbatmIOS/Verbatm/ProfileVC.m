@@ -7,6 +7,7 @@
 //
 
 #import "Channel_BackendObject.h"
+#import "CommentingViewController.h"
 
 #import "Durations.h"
 
@@ -283,8 +284,8 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 }
 
 -(void)showWhoCommentedOnPost:(PFObject *) post{
-    UserAndChannelListsTVC *commentListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
-    [commentListVC presentList:CommentList forChannel:nil orPost:post];
+    CommentingViewController *commentListVC = [[CommentingViewController alloc] init];
+    [commentListVC presentCommentsForPost: post];
 	if (self.navigationController) {
 		[self.navigationController pushViewController:commentListVC animated:YES];
 	} else {

@@ -191,7 +191,7 @@ withOldParseObjects:(NSMutableArray *)newParseObjects {
 
 -(void) display:(Channel*)channelForList withListOwner:(PFUser*)listOwner
 isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
-    
+
 	[self initializeChannel:channelForList withListOwner:listOwner
 	   isCurrentUserProfile:isCurrentUserProfile andStartingDate:date];
 	[self refreshPosts];
@@ -200,13 +200,13 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 -(void) initializeChannel:(Channel*)channelForList withListOwner:(PFUser*)listOwner
 	 isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	[self clearViews];
-    self.latestPostSeen = date;
+	self.latestPostSeen = date;
 	self.exitedView = NO;
 	self.latestPostSeen = date;
 	self.channelForList = channelForList;
 	self.listOwner = listOwner;
 	self.isCurrentUserProfile = isCurrentUserProfile;
-    //so that you don't see cursor dots 
+	//so that you don't see cursor dots
 	if (isCurrentUserProfile) {
 		self.latestPostSeen = channelForList.dateOfMostRecentChannelPost;
 	}
@@ -262,11 +262,11 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 			[weakSelf.postListDelegate postsFound];
 			[weakSelf.parsePostActivityObjects removeAllObjects];
 			[weakSelf.parsePostActivityObjects addObjectsFromArray:posts];
-            if(weakSelf.isCurrentUserProfile)[weakSelf.parsePostActivityObjects addObject:weakSelf.publishingProgressViewPositionHolder];
+			if(weakSelf.isCurrentUserProfile)[weakSelf.parsePostActivityObjects addObject:weakSelf.publishingProgressViewPositionHolder];
 			[weakSelf.collectionView reloadData];
 			[weakSelf scrollToLastElementInList];
 		} else if (!weakSelf.currentlyPublishing) {
-            if(weakSelf.isCurrentUserProfile)[weakSelf.parsePostActivityObjects addObject:weakSelf.publishingProgressViewPositionHolder];
+			if(weakSelf.isCurrentUserProfile)[weakSelf.parsePostActivityObjects addObject:weakSelf.publishingProgressViewPositionHolder];
 			[weakSelf.postListDelegate noPostFound];
 		}
 	};
@@ -424,11 +424,11 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(NSDate *)creationDateOfLastPostObjectInPostList{
-    if(!self.isCurrentUserProfile){
-        PFObject * lastObj = [self.parsePostActivityObjects lastObject];
-        return [lastObj createdAt];
-    }
-    return [NSDate date];
+	if(!self.isCurrentUserProfile){
+		PFObject * lastObj = [self.parsePostActivityObjects lastObject];
+		return [lastObj createdAt];
+	}
+	return [NSDate date];
 }
 
 -(void) updateCursor {
@@ -436,18 +436,18 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		NSDate * postDate = self.currentDisplayCell.currentPostActivityObject.createdAt;
 		NSTimeInterval timeSinceSeen = [postDate timeIntervalSinceDate:self.latestPostSeen];
 		if (timeSinceSeen > 0.f) {
-            
+
 			if (!self.inSmallMode) {
 				self.latestPostSeen = postDate;
 			} else {
-               
+
 				[self.currentDisplayCell addDot];
-            }
-        
-        } else if (self.inSmallMode) {
+			}
+
+		} else if (self.inSmallMode) {
 			[self.currentDisplayCell removeDot];
 		}
-        
+
 	}
 }
 
@@ -488,7 +488,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void)createPostPromptSelected{
-    [self.postListDelegate createPostPromptSelected];
+	[self.postListDelegate createPostPromptSelected];
 }
 
 -(PostCollectionViewCell*) postCellAtIndexPath:(NSIndexPath *)indexPath {
@@ -502,7 +502,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	cell.cellDelegate = self;
 	if([postActivityObject isKindOfClass:[NSNumber class]]) {
 		[cell clearViews];
-        [cell presentPromptView:self.publishingProgressViewPositionHolder];
+		[cell presentPromptView:self.publishingProgressViewPositionHolder];
 	} else {
 		NSString *otherId = postActivityObject.objectId;
 		if (currentId == nil || otherId == nil || ![currentId isEqualToString: otherId]) {
@@ -693,11 +693,11 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		[self.sharePostView removeFromSuperview];
 		self.sharePostView = nil;
 	}
-    
-    
-    CGFloat height = [UIApplication sharedApplication].keyWindow.frame.size.height/2.f;
-    CGFloat onScreenY = height;
-    
+
+
+	CGFloat height = [UIApplication sharedApplication].keyWindow.frame.size.height/2.f;
+	CGFloat onScreenY = height;
+
 	CGRect onScreenFrame = CGRectMake(0.f,onScreenY, self.view.frame.size.width,height);
 	CGRect offScreenFrame = CGRectMake(0.f, [UIApplication sharedApplication].keyWindow.frame.size.height, self.view.frame.size.width, height);
 	self.sharePostView = [[SharePostView alloc] initWithFrame:offScreenFrame];
@@ -706,18 +706,18 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	[[UIApplication sharedApplication].keyWindow addSubview:self.sharePostView];
 
 	[[UIApplication sharedApplication].keyWindow bringSubviewToFront:self.sharePostView];
-    
+
 	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^ {
 		self.sharePostView.frame = onScreenFrame;
 	}];
 }
 
 -(void)removeSharePOVView{
-	
-    if(self.sharePostView){
-        
+
+	if(self.sharePostView){
+
 		CGRect offScreenFrame = CGRectMake(0.f, [UIApplication sharedApplication].keyWindow.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-        
+
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			self.sharePostView.frame = offScreenFrame;
 		}completion:^(BOOL finished) {
@@ -727,7 +727,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 			}
 		}];
 	}
-    
+
 }
 
 #pragma mark - Share Selection View Protocol -
@@ -827,7 +827,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(void) shareToSmsSelected{
 	NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
 	if(url){
-        [self.postListDelegate shareToSmsSelectedToUrl:url];
+		[self.postListDelegate shareToSmsSelectedToUrl:url];
 	}else{
 		[self.externalShare storeShareLinkToPost:self.postToShare withCaption:nil withCompletionBlock:nil];
 		[self reportLinkError];
@@ -929,10 +929,10 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void) postToFacebookWithShareLink:(NSString*)shareLink {
 	NSString *postId = self.postToShare.objectId;
-//	PFUser *user = [PFUser currentUser];
-//	NSString *name = [user valueForKey:VERBATM_USER_NAME_KEY];
-//	Channel_BackendObject *channelObj = [self.postToShare valueForKey:POST_CHANNEL_KEY];
-//	NSString *channelName = [channelObj valueForKey:CHANNEL_NAME_KEY];
+	//	PFUser *user = [PFUser currentUser];
+	//	NSString *name = [user valueForKey:VERBATM_USER_NAME_KEY];
+	//	Channel_BackendObject *channelObj = [self.postToShare valueForKey:POST_CHANNEL_KEY];
+	//	NSString *channelName = [channelObj valueForKey:CHANNEL_NAME_KEY];
 
 	BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:postId];
 	branchUniversalObject.title = @"Hey! Checkout this post on Verbatm!";
@@ -972,8 +972,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark - Publishing -
 
 -(void)clearPublishingView {
-    if(self.isCurrentUserProfile)self.publishingProgressViewPositionHolder = [NSNumber numberWithInteger:CreateNewPostPrompt];
-    [self refreshPosts];
+	if(self.isCurrentUserProfile)self.publishingProgressViewPositionHolder = [NSNumber numberWithInteger:CreateNewPostPrompt];
+	[self refreshPosts];
 }
 
 -(void)startMonitoringPublishing{
@@ -985,9 +985,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	self.currentlyPublishing = YES;
 	self.nextIndexToPresent = -1;
 	self.nextNextIndex = -1;
-    self.publishingProgressViewPositionHolder = [NSNumber numberWithInteger:PublishingPostPrompt];
-    [self.collectionView reloadData];
-    [self.postListDelegate postsFound];
+	self.publishingProgressViewPositionHolder = [NSNumber numberWithInteger:PublishingPostPrompt];
+	[self.collectionView reloadData];
+	[self.postListDelegate postsFound];
 }
 
 -(void) userPublishing:(NSNotification *) notification {
@@ -1018,7 +1018,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 	self.parsePostActivityObjects = nil;
 	[self.collectionView reloadData];
-    
+
 	// Start off assuming scrolling backwards
 	self.scrollDirection = -1;
 	self.nextIndexToPresent = -1;
@@ -1036,7 +1036,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark - POV delegate -
 
 -(void)removePostViewSelected{
-    [self.postListDelegate removePostViewSelected];
+	[self.postListDelegate removePostViewSelected];
 }
 
 -(void)channelSelected:(Channel *) channel{
@@ -1048,7 +1048,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void)showWhoCommentedOnPost:(PFObject *) post{
-    [self.postListDelegate showWhoCommentedOnPost:post];
+	[self.postListDelegate showWhoCommentedOnPost:post];
 }
 
 #pragma mark - Lazy instantiation -
@@ -1112,10 +1112,10 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(NSNumber*)publishingProgressViewPositionHolder{
-    if(!_publishingProgressViewPositionHolder){
-        LastPostType type = ([PublishingProgressManager sharedInstance].currentlyPublishing) ? PublishingPostPrompt : CreateNewPostPrompt;
-        _publishingProgressViewPositionHolder = [NSNumber numberWithInteger:type];
-    }
+	if(!_publishingProgressViewPositionHolder){
+		LastPostType type = ([PublishingProgressManager sharedInstance].currentlyPublishing) ? PublishingPostPrompt : CreateNewPostPrompt;
+		_publishingProgressViewPositionHolder = [NSNumber numberWithInteger:type];
+	}
 	return _publishingProgressViewPositionHolder;
 }
 

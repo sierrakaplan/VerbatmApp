@@ -54,6 +54,7 @@
 		A57A92FF1B55A551006C2597 /* CameraFocusSquare.m in Sources */ = {isa = PBXBuildFile; fileRef = A57A92FE1B55A551006C2597 /* CameraFocusSquare.m */; };
 		A57A93051B55E835006C2597 /* VerbatmCameraView.m in Sources */ = {isa = PBXBuildFile; fileRef = A57A93041B55E835006C2597 /* VerbatmCameraView.m */; };
 		A57A93071B55E95B006C2597 /* VerbatmCameraView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A57A93061B55E95B006C2597 /* VerbatmCameraView.xib */; };
+		A582D28D1D75F6E90004A017 /* CommentingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A582D28C1D75F6E90004A017 /* CommentingViewController.m */; };
 		A58656681B61FD99008E358C /* PhotoPVE.m in Sources */ = {isa = PBXBuildFile; fileRef = A58656671B61FD99008E358C /* PhotoPVE.m */; };
 		A586566D1B620E60008E358C /* PointObject.m in Sources */ = {isa = PBXBuildFile; fileRef = A586566C1B620E60008E358C /* PointObject.m */; };
 		A58656711B621CA4008E358C /* MathOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = A58656701B621CA4008E358C /* MathOperations.m */; };
@@ -380,6 +381,8 @@
 		A57A93031B55E835006C2597 /* VerbatmCameraView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmCameraView.h; sourceTree = "<group>"; };
 		A57A93041B55E835006C2597 /* VerbatmCameraView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmCameraView.m; sourceTree = "<group>"; };
 		A57A93061B55E95B006C2597 /* VerbatmCameraView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VerbatmCameraView.xib; sourceTree = "<group>"; };
+		A582D28B1D75F6E90004A017 /* CommentingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentingViewController.h; sourceTree = "<group>"; };
+		A582D28C1D75F6E90004A017 /* CommentingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentingViewController.m; sourceTree = "<group>"; };
 		A58656661B61FD99008E358C /* PhotoPVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoPVE.h; sourceTree = "<group>"; };
 		A58656671B61FD99008E358C /* PhotoPVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoPVE.m; sourceTree = "<group>"; };
 		A58656691B620951008E358C /* PointObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PointObject.h; sourceTree = "<group>"; };
@@ -767,7 +770,6 @@
 		A51A0AD21D6CEFDB009D7CDD /* ProfileList */ = {
 			isa = PBXGroup;
 			children = (
-				A51A0ADB1D6CF1E2009D7CDD /* PostList/Posts */,
 				C7178E061D21101900B90643 /* FeedTableViewController.h */,
 				C7178E071D21101900B90643 /* FeedTableViewController.m */,
 				A5BB653D1D6E9E6800F5B01B /* FeedProfileListTVC.h */,
@@ -823,12 +825,13 @@
 				A51A0AD01D6CEFCC009D7CDD /* Login/Onboarding */,
 				A51A0AD91D6CF0D6009D7CDD /* MainTabController */,
 				A51A0ACF1D6CEFC2009D7CDD /* ADK */,
+				A51A0ADB1D6CF1E2009D7CDD /* PostList/Posts */,
 				A56D19EC1D74BC50003B6907 /* Profile */,
 				A51A0AD21D6CEFDB009D7CDD /* ProfileList */,
 				A51A0AD31D6CEFEB009D7CDD /* Discover */,
 				A51A0AD41D6CEFF0009D7CDD /* Notifications */,
 				C70E1C551C3BF76200346A25 /* Settings Page */,
-				A51A0ADA1D6CF1D6009D7CDD /* UserList */,
+				A51A0ADA1D6CF1D6009D7CDD /* User/Channel/Comment List */,
 			);
 			name = FrontEnd;
 			sourceTree = "<group>";
@@ -865,15 +868,18 @@
 			name = MainTabController;
 			sourceTree = "<group>";
 		};
-		A51A0ADA1D6CF1D6009D7CDD /* UserList */ = {
+		A51A0ADA1D6CF1D6009D7CDD /* User/Channel/Comment List */ = {
 			isa = PBXGroup;
 			children = (
 				C76172751C4C9FCE00AB0D84 /* ChannelOrUsernameCV.h */,
 				C76172761C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m */,
 				C76172721C4C8B1300AB0D84 /* UserAndChannelListsTVC.h */,
 				C76172731C4C8B1300AB0D84 /* UserAndChannelListsTVC.m */,
+				A582D28B1D75F6E90004A017 /* CommentingViewController.h */,
+				A582D28C1D75F6E90004A017 /* CommentingViewController.m */,
+				A51A0AE41D6CF5D7009D7CDD /* Commenting Toolbar */,
 			);
-			name = UserList;
+			name = "User/Channel/Comment List";
 			sourceTree = "<group>";
 		};
 		A51A0ADB1D6CF1E2009D7CDD /* PostList/Posts */ = {
@@ -933,7 +939,6 @@
 				A5BB65431D6E9EB000F5B01B /* ProfileListHeader.h */,
 				A5BB65441D6E9EB000F5B01B /* ProfileListHeader.m */,
 				A51A0AEC1D6CF7CD009D7CDD /* Feed Cell View */,
-				A51A0AE41D6CF5D7009D7CDD /* LikeCommentBar */,
 			);
 			name = "Custom Views";
 			sourceTree = "<group>";
@@ -964,13 +969,13 @@
 			name = Toolbars;
 			sourceTree = "<group>";
 		};
-		A51A0AE41D6CF5D7009D7CDD /* LikeCommentBar */ = {
+		A51A0AE41D6CF5D7009D7CDD /* Commenting Toolbar */ = {
 			isa = PBXGroup;
 			children = (
 				C73766741D64D9D800933A81 /* CommentingKeyboardToolbar.h */,
 				C73766751D64D9D800933A81 /* CommentingKeyboardToolbar.m */,
 			);
-			name = LikeCommentBar;
+			name = "Commenting Toolbar";
 			sourceTree = "<group>";
 		};
 		A51A0AE51D6CF5F4009D7CDD /* Custom Views */ = {
@@ -1565,10 +1570,10 @@
 		C7BC437B199D97F5004B91A1 /* Verbatm */ = {
 			isa = PBXGroup;
 			children = (
-				A51A0ADC1D6CF2C7009D7CDD /* Resources */,
 				A5BB65461D6F804000F5B01B /* Main.storyboard */,
 				A51A0AD61D6CF03F009D7CDD /* FrontEnd */,
 				A51A0AD51D6CF036009D7CDD /* Framedation/Model */,
+				A51A0ADC1D6CF2C7009D7CDD /* Resources */,
 				C7BC437C199D97F5004B91A1 /* Supporting Files */,
 				C716E9D31BD6CAAA001B769D /* Analytics */,
 			);
@@ -1975,6 +1980,7 @@
 				C7E6C1461A4E394600863893 /* VideoPVE.m in Sources */,
 				C7BF1AA81C57F5F500CEDE4B /* Photo_BackendObject.m in Sources */,
 				A5BB65501D70ECBF00F5B01B /* VerbatmNavigationController.m in Sources */,
+				A582D28D1D75F6E90004A017 /* CommentingViewController.m in Sources */,
 				A5E73B761D1634D300527ECF /* UserManager.m in Sources */,
 				C7E65F6F1B92EB650042AD99 /* PostView.m in Sources */,
 				C755DB0C1C74619200136F6E /* PublishingProgressManager.m in Sources */,
