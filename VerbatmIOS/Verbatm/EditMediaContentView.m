@@ -81,6 +81,8 @@
 
 @property (nonatomic) CGFloat lastScale;
 
+@property (nonatomic) BOOL isPinchZoomingImage;
+
 @end
 
 @implementation EditMediaContentView
@@ -482,6 +484,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
             switch (gesture.state) {
                 case UIGestureRecognizerStateBegan: {
                     self.lastScale = gesture.scale;
+                    self.isPinchZoomingImage = YES;
                     break;
                 }
                 case UIGestureRecognizerStateChanged: {
@@ -491,10 +494,12 @@ andTextAlignment:(NSTextAlignment)textAlignment
                     break;
                 }
                 case UIGestureRecognizerStateEnded: {
+                    self.isPinchZoomingImage = NO;
                     self.lastScale = gesture.scale;
                     break;
                 }
                 default: {
+                    self.isPinchZoomingImage = NO;
                     return;
                 }
             }
@@ -508,7 +513,8 @@ andTextAlignment:(NSTextAlignment)textAlignment
 /* Handles pan gesture which could be horizontal to add a filter to an image,
  or vertical to change text position */
 -(void) didPan:(UIGestureRecognizer *) sender{
-	switch (sender.state) {
+    if(self.isPinchZoomingImage)return;
+    switch (sender.state) {
 		case UIGestureRecognizerStateBegan:
 			if (sender.numberOfTouches < 1) return;
 			self.panStartLocation = [sender locationOfTouch:0 inView:self];

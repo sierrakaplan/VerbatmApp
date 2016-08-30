@@ -128,7 +128,6 @@
 
 
 -(void)scaleImagewithTransform:(CGAffineTransform) transform{
-
     [self.imageView setTransform:transform];
 }
 
