@@ -15,7 +15,6 @@
 
 #import "ParseBackendKeys.h"
 #import "ProfileListHeader.h"
-#import "ProfileVerbatmLogoBar.h"
 #import "Styles.h"
 
 #import "UserInfoCache.h"
