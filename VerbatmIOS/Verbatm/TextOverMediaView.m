@@ -138,54 +138,28 @@
 }
 
 -(void) setNewImageContentOffset:(CGFloat)newX andY:(CGFloat)newY {
-
+    
     if(self.imageView.frame.size.height > self.imageView.frame.size.width){
+        
         if (newY >= self.imageView.frame.origin.y){
+            
             if((self.imageView.frame.origin.y + self.imageView.frame.size.height) <=
                newY + self.imageView.frame.size.height){
                 self.repositionPhotoScrollView.contentOffset = CGPointMake(newX, newY);
             }
+            
         }
+        
     } else{
+        
         if (newX >= self.imageView.frame.origin.x){
             if((self.imageView.frame.origin.x + self.imageView.frame.size.width) <=
                newX + self.imageView.frame.size.width){
                self.repositionPhotoScrollView.contentOffset = CGPointMake(newX, newY);
             }
         }
+        
     }
-    
-//    
-//    
-//    CGFloat xMax = self.repositionPhotoScrollView.contentSize.width - self.bounds.size.width;
-//    if (newX > xMax) {
-//        newX = xMax;
-//    }
-//    
-//    if (newY < 0) newY = 0;
-//    CGFloat yMax = self.repositionPhotoScrollView.contentSize.height - self.bounds.size.height;
-//    if (newY > yMax) {
-//        newY = yMax;
-//    }
-    
-//    if(self.imageView.frame.size.height > self.imageView.frame.size.width){
-//        
-//        if(newY <= self.imageView.frame.origin.y &&
-//           ((newY + self.imageView.frame.size.height) <=
-//           self.imageView.frame.origin.y + self.imageView.frame.size.height)){
-//            self.repositionPhotoScrollView.contentOffset = CGPointMake(newX, newY);
-//        }
-//        
-//    }else{
-       // if(newX <= self.imageView.frame.origin.x){
-    
-//        }else if ((newX + self.imageView.frame.size.width) <=
-//                   self.imageView.frame.origin.y + self.imageView.frame.size.width){
-//            self.repositionPhotoScrollView.contentOffset = CGPointMake(newX, newY);
-//        }
-    //}
-    
-    
     
 }
 
