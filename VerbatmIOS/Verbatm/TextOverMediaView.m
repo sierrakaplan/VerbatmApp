@@ -113,12 +113,10 @@
 
 -(void)startRepositioningPhoto {
 	[self.repositionPhotoGrid setHidden:NO];
-	[self.textView setHidden:YES];
 }
 
 -(void)endRepositioningPhoto {
 	[self.repositionPhotoGrid setHidden:YES];
-	[self.textView setHidden:NO];
 }
 
 -(CGPoint)getImageOffset {
