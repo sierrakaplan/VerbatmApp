@@ -86,14 +86,14 @@
             [Notification_BackendManager createNotificationWithType:NotificationTypeNewComment
 													  receivingUser:[postParseObject valueForKey:POST_ORIGINAL_CREATOR_KEY]
 												 relevantPostObject:postParseObject];
-            [Commenting_BackendObject NotifyNewCommentOnPost:postParseObject];
+            [Commenting_BackendObject notifyNewCommentOnPost:postParseObject];
             
         }
     }];
 }
 
 
-+(void)NotifyNewCommentOnPost:(PFObject *)postParseObject{
++(void)notifyNewCommentOnPost:(PFObject *)postParseObject{
     NSDictionary * userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[postParseObject objectId],POST_COMMENTED_ON_NOTIFICATION_USERINFO_KEY,nil];
     
     NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_NEW_COMMENT_USER object:nil userInfo:userInfo];

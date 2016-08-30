@@ -98,7 +98,6 @@
 }
 
 -(void)clearLikeAndCommentInformation{
-    @autoreleasepool {
         [self.numSharesLabel removeFromSuperview];
         [self.smallShareButton removeFromSuperview];
         [self.numLikeLabel removeFromSuperview];
@@ -111,7 +110,6 @@
         self.smallShareButton = nil;
         self.numLikeLabel = nil;
         self.smallLikeButton = nil;
-    }
 }
 
 -(void) clearViews {
@@ -122,11 +120,9 @@
 
 	[self removePublishingProgress];
     [self clearLikeAndCommentInformation];
-	@autoreleasepool {
-		self.currentPostView = nil;
-        self.currentPostActivityObject = nil;
-        self.postBeingPresented = nil;
-	}
+    self.currentPostView = nil;
+    self.currentPostActivityObject = nil;
+    self.postBeingPresented = nil;
 	
 
 	self.isOnScreen = NO;
