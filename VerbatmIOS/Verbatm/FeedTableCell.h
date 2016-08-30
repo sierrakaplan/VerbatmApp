@@ -15,7 +15,7 @@
 
 @protocol FeedCellDelegate <NSObject>
 
--(void) showNavBar:(BOOL) show;
+-(void) lockFeedScrollView:(BOOL)shouldLock;
 -(void) pushViewController:(UIViewController*)viewController;
 
 @end

@@ -57,6 +57,7 @@
     [self presentCellSeperator];
 }
 
+
 -(void)presentChannel:(Channel *) channel isSelected:(BOOL) isSelected{
     [self clearView];
     self.isSelected = isSelected;
