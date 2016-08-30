@@ -98,7 +98,7 @@
 }
 
 
-#pragma mark - Table view data source
+#pragma mark - Table view data source -
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     ProfileListHeader *view = [[ProfileListHeader alloc] initWithFrame:CGRectMake(0, 0,

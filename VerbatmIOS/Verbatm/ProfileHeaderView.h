@@ -5,6 +5,7 @@
 //  Created by Sierra Kaplan-Nelson on 8/29/16.
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
+//	This shows the header on the profile - username and cover photo.
 
 #import <UIKit/UIKit.h>
 

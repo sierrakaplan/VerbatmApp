@@ -5,6 +5,8 @@
 //  Created by Sierra Kaplan-Nelson on 8/29/16.
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
+//	This class shows more information about a profile, including the followers and following lists
+//	and description.
 
 #import <UIKit/UIKit.h>
 
