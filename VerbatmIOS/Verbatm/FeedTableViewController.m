@@ -40,6 +40,7 @@
 	[self.tableView registerClass:[FeedTableCell class] forCellReuseIdentifier:@"FeedTableCell"];
 	self.view.backgroundColor = [UIColor blackColor];
 	self.tableView.pagingEnabled = YES;
+	self.automaticallyAdjustsScrollViewInsets = NO;
 	self.tableView.allowsSelection = NO;
 	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 	[self setNeedsStatusBarAppearanceUpdate];
@@ -49,7 +50,6 @@
 	[super viewWillAppear:animated];
 	[self.navigationController setNavigationBarHidden:NO];
 	[(VerbatmNavigationController*)self.navigationController setNavigationBarStyleClearWithTextColor:[UIColor whiteColor]];
-	[self.delegate showTabBar: NO];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -78,15 +78,12 @@
 }
 
 -(void) refreshListOfContent {
-
 	if (self.tableView.contentOffset.y > (self.view.frame.size.height - REFRESH_DISTANCE)) {
 		[self.tableView setContentOffset:CGPointZero animated:YES];
 	}
     
     [self.delegate refreshListOfContent];
-    
 }
-
 
 -(void)setAndRefreshWithList:(NSMutableArray *) channelList withStartIndex:(NSInteger) startIndex{
     [self.followingProfileList removeAllObjects];
@@ -94,9 +91,8 @@
     [self.tableView reloadData];
     if(startIndex >= 0){
         NSIndexPath * indexPath = [NSIndexPath indexPathForRow:startIndex inSection:0];
-        
         [self.tableView scrollToRowAtIndexPath:indexPath
-                             atScrollPosition:UITableViewScrollPositionMiddle
+                             atScrollPosition:UITableViewScrollPositionTop
                                      animated:NO];
     }
     
@@ -174,9 +170,6 @@
 
 #pragma mark - Table view data source
 
--(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-	//[self.delegate showTabBar:YES];
-}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	return 1;
@@ -225,10 +218,16 @@ forRowAtIndexPath:(NSIndexPath *)indexPath{
 
 #pragma mark - Feed Cell Protocol -
 
--(void)shouldHideTabBar:(BOOL) shouldHide{
-	self.tableView.scrollEnabled = !shouldHide;
-	self.contentInFullScreen = shouldHide;
-	[self setNeedsStatusBarAppearanceUpdate];
+-(void) showTabBar:(BOOL)show {
+	[self.delegate showTabBar: show];
+}
+
+-(void) showNavBar:(BOOL)show {
+	[self.navigationController setNavigationBarHidden: !show];
+}
+
+-(void) pushViewController:(UIViewController *)viewController {
+	[self.navigationController pushViewController:viewController animated:YES];
 }
 
 @end

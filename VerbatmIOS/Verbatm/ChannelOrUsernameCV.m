@@ -124,8 +124,6 @@
     }];
 }
 
-
-
 -(void)setHeaderTitle{
 	self.isHeaderTile = YES;
 }

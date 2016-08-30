@@ -1072,9 +1072,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void) showWhoLikesThePost:(PFObject *) post{
-	UserAndChannelListsTVC *likersListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
-	[likersListVC presentList:LikersList forChannel:nil orPost:post];
-	[self.navigationController pushViewController:likersListVC animated:YES];
+	[self.postListDelegate showWhoLikedPost:post];
 }
 
 -(void)showWhoCommentedOnPost:(PFObject *) post{

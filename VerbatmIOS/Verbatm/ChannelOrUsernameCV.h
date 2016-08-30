@@ -22,4 +22,5 @@
 -(void)clearView;
 
 +(CGFloat)getHeightForCellFromCommentObject:(Comment *) commentObject;
+
 @end

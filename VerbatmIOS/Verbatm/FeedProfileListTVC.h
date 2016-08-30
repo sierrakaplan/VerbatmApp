@@ -17,6 +17,9 @@
 @end
 
 @interface FeedProfileListTVC : UITableViewController
+
 -(void) refreshListOfContent;
-@property (nonatomic) id<FeedProfileListProtocol> delegate;
+
+@property (nonatomic, weak) id<FeedProfileListProtocol> delegate;
+
 @end

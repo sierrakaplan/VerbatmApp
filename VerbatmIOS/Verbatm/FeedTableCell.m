@@ -9,7 +9,7 @@
 #import "FeedTableCell.h"
 #import "UtilityFunctions.h"
 
-@interface FeedTableCell ()<ProfileVCDelegate>
+@interface FeedTableCell () <ProfileVCDelegate>
 
 @property (nonatomic) ProfileVC * currentProfile;
 
@@ -71,10 +71,6 @@
 	[self.currentProfile refreshProfile];
 }
 
--(void) showTabBar:(BOOL) show {
-	[self.delegate shouldHideTabBar:!show];
-}
-
 - (void)awakeFromNib {
 	[super awakeFromNib];
 	// Initialization code
@@ -84,6 +80,20 @@
 	[super setSelected:selected animated:animated];
 
 	// Configure the view for the selected state
+}
+
+#pragma mark - Profile Delegate -
+
+-(void) pushViewController:(UIViewController *)viewController {
+	[self.delegate pushViewController: viewController];
+}
+
+-(void) showTabBar:(BOOL) show {
+	[self.delegate showTabBar: show];
+}
+
+-(void) showNavBar:(BOOL)show {
+	[self.delegate showNavBar: show];
 }
 
 @end

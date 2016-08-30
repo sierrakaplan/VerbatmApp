@@ -17,12 +17,9 @@
  5)People you are following
  */
 
-
-
-
 @protocol UserAndChannelListsTVCDelegate <NSObject>
--(void)openChannel:(Channel *) channel;
 
+-(void)openChannel:(Channel *) channel;
 -(void)selectedUser:(id)userId;
 
 @end

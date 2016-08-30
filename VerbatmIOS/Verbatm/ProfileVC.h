@@ -18,8 +18,9 @@
 -(void) showTabBar: (BOOL) show;
 
 @optional
--(void) exitProfile;
--(void) userCreateFirstPost;
+
+-(void) showNavBar:(BOOL)show;
+-(void) pushViewController: (UIViewController*)viewController;
 
 @end
 

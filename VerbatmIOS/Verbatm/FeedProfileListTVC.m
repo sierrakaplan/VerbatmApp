@@ -126,7 +126,6 @@
     [self.profileListFeed setAndRefreshWithList:[self getCombinedChannelList] withStartIndex:startIndex];
 	[self.navigationController pushViewController:self.profileListFeed animated:YES];
     [self.tableView setScrollEnabled:NO];
-    [self.delegate showTabBar:NO];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -199,15 +198,14 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.profileListFeed.view removeFromSuperview];
     self.profileListFeed = nil;
     [self.tableView setScrollEnabled:YES];
-    [self.delegate showTabBar:YES];
-}
-
--(void) showTabBar: (BOOL)show {
-    [self.delegate showTabBar:show];
 }
 
 -(void)goToDiscover {
     [self.delegate goToDiscover];
+}
+
+-(void) showTabBar:(BOOL)show {
+	[self.delegate showTabBar:show];
 }
 
 -(void) refreshListOfContent {
@@ -229,7 +227,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     }];
 }
 
-#pragma mark -Lazy Instantiation-
+#pragma mark - Lazy Instantiation -
 
 
 -(FeedTableViewController *)profileListFeed{

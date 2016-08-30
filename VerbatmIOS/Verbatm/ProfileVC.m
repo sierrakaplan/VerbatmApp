@@ -87,7 +87,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	[super viewDidLoad];
 	self.moreInfoViewOnScreen = NO;
 	self.automaticallyAdjustsScrollViewInsets = NO;
-	self.view.backgroundColor = [UIColor colorWithWhite:0.90 alpha:1.f];
+	self.view.backgroundColor = [UIColor blackColor];
 	[self buildHeaderView];
 	[self loadContentToPostList];
 }
@@ -147,7 +147,11 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 -(void)presentUserList:(ListType) listType{
 	UserAndChannelListsTVC *userList = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
 	[userList presentList:listType forChannel:self.channel orPost:nil];
-	[self.navigationController pushViewController:userList animated:YES];
+	if (self.navigationController) {
+		[self.navigationController pushViewController:userList animated:YES];
+	} else {
+		[self.delegate pushViewController:userList];
+	}
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -272,7 +276,21 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 -(void)showWhoCommentedOnPost:(PFObject *) post{
     UserAndChannelListsTVC *commentListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
     [commentListVC presentList:CommentList forChannel:nil orPost:post];
-    [self.navigationController pushViewController:commentListVC animated:YES];
+	if (self.navigationController) {
+		[self.navigationController pushViewController:commentListVC animated:YES];
+	} else {
+		[self.delegate pushViewController:commentListVC];
+	}
+}
+
+-(void) showWhoLikedPost:(PFObject *)post {
+	UserAndChannelListsTVC *likersListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+	[likersListVC presentList:LikersList forChannel:nil orPost:post];
+	if (self.navigationController) {
+		[self.navigationController pushViewController:likersListVC animated:YES];
+	} else {
+		[self.delegate pushViewController:likersListVC];
+	}
 }
 
 // Something in profile was reblogged so contains a header allowing user to navigate
@@ -289,7 +307,11 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
         userProfile.isProfileTab = NO;
         userProfile.ownerOfProfile = channel.channelCreator;
         userProfile.channel = channel;
-        [self.navigationController pushViewController:userProfile animated:YES];
+		if (self.navigationController) {
+			[self.navigationController pushViewController:userProfile animated:YES];
+		} else {
+			[self.delegate pushViewController:userProfile];
+		}
     }
 }
 
@@ -311,7 +333,8 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	return flowLayout;
 }
 
--(void)presentViewPostView:(PostListVC *) postList inSmallMode:(BOOL) inSmallMode shouldPage:(BOOL) shouldPage
+-(void)presentViewPostView:(PostListVC *) postList inSmallMode:(BOOL) inSmallMode
+				shouldPage:(BOOL) shouldPage
 			  fromCellPath:(NSIndexPath *) cellPath{
 
 	[self.view addSubview:postList.view];
@@ -321,7 +344,8 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	} else if(cellPath.row < self.postListVC.parsePostActivityObjects.count) {
 		[postList.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
 	}
-	[self.delegate showTabBar:!shouldPage];
+	[self.delegate showTabBar:inSmallMode];
+	[self.delegate showNavBar:inSmallMode];
 	[self.postListVC.view removeFromSuperview];
 	[self.postListVC clearViews];
 	self.postListVC = nil;
@@ -365,7 +389,11 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
         [newVC display:self.channel withListOwner:self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile
        andStartingDate:startingDate withOldParseObjects:self.postListVC.parsePostActivityObjects];
     }
-
+	if (self.inFullScreenMode) {
+		[self.navigationController setNavigationBarHidden:YES];
+	} else {
+		[self.navigationController setNavigationBarHidden:NO];
+	}
     [self presentViewPostView:newVC inSmallMode:!self.inFullScreenMode shouldPage:self.inFullScreenMode fromCellPath:cellPath];
 }
 
@@ -423,7 +451,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 -(void) shareToSmsSelectedToUrl:(NSString *) url{
     if(url){
         MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
-        NSString * message = @"Hey - checkout this post on Verbatm!   ";
+        NSString * message = @"Hey - checkout this post on Verbatm!";
         controller.body = [message stringByAppendingString:url];
         
         controller.messageComposeDelegate = self;
@@ -433,18 +461,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 - (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result{
     [controller.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-}
-
-
-//the current user has selected the back button
--(void)exitCurrentProfile {
-    
-    if(self.profileInFeed){
-        [self.delegate exitProfile];
-    }else{
-        [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
-        }];
-    }
 }
 
 -(void)blockCurrentUserShouldBlock:(BOOL) shouldBlock{

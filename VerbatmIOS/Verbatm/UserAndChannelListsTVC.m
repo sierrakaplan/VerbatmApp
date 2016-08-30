@@ -30,6 +30,8 @@
 
 #import "QuartzCore/QuartzCore.h"
 
+#import "VerbatmNavigationController.h"
+
 @interface UserAndChannelListsTVC () <CustomNavigationBarDelegate, CommentingKeyboardToolbarProtocol>
 @property (nonatomic) Channel * channelOnDisplay;
 @property (nonatomic) PFObject * postObject;
@@ -49,10 +51,11 @@
 
 @property (nonatomic) id userInfoOnDisplay;//the user whose data we are displaying
 
-@property (nonatomic) BOOL presentAllChannels;
 @property (nonatomic) BOOL shouldAnimateViews;
 
 @property (nonatomic) UIColor *oldNavigationBarTintColor;
+@property (nonatomic) UIColor *oldNavigationBarBackground;
+@property (nonatomic) BOOL oldNavigationBarHidden;
 
 #define CHANNEL_CELL_ID @"channel_cell_id"
 #define LIKERS_TEXT @"Likes"
@@ -78,11 +81,11 @@
 
 	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 	self.tableView.allowsMultipleSelection = NO;
+	self.automaticallyAdjustsScrollViewInsets = NO;
 	self.tableView.showsHorizontalScrollIndicator = NO;
 	self.tableView.showsVerticalScrollIndicator = NO;
 
 	[self setNeedsStatusBarAppearanceUpdate];
-	[self setNavigationItemTitle];
 }
 
 -(void) setNavigationItemTitle {
@@ -100,8 +103,13 @@
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	[self setNeedsStatusBarAppearanceUpdate];
+	self.oldNavigationBarHidden = self.navigationController.navigationBarHidden;
+	[self.navigationController setNavigationBarHidden:NO];
 	self.oldNavigationBarTintColor = self.navigationController.navigationBar.tintColor;
 	self.navigationController.navigationBar.tintColor = [UIColor blackColor];
+	[(VerbatmNavigationController*)self.navigationController setNavigationTitleColor: [UIColor blackColor]];
+	self.oldNavigationBarBackground = self.navigationController.navigationBar.backgroundColor;
+	self.navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -110,7 +118,10 @@
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
+	[self.navigationController setNavigationBarHidden:self.oldNavigationBarHidden];
 	self.navigationController.navigationBar.tintColor = self.oldNavigationBarTintColor;
+	[(VerbatmNavigationController*)self.navigationController setNavigationTitleColor: self.oldNavigationBarTintColor];
+	self.navigationController.navigationBar.backgroundColor = self.oldNavigationBarBackground;
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -133,20 +144,21 @@
 		[self.refreshControl endRefreshing];
 		[self.tableView reloadData];
 	}];
+	[self setNavigationItemTitle];
 }
 
 -(void)viewDidLayoutSubviews {
 	[super viewDidLayoutSubviews];
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (self.shouldAnimateViews) {
 		CGFloat direction = (YES) ? 1 : -1;
 		cell.transform = CGAffineTransformMakeTranslation(0, cell.bounds.size.height * direction);
 		[UIView animateWithDuration:0.4f animations:^{
 			cell.transform = CGAffineTransformIdentity;
 		}];
-
 
 		if(cell.bounds.size.height * indexPath.row >= self.view.frame.size.height){
 			self.shouldAnimateViews = NO;
@@ -173,10 +185,8 @@
 }
 
 -(void)putCommentingKeyboardBarOnScreen{
-    
-    CGFloat yPos = KEYBOARD_BAR_START_YPOS;
-    
-    self.commentingKeyboard = [[CommentingKeyboardToolbar alloc] initWithFrame:CGRectMake(0.f, yPos, self.view.frame.size.width, COMMENTING_KEYBOARD_HEIGHT)];
+    self.commentingKeyboard = [[CommentingKeyboardToolbar alloc] initWithFrame:CGRectMake(0.f, KEYBOARD_BAR_START_YPOS,
+																						  self.view.frame.size.width, COMMENTING_KEYBOARD_HEIGHT)];
     self.commentingKeyboard.delegate = self;
     [self.tableView addSubview:self.commentingKeyboard];
     
@@ -243,7 +253,7 @@
 	if(self.channelsToDisplay && (self.currentListType != CommentList)){
 		//this is some list of channels
 
-		NSInteger objectIndex = indexPath.row - self.presentAllChannels;
+		NSInteger objectIndex = indexPath.row;
 
 		Channel * channel = [self.channelsToDisplay objectAtIndex:objectIndex];
 		PFUser * user = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
@@ -322,7 +332,15 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if(self.currentListType == CommentList) return self.commentObjectList.count;
-    return (self.channelsToDisplay.count + self.presentAllChannels);
+    return self.channelsToDisplay.count;
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+	if(self.currentListType == CommentList){
+		CGFloat yPos = self.view.frame.size.height - self.commentingKeyboard.frame.size.height;
+		self.commentingKeyboard.frame = CGRectMake(0.f, yPos, self.commentingKeyboard.frame.size.width,
+												   self.commentingKeyboard.frame.size.height);
+	}
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -336,15 +354,11 @@
 		[cell removeFromSuperview];
 	}
 
-	if(self.presentAllChannels && indexPath.row == 0) {
-        [cell setHeaderTitle];
-    } else if(self.commentObjectList) {
-        NSInteger objectIndex = indexPath.row;
-        Comment * comment = [self.commentObjectList objectAtIndex:objectIndex];
+	if(self.commentObjectList) {
+        Comment * comment = [self.commentObjectList objectAtIndex: indexPath.row];
         [cell presentComment:comment];
     } else {
-        NSInteger objectIndex = self.presentAllChannels ? (indexPath.row - 1) : indexPath.row;
-		Channel *channel = [self.channelsToDisplay objectAtIndex:objectIndex];
+		Channel *channel = [self.channelsToDisplay objectAtIndex: indexPath.row];
 		[cell presentChannel:channel];
 	}
 	return cell;
@@ -354,8 +368,8 @@
 #pragma mark - Lazy Instantiation -
 
 
--(NSMutableArray *) channelsToDisplay{
-	if(!_channelsToDisplay)_channelsToDisplay = [[NSMutableArray alloc] init];
+-(NSMutableArray *) channelsToDisplay {
+	if(!_channelsToDisplay) _channelsToDisplay = [[NSMutableArray alloc] init];
 	return _channelsToDisplay;
 }
 

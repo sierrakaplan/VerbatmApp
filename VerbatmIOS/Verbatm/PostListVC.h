@@ -20,7 +20,9 @@
 
 -(void)channelSelected:(Channel *) channel;
 -(void)removePostViewSelected;
--(void) shareToSmsSelectedToUrl:(NSString *) url;
+-(void)shareToSmsSelectedToUrl:(NSString *) url;
+
+-(void)showWhoLikedPost:(PFObject*) post;
 -(void)showWhoCommentedOnPost:(PFObject *) post;
 
 @end
