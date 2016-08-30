@@ -188,7 +188,7 @@
 		CGSize size = half ? HALF_SCREEN_SIZE : FULL_SCREEN_SIZE;
 		CGRect frame = CGRectMake(0.f, 0.f, size.width, size.height);
         CGRect imageFrame = frame;
-        if(CGRectEqualToRect(self.imageContentFrame, CGRectZero)){
+        if(!CGRectEqualToRect(self.imageContentFrame, CGRectZero)){
             imageFrame = self.imageContentFrame;
         }
         

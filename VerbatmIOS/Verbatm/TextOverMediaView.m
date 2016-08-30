@@ -316,7 +316,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 -(UIImageView*) imageView {
 	if (!_imageView) {
-		UIImageView *imageView = [[UIImageView alloc] init];
+		UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.bounds];
 		[self insertSubview:imageView belowSubview:self.textView];
 		_imageView = imageView;
 		_imageView.clipsToBounds = YES;
