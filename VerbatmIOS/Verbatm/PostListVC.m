@@ -388,7 +388,7 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView
 	 numberOfItemsInSection:(NSInteger)section {
-	if (self.inSmallMode) {
+	if (self.inSmallMode || !self.isCurrentUserProfile) {
 		return self.parsePostActivityObjects.count;
 	} else {
 		return self.parsePostActivityObjects.count - 1;
@@ -548,7 +548,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		[cellTapped removeTapToExitNotification];
 	} else {
 		NSIndexPath *indexPath = [self.collectionView indexPathForCell:cellTapped];
-		if (indexPath.row < self.parsePostActivityObjects.count-1) {
+		NSInteger limit = self.isCurrentUserProfile ? self.parsePostActivityObjects.count-1 : self.parsePostActivityObjects.count;
+		if (indexPath.row < limit) {
 			[self.postListDelegate cellSelectedAtPostIndex:indexPath];
 		} else {
 			//Trying to select publishing view
