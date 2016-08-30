@@ -10,13 +10,14 @@
 
 @protocol FeedProfileListProtocol <NSObject>
 
--(void) showTabBar: (BOOL) show;
-
 -(void)goToDiscover;
 
 @end
 
 @interface FeedProfileListTVC : UITableViewController
+
 -(void) refreshListOfContent;
-@property (nonatomic) id<FeedProfileListProtocol> delegate;
+
+@property (nonatomic, weak) id<FeedProfileListProtocol> delegate;
+
 @end

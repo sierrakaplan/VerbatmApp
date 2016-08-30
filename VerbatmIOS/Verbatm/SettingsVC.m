@@ -28,8 +28,6 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *userNameField;
 @property (weak, nonatomic) IBOutlet UIImageView *profileIconImage;
 
-@property (nonatomic) CustomNavigationBar * navigationBar;
-
 #define VIEW_OFFSET_Y 20.f
 #define PROFILE_ICON_WALL_OFFSET 15.f //distance of profile picture from left wall
 #define PROFILE_TEXTFILED_GAP 10.f //distance between the profile icon and the textField
@@ -43,7 +41,7 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [self createNavigationBar];
+//    [self createNavigationBar];
     [self positionButtonViews];
 }
 
@@ -51,17 +49,17 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
 	return YES;
 }
 
--(void)createNavigationBar{
-    CGRect navBarFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT);
-    self.navigationBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:SETTINGS_NAV_BAR_COLOR];
-    self.navigationBar.delegate = self;
-    
-    [self.navigationBar createLeftButtonWithTitle:@"BACK" orImage:nil];
-    
-    [self.navigationBar createRightButtonWithTitle:@"SAVE" orImage:nil];
-    
-    [self.view addSubview:self.navigationBar];
-}
+//-(void)createNavigationBar{
+//    CGRect navBarFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT);
+//    self.navigationBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:SETTINGS_NAV_BAR_COLOR];
+//    self.navigationBar.delegate = self;
+//    
+//    [self.navigationBar createLeftButtonWithTitle:@"BACK" orImage:nil];
+//    
+//    [self.navigationBar createRightButtonWithTitle:@"SAVE" orImage:nil];
+//    
+//    [self.view addSubview:self.navigationBar];
+//}
 
 -(void) positionButtonViews{
     

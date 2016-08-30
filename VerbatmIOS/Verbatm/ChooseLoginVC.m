@@ -248,7 +248,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 		CGFloat yPos = self.phoneLoginField.frame.origin.y + self.phoneLoginField.frame.size.height;
 		_sendTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.center.x - OR_TEXT_WIDTH/2.f, yPos,
 																   OR_TEXT_WIDTH, 30.f)];
-		_sendTextLabel.text = @"We'll send a text to verify your phone.";
+		_sendTextLabel.text = @"We'll text you a login code.";
 		_sendTextLabel.textAlignment = NSTextAlignmentCenter;
 		[_sendTextLabel setBackgroundColor:[UIColor clearColor]];
 		[_sendTextLabel setTextColor:[UIColor whiteColor]];

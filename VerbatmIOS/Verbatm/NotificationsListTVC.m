@@ -17,10 +17,12 @@
 #import "CustomNavigationBar.h"
 #import "ProfileVC.h"
 #import <Parse/PFQuery.h>
+#import "MasterNavigationVC.h"
 #import "NotificationPostPreview.h"
 #import "Durations.h"
 #import "Icons.h"
 #import "UserAndChannelListsTVC.h"
+#import "VerbatmNavigationController.h"
 
 @interface NotificationsListTVC () <NotificationPostPreviewProtocol>
 
@@ -72,6 +74,7 @@
 	self.tableView.contentInset = inset;
 
 	[self createHeader];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarStyleClearWithTextColor:[UIColor blackColor]];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -184,15 +187,16 @@
 }
 
 -(void)presentCommentListForPost:(PFObject *)post {
+	//todo: separate vc for comments
     UserAndChannelListsTVC *commentorsListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
     [commentorsListVC presentList:CommentList forChannel:nil orPost:post];
-    [self presentViewController:commentorsListVC animated:YES completion:nil];
+	[self.navigationController pushViewController:commentorsListVC animated:YES];
 }
 
 -(void) showWhoLikesThePostFromNotifications:(PFObject *) post {
     UserAndChannelListsTVC *likersListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
     [likersListVC presentList:LikersList forChannel:nil orPost:post];
-    [self presentViewController:likersListVC animated:YES completion:nil];
+    [self.navigationController pushViewController:likersListVC animated:YES];
 }
 
 -(void) getMoreNotifications {
@@ -223,7 +227,7 @@
 }
 
 -(void)presentPost:(PFObject *)postObject andChannel:(Channel *) channel{
-
+//todo: push segue
 	if(postObject && channel){
         if(!self.postPreview){
             self.postPreview = [[NotificationPostPreview alloc] initWithFrame:CGRectMake(0.f,self.tableView.contentOffset.y + self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height)];
@@ -234,7 +238,7 @@
             [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
                 self.postPreview.frame = CGRectMake(0.f, self.tableView.contentOffset.y, self.view.frame.size.width, self.view.frame.size.height);
             }];
-            [self.delegate notificationListHideTabBar:YES];
+            [(MasterNavigationVC*)self.tabBarController showTabBar:NO];
         }
 	}
 }
@@ -249,7 +253,7 @@
 				[self.postPreview clearViews];
 				[self.postPreview removeFromSuperview];
 				self.tableView.scrollEnabled = YES;
-				[self.delegate notificationListHideTabBar:NO];
+				[(MasterNavigationVC*)self.tabBarController showTabBar:NO];
                 self.postPreview = nil;
 			}
 		}];
@@ -278,13 +282,14 @@
 
 -(void)presentProfileForUser:(PFUser *) user
 			withStartChannel:(Channel *) startChannel{
+	//todo: push segue
 	if(![[user objectId] isEqualToString:[[PFUser currentUser] objectId]]){
 		ProfileVC * userProfile = [[ProfileVC alloc] init];
 		userProfile.isCurrentUserProfile = NO;
 		userProfile.isProfileTab = NO;
 		userProfile.ownerOfProfile = user;
 		userProfile.channel = startChannel;
-		[self presentViewController:userProfile animated:YES completion:nil];
+		[self.navigationController pushViewController:userProfile animated:YES];
 	}
 }
 

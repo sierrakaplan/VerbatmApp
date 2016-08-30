@@ -11,7 +11,6 @@
 
 @protocol FeedTableViewDelegate <NSObject>
 
--(void) showTabBar: (BOOL) show;
 -(void) goToDiscover;
 
 @optional

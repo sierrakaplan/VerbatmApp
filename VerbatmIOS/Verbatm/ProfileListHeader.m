@@ -11,6 +11,7 @@
 #import "SizesAndPositions.h"
 
 @interface ProfileListHeader ()
+
 @property(nonatomic) UILabel * title;
 
 #define UPDATED_PROFILES_TITLE @"Updated Profiles"

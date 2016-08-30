@@ -13,7 +13,7 @@
 
 -(void) viewDidLoad {
 	[self formatNavigationBar];
-	[self setNavigationBarHidden:YES animated:YES];
+	[self setNavigationBarHidden:YES animated:NO];
 }
 
 -(void) setNavigationBarHidden:(BOOL)navigationBarHidden {
@@ -28,13 +28,28 @@
 	self.navigationBar.translucent = NO;
 	self.navigationBar.barTintColor = [UIColor blackColor];
 	self.navigationBar.tintColor = [UIColor whiteColor];
-	[self.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-																	 [UIColor whiteColor], NSForegroundColorAttributeName,
-																	 [UIFont fontWithName:BOLD_FONT size:21.0], NSFontAttributeName, nil]];
+	[self setNavigationTitleColor:[UIColor whiteColor]];
 }
 
--(UIStatusBarStyle) preferredStatusBarStyle {
-	return UIStatusBarStyleLightContent;
+-(void) setNavigationBarStyleClearWithTextColor: (UIColor*)textColor {
+	[self.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+	self.navigationBar.shadowImage = [UIImage new];
+	self.navigationBar.translucent = YES;
+	self.navigationBar.tintColor = textColor;
+}
+
+-(void) setNavigationTitleColor: (UIColor*)textColor {
+	[self.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+												textColor, NSForegroundColorAttributeName,
+												[UIFont fontWithName:BOLD_FONT size:21.0], NSFontAttributeName, nil]];
+}
+
+- (UIViewController *)childViewControllerForStatusBarHidden {
+	return self.visibleViewController;
+}
+
+- (UIViewController *)childViewControllerForStatusBarStyle {
+	return self.visibleViewController;
 }
 
 @end

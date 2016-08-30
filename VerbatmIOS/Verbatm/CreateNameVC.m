@@ -66,7 +66,7 @@
 		[[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 			if (!succeeded || error) {
 				self.savingName = NO;
-				//todo: something
+				//todo: error handling?
 			} else {
 				[self performSegueWithIdentifier:SEGUE_FOLLOW_FRIENDS sender:self];
 			}

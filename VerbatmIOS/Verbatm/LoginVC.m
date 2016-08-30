@@ -34,7 +34,7 @@
 
 #import "UserSetupParameters.h"
 #import "UserManager.h"
-
+#import "VerbatmNavigationController.h"
 
 @interface LoginVC ()
 
@@ -69,10 +69,7 @@
 }
 
 -(void) formatNavigationBar {
-	[self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-	self.navigationController.navigationBar.shadowImage = [UIImage new];
-	self.navigationController.navigationBar.translucent = YES;
-	self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarStyleClearWithTextColor:[UIColor whiteColor]];
 	[self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
 																	 [UIColor whiteColor], NSForegroundColorAttributeName,
 																	 [UIFont fontWithName:BOLD_FONT size:21.0], NSFontAttributeName, nil]];

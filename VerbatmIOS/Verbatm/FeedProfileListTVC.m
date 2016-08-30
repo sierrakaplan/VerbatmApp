@@ -15,7 +15,6 @@
 
 #import "ParseBackendKeys.h"
 #import "ProfileListHeader.h"
-#import "ProfileVerbatmLogoBar.h"
 #import "Styles.h"
 
 #import "UserInfoCache.h"
@@ -28,6 +27,8 @@
 @property (nonatomic) Channel *currentUserChannel;
 
 @end
+
+//todo: cleanup commented out code
 
 #define CELL_HEIGHT 75.f
 #define HEADER_TITLE_HEIGHT 60.f
@@ -96,7 +97,7 @@
 }
 
 
-#pragma mark - Table view data source
+#pragma mark - Table view data source -
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     ProfileListHeader *view = [[ProfileListHeader alloc] initWithFrame:CGRectMake(0, 0,
@@ -124,7 +125,6 @@
     [self.profileListFeed setAndRefreshWithList:[self getCombinedChannelList] withStartIndex:startIndex];
 	[self.navigationController pushViewController:self.profileListFeed animated:YES];
     [self.tableView setScrollEnabled:NO];
-    [self.delegate showTabBar:NO];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -197,11 +197,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.profileListFeed.view removeFromSuperview];
     self.profileListFeed = nil;
     [self.tableView setScrollEnabled:YES];
-    [self.delegate showTabBar:YES];
-}
-
--(void) showTabBar: (BOOL)show {
-    [self.delegate showTabBar:show];
 }
 
 -(void)goToDiscover {
@@ -227,7 +222,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     }];
 }
 
-#pragma mark -Lazy Instantiation-
+#pragma mark - Lazy Instantiation -
 
 
 -(FeedTableViewController *)profileListFeed{

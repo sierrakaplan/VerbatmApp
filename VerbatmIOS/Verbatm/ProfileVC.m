@@ -18,12 +18,14 @@
 
 #import "LoadingIndicator.h"
 
+#import "MasterNavigationVC.h"
 #import <MessageUI/MFMessageComposeViewController.h>
 
 #import "ParseBackendKeys.h"
 
 #import "ProfileVC.h"
 #import "ProfileHeaderView.h"
+#import "ProfileMoreInfoView.h"
 #import "PostListVC.h"
 #import "PostCollectionViewCell.h"
 
@@ -44,7 +46,7 @@
 #import "UtilityFunctions.h"
 #import <PromiseKit/PromiseKit.h>
 
-@interface ProfileVC() <ProfileHeaderViewDelegate,
+@interface ProfileVC() <ProfileHeaderViewDelegate, ProfileMoreInfoViewDelegate,
 UIScrollViewDelegate, PostListVCProtocol,
 UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeViewControllerDelegate>
 
@@ -54,10 +56,10 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 @property (strong, nonatomic) PostListVC * postListVC;
 
-@property (nonatomic, strong) ProfileHeaderView *profileHeaderView;
-@property (nonatomic) BOOL headerViewOnScreen;
-
-@property (nonatomic) UIView * darkScreenCover;
+//@property (nonatomic, strong) ProfileHeaderViewOld *profileHeaderView;
+@property (nonatomic) ProfileHeaderView *profileHeaderView;
+@property (nonatomic) ProfileMoreInfoView *moreInfoView;
+@property (nonatomic) BOOL moreInfoViewOnScreen;
 @property (nonatomic) SharePostView * sharePOVView;
 
 @property (nonatomic) BOOL inFullScreenMode;
@@ -68,7 +70,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 @property (nonatomic, strong) NSProgress* publishingProgress;
 @property (nonatomic, strong) UIProgressView* progressBar;
 
-
 @property (nonatomic) CGRect  postListSmallFrame;
 @property (nonatomic) CGRect  postListLargeFrame;
 @property (nonatomic) CGSize  cellSmallFrameSize;
@@ -77,7 +78,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 #define CELL_SPACING_SMALL 5.f
 #define CELL_SPACING_LARGE 0.3
-#define POSTLISTVC_ISNOT_CREATED_YET (!_postListVC)
+#define HEADER_SIZE (self.view.frame.size.height / 3.f)
 
 @end
 
@@ -85,13 +86,14 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
+	self.moreInfoViewOnScreen = NO;
 	self.automaticallyAdjustsScrollViewInsets = NO;
-	self.view.backgroundColor = [UIColor colorWithWhite:0.90 alpha:1.f];
+	self.view.backgroundColor = [UIColor blackColor];
 	[self buildHeaderView];
 	[self loadContentToPostList];
 }
 
--(void)updateDateOfLastPostSeen{
+-(void)updateDateOfLastPostSeen {
     if(!self.isCurrentUserProfile && self.profileInFeed && [self.channel dateOfMostRecentChannelPost]){
         NSDate * finalDate = [self.postListVC creationDateOfLastPostObjectInPostList];
         if(finalDate){
@@ -125,6 +127,10 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	[self setNeedsStatusBarAppearanceUpdate];
+	if (!self.inFullScreenMode) {
+		[(MasterNavigationVC*)self.tabBarController showTabBar:YES];
+	}
+	[self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
@@ -132,8 +138,8 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 }
 
 -(void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
-    
+	[super viewDidAppear:animated];
+
 }
 
 -(void)clearOurViews {
@@ -146,7 +152,11 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 -(void)presentUserList:(ListType) listType{
 	UserAndChannelListsTVC *userList = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
 	[userList presentList:listType forChannel:self.channel orPost:nil];
-	[self presentViewController:userList animated:YES completion:nil];
+	if (self.navigationController) {
+		[self.navigationController pushViewController:userList animated:YES];
+	} else {
+		[self.delegate pushViewController:userList];
+	}
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -156,23 +166,50 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 -(void)buildHeaderView {
 	if(self.profileHeaderView){
 		[self.profileHeaderView removeFromSuperview];
-		self.headerViewOnScreen = NO;
 		self.profileHeaderView = nil;
 	}
 
-	CGRect frame = self.view.bounds;
-	PFUser* user = self.isCurrentUserProfile ? nil : self.channel.channelCreator;
-
-	self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andUser:user
-														   andChannel:self.channel
-														 inProfileTab:self.isProfileTab inFeed:self.profileInFeed];
-
+	CGRect frame = CGRectMake(0.f, 0.f, self.view.frame.size.width, HEADER_SIZE);
+	self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andChannel:self.channel];
 	self.profileHeaderView.delegate = self;
 	[self.view addSubview: self.profileHeaderView];
 	[self.view sendSubviewToBack:self.profileHeaderView];
-	self.headerViewOnScreen = YES;
 }
 
+-(void) moreInfoButtonTapped {
+	CGFloat yPos = HEADER_SIZE;
+	CGFloat height = self.view.frame.size.height - yPos;
+	CGRect offScreenFrame = CGRectMake(0.f, yPos - height, self.view.frame.size.width, height);
+	CGRect onScreenFrame = CGRectMake(0.f, yPos, self.view.frame.size.width, height);
+	if (!_moreInfoView) {
+		self.moreInfoView = [[ProfileMoreInfoView alloc] initWithFrame:onScreenFrame
+												   andNumFollowers:self.channel.parseChannelObject[CHANNEL_NUM_FOLLOWS]
+												   andNumFollowing:self.channel.parseChannelObject[CHANNEL_NUM_FOLLOWING]
+													andDescription:self.channel.blogDescription];
+		self.moreInfoView.delegate = self;
+		self.moreInfoView.frame = offScreenFrame;
+		[self.view addSubview: self.moreInfoView];
+	}
+	[self.view bringSubviewToFront: self.moreInfoView];
+	[self.view bringSubviewToFront: self.profileHeaderView];
+	self.moreInfoViewOnScreen = !self.moreInfoViewOnScreen;
+	[UIView animateWithDuration:0.5f animations:^{
+		if (self.moreInfoViewOnScreen) {
+			self.moreInfoView.frame = onScreenFrame;
+		} else {
+			self.moreInfoView.frame = offScreenFrame;
+		}
+	} completion:^(BOOL finished) {
+	}];
+}
+
+-(void) followersButtonPressed {
+	[self showFollowers];
+}
+
+-(void) followingButtonPressed {
+	[self showChannelsFollowing];
+}
 
 #pragma mark - Profile Photo -
 
@@ -202,7 +239,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	for(PHAsset * asset in assetArray) {
 		if(asset.mediaType==PHAssetMediaTypeImage) {
 			@autoreleasepool {
-				[self getImageFromAsset:asset];
+//				[self getImageFromAsset:asset];
 			}
 		}
 	}
@@ -213,24 +250,19 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	}];
 }
 
--(void) getImageFromAsset: (PHAsset *) asset {
-	PHImageRequestOptions *options = [PHImageRequestOptions new];
-	options.synchronous = YES;
-	[self.imageManager requestImageForAsset:asset targetSize:self.view.frame.size contentMode:PHImageContentModeAspectFill
-									options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
-										// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
-										dispatch_async(dispatch_get_main_queue(), ^{
-											[self.profileHeaderView setCoverPhotoImage:image];
-										});
-									}];
-}
+//todo: in edit mode
+//-(void) getImageFromAsset: (PHAsset *) asset {
+//	PHImageRequestOptions *options = [PHImageRequestOptions new];
+//	options.synchronous = YES;
+//	[self.imageManager requestImageForAsset:asset targetSize:self.view.frame.size contentMode:PHImageContentModeAspectFill
+//									options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
+//										// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+//										dispatch_async(dispatch_get_main_queue(), ^{
+//											[self.profileHeaderView setCoverPhotoImage:image];
+//										});
+//									}];
+//}
 
--(void)addClearScreenGesture{
-	UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clearScreen:)];
-	singleTap.numberOfTapsRequired = 1;
-	singleTap.delegate = self;
-	[self.postListVC.view addGestureRecognizer:singleTap];
-}
 
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
 	return YES;
@@ -247,9 +279,23 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 }
 
 -(void)showWhoCommentedOnPost:(PFObject *) post{
-    UserAndChannelListsTVC *likersListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
-    [likersListVC presentList:CommentList forChannel:nil orPost:post];
-    [self presentViewController:likersListVC animated:YES completion:nil];
+    UserAndChannelListsTVC *commentListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    [commentListVC presentList:CommentList forChannel:nil orPost:post];
+	if (self.navigationController) {
+		[self.navigationController pushViewController:commentListVC animated:YES];
+	} else {
+		[self.delegate pushViewController:commentListVC];
+	}
+}
+
+-(void) showWhoLikedPost:(PFObject *)post {
+	UserAndChannelListsTVC *likersListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+	[likersListVC presentList:LikersList forChannel:nil orPost:post];
+	if (self.navigationController) {
+		[self.navigationController pushViewController:likersListVC animated:YES];
+	} else {
+		[self.delegate pushViewController:likersListVC];
+	}
 }
 
 // Something in profile was reblogged so contains a header allowing user to navigate
@@ -259,14 +305,18 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
         //if the channel belongs to this profile then simply remove the large postlist view
         [self exitCurrentPostView];
     } else {
+		//todo: push segue
         ProfileVC *  userProfile = [[ProfileVC alloc] init];
 		BOOL isCurrentUserChannel = [[channel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
 		userProfile.isCurrentUserProfile = isCurrentUserChannel;
         userProfile.isProfileTab = NO;
         userProfile.ownerOfProfile = channel.channelCreator;
         userProfile.channel = channel;
-        [self presentViewController:userProfile animated:YES completion:^{
-        }];
+		if (self.navigationController) {
+			[self.navigationController pushViewController:userProfile animated:YES];
+		} else {
+			[self.delegate pushViewController:userProfile];
+		}
     }
 }
 
@@ -288,7 +338,8 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	return flowLayout;
 }
 
--(void)presentViewPostView:(PostListVC *) postList inSmallMode:(BOOL) inSmallMode shouldPage:(BOOL) shouldPage
+-(void)presentViewPostView:(PostListVC *) postList inSmallMode:(BOOL) inSmallMode
+				shouldPage:(BOOL) shouldPage
 			  fromCellPath:(NSIndexPath *) cellPath{
 
 	[self.view addSubview:postList.view];
@@ -298,7 +349,12 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	} else if(cellPath.row < self.postListVC.parsePostActivityObjects.count) {
 		[postList.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
 	}
-	[self.delegate showTabBar:!shouldPage];
+	[(MasterNavigationVC*)self.tabBarController showTabBar: inSmallMode];
+	if (self.navigationController) {
+		[self.navigationController setNavigationBarHidden: !inSmallMode];
+	} else {
+		[self.delegate showNavBar:inSmallMode];
+	}
 	[self.postListVC.view removeFromSuperview];
 	[self.postListVC clearViews];
 	self.postListVC = nil;
@@ -342,14 +398,14 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
         [newVC display:self.channel withListOwner:self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile
        andStartingDate:startingDate withOldParseObjects:self.postListVC.parsePostActivityObjects];
     }
-
     [self presentViewPostView:newVC inSmallMode:!self.inFullScreenMode shouldPage:self.inFullScreenMode fromCellPath:cellPath];
 }
 
 #pragma mark - Profile Nav Bar Delegate Methods -
 
 -(void) settingsButtonClicked {
-	[self performSegueWithIdentifier:SETTINGS_PAGE_MODAL_SEGUE sender:self];
+	//todo: push segue with back button
+//	[self performSegueWithIdentifier:SETTINGS_PAGE_MODAL_SEGUE sender:self];
 }
 
 -(void) editDoneButtonClickedWithoutName {
@@ -361,14 +417,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	[self presentViewController:newAlert animated:YES completion:nil];
 }
 
--(void)followersButtonSelected{
-	[self showFollowers];
-}
-
--(void)followingButtonSelected{
-	[self showChannelsFollowing];
-}
-
 -(void)showChannelsFollowing{
 	[self presentUserList: FollowingList];
 }
@@ -377,42 +425,10 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	[self presentUserList: FollowersList];
 }
 
--(void)darkenScreen{
-	if(!self.darkScreenCover){
-		self.darkScreenCover = [[UIView alloc] initWithFrame:self.view.bounds];
-		self.darkScreenCover.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.5];
-		[self.view addSubview:self.darkScreenCover];
-	}
-}
-
--(void) removeScreenDarkener {
-	if(self.darkScreenCover) {
-		[self.darkScreenCover removeFromSuperview];
-		self.darkScreenCover = nil;
-	}
-}
-
-//-(void)createPromptToPost{
-//	self.postPrompt =  [[UIButton alloc] init];
-//	[self.postPrompt setBackgroundImage:[UIImage imageNamed:CREATE_POST_PROMPT_ICON] forState:UIControlStateNormal];
-//	[self.view addSubview:self.postPrompt];
-//	[self.postPrompt addTarget:self action:@selector(createFirstPost) forControlEvents:UIControlEventTouchDown];
-//	self.postPrompt.frame = CGRectMake(self.postListSmallFrame.origin.x, self.postListSmallFrame.origin.y,
-//									   self.cellSmallFrameSize.width, self.cellSmallFrameSize.height);
-//	self.postListVC.view.hidden = YES;
-//	[self.delegate showTabBar:YES];
-//}
-
-//-(void)createFirstPost {
-//	if([self.delegate respondsToSelector:@selector(userCreateFirstPost)]){
-//		[self.delegate userCreateFirstPost];
-//	}
-//}
-
 -(void)postsFound{
 //	[self removePromptToPost];
     if(!self.isCurrentUserProfile){
-        [self.profileHeaderView removeProfileConstructionNotification];
+//        [self.profileHeaderView removeProfileConstructionNotification];
     }
 }
 
@@ -429,7 +445,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
     if(self.isCurrentUserProfile){
 //        [self createPromptToPost];
     }else{
-        [self.profileHeaderView presentProfileUnderConstructionNotification];
+//        [self.profileHeaderView presentProfileUnderConstructionNotification];
     }
 	if (self.inFullScreenMode) {
 		[self exitCurrentPostView];
@@ -439,7 +455,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 -(void) shareToSmsSelectedToUrl:(NSString *) url{
     if(url){
         MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
-        NSString * message = @"Hey - checkout this post on Verbatm!   ";
+        NSString * message = @"Hey - checkout this post on Verbatm!";
         controller.body = [message stringByAppendingString:url];
         
         controller.messageComposeDelegate = self;
@@ -449,18 +465,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 - (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result{
     [controller.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-}
-
-
-//the current user has selected the back button
--(void)exitCurrentProfile {
-    
-    if(self.profileInFeed){
-        [self.delegate exitProfile];
-    }else{
-        [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
-        }];
-    }
 }
 
 -(void)blockCurrentUserShouldBlock:(BOOL) shouldBlock{
@@ -510,53 +514,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	[self presentViewController:alert animated:YES completion:nil];
 }
 
-#pragma mark - POSTListVC Protocol -
-
--(void)hideNavBarIfPresent{
-	[self presentHeadAndFooter:NO];
-}
-
--(void) presentHeadAndFooter:(BOOL) shouldShow {
-	if(shouldShow && !self.headerViewOnScreen) {
-		self.headerViewOnScreen = YES;
-		CGRect onScreenFrame = CGRectOffset(self.profileHeaderView.frame, 0.f, self.profileHeaderView.frame.size.height);
-		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			[self.profileHeaderView setFrame: onScreenFrame];
-		}];
-		[self.delegate showTabBar:YES];
-		if(self.isProfileTab) [self.postListVC footerShowing:YES];
-
-	} else if (!shouldShow && self.headerViewOnScreen) {
-		self.headerViewOnScreen = NO;
-		CGRect offScreenFrame = CGRectOffset(self.profileHeaderView.frame, 0.f, -self.profileHeaderView.frame.size.height);
-		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			[self.profileHeaderView setFrame: offScreenFrame];
-		}];
-
-		[self.delegate showTabBar:NO];
-		if(self.isCurrentUserProfile) [self.postListVC footerShowing:NO];
-	}
-}
-
--(void)clearScreen:(UIGestureRecognizer *) tapGesture {
-	if (self.headerViewOnScreen) {
-		[self presentHeadAndFooter:NO];
-	} else {
-		[self presentHeadAndFooter:YES];
-	}
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-	// Make sure your segue name in storyboard is the same as this line
-	if ([[segue identifier] isEqualToString:SETTINGS_PAGE_MODAL_SEGUE]){
-		// Get reference to the destination view controller
-		SettingsVC * vc = [segue destinationViewController];
-
-		//set the username of the currently logged in user
-		vc.userName  = [[PFUser currentUser] valueForKey:VERBATM_USER_NAME_KEY];
-	}
-}
-
 #pragma mark - Lazy Instantiation -
 
 -(UIView*) publishingProgressView {
@@ -579,30 +536,26 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	return _publishingProgressView;
 }
 
--(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
+-(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change
+					   context:(void *)context {
 	if (object == self.publishingProgress && [keyPath isEqualToString:@"completedUnitCount"] ) {
 		[self.progressBar setProgress:self.publishingProgress.fractionCompleted animated:YES];
 	}
 }
 
 -(PostListVC *) postListVC{
-	if(!_postListVC){
-		CGFloat postHeight = self.view.frame.size.height - (self.view.frame.size.width - SMALL_SQUARE_LIKESHAREBAR_HEIGHT);
-		CGFloat postWidth = (self.view.frame.size.width / self.view.frame.size.height ) * postHeight;//same ratio as screen
-        CGFloat postListSmallY = self.view.frame.size.height - postHeight - ((self.isCurrentUserProfile) ? (TAB_BAR_HEIGHT + 1.f): 1.f) - SMALL_SQUARE_LIKESHAREBAR_HEIGHT;
-        
+	if(!_postListVC) {
+		self.postListLargeFrame = self.view.bounds;
+		self.postListSmallFrame = CGRectMake(0.f, HEADER_SIZE,
+											 self.view.frame.size.width, self.view.frame.size.height -
+											 HEADER_SIZE - TAB_BAR_HEIGHT);
+		CGFloat postHeight = self.postListSmallFrame.size.height - SMALL_SQUARE_LIKESHAREBAR_HEIGHT;
+		CGFloat postWidth = (self.view.frame.size.width / self.view.frame.size.height ) * postHeight;
 		self.cellSmallFrameSize = CGSizeMake(postWidth, postHeight);
-		UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
-		flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-		[flowLayout setMinimumInteritemSpacing:CELL_SPACING_SMALL];
-		[flowLayout setMinimumLineSpacing:CELL_SPACING_SMALL];
-		[flowLayout setItemSize:self.cellSmallFrameSize];
-		_postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
+
+		_postListVC = [[PostListVC alloc] initWithCollectionViewLayout:[self getFlowLayout]];
 		_postListVC.postListDelegate = self;
 		_postListVC.inSmallMode = YES;
-		self.postListSmallFrame = CGRectMake(0.f,postListSmallY,
-											 self.view.frame.size.width, postHeight);
-		self.postListLargeFrame = self.view.bounds;
 		[_postListVC.view setFrame:self.postListSmallFrame];
         [self.view addSubview:_postListVC.view];
     }

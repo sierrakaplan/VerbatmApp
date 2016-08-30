@@ -9,6 +9,7 @@
 #import "Analytics.h"
 
 #import "ContentDevVC.h"
+#import "CurrentUserProfileVC.h"
 
 #import "Durations.h"
 
@@ -26,7 +27,6 @@
 #import "Notification_BackendManager.h"
 
 #import "ParseBackendKeys.h"
-#import "ProfileVC.h"
 #import "PublishingProgressManager.h"
 #import <Parse/PFQuery.h>
 #import <Parse/PFInstallation.h>
@@ -64,7 +64,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 #pragma mark View Controllers in tab bar Controller
 
 @property (nonatomic) VerbatmNavigationController *profileNavigationController;
-@property (strong,nonatomic) ProfileVC *profileVC;
+@property (strong,nonatomic) CurrentUserProfileVC *profileVC;
 
 @property (nonatomic) VerbatmNavigationController *discoverNavigationController;
 @property (strong,nonatomic) DiscoverVC *discoverVC;
@@ -319,10 +319,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
     
 	self.profileNavigationController.tabBarItem.imageInsets = self.discoverVC.tabBarItem.imageInsets =
     self.feedProfileListNavigationController.tabBarItem.imageInsets =  UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
-}
-
--(void)notificationListHideTabBar:(BOOL) shouldHide{
-    [self showTabBar:!shouldHide];
 }
 
 -(void)showNotificationIndicator{

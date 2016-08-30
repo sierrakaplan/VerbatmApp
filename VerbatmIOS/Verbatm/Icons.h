@@ -28,12 +28,12 @@
 
 #define NOTIFICATION_ICON_SELECTED @"notification_icon_selected"
 #define NOTIFICATION_ICON_UNSELECTED @"notification_icon_unselected"
-#pragma mark - Profile -
 
-#define BLOCK_USER_ICON @"settings_icon"
+#pragma mark - Profile -
 
 #define SETTINGS_BUTTON_ICON @"settings_icon"
 #define BLOCK_ICON @"block_icon"
+#define MORE_INFO_ICON @"people_icon"
 
 #define BACK_BUTTON_ICON @"back_arrow_black"
 #define DOWN_ARROW_ICON @"down_arrow_white"
