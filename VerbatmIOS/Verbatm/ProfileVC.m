@@ -124,6 +124,10 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 }
 
+-(BOOL) prefersStatusBarHidden {
+	return NO;
+}
+
 - (UIStatusBarStyle)preferredStatusBarStyle {
 	return UIStatusBarStyleLightContent;
 }
@@ -134,16 +138,16 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 }
 
 -(void)updateDateOfLastPostSeen {
-    if(!self.isCurrentUserProfile && self.profileInFeed && [self.channel dateOfMostRecentChannelPost]){
-        NSDate * finalDate = [self.postListVC creationDateOfLastPostObjectInPostList];
-        if(finalDate){
-            [self.channel.followObject setObject:finalDate forKey:FOLLOW_LATEST_POST_DATE];
-            [self.channel.followObject saveInBackground];
-            if([finalDate compare:[self.channel dateOfMostRecentChannelPost]] != NSOrderedSame){
-                [self.channel resetLatestPostInfo];
-            }
-        }
-    }
+	if(!self.isCurrentUserProfile && self.profileInFeed && [self.channel dateOfMostRecentChannelPost]){
+		NSDate * finalDate = [self.postListVC creationDateOfLastPostObjectInPostList];
+		if(finalDate){
+			[self.channel.followObject setObject:finalDate forKey:FOLLOW_LATEST_POST_DATE];
+			[self.channel.followObject saveInBackground];
+			if([finalDate compare:[self.channel dateOfMostRecentChannelPost]] != NSOrderedSame){
+				[self.channel resetLatestPostInfo];
+			}
+		}
+	}
 }
 
 -(void)loadContentToPostList {
@@ -205,9 +209,9 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	CGRect onScreenFrame = CGRectMake(0.f, yPos, self.view.frame.size.width, height);
 	if (!_moreInfoView) {
 		self.moreInfoView = [[ProfileMoreInfoView alloc] initWithFrame:onScreenFrame
-												   andNumFollowers:self.channel.parseChannelObject[CHANNEL_NUM_FOLLOWS]
-												   andNumFollowing:self.channel.parseChannelObject[CHANNEL_NUM_FOLLOWING]
-													andDescription:self.channel.blogDescription];
+													   andNumFollowers:self.channel.parseChannelObject[CHANNEL_NUM_FOLLOWS]
+													   andNumFollowing:self.channel.parseChannelObject[CHANNEL_NUM_FOLLOWING]
+														andDescription:self.channel.blogDescription];
 		self.moreInfoView.delegate = self;
 		self.moreInfoView.frame = offScreenFrame;
 		[self.view addSubview: self.moreInfoView];
@@ -261,7 +265,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	for(PHAsset * asset in assetArray) {
 		if(asset.mediaType==PHAssetMediaTypeImage) {
 			@autoreleasepool {
-//				[self getImageFromAsset:asset];
+				//				[self getImageFromAsset:asset];
 			}
 		}
 	}
@@ -291,17 +295,17 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 }
 
 -(void)exitCurrentPostView{
-    [self createNewPostViewFromCellIndexPath:nil];
+	[self createNewPostViewFromCellIndexPath:nil];
 }
 
 #pragma mark - Post list vc delegate -
 
 -(void)removePostViewSelected{
-    [self exitCurrentPostView];
+	[self exitCurrentPostView];
 }
 
 -(void)showWhoCommentedOnPost:(PFObject *) post{
-    CommentingViewController *commentListVC = [[CommentingViewController alloc] initForPost:post];
+	CommentingViewController *commentListVC = [[CommentingViewController alloc] initForPost:post];
 	if (self.navigationController) {
 		[self.navigationController pushViewController:commentListVC animated:YES];
 	} else {
@@ -322,17 +326,17 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 // Something in profile was reblogged so contains a header allowing user to navigate
 // to a different profile
 -(void)channelSelected:(Channel *) channel{
-    if([[[channel channelCreator] objectId] isEqualToString:[[self.channel channelCreator] objectId]]){
-        //if the channel belongs to this profile then simply remove the large postlist view
-        [self exitCurrentPostView];
-    } else {
+	if([[[channel channelCreator] objectId] isEqualToString:[[self.channel channelCreator] objectId]]){
+		//if the channel belongs to this profile then simply remove the large postlist view
+		[self exitCurrentPostView];
+	} else {
 		//todo: push segue
-        ProfileVC *  userProfile = [[ProfileVC alloc] init];
+		ProfileVC *  userProfile = [[ProfileVC alloc] init];
 		BOOL isCurrentUserChannel = [[channel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
 		userProfile.isCurrentUserProfile = isCurrentUserChannel;
-        userProfile.isProfileTab = NO;
-        userProfile.ownerOfProfile = channel.channelCreator;
-        userProfile.channel = channel;
+		userProfile.isProfileTab = NO;
+		userProfile.ownerOfProfile = channel.channelCreator;
+		userProfile.channel = channel;
 		if (self.navigationController) {
 			[self.navigationController pushViewController:userProfile animated:YES];
 		} else {
@@ -340,7 +344,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 			userProfile.verbatmTabBarController = self.verbatmTabBarController;
 			[self.verbatmNavigationController pushViewController:userProfile animated:YES];
 		}
-    }
+	}
 }
 
 -(UICollectionViewFlowLayout * )getFlowLayout{
@@ -367,10 +371,10 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 	[self.view addSubview:postList.view];
 	[self.view bringSubviewToFront:postList.view];
-	if (cellPath == nil) {
-
-	} else if(cellPath.row < self.postListVC.parsePostActivityObjects.count) {
-		[postList.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
+	if(cellPath != nil) {
+		if(cellPath.row < self.postListVC.parsePostActivityObjects.count) {
+			[postList.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
+		}
 	}
 
 	if (self.navigationController) {
@@ -388,50 +392,49 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 // Switches between large and small post list
 -(void)cellSelectedAtPostIndex:(NSIndexPath *) cellPath{
-    
-    [self createNewPostViewFromCellIndexPath:cellPath];
+	[self createNewPostViewFromCellIndexPath:cellPath];
 }
 
 -(void)createNewPostViewFromCellIndexPath:(NSIndexPath *) cellPath{
-    
-    self.inFullScreenMode = !self.inFullScreenMode;
+
+	self.inFullScreenMode = !self.inFullScreenMode;
 	NSArray *visibleCells = [self.postListVC.collectionView visibleCells];
 	if (cellPath == nil && visibleCells.count) {
 		PostCollectionViewCell* cell = (PostCollectionViewCell*)[visibleCells firstObject];
-        cellPath = [self.postListVC.collectionView indexPathForCell:cell];
-    }
-    
-    PostListVC * newVC = [[PostListVC alloc] initWithCollectionViewLayout:[self getFlowLayout]];
-    newVC.postListDelegate = self;
-    newVC.inSmallMode = !self.inFullScreenMode;
-    newVC.collectionView.pagingEnabled = self.inFullScreenMode;
-    [newVC.view setFrame: (self.inFullScreenMode) ? self.postListLargeFrame : self.postListSmallFrame];
+		cellPath = [self.postListVC.collectionView indexPathForCell:cell];
+	}
+
+	PostListVC * newVC = [[PostListVC alloc] initWithCollectionViewLayout:[self getFlowLayout]];
+	newVC.postListDelegate = self;
+	newVC.inSmallMode = !self.inFullScreenMode;
+	newVC.collectionView.pagingEnabled = self.inFullScreenMode;
+	[newVC.view setFrame: (self.inFullScreenMode) ? self.postListLargeFrame : self.postListSmallFrame];
 
 	// If clicking out of full screen update cursor (latest date seen)
 	if (self.channel.followObject && newVC.inSmallMode && self.postListVC) {
 		NSDate *latestDate = self.postListVC.latestPostSeen;
 		NSTimeInterval timeSince = [latestDate timeIntervalSinceDate:self.channel.followObject[FOLLOW_LATEST_POST_DATE]];
 		if (latestDate && timeSince > 0) {
-            [self.channel.followObject setObject:latestDate forKey:FOLLOW_LATEST_POST_DATE];
+			[self.channel.followObject setObject:latestDate forKey:FOLLOW_LATEST_POST_DATE];
 			[self.channel.followObject saveInBackground];
 		}
 	}
 
 	NSDate *startingDate = self.channel.followObject ? self.channel.followObject[FOLLOW_LATEST_POST_DATE] : nil;
-    if(self.postListVC.parsePostActivityObjects) {
-        newVC.postsQueryManager = self.postListVC.postsQueryManager;
-        newVC.currentlyPublishing = self.postListVC.currentlyPublishing;
-        [newVC display:self.channel withListOwner:self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile
-       andStartingDate:startingDate withOldParseObjects:self.postListVC.parsePostActivityObjects];
-    }
-    [self presentViewPostView:newVC inSmallMode:!self.inFullScreenMode shouldPage:self.inFullScreenMode fromCellPath:cellPath];
+	if(self.postListVC.parsePostActivityObjects) {
+		newVC.postsQueryManager = self.postListVC.postsQueryManager;
+		newVC.currentlyPublishing = self.postListVC.currentlyPublishing;
+		[newVC display:self.channel withListOwner:self.ownerOfProfile isCurrentUserProfile:self.isCurrentUserProfile
+	   andStartingDate:startingDate withOldParseObjects:self.postListVC.parsePostActivityObjects];
+	}
+	[self presentViewPostView:newVC inSmallMode:!self.inFullScreenMode shouldPage:self.inFullScreenMode fromCellPath:cellPath];
 }
 
 #pragma mark - Profile Nav Bar Delegate Methods -
 
 -(void) settingsButtonClicked {
 	//todo: push segue with back button
-//	[self performSegueWithIdentifier:SETTINGS_PAGE_MODAL_SEGUE sender:self];
+	//	[self performSegueWithIdentifier:SETTINGS_PAGE_MODAL_SEGUE sender:self];
 }
 
 -(void) editDoneButtonClickedWithoutName {
@@ -453,42 +456,42 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 
 -(void)createPostPromptSelected{
-    if([self.delegate respondsToSelector:@selector(userCreateFirstPost)]){
-        if(self.inFullScreenMode)[self createNewPostViewFromCellIndexPath:nil];
-        [self.delegate userCreateFirstPost];
-    }
+	if([self.delegate respondsToSelector:@selector(userCreateFirstPost)]){
+		if(self.inFullScreenMode)[self createNewPostViewFromCellIndexPath:nil];
+		[self.delegate userCreateFirstPost];
+	}
 }
 
 
 -(void)postsFound{
-//	[self removePromptToPost];
-    if(!self.isCurrentUserProfile){
-//        [self.profileHeaderView removeProfileConstructionNotification];
-    }
+	//	[self removePromptToPost];
+	if(!self.isCurrentUserProfile){
+		//        [self.profileHeaderView removeProfileConstructionNotification];
+	}
 }
 
 
 -(void)noPostFound {
-    if(!self.isCurrentUserProfile){
-       // [self.profileHeaderView presentProfileUnderConstructionNotification];
-    }
+	if(!self.isCurrentUserProfile){
+		// [self.profileHeaderView presentProfileUnderConstructionNotification];
+	}
 	if (self.inFullScreenMode) {
 		[self exitCurrentPostView];
 	}
 }
 
 -(void) shareToSmsSelectedToUrl:(NSString *) url{
-    if(url){
-        MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
-        NSString * message = @"Hey - checkout this post on Verbatm!";
-        controller.body = [message stringByAppendingString:url];
-        controller.messageComposeDelegate = self;
-        [self presentViewController:controller animated:YES completion:nil];
-    }
+	if(url){
+		MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
+		NSString * message = @"Hey - checkout this post on Verbatm!";
+		controller.body = [message stringByAppendingString:url];
+		controller.messageComposeDelegate = self;
+		[self presentViewController:controller animated:YES completion:nil];
+	}
 }
 
 - (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result{
-    [controller.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+	[controller.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)blockCurrentUserShouldBlock:(BOOL) shouldBlock{
@@ -512,11 +515,11 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	UIAlertAction* confirmAction = [UIAlertAction actionWithTitle:@"Yes, I'm sure." style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
 		if(shouldBlock){
 			[User_BackendObject blockUser:self.ownerOfProfile];
-            [self alertUserBlocked:YES];
+			[self alertUserBlocked:YES];
 
 		} else {
 			[User_BackendObject unblockUser:self.ownerOfProfile];
-            [self alertUserBlocked:NO];
+			[self alertUserBlocked:NO];
 		}
 	}];
 
@@ -580,9 +583,9 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 		_postListVC.postListDelegate = self;
 		_postListVC.inSmallMode = YES;
 		[_postListVC.view setFrame:self.postListSmallFrame];
-        [self.view addSubview:_postListVC.view];
-    }
-    
+		[self.view addSubview:_postListVC.view];
+	}
+
 	return _postListVC;
 }
 

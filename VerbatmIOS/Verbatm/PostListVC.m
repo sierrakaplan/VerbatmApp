@@ -388,7 +388,11 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView
 	 numberOfItemsInSection:(NSInteger)section {
-	return self.parsePostActivityObjects.count;
+	if (self.inSmallMode) {
+		return self.parsePostActivityObjects.count;
+	} else {
+		return self.parsePostActivityObjects.count - 1;
+	}
 }
 
 - (BOOL)collectionView: (UICollectionView *)collectionView
@@ -505,7 +509,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	PFObject *postActivityObject = self.parsePostActivityObjects[indexPath.row];
 	NSString *currentId = cell.currentPostActivityObject.objectId;
 	cell.cellDelegate = self;
-	if([postActivityObject isKindOfClass:[NSNumber class]]) {
+	if([postActivityObject isKindOfClass:[NSNumber class]] && self.inSmallMode) {
 		[cell clearViews];
 		[cell presentPromptView:self.publishingProgressViewPositionHolder];
 	} else {
@@ -543,7 +547,12 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	if([cellTapped presentingTapToExitNotification]) {
 		[cellTapped removeTapToExitNotification];
 	} else {
-		[self.postListDelegate cellSelectedAtPostIndex:[self.collectionView indexPathForCell:cellTapped]];
+		NSIndexPath *indexPath = [self.collectionView indexPathForCell:cellTapped];
+		if (indexPath.row < self.parsePostActivityObjects.count-1) {
+			[self.postListDelegate cellSelectedAtPostIndex:indexPath];
+		} else {
+			//Trying to select publishing view
+		}
 	}
 }
 
