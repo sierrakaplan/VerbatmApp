@@ -13,6 +13,7 @@
 #import "ProfileVC.h"
 #import "UtilityFunctions.h"
 #import "Icons.h"
+#import "SizesAndPositions.h"
 #import "VerbatmNavigationController.h"
 
 @interface FeedTableViewController () <FeedCellDelegate>
@@ -22,6 +23,8 @@
 @property (nonatomic) ProfileVC *nextProfileToPresent;
 @property (nonatomic) NSInteger nextProfileIndex;
 @property (nonatomic) UIRefreshControl *refreshControl;
+
+@property (nonatomic) NSInteger startIndex;
 
 @property (nonatomic) UIImageView * emptyFeedNotification;
 
@@ -50,6 +53,16 @@
 	[super viewWillAppear:animated];
 	[self.navigationController setNavigationBarHidden:NO];
 	[(VerbatmNavigationController*)self.navigationController setNavigationBarStyleClearWithTextColor:[UIColor whiteColor]];
+	if(self.startIndex >= 0) {
+		NSIndexPath * indexPath = [NSIndexPath indexPathForRow:self.startIndex inSection:0];
+		[self.tableView scrollToRowAtIndexPath:indexPath
+							  atScrollPosition:UITableViewScrollPositionTop
+									  animated:NO];
+	}
+}
+
+-(void) viewDidAppear:(BOOL)animated {
+	[super viewDidAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -88,13 +101,8 @@
 -(void)setAndRefreshWithList:(NSMutableArray *) channelList withStartIndex:(NSInteger) startIndex{
     [self.followingProfileList removeAllObjects];
     self.followingProfileList = channelList;
+	self.startIndex = startIndex;
     [self.tableView reloadData];
-    if(startIndex >= 0){
-        NSIndexPath * indexPath = [NSIndexPath indexPathForRow:startIndex inSection:0];
-        [self.tableView scrollToRowAtIndexPath:indexPath
-                             atScrollPosition:UITableViewScrollPositionTop
-                                     animated:NO];
-    }
     
 }
 
@@ -156,7 +164,13 @@
 #pragma mark - Table View Delegate methods (view customization) -
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-	return self.view.frame.size.height;
+	CGFloat height = self.view.frame.size.height;
+	return height;
+}
+
+- (CGFloat) tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
+	CGFloat height = self.view.frame.size.height;
+	return height;
 }
 
 - (void)didReceiveMemoryWarning {

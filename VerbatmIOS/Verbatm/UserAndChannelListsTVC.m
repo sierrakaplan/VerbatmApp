@@ -33,6 +33,7 @@
 #import "VerbatmNavigationController.h"
 
 @interface UserAndChannelListsTVC () <CustomNavigationBarDelegate, CommentingKeyboardToolbarProtocol>
+
 @property (nonatomic) Channel * channelOnDisplay;
 @property (nonatomic) PFObject * postObject;
 @property (nonatomic) CommentingKeyboardToolbar * commentingKeyboard;

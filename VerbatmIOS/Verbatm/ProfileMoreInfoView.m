@@ -37,7 +37,7 @@
 	self = [super initWithFrame:frame];
 	if (self) {
 		self.clipsToBounds = YES;
-		self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.85];
+		self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.9];
 		self.numFollowersLabel.text = numFollowers.stringValue;
 		self.numFollowingLabel.text = numFollowing.stringValue;
 		self.blogDescription.text = description;

@@ -19,6 +19,7 @@
 
 @property (nonatomic, weak) id<ProfileHeaderViewDelegate> delegate;
 
--(instancetype) initWithFrame:(CGRect)frame andChannel: (Channel*) channel;
+-(instancetype) initWithFrame:(CGRect)frame andChannel: (Channel*) channel
+		 inCurrentUserProfile:(BOOL)currentUserProfile;
 
 @end

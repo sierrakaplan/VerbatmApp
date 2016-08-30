@@ -15,6 +15,7 @@
 
 #import "ParseBackendKeys.h"
 #import "ProfileListHeader.h"
+#import "SizesAndPositions.h"
 #import "Styles.h"
 
 #import "UserInfoCache.h"
@@ -25,6 +26,7 @@
 @property (nonatomic) NSMutableArray *channelsUserFollowing;
 @property (nonatomic) NSMutableArray *channelsRecentlyUpdated;
 @property (nonatomic) Channel *currentUserChannel;
+@property (nonatomic) UIView *headerView;
 
 @end
 
@@ -40,6 +42,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor blackColor];
+	self.headerView = [[UIView alloc] initWithFrame:CGRectMake(0.f, 0.f, self.view.frame.size.width,
+																		  STATUS_BAR_HEIGHT)];
+	self.headerView.backgroundColor = [UIColor blackColor];
+	[self.navigationController.view addSubview: self.headerView];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.tableView registerClass:[FeedListTableViewCell class] forCellReuseIdentifier:@"FeedListTableViewCell"];
     self.tableView.allowsSelection = YES;
@@ -57,8 +63,8 @@
 }
 
 -(void) formatNavigationItem {
-	self.navigationItem.title = @"Blog List";
-	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Blog List" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
+	self.navigationItem.title = @"Profile List";
+	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -121,7 +127,7 @@
 //    [self.logoBar removeFromSuperview];
 
     NSInteger startIndex = (indexPath.section == 0) ? indexPath.row : indexPath.row + self.channelsRecentlyUpdated.count;
-    
+
     [self.profileListFeed setAndRefreshWithList:[self getCombinedChannelList] withStartIndex:startIndex];
 	[self.navigationController pushViewController:self.profileListFeed animated:YES];
     [self.tableView setScrollEnabled:NO];
@@ -228,6 +234,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 -(FeedTableViewController *)profileListFeed{
     if(!_profileListFeed){
         _profileListFeed = [[FeedTableViewController alloc] init];
+		_profileListFeed.view.frame = self.view.bounds;
         _profileListFeed.delegate = self;
     }
     return _profileListFeed;

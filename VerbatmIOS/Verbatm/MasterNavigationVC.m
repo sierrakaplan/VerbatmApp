@@ -294,7 +294,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 															  image:[UIImage imageNamed:PROFILE_NAV_ICON]
 													  selectedImage:[UIImage imageNamed:PROFILE_NAV_ICON]];
 	
-    
     self.feedProfileListNavigationController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
                                                            image:[UIImage imageNamed:HOME_NAV_ICON]
                                                    selectedImage:[UIImage imageNamed:HOME_NAV_ICON]];
@@ -316,8 +315,8 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
                                                        selectedImage:selectedNotification];
     
     self.notificationsNavigationController.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
-    
-	self.profileNavigationController.tabBarItem.imageInsets = self.discoverVC.tabBarItem.imageInsets =
+    self.discoverNavigationController.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+	self.profileNavigationController.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
     self.feedProfileListNavigationController.tabBarItem.imageInsets =  UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 }
 

@@ -436,7 +436,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		NSTimeInterval timeSinceSeen = [postDate timeIntervalSinceDate:self.latestPostSeen];
 		if (timeSinceSeen > 0.f) {
 			// If in fullscreen mode update latest date
-            
+			//todo: delete
             NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
             [dateFormat setDateFormat:@"MMM dd, YYYY hh:mma"];
             NSString *dateString = [dateFormat stringFromDate:self.latestPostSeen];

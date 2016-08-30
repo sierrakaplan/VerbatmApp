@@ -78,7 +78,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 #define CELL_SPACING_SMALL 5.f
 #define CELL_SPACING_LARGE 0.3
-#define HEADER_SIZE (self.view.frame.size.height / 3.f)
+#define HEADER_SIZE (self.view.frame.size.height * 2.f/5.f)
 
 @end
 
@@ -170,7 +170,8 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	}
 
 	CGRect frame = CGRectMake(0.f, 0.f, self.view.frame.size.width, HEADER_SIZE);
-	self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andChannel:self.channel];
+	self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andChannel:self.channel
+												 inCurrentUserProfile:NO];
 	self.profileHeaderView.delegate = self;
 	[self.view addSubview: self.profileHeaderView];
 	[self.view sendSubviewToBack:self.profileHeaderView];
@@ -549,10 +550,9 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 		self.postListSmallFrame = CGRectMake(0.f, HEADER_SIZE,
 											 self.view.frame.size.width, self.view.frame.size.height -
 											 HEADER_SIZE - TAB_BAR_HEIGHT);
-		CGFloat postHeight = self.postListSmallFrame.size.height - SMALL_SQUARE_LIKESHAREBAR_HEIGHT;
+		CGFloat postHeight = self.postListSmallFrame.size.height;
 		CGFloat postWidth = (self.view.frame.size.width / self.view.frame.size.height ) * postHeight;
 		self.cellSmallFrameSize = CGSizeMake(postWidth, postHeight);
-
 		_postListVC = [[PostListVC alloc] initWithCollectionViewLayout:[self getFlowLayout]];
 		_postListVC.postListDelegate = self;
 		_postListVC.inSmallMode = YES;

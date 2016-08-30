@@ -9,11 +9,13 @@
 #import "Channel.h"
 #import "Icons.h"
 #import "ProfileHeaderView.h"
+#import "SizesAndPositions.h"
 #import "Styles.h"
 #import "UIView+Effects.h"
 
 @interface ProfileHeaderView()
 
+@property (nonatomic) BOOL currentUserProfile;
 @property (nonatomic) UIImageView *coverPhotoImageView;
 @property (nonatomic) UIView *transparentTintCoverView;
 @property (nonatomic) NSString *userName;
@@ -24,26 +26,30 @@
 
 #define TEXT_X_OFFSET 10.f
 
-#define USERNAME_Y_OFFSET 80.f
+#define USERNAME_Y_OFFSET 100.f
 #define USERNAME_HEIGHT 40.f
 #define USERNAME_FONT_SIZE 24.f
 
-#define MORE_INFO_BUTTON_SIZE 30.f
+#define MORE_INFO_BUTTON_SIZE 40.f
 #define MORE_INFO_BUTTON_SPACING 5.f
+
+#define COVER_PHOTO_BORDER 5.f
 
 @end
 
 @implementation ProfileHeaderView
 
--(instancetype) initWithFrame:(CGRect)frame andChannel: (Channel*) channel {
+-(instancetype) initWithFrame:(CGRect)frame andChannel: (Channel*) channel
+		 inCurrentUserProfile:(BOOL)currentUserProfile {
 	self = [super initWithFrame: frame];
 	if (self) {
+		self.currentUserProfile = currentUserProfile;
 		self.moreInfoButtonSelected = NO;
+		self.backgroundColor = [UIColor blackColor];
 		[channel loadCoverPhotoWithCompletionBlock:^(UIImage *coverPhoto, NSData *data) {
 			[self.coverPhotoImageView setImage: coverPhoto];
 		}];
 		[self addSubview: self.coverPhotoImageView];
-		[self addSubview: self.transparentTintCoverView];
 		[channel getChannelOwnerNameWithCompletionBlock:^(NSString *username) {
 			self.userName = username;
 			[self addSubview: self.userNameLabel];
@@ -56,10 +62,12 @@
 -(void) moreInfoButtonTapped {
 	self.moreInfoButtonSelected = !self.moreInfoButtonSelected;
 	if (self.moreInfoButtonSelected) {
-		self.moreInfoButtonBorder = [self.moreInfoButton addBottomBorderWithColor:[UIColor whiteColor] andWidth:1.f];
+		self.moreInfoButton.backgroundColor = [UIColor colorWithWhite:1.f alpha:0.3];
+//		self.moreInfoButtonBorder = [self.moreInfoButton addBottomBorderWithColor:[UIColor whiteColor] andWidth:1.f];
 	} else {
-		[self.moreInfoButtonBorder removeFromSuperlayer];
-		self.moreInfoButtonBorder = nil;
+		self.moreInfoButton.backgroundColor = [UIColor clearColor];
+//		[self.moreInfoButtonBorder removeFromSuperlayer];
+//		self.moreInfoButtonBorder = nil;
 	}
 	[self.delegate moreInfoButtonTapped];
 }
@@ -68,11 +76,14 @@
 
 -(UIImageView*) coverPhotoImageView {
 	if (!_coverPhotoImageView) {
-		_coverPhotoImageView = [[UIImageView alloc] initWithFrame: self.bounds];
+		CGRect frame = CGRectMake(COVER_PHOTO_BORDER, STATUS_BAR_HEIGHT, self.bounds.size.width - COVER_PHOTO_BORDER*2,
+								  self.bounds.size.height - STATUS_BAR_HEIGHT);
+		_coverPhotoImageView = [[UIImageView alloc] initWithFrame: frame];
 		[_coverPhotoImageView setImage:[UIImage imageNamed: NO_COVER_PHOTO_IMAGE]];
 		_coverPhotoImageView.backgroundColor = [UIColor lightGrayColor];
 		_coverPhotoImageView.clipsToBounds = YES;
 		_coverPhotoImageView.contentMode = UIViewContentModeScaleAspectFill;
+		[_coverPhotoImageView addSubview: self.transparentTintCoverView];
 	}
 	return _coverPhotoImageView;
 }
@@ -110,8 +121,13 @@
 	if (!_moreInfoButton) {
 		CGRect frame = CGRectMake(self.userNameLabel.frame.origin.x + self.userNameLabel.frame.size.width +
 								  MORE_INFO_BUTTON_SPACING,
-								  self.userNameLabel.frame.origin.y, MORE_INFO_BUTTON_SIZE, MORE_INFO_BUTTON_SIZE);
+								  self.userNameLabel.center.y - MORE_INFO_BUTTON_SIZE/2.f, MORE_INFO_BUTTON_SIZE,
+								  MORE_INFO_BUTTON_SIZE);
 		_moreInfoButton = [[UIButton alloc] initWithFrame: frame];
+		_moreInfoButton.layer.borderColor = [UIColor whiteColor].CGColor;
+		_moreInfoButton.contentEdgeInsets = UIEdgeInsetsMake(10.f, 10.f, 10.f, 10.f);
+		_moreInfoButton.layer.borderWidth = 2.f;
+		_moreInfoButton.layer.cornerRadius = 10.f;
 		_moreInfoButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
 		[_moreInfoButton setImage:[UIImage imageNamed:MORE_INFO_ICON] forState:UIControlStateNormal];
 		[_moreInfoButton addTarget:self action:@selector(moreInfoButtonTapped) forControlEvents:UIControlEventTouchDown];
