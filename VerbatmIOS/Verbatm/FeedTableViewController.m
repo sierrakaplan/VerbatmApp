@@ -60,6 +60,12 @@
 							  atScrollPosition:UITableViewScrollPositionTop
 									  animated:NO];
 	}
+	NSArray * visibleCell = [self.tableView visibleCells];
+	if(visibleCell && visibleCell.count) {
+		FeedTableCell *cell = [visibleCell firstObject];
+		[cell.currentProfile viewWillAppear:animated];
+	}
+
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -219,6 +225,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath{
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	FeedTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FeedTableCell" forIndexPath:indexPath];
 	cell.delegate = self;
+	cell.navigationController = (VerbatmNavigationController*)self.navigationController;
+	cell.tabBarController = (MasterNavigationVC*)self.tabBarController;
 	if(self.nextProfileToPresent && indexPath.row == self.nextProfileIndex){
 		[cell setProfileAlreadyLoaded:self.nextProfileToPresent];
 	} else {

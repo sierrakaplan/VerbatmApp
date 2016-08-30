@@ -81,7 +81,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 #define CELL_SPACING_SMALL 5.f
 #define CELL_SPACING_LARGE 0.3
-#define HEADER_SIZE (self.view.frame.size.height * 2.f/5.f)
+#define HEADER_SIZE (self.view.frame.size.height/2.f)
 
 @end
 
@@ -100,20 +100,18 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	[self setNeedsStatusBarAppearanceUpdate];
-	if (!self.inFullScreenMode) {
-		[(MasterNavigationVC*)self.tabBarController showTabBar:YES];
-		if (self.navigationController) {
-			[self.navigationController setNavigationBarHidden:NO];
-		}
-	} else {
-		[(MasterNavigationVC*)self.tabBarController showTabBar:NO];
-		if (self.navigationController) {
-			[self.navigationController setNavigationBarHidden:YES];
-		}
-	}
 	if (self.navigationController) {
+		[(MasterNavigationVC*)self.tabBarController showTabBar:!self.inFullScreenMode];
+		[self.navigationController setNavigationBarHidden: self.inFullScreenMode];
 		[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundClear];
 		[(VerbatmNavigationController*)self.navigationController setNavigationBarTextColor:[UIColor whiteColor]];
+	}
+	// In feed list
+	else {
+		[self.verbatmTabBarController showTabBar:!self.inFullScreenMode];
+		[self.verbatmNavigationController setNavigationBarHidden:self.inFullScreenMode];
+		[self.verbatmNavigationController setNavigationBarBackgroundClear];
+		[self.verbatmNavigationController setNavigationBarTextColor:[UIColor whiteColor]];
 	}
 }
 
@@ -182,7 +180,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	if (self.navigationController) {
 		[self.navigationController pushViewController:userList animated:YES];
 	} else {
-		[self.delegate pushViewController:userList];
+		[self.verbatmNavigationController pushViewController:userList animated:YES];
 	}
 }
 
@@ -307,7 +305,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	if (self.navigationController) {
 		[self.navigationController pushViewController:commentListVC animated:YES];
 	} else {
-		[self.delegate pushViewController:commentListVC];
+		[self.verbatmNavigationController pushViewController:commentListVC animated:YES];
 	}
 }
 
@@ -317,7 +315,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	if (self.navigationController) {
 		[self.navigationController pushViewController:likersListVC animated:YES];
 	} else {
-		[self.delegate pushViewController:likersListVC];
+		[self.verbatmNavigationController pushViewController:likersListVC animated:YES];
 	}
 }
 
@@ -338,7 +336,9 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 		if (self.navigationController) {
 			[self.navigationController pushViewController:userProfile animated:YES];
 		} else {
-			[self.delegate pushViewController:userProfile];
+			userProfile.verbatmNavigationController = self.verbatmNavigationController;
+			userProfile.verbatmTabBarController = self.verbatmTabBarController;
+			[self.verbatmNavigationController pushViewController:userProfile animated:YES];
 		}
     }
 }
@@ -372,11 +372,13 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	} else if(cellPath.row < self.postListVC.parsePostActivityObjects.count) {
 		[postList.collectionView scrollToItemAtIndexPath:cellPath atScrollPosition:(UICollectionViewScrollPositionCenteredHorizontally) animated:NO];
 	}
-	[(MasterNavigationVC*)self.tabBarController showTabBar: inSmallMode];
+
 	if (self.navigationController) {
 		[self.navigationController setNavigationBarHidden: !inSmallMode];
+		[(MasterNavigationVC*)self.tabBarController showTabBar: inSmallMode];
 	} else {
-		[self.delegate showNavBar:inSmallMode];
+		[self.verbatmNavigationController setNavigationBarHidden: !inSmallMode];
+		[self.verbatmTabBarController showTabBar: inSmallMode];
 	}
 	[self.postListVC.view removeFromSuperview];
 	[self.postListVC clearViews];
@@ -480,7 +482,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
         MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
         NSString * message = @"Hey - checkout this post on Verbatm!";
         controller.body = [message stringByAppendingString:url];
-        
         controller.messageComposeDelegate = self;
         [self presentViewController:controller animated:YES completion:nil];
     }

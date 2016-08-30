@@ -11,8 +11,6 @@
 
 @interface FeedTableCell () <ProfileVCDelegate>
 
-@property (nonatomic) ProfileVC * currentProfile;
-
 @end
 
 
@@ -30,6 +28,8 @@
 	ProfileVC * __block oldProfile = self.currentProfile;
 	self.currentProfile = newProfile;
 	self.currentProfile.delegate = self;
+	self.currentProfile.verbatmNavigationController = self.navigationController;
+	self.currentProfile.verbatmTabBarController = self.tabBarController;
 	[self addSubview:self.currentProfile.view];
 	self.clipsToBounds = YES;
 
@@ -46,6 +46,8 @@
 	dispatch_async(dispatch_get_global_queue(0, 0), ^{
 		self.currentProfile = [[ProfileVC alloc] init];
 		self.currentProfile.isCurrentUserProfile = NO;
+		self.currentProfile.verbatmNavigationController = self.navigationController;
+		self.currentProfile.verbatmTabBarController = self.tabBarController;
 		self.currentProfile.profileInFeed = YES;
 		self.currentProfile.isProfileTab = NO;
 		self.currentProfile.delegate = self;
