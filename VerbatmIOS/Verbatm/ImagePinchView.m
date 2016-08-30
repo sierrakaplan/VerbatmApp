@@ -187,9 +187,9 @@
 	@autoreleasepool {
 		CGSize size = half ? HALF_SCREEN_SIZE : FULL_SCREEN_SIZE;
 		CGRect frame = CGRectMake(0.f, 0.f, size.width, size.height);
-        CGRect imageFrame = frame;
-        if(!CGRectEqualToRect(self.imageContentFrame, CGRectZero)){
-            imageFrame = self.imageContentFrame;
+        CGRect imageFrame = self.imageContentFrame;
+        if(CGRectEqualToRect(self.imageContentFrame, CGRectZero)){
+            imageFrame = frame ;
         }
         
 		TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:frame andImage:image

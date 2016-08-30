@@ -140,19 +140,6 @@
 }
 
 -(void) setNewImageContentOffset:(CGFloat)newX andY:(CGFloat)newY {
-
-	if (newX < 0) newX = 0;
-	CGFloat xMax = self.repositionPhotoScrollView.contentSize.width - self.bounds.size.width;
-	if (newX > xMax) {
-		newX = xMax;
-	}
-
-	if (newY < 0) newY = 0;
-	CGFloat yMax = self.repositionPhotoScrollView.contentSize.height - self.bounds.size.height;
-	if (newY > yMax) {
-		newY = yMax;
-	}
-
 	self.repositionPhotoScrollView.contentOffset = CGPointMake(newX, newY);
 }
 
