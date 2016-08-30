@@ -10,7 +10,10 @@
 
 @interface VerbatmNavigationController : UINavigationController
 
--(void) setNavigationBarStyleClearWithTextColor: (UIColor*)textColor;
--(void) setNavigationTitleColor: (UIColor*)textColor;
+-(void) setNavigationBarBackgroundClear;
+
+-(void) setNavigationBarBackgroundColor:(UIColor*)backgroundColor;
+
+-(void) setNavigationBarTextColor: (UIColor*)textColor;
 
 @end

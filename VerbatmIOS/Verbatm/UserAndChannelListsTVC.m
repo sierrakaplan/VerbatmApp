@@ -30,6 +30,7 @@
 
 #import "QuartzCore/QuartzCore.h"
 
+#import "MasterNavigationVC.h"
 #import "VerbatmNavigationController.h"
 
 @interface UserAndChannelListsTVC () <CustomNavigationBarDelegate>
@@ -91,13 +92,10 @@
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	[self setNeedsStatusBarAppearanceUpdate];
-	self.oldNavigationBarHidden = self.navigationController.navigationBarHidden;
+	[(MasterNavigationVC*) self.tabBarController showTabBar:NO];
 	[self.navigationController setNavigationBarHidden:NO];
-	self.oldNavigationBarTintColor = self.navigationController.navigationBar.tintColor;
-	self.navigationController.navigationBar.tintColor = [UIColor blackColor];
-	[(VerbatmNavigationController*)self.navigationController setNavigationTitleColor: [UIColor blackColor]];
-	self.oldNavigationBarBackground = self.navigationController.navigationBar.backgroundColor;
-	self.navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundColor:[UIColor whiteColor]];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarTextColor:[UIColor blackColor]];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -106,12 +104,6 @@
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
-	if (self.isMovingFromParentViewController) {
-		[self.navigationController setNavigationBarHidden:self.oldNavigationBarHidden];
-	}
-	self.navigationController.navigationBar.tintColor = self.oldNavigationBarTintColor;
-	[(VerbatmNavigationController*)self.navigationController setNavigationTitleColor: self.oldNavigationBarTintColor];
-	self.navigationController.navigationBar.backgroundColor = self.oldNavigationBarBackground;
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -173,48 +165,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void)refresh:(UIRefreshControl *)refreshControl {
 	[self presentList:self.currentListType forChannel:self.channelOnDisplay orPost:self.postObject];
 }
-
-//-(void)putCommentingKeyboardBarOnScreen{
-//	self.commentingKeyboard = [[CommentingKeyboardToolbar alloc] initWithFrame:CGRectMake(0.f, KEYBOARD_BAR_START_YPOS,
-//																						  self.view.frame.size.width, COMMENTING_KEYBOARD_HEIGHT)];
-//	self.commentingKeyboard.delegate = self;
-//	[self.tableView addSubview:self.commentingKeyboard];
-//
-//	// create hooks for keyboard
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(keyboardDidShowOrHide:)
-//												 name:UIKeyboardWillShowNotification
-//											   object:nil];
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(keyboardDidShowOrHide:)
-//												 name:UIKeyboardWillHideNotification
-//											   object:nil];
-//}
-
-//-(void)keyboardDidShowOrHide:(NSNotification *)notification {
-//    NSDictionary *userInfo = [notification userInfo];
-//    NSTimeInterval animationDuration;
-//    UIViewAnimationCurve animationCurve;
-//    CGRect keyboardEndFrame;
-//
-//    [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
-//    [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
-//    [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] getValue:&keyboardEndFrame];
-//
-//    [UIView beginAnimations:nil context:nil];
-//    [UIView setAnimationDuration:animationDuration];
-//    [UIView setAnimationCurve:animationCurve];
-//
-//
-//    CGFloat yPosKeyboardWithTableViewCord = keyboardEndFrame.origin.y + self.tableView.contentOffset.y;
-//
-//    CGRect newFrame = self.commentingKeyboard.frame;
-//    newFrame.origin.y =  yPosKeyboardWithTableViewCord - (self.commentingKeyboard.frame.size.height);
-//    self.commentingKeyboard.frame = newFrame;
-//
-//    [UIView commitAnimations];
-//}
-
 
 - (void)didReceiveMemoryWarning {
 	[super didReceiveMemoryWarning];

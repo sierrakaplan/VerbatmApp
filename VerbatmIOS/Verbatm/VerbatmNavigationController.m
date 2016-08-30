@@ -21,24 +21,23 @@
 }
 
 -(void) formatNavigationBar {
-	//	[self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-	//	self.navigationController.navigationBar.shadowImage = [UIImage new];
-	//	[self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.navigationController.navigationBar attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeHeight multiplier:1 constant:NAVIGATION_BAR_HEIGHT]];
-
-	self.navigationBar.translucent = NO;
-	self.navigationBar.barTintColor = [UIColor blackColor];
-	self.navigationBar.tintColor = [UIColor whiteColor];
-	[self setNavigationTitleColor:[UIColor whiteColor]];
+	[self setNavigationBarBackgroundColor:[UIColor blackColor]];
+	[self setNavigationBarTextColor:[UIColor whiteColor]];
 }
 
--(void) setNavigationBarStyleClearWithTextColor: (UIColor*)textColor {
+-(void) setNavigationBarBackgroundClear {
 	[self.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
 	self.navigationBar.shadowImage = [UIImage new];
 	self.navigationBar.translucent = YES;
-	self.navigationBar.tintColor = textColor;
 }
 
--(void) setNavigationTitleColor: (UIColor*)textColor {
+-(void) setNavigationBarBackgroundColor:(UIColor*)backgroundColor {
+	self.navigationBar.translucent = NO;
+	self.navigationBar.barTintColor = backgroundColor;
+}
+
+-(void) setNavigationBarTextColor: (UIColor*)textColor {
+	self.navigationBar.tintColor = textColor;
 	[self.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
 												textColor, NSForegroundColorAttributeName,
 												[UIFont fontWithName:BOLD_FONT size:21.0], NSFontAttributeName, nil]];

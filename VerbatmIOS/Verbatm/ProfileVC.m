@@ -92,6 +92,34 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	self.view.backgroundColor = [UIColor blackColor];
 	[self buildHeaderView];
 	[self loadContentToPostList];
+	[self formatNavigationItem];
+}
+
+-(void) viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
+	[self setNeedsStatusBarAppearanceUpdate];
+	if (!self.inFullScreenMode) {
+		[(MasterNavigationVC*)self.tabBarController showTabBar:YES];
+	}
+	[self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
+}
+
+-(void) viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+	[super viewDidAppear:animated];
+
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle {
+	return UIStatusBarStyleLightContent;
+}
+
+-(void) formatNavigationItem {
+	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style
+																			target:nil action:nil];
 }
 
 -(void)updateDateOfLastPostSeen {
@@ -128,24 +156,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	[self buildHeaderView];
 }
 
--(void) viewWillAppear:(BOOL)animated {
-	[super viewWillAppear:animated];
-	[self setNeedsStatusBarAppearanceUpdate];
-	if (!self.inFullScreenMode) {
-		[(MasterNavigationVC*)self.tabBarController showTabBar:YES];
-	}
-	[self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
-}
-
--(void) viewWillDisappear:(BOOL)animated {
-	[super viewWillDisappear:animated];
-}
-
--(void)viewDidAppear:(BOOL)animated{
-	[super viewDidAppear:animated];
-
-}
-
 -(void)clearOurViews {
 	if(self.postListVC)[self.postListVC offScreen];
 	if(self.postListVC)[self.postListVC clearViews];
@@ -161,10 +171,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	} else {
 		[self.delegate pushViewController:userList];
 	}
-}
-
-- (UIStatusBarStyle)preferredStatusBarStyle {
-	return UIStatusBarStyleLightContent;
 }
 
 -(void)buildHeaderView {
@@ -284,8 +290,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 }
 
 -(void)showWhoCommentedOnPost:(PFObject *) post{
-    CommentingViewController *commentListVC = [[CommentingViewController alloc] init];
-    [commentListVC presentCommentsForPost: post];
+    CommentingViewController *commentListVC = [[CommentingViewController alloc] initForPost:post];
 	if (self.navigationController) {
 		[self.navigationController pushViewController:commentListVC animated:YES];
 	} else {

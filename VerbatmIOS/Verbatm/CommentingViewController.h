@@ -11,6 +11,6 @@
 
 @interface CommentingViewController : UIViewController
 
--(void)presentCommentsForPost:(PFObject *)post;
+-(instancetype) initForPost: (PFObject*)post;
 
 @end

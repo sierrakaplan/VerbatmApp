@@ -13,6 +13,7 @@
 #import "ParseBackendKeys.h"
 #import "Channel_BackendObject.h"
 #import "Channel.h"
+#import "CommentingViewController.h"
 #import "Styles.h"
 #import "CustomNavigationBar.h"
 #import "ProfileVC.h"
@@ -74,13 +75,13 @@
 	self.tableView.contentInset = inset;
 
 	[self createHeader];
-	[(VerbatmNavigationController*)self.navigationController setNavigationBarStyleClearWithTextColor:[UIColor blackColor]];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
 	if(self.isFirstLoad) {
 		self.isFirstLoad = NO;
 	}
+	[self.navigationController setNavigationBarHidden:YES];
 	[self.delegate removeNotificationIndicator];
 	self.currentlyBeingViewed = YES;
 	self.cellSelected = NO;
@@ -187,9 +188,7 @@
 }
 
 -(void)presentCommentListForPost:(PFObject *)post {
-	//todo: separate vc for comments
-    UserAndChannelListsTVC *commentorsListVC = [[UserAndChannelListsTVC alloc] initWithStyle:UITableViewStyleGrouped];
-    [commentorsListVC presentList:CommentList forChannel:nil orPost:post];
+    CommentingViewController *commentorsListVC = [[CommentingViewController alloc] initForPost:post];
 	[self.navigationController pushViewController:commentorsListVC animated:YES];
 }
 

@@ -52,7 +52,8 @@
 -(void)viewWillAppear:(BOOL)animated{
 	[super viewWillAppear:animated];
 	[self.navigationController setNavigationBarHidden:NO];
-	[(VerbatmNavigationController*)self.navigationController setNavigationBarStyleClearWithTextColor:[UIColor whiteColor]];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundClear];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarTextColor:[UIColor whiteColor]];
 	if(self.startIndex >= 0) {
 		NSIndexPath * indexPath = [NSIndexPath indexPathForRow:self.startIndex inSection:0];
 		[self.tableView scrollToRowAtIndexPath:indexPath

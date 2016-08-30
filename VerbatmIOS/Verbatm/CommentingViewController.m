@@ -11,8 +11,10 @@
 #import "Commenting_BackendObject.h"
 #import "CommentingKeyboardToolbar.h"
 #import "CommentingViewController.h"
+#import "MasterNavigationVC.h"
+#import "VerbatmNavigationController.h"
 
-@interface CommentingViewController() <UITableViewDelegate, CommentingKeyboardToolbarProtocol>
+@interface CommentingViewController() <UITableViewDelegate, UITableViewDataSource, CommentingKeyboardToolbarProtocol>
 
 @property (nonatomic) PFObject *postObject;
 @property (strong, nonatomic) UITableView *tableView;
@@ -31,6 +33,14 @@
 
 @implementation CommentingViewController
 
+-(instancetype) initForPost: (PFObject*)post {
+	self = [super init];
+	if (self) {
+		self.postObject = post;
+	}
+	return self;
+}
+
 -(void) viewDidLoad {
 	[super viewDidLoad];
 	self.refreshing = NO;
@@ -38,6 +48,28 @@
 	self.view.backgroundColor = [UIColor whiteColor];
 	[self.view addSubview: self.tableView];
 	[self.view addSubview: self.commentingKeyboard];
+	[self addRefreshFeature];
+	if (![self.refreshControl isRefreshing]) {
+		[self.loadMoreSpinner startAnimating];
+	}
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(keyboardDidShowOrHide:)
+												 name:UIKeyboardWillShowNotification
+											   object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(keyboardDidShowOrHide:)
+												 name:UIKeyboardWillHideNotification
+											   object:nil];
+	[self refreshData];
+}
+
+-(void) viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
+	// Set all navigation bar and tab bar formatting here:
+	[(MasterNavigationVC*)self.tabBarController showTabBar:NO];
+	[self.navigationController setNavigationBarHidden:NO];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundColor:[UIColor whiteColor]];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarTextColor:[UIColor blackColor]];
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -45,20 +77,12 @@
 }
 
 -(void) setNavigationItem {
-	self.navigationItem.title = @"Comments";
+	self.navigationItem.title = COMMENTING_TEXT;
 }
 
 
 #pragma mark - Loading comments -
 
--(void)presentCommentsForPost:(PFObject *)post {
-	[self addRefreshFeature];
-	if (![self.refreshControl isRefreshing]) {
-		[self.loadMoreSpinner startAnimating];
-	}
-	self.postObject = post;
-	[self refreshData];
-}
 
 -(void) refreshData {
 	if (self.refreshing) return;
@@ -118,8 +142,31 @@
 	return cell;
 }
 
-
 #pragma mark - Adding new comment -
+
+-(void)keyboardDidShowOrHide:(NSNotification *)notification {
+	NSDictionary *userInfo = [notification userInfo];
+	NSTimeInterval animationDuration;
+	UIViewAnimationCurve animationCurve;
+	CGRect keyboardEndFrame;
+
+	[[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
+	[[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
+	[[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] getValue:&keyboardEndFrame];
+
+	[UIView beginAnimations:nil context:nil];
+	[UIView setAnimationDuration:animationDuration];
+	[UIView setAnimationCurve:animationCurve];
+
+
+	CGFloat yPosKeyboardWithTableViewCord = keyboardEndFrame.origin.y + self.tableView.contentOffset.y;
+
+	CGRect newFrame = self.commentingKeyboard.frame;
+	newFrame.origin.y = yPosKeyboardWithTableViewCord - (self.commentingKeyboard.frame.size.height) - self.navigationController.navigationBar.frame.size.height;
+	self.commentingKeyboard.frame = newFrame;
+
+	[UIView commitAnimations];
+}
 
 -(void)doneButtonSelectedWithFinalString:(NSString *) commentString{
 	Comment * newComment  = [[Comment alloc] initWithString:commentString andPostObject:self.postObject];
@@ -134,13 +181,16 @@
 		_tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
 		_tableView.backgroundColor = [UIColor whiteColor];
 		_tableView.delegate = self;
+		_tableView.dataSource = self;
+		[_tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 	}
 	return _tableView;
 }
 
 -(CommentingKeyboardToolbar*) commentingKeyboard {
 	if (!_commentingKeyboard) {
-		CGRect frame = CGRectMake(0.f, self.view.frame.size.height - COMMENTING_KEYBOARD_HEIGHT,
+		CGRect frame = CGRectMake(0.f, self.view.frame.size.height - COMMENTING_KEYBOARD_HEIGHT -
+								  self.navigationController.navigationBar.frame.size.height,
 								  self.view.frame.size.width, COMMENTING_KEYBOARD_HEIGHT);
 		_commentingKeyboard = [[CommentingKeyboardToolbar alloc] initWithFrame:frame];
 		_commentingKeyboard.delegate = self;
