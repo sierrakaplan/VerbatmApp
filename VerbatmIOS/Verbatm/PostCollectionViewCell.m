@@ -51,6 +51,8 @@
 @property (nonatomic) NSNumber * numShares;
 @property (nonatomic) NSNumber * numComments;
 
+@property (nonatomic) UIButton * createPostPrompt;
+
 #define POSTVIEW_FRAME ((self.inSmallMode) ? CGRectMake(0.f, SMALL_SQUARE_LIKESHAREBAR_HEIGHT, self.frame.size.width, self.frame.size.height - SMALL_SQUARE_LIKESHAREBAR_HEIGHT) : self.bounds)
 
 #define LIKE_BUTTION_SIZE 25.f
@@ -139,11 +141,18 @@
 	}
 }
 
--(void)presentPublishingView{
+-(void)presentPromptView:(NSNumber *) promptType{
+    LastPostType type = [promptType integerValue];
+    
 	if(self.presentingTapToExitNotification){
 		[self insertSubview:self.publishingProgressView belowSubview:self.tapToExitNotification];
 	}else{
-		[self addSubview:self.publishingProgressView];
+        [self clearViews];
+        if(type == PublishingPostPrompt){
+            [self addSubview:self.publishingProgressView];
+        }else{
+            [self addSubview:self.createPostPrompt];
+        }
 	}
 	self.hasPublishingView = YES;
 }
@@ -409,6 +418,24 @@
 
 -(void) flagButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post {
 	[self.cellDelegate flagOrBlockButtonSelectedOnPostView:postView withPostObject:post];
+}
+
+
+-(void)createPostPromptSelected{
+    [self.cellDelegate createPostPromptSelected];
+}
+
+-(UIButton *)createPostPrompt{
+    
+    if(!_createPostPrompt){
+        _createPostPrompt = [[UIButton alloc] initWithFrame:self.bounds];
+        [_createPostPrompt setImage:[UIImage imageNamed:ADD_FIRST_POST_ICON] forState:UIControlStateNormal];
+        _createPostPrompt.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        [_createPostPrompt addTarget:self action:@selector(createPostPromptSelected) forControlEvents:UIControlEventTouchDown];
+    }
+    
+    return _createPostPrompt;
+    
 }
 
 -(PublishingProgressView *)publishingProgressView{

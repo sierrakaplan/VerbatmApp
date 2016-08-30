@@ -262,12 +262,11 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 			[weakSelf.postListDelegate postsFound];
 			[weakSelf.parsePostActivityObjects removeAllObjects];
 			[weakSelf.parsePostActivityObjects addObjectsFromArray:posts];
-			if(weakSelf.currentlyPublishing) {
-				[weakSelf.parsePostActivityObjects addObject:weakSelf.publishingProgressViewPositionHolder];
-			}
+            if(weakSelf.isCurrentUserProfile)[weakSelf.parsePostActivityObjects addObject:weakSelf.publishingProgressViewPositionHolder];
 			[weakSelf.collectionView reloadData];
 			[weakSelf scrollToLastElementInList];
 		} else if (!weakSelf.currentlyPublishing) {
+            if(weakSelf.isCurrentUserProfile)[weakSelf.parsePostActivityObjects addObject:weakSelf.publishingProgressViewPositionHolder];
 			[weakSelf.postListDelegate noPostFound];
 		}
 	};
@@ -425,9 +424,11 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(NSDate *)creationDateOfLastPostObjectInPostList{
- 
-    PFObject * lastObj = [self.parsePostActivityObjects lastObject];
-    return [lastObj createdAt];
+    if(!self.isCurrentUserProfile){
+        PFObject * lastObj = [self.parsePostActivityObjects lastObject];
+        return [lastObj createdAt];
+    }
+    return [NSDate date];
 }
 
 -(void) updateCursor {
@@ -487,6 +488,10 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	if (self.nextNextCell) [self.nextNextCell almostOnScreen];
 }
 
+-(void)createPostPromptSelected{
+    [self.postListDelegate createPostPromptSelected];
+}
+
 -(PostCollectionViewCell*) postCellAtIndexPath:(NSIndexPath *)indexPath {
 	if (indexPath.row >= self.parsePostActivityObjects.count) {
 		return nil;
@@ -498,9 +503,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	cell.cellDelegate = self;
 	if([postActivityObject isKindOfClass:[NSNumber class]]) {
 		[cell clearViews];
-		if (self.currentlyPublishing) {
-			[cell presentPublishingView];
-		}
+        [cell presentPromptView:self.publishingProgressViewPositionHolder];
 	} else {
 		NSString *otherId = postActivityObject.objectId;
 		if (currentId == nil || otherId == nil || ![currentId isEqualToString: otherId]) {
@@ -711,7 +714,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void)removeSharePOVView{
-	if(self.sharePostView){
+	
+    if(self.sharePostView){
+        
 		CGRect offScreenFrame = CGRectMake(0.f, [UIApplication sharedApplication].keyWindow.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
         
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
@@ -723,6 +728,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 			}
 		}];
 	}
+    
 }
 
 #pragma mark - Share Selection View Protocol -
@@ -967,12 +973,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark - Publishing -
 
 -(void)clearPublishingView {
-	if(self.currentlyPublishing && self.parsePostActivityObjects.count) {
-		self.currentlyPublishing = NO;
-		[self removePostAtIndex:[self.parsePostActivityObjects indexOfObject:self.publishingProgressViewPositionHolder] withCompletionBlock:^() {
-			[self refreshPosts];
-		}];
-	}
+    if(self.isCurrentUserProfile)self.publishingProgressViewPositionHolder = [NSNumber numberWithInteger:CreateNewPostPrompt];
+    [self refreshPosts];
 }
 
 -(void)startMonitoringPublishing{
@@ -984,31 +986,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	self.currentlyPublishing = YES;
 	self.nextIndexToPresent = -1;
 	self.nextNextIndex = -1;
-
-	[CATransaction begin];
-	[CATransaction setDisableActions:YES];
-	self.performingUpdate = YES;
-	//add progress view to parseObjects
-	NSInteger index = self.parsePostActivityObjects.count;
-	[self.collectionView performBatchUpdates:^{
-		//Insert the new data
-		[self.parsePostActivityObjects addObject:self.publishingProgressViewPositionHolder];
-		//Insert the new cells
-		[self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:index inSection:0]]];
-
-	} completion:^(BOOL finished) {
-		if(finished){
-			self.performingUpdate = NO;
-
-			// scroll to publishing item
-			NSInteger item = [self.collectionView numberOfItemsInSection:0] - 1;
-			NSIndexPath *indexPath = [NSIndexPath indexPathForItem:item inSection:0];
-			[self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:(UICollectionViewScrollPositionRight) animated:YES];
-
-			[CATransaction commit];
-			[self.postListDelegate postsFound];
-		}
-	}];
+    self.publishingProgressViewPositionHolder = [NSNumber numberWithInteger:PublishingPostPrompt];
+    [self.collectionView reloadData];
+    [self.postListDelegate postsFound];
 }
 
 -(void) userPublishing:(NSNotification *) notification {
@@ -1039,6 +1019,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 	self.parsePostActivityObjects = nil;
 	[self.collectionView reloadData];
+    
 	// Start off assuming scrolling backwards
 	self.scrollDirection = -1;
 	self.nextIndexToPresent = -1;
@@ -1132,7 +1113,10 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(NSNumber*)publishingProgressViewPositionHolder{
-	if(!_publishingProgressViewPositionHolder)_publishingProgressViewPositionHolder = [NSNumber numberWithBool:YES];
+    if(!_publishingProgressViewPositionHolder){
+        LastPostType type = ([PublishingProgressManager sharedInstance].currentlyPublishing) ? PublishingPostPrompt : CreateNewPostPrompt;
+        _publishingProgressViewPositionHolder = [NSNumber numberWithInteger:type];
+    }
 	return _publishingProgressViewPositionHolder;
 }
 
