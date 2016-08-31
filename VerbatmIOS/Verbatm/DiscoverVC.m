@@ -114,18 +114,21 @@
 
 -(void) setUpSearchController {
 	self.searchResultsController = [[SearchResultsVC alloc] init];
-	self.searchResultsController.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 	self.searchResultsController.verbatmTabBarController = (MasterNavigationVC*)self.tabBarController;
 	self.searchResultsController.verbatmNavigationController = (VerbatmNavigationController*)self.navigationController;
 	self.searchController = [[UISearchController alloc] initWithSearchResultsController: self.searchResultsController];
 	self.searchController.searchResultsUpdater = self.searchResultsController;
 	self.tableView.tableHeaderView = self.searchController.searchBar;
 	self.definesPresentationContext = YES;
-	self.searchController.searchBar.barTintColor = [UIColor clearColor];
-	self.searchController.searchBar.tintColor = [UIColor whiteColor];
-	self.searchController.searchBar.backgroundColor = [UIColor clearColor];
-	self.searchController.searchBar.backgroundImage = [UIImage new];
+	[self formatSearchBar: self.searchController.searchBar];
 	//	self.searchController.searchBar.scopeButtonTitles = @[@"Users", @"Blogs"];
+}
+
+-(void) formatSearchBar:(UISearchBar*)searchBar {
+	searchBar.barTintColor = [UIColor clearColor];
+	searchBar.tintColor = [UIColor whiteColor];
+	searchBar.backgroundColor = [UIColor clearColor];
+	searchBar.backgroundImage = [UIImage new];
 }
 
 -(void) clearViews {

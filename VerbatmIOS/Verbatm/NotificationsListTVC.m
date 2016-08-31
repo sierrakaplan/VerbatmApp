@@ -350,7 +350,6 @@
 			});
 		} else {
 			//Error where user doesn't have channel
-
 		}
 	}];
 }
