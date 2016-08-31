@@ -127,7 +127,7 @@ andTextYPosition:(CGFloat)yPosition
    andTextColorBlack:(BOOL)textColorBlack
 andTextAlignment:(NSTextAlignment)textAlignment
 	andTextSize:(CGFloat)textSize andFontName:(NSString *)fontName {
-
+    
 	[self.textAndImageView setText: text
 				  andTextYPosition: yPosition
 					  andTextColorBlack: textColorBlack
@@ -169,8 +169,18 @@ andTextAlignment:(NSTextAlignment)textAlignment
 																 isOnScreenPermanently:YES];
 		[self.permanentOnScreenKeyboard setDelegate:self];
 		[self addSubview:self.permanentOnScreenKeyboard];
+        if([self.textAndImageView getText].length){
+            [self.permanentOnScreenKeyboard presentTextEditingOptions];
+        }else{
+            [self.permanentOnScreenKeyboard hideTextEditingOptions];
+        }
 	} else if (self.textAndImageView) {
 		[self addSubview:self.permanentOnScreenKeyboard];
+        if([self.textAndImageView getText].length){
+            [self.permanentOnScreenKeyboard presentTextEditingOptions];
+        }else{
+            [self.permanentOnScreenKeyboard hideTextEditingOptions];
+        }
 	}
 }
 
@@ -289,6 +299,8 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 -(void)keyboardDidHide:(NSNotification *) notification {
 	[self addToolBarToViewWithTextColorBlack:NO];
+    if(![self.textAndImageView getText].length)[self.permanentOnScreenKeyboard hideTextEditingOptions];
+    else [self.permanentOnScreenKeyboard presentTextEditingOptions];
 }
 
 /* Change size of keyboard when keyboard frame changes */
