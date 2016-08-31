@@ -46,7 +46,6 @@
 
 -(void) settingsButtonPressed {
 	SettingsVC *settingsVC = [self.storyboard instantiateViewControllerWithIdentifier:SETTINGS_VC_ID];
-	settingsVC.userName  = [[PFUser currentUser] valueForKey:VERBATM_USER_NAME_KEY];
 	[self.navigationController pushViewController:settingsVC animated:YES];
 }
 

@@ -179,6 +179,7 @@
 
 -(void) logOutUser {
 	[PFUser logOutInBackground];
+	[[NSUserDefaults standardUserDefaults] setPersistentDomain:[NSDictionary dictionary] forName:[[NSBundle mainBundle] bundleIdentifier]];
 	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_SIGNED_OUT object:nil];
 }
 

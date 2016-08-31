@@ -11,5 +11,4 @@
 
 @interface TermsAndConditionsVC : UIViewController
 
-@property (nonatomic) BOOL userMustAcceptTerms;
 @end
