@@ -13,6 +13,8 @@
 #import "VerbatmNavigationController.h"
 #import "StoryboardVCIdentifiers.h"
 
+#import "VerbatmNavigationController.h"
+
 @interface CurrentUserProfileVC()
 
 #define SETTINGS_BUTTON_SIZE 24.f
@@ -28,6 +30,7 @@
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear: animated];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarTextColor:[UIColor blackColor]];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
@@ -46,7 +49,6 @@
 
 -(void) settingsButtonPressed {
 	SettingsVC *settingsVC = [self.storyboard instantiateViewControllerWithIdentifier:SETTINGS_VC_ID];
-	settingsVC.userName  = [[PFUser currentUser] valueForKey:VERBATM_USER_NAME_KEY];
 	[self.navigationController pushViewController:settingsVC animated:YES];
 }
 

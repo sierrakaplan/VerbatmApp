@@ -13,142 +13,65 @@
 #import "TermsAndConditionsVC.h"
 
 #import "SizesAndPositions.h"
+#import "SegueIDs.h"
 #import "SettingsVC.h"
 #import "Styles.h"
 
 #import "UserManager.h"
 
-@interface SettingsVC () <CustomNavigationBarDelegate,
-MFMailComposeViewControllerDelegate,UITextFieldDelegate>
+@interface SettingsVC () <MFMailComposeViewControllerDelegate, UITableViewDelegate, UITableViewDataSource>
 
+@property (weak, nonatomic) IBOutlet UILabel *feedbackLabel;
+@property (weak, nonatomic) IBOutlet UILabel *termsAndConditionsLabel;
+@property (weak, nonatomic) IBOutlet UILabel *signOutLabel;
 
-@property (weak, nonatomic) IBOutlet UIButton *contactUsButton;
-@property (weak, nonatomic) IBOutlet UIButton *termsAndConditionsButton;
-@property (weak, nonatomic) IBOutlet UIButton *signOutButton;
-@property (weak, nonatomic) IBOutlet UITextField *userNameField;
-@property (weak, nonatomic) IBOutlet UIImageView *profileIconImage;
+#define FONT_SIZE 16.f
+#define X_POS 5.f
 
-#define VIEW_OFFSET_Y 20.f
-#define PROFILE_ICON_WALL_OFFSET 15.f //distance of profile picture from left wall
-#define PROFILE_TEXTFILED_GAP 10.f //distance between the profile icon and the textField
 #define VERBATM_HELP_EMAIL @"feedback@verbatm.io"
 #define HELP_EMAIL_SUBJECT @"Feedback to Verbatm team"
+
 @end
 
 @implementation SettingsVC
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    
-//    [self createNavigationBar];
-    [self positionButtonViews];
+	self.feedbackLabel.font = [UIFont fontWithName:REGULAR_FONT size:FONT_SIZE];
+	self.termsAndConditionsLabel.font = [UIFont fontWithName:REGULAR_FONT size:FONT_SIZE];
+	self.signOutLabel.font = [UIFont fontWithName:REGULAR_FONT size:FONT_SIZE];
+	self.tableView.delegate = self;
+	self.tableView.dataSource = self;
 }
 
 -(BOOL) prefersStatusBarHidden {
-	return YES;
+	return NO;
 }
 
-//-(void)createNavigationBar{
-//    CGRect navBarFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT);
-//    self.navigationBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:SETTINGS_NAV_BAR_COLOR];
-//    self.navigationBar.delegate = self;
-//    
-//    [self.navigationBar createLeftButtonWithTitle:@"BACK" orImage:nil];
-//    
-//    [self.navigationBar createRightButtonWithTitle:@"SAVE" orImage:nil];
-//    
-//    [self.view addSubview:self.navigationBar];
-//}
-
--(void) positionButtonViews{
-    
-    CGRect userNameFieldFrame = CGRectMake(PROFILE_ICON_WALL_OFFSET +
-                                           self.profileIconImage.frame.size.width +
-                                           PROFILE_TEXTFILED_GAP, CUSTOM_NAV_BAR_HEIGHT +
-                                  VIEW_OFFSET_Y, self.view.frame.size.width -
-                                           (self.profileIconImage.frame.size.width + PROFILE_ICON_WALL_OFFSET*2 +
-                                            PROFILE_TEXTFILED_GAP),
-                                           self.userNameField.frame.size.height);
-    
-    self.userNameField.frame = userNameFieldFrame;
-    self.userNameField.returnKeyType = UIReturnKeyDone;
-    self.userNameField.delegate = self;
-    
-    if(self.userName){
-        self.userNameField.text = self.userName;
-    }
-    
-    
-    CGFloat profileIconWidth = self.profileIconImage.frame.size.width;
-    CGFloat profileIconHeight = profileIconWidth * (47.f/35.f);
-
-    CGRect profileIconFrame = CGRectMake(PROFILE_ICON_WALL_OFFSET,self.userNameField.center.y - (profileIconHeight/2.f) , profileIconWidth, profileIconHeight);
-    
-    self.profileIconImage.frame = profileIconFrame;
-
-	CGRect contactUsButtonFrame = CGRectMake(0.f, profileIconFrame.origin.y +
-											 profileIconFrame.size.height + VIEW_OFFSET_Y, self.view.frame.size.width, self.signOutButton.frame.size.height);
-
-	CGRect termsAndCondButtonFrame = CGRectMake(0.f, contactUsButtonFrame.origin.y +
-												contactUsButtonFrame.size.height + VIEW_OFFSET_Y , self.view.frame.size.width, self.termsAndConditionsButton.frame.size.height);
-
-	CGRect signOutButtonFrame = CGRectMake(0.f, termsAndCondButtonFrame.origin.y +
-										   termsAndCondButtonFrame.size.height + VIEW_OFFSET_Y, self.view.frame.size.width, self.contactUsButton.frame.size.height);
-
-
-    self.contactUsButton.frame= contactUsButtonFrame;
-    self.termsAndConditionsButton.frame = termsAndCondButtonFrame;
-    self.signOutButton.frame = signOutButtonFrame;
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	NSInteger section = indexPath.section;
+	NSInteger row = indexPath.row;
+	if (section == 0 && row == 0) {
+		[self sendFeedback];
+	} else if (section == 1 && row == 0) {
+		[self showTermsAndConditions];
+	} else if (section == 2 && row == 0) {
+		[self logoutAlert];
+	}
 }
 
-//when the user is done editing their name then they can remove the keyboard
-- (BOOL)textFieldShouldReturn:(UITextField *)textField{
-    [textField resignFirstResponder];
-    return NO;
+#pragma mark - Send Feedback -
+
+-(void) sendFeedback {
+	[self presentEmailViewController];
 }
-
-//user selected cancel so remove settings view
--(void) leftButtonPressed{
-    [self exitSettingsPageWithCompletionBlock:nil];
-}
-
-//user selected done. Save their changes and exit view
--(void) rightButtonPressed {
-    //save changes made by user to username
-    [User_BackendObject updateUserNameOfCurrentUserTo:self.userNameField.text];
-    [self exitSettingsPageWithCompletionBlock:nil];
-}
-
-
--(void)exitSettingsPageWithCompletionBlock:(void(^)())block{
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
-            if(block)block();
-    }];
-}
-
-- (IBAction)signOutButtonSelected:(id)sender {
-    //todo - exit app
-    [self exitSettingsPageWithCompletionBlock:^{
-		[[UserManager sharedInstance] logOutUser];
-    }];
-}
-
-
-#pragma mark -seding email functionality-
-
-- (IBAction)contactUsButtonSelected:(id)sender {
-    
-    [self presentEmailViewController];
-}
-
 
 -(void)presentEmailViewController {
     NSString *iOSVersion = [[UIDevice currentDevice] systemVersion];
     NSString *model = [[UIDevice currentDevice] model];
     MFMailComposeViewController *mailComposer = [[MFMailComposeViewController alloc] init];
     mailComposer.mailComposeDelegate = self;
-    [mailComposer setToRecipients:[NSArray arrayWithObjects:VERBATM_HELP_EMAIL,nil]];
+    [mailComposer setToRecipients:[NSArray arrayWithObjects:VERBATM_HELP_EMAIL, nil]];
     [mailComposer setSubject:HELP_EMAIL_SUBJECT];
     NSString *supportText = [NSString stringWithFormat:@"Device: %@\niOS Version:%@\n\n",model,iOSVersion];
     supportText = [supportText stringByAppendingString: @"Please give us feedback or describe your problem. \n Thank you!"];
@@ -167,18 +90,35 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
 }
 
 
-#pragma mark - Navigation
+#pragma mark - Terms and Conditions -
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-    
-    UIViewController * vc = [segue destinationViewController];
-    if([vc isKindOfClass:[TermsAndConditionsVC class]]){
-        ((TermsAndConditionsVC *)vc).userMustAcceptTerms = NO;
-    }
+-(void) showTermsAndConditions {
+	[self performSegueWithIdentifier:SEGUE_TERMS_AND_CONDITIONS_FROM_SETTINGS sender:self];
 }
 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+}
 
+#pragma mark - Logging Out -
+
+-(void) logoutAlert {
+	UIAlertController* alert = [UIAlertController alertControllerWithTitle:nil
+																   message:nil
+															preferredStyle:UIAlertControllerStyleActionSheet];
+
+	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
+														 handler:^(UIAlertAction * action) {}];
+	UIAlertAction* logoutAction = [UIAlertAction actionWithTitle:@"Log Out" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+		[self logout];
+	}];
+
+	[alert addAction: cancelAction];
+	[alert addAction: logoutAction];
+	[self presentViewController:alert animated:YES completion:nil];
+
+}
+
+-(void) logout {
+	[[UserManager sharedInstance] logOutUser];
+}
 @end

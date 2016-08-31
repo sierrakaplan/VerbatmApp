@@ -379,11 +379,9 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 	[self performSegueWithIdentifier:ADK_SEGUE sender:self];
 }
 
-
 -(void)userHasSignedOutNotification:(NSNotification *) notification{
 	[self bringUpLogin];
 }
-
 
 #pragma mark - Handle Login -
 

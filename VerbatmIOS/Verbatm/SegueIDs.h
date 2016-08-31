@@ -14,7 +14,7 @@
 // From Master VC
 #define SEGUE_LOGIN_OR_SIGNUP @"login_or_signup_segue"
 
-// Login
+// Login (vs create account from first page)
 #define SEGUE_LOGIN @"login_segue"
 
 // Create account
@@ -38,5 +38,7 @@
 // ADK
 #define ADK_SEGUE @"segue_id_adk"
 #define UNWIND_SEGUE_FROM_ADK_TO_MASTER @"unwind_to_master_vc_from_adk"
+
+#define SEGUE_TERMS_AND_CONDITIONS_FROM_SETTINGS @"terms_and_conditions_from_settings"
 
 #endif /* SegueIDs_h */
