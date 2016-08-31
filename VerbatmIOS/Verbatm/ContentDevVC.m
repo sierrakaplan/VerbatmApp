@@ -169,6 +169,8 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 	[super viewDidLoad];
 	self.totalPiecesOfMedia = 0;
 	self.ourPosts = [[NSMutableArray alloc] init];
+	self.cameraView = [[VerbatmCameraView alloc] initWithFrame:self.view.bounds];
+	self.cameraView.delegate = self;
 	[self initializeVariables];
 	[self setFrameMainScrollView];
 	[self setElementDefaultFrames];
@@ -203,6 +205,10 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear: animated];
+}
+
+-(void) viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
 }
 
 -(void) initializeVariables {
@@ -240,7 +246,7 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 -(void) formatNavBar {
 	[self.navBar createLeftButtonWithTitle:@"CLOSE" orImage:nil];
 	[self.navBar createRightButtonWithTitle:@"POST" orImage:nil];
-	[self.navBar createMiddleButtonWithTitle:@"UPDATE BLOG" blackText:YES largeSize:YES];
+	[self.navBar createMiddleButtonWithTitle:@"UPDATE BLOG" blackText:NO largeSize:YES];
 	self.navBar.delegate = self;
 	[self.view addSubview: self.navBar];
 }
@@ -1773,7 +1779,7 @@ andSaveInUserDefaults:(BOOL)save {
 	}
 }
 
-#pragma mark -Share Seletion View Protocol -
+#pragma mark - Share Seletion View Protocol -
 
 -(void)cancelButtonSelected{
 	[self removeSharePOVView];
@@ -1832,7 +1838,7 @@ andSaveInUserDefaults:(BOOL)save {
 	self.shareLinkView = nil;
 }
 
--(void) continueToPublish{
+-(void) continueToPublish {
 
 	[[PublishingProgressManager sharedInstance] publishPostToChannel:self.userChannel andFacebook:TRUE withCaption:self.fbCaption withPinchViews:self.pinchViewsToPublish
 												 withCompletionBlock:^(BOOL isAlreadyPublishing, BOOL noNetwork) {
@@ -1862,14 +1868,6 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 #pragma mark - Lazy Instantiation
-
--(VerbatmCameraView*) cameraView {
-	if (!_cameraView) {
-		_cameraView = [[VerbatmCameraView alloc] initWithFrame:self.view.bounds];
-		_cameraView.delegate = self;
-	}
-	return _cameraView;
-}
 
 -(PreviewDisplayView*) previewDisplayView {
 	if(!_previewDisplayView){

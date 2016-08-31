@@ -17,12 +17,9 @@
  5)People you are following
  */
 
-
-
-
 @protocol UserAndChannelListsTVCDelegate <NSObject>
--(void)openChannel:(Channel *) channel;
 
+-(void)openChannel:(Channel *) channel;
 -(void)selectedUser:(id)userId;
 
 @end
@@ -32,7 +29,6 @@ typedef enum{
 	LikersList = 0,
     FollowersList = 1,
     FollowingList = 2,
-    CommentList = 3
 } ListType;
 
 @interface UserAndChannelListsTVC : UITableViewController

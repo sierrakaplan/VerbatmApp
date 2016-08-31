@@ -10,5 +10,6 @@
 @interface MasterNavigationVC : UITabBarController
 
 @property (nonatomic) CGFloat tabBarHeight;
+-(void) showTabBar:(BOOL)show;
 
 @end

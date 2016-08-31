@@ -28,12 +28,12 @@
 
 #define NOTIFICATION_ICON_SELECTED @"notification_icon_selected"
 #define NOTIFICATION_ICON_UNSELECTED @"notification_icon_unselected"
-#pragma mark - Profile -
 
-#define BLOCK_USER_ICON @"settings_icon"
+#pragma mark - Profile -
 
 #define SETTINGS_BUTTON_ICON @"settings_icon"
 #define BLOCK_ICON @"block_icon"
+#define MORE_INFO_ICON @"people_icon"
 
 #define BACK_BUTTON_ICON @"back_arrow_black"
 #define DOWN_ARROW_ICON @"down_arrow_white"
@@ -189,6 +189,8 @@
 
 #define ADD_COVER_PHOTO_ICON @"add_cover_photo_icon"
 #define FEEDBACK_NOTIFICATION_ICON @"FeedbackNotification"
+
+#define ADD_FIRST_POST_ICON @"Add First Post icon"
 
 #define PROFILE_UNDER_CONSTRUCTION_ICON @"ProfileUnderConstruction"
 

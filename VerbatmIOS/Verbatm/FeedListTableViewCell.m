@@ -58,8 +58,6 @@
 }
 
 
-
-
 -(void)presentChannel:(Channel *) channel isSelected:(BOOL) isSelected{
     [self clearView];
     self.isSelected = isSelected;
@@ -85,9 +83,7 @@
 }
 
 -(void)setSelctionDotAsSelected:(BOOL)selected{
-    
     self.selectionDot.backgroundColor = (selected) ? [UIColor SELECTION_DOT_COLOR] : [UIColor clearColor];
-    
 }
 
 -(void)clearView{
@@ -114,7 +110,6 @@
     [self addSubview: self.nameLabel];
     
 }
-
 
 -(UILabel *) getLabel:(NSString *) title withOrigin:(CGPoint) origin andAttributes:(NSDictionary *) nameLabelAttribute withMaxWidth:(CGFloat) maxWidth {
     UILabel * nameLabel = [[UILabel alloc] init];
@@ -151,6 +146,7 @@
     //create "followers" text
    
 }
+
 -(NSDictionary *)getUserNameAttributes{
     NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
     paragraphStyle.alignment                = NSTextAlignmentCenter;

@@ -56,6 +56,10 @@
 	self.continueButton.titleLabel.font = [UIFont fontWithName:BOLD_FONT size:30.f];
 }
 
+-(BOOL) prefersStatusBarHidden {
+	return YES;
+}
+
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(termsAndConditionsPressed)];

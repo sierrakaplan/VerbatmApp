@@ -10,6 +10,7 @@
 #define Notifications_h
 
 #pragma mark - Networking -
+
 #define INTERNET_CONNECTION_NOTIFICATION @"internet_connection_notification"
 //this key gives you access to a string that tells you if the connection is established or not
 #define INTERNET_CONNECTION_KEY @"internet_connection_key"
@@ -27,10 +28,13 @@
 
 #define NOTIFICATION_NOW_FOLLOWING_USER @"following_user"
 
+#define NOTIFICATION_NEW_COMMENT_USER @"new_comment"
+
+
 #define NOTIFICATION_FREE_MEMORY_DISCOVER @"free_memory_discover"
 #define NOTIFICATION_REFRESH_DISCOVER @"refresh_discover"
 
-
+#define POST_COMMENTED_ON_NOTIFICATION_USERINFO_KEY @"PostCommentedOn"
 #define USER_FOLLOWING_NOTIFICATION_USERINFO_KEY @"UserFollowing"
 #define USER_FOLLOWING_NOTIFICATION_ISFOLLOWING_KEY @"IsFollowing"//is it a follow or unfollow
 

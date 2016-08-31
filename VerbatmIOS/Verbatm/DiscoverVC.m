@@ -19,6 +19,7 @@
 #import "SearchResultsVC.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
+#import "VerbatmNavigationController.h"
 
 @interface DiscoverVC() <UIScrollViewDelegate, ExploreChannelCellViewDelegate>
 
@@ -70,11 +71,13 @@
 												 name:NOTIFICATION_FREE_MEMORY_DISCOVER object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshChannels)
 												 name:NOTIFICATION_REFRESH_DISCOVER object:nil];
-	[self setNeedsStatusBarAppearanceUpdate];
+	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
+	[self setNeedsStatusBarAppearanceUpdate];
+	[self.navigationController setNavigationBarHidden:YES];
 	if (!_exploreChannels || !self.exploreChannels.count) {
 		[self refreshChannels];
 	}
@@ -112,6 +115,8 @@
 -(void) setUpSearchController {
 	self.searchResultsController = [[SearchResultsVC alloc] init];
 	self.searchResultsController.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+	self.searchResultsController.verbatmTabBarController = (MasterNavigationVC*)self.tabBarController;
+	self.searchResultsController.verbatmNavigationController = (VerbatmNavigationController*)self.navigationController;
 	self.searchController = [[UISearchController alloc] initWithSearchResultsController: self.searchResultsController];
 	self.searchController.searchResultsUpdater = self.searchResultsController;
 	self.tableView.tableHeaderView = self.searchController.searchBar;
@@ -206,16 +211,16 @@
 	self.tableView.tableFooterView = self.loadMoreSpinner;
 }
 
+//todo: different view controller for onboarding
 -(void) channelSelected:(Channel *)channel {
 	BOOL isCurrentUserChannel = [[channel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
-	if(!self.onboardingBlogSelection &&
-	   !isCurrentUserChannel){
+	if(!self.onboardingBlogSelection && !isCurrentUserChannel) {
 		ProfileVC * userProfile = [[ProfileVC alloc] init];
 		userProfile.isCurrentUserProfile = isCurrentUserChannel;
 		userProfile.isProfileTab = NO;
 		userProfile.ownerOfProfile = channel.channelCreator;
 		userProfile.channel = channel;
-		[self presentViewController:userProfile animated:YES completion:nil];
+		[self.navigationController pushViewController:userProfile animated:YES];
 	}
 
 }

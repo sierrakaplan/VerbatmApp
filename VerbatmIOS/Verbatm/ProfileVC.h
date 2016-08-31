@@ -13,12 +13,13 @@
 #import <Parse/PFUser.h>
 #import "Channel.h"
 
+@class VerbatmNavigationController;
+@class MasterNavigationVC;
+
 @protocol ProfileVCDelegate <NSObject>
 
--(void) showTabBar: (BOOL) show;
-
 @optional
--(void)exitProfile;
+-(void) lockFeedScrollView:(BOOL)lock;
 -(void) userCreateFirstPost;
 
 @end
@@ -29,9 +30,14 @@
 
 @property (weak, nonatomic) id<ProfileVCDelegate> delegate;
 
+// Only used in feed list
+@property (nonatomic) VerbatmNavigationController *verbatmNavigationController;
+@property (nonatomic) MasterNavigationVC *verbatmTabBarController;
+
 @property (weak, nonatomic) PFUser* ownerOfProfile;
 @property (nonatomic) Channel* channel; 
 
+//todo: get rid of these properties
 //let us know if this is the profile of the logged in user
 @property (nonatomic) BOOL isCurrentUserProfile;
 

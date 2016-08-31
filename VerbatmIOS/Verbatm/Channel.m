@@ -18,6 +18,7 @@
 #import "UtilityFunctions.h"
 
 @interface Channel ()
+
 @property (nonatomic, readwrite) NSDate *dateOfMostRecentChannelPost;
 @property (nonatomic, readwrite) NSString * name;
 @property (nonatomic, readwrite) NSString *blogDescription;
@@ -71,6 +72,7 @@
     block(imageData);
 }
 
+//todo: clean up and store cover photo once it's been loaded once
 -(void)loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*, NSData*))block{
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             NSString * url = [self.parseChannelObject valueForKey:CHANNEL_COVER_PHOTO_URL];
@@ -131,6 +133,7 @@
 	[self.parseChannelObject saveInBackground];
 }
 
+//todo:
 -(void)getChannelOwnerNameWithCompletionBlock:(void(^)(NSString *))block {
     if (!self.parseChannelObject) {
         block(@"");
@@ -214,10 +217,12 @@
         }
     }
 }
-
+-(void)resetLatestPostInfo{
+    [Channel_BackendObject updateLatestPostDateForChannel:self.parseChannelObject];
+}
 -(void) updatePostDeleted:(PFObject*)post {
 	if ([(NSDate*)self.parseChannelObject[CHANNEL_LATEST_POST_DATE] compare: post.createdAt] == NSOrderedSame) {
-		[Channel_BackendObject updateLatestPostDateForChannel:self.parseChannelObject];
+        [self resetLatestPostInfo];
 	}
 }
 

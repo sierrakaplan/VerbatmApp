@@ -80,6 +80,7 @@
             [self.imageView setFrame:imageViewFrame];
 			[self.repositionPhotoScrollView addSubview:self.imageView];
 			[self setRepositionImageScrollViewFromImage: image];
+            [self.repositionPhotoScrollView setDecelerationRate:0.f];
 			[self setNewImageContentOffset:contentOffset.x andY:contentOffset.y];
 			[self insertSubview:self.repositionPhotoScrollView belowSubview:self.textView];
 			self.repositionPhotoGrid = [[GridView alloc] initWithFrame:self.bounds];

@@ -21,7 +21,14 @@
 -(void)showWhoCommentedOnPost:(PFObject *) post;
 -(void)justRemovedTapToExitNotification;
 -(void)removePostViewSelected;
+-(void)createPostPromptSelected;
 @end
+
+
+typedef enum LastPostType : NSInteger{
+    CreateNewPostPrompt = 0,
+    PublishingPostPrompt = 1
+}LastPostType;
 
 @interface PostCollectionViewCell : UICollectionViewCell
 
@@ -42,7 +49,7 @@
 -(void) offScreen;
 
 -(void) clearViews;
--(void)presentPublishingView;
+-(void)presentPromptView:(NSNumber *) promptType;
 -(void)presentTapToExitNotification;
 -(void)removeTapToExitNotification;
 

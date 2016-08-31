@@ -44,34 +44,53 @@
     [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray * channels) {
         if (channels.count > 0) {
 			self.userChannel = channels[0];
+			//todo: clean up code
 			if (!self.userChannel.name.length) {
-				[self.userChannel changeTitle:[self getDefaultBlogName]];
-				self.userChannel.defaultBlogName = YES;
+				[self getDefaultBlogNameWithBlock:^(NSString *defaultBlogName) {
+					[self.userChannel changeTitle:defaultBlogName];
+					self.userChannel.defaultBlogName = YES;
+					if (!self.userChannel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY]) {
+						[self.userChannel.parseChannelObject setObject:[PFUser currentUser][VERBATM_USER_NAME_KEY]
+																forKey:CHANNEL_CREATOR_NAME_KEY];
+						[self.userChannel.parseChannelObject saveInBackground];
+					}
+					block();
+				}];
+			} else {
+				if (!self.userChannel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY]) {
+					[self.userChannel.parseChannelObject setObject:[PFUser currentUser][VERBATM_USER_NAME_KEY]
+															forKey:CHANNEL_CREATOR_NAME_KEY];
+					[self.userChannel.parseChannelObject saveInBackground];
+				}
+				block();
 			}
-			//todo:
-			if (!self.userChannel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY]) {
-				[self.userChannel.parseChannelObject setObject:[PFUser currentUser][VERBATM_USER_NAME_KEY] forKey:CHANNEL_CREATOR_NAME_KEY];
-				[self.userChannel.parseChannelObject saveInBackground];
-			}
-			block();
 		} else {
 			// First time logging in - create a new channel
-//			NSString *defaultBlogName = [self getDefaultBlogName];
-//			[Channel_BackendObject createChannelWithName:defaultBlogName andCompletionBlock:^(PFObject *channelObj) {
-//				self.userChannel = [[Channel alloc] initWithChannelName:defaultBlogName andParseChannelObject:channelObj
-//													  andChannelCreator:[PFUser currentUser] andFollowObject:nil];
-//				self.userChannel.defaultBlogName = YES;
-//				[self.userChannel getChannelsFollowingWithCompletionBlock:^{
-//					block();
-//				}];
-//			}];
+			[self getDefaultBlogNameWithBlock:^(NSString *defaultBlogName) {
+				[Channel_BackendObject createChannelWithName:defaultBlogName andCompletionBlock:^(PFObject *channelObj) {
+					self.userChannel = [[Channel alloc] initWithChannelName:defaultBlogName andParseChannelObject:channelObj
+														  andChannelCreator:[PFUser currentUser] andFollowObject:nil];
+					self.userChannel.defaultBlogName = YES;
+					[self.userChannel getChannelsFollowingWithCompletionBlock:^{
+						block();
+					}];
+				}];
+			}];
 		}
     }];
 }
 
--(NSString*) getDefaultBlogName {
+-(void) getDefaultBlogNameWithBlock:(void(^)(NSString*))block {
 	NSString *userName = [PFUser currentUser][VERBATM_USER_NAME_KEY];
-	return [userName stringByAppendingString:@"'s Blog"];
+	if (!userName) {
+		userName = @"Fluffy";
+		[PFUser currentUser][VERBATM_USER_NAME_KEY] = @"Fluffy";
+		[[PFUser currentUser]saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+			block([userName stringByAppendingString:@"'s Blog"]);
+		}];
+	} else {
+		block([userName stringByAppendingString:@"'s Blog"]);
+	}
 }
 
 -(Channel *) getUserChannel {

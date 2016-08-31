@@ -152,8 +152,9 @@
 }
 
 + (void) updateLatestPostDateForChannel:(PFObject*)channel {
-	PFQuery *findLatestPostQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
-	[findLatestPostQuery orderByDescending:@"createdAt"];
+	PFQuery *findLatestPostQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
+    [findLatestPostQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel];
+    [findLatestPostQuery orderByDescending:@"createdAt"];
     findLatestPostQuery.limit = 1;
 	[findLatestPostQuery getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
 		if (!object || error) {

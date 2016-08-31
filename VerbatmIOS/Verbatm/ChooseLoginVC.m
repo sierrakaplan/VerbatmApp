@@ -26,7 +26,6 @@
 @property (nonatomic) UILabel *orLabel;
 @property (strong, nonatomic) UITextField *phoneLoginField;
 @property (nonatomic) UILabel *sendTextLabel;
-@property (nonatomic) CGRect originalPhoneTextFrame;
 
 #define PHONE_FIELD_WIDTH 200.f
 #define PHONE_FIELD_HEIGHT 50.f
@@ -40,7 +39,7 @@
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
-	[self formatNavigationBar];
+	[self formatNavigationItem];
 	[self.backgroundImageView setFrame: self.view.bounds];
 	[self.view addSubview: self.facebookLoginButton];
 	[self.view addSubview: self.orLabel];
@@ -55,7 +54,7 @@
 	return YES;
 }
 
--(void) formatNavigationBar {
+-(void) formatNavigationItem {
 	if (self.creatingAccount) {
 		self.navigationItem.title = @"Sign Up";
 	} else {
@@ -249,7 +248,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 		CGFloat yPos = self.phoneLoginField.frame.origin.y + self.phoneLoginField.frame.size.height;
 		_sendTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.center.x - OR_TEXT_WIDTH/2.f, yPos,
 																   OR_TEXT_WIDTH, 30.f)];
-		_sendTextLabel.text = @"We'll send a text to verify your phone.";
+		_sendTextLabel.text = @"We'll text you a login code.";
 		_sendTextLabel.textAlignment = NSTextAlignmentCenter;
 		[_sendTextLabel setBackgroundColor:[UIColor clearColor]];
 		[_sendTextLabel setTextColor:[UIColor whiteColor]];
@@ -262,8 +261,8 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 -(UITextField*) phoneLoginField {
 	if (!_phoneLoginField) {
 		CGFloat yPosition = self.orLabel.frame.origin.y + self.orLabel.frame.size.height;
-		self.originalPhoneTextFrame = CGRectMake(self.view.center.x - PHONE_FIELD_WIDTH/2.f, yPosition, PHONE_FIELD_WIDTH, PHONE_FIELD_HEIGHT);
-		_phoneLoginField = [[UITextField alloc] initWithFrame: self.originalPhoneTextFrame];
+		CGRect frame = CGRectMake(self.view.center.x - PHONE_FIELD_WIDTH/2.f, yPosition, PHONE_FIELD_WIDTH, PHONE_FIELD_HEIGHT);
+		_phoneLoginField = [[UITextField alloc] initWithFrame: frame];
 		_phoneLoginField.backgroundColor = [UIColor whiteColor];
 		_phoneLoginField.layer.borderColor = [UIColor blackColor].CGColor;
 		_phoneLoginField.layer.borderWidth = 1.f;
