@@ -383,7 +383,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 		[self insertSubview:imageView belowSubview:self.textView];
 		_imageView = imageView;
 		_imageView.clipsToBounds = YES;
-		_imageView.contentMode = UIViewContentModeScaleAspectFit;
+		_imageView.contentMode = UIViewContentModeScaleAspectFill;
 	}
 	return _imageView;
 }
