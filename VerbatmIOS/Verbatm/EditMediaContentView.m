@@ -415,6 +415,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 		[self.textAndImageView changeTextColor:[UIColor whiteColor]];
 	}
 }
+
 -(void)changeTextToFont:(NSString *)fontName{
     [self.textAndImageView.textView setFont:[UIFont fontWithName:fontName size:self.textAndImageView.textView.font.pointSize]];
 }
@@ -423,21 +424,26 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self.textAndImageView increaseTextSize];
 }
 
+
 -(void) textSizeDecreased {
 	[self.textAndImageView decreaseTextSize];
 }
+
 
 -(void) leftAlignButtonPressed {
 	[self.textAndImageView changeTextAlignment:NSTextAlignmentLeft];
 }
 
+
 -(void) centerAlignButtonPressed {
 	[self.textAndImageView changeTextAlignment:NSTextAlignmentCenter];
 }
 
+
 -(void) rightAlignButtonPressed {
 	[self.textAndImageView changeTextAlignment:NSTextAlignmentRight];
 }
+
 
 -(void)repositionPhotoSelected {
 	[self.textAndImageView startRepositioningPhoto];
@@ -445,11 +451,13 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	self.isRepositioningPhoto = YES;
 }
 
+
 -(void)repositionPhotoUnSelected {
 	[self.textAndImageView endRepositioningPhoto];
 	[self enableMainScrollView:YES];
 	self.isRepositioningPhoto = NO;
 }
+
 
 -(void) doneButtonPressed {
 	if([[self.textAndImageView getText] isEqualToString:@""]) {
@@ -458,17 +466,18 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self removeKeyboard];
 }
 
+
 #pragma maro - Pan gestures -
 
 // Add gestures related to text/image view
 -(void) addTextViewGestures {
-	UIPanGestureRecognizer *moveImageGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPan:)];
-	moveImageGesture.delegate = self;
-	[self.textAndImageView addGestureRecognizer: moveImageGesture];
+//	UIPanGestureRecognizer *moveImageGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPan:)];
+//	moveImageGesture.delegate = self;
+//	[self.textAndImageView addGestureRecognizer: moveImageGesture];
 
     
-    UIPinchGestureRecognizer * pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
-    [self.textAndImageView addGestureRecognizer:pinch];
+//    UIPinchGestureRecognizer * pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
+//    [self.textAndImageView addGestureRecognizer:pinch];
     
     
 	self.editTextGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(keyboardButtonPressed)];

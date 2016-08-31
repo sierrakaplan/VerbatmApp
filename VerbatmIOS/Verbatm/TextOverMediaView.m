@@ -17,7 +17,7 @@
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "UtilityFunctions.h"
 
-@interface TextOverMediaView ()
+@interface TextOverMediaView () <UIScrollViewDelegate>
 
 @property (nonatomic) BOOL onTextAve;
 @property (nonatomic, readwrite) BOOL textShowing;
@@ -29,6 +29,9 @@
 @property (nonatomic, readwrite) CGFloat textSize;
 @property (nonatomic, readwrite) NSTextAlignment textAlignment;
 @property (nonatomic, readwrite) BOOL blackTextColor;
+
+@property (nonatomic) CGFloat minZoomScale;
+@property (nonatomic) CGPoint originalImageCenter;
 
 #define DEFAULT_TEXT_VIEW_FRAME CGRectMake(TEXT_VIEW_X_OFFSET, self.textYPosition, self.frame.size.width - TEXT_VIEW_X_OFFSET*2, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT)
 
@@ -72,13 +75,13 @@
 			self.repositionPhotoScrollView.scrollEnabled = NO;
 			self.repositionPhotoScrollView.showsVerticalScrollIndicator = NO;
 			self.repositionPhotoScrollView.showsHorizontalScrollIndicator = NO;
+            self.repositionPhotoScrollView.delegate = self;
 			[self.imageView removeFromSuperview];
             [self.imageView setFrame:imageViewFrame];
 			[self.repositionPhotoScrollView addSubview:self.imageView];
 			[self setRepositionImageScrollViewFromImage: image];
 			[self setNewImageContentOffset:contentOffset.x andY:contentOffset.y];
 			[self insertSubview:self.repositionPhotoScrollView belowSubview:self.textView];
-
 			self.repositionPhotoGrid = [[GridView alloc] initWithFrame:self.bounds];
 			[self addSubview:self.repositionPhotoGrid];
 			self.repositionPhotoGrid.hidden = YES;
@@ -87,6 +90,49 @@
 		}
 	}
 	return self;
+}
+
+#pragma mark - Scrollview Delegate -
+-(CGFloat)getMinZoomScaleFromFrame:(CGSize)imageSize{
+        return self.frame.size.width/imageSize.width;
+}
+
+
+-(BOOL)imageViewTopEdgesAreExposed{
+    
+    if(self.imageView.frame.origin.y > self.repositionPhotoScrollView.contentOffset.y ||
+       self.imageView.frame.origin.y + self.imageView.frame.size.height <
+       self.repositionPhotoScrollView.contentOffset.y +
+       self.repositionPhotoScrollView.frame.size.height){
+        return YES;
+    }
+    
+    return NO;
+}
+
+-(BOOL)imageViewSideEdgesAreExposed{
+    
+    if(self.imageView.frame.origin.x > self.repositionPhotoScrollView.contentOffset.x ||
+       self.imageView.frame.origin.x + self.imageView.frame.size.width <
+       self.repositionPhotoScrollView.contentOffset.x +
+       self.repositionPhotoScrollView.frame.size.width){
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (void)scrollViewDidZoom:(UIScrollView *)scrollView {
+    if([self imageViewTopEdgesAreExposed]){
+        CGFloat centerX = self.imageView.center.x;
+        CGFloat centerY = scrollView.center.y;
+        self.imageView.center = CGPointMake(centerX,centerY);
+    }
+}
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
+{
+    return self.imageView;
 }
 
 -(instancetype) initWithFrame:(CGRect)frame {
@@ -107,17 +153,26 @@
 }
 
 -(void) setRepositionImageScrollViewFromImage: (UIImage *) image {
-
-	self.repositionPhotoScrollView.contentSize = image.size;
+    self.repositionPhotoScrollView.contentSize = self.imageView.frame.size;
 	[self.imageView setImage: image];
 }
 
 -(void)startRepositioningPhoto {
+    self.repositionPhotoScrollView.scrollEnabled = YES;
+    self.minZoomScale = [self getMinZoomScaleFromFrame:self.imageView.frame.size];
+    self.repositionPhotoScrollView.minimumZoomScale = self.minZoomScale;
+    self.repositionPhotoScrollView.maximumZoomScale=6.0;
 	[self.repositionPhotoGrid setHidden:NO];
+    [self.repositionPhotoGrid setUserInteractionEnabled:NO];
+    
 }
 
 -(void)endRepositioningPhoto {
+    self.repositionPhotoScrollView.scrollEnabled = NO;
+    self.repositionPhotoScrollView.minimumZoomScale = 1.f;
+    self.repositionPhotoScrollView.maximumZoomScale = 1.f;
 	[self.repositionPhotoGrid setHidden:YES];
+    
 }
 
 -(CGPoint)getImageOffset {
@@ -327,7 +382,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 		[self insertSubview:imageView belowSubview:self.textView];
 		_imageView = imageView;
 		_imageView.clipsToBounds = YES;
-		_imageView.contentMode = UIViewContentModeScaleAspectFill;
+		_imageView.contentMode = UIViewContentModeScaleAspectFit;
 	}
 	return _imageView;
 }
