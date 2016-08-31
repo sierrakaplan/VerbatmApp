@@ -195,7 +195,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void)presentProfileForUser:(PFUser *) user
-			withStartChannel:(Channel *) startChannel{
+			withStartChannel:(Channel *) startChannel {
 	if(![[user objectId] isEqualToString:[[PFUser currentUser] objectId]]) {
 		//todo: push segue
 		ProfileVC *  userProfile = [[ProfileVC alloc] init];
