@@ -41,4 +41,8 @@
 -(instancetype)initWithFrame:(CGRect)frame andTextColorBlack:(BOOL)textColorBlack
 				 isOnTextAve:(BOOL)onTextAve isOnScreenPermanently:(BOOL) onScreen;
 
+-(void)hideTextEditingOptions;
+-(void)presentTextEditingOptions;
+
+
 @end

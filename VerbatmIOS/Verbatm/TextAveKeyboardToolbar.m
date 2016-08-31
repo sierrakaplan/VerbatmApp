@@ -89,6 +89,21 @@ typedef enum {
 	return self;
 }
 
+
+-(void)hideTextEditingOptions{
+    [self.textColorButton setHidden:YES];
+    [self.changeFontSizeButton setHidden:YES];
+    [self.changeTextAlignmentButton setHidden:YES];
+    [self.changeFontTypeButton setHidden:YES];
+}
+
+-(void)presentTextEditingOptions{
+    [self.textColorButton setHidden:NO];
+    [self.changeFontSizeButton setHidden:NO];
+    [self.changeTextAlignmentButton setHidden:NO];
+    [self.changeFontTypeButton setHidden:NO];
+}
+
 -(void) addAllButtons {
 	[self addSubview:self.textColorButton];
     [self addSubview:self.changeFontSizeButton];

@@ -21,9 +21,8 @@
 @property (nonatomic) UIImageView* imageView;
 
 // Preview mode
--(instancetype) initWithFrame:(CGRect)frame andImage:(UIImage *)image
-			 andContentOffset:(CGPoint)contentOffset forTextAVE:(BOOL)onTextAve;
-
+-(instancetype) initWithFrame:(CGRect)frame andImage:(UIImage *)image imageViewFrame:(CGRect) imageViewFrame
+             andContentOffset:(CGPoint)contentOffset forTextAVE:(BOOL)onTextAve;
 // Published mode
 -(instancetype) initWithFrame:(CGRect)frame andImageURL:(NSURL*)imageUrl
 			   withSmallImage: (UIImage*)smallImage asSmall:(BOOL) small;
@@ -83,4 +82,5 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 -(BOOL) pointInTextView: (CGPoint)point withBuffer: (CGFloat)buffer;
 
+-(void)scaleImagewithTransform:(CGAffineTransform) transform;
 @end
