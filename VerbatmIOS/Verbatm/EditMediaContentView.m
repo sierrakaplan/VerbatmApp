@@ -470,16 +470,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 #pragma maro - Pan gestures -
 
 // Add gestures related to text/image view
--(void) addTextViewGestures {
-//	UIPanGestureRecognizer *moveImageGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPan:)];
-//	moveImageGesture.delegate = self;
-//	[self.textAndImageView addGestureRecognizer: moveImageGesture];
-
-    
-//    UIPinchGestureRecognizer * pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
-//    [self.textAndImageView addGestureRecognizer:pinch];
-    
-    
+-(void) addTextViewGestures {    
 	self.editTextGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(keyboardButtonPressed)];
 	self.editTextGesture.delegate = self;
 	[self.textAndImageView addGestureRecognizer: self.editTextGesture];
@@ -488,97 +479,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
 }
 
 
--(void) handlePinchGesture:(UIPinchGestureRecognizer *)gesture {
-    if(self.isRepositioningPhoto){
-            switch (gesture.state) {
-                case UIGestureRecognizerStateBegan: {
-                    self.lastScale = gesture.scale;
-                    self.isPinchZoomingImage = YES;
-                    break;
-                }
-                case UIGestureRecognizerStateChanged: {
-                    if([gesture numberOfTouches] != 2) return;
-                    [self scalePhotoToScale:gesture.scale andTransform:self.textAndImageView.imageView.transform];
-                    self.lastScale = gesture.scale;
-                    break;
-                }
-                case UIGestureRecognizerStateEnded: {
-                    self.isPinchZoomingImage = NO;
-                    self.lastScale = gesture.scale;
-                    break;
-                }
-                default: {
-                    self.isPinchZoomingImage = NO;
-                    return;
-                }
-            }
-    }
-}
-
-
-
-
-
-/* Handles pan gesture which could be horizontal to add a filter to an image,
- or vertical to change text position */
--(void) didPan:(UIGestureRecognizer *) sender{
-    if(self.isPinchZoomingImage)return;
-    switch (sender.state) {
-		case UIGestureRecognizerStateBegan:
-			if (sender.numberOfTouches < 1) return;
-			self.panStartLocation = [sender locationOfTouch:0 inView:self];
-			self.gestureActionJustStarted = YES;
-			break;
-		case UIGestureRecognizerStateChanged:{
-			if (sender.numberOfTouches < 1) return;
-			CGPoint location = [sender locationOfTouch:0 inView:self];
-			if(self.gestureActionJustStarted){
-				[self checkGestureDirection: location];
-				self.gestureActionJustStarted = NO;
-			}
-
-			if (self.isRepositioningPhoto) {
-				[self repositionPhoto: location];
-			} else if(self.isHorizontalPan && !self.filterSwitched) {
-				//todo: filters?
-//				float horizontalDiff = location.x - self.panStartLocation.x;
-//				self.horizontalPanDistance += horizontalDiff;
-//				//checks if the horizontal pan gone long enough for a "swipe" to change filter
-//				if((fabs(self.horizontalPanDistance) >= HORIZONTAL_PAN_FILTER_SWITCH_DISTANCE)){
-//					if(self.horizontalPanDistance < 0){
-//						[self changeFilteredImageLeft];
-//					}else{
-//						[self changeFilteredImageRight];
-//					}
-//					self.filterSwitched = YES;
-//				}
-			}
-
-			self.panStartLocation = location;
-			break;
-		}
-		case UIGestureRecognizerStateCancelled:
-		case UIGestureRecognizerStateEnded: {
-			self.horizontalPanDistance = 0.f;
-			self.isHorizontalPan = NO;
-			self.filterSwitched = NO;
-			break;
-		}
-		default:
-			break;
-	}
-}
-
--(void)scalePhotoToScale:(CGFloat) scale andTransform:(CGAffineTransform) baseTransform{
-    CGFloat newScale = 1.f - (self.lastScale - scale);
-    [self.textAndImageView scaleImagewithTransform:CGAffineTransformScale(baseTransform, newScale, newScale)];
-}
-
--(void) repositionPhoto: (CGPoint) location {
-	CGFloat xDiff = location.x - self.panStartLocation.x;
-	CGFloat yDiff = location.y - self.panStartLocation.y;
-	[self.textAndImageView moveImageX:xDiff andY:yDiff];
-}
 
 /* Handles pan gesture on text by moving text to new position */
 -(void) didPanTextView:(UIGestureRecognizer *) sender{

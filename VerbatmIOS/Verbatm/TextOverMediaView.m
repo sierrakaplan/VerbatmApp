@@ -34,6 +34,7 @@
 @property (nonatomic) CGPoint originalImageCenter;
 
 #define DEFAULT_TEXT_VIEW_FRAME CGRectMake(TEXT_VIEW_X_OFFSET, self.textYPosition, self.frame.size.width - TEXT_VIEW_X_OFFSET*2, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT)
+#define MAX_IMAGE_ZOOM 6.f
 
 @end
 
@@ -162,7 +163,7 @@
     self.repositionPhotoScrollView.scrollEnabled = YES;
     self.minZoomScale = [self getMinZoomScaleFromFrame:self.imageView.frame.size];
     self.repositionPhotoScrollView.minimumZoomScale = self.minZoomScale;
-    self.repositionPhotoScrollView.maximumZoomScale=6.0;
+    self.repositionPhotoScrollView.maximumZoomScale= MAX_IMAGE_ZOOM;
 	[self.repositionPhotoGrid setHidden:NO];
     [self.repositionPhotoGrid setUserInteractionEnabled:NO];
     
