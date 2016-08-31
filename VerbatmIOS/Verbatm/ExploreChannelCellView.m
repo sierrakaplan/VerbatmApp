@@ -27,7 +27,6 @@
 @property (nonatomic, strong) UILabel *userNameLabel;
 @property (nonatomic, strong) UIButton *followButton;
 @property (nonatomic, strong) UILabel *numFollowersLabel;
-@property (nonatomic, strong) UILabel *channelNameLabel;
 
 @property (strong, nonatomic) UIScrollView *horizontalScrollView;
 @property (strong, nonatomic) NSMutableArray *postViews;
@@ -98,14 +97,12 @@
 	self.followButton.frame = CGRectMake(POST_VIEW_OFFSET, OFFSET, FOLLOW_BUTTON_WIDTH, DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
 	self.numFollowersLabel.frame = CGRectMake(self.followButton.frame.origin.x + FOLLOW_BUTTON_WIDTH + OFFSET, OFFSET, NUM_FOLLOWERS_WIDTH,
 											  DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
-	CGFloat userNameX = self.numFollowersLabel.frame.origin.x + self.numFollowersLabel.frame.size.width + OFFSET;
-	self.userNameLabel.frame = CGRectMake(userNameX, OFFSET, self.mainView.frame.size.width - userNameX - OFFSET, DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
 
-	self.channelNameLabel.frame = CGRectMake(OFFSET, OFFSET + DISCOVER_USERNAME_AND_FOLLOW_HEIGHT,
-											 self.mainView.frame.size.width - (OFFSET*2),
-											 DISCOVER_CHANNEL_NAME_HEIGHT);
+    self.userNameLabel.frame = CGRectMake(OFFSET, OFFSET + DISCOVER_USERNAME_AND_FOLLOW_HEIGHT,
+                                          self.mainView.frame.size.width - (OFFSET*2),
+                                          DISCOVER_CHANNEL_NAME_HEIGHT);
 
-	CGFloat postScrollViewOffset = self.channelNameLabel.frame.origin.y + self.channelNameLabel.frame.size.height;
+	CGFloat postScrollViewOffset = self.userNameLabel.frame.origin.y + self.userNameLabel.frame.size.height;
 	self.horizontalScrollView.frame = CGRectMake(0.f, postScrollViewOffset, self.mainView.frame.size.width,
 												 self.mainView.frame.size.height - postScrollViewOffset);
 
@@ -126,10 +123,8 @@
     self.isFollowed = [[UserInfoCache sharedInstance] checkUserFollowsChannel: channel];
 	self.channelBeingPresented = channel;
 
-	[self.channelNameLabel setText: channel.channelName];
-	[channel getChannelOwnerNameWithCompletionBlock:^(NSString *name) {
-		[self.userNameLabel setText: name];
-	}];
+	[self.userNameLabel setText: channel.userName];
+
 
 	__block CGFloat xCoordinate = POST_VIEW_OFFSET;
 	[PostsQueryManager getPostsInChannel:channel withLimit:3 withCompletionBlock:^(NSArray *postChannelActivityObjects) {
@@ -166,7 +161,6 @@
     }
 	
 	[self.mainView addSubview:self.userNameLabel];
-	[self.mainView addSubview:self.channelNameLabel];
 	[self.mainView addSubview:self.numFollowersLabel];
 }
 
@@ -178,10 +172,8 @@
 
 	[self.userNameLabel removeFromSuperview];
 	[self.followButton removeFromSuperview];
-	[self.channelNameLabel removeFromSuperview];
 	self.userNameLabel = nil;
 	self.followButton = nil;
-	self.channelNameLabel = nil;
 
 	for (PostView *postView in self.postViews) {
 		[postView removeFromSuperview];
@@ -315,10 +307,10 @@
 -(UILabel *) userNameLabel {
 	if (!_userNameLabel) {
 		_userNameLabel = [[UILabel alloc] init];
-		[_userNameLabel setAdjustsFontSizeToFitWidth:YES];
-		[_userNameLabel setFont:[UIFont fontWithName:REGULAR_FONT size:DISCOVER_USER_NAME_FONT_SIZE]];
-		[_userNameLabel setTextColor:VERBATM_GOLD_COLOR];
-		[_userNameLabel setTextAlignment:NSTextAlignmentRight];
+        [_userNameLabel setAdjustsFontSizeToFitWidth:YES];
+        [_userNameLabel setTextAlignment:NSTextAlignmentCenter];
+        [_userNameLabel setFont:[UIFont fontWithName:INFO_LIST_HEADER_FONT size:DISCOVER_CHANNEL_NAME_FONT_SIZE]];
+        [_userNameLabel setTextColor:[UIColor whiteColor]];
 	}
 	return _userNameLabel;
 }
@@ -348,16 +340,6 @@
 	return _numFollowersLabel;
 }
 
--(UILabel *) channelNameLabel {
-	if (!_channelNameLabel) {
-		_channelNameLabel = [[UILabel alloc] init];
-		[_channelNameLabel setAdjustsFontSizeToFitWidth:YES];
-		[_channelNameLabel setTextAlignment:NSTextAlignmentCenter];
-		[_channelNameLabel setFont:[UIFont fontWithName:INFO_LIST_HEADER_FONT size:DISCOVER_CHANNEL_NAME_FONT_SIZE]];
-		[_channelNameLabel setTextColor:[UIColor whiteColor]];
-	}
-	return _channelNameLabel;
-}
 
 -(void) dealloc {
 
