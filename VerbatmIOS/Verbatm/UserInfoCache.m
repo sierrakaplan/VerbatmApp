@@ -45,7 +45,7 @@
         if (channels.count > 0) {
 			self.userChannel = channels[0];
 			//todo: clean up code
-			if (!self.userChannel.name.length) {
+			if (!self.userChannel.channelName.length) {
 				[self getDefaultBlogNameWithBlock:^(NSString *defaultBlogName) {
 					[self.userChannel changeTitle:defaultBlogName];
 					self.userChannel.defaultBlogName = YES;

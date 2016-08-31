@@ -20,7 +20,9 @@
 @interface Channel ()
 
 @property (nonatomic, readwrite) NSDate *dateOfMostRecentChannelPost;
-@property (nonatomic, readwrite) NSString * name;
+@property (nonatomic, readwrite) NSString * channelName;
+@property (nonatomic, readwrite) NSString *userName;
+
 @property (nonatomic, readwrite) NSString *blogDescription;
 @property (nonatomic, readwrite) PFObject * parseChannelObject;
 @property (nonatomic, readwrite) PFUser *channelCreator;
@@ -44,11 +46,12 @@
     
     self = [super init];
     if(self){
-        self.name = channelName;
+        self.channelName = channelName;
 		self.followObject = followObject;
         if (parseChannelObject) {
             [self addParseChannelObject:parseChannelObject andChannelCreator:channelCreator];
             self.blogDescription = parseChannelObject[CHANNEL_DESCRIPTION_KEY];
+            self.userName = [parseChannelObject objectForKey:CHANNEL_CREATOR_NAME_KEY];
         }
         if (self.blogDescription == nil) {
             self.blogDescription = @"";
@@ -96,7 +99,7 @@
 
 -(void) changeTitle:(NSString*)title {
 	if (!title.length) return;
-	self.name = title;
+	self.channelName = title;
 	self.parseChannelObject[CHANNEL_NAME_KEY] = title;
 	[self.parseChannelObject saveInBackground];
 }
@@ -104,7 +107,7 @@
 -(void) changeTitle:(NSString*)title andDescription:(NSString*)description {
 	if (!title.length) return;
 	self.defaultBlogName = NO;
-    self.name = title;
+    self.channelName = title;
     self.blogDescription = description;
     self.parseChannelObject[CHANNEL_NAME_KEY] = title;
     self.parseChannelObject[CHANNEL_DESCRIPTION_KEY] = description;

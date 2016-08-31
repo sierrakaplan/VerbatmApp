@@ -19,7 +19,8 @@
 //this definition must match the name of the lower NSDate value
 #define CHANNEL_MOST_RECENT_POST_DATE_NAME @"dateOfMostRecentChannelPost"
 @property (nonatomic, readonly) NSDate * dateOfMostRecentChannelPost;
-@property (nonatomic, readonly) NSString *name;
+@property (nonatomic, readonly) NSString *channelName;
+@property (nonatomic, readonly) NSString *userName;
 @property (nonatomic, readonly) NSString *blogDescription;
 @property (nonatomic, readonly) PFObject *parseChannelObject;
 @property (nonatomic, readonly) PFUser *channelCreator;

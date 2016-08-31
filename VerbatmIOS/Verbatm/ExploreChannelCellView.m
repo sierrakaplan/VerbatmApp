@@ -126,7 +126,7 @@
     self.isFollowed = [[UserInfoCache sharedInstance] checkUserFollowsChannel: channel];
 	self.channelBeingPresented = channel;
 
-	[self.channelNameLabel setText: channel.name];
+	[self.channelNameLabel setText: channel.channelName];
 	[channel getChannelOwnerNameWithCompletionBlock:^(NSString *name) {
 		[self.userNameLabel setText: name];
 	}];

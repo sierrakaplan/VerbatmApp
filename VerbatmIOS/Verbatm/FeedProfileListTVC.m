@@ -32,7 +32,7 @@
 
 //todo: cleanup commented out code
 
-#define CELL_HEIGHT 75.f
+#define CELL_HEIGHT 65.f
 #define HEADER_TITLE_HEIGHT 60.f
 #define FEED_LIST_CELL_ID @"FeedListTableViewCell"
 #define NAVIGATION_BAR_HEIGHT 15.f
@@ -220,7 +220,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
             Channel * leftObj = obj1;
             Channel * rightObj = obj2;
             
-            return [[leftObj name] caseInsensitiveCompare:[rightObj name]];
+            return [[leftObj userName] caseInsensitiveCompare:[rightObj userName]];
         }];
         [self findUpdatedPosts];
         [self.refreshControl endRefreshing];

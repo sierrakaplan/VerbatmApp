@@ -148,7 +148,7 @@
 		if(object) {
 			NSString *userName = [creator valueForKey:VERBATM_USER_NAME_KEY];
 			dispatch_async(dispatch_get_main_queue(), ^{
-				[self setChannelName:channel.name andUserName: userName];
+				[self setChannelName:channel.channelName andUserName: userName];
                 
                 if(![[creator objectId] isEqualToString:[[PFUser currentUser] objectId]])[self createFollowButton];
                 
