@@ -63,10 +63,10 @@
     
     self = [super initWithFrame:frame];
     if(self) {
-		self.totalNumberOfPages = numPages;
-		self.numberOfShares = numShares;
-        self.numberOfLikes = numLikes;
-        self.numberOfComments = numComments;
+		self.totalNumberOfPages = numPages ? numPages : [NSNumber numberWithInteger:1];
+		self.numberOfShares = numShares ? numShares : [NSNumber numberWithInteger:0];
+        self.numberOfLikes = numLikes ? numLikes : [NSNumber numberWithInteger:0];
+        self.numberOfComments = numComments ? numComments : [NSNumber numberWithInteger:0];
 
 		self.backgroundColor = LIKE_SHARE_BAR_BACKGROUND_COLOR;
 		self.layer.cornerRadius = 10.f;
