@@ -17,7 +17,7 @@
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "UtilityFunctions.h"
 
-@interface TextOverMediaView ()
+@interface TextOverMediaView () <UIScrollViewDelegate>
 
 @property (nonatomic) BOOL onTextAve;
 @property (nonatomic, readwrite) BOOL textShowing;
@@ -30,11 +30,16 @@
 @property (nonatomic, readwrite) NSTextAlignment textAlignment;
 @property (nonatomic, readwrite) BOOL blackTextColor;
 
+@property (nonatomic) CGFloat minZoomScale;
+@property (nonatomic) CGPoint originalImageCenter;
+
 #define DEFAULT_TEXT_VIEW_FRAME CGRectMake(TEXT_VIEW_X_OFFSET, self.textYPosition, self.frame.size.width - TEXT_VIEW_X_OFFSET*2, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT)
+#define MAX_IMAGE_ZOOM 6.f
 
 @end
 
 @implementation TextOverMediaView
+
 
 // For published view
 -(instancetype) initWithFrame:(CGRect)frame andImageURL:(NSURL*)imageUrl
@@ -60,7 +65,7 @@
 }
 
 // For preview mode
--(instancetype) initWithFrame:(CGRect)frame andImage:(UIImage *)image
+-(instancetype) initWithFrame:(CGRect)frame andImage:(UIImage *)image imageViewFrame:(CGRect) imageViewFrame
 			 andContentOffset:(CGPoint)contentOffset forTextAVE:(BOOL)onTextAve {
 	self = [self initWithFrame: frame];
 	if (self) {
@@ -71,12 +76,14 @@
 			self.repositionPhotoScrollView.scrollEnabled = NO;
 			self.repositionPhotoScrollView.showsVerticalScrollIndicator = NO;
 			self.repositionPhotoScrollView.showsHorizontalScrollIndicator = NO;
+            self.repositionPhotoScrollView.delegate = self;
 			[self.imageView removeFromSuperview];
+            [self.imageView setFrame:imageViewFrame];
 			[self.repositionPhotoScrollView addSubview:self.imageView];
 			[self setRepositionImageScrollViewFromImage: image];
+            [self.repositionPhotoScrollView setDecelerationRate:0.f];
 			[self setNewImageContentOffset:contentOffset.x andY:contentOffset.y];
 			[self insertSubview:self.repositionPhotoScrollView belowSubview:self.textView];
-
 			self.repositionPhotoGrid = [[GridView alloc] initWithFrame:self.bounds];
 			[self addSubview:self.repositionPhotoGrid];
 			self.repositionPhotoGrid.hidden = YES;
@@ -85,6 +92,49 @@
 		}
 	}
 	return self;
+}
+
+#pragma mark - Scrollview Delegate -
+-(CGFloat)getMinZoomScaleFromFrame:(CGSize)imageSize{
+        return self.frame.size.width/imageSize.width;
+}
+
+
+-(BOOL)imageViewTopEdgesAreExposed{
+    
+    if(self.imageView.frame.origin.y > self.repositionPhotoScrollView.contentOffset.y ||
+       self.imageView.frame.origin.y + self.imageView.frame.size.height <
+       self.repositionPhotoScrollView.contentOffset.y +
+       self.repositionPhotoScrollView.frame.size.height){
+        return YES;
+    }
+    
+    return NO;
+}
+
+-(BOOL)imageViewSideEdgesAreExposed{
+    
+    if(self.imageView.frame.origin.x > self.repositionPhotoScrollView.contentOffset.x ||
+       self.imageView.frame.origin.x + self.imageView.frame.size.width <
+       self.repositionPhotoScrollView.contentOffset.x +
+       self.repositionPhotoScrollView.frame.size.width){
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (void)scrollViewDidZoom:(UIScrollView *)scrollView {
+    if([self imageViewTopEdgesAreExposed]){
+        CGFloat centerX = self.imageView.center.x;
+        CGFloat centerY = scrollView.center.y;
+        self.imageView.center = CGPointMake(centerX,centerY);
+    }
+}
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
+{
+    return self.imageView;
 }
 
 -(instancetype) initWithFrame:(CGRect)frame {
@@ -105,27 +155,36 @@
 }
 
 -(void) setRepositionImageScrollViewFromImage: (UIImage *) image {
-	CGSize imageSize = image.size;
-	if (imageSize.width < self.frame.size.width) imageSize.width = self.frame.size.width;
-	if (imageSize.height < self.frame.size.height) imageSize.height = self.frame.size.height;
-	self.repositionPhotoScrollView.contentSize = imageSize;
-	self.imageView.frame = CGRectMake(0.f, 0.f, imageSize.width, imageSize.height);
+    self.repositionPhotoScrollView.contentSize = self.imageView.frame.size;
 	[self.imageView setImage: image];
 }
 
 -(void)startRepositioningPhoto {
+    self.repositionPhotoScrollView.scrollEnabled = YES;
+    self.minZoomScale = [self getMinZoomScaleFromFrame:self.imageView.frame.size];
+    self.repositionPhotoScrollView.minimumZoomScale = self.minZoomScale;
+    self.repositionPhotoScrollView.maximumZoomScale= MAX_IMAGE_ZOOM;
 	[self.repositionPhotoGrid setHidden:NO];
-	[self.textView setHidden:YES];
+    [self.repositionPhotoGrid setUserInteractionEnabled:NO];
+    
 }
 
 -(void)endRepositioningPhoto {
+    self.repositionPhotoScrollView.scrollEnabled = NO;
+    self.repositionPhotoScrollView.minimumZoomScale = 1.f;
+    self.repositionPhotoScrollView.maximumZoomScale = 1.f;
 	[self.repositionPhotoGrid setHidden:YES];
-	[self.textView setHidden:NO];
+    
 }
 
 -(CGPoint)getImageOffset {
 	CGPoint contentOffset = self.repositionPhotoScrollView.contentOffset;
 	return contentOffset;
+}
+
+
+-(void)scaleImagewithTransform:(CGAffineTransform) transform{
+    [self.imageView setTransform:transform];
 }
 
 -(void) moveImageX:(CGFloat)xDiff andY:(CGFloat)yDiff {
@@ -136,20 +195,29 @@
 }
 
 -(void) setNewImageContentOffset:(CGFloat)newX andY:(CGFloat)newY {
-
-	if (newX < 0) newX = 0;
-	CGFloat xMax = self.repositionPhotoScrollView.contentSize.width - self.bounds.size.width;
-	if (newX > xMax) {
-		newX = xMax;
-	}
-
-	if (newY < 0) newY = 0;
-	CGFloat yMax = self.repositionPhotoScrollView.contentSize.height - self.bounds.size.height;
-	if (newY > yMax) {
-		newY = yMax;
-	}
-
-	self.repositionPhotoScrollView.contentOffset = CGPointMake(newX, newY);
+    
+    if(self.imageView.frame.size.height > self.imageView.frame.size.width){
+        
+        if (newY >= self.imageView.frame.origin.y){
+            
+            if((self.imageView.frame.origin.y + self.imageView.frame.size.height) <=
+               newY + self.imageView.frame.size.height){
+                self.repositionPhotoScrollView.contentOffset = CGPointMake(newX, newY);
+            }
+            
+        }
+        
+    } else{
+        
+        if (newX >= self.imageView.frame.origin.x){
+            if((self.imageView.frame.origin.x + self.imageView.frame.size.width) <=
+               newX + self.imageView.frame.size.width){
+               self.repositionPhotoScrollView.contentOffset = CGPointMake(newX, newY);
+            }
+        }
+        
+    }
+    
 }
 
 #pragma mark - Text View functionality -
@@ -312,7 +380,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 -(UIImageView*) imageView {
 	if (!_imageView) {
-		UIImageView *imageView = [[UIImageView alloc] initWithFrame: self.bounds];
+		UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.bounds];
 		[self insertSubview:imageView belowSubview:self.textView];
 		_imageView = imageView;
 		_imageView.clipsToBounds = YES;

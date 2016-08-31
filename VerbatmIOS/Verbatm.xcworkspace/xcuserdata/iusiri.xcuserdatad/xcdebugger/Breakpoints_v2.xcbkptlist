@@ -5971,7 +5971,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "191"
             endingLineNumber = "191"
-            landmarkName = "-changeText:"
+            landmarkName = "-moveImageX:andY:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -6323,7 +6323,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "72"
             endingLineNumber = "72"
-            landmarkName = "-initWithFrame:andImage:andContentOffset:forTextAVE:"
+            landmarkName = "-initWithFrame:andImage:imageViewFrame:andContentOffset:forTextAVE:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -6338,7 +6338,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "387"
-            endingLineNumber = "387">
+            endingLineNumber = "387"
+            landmarkName = "-imageView"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -6353,7 +6355,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "171"
             endingLineNumber = "171"
-            landmarkName = "-setText:andTextYPosition:andTextColorBlack:andTextAlignment:andTextSize:andFontName:"
+            landmarkName = "-endRepositioningPhoto"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -6369,7 +6371,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "161"
             endingLineNumber = "161"
-            landmarkName = "-setText:andTextYPosition:andTextColorBlack:andTextAlignment:andTextSize:andFontName:"
+            landmarkName = "-startRepositioningPhoto"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -6401,7 +6403,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "170"
             endingLineNumber = "170"
-            landmarkName = "-setText:andTextYPosition:andTextColorBlack:andTextAlignment:andTextSize:andFontName:"
+            landmarkName = "-startRepositioningPhoto"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -6433,7 +6435,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "145"
             endingLineNumber = "145"
-            landmarkName = "-setNewImageContentOffset:andY:"
+            landmarkName = "-initWithFrame:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -6449,7 +6451,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "134"
             endingLineNumber = "134"
-            landmarkName = "-moveImageX:andY:"
+            landmarkName = "-viewForZoomingInScrollView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -7984,7 +7986,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "157"
             endingLineNumber = "157"
-            landmarkName = "-setText:andTextYPosition:andTextColorBlack:andTextAlignment:andTextSize:andFontName:"
+            landmarkName = "-setRepositionImageScrollViewFromImage:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8016,7 +8018,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "80"
             endingLineNumber = "80"
-            landmarkName = "-initWithFrame:andImage:andContentOffset:forTextAVE:"
+            landmarkName = "-initWithFrame:andImage:imageViewFrame:andContentOffset:forTextAVE:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8096,7 +8098,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "186"
             endingLineNumber = "186"
-            landmarkName = "-revertToDefaultTextSettings"
+            landmarkName = "-scaleImagewithTransform:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8368,7 +8370,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "135"
             endingLineNumber = "135"
-            landmarkName = "-moveImageX:andY:"
+            landmarkName = "-viewForZoomingInScrollView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8384,7 +8386,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "69"
             endingLineNumber = "69"
-            landmarkName = "-initWithFrame:andImage:andContentOffset:forTextAVE:"
+            landmarkName = "-initWithFrame:andImage:imageViewFrame:andContentOffset:forTextAVE:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8400,7 +8402,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "68"
             endingLineNumber = "68"
-            landmarkName = "-initWithFrame:andImage:andContentOffset:forTextAVE:"
+            landmarkName = "-initWithFrame:andImage:imageViewFrame:andContentOffset:forTextAVE:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8416,7 +8418,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "127"
             endingLineNumber = "127"
-            landmarkName = "-getImageOffset"
+            landmarkName = "-scrollViewDidZoom:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
