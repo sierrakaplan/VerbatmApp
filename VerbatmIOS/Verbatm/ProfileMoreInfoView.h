@@ -15,13 +15,16 @@
 -(void) followingButtonPressed;
 -(void) followersButtonPressed;
 
+-(void) followChannel:(BOOL)follow;
+-(void) blockButtonPressed;
+
 @end
 
 @interface ProfileMoreInfoView : UIView
 
 @property (nonatomic, weak) id<ProfileMoreInfoViewDelegate> delegate;
 
--(instancetype) initWithFrame:(CGRect)frame andNumFollowers:(NSNumber*)numFollowers
-			  andNumFollowing:(NSNumber*)numFollowing andDescription:(NSString*)description;
+-(instancetype) initWithFrame:(CGRect)frame andChannel:(Channel*)channel
+		 isCurrentUserProfile:(BOOL)currentUserProfile;
 
 @end

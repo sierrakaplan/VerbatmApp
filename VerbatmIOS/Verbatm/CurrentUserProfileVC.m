@@ -10,6 +10,7 @@
 #import "Icons.h"
 #import "ParseBackendKeys.h"
 #import "ProfileHeaderView.h"
+#import "ProfileMoreInfoView.h"
 #import "SettingsVC.h"
 #import "VerbatmNavigationController.h"
 #import "StoryboardVCIdentifiers.h"

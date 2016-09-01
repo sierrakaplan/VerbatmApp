@@ -55,6 +55,7 @@ UIScrollViewDelegate, PostListVCProtocol,
 UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeViewControllerDelegate>
 
 @property (nonatomic) BOOL isCurrentUserProfile;
+@property (nonatomic) BOOL isBlocked;
 @property (nonatomic) UIButton * postPrompt;
 
 @property (nonatomic) BOOL currentlyCreatingNewChannel;
@@ -95,6 +96,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
+	self.isBlocked = NO;
 	self.isCurrentUserProfile = [self isKindOfClass:[CurrentUserProfileVC class]];
 	self.moreInfoViewOnScreen = NO;
 	self.automaticallyAdjustsScrollViewInsets = NO;
@@ -235,6 +237,69 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 -(void) followingButtonPressed {
 	[self showChannelsFollowing];
+}
+
+-(void) followChannel:(BOOL)follow {
+	if (follow) {
+		[Follow_BackendManager currentUserFollowChannel: self.channel];
+	} else {
+		[Follow_BackendManager currentUserStopFollowingChannel: self.channel];
+	}
+}
+
+-(void) blockButtonPressed {
+	if (self.isBlocked) {
+		[self askIfShouldBlock: NO];
+	} else {
+		[User_BackendObject userIsBlockedByCurrentUser:self.channel.channelCreator withCompletionBlock:^(BOOL blocked) {
+			self.isBlocked = blocked;
+			[self askIfShouldBlock: !blocked];
+		}];
+	}
+}
+
+-(void) askIfShouldBlock:(BOOL) shouldBlock {
+	NSString * titleText;
+
+	if(shouldBlock) {
+		titleText = @"Block User";
+	} else {
+		titleText = @"Unblock User";
+	}
+
+	UIAlertController* alert = [UIAlertController alertControllerWithTitle:nil
+																   message:nil
+															preferredStyle:UIAlertControllerStyleActionSheet];
+
+	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
+														 handler:^(UIAlertAction * action) {}];
+	UIAlertAction* confirmAction = [UIAlertAction actionWithTitle:titleText style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+		if(shouldBlock){
+			[User_BackendObject blockUser:self.ownerOfProfile];
+			[self alertUserBlocked:YES];
+
+		} else {
+			[User_BackendObject unblockUser:self.ownerOfProfile];
+			[self alertUserBlocked:NO];
+		}
+	}];
+
+	[alert addAction: cancelAction];
+	[alert addAction: confirmAction];
+	[self presentViewController:alert animated:YES completion:nil];
+}
+
+-(void) alertUserBlocked:(BOOL) blocked {
+	NSString *title = blocked ? @"User blocked" : @"User unblocked";
+	UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+																   message:nil
+															preferredStyle:UIAlertControllerStyleAlert];
+
+	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleCancel
+														 handler:^(UIAlertAction * action) {}];
+
+	[alert addAction: cancelAction];
+	[self presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark - Profile Photo -
@@ -491,53 +556,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	[controller.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
--(void)blockCurrentUserShouldBlock:(BOOL) shouldBlock{
-	NSString * titleText;
-	NSString * messageText;
-
-	if(shouldBlock) {
-		titleText = @"Block User";
-		messageText = @"Are you sure?";
-	} else {
-		titleText = @"Unblock User";
-		messageText = @"Are you sure?";
-	}
-
-	UIAlertController* alert = [UIAlertController alertControllerWithTitle:titleText
-																   message:messageText
-															preferredStyle:UIAlertControllerStyleAlert];
-
-	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
-														 handler:^(UIAlertAction * action) {}];
-	UIAlertAction* confirmAction = [UIAlertAction actionWithTitle:@"Yes, I'm sure." style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-		if(shouldBlock){
-			[User_BackendObject blockUser:self.ownerOfProfile];
-			[self alertUserBlocked:YES];
-
-		} else {
-			[User_BackendObject unblockUser:self.ownerOfProfile];
-			[self alertUserBlocked:NO];
-		}
-	}];
-
-	[alert addAction: cancelAction];
-	[alert addAction: confirmAction];
-	[self presentViewController:alert animated:YES completion:nil];
-}
-
--(void) alertUserBlocked:(BOOL) blocked {
-	NSString *title = blocked ? @"User blocked" : @"User unblocked";
-	UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
-																   message:nil
-															preferredStyle:UIAlertControllerStyleAlert];
-
-	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleCancel
-														 handler:^(UIAlertAction * action) {}];
-
-	[alert addAction: cancelAction];
-	[self presentViewController:alert animated:YES completion:nil];
-}
-
 #pragma mark - Lazy Instantiation -
 
 -(ProfileMoreInfoView*) moreInfoView {
@@ -546,10 +564,8 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 		CGFloat height = self.view.frame.size.height - yPos;
 		self.moreInfoViewOffScreenFrame = CGRectMake(0.f, yPos - height, self.view.frame.size.width, height);
 		self.moreInfoViewOnScreenFrame = CGRectMake(0.f, yPos, self.view.frame.size.width, height);
-		_moreInfoView = [[ProfileMoreInfoView alloc] initWithFrame:self.moreInfoViewOnScreenFrame
-													   andNumFollowers:self.channel.parseChannelObject[CHANNEL_NUM_FOLLOWS]
-													   andNumFollowing:self.channel.parseChannelObject[CHANNEL_NUM_FOLLOWING]
-														andDescription:self.channel.blogDescription];
+		_moreInfoView = [[ProfileMoreInfoView alloc] initWithFrame:self.moreInfoViewOnScreenFrame andChannel:self.channel
+											  isCurrentUserProfile:self.isCurrentUserProfile];
 		_moreInfoView.delegate = self;
 		_moreInfoView.frame = self.moreInfoViewOffScreenFrame;
 		[self.view addSubview: _moreInfoView];
@@ -612,7 +628,11 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 -(UIImageView*) noPostsView {
 	if (!_noPostsView) {
-		_noPostsView = [[UIImageView alloc] initWithFrame: self.postListSmallFrame];
+		CGRect frame = CGRectMake(self.postListSmallFrame.origin.x + 5.f,
+								  self.postListSmallFrame.origin.y + 5.f,
+								  self.postListSmallFrame.size.width - 10.f,
+								  self.postListSmallFrame.size.height - 10.f);
+		_noPostsView = [[UIImageView alloc] initWithFrame: frame];
 		_noPostsView.contentMode = UIViewContentModeScaleAspectFit;
 		_noPostsView.image = [UIImage imageNamed: PROFILE_UNDER_CONSTRUCTION_ICON];
 	}
