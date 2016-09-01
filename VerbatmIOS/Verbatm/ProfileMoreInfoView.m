@@ -59,7 +59,7 @@
 #define EDIT_BUTTON_FONT_SIZE 14.f
 #define EDIT_TEXT @"Edit Bio"
 #define DONE_TEXT @"Done Editing"
-#define KEYBOARD_HEIGHT 150.f
+#define KEYBOARD_HEIGHT 200.f
 
 #define X_OFFSET 20.f
 #define BOTTOM_ICON_Y_OFFSET (self.frame.size.height - TAB_BAR_HEIGHT - BLOCK_BUTTON_SIZE - Y_OFFSET)
@@ -81,8 +81,7 @@
 		self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.9];
 		[self updateNumFollowersAndFollowing];
 		self.editMode = NO;
-		self.blogDescription.text = channel.blogDescription;
-		[self.blogDescription sizeToFit];
+		[self setBlogDescriptionText: channel.blogDescription];
 		[self addSubview: self.followersButton];
 		[self addSubview: self.followingButton];
 		[self addSubview: self.blogDescription];
@@ -112,30 +111,46 @@
 -(void) editButtonPressed {
 	self.editMode = !self.editMode;
 	if (self.editMode) {
-		self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y - KEYBOARD_HEIGHT, self.frame.size.width, self.frame.size.height);
-		[self.superview bringSubviewToFront:self];
 		NSAttributedString *title = [[NSAttributedString alloc] initWithString:DONE_TEXT attributes:self.editButtonAttributes];
 		[self.editButton setAttributedTitle:title forState:UIControlStateNormal];
 		self.blogDescriptionEditable.text = self.blogDescription.text;
+		self.editButton.frame = CGRectMake(self.editButton.frame.origin.x, self.blogDescriptionEditable.frame.origin.y +
+										   self.blogDescriptionEditable.frame.size.height + Y_OFFSET, self.editButton.frame.size.width,
+										   self.editButton.frame.size.height);
 		[self.blogDescription removeFromSuperview];
 		[self addSubview: self.blogDescriptionEditable];
 		[self addSubview: self.blogDescriptionPlaceholder];
 		if (self.blogDescriptionEditable.text.length > 0) {
 			self.blogDescriptionPlaceholder.hidden = YES;
 		}
+		//Slide up to be editable with keyboard
+		self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y - KEYBOARD_HEIGHT, self.frame.size.width, self.frame.size.height);
+		[self.superview bringSubviewToFront:self];
 		[self.blogDescriptionEditable becomeFirstResponder];
 	} else {
 		[self.blogDescriptionEditable resignFirstResponder];
-		self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y + KEYBOARD_HEIGHT, self.frame.size.width, self.frame.size.height);
 		NSAttributedString *title = [[NSAttributedString alloc] initWithString:EDIT_TEXT attributes:self.editButtonAttributes];
 		[self.editButton setAttributedTitle:title forState:UIControlStateNormal];
 		NSString *newDescription = self.blogDescriptionEditable.text;
-		self.blogDescription.text = newDescription;
+		[self setBlogDescriptionText: newDescription];
+		self.editButton.frame = CGRectMake(self.editButton.frame.origin.x, self.blogDescription.frame.origin.y +
+										   self.blogDescription.frame.size.height + Y_OFFSET, self.editButton.frame.size.width,
+										   self.editButton.frame.size.height);
 		[self.channel changeTitle:self.channel.channelName andDescription:self.blogDescriptionEditable.text];
+		self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y + KEYBOARD_HEIGHT, self.frame.size.width, self.frame.size.height);
 		[self.blogDescriptionEditable removeFromSuperview];
 		[self.blogDescriptionPlaceholder removeFromSuperview];
 		[self addSubview: self.blogDescription];
 	}
+}
+
+-(void) setBlogDescriptionText:(NSString*)text {
+	self.blogDescription.text = text;
+	CGFloat width = self.blogDescription.frame.size.width;
+	[self.blogDescription sizeToFit];
+	CGRect frame = self.blogDescription.frame;
+	frame.size.width = width;
+	self.blogDescription.frame = frame;
 }
 
 -(void) followButtonPressed {
@@ -321,7 +336,7 @@
 		_blogDescriptionEditable.backgroundColor = [UIColor clearColor];
 		_blogDescriptionEditable.layer.borderWidth = 0.5f;
 		_blogDescriptionEditable.layer.borderColor = [UIColor whiteColor].CGColor;
-		_blogDescriptionEditable.layer.cornerRadius = 2.f;
+		_blogDescriptionEditable.layer.cornerRadius = 5.f;
 		_blogDescriptionEditable.text = self.blogDescription.text;
 		_blogDescriptionEditable.editable = YES;
 		_blogDescriptionEditable.delegate = self;
@@ -336,7 +351,7 @@
 
 -(UILabel *) blogDescriptionPlaceholder {
 	if (!_blogDescriptionPlaceholder) {
-		_blogDescriptionPlaceholder = [[UILabel alloc] initWithFrame: CGRectMake(2.f, 0.f, self.frame.size.width, self.blogDescriptionEditable.frame.size.height)];
+		_blogDescriptionPlaceholder = [[UILabel alloc] initWithFrame: self.blogDescriptionEditable.frame];
 		_blogDescriptionPlaceholder.font = [UIFont fontWithName:LIGHT_ITALIC_FONT size:DESCRIPTION_FONT_SIZE];
 		[_blogDescriptionPlaceholder setTextColor:[UIColor whiteColor]];
 		_blogDescriptionPlaceholder.text = @"Tap here to add a blog description!";
