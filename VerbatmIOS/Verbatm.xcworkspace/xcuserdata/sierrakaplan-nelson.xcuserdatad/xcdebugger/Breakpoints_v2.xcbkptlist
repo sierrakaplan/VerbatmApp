@@ -6261,11 +6261,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileMoreInfoView.m"
-            timestampString = "494459578.465566"
+            timestampString = "494463341.04403"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "342"
-            endingLineNumber = "342"
+            startingLineNumber = "345"
+            endingLineNumber = "345"
             landmarkName = "-blogDescriptionEditable"
             landmarkType = "5">
          </BreakpointContent>
@@ -6277,11 +6277,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileMoreInfoView.m"
-            timestampString = "494459578.465566"
+            timestampString = "494463341.04403"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "328"
-            endingLineNumber = "328"
+            startingLineNumber = "331"
+            endingLineNumber = "331"
             landmarkName = "-blogDescription"
             landmarkType = "5">
          </BreakpointContent>

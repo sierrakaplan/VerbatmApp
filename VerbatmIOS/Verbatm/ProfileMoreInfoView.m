@@ -234,6 +234,9 @@
 		return NO;
 	}
 	if (textView == self.blogDescriptionEditable) {
+		if (length < textView.text.length) {
+			return YES;
+		}
 		return length <= DESCRIPTION_MAX_CHARACTERS;
 	}
 	return YES;

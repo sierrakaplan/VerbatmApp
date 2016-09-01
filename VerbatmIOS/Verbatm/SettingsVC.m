@@ -6,7 +6,9 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+#import <Crashlytics/Crashlytics.h>
 #import "CustomNavigationBar.h"
+#import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
 #import "User_BackendObject.h"
 #import <MessageUI/MessageUI.h>
@@ -19,15 +21,20 @@
 
 #import "UserManager.h"
 
-@interface SettingsVC () <MFMailComposeViewControllerDelegate, UITableViewDelegate, UITableViewDataSource>
+@interface SettingsVC () <MFMailComposeViewControllerDelegate, UITableViewDelegate,
+UITableViewDataSource, UITextFieldDelegate>
 
+@property (weak, nonatomic) IBOutlet UITextField *userNameTextField;
 @property (weak, nonatomic) IBOutlet UILabel *feedbackLabel;
 @property (weak, nonatomic) IBOutlet UILabel *termsAndConditionsLabel;
 @property (weak, nonatomic) IBOutlet UILabel *signOutLabel;
 
+@property (nonatomic) NSString *oldUsername;
+
 #define FONT_SIZE 16.f
 #define X_POS 5.f
 
+#define USER_NAME_CHAR_LIMIT 30
 #define VERBATM_HELP_EMAIL @"feedback@verbatm.io"
 #define HELP_EMAIL_SUBJECT @"Feedback to Verbatm team"
 
@@ -37,9 +44,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+	self.userNameTextField.font = [UIFont fontWithName:ITALIC_FONT size:FONT_SIZE];
+	self.userNameTextField.text = [PFUser currentUser][VERBATM_USER_NAME_KEY];
+	self.userNameTextField.delegate = self;
+	self.userNameTextField.returnKeyType = UIReturnKeyDone;
 	self.feedbackLabel.font = [UIFont fontWithName:REGULAR_FONT size:FONT_SIZE];
 	self.termsAndConditionsLabel.font = [UIFont fontWithName:REGULAR_FONT size:FONT_SIZE];
-	self.signOutLabel.font = [UIFont fontWithName:REGULAR_FONT size:FONT_SIZE];
+	self.signOutLabel.font = [UIFont fontWithName:BOLD_FONT size:FONT_SIZE];
 	self.tableView.delegate = self;
 	self.tableView.dataSource = self;
 }
@@ -51,13 +62,48 @@
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSInteger section = indexPath.section;
 	NSInteger row = indexPath.row;
-	if (section == 0 && row == 0) {
-		[self sendFeedback];
-	} else if (section == 1 && row == 0) {
-		[self showTermsAndConditions];
+	if (section == 1) {
+		if (row == 0) {
+			[self sendFeedback];
+		} else {
+			[self showTermsAndConditions];
+		}
 	} else if (section == 2 && row == 0) {
 		[self logoutAlert];
 	}
+}
+
+#pragma mark - Editing text field -
+
+-(BOOL) textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+	NSUInteger newLength = [textField.text length] + [string length] - range.length;
+	if (newLength < textField.text.length) {
+		return YES;
+	}
+	return newLength <= USER_NAME_CHAR_LIMIT;
+}
+
+-(void) textFieldDidBeginEditing:(UITextField *)textField {
+	self.oldUsername = textField.text;
+}
+
+-(void) textFieldDidEndEditing:(UITextField *)textField {
+	if (textField.text.length < 1) {
+		textField.text = self.oldUsername;
+	}
+	[PFUser currentUser][VERBATM_USER_NAME_KEY] = textField.text;
+	[[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+		if (error) {
+			[[Crashlytics sharedInstance] recordError:error];
+		} else {
+			NSLog(@"User name saved successfully.");
+		}
+	}];
+}
+
+-(BOOL) textFieldShouldReturn:(UITextField *)textField {
+	[textField resignFirstResponder];
+	return NO;
 }
 
 #pragma mark - Send Feedback -
