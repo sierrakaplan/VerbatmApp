@@ -29,7 +29,7 @@
 #pragma mark - Main Tab bar -
 
 #define TAB_BUTTON_PADDING_X 12.f
-#define TAB_BUTTON_PADDING_Y 7.f
+#define TAB_BUTTON_PADDING_Y 0.f
 
 #define TAB_DIVIDER_WIDTH 2.f
 #define TAB_BAR_HEIGHT 40.f

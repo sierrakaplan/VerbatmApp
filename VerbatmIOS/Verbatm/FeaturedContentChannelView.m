@@ -68,7 +68,7 @@
 			[self.userNameLabel setText: name];
 		}];
 		[self addSubview:self.userNameLabel];
-		[self.channelNameLabel setText: channel.name];
+		[self.channelNameLabel setText: channel.channelName];
 		[self addSubview: self.channelNameLabel];
 		self.post = post;
 		self.pages = pages;

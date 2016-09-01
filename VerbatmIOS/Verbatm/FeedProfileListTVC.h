@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+
+/*
+ List of people that you are following on Verbatm.
+ */
+
 @protocol FeedProfileListProtocol <NSObject>
 
 -(void)goToDiscover;

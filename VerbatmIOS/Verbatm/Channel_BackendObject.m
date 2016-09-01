@@ -60,7 +60,7 @@
 	if(channel.parseChannelObject){
 		block ([self createPostFromPinchViews:pinchViews andChannel:channel]);
 	} else {
-		[Channel_BackendObject createChannelWithName:channel.name andCompletionBlock:^(PFObject* channelObject){
+		[Channel_BackendObject createChannelWithName:channel.channelName andCompletionBlock:^(PFObject* channelObject){
 			if (!channelObject) {
 				block (nil);
 			} else {

@@ -66,20 +66,11 @@
 }
 
 -(void)createLabelsFromChannel:(Channel *)channel isSelected:(BOOL) isSelected{
-    
-    PFUser *creator = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
-    
-    [creator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-        if(object) {
-            NSString *userName = [creator valueForKey:VERBATM_USER_NAME_KEY];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self setLabelsForChannel:channel andUserName:userName];
-                [self setSelctionDotAsSelected:isSelected];
+    NSString * creatorName = channel.userName;
+    [self setLabelForUserName: creatorName];
+    [self setSelctionDotAsSelected:isSelected];
 
-            });
-        }
-    }];
-
+ 
 }
 
 -(void)setSelctionDotAsSelected:(BOOL)selected{
@@ -95,18 +86,15 @@
     self.channelNameLabel = nil;
 }
 
--(void) setLabelsForChannel:(Channel *) channel andUserName:(NSString *) userName {
+-(void) setLabelForUserName:(NSString *) userName {
     
     [self clearView];
     CGFloat xPos = self.selectionDot.frame.origin.x + self.selectionDot.frame.size.width + TAB_BUTTON_PADDING_X;
     CGPoint nameLabelOrigin = CGPointMake(xPos,TAB_BUTTON_PADDING_Y);
-    CGPoint channelNameLabelOrigin  = CGPointMake(xPos,self.frame.size.height/2.f);
-    
-    self.channelNameLabel = [self getLabel:[channel name] withOrigin:channelNameLabelOrigin andAttributes:[self getChannelNameAttributes] withMaxWidth:MAX_WIDTH];
+
     self.nameLabel = [self getLabel:userName withOrigin:nameLabelOrigin andAttributes:[self getUserNameAttributes] withMaxWidth:MAX_WIDTH];
     
-    [self.nameLabel setFrame:CGRectMake(xPos, (self.frame.size.height/2.f) - self.nameLabel.frame.size.height, self.nameLabel.frame.size.width, self.nameLabel.frame.size.height)];
-    [self addSubview: self.channelNameLabel];
+    [self.nameLabel setFrame:CGRectMake(xPos, self.nameLabel.frame.origin.y, self.nameLabel.frame.size.width, self.frame.size.height)];
     [self addSubview: self.nameLabel];
     
 }
@@ -147,11 +135,12 @@
    
 }
 
+
 -(NSDictionary *)getUserNameAttributes{
     NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
     paragraphStyle.alignment                = NSTextAlignmentCenter;
    return @{NSForegroundColorAttributeName: [UIColor whiteColor],
-      NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:CHANNEL_USER_LIST_USER_NAME_FONT_SIZE], NSParagraphStyleAttributeName:paragraphStyle};
+      NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:POSTLIST_USER_LIST_USER_NAME_FONT_SIZE], NSParagraphStyleAttributeName:paragraphStyle};
 }
 
 
