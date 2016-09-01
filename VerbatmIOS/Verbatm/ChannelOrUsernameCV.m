@@ -27,23 +27,23 @@
 @property (nonatomic) BOOL isAChannel;
 @property (nonatomic) BOOL isAChannelIFollow;
 
-@property (nonatomic, strong) UILabel * usernameLabel;
+@property (nonatomic, strong) UILabel *usernameLabel;
 
-@property (nonatomic,strong) UILabel * commentLabel;
-@property (nonatomic, strong) UILabel * commentUserNameLabel;
+@property (nonatomic,strong) UILabel *commentLabel;
+@property (nonatomic, strong) UILabel *commentUserNameLabel;
 
-@property (nonatomic) NSString * userName;
+@property (nonatomic) NSString *userName;
 
 @property (strong, nonatomic) NSDictionary* userNameLabelAttributes;
 @property (strong, nonatomic) NSDictionary* userNameCommentLabelAttributes;
 @property (strong, nonatomic) NSDictionary* commentStringLabelAttributes;
 
 
-@property (nonatomic) UIView * seperatorView;
+@property (nonatomic) UIView *seperatorView;
 
-@property (nonatomic) UILabel * headerTitle;//makes the cell a header for the table view
+@property (nonatomic) UILabel *headerTitle;//makes the cell a header for the table view
 @property (nonatomic) BOOL isHeaderTile;
-@property (nonatomic) UIButton * followButton;
+@property (nonatomic) UIButton *followButton;
 @property (nonatomic) BOOL currentUserFollowingChannelUser;
 
 
@@ -131,7 +131,7 @@
 			if(self.followButton)[self updateUserFollowingChannel];
         }
         
-    }else{
+     }else {
         self.currentUserFollowingChannelUser = [self.channel.usersFollowingChannel containsObject:[PFUser currentUser]];
         if(self.followButton)[self updateUserFollowingChannel];
     }
@@ -141,7 +141,7 @@
 		if(object) {
 			NSString *userName = [creator valueForKey:VERBATM_USER_NAME_KEY];
 			dispatch_async(dispatch_get_main_queue(), ^{
-				[self setUserName: userName];
+				self.userName = userName;
                 
                 if(![[creator objectId] isEqualToString:[[PFUser currentUser] objectId]])[self createFollowButton];
                 
@@ -163,6 +163,7 @@
     CGFloat frame_x = self.frame.size.width - 5.f - LARGE_FOLLOW_BUTTON_WIDTH;
     CGRect followButtonFrame = CGRectMake(frame_x, TAB_BUTTON_PADDING_Y, LARGE_FOLLOW_BUTTON_WIDTH, LARGE_FOLLOW_BUTTON_HEIGHT);
     self.followButton = [[UIButton alloc] initWithFrame: followButtonFrame];
+	self.followButton.center = CGPointMake(self.followButton.center.x, self.center.y - self.frame.origin.y);
     self.followButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
     self.followButton.clipsToBounds = YES;
     self.followButton.layer.borderColor = [UIColor blackColor].CGColor;
@@ -199,11 +200,6 @@
                                       NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size:FOLLOW_TEXT_FONT_SIZE]};
     NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:titleAttributes];
     [self.followButton setAttributedTitle:attributedTitle forState:UIControlStateNormal];
-}
-
--(void)setUserName:(NSString *) userName {
-	self.userName = userName;
-	self.isHeaderTile = NO;
 }
 
 -(void)layoutSubviews {
@@ -248,9 +244,13 @@
 
     [self clearView];
 
-    CGPoint nameLabelOrigin = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y);
+	if (!self.userNameLabelAttributes) {
+		[self createSelectedTextAttributes];
+	}
+    CGPoint nameLabelOrigin = CGPointMake(TAB_BUTTON_PADDING_X, TAB_BUTTON_PADDING_Y);
 
-	self.usernameLabel = [self getLabel:self.userName withOrigin:nameLabelOrigin andAttributes:self.userNameLabelAttributes withMaxWidth:MAX_WIDTH];
+	self.usernameLabel = [self getLabel:self.userName withOrigin:nameLabelOrigin
+						  andAttributes:self.userNameLabelAttributes withMaxWidth:MAX_WIDTH];
 
 	[self addSubview: self.usernameLabel];
 }
@@ -273,24 +273,27 @@
 
 -(UILabel *) getLabel:(NSString *) title withOrigin:(CGPoint) origin andAttributes:(NSDictionary *) nameLabelAttribute withMaxWidth:(CGFloat) maxWidth {
     UILabel * nameLabel = [[UILabel alloc] init];
-    
+
     if(title && nameLabelAttribute){
         NSAttributedString* tabAttributedTitle = [[NSAttributedString alloc] initWithString:title attributes:nameLabelAttribute];
         CGRect textSize = [title boundingRectWithSize:CGSizeMake(maxWidth, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:nameLabelAttribute context:nil];
         
            CGFloat height;
-        if(self.channel){
+        if(self.channel) {
             height= (textSize.size.height <= (self.frame.size.height/2.f) - 2.f) ?
             textSize.size.height : self.frame.size.height/2.f;
-        }else{
+        } else {
             height = textSize.size.height;
         }
+
+		//todo: make code cleaner
         
         CGFloat width = (maxWidth > 0 && textSize.size.width > maxWidth) ? maxWidth : textSize.size.width;
         
         CGRect labelFrame = CGRectMake(origin.x, origin.y, width, height +7.f);
         
         nameLabel.frame = labelFrame;
+		nameLabel.center = CGPointMake(nameLabel.center.x, self.center.y - self.frame.origin.y);
         nameLabel.adjustsFontSizeToFitWidth = YES;
         nameLabel.numberOfLines = 1.f;
         nameLabel.backgroundColor = [UIColor clearColor];
@@ -325,14 +328,13 @@
     return textLabel;
 }
 
-
-
 -(void)createSelectedTextAttributes{
 	NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
 	paragraphStyle.alignment                = NSTextAlignmentCenter;
 	//create "followers" text
 	self.userNameLabelAttributes =@{NSForegroundColorAttributeName: [UIColor blackColor],
-									NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT size:CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE],
+									NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT
+																		 size:CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE],
 									NSParagraphStyleAttributeName:paragraphStyle};
 
     NSMutableParagraphStyle *usernameAlignment = NSMutableParagraphStyle.new;
