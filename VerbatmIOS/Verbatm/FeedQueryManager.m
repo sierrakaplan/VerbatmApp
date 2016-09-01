@@ -66,6 +66,7 @@
 	self.currentFeedStart = nil;
 }
 
+//todo: cloud code
 // Waits if another thread is already refreshing followed channels,
 // Otherwise refreshes followed channels and signals that refreshing is done, then
 // block returns.
@@ -87,7 +88,7 @@
 		self.followedChannelsRefreshing = YES;
 		[self.channelsRefreshingCondition unlock];
 
-		//todo: make this cloud code
+		//todo: cloud code
 		PFQuery *followObjectsQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
 		[followObjectsQuery whereKey:FOLLOW_USER_KEY equalTo:[PFUser currentUser]];
 		followObjectsQuery.cachePolicy = kPFCachePolicyNetworkOnly;
@@ -111,37 +112,6 @@
 			block();
 		}];
 	});
-}
-
--(void)refreshFeedWithCompletionHandler:(void(^)(NSArray *))block {
-	[self refreshChannelsWeFollowWithCompletionHandler:^{
-		// Get POST_DOWNLOAD_MAX_SIZE of posts associated with these channels sorted from newest to oldest
-		PFQuery *postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
-		[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO containedIn:self.channelsFollowed];
-		[postQuery orderByDescending:@"createdAt"];
-		[postQuery setSkip: 0];
-		//Only load newer posts
-		if (self.currentFeedStart) {
-			[postQuery whereKey:@"createdAt" greaterThan:self.currentFeedStart];
-		} else {
-			[postQuery setLimit: POST_DOWNLOAD_MAX_SIZE];
-		}
-		[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities, NSError * _Nullable error) {
-			NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
-			for(PFObject *postChannelActivity in activities) {
-				PFObject *post = [postChannelActivity objectForKey:POST_CHANNEL_ACTIVITY_POST];
-				[post fetchIfNeededInBackground];
-				[finalPostObjects addObject:postChannelActivity];
-			}
-
-			// Reset cursor to start
-			if (activities.count > 0) {
-				self.currentFeedStart = [activities[0] createdAt];
-			}
-			self.postsInFeed += finalPostObjects.count;
-			block(finalPostObjects);
-		}];
-	}];
 }
 
 -(void) loadMorePostsWithCompletionHandler:(void(^)(NSArray *))block {
@@ -195,6 +165,7 @@
 	PFUser *user = [PFUser currentUser];
 	// make this better
 	[self refreshChannelsWeFollowWithCompletionHandler:^{
+		//todo: cloud code
 		//First get all the people who have blocked this user and do not include their channels
 		PFQuery *blockQuery = [PFQuery queryWithClassName:BLOCK_PFCLASS_KEY];
 		[blockQuery whereKey:BLOCK_USER_BLOCKED_KEY equalTo:user];

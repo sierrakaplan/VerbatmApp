@@ -17,6 +17,7 @@
 #import "Post_BackendObject.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFQuery.h>
+#import <Parse/PFCloud.h>
 
 #import "UserInfoCache.h"
 
@@ -77,6 +78,26 @@
 	return [newPost createPostFromPinchViews:pinchViews toChannel:channel];
 }
 
++ (void) getChannelsForFollowers:(Channel*)channel withCompletionBlock:(void(^)(NSArray *))completionBlock {
+	NSDictionary *params = @{@"channelID" : channel.parseChannelObject.objectId};
+	[PFCloud callFunctionInBackground:@"getChannelFollowers" withParameters:params block:^(NSArray* followerChannels,
+																						   NSError * _Nullable error) {
+		if (error) {
+
+		} else {
+			NSMutableArray *channels = [[NSMutableArray alloc] initWithCapacity: followerChannels.count];
+			for (PFObject *channelObject in followerChannels) {
+				Channel *newChannel = [[Channel alloc] initWithChannelName:channelObject[CHANNEL_NAME_KEY]
+													 andParseChannelObject:channelObject andChannelCreator:channelObject[CHANNEL_CREATOR_KEY]
+														   andFollowObject:nil];
+				[channels addObject: newChannel];
+			}
+			completionBlock(channels);
+		}
+	}];
+}
+
+//todo: clean up
 + (void) getChannelsForUser:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock {
 	if (!user) {
 		completionBlock (nil);
@@ -151,6 +172,7 @@
     }];
 }
 
+//todo: clean up
 + (void) updateLatestPostDateForChannel:(PFObject*)channel {
 	PFQuery *findLatestPostQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
     [findLatestPostQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel];

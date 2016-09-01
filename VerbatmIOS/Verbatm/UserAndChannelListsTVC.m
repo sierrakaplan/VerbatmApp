@@ -6,7 +6,7 @@
 //  Copyright Â© 2016 Verbatm. All rights reserved.
 //
 
-
+#import "Channel_BackendObject.h"
 #import "ChannelOrUsernameCV.h"
 #import "CustomNavigationBar.h"
 #import "Channel_BackendObject.h"
@@ -40,8 +40,7 @@
 
 @property (nonatomic) UIActivityIndicatorView *loadMoreSpinner;
 @property (nonatomic) UIRefreshControl *refreshControl;
-@property (nonatomic) NSMutableArray *channelsToDisplay;
-@property (nonatomic) NSMutableArray *usersToDisplay;//catch all array -- can be used for any of the usecases to store a list of users
+@property (nonatomic) NSArray *channelsToDisplay;
 
 @property (nonatomic) BOOL shouldDisplayFollowers;
 
@@ -220,11 +219,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 			}];
 			break;
 		} case FollowersList: {
-			[channel getFollowersWithCompletionBlock:^{
-				[Channel getChannelsForUserList:[channel usersFollowingChannel] andCompletionBlock:^(NSMutableArray * channelList) {
-					self.channelsToDisplay = channelList;
-					block();
-				}];
+			[Channel_BackendObject getChannelsForFollowers:channel withCompletionBlock:^(NSArray *followersChannels) {
+				self.channelsToDisplay = followersChannels;
+				block();
 			}];
 			break;
 		} case FollowingList: {
@@ -272,7 +269,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark - Lazy Instantiation -
 
 
--(NSMutableArray *) channelsToDisplay {
+-(NSArray *) channelsToDisplay {
 	if(!_channelsToDisplay) _channelsToDisplay = [[NSMutableArray alloc] init];
 	return _channelsToDisplay;
 }

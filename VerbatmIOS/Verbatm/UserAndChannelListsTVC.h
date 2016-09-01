@@ -12,7 +12,6 @@
  This VC presents information about:
  1) who has liked a post
  2) who has shared a post
- 3)All channels on Verbatm
  4)Your followers - sorted by channels
  5)People you are following
  */

@@ -2634,11 +2634,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedQueryManager.m"
-            timestampString = "493592164.555446"
+            timestampString = "494395131.159457"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "250"
-            endingLineNumber = "250"
+            startingLineNumber = "221"
+            endingLineNumber = "221"
             landmarkName = "-loadFriendsChannelsWithCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2826,11 +2826,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedQueryManager.m"
-            timestampString = "493592164.555446"
+            timestampString = "494395131.159457"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "234"
-            endingLineNumber = "234"
+            startingLineNumber = "205"
+            endingLineNumber = "205"
             landmarkName = "-loadExploreChannelsWithSkip:andCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2842,11 +2842,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedQueryManager.m"
-            timestampString = "493592164.555446"
+            timestampString = "494395131.159457"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "233"
-            endingLineNumber = "233"
+            startingLineNumber = "204"
+            endingLineNumber = "204"
             landmarkName = "-loadExploreChannelsWithSkip:andCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2938,11 +2938,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedQueryManager.m"
-            timestampString = "493784349.035424"
+            timestampString = "494395131.159457"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "311"
-            endingLineNumber = "311"
+            startingLineNumber = "282"
+            endingLineNumber = "282"
             landmarkName = "-getPhoneContactsWithCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2954,11 +2954,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedQueryManager.m"
-            timestampString = "493784349.035424"
+            timestampString = "494395131.159457"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "334"
-            endingLineNumber = "334"
+            startingLineNumber = "305"
+            endingLineNumber = "305"
             landmarkName = "-getPhoneContactsWithCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2970,11 +2970,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedQueryManager.m"
-            timestampString = "493784349.035424"
+            timestampString = "494395131.159457"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "339"
-            endingLineNumber = "339"
+            startingLineNumber = "310"
+            endingLineNumber = "310"
             landmarkName = "-getPhoneContactsWithCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2986,11 +2986,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedQueryManager.m"
-            timestampString = "493784349.035424"
+            timestampString = "494395131.159457"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "343"
-            endingLineNumber = "343"
+            startingLineNumber = "314"
+            endingLineNumber = "314"
             landmarkName = "-getPhoneContactsWithCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3002,11 +3002,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedQueryManager.m"
-            timestampString = "493784349.035424"
+            timestampString = "494395131.159457"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "329"
-            endingLineNumber = "329"
+            startingLineNumber = "300"
+            endingLineNumber = "300"
             landmarkName = "-getPhoneContactsWithCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3721,11 +3721,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedQueryManager.m"
-            timestampString = "493784349.035424"
+            timestampString = "494395131.159457"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "356"
-            endingLineNumber = "356"
+            startingLineNumber = "327"
+            endingLineNumber = "327"
             landmarkName = "-getChannelsForFriends:withCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3737,11 +3737,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedQueryManager.m"
-            timestampString = "493784349.035424"
+            timestampString = "494395131.159457"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "366"
-            endingLineNumber = "366"
+            startingLineNumber = "337"
+            endingLineNumber = "337"
             landmarkName = "-getChannelsForFriends:withCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3753,11 +3753,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedQueryManager.m"
-            timestampString = "493784349.035424"
+            timestampString = "494395131.159457"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "369"
-            endingLineNumber = "369"
+            startingLineNumber = "340"
+            endingLineNumber = "340"
             landmarkName = "-getChannelsForFriends:withCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3817,11 +3817,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedQueryManager.m"
-            timestampString = "493784325.648913"
+            timestampString = "494395131.159457"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "295"
-            endingLineNumber = "295"
+            startingLineNumber = "266"
+            endingLineNumber = "266"
             landmarkName = "-loadFriendsChannelsWithCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3833,11 +3833,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedQueryManager.m"
-            timestampString = "493784468.258082"
+            timestampString = "494395131.159457"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "256"
-            endingLineNumber = "256"
+            startingLineNumber = "227"
+            endingLineNumber = "227"
             landmarkName = "-loadFriendsChannelsWithCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3849,11 +3849,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedQueryManager.m"
-            timestampString = "493784551.257289"
+            timestampString = "494395131.159457"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "270"
-            endingLineNumber = "270"
+            startingLineNumber = "241"
+            endingLineNumber = "241"
             landmarkName = "-loadFriendsChannelsWithCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3865,11 +3865,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedQueryManager.m"
-            timestampString = "493784555.790247"
+            timestampString = "494395131.159457"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "274"
-            endingLineNumber = "274"
+            startingLineNumber = "245"
+            endingLineNumber = "245"
             landmarkName = "-loadFriendsChannelsWithCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3881,11 +3881,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedQueryManager.m"
-            timestampString = "493784568.63005"
+            timestampString = "494395131.159457"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "287"
-            endingLineNumber = "287"
+            startingLineNumber = "258"
+            endingLineNumber = "258"
             landmarkName = "-loadFriendsChannelsWithCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4297,12 +4297,12 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/PostListVC.m"
-                  timestampString = "494303953.794261"
+                  timestampString = "494396832.982999"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "962"
                   endingLineNumber = "962"
-                  offsetFromSymbolStart = "100">
+                  offsetFromSymbolStart = "66">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -4312,12 +4312,12 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/PostListVC.m"
-                  timestampString = "494303953.794473"
+                  timestampString = "494396832.983151"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "962"
                   endingLineNumber = "962"
-                  offsetFromSymbolStart = "32">
+                  offsetFromSymbolStart = "40">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -4345,12 +4345,12 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/PostListVC.m"
-                  timestampString = "494303953.795446"
+                  timestampString = "494396832.984061"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "960"
                   endingLineNumber = "960"
-                  offsetFromSymbolStart = "420">
+                  offsetFromSymbolStart = "568">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -4360,12 +4360,12 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/PostListVC.m"
-                  timestampString = "494303953.795592"
+                  timestampString = "494396832.984211"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "961"
                   endingLineNumber = "961"
-                  offsetFromSymbolStart = "80">
+                  offsetFromSymbolStart = "46">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -4526,7 +4526,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "562"
             endingLineNumber = "562"
-            landmarkName = "-observeValueForKeyPath:ofObject:change:context:"
+            landmarkName = "-publishingProgressView"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -5528,12 +5528,12 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/OnboardingADK.m"
-                  timestampString = "494303953.798968"
+                  timestampString = "494396832.986895"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "176"
                   endingLineNumber = "176"
-                  offsetFromSymbolStart = "40">
+                  offsetFromSymbolStart = "46">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -5543,12 +5543,12 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/OnboardingADK.m"
-                  timestampString = "494303953.799097"
+                  timestampString = "494396832.987026"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "176"
                   endingLineNumber = "176"
-                  offsetFromSymbolStart = "32">
+                  offsetFromSymbolStart = "40">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -5941,11 +5941,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedQueryManager.m"
-            timestampString = "494303994.090288"
+            timestampString = "494395131.159457"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "362"
-            endingLineNumber = "362"
+            startingLineNumber = "333"
+            endingLineNumber = "333"
             landmarkName = "-getChannelsForFriends:withCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
@@ -5957,12 +5957,60 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedQueryManager.m"
-            timestampString = "494304020.4815"
+            timestampString = "494395131.159457"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "102"
-            endingLineNumber = "102"
+            startingLineNumber = "103"
+            endingLineNumber = "103"
             landmarkName = "-refreshChannelsWeFollowWithCompletionHandler:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/Channel_BackendObject.m"
+            timestampString = "494395197.883409"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "85"
+            endingLineNumber = "85"
+            landmarkName = "+getChannelsForFollowers:withCompletionBlock:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/UserAndChannelListsTVC.m"
+            timestampString = "494395536.491387"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "223"
+            endingLineNumber = "223"
+            landmarkName = "-refreshDataForListType:forChannel:orPost:withCompletionBlock:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/Channel_BackendObject.m"
+            timestampString = "494395199.220596"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "86"
+            endingLineNumber = "86"
+            landmarkName = "+getChannelsForFollowers:withCompletionBlock:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -27,20 +27,14 @@
 @property (nonatomic) BOOL isAChannel;
 @property (nonatomic) BOOL isAChannelIFollow;
 
-@property (nonatomic,strong) UILabel * channelNameLabel;
 @property (nonatomic, strong) UILabel * usernameLabel;
 
 @property (nonatomic,strong) UILabel * commentLabel;
 @property (nonatomic, strong) UILabel * commentUserNameLabel;
 
-
-
-@property (nonatomic) NSString * channelName;
 @property (nonatomic) NSString * userName;
 
-@property (strong, nonatomic) NSDictionary* channelNameLabelAttributes;
 @property (strong, nonatomic) NSDictionary* userNameLabelAttributes;
-
 @property (strong, nonatomic) NSDictionary* userNameCommentLabelAttributes;
 @property (strong, nonatomic) NSDictionary* commentStringLabelAttributes;
 
@@ -69,7 +63,6 @@
         self.backgroundColor = [UIColor whiteColor];
 		self.isAChannel = isChannel;
         self.clipsToBounds = YES;
-		if(!self.channelNameLabelAttributes)[self createSelectedTextAttributes];
         [self registerForFollowNotification];
 	}
 
@@ -128,7 +121,7 @@
 	self.isHeaderTile = YES;
 }
 
--(void)presentChannel:(Channel *) channel{
+-(void)presentChannel:(Channel *) channel {
     self.channel = channel;
 	PFUser *creator = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
     
@@ -148,7 +141,7 @@
 		if(object) {
 			NSString *userName = [creator valueForKey:VERBATM_USER_NAME_KEY];
 			dispatch_async(dispatch_get_main_queue(), ^{
-				[self setChannelName:channel.channelName andUserName: userName];
+				[self setUserName: userName];
                 
                 if(![[creator objectId] isEqualToString:[[PFUser currentUser] objectId]])[self createFollowButton];
                 
@@ -208,8 +201,7 @@
     [self.followButton setAttributedTitle:attributedTitle forState:UIControlStateNormal];
 }
 
--(void)setChannelName:(NSString *)channelName andUserName:(NSString *) userName {
-	self.channelName = channelName;
+-(void)setUserName:(NSString *) userName {
 	self.userName = userName;
 	self.isHeaderTile = NO;
 }
@@ -236,11 +228,6 @@
 }
 
 -(void)clearView{
-    if(self.channelNameLabel){
-        [self.channelNameLabel removeFromSuperview];
-        
-        self.channelNameLabel = nil;
-    }
     if(self.usernameLabel){
         [self.usernameLabel removeFromSuperview];
         self.usernameLabel = nil;
@@ -257,20 +244,15 @@
     }
 }
 
--(void) setLabelsForChannel{
+-(void) setLabelsForChannel {
 
     [self clearView];
 
     CGPoint nameLabelOrigin = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y);
-	CGPoint channelNameLabelOrigin  = CGPointMake(TAB_BUTTON_PADDING_X,TAB_BUTTON_PADDING_Y + self.frame.size.height/3.f);
-    
-	self.channelNameLabel = [self getLabel:self.channelName withOrigin:channelNameLabelOrigin andAttributes:self.channelNameLabelAttributes withMaxWidth:MAX_WIDTH];
+
 	self.usernameLabel = [self getLabel:self.userName withOrigin:nameLabelOrigin andAttributes:self.userNameLabelAttributes withMaxWidth:MAX_WIDTH];
-    
-    
-	[self addSubview: self.channelNameLabel];
+
 	[self addSubview: self.usernameLabel];
-    
 }
 
 -(void)setLabelsForComment:(NSString *) comment andUserName:(NSString *) userName{
@@ -348,14 +330,11 @@
 -(void)createSelectedTextAttributes{
 	NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
 	paragraphStyle.alignment                = NSTextAlignmentCenter;
-	self.channelNameLabelAttributes =@{NSForegroundColorAttributeName: [UIColor blackColor],
-									   NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT size:CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE],
-									   NSParagraphStyleAttributeName:paragraphStyle};
-
 	//create "followers" text
 	self.userNameLabelAttributes =@{NSForegroundColorAttributeName: [UIColor blackColor],
-									NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:CHANNEL_USER_LIST_USER_NAME_FONT_SIZE]};
-    
+									NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT size:CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE],
+									NSParagraphStyleAttributeName:paragraphStyle};
+
     NSMutableParagraphStyle *usernameAlignment = NSMutableParagraphStyle.new;
     usernameAlignment.alignment  = NSTextAlignmentLeft;
     

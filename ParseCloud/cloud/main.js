@@ -28,7 +28,7 @@ Parse.Cloud.beforeSave("ChannelClass", function(request, response) {
 var NotificationClass = Parse.Object.extend("NotificationClass");
 var LikeClass = Parse.Object.extend("LikeClass");
 var FollowClass = Parse.Object.extend("FollowClass");
-
+var ChannelClass = Parse.Object.extend("ChannelClass");
 
 // NOTIFICATIONS - PUSH
 
@@ -199,12 +199,80 @@ Parse.Cloud.beforeSave("FollowClass", function(request, response) {
 
 Parse.Cloud.beforeSave(Parse.User, function(request, response) {
   var newACL = new Parse.ACL();
-
   newACL.setPublicReadAccess(true);
   request.object.setACL(newACL);
+
+  //todo: send notifications to this user's fb friends that they've joined
   response.success();
 });
 
+// CHANNELS FOR LIKES/SHARES
+
+Parse.Cloud.define("getChannelsForLikes", function(req, res) {
+
+});
+
+Parse.Cloud.define("getChannelsForShares", function(req, res) {
+
+});
+
+// CHANNELS FOLLOWED/FOLLOWING
+
+Parse.Cloud.define("getChannelsFollowed", function(req, res) {
+
+});
+
+Parse.Cloud.define("getChannelFollowers", function(req, res) {
+	var channel = new ChannelClass();
+	channel.id = req.params.channelID;
+	var query = new Parse.Query(FollowClass);
+	query.equalTo("ChannelFollowed", channel);
+	query.limit(1000);
+	query.find({
+		  success: function(results) {
+		  	var usersFollowing = [];
+		    for (var i = 0; i < results.length; i++) {
+		    	var followObject = results[i];
+		    	var userFollowing = followObject.get("UserFollowing");
+		    	usersFollowing.push(userFollowing);
+		    }
+		    console.log(usersFollowing);
+		    var query = new Parse.Query(ChannelClass);
+		    query.containedIn("ChannelCreator", usersFollowing);
+		    query.limit(1000);
+		    query.find({
+		    	success: function(results) {
+		    		res.success(results);
+		    	},
+		    	error: function(error) {
+					res.error("Got an error " + error.code + " : " + error.message);
+				}
+		    });
+		  },
+
+		  error: function(error) {
+		    res.error("Got an error " + error.code + " : " + error.message);
+		  }
+		});
+});
+
+// GET DISCOVER CHANNELS
+
+Parse.Cloud.define("getFacebookFriendsChannels", function(req, res) {
+
+});
+
+Parse.Cloud.define("getPhoneContactsChannels", function(req, res) {
+
+});
+
+Parse.Cloud.define("getFriendsChannels", function(req, res) {
+
+});
+
+Parse.Cloud.define("getDiscoverChannels", function(req, res) {
+
+});
 
 // PHONE LOGIN
 

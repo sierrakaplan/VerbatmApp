@@ -18,12 +18,15 @@
 #import "Notifications.h"
 #import "UserInfoCache.h"
 #import "Channel.h"
+
 @implementation Follow_BackendManager
 
 //this function should not be called for a channel that is already being followed
 +(void)currentUserFollowChannel:(Channel *) channelToFollow {
 	PFObject * newFollowObject = [PFObject objectWithClassName:FOLLOW_PFCLASS_KEY];
 	[newFollowObject setObject:[PFUser currentUser]forKey:FOLLOW_USER_KEY];
+	[newFollowObject setObject:[[UserInfoCache sharedInstance] getUserChannel].parseChannelObject
+						forKey:FOLLOW_CHANNEL_FOLLOWING_KEY];
 	if (channelToFollow.dateOfMostRecentChannelPost) {
 		[newFollowObject setObject:channelToFollow.dateOfMostRecentChannelPost forKey:FOLLOW_LATEST_POST_DATE];
 	}
@@ -49,7 +52,6 @@
 	NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_NOW_FOLLOWING_USER object:nil userInfo:userInfo];
 	[[NSNotificationCenter defaultCenter] postNotification:notification];
 }
-
 
 +(void)blockUser:(PFUser *) user fromFollowingChannel:(Channel *) channelToUnfollow {
 	PFQuery *followQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];

@@ -15,10 +15,10 @@
 
 - (instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier isChannel:(BOOL) isChannel;
 
--(void)setChannelName:(NSString *)channelName andUserName:(NSString *) userName ;
--(void)setHeaderTitle;
 -(void)presentChannel:(Channel *) channel;
+
 -(void)presentComment:(Comment *) commentObject;
+
 -(void)clearView;
 
 +(CGFloat)getHeightForCellFromCommentObject:(Comment *) commentObject;
