@@ -8,6 +8,7 @@
 
 #import "Channel_BackendObject.h"
 #import "CommentingViewController.h"
+#import "CurrentUserProfileVC.h"
 
 #import "Durations.h"
 
@@ -53,6 +54,7 @@
 UIScrollViewDelegate, PostListVCProtocol,
 UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeViewControllerDelegate>
 
+@property (nonatomic) BOOL isCurrentUserProfile;
 @property (nonatomic) UIButton * postPrompt;
 
 @property (nonatomic) BOOL currentlyCreatingNewChannel;
@@ -64,6 +66,9 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 @property (nonatomic) ProfileHeaderView *profileHeaderView;
 @property (nonatomic) ProfileMoreInfoView *moreInfoView;
 @property (nonatomic) BOOL moreInfoViewOnScreen;
+@property (nonatomic) CGRect moreInfoViewOnScreenFrame;
+@property (nonatomic) CGRect moreInfoViewOffScreenFrame;
+
 @property (nonatomic) SharePostView * sharePOVView;
 
 @property (nonatomic) BOOL inFullScreenMode;
@@ -90,6 +95,7 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
+	self.isCurrentUserProfile = [self isKindOfClass:[CurrentUserProfileVC class]];
 	self.moreInfoViewOnScreen = NO;
 	self.automaticallyAdjustsScrollViewInsets = NO;
 	self.view.backgroundColor = [UIColor blackColor];
@@ -196,34 +202,28 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
     
 	CGRect frame = CGRectMake(0.f, 0.f, self.view.frame.size.width, HEADER_SIZE);
 	self.profileHeaderView = [[ProfileHeaderView alloc] initWithFrame:frame andChannel:self.channel
-												 inCurrentUserProfile:NO];
+												 inCurrentUserProfile: self.isCurrentUserProfile];
 	self.profileHeaderView.delegate = self;
 	[self.view addSubview: self.profileHeaderView];
 	[self.view sendSubviewToBack:self.profileHeaderView];
 }
 
--(void) moreInfoButtonTapped {
-	CGFloat yPos = HEADER_SIZE;
-	CGFloat height = self.view.frame.size.height - yPos;
-	CGRect offScreenFrame = CGRectMake(0.f, yPos - height, self.view.frame.size.width, height);
-	CGRect onScreenFrame = CGRectMake(0.f, yPos, self.view.frame.size.width, height);
-	if (!_moreInfoView) {
-		self.moreInfoView = [[ProfileMoreInfoView alloc] initWithFrame:onScreenFrame
-													   andNumFollowers:self.channel.parseChannelObject[CHANNEL_NUM_FOLLOWS]
-													   andNumFollowing:self.channel.parseChannelObject[CHANNEL_NUM_FOLLOWING]
-														andDescription:self.channel.blogDescription];
-		self.moreInfoView.delegate = self;
-		self.moreInfoView.frame = offScreenFrame;
-		[self.view addSubview: self.moreInfoView];
+-(void) headerViewTapped {
+	//If the header is tapped anywhere while the more info view is on screen, remove it
+	if (self.moreInfoViewOnScreen) {
+		[self moreInfoButtonTapped];
 	}
+}
+
+-(void) moreInfoButtonTapped {
 	[self.view bringSubviewToFront: self.moreInfoView];
 	[self.view bringSubviewToFront: self.profileHeaderView];
 	self.moreInfoViewOnScreen = !self.moreInfoViewOnScreen;
 	[UIView animateWithDuration:0.5f animations:^{
 		if (self.moreInfoViewOnScreen) {
-			self.moreInfoView.frame = onScreenFrame;
+			self.moreInfoView.frame = self.moreInfoViewOnScreenFrame;
 		} else {
-			self.moreInfoView.frame = offScreenFrame;
+			self.moreInfoView.frame = self.moreInfoViewOffScreenFrame;
 		}
 	} completion:^(BOOL finished) {
 	}];
@@ -334,7 +334,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 		ProfileVC *  userProfile = [[ProfileVC alloc] init];
 		BOOL isCurrentUserChannel = [[channel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
 		userProfile.isCurrentUserProfile = isCurrentUserChannel;
-		userProfile.isProfileTab = NO;
 		userProfile.ownerOfProfile = channel.channelCreator;
 		userProfile.channel = channel;
 		if (self.navigationController) {
@@ -438,10 +437,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 
 #pragma mark - Profile Nav Bar Delegate Methods -
 
--(void) settingsButtonClicked {
-	//todo: push segue with back button
-	//	[self performSegueWithIdentifier:SETTINGS_PAGE_MODAL_SEGUE sender:self];
-}
 
 -(void) editDoneButtonClickedWithoutName {
 	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"You've gotta title your blog!" message:nil
@@ -459,7 +454,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 -(void)showFollowers{
 	[self presentUserList: FollowersList];
 }
-
 
 -(void)createPostPromptSelected{
 	if([self.delegate respondsToSelector:@selector(userCreateFirstPost)]){
@@ -545,6 +539,23 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 }
 
 #pragma mark - Lazy Instantiation -
+
+-(ProfileMoreInfoView*) moreInfoView {
+	if (!_moreInfoView) {
+		CGFloat yPos = HEADER_SIZE;
+		CGFloat height = self.view.frame.size.height - yPos;
+		self.moreInfoViewOffScreenFrame = CGRectMake(0.f, yPos - height, self.view.frame.size.width, height);
+		self.moreInfoViewOnScreenFrame = CGRectMake(0.f, yPos, self.view.frame.size.width, height);
+		_moreInfoView = [[ProfileMoreInfoView alloc] initWithFrame:self.moreInfoViewOnScreenFrame
+													   andNumFollowers:self.channel.parseChannelObject[CHANNEL_NUM_FOLLOWS]
+													   andNumFollowing:self.channel.parseChannelObject[CHANNEL_NUM_FOLLOWING]
+														andDescription:self.channel.blogDescription];
+		_moreInfoView.delegate = self;
+		_moreInfoView.frame = self.moreInfoViewOffScreenFrame;
+		[self.view addSubview: _moreInfoView];
+	}
+	return _moreInfoView;
+}
 
 -(UIView*) publishingProgressView {
 	if (!_publishingProgressView) {

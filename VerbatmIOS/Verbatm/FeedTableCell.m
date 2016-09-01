@@ -45,11 +45,9 @@
 
 	dispatch_async(dispatch_get_global_queue(0, 0), ^{
 		self.currentProfile = [[ProfileVC alloc] init];
-		self.currentProfile.isCurrentUserProfile = NO;
 		self.currentProfile.verbatmNavigationController = self.navigationController;
 		self.currentProfile.verbatmTabBarController = self.tabBarController;
 		self.currentProfile.profileInFeed = YES;
-		self.currentProfile.isProfileTab = NO;
 		self.currentProfile.delegate = self;
 		self.currentProfile.ownerOfProfile = channel.channelCreator;
 		self.currentProfile.channel = channel;

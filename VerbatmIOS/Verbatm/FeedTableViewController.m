@@ -202,12 +202,9 @@
 -(void)prepareNextPostFromNextIndex:(NSInteger) nextIndex{
 	if(nextIndex < self.followingProfileList.count) {
 		Channel * nextChannel = self.followingProfileList[nextIndex];
-		BOOL isCurrentUserChannel = [[nextChannel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
 		self.nextProfileToPresent = nil;
 		self.nextProfileToPresent = [[ProfileVC alloc] init];
 		self.nextProfileToPresent.profileInFeed = YES;
-		self.nextProfileToPresent.isCurrentUserProfile = isCurrentUserChannel;
-		self.nextProfileToPresent.isProfileTab = NO;
 		self.nextProfileToPresent.ownerOfProfile = nextChannel.channelCreator;
 		self.nextProfileToPresent.channel = nextChannel;
 	}

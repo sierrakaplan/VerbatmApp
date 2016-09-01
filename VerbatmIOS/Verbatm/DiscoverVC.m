@@ -219,8 +219,6 @@
 	BOOL isCurrentUserChannel = [[channel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
 	if(!self.onboardingBlogSelection && !isCurrentUserChannel) {
 		ProfileVC * userProfile = [[ProfileVC alloc] init];
-		userProfile.isCurrentUserProfile = isCurrentUserChannel;
-		userProfile.isProfileTab = NO;
 		userProfile.ownerOfProfile = channel.channelCreator;
 		userProfile.channel = channel;
 		[self.navigationController pushViewController:userProfile animated:YES];

@@ -159,8 +159,6 @@
 													   andChannelCreator:channelObj[CHANNEL_CREATOR_KEY] andFollowObject:nil];
 	//todo: push segue
 	ProfileVC * userProfile = [[ProfileVC alloc] init];
-	userProfile.isCurrentUserProfile = [channel.channelCreator.objectId isEqualToString:[PFUser currentUser].objectId];
-	userProfile.isProfileTab = NO;
 	userProfile.ownerOfProfile = channel.channelCreator;
 	userProfile.channel = channel;
 	userProfile.verbatmNavigationController = self.verbatmNavigationController;

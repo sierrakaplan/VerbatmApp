@@ -9,13 +9,14 @@
 #import "CurrentUserProfileVC.h"
 #import "Icons.h"
 #import "ParseBackendKeys.h"
+#import "ProfileHeaderView.h"
 #import "SettingsVC.h"
 #import "VerbatmNavigationController.h"
 #import "StoryboardVCIdentifiers.h"
 
 #import "VerbatmNavigationController.h"
 
-@interface CurrentUserProfileVC()
+@interface CurrentUserProfileVC() <ProfileHeaderViewDelegate>
 
 #define SETTINGS_BUTTON_SIZE 24.f
 
@@ -25,7 +26,6 @@
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
-	[self setNavigationItem];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
@@ -38,16 +38,21 @@
 }
 
 -(void) setNavigationItem {
-	UIButton *settingsButton = [[UIButton alloc] initWithFrame:CGRectMake(0.f, 0.f, SETTINGS_BUTTON_SIZE,
-																		  SETTINGS_BUTTON_SIZE)];
-	settingsButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-	[settingsButton setImage:[UIImage imageNamed:SETTINGS_BUTTON_ICON] forState:UIControlStateNormal];
-	[settingsButton addTarget:self action:@selector(settingsButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-	UIBarButtonItem *settingsBarButton = [[UIBarButtonItem alloc] initWithCustomView: settingsButton];
-	self.navigationItem.rightBarButtonItem = settingsBarButton;
 }
 
--(void) settingsButtonPressed {
+-(void) headerViewTapped {
+	[super headerViewTapped];
+}
+
+-(void) moreInfoButtonTapped {
+	[super moreInfoButtonTapped];
+}
+
+-(void) addCoverPhotoButtonTapped {
+	//todo:
+}
+
+-(void) settingsButtonTapped {
 	SettingsVC *settingsVC = [self.storyboard instantiateViewControllerWithIdentifier:SETTINGS_VC_ID];
 	[self.navigationController pushViewController:settingsVC animated:YES];
 }

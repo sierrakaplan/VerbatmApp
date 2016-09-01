@@ -18,20 +18,24 @@
 @property (nonatomic) BOOL currentUserProfile;
 @property (nonatomic) UIImageView *coverPhotoImageView;
 @property (nonatomic) UIView *transparentTintCoverView;
+
 @property (nonatomic) NSString *userName;
 @property (nonatomic) UILabel *userNameLabel;
+
 @property (nonatomic) UIButton *moreInfoButton;
 @property (nonatomic) BOOL moreInfoButtonSelected;
-@property (nonatomic) CALayer *moreInfoButtonBorder;
+@property (nonatomic) UIButton *addCoverPhotoButton;
+@property (nonatomic) UIButton *settingsButton;
 
 #define TEXT_X_OFFSET 10.f
 
-#define USERNAME_Y_OFFSET 100.f
+#define USERNAME_Y_OFFSET 40.f
 #define USERNAME_HEIGHT 40.f
 #define USERNAME_FONT_SIZE 24.f
 
-#define MORE_INFO_BUTTON_SIZE 40.f
-#define MORE_INFO_BUTTON_SPACING 5.f
+#define ICON_SIZE 30.f
+#define ICON_SPACING 20.f
+#define ICON_Y_OFFSET 10.f
 
 #define COVER_PHOTO_BORDER 5.f
 
@@ -57,18 +61,37 @@
 			[self addSubview: self.userNameLabel];
 		}];
 		[self addSubview: self.moreInfoButton];
+		if (self.currentUserProfile) {
+			[self addSubview: self.addCoverPhotoButton];
+			[self addSubview: self.settingsButton];
+		}
+
+		UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(headerTapped)];
+		[self.coverPhotoImageView addGestureRecognizer: tapGesture];
 	}
 	return self;
 }
 
+-(void) headerTapped {
+	[self.delegate headerViewTapped];
+}
+
 -(void) moreInfoButtonTapped {
 	self.moreInfoButtonSelected = !self.moreInfoButtonSelected;
-	if (self.moreInfoButtonSelected) {
-		self.moreInfoButton.backgroundColor = [UIColor colorWithWhite:1.f alpha:0.3];
-	} else {
-		self.moreInfoButton.backgroundColor = [UIColor clearColor];
-	}
+//	if (self.moreInfoButtonSelected) {
+//		self.moreInfoButton.backgroundColor = [UIColor colorWithWhite:1.f alpha:0.3];
+//	} else {
+//		self.moreInfoButton.backgroundColor = [UIColor clearColor];
+//	}
 	[self.delegate moreInfoButtonTapped];
+}
+
+-(void) addCoverPhotoButtonTapped {
+	[self.delegate addCoverPhotoButtonTapped];
+}
+
+-(void) settingsButtonTapped {
+	[self.delegate settingsButtonTapped];
 }
 
 #pragma mark - Lazy Instantiation -
@@ -83,6 +106,7 @@
 		_coverPhotoImageView.clipsToBounds = YES;
 		_coverPhotoImageView.contentMode = UIViewContentModeScaleAspectFill;
 		[_coverPhotoImageView addSubview: self.transparentTintCoverView];
+		_coverPhotoImageView.userInteractionEnabled = YES;
 	}
 	return _coverPhotoImageView;
 }
@@ -97,7 +121,7 @@
 
 -(UILabel*) userNameLabel {
 	if (!_userNameLabel) {
-		CGFloat maxWidth = self.frame.size.width - (TEXT_X_OFFSET + MORE_INFO_BUTTON_SIZE + MORE_INFO_BUTTON_SPACING);
+		CGFloat maxWidth = self.frame.size.width - (TEXT_X_OFFSET*2);
 		CGRect frame = CGRectMake(TEXT_X_OFFSET, USERNAME_Y_OFFSET,
 								  maxWidth, USERNAME_HEIGHT);
 		_userNameLabel = [[UILabel alloc] initWithFrame:frame];
@@ -111,6 +135,7 @@
 		if (frame.size.width > maxWidth) {
 			frame.size.width = maxWidth;
 		}
+		frame.origin.x = self.frame.size.width - frame.size.width - TEXT_X_OFFSET;
 		_userNameLabel.frame = frame;
 	}
 	return _userNameLabel;
@@ -118,20 +143,44 @@
 
 -(UIButton*) moreInfoButton {
 	if (!_moreInfoButton) {
-		CGRect frame = CGRectMake(self.userNameLabel.frame.origin.x + self.userNameLabel.frame.size.width +
-								  MORE_INFO_BUTTON_SPACING,
-								  self.userNameLabel.center.y - MORE_INFO_BUTTON_SIZE/2.f, MORE_INFO_BUTTON_SIZE,
-								  MORE_INFO_BUTTON_SIZE);
-		_moreInfoButton = [[UIButton alloc] initWithFrame: frame];
-		_moreInfoButton.layer.borderColor = [UIColor whiteColor].CGColor;
-		_moreInfoButton.contentEdgeInsets = UIEdgeInsetsMake(10.f, 10.f, 10.f, 10.f);
-		_moreInfoButton.layer.borderWidth = 2.f;
-		_moreInfoButton.layer.cornerRadius = 10.f;
-		_moreInfoButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-		[_moreInfoButton setImage:[UIImage imageNamed:MORE_INFO_ICON] forState:UIControlStateNormal];
-		[_moreInfoButton addTarget:self action:@selector(moreInfoButtonTapped) forControlEvents:UIControlEventTouchDown];
+		CGFloat xOffset = 0.f;
+		if (self.currentUserProfile) {
+			xOffset = self.addCoverPhotoButton.frame.origin.x - ICON_SIZE - ICON_SPACING;
+		} else {
+			xOffset = self.frame.size.width - ICON_SPACING - ICON_SIZE;
+		}
+		_moreInfoButton = [self getBottomIconWithXOffset:xOffset andIcon:[UIImage imageNamed:MORE_INFO_ICON]
+											   andAction:@selector(moreInfoButtonTapped)];
 	}
 	return _moreInfoButton;
+}
+
+-(UIButton*) addCoverPhotoButton {
+	if (!_addCoverPhotoButton) {
+		CGFloat xOffset = self.settingsButton.frame.origin.x - ICON_SIZE - ICON_SPACING;
+		_addCoverPhotoButton = [self getBottomIconWithXOffset:xOffset andIcon:[UIImage imageNamed:ADD_COVER_PHOTO_ICON]
+													andAction:@selector(addCoverPhotoButtonTapped)];
+	}
+	return _addCoverPhotoButton;
+}
+
+-(UIButton*) settingsButton {
+	if (!_settingsButton) {
+		CGFloat xOffset = self.frame.size.width - ICON_SPACING - ICON_SIZE;
+		_settingsButton = [self getBottomIconWithXOffset:xOffset andIcon:[UIImage imageNamed:SETTINGS_BUTTON_ICON]
+											   andAction:@selector(settingsButtonTapped)];
+	}
+	return _settingsButton;
+}
+
+-(UIButton*) getBottomIconWithXOffset:(CGFloat)xOffset andIcon:(UIImage*)icon andAction:(SEL)action {
+	CGFloat yPos = self.coverPhotoImageView.frame.size.height + self.coverPhotoImageView.frame.origin.y - ICON_SIZE - ICON_Y_OFFSET;
+	CGRect frame = CGRectMake(xOffset, yPos, ICON_SIZE, ICON_SIZE);
+	UIButton *button = [[UIButton alloc] initWithFrame:frame];
+	button.imageView.contentMode = UIViewContentModeScaleAspectFit;
+	[button setImage:icon forState:UIControlStateNormal];
+	[button addTarget:self action:action forControlEvents:UIControlEventTouchDown];
+	return button;
 }
 
 @end

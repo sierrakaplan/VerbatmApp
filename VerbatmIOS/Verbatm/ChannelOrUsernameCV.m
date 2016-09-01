@@ -302,6 +302,7 @@
 	return nameLabel;
 }
 
+
 +(UILabel *) getTextView:(NSString *) title withOrigin:(CGPoint) origin andAttributes:(NSDictionary *) nameLabelAttribute withMaxWidth:(CGFloat) maxWidth {
     UILabel * textLabel = [[UILabel alloc] init];
     

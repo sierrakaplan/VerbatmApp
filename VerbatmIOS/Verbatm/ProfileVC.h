@@ -37,13 +37,6 @@
 @property (weak, nonatomic) PFUser* ownerOfProfile;
 @property (nonatomic) Channel* channel; 
 
-//todo: get rid of these properties
-//let us know if this is the profile of the logged in user
-@property (nonatomic) BOOL isCurrentUserProfile;
-
-// This is the profile tab
-@property (nonatomic) BOOL isProfileTab;
-
 @property (nonatomic) id userIdToPresent;
 
 -(void) clearOurViews;
@@ -53,8 +46,13 @@
 
 //to be used sparingly
 -(void) refreshProfile;
+
 //notifies the profile that it's on the screen for the feed
 //and that it should update the cursor
 -(void)updateDateOfLastPostSeen;
+
+-(void) headerViewTapped;
+
+-(void) moreInfoButtonTapped;
 
 @end

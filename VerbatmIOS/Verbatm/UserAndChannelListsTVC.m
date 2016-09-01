@@ -198,9 +198,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 	if(![[user objectId] isEqualToString:[[PFUser currentUser] objectId]]) {
 		//todo: push segue
 		ProfileVC *  userProfile = [[ProfileVC alloc] init];
-		BOOL isCurrentUserChannel = [[startChannel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
-		userProfile.isCurrentUserProfile = isCurrentUserChannel;
-		userProfile.isProfileTab = NO;
 		userProfile.ownerOfProfile = user;
 		userProfile.channel = startChannel;
 		[self.navigationController pushViewController:userProfile animated:YES];

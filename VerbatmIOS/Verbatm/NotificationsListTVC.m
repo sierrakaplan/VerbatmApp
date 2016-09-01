@@ -284,8 +284,6 @@
 	//todo: push segue
 	if(![[user objectId] isEqualToString:[[PFUser currentUser] objectId]]){
 		ProfileVC * userProfile = [[ProfileVC alloc] init];
-		userProfile.isCurrentUserProfile = NO;
-		userProfile.isProfileTab = NO;
 		userProfile.ownerOfProfile = user;
 		userProfile.channel = startChannel;
 		[self.navigationController pushViewController:userProfile animated:YES];

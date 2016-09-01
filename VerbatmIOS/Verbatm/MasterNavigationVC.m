@@ -276,9 +276,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 	self.profileVC = self.profileNavigationController.viewControllers[0];
 	self.profileVC.delegate = self;
 	self.profileVC.ownerOfProfile = [PFUser currentUser];
-	self.profileVC.isCurrentUserProfile = YES;
 	self.profileVC.channel = [[UserInfoCache sharedInstance] getUserChannel];
-	self.profileVC.isProfileTab = YES;
 
 	self.feedProfileListNavigationController = [self.storyboard instantiateViewControllerWithIdentifier:
 												FEED_PROFILE_LIST_NAVIGATION_CONTROLLER_ID];

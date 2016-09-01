@@ -11,7 +11,12 @@
 
 @protocol ProfileHeaderViewDelegate <NSObject>
 
+-(void) headerViewTapped;
 -(void) moreInfoButtonTapped;
+
+@optional
+-(void) addCoverPhotoButtonTapped;
+-(void) settingsButtonTapped;
 
 @end
 

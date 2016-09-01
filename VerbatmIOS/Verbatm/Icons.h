@@ -187,7 +187,7 @@
 
 #pragma mark - Profile Information Header -
 
-#define ADD_COVER_PHOTO_ICON @"add_cover_photo_icon"
+#define ADD_COVER_PHOTO_ICON @"camera"
 #define FEEDBACK_NOTIFICATION_ICON @"FeedbackNotification"
 
 #define ADD_FIRST_POST_ICON @"Add First Post icon"
