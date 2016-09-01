@@ -55,7 +55,7 @@
 }
 
 -(void) addCoverPhotoButtonTapped {
-	//todo:
+	[self presentGalleryToSelectImage];
 }
 
 -(void) settingsButtonTapped {
@@ -76,7 +76,7 @@
 
 	//Customize the picker title and prompt (helper message over the title)
 	picker.title = @"Verbatm";
-	picker.customNavigationBarPrompt = @"Pick a cover photo for your blog!";
+	picker.customNavigationBarPrompt = @"Pick a cover photo for your profile!";
 
 	[picker setSelectOnlyOneImage:YES];
 

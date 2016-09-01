@@ -35,7 +35,7 @@
 
 #define ICON_SIZE 50.f
 #define ICON_SPACING 20.f
-#define ICON_Y_OFFSET 10.f
+#define ICON_Y_OFFSET 0.f
 
 #define COVER_PHOTO_BORDER 5.f
 
@@ -177,7 +177,7 @@
 	CGRect frame = CGRectMake(xOffset, yPos, ICON_SIZE, ICON_SIZE);
 	UIButton *button = [[UIButton alloc] initWithFrame:frame];
 	button.imageView.contentMode = UIViewContentModeScaleAspectFit;
-	button.imageEdgeInsets = UIEdgeInsetsMake(ICON_SPACING, ICON_SPACING, ICON_SPACING, ICON_SPACING);
+	button.imageEdgeInsets = UIEdgeInsetsMake(ICON_SPACING/2.f, ICON_SPACING/2.f, ICON_SPACING/2.f, ICON_SPACING/2.f);
 	[button setImage:icon forState:UIControlStateNormal];
 	[button addTarget:self action:action forControlEvents:UIControlEventTouchDown];
 	return button;

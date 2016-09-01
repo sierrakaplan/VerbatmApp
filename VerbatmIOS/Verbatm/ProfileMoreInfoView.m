@@ -126,7 +126,7 @@
 			self.blogDescriptionPlaceholder.hidden = YES;
 		}
 		//Slide up to be editable with keyboard
-		[self animateFrameToYPos:0.f];
+		[self animateFrameToYPos: STATUS_BAR_HEIGHT];
 		[self.superview bringSubviewToFront:self];
 		[self.blogDescriptionEditable becomeFirstResponder];
 	} else {
@@ -147,7 +147,7 @@
 }
 
 -(void) animateFrameToYPos:(CGFloat)yPos {
-	[UIView animateWithDuration:0.5f animations:^{
+	[UIView animateWithDuration:0.3f animations:^{
 		self.frame = CGRectMake(self.frame.origin.x, yPos, self.frame.size.width, self.frame.size.height);
 	}];
 }
