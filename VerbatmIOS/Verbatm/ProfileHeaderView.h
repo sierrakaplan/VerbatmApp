@@ -27,4 +27,6 @@
 -(instancetype) initWithFrame:(CGRect)frame andChannel: (Channel*) channel
 		 inCurrentUserProfile:(BOOL)currentUserProfile;
 
+-(void) setNewCoverPhoto: (UIImage*)coverPhoto;
+
 @end

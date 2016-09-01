@@ -21,6 +21,7 @@
 
 @property (nonatomic) Channel* channel;
 @property (nonatomic) BOOL isCurrentUserProfile;
+@property (nonatomic) CGFloat oldYPos;
 
 @property (nonatomic) UILabel *blogDescription;
 @property (nonatomic) BOOL editMode;
@@ -55,7 +56,7 @@
 #define DESCRIPTION_FONT_SIZE 16.f
 #define DESCRIPTION_X_OFFSET 10.f
 
-#define EDIT_BUTTON_HEIGHT 20.f
+#define EDIT_BUTTON_HEIGHT 40.f
 #define EDIT_BUTTON_FONT_SIZE 14.f
 #define EDIT_TEXT @"Edit Bio"
 #define DONE_TEXT @"Done Editing"
@@ -75,6 +76,7 @@
 		 isCurrentUserProfile:(BOOL)currentUserProfile {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.oldYPos = frame.origin.y;
 		self.channel = channel;
 		self.isCurrentUserProfile = currentUserProfile;
 		self.clipsToBounds = YES;
@@ -124,7 +126,7 @@
 			self.blogDescriptionPlaceholder.hidden = YES;
 		}
 		//Slide up to be editable with keyboard
-		self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y - KEYBOARD_HEIGHT, self.frame.size.width, self.frame.size.height);
+		[self animateFrameToYPos:0.f];
 		[self.superview bringSubviewToFront:self];
 		[self.blogDescriptionEditable becomeFirstResponder];
 	} else {
@@ -137,11 +139,17 @@
 										   self.blogDescription.frame.size.height + Y_OFFSET, self.editButton.frame.size.width,
 										   self.editButton.frame.size.height);
 		[self.channel changeTitle:self.channel.channelName andDescription:self.blogDescriptionEditable.text];
-		self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y + KEYBOARD_HEIGHT, self.frame.size.width, self.frame.size.height);
+		[self animateFrameToYPos: self.oldYPos];
 		[self.blogDescriptionEditable removeFromSuperview];
 		[self.blogDescriptionPlaceholder removeFromSuperview];
 		[self addSubview: self.blogDescription];
 	}
+}
+
+-(void) animateFrameToYPos:(CGFloat)yPos {
+	[UIView animateWithDuration:0.5f animations:^{
+		self.frame = CGRectMake(self.frame.origin.x, yPos, self.frame.size.width, self.frame.size.height);
+	}];
 }
 
 -(void) setBlogDescriptionText:(NSString*)text {
@@ -164,10 +172,9 @@
 	[self.delegate blockButtonPressed];
 }
 
-
 #pragma mark - Follow status changed -
 
--(void)registerForFollowNotification{
+-(void)registerForFollowNotification {
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(userFollowStatusChanged:)
 												 name:NOTIFICATION_NOW_FOLLOWING_USER
@@ -361,8 +368,8 @@
 
 -(UIButton*) editButton {
 	if (!_editButton) {
-		CGRect frame = CGRectMake(0.f, self.blogDescription.frame.origin.y + self.blogDescription.frame.size.height + Y_OFFSET, self.frame.size.width,
-								  EDIT_BUTTON_HEIGHT);
+		CGRect frame = CGRectMake(0.f, self.blogDescription.frame.origin.y + self.blogDescription.frame.size.height,
+								  self.frame.size.width, EDIT_BUTTON_HEIGHT);
 		_editButton = [[UIButton alloc] initWithFrame: frame];
 		self.editButtonAttributes = @{NSForegroundColorAttributeName: [UIColor colorWithRed:0.1 green:0.5 blue:1.f alpha:1.f],
 											   NSFontAttributeName: [UIFont fontWithName:REGULAR_FONT size:EDIT_BUTTON_FONT_SIZE]};

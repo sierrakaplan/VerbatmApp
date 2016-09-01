@@ -16,8 +16,6 @@
 
 #import "Follow_BackendManager.h"
 
-#import "GMImagePickerController.h"
-
 #import "LoadingIndicator.h"
 
 #import "MasterNavigationVC.h"
@@ -52,7 +50,7 @@
 
 @interface ProfileVC() <ProfileHeaderViewDelegate, ProfileMoreInfoViewDelegate,
 UIScrollViewDelegate, PostListVCProtocol,
-UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeViewControllerDelegate>
+UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 
 @property (nonatomic) BOOL isCurrentUserProfile;
 @property (nonatomic) BOOL isBlocked;
@@ -63,8 +61,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 @property (strong, nonatomic) PostListVC * postListVC;
 @property (nonatomic) UIImageView *noPostsView;
 
-//@property (nonatomic, strong) ProfileHeaderViewOld *profileHeaderView;
-@property (nonatomic) ProfileHeaderView *profileHeaderView;
 @property (nonatomic) ProfileMoreInfoView *moreInfoView;
 @property (nonatomic) BOOL moreInfoViewOnScreen;
 @property (nonatomic) CGRect moreInfoViewOnScreenFrame;
@@ -84,7 +80,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 @property (nonatomic) CGRect  postListLargeFrame;
 @property (nonatomic) CGSize  cellSmallFrameSize;
 
-@property (nonatomic) PHImageManager* imageManager;
 
 #define CELL_SPACING_SMALL 5.f
 #define CELL_SPACING_LARGE 0.3
@@ -301,59 +296,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	[alert addAction: cancelAction];
 	[self presentViewController:alert animated:YES completion:nil];
 }
-
-#pragma mark - Profile Photo -
-
--(void)presentGalleryToSelectImage {
-	GMImagePickerController *picker = [[GMImagePickerController alloc] init];
-	picker.delegate = self;
-	//Display or not the selection info Toolbar:
-	picker.displaySelectionInfoToolbar = YES;
-
-	//Display or not the number of assets in each album:
-	picker.displayAlbumsNumberOfAssets = YES;
-
-	//Customize the picker title and prompt (helper message over the title)
-	picker.title = GALLERY_PICKER_TITLE;
-	picker.customNavigationBarPrompt = GALLERY_CUSTOM_MESSAGE;
-
-	[picker setSelectOnlyOneImage:YES];
-
-	//Customize the number of cols depending on orientation and the inter-item spacing
-	picker.colsInPortrait = 3;
-	picker.colsInLandscape = 5;
-	picker.minimumInteritemSpacing = 2.0;
-	[self presentViewController:picker animated:YES completion:nil];
-}
-
--(void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray{
-	for(PHAsset * asset in assetArray) {
-		if(asset.mediaType==PHAssetMediaTypeImage) {
-			@autoreleasepool {
-				//				[self getImageFromAsset:asset];
-			}
-		}
-	}
-}
-
-- (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
-	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
-	}];
-}
-
-//todo: in edit mode
-//-(void) getImageFromAsset: (PHAsset *) asset {
-//	PHImageRequestOptions *options = [PHImageRequestOptions new];
-//	options.synchronous = YES;
-//	[self.imageManager requestImageForAsset:asset targetSize:self.view.frame.size contentMode:PHImageContentModeAspectFill
-//									options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
-//										// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
-//										dispatch_async(dispatch_get_main_queue(), ^{
-//											[self.profileHeaderView setCoverPhotoImage:image];
-//										});
-//									}];
-//}
-
 
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
 	return YES;
@@ -617,13 +559,6 @@ UIGestureRecognizerDelegate, GMImagePickerControllerDelegate, MFMessageComposeVi
 	}
 
 	return _postListVC;
-}
-
--(PHImageManager*) imageManager {
-	if (!_imageManager) {
-		_imageManager = [[PHImageManager alloc] init];
-	}
-	return _imageManager;
 }
 
 -(UIImageView*) noPostsView {

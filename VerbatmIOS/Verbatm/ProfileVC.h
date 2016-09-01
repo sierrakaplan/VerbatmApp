@@ -15,6 +15,7 @@
 
 @class VerbatmNavigationController;
 @class MasterNavigationVC;
+@class ProfileHeaderView;
 
 @protocol ProfileVCDelegate <NSObject>
 
@@ -35,7 +36,9 @@
 @property (nonatomic) MasterNavigationVC *verbatmTabBarController;
 
 @property (weak, nonatomic) PFUser* ownerOfProfile;
-@property (nonatomic) Channel* channel; 
+@property (nonatomic) Channel* channel;
+
+@property (nonatomic) ProfileHeaderView *profileHeaderView;
 
 @property (nonatomic) id userIdToPresent;
 

@@ -33,7 +33,7 @@
 #define USERNAME_HEIGHT 40.f
 #define USERNAME_FONT_SIZE 24.f
 
-#define ICON_SIZE 30.f
+#define ICON_SIZE 50.f
 #define ICON_SPACING 20.f
 #define ICON_Y_OFFSET 10.f
 
@@ -72,17 +72,16 @@
 	return self;
 }
 
+-(void) setNewCoverPhoto: (UIImage*)coverPhoto {
+	[self.coverPhotoImageView setImage: coverPhoto];
+}
+
 -(void) headerTapped {
 	[self.delegate headerViewTapped];
 }
 
 -(void) moreInfoButtonTapped {
 	self.moreInfoButtonSelected = !self.moreInfoButtonSelected;
-//	if (self.moreInfoButtonSelected) {
-//		self.moreInfoButton.backgroundColor = [UIColor colorWithWhite:1.f alpha:0.3];
-//	} else {
-//		self.moreInfoButton.backgroundColor = [UIColor clearColor];
-//	}
 	[self.delegate moreInfoButtonTapped];
 }
 
@@ -145,9 +144,9 @@
 	if (!_moreInfoButton) {
 		CGFloat xOffset = 0.f;
 		if (self.currentUserProfile) {
-			xOffset = self.addCoverPhotoButton.frame.origin.x - ICON_SIZE - ICON_SPACING;
+			xOffset = self.addCoverPhotoButton.frame.origin.x - ICON_SIZE;
 		} else {
-			xOffset = self.frame.size.width - ICON_SPACING - ICON_SIZE;
+			xOffset = self.frame.size.width - ICON_SIZE;
 		}
 		_moreInfoButton = [self getBottomIconWithXOffset:xOffset andIcon:[UIImage imageNamed:MORE_INFO_ICON]
 											   andAction:@selector(moreInfoButtonTapped)];
@@ -157,7 +156,7 @@
 
 -(UIButton*) addCoverPhotoButton {
 	if (!_addCoverPhotoButton) {
-		CGFloat xOffset = self.settingsButton.frame.origin.x - ICON_SIZE - ICON_SPACING;
+		CGFloat xOffset = self.settingsButton.frame.origin.x - ICON_SIZE;
 		_addCoverPhotoButton = [self getBottomIconWithXOffset:xOffset andIcon:[UIImage imageNamed:ADD_COVER_PHOTO_ICON]
 													andAction:@selector(addCoverPhotoButtonTapped)];
 	}
@@ -166,7 +165,7 @@
 
 -(UIButton*) settingsButton {
 	if (!_settingsButton) {
-		CGFloat xOffset = self.frame.size.width - ICON_SPACING - ICON_SIZE;
+		CGFloat xOffset = self.frame.size.width - ICON_SIZE;
 		_settingsButton = [self getBottomIconWithXOffset:xOffset andIcon:[UIImage imageNamed:SETTINGS_BUTTON_ICON]
 											   andAction:@selector(settingsButtonTapped)];
 	}
@@ -178,6 +177,7 @@
 	CGRect frame = CGRectMake(xOffset, yPos, ICON_SIZE, ICON_SIZE);
 	UIButton *button = [[UIButton alloc] initWithFrame:frame];
 	button.imageView.contentMode = UIViewContentModeScaleAspectFit;
+	button.imageEdgeInsets = UIEdgeInsetsMake(ICON_SPACING, ICON_SPACING, ICON_SPACING, ICON_SPACING);
 	[button setImage:icon forState:UIControlStateNormal];
 	[button addTarget:self action:action forControlEvents:UIControlEventTouchDown];
 	return button;
