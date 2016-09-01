@@ -156,7 +156,6 @@
 						[self enableResendCodeButton];
 						self.verifyingCode = NO;
 					} else {
-						[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
 						if (self.creatingAccount) {
 							//todo: enter name
 							//						[user setObject:self.verbatmName forKey:VERBATM_USER_NAME_KEY];
@@ -167,6 +166,7 @@
 								}
 							}];
 						} else {
+							[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
 							[self performSegueWithIdentifier:UNWIND_SEGUE_PHONE_LOGIN_TO_MASTER sender:self];
 						}
 					}

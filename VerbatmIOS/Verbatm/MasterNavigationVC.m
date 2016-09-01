@@ -1,3 +1,4 @@
+
 //
 //  verbatmMasterNavigationViewController.m
 //  Verbatm
@@ -177,7 +178,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 	}
 	self.view.backgroundColor = [UIColor blackColor];
 	//todo: show loading while this happens
-	[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
+	[[UserInfoCache sharedInstance] loadUserChannelWithCompletionBlock:^{
 		[self setUpTabBarController];
 	}];
 }

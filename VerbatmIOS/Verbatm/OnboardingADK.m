@@ -173,29 +173,29 @@
 }
 
 -(void) continueToPublish {
-	[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
-		//todo: make sure not creating two
-		self.userChannel = [[UserInfoCache sharedInstance] getUserChannel];
-		[[PublishingProgressManager sharedInstance] publishPostToChannel:self.userChannel andFacebook:TRUE withCaption:@"" withPinchViews:self.pinchViewsToPublish
-													 withCompletionBlock:^(BOOL isAlreadyPublishing, BOOL noNetwork) {
-														 NSString *errorMessage;
-														 if(isAlreadyPublishing) {
-															 errorMessage = @"Please wait until the previous post has finished publishing.";
-														 } else if (noNetwork) {
-															 errorMessage = @"Something went wrong - please check your network connection and try again.";
-														 } else {
-															 //Everything went ok
-															 [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ONBOARDING_TO_MASTER sender:self];
-															 //														 [self cleanUp];
-															 return;
-														 }
-														 UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Couldn't Publish" message:errorMessage preferredStyle:UIAlertControllerStyleAlert];
-														 UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
-																											   handler:^(UIAlertAction * action) {}];
-														 [newAlert addAction:defaultAction];
-														 [self presentViewController:newAlert animated:YES completion:nil];
-													 }];
-	}];
+	self.userChannel = [[UserInfoCache sharedInstance] getUserChannel];
+	[[PublishingProgressManager sharedInstance] publishPostToChannel:self.userChannel
+														 andFacebook:TRUE withCaption:@""
+													  withPinchViews:self.pinchViewsToPublish
+												 withCompletionBlock:^(BOOL isAlreadyPublishing, BOOL noNetwork) {
+													 NSString *errorMessage;
+													 if(isAlreadyPublishing) {
+														 errorMessage = @"Please wait until the previous post has finished publishing.";
+													 } else if (noNetwork) {
+														 errorMessage = @"Something went wrong - please check your network connection and try again.";
+													 } else {
+														 //Everything went ok
+														 [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ONBOARDING_TO_MASTER sender:self];
+														 //														 [self cleanUp];
+														 return;
+													 }
+													 UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Couldn't Publish" message:errorMessage preferredStyle:UIAlertControllerStyleAlert];
+													 UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+																										   handler:^(UIAlertAction * action) {}];
+													 [newAlert addAction:defaultAction];
+													 [self presentViewController:newAlert animated:YES completion:nil];
+												 }];
+
 }
 
 #pragma mark - Lazy Instantiation -

@@ -40,30 +40,12 @@
     return sharedInstance;
 }
 
--(void)loadUserChannelsWithCompletionBlock:(void(^)())block {
+-(void)loadUserChannelWithCompletionBlock:(void(^)())block {
     [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray * channels) {
         if (channels.count > 0) {
-			self.userChannel = channels[0];
-			//todo: clean up code
-			if (!self.userChannel.channelName.length) {
-				[self getDefaultBlogNameWithBlock:^(NSString *defaultBlogName) {
-					[self.userChannel changeTitle:defaultBlogName];
-					self.userChannel.defaultBlogName = YES;
-					if (!self.userChannel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY]) {
-						[self.userChannel.parseChannelObject setObject:[PFUser currentUser][VERBATM_USER_NAME_KEY]
-																forKey:CHANNEL_CREATOR_NAME_KEY];
-						[self.userChannel.parseChannelObject saveInBackground];
-					}
-					block();
-				}];
-			} else {
-				if (!self.userChannel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY]) {
-					[self.userChannel.parseChannelObject setObject:[PFUser currentUser][VERBATM_USER_NAME_KEY]
-															forKey:CHANNEL_CREATOR_NAME_KEY];
-					[self.userChannel.parseChannelObject saveInBackground];
-				}
+			[self fixMultipleChannels:channels withCompletionBlock:^{
 				block();
-			}
+			}];
 		} else {
 			// First time logging in - create a new channel
 			[self getDefaultBlogNameWithBlock:^(NSString *defaultBlogName) {
@@ -78,6 +60,29 @@
 			}];
 		}
     }];
+}
+
+-(void) fixMultipleChannels:(NSArray*)channels withCompletionBlock:(void(^)())block {
+	self.userChannel = channels[0];
+	if (!self.userChannel.channelName.length) {
+		[self getDefaultBlogNameWithBlock:^(NSString *defaultBlogName) {
+			[self.userChannel changeTitle:defaultBlogName];
+			self.userChannel.defaultBlogName = YES;
+			if (!self.userChannel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY]) {
+				[self.userChannel.parseChannelObject setObject:[PFUser currentUser][VERBATM_USER_NAME_KEY]
+														forKey:CHANNEL_CREATOR_NAME_KEY];
+				[self.userChannel.parseChannelObject saveInBackground];
+			}
+			block();
+		}];
+	} else {
+		if (!self.userChannel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY]) {
+			[self.userChannel.parseChannelObject setObject:[PFUser currentUser][VERBATM_USER_NAME_KEY]
+													forKey:CHANNEL_CREATOR_NAME_KEY];
+			[self.userChannel.parseChannelObject saveInBackground];
+		}
+		block();
+	}
 }
 
 -(void) getDefaultBlogNameWithBlock:(void(^)(NSString*))block {

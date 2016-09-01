@@ -8,11 +8,13 @@
 
 #import "CreateNameVC.h"
 #import "LoginKeyboardToolBar.h"
+#import "Notifications.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
+#import "UserInfoCache.h"
 
 @interface CreateNameVC() <LoginKeyboardToolBarDelegate, UITextFieldDelegate>
 
@@ -68,7 +70,18 @@
 				self.savingName = NO;
 				//todo: error handling?
 			} else {
-				[self performSegueWithIdentifier:SEGUE_FOLLOW_FRIENDS sender:self];
+				[[UserInfoCache sharedInstance] loadUserChannelWithCompletionBlock:^{
+					Channel *channel = [[UserInfoCache sharedInstance] getUserChannel];
+					channel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY] = name;
+					[channel.parseChannelObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+						if (!succeeded || error) {
+							self.savingName = NO;
+						} else {
+							[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
+							[self performSegueWithIdentifier:SEGUE_FOLLOW_FRIENDS sender:self];
+						}
+					}];
+				}];
 			}
 		}];
 	}

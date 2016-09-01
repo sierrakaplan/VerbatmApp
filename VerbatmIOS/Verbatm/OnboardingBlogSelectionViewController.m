@@ -38,7 +38,6 @@
 
 -(void) viewDidLoad {
     [super viewDidLoad];
-	self.navigationItem.hidesBackButton = YES;
     [self addBackgroundImage];
 	[self.view addSubview: self.headerView];
     self.tableContainerView.frame = CGRectMake(0.f, HEADER_VIEW_HEIGHT,
@@ -49,10 +48,12 @@
 	[self addHeaderLabel];
 }
 
+-(BOOL) prefersStatusBarHidden {
+	return YES;
+}
+
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-	self.navigationController.interactivePopGestureRecognizer.enabled = NO;
-	self.navigationController.interactivePopGestureRecognizer.delegate = self;
 }
 
 -(BOOL) gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
@@ -74,10 +75,11 @@
 }
 
 -(void)addDoneButton {
-    CGRect buttomFrame = CGRectMake(self.view.frame.size.width - (DONE_BUTTON_WIDTH + HEADER_X_OFFSET),  STATUS_BAR_HEIGHT,
+	CGRect buttonFrame = CGRectMake(self.view.frame.size.width - (DONE_BUTTON_WIDTH + HEADER_X_OFFSET),
+									STATUS_BAR_HEIGHT + HEADER_Y_OFFSET,
 									DONE_BUTTON_WIDTH, HEADER_VIEW_HEIGHT - (HEADER_Y_OFFSET*2) - STATUS_BAR_HEIGHT);
-    
-    UIButton * done = [[UIButton alloc] initWithFrame:buttomFrame];
+
+    UIButton * done = [[UIButton alloc] initWithFrame:buttonFrame];
 	self.doneButton = done;
     [done addTarget:self action:@selector(exitDiscover) forControlEvents:UIControlEventTouchUpInside];
     [done setTitle:@"DONE" forState:UIControlStateNormal];
@@ -86,7 +88,7 @@
 	done.layer.borderWidth = 3.f;
 	done.layer.cornerRadius = 3.f;
 	[done.titleLabel setFont:[UIFont fontWithName:BOLD_FONT size: 14.f]]; //todo
-    [self.navigationController.navigationBar addSubview:done];
+    [self.headerView addSubview:done];
 }
 
 -(void) addHeaderLabel {

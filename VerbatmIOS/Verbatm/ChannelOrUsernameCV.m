@@ -256,7 +256,6 @@
 }
 
 -(void)setLabelsForComment:(NSString *) comment andUserName:(NSString *) userName{
-    
     [self clearView];
     
     CGFloat maxWidth = [[UIScreen mainScreen] bounds].size.width - (TAB_BUTTON_PADDING_X * 2);

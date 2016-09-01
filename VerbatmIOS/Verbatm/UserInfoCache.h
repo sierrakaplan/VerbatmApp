@@ -16,7 +16,7 @@
 
 +(instancetype)sharedInstance;
 
--(void)loadUserChannelsWithCompletionBlock:(void(^)())block;
+-(void)loadUserChannelWithCompletionBlock:(void(^)())block;
 
 -(Channel *) getUserChannel;
 
