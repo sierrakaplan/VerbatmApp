@@ -45,6 +45,8 @@
 
 -(void) updateLatestPostDate:(NSDate*)date;
 
+-(void) changeChannelOwnerName:(NSString*)newName;
+
 -(void) getChannelOwnerNameWithCompletionBlock:(void(^)(NSString *))block;
 
 -(void) getFollowersWithCompletionBlock:(void(^)(void))block;
@@ -55,9 +57,7 @@
 
 -(void) addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator;
 
-
 +(void) getChannelsForUserList:(NSArray *) userList andCompletionBlock:(void(^)(NSMutableArray *))block;
-
 
 -(void) storeCoverPhoto:(UIImage *) coverPhoto;
 
@@ -70,5 +70,5 @@
 -(void)registerStopedFollowingChannel:(Channel *)channel;
 
 -(void) updatePostDeleted:(PFObject*)post;
--(void)resetLatestPostInfo;
+-(void) resetLatestPostInfo;
 @end

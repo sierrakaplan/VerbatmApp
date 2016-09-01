@@ -60,7 +60,6 @@
     return self;
 }
 
-
 -(NSString *)getCoverPhotoUrl{
     NSString * url = [self.parseChannelObject valueForKey:CHANNEL_COVER_PHOTO_URL];
     return url;
@@ -136,6 +135,11 @@
 	[self.parseChannelObject saveInBackground];
 }
 
+-(void) changeChannelOwnerName:(NSString*)newName {
+	self.parseChannelObject[CHANNEL_CREATOR_NAME_KEY] = newName;
+	[self.parseChannelObject saveInBackground];
+}
+
 //todo:
 -(void)getChannelOwnerNameWithCompletionBlock:(void(^)(NSString *))block {
     if (!self.parseChannelObject) {
@@ -151,6 +155,8 @@
         self.channelCreator = (PFUser*)object;
         [self.channelCreator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
             NSString * userName = [self.channelCreator valueForKey:VERBATM_USER_NAME_KEY];
+			self.parseChannelObject[CHANNEL_CREATOR_NAME_KEY] = userName;
+			[self.parseChannelObject saveInBackground];
             block(userName);
         }];
     }];

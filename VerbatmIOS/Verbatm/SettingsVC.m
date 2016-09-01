@@ -19,6 +19,7 @@
 #import "SettingsVC.h"
 #import "Styles.h"
 
+#import "UserInfoCache.h"
 #import "UserManager.h"
 
 @interface SettingsVC () <MFMailComposeViewControllerDelegate, UITableViewDelegate,
@@ -90,13 +91,24 @@ UITableViewDataSource, UITextFieldDelegate>
 -(void) textFieldDidEndEditing:(UITextField *)textField {
 	if (textField.text.length < 1) {
 		textField.text = self.oldUsername;
+		return;
 	}
-	[PFUser currentUser][VERBATM_USER_NAME_KEY] = textField.text;
+	//todo: this should be atomic
+	NSString *newUserName = textField.text;
+	[PFUser currentUser][VERBATM_USER_NAME_KEY] = newUserName;
 	[[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 		if (error) {
 			[[Crashlytics sharedInstance] recordError:error];
 		} else {
+			//todo: send notification that user name changed and update everywhere
 			NSLog(@"User name saved successfully.");
+		}
+	}];
+	PFObject *channel =[[UserInfoCache sharedInstance] getUserChannel].parseChannelObject;
+	channel[CHANNEL_CREATOR_NAME_KEY] = textField.text;
+	[channel saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+		if (error) {
+			[[Crashlytics sharedInstance] recordError:error];
 		}
 	}];
 }
