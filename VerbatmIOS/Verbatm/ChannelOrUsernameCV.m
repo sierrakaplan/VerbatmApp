@@ -101,7 +101,7 @@
 	UILabel * heightFinder = [ChannelOrUsernameCV getTextView:[commentObject commentString] withOrigin:CGPointMake(0.f, 0.f)
 												andAttributes:[ChannelOrUsernameCV getAttrForCommentString] withMaxWidth:maxWidth];
 
-	return heightFinder.frame.size.height + (CHANNEL_USER_LIST_CELL_HEIGHT);
+	return heightFinder.frame.size.height + (CHANNEL_USER_LIST_CELL_HEIGHT/2.f );
 }
 
 +(NSDictionary *) getAttrForCommentString{
@@ -250,6 +250,7 @@
 
 	self.usernameLabel = [self getLabel:self.userName withOrigin:nameLabelOrigin
 						  andAttributes:self.userNameLabelAttributes withMaxWidth:MAX_WIDTH];
+	self.usernameLabel.center = CGPointMake(self.usernameLabel.center.x, self.center.y - self.frame.origin.y);
 
 	[self addSubview: self.usernameLabel];
 }
@@ -294,7 +295,6 @@
 	CGRect labelFrame = CGRectMake(origin.x, origin.y, width, height +7.f);
 
 	nameLabel.frame = labelFrame;
-	nameLabel.center = CGPointMake(nameLabel.center.x, self.center.y - self.frame.origin.y);
 	nameLabel.adjustsFontSizeToFitWidth = YES;
 	nameLabel.numberOfLines = 1.f;
 	nameLabel.backgroundColor = [UIColor clearColor];
