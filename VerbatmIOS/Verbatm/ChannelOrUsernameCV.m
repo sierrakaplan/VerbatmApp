@@ -101,7 +101,7 @@
 	UILabel * heightFinder = [ChannelOrUsernameCV getTextView:[commentObject commentString] withOrigin:CGPointMake(0.f, 0.f)
 												andAttributes:[ChannelOrUsernameCV getAttrForCommentString] withMaxWidth:maxWidth];
 
-	return heightFinder.frame.size.height + (CHANNEL_USER_LIST_CELL_HEIGHT/2.f );
+	return heightFinder.frame.size.height + (CHANNEL_USER_LIST_CELL_HEIGHT);
 }
 
 +(NSDictionary *) getAttrForCommentString{
@@ -263,7 +263,7 @@
 	self.commentUserNameLabel = [self getLabel:userName withOrigin:userNameLabelOrigin
 								 andAttributes:self.userNameCommentLabelAttributes withMaxWidth:maxWidth];
 
-	CGPoint  commentStringLabelOrigin = CGPointMake(TAB_BUTTON_PADDING_X,
+	CGPoint commentStringLabelOrigin = CGPointMake(TAB_BUTTON_PADDING_X,
 													self.commentUserNameLabel.frame.origin.y + self.commentUserNameLabel.frame.size.height);
 
 	self.commentLabel = [ChannelOrUsernameCV getTextView:comment withOrigin:commentStringLabelOrigin
@@ -281,8 +281,8 @@
 
 	CGFloat height;
 	if(self.channel) {
-		height= (textSize.size.height <= (self.frame.size.height/2.f) - 5.f) ?
-		textSize.size.height : self.frame.size.height/2.f - 5.f;
+		height= (textSize.size.height <= (self.frame.size.height/2.f) - 2.f) ?
+		textSize.size.height : self.frame.size.height/2.f;
 	} else {
 		height = textSize.size.height;
 	}
@@ -310,7 +310,6 @@
 	NSAttributedString* tabAttributedTitle = [[NSAttributedString alloc] initWithString:title attributes:nameLabelAttribute];
 	CGRect textSize = [title boundingRectWithSize:CGSizeMake(maxWidth, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:nameLabelAttribute context:nil];
 
-
 	CGFloat height;
 
 	CGFloat extraHeight = textSize.size.width - maxWidth;
@@ -318,7 +317,7 @@
 	height = textSize.size.height + ((extraHeight > 0.f) ? extraHeight : 0.f);
 	CGFloat width = ((maxWidth > 0) && (textSize.size.width > maxWidth)) ? maxWidth : textSize.size.width;
 
-	CGRect labelFrame = CGRectMake(origin.x, origin.y, width, height +7.f);
+	CGRect labelFrame = CGRectMake(origin.x, origin.y, width, height);
 
 	textLabel.frame = labelFrame;
 	textLabel.backgroundColor = [UIColor clearColor];
