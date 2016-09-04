@@ -13,11 +13,14 @@
 #import <Parse/PFUser.h>
 #import "Channel.h"
 
+@class VerbatmNavigationController;
+@class MasterNavigationVC;
+@class ProfileHeaderView;
+
 @protocol ProfileVCDelegate <NSObject>
 
--(void) showTabBar: (BOOL) show;
-
 @optional
+-(void) lockFeedScrollView:(BOOL)lock;
 -(void) userCreateFirstPost;
 
 @end
@@ -28,14 +31,14 @@
 
 @property (weak, nonatomic) id<ProfileVCDelegate> delegate;
 
+// Only used in feed list
+@property (nonatomic) VerbatmNavigationController *verbatmNavigationController;
+@property (nonatomic) MasterNavigationVC *verbatmTabBarController;
+
 @property (weak, nonatomic) PFUser* ownerOfProfile;
-@property (nonatomic) Channel* channel; 
+@property (nonatomic) Channel* channel;
 
-//let us know if this is the profile of the logged in user
-@property (nonatomic) BOOL isCurrentUserProfile;
-
-// This is the profile tab
-@property (nonatomic) BOOL isProfileTab;
+@property (nonatomic) ProfileHeaderView *profileHeaderView;
 
 @property (nonatomic) id userIdToPresent;
 
@@ -46,5 +49,13 @@
 
 //to be used sparingly
 -(void) refreshProfile;
+
+//notifies the profile that it's on the screen for the feed
+//and that it should update the cursor
+-(void)updateDateOfLastPostSeen;
+
+-(void) headerViewTapped;
+
+-(void) moreInfoButtonTapped;
 
 @end

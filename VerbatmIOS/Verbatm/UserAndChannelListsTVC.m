@@ -6,7 +6,7 @@
 //  Copyright Â© 2016 Verbatm. All rights reserved.
 //
 
-
+#import "Channel_BackendObject.h"
 #import "ChannelOrUsernameCV.h"
 #import "CustomNavigationBar.h"
 #import "Channel_BackendObject.h"
@@ -30,19 +30,17 @@
 
 #import "QuartzCore/QuartzCore.h"
 
-@interface UserAndChannelListsTVC () <CustomNavigationBarDelegate, CommentingKeyboardToolbarProtocol>
-@property (nonatomic) Channel * channelOnDisplay;
-@property (nonatomic) PFObject * postObject;
-@property (nonatomic) CommentingKeyboardToolbar * commentingKeyboard;
+#import "MasterNavigationVC.h"
+#import "VerbatmNavigationController.h"
 
-@property (nonatomic) UIView * navBar;
+@interface UserAndChannelListsTVC () <CustomNavigationBarDelegate>
+
+@property (nonatomic) Channel *channelOnDisplay;
+@property (nonatomic) PFObject *postObject;
 
 @property (nonatomic) UIActivityIndicatorView *loadMoreSpinner;
 @property (nonatomic) UIRefreshControl *refreshControl;
-@property (nonatomic) NSMutableArray * channelsToDisplay;
-@property (nonatomic) NSMutableArray * usersToDisplay;//catch all array -- can be used for any of the usecases to store a list of users
-
-@property (nonatomic) NSMutableArray * commentObjectList;
+@property (nonatomic) NSArray *channelsToDisplay;
 
 @property (nonatomic) BOOL shouldDisplayFollowers;
 
@@ -51,25 +49,14 @@
 
 @property (nonatomic) id userInfoOnDisplay;//the user whose data we are displaying
 
-@property (nonatomic) BOOL presentAllChannels;
 @property (nonatomic) BOOL shouldAnimateViews;
 
+
 #define CHANNEL_CELL_ID @"channel_cell_id"
-#define CUSTOM_CHANNEL_LIST_BAR_HEIGHT 50.f
 #define LIKERS_TEXT @"Likes"
 #define FOLLOWING_TEXT @"Following"
-#define COMMENTING_TEXT @"Comments"
-
 #define FOLLOWERS_TEXT @"Followers"
-#define LIST_BAR_Y_OFFSET -15.f
 
-
-#define COMMENTING_KEYBOARD_HEIGHT 50.f
-#define TOP_INSET (LIST_BAR_Y_OFFSET+ STATUS_BAR_HEIGHT + CUSTOM_CHANNEL_LIST_BAR_HEIGHT)
-#define BOTTOM_INSET CUSTOM_CHANNEL_LIST_BAR_HEIGHT
-
-
-#define KEYBOARD_BAR_START_YPOS (self.view.frame.size.height - (COMMENTING_KEYBOARD_HEIGHT + TOP_INSET))
 @end
 
 
@@ -84,29 +71,42 @@
 
 	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 	self.tableView.allowsMultipleSelection = NO;
+	self.automaticallyAdjustsScrollViewInsets = NO;
 	self.tableView.showsHorizontalScrollIndicator = NO;
 	self.tableView.showsVerticalScrollIndicator = NO;
 
 	[self setNeedsStatusBarAppearanceUpdate];
+}
 
-	//avoid covering last item in uitableview
-	UIEdgeInsets inset = UIEdgeInsetsMake(TOP_INSET, 0, BOTTOM_INSET, 0);
-	self.tableView.contentInset = inset;
-	self.tableView.scrollIndicatorInsets = inset;
+-(void) setNavigationItemTitle {
+	NSString * navBarMiddleText = FOLLOWERS_TEXT;
+	if(self.currentListType == LikersList){
+		navBarMiddleText = LIKERS_TEXT;
+	}else if (self.currentListType == FollowingList){
+		navBarMiddleText = FOLLOWING_TEXT;
+	}
+	self.navigationItem.title = navBarMiddleText;
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	[self setNeedsStatusBarAppearanceUpdate];
+	[(MasterNavigationVC*) self.tabBarController showTabBar:NO];
+	[self.navigationController setNavigationBarHidden:NO];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundColor:[UIColor whiteColor]];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarTextColor:[UIColor blackColor]];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
 	[super viewDidAppear:animated];
-	if(self.navBar){
-		[self.view bringSubviewToFront:self.navBar];
-	}else{
-		[self setTableViewHeader];
-	}
+}
+
+-(void) viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
+}
+
+-(BOOL) prefersStatusBarHidden {
+	return YES;
 }
 
 #pragma mark - Present List -
@@ -124,25 +124,22 @@
 		[self.loadMoreSpinner stopAnimating];
 		[self.refreshControl endRefreshing];
 		[self.tableView reloadData];
-		if(self.navBar)[self.view bringSubviewToFront:self.navBar];
 	}];
+	[self setNavigationItemTitle];
 }
 
--(void)viewDidLayoutSubviews{
+-(void)viewDidLayoutSubviews {
 	[super viewDidLayoutSubviews];
-	if(self.navBar){
-		[self.view bringSubviewToFront:self.navBar];
-	}
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell
+forRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (self.shouldAnimateViews) {
 		CGFloat direction = (YES) ? 1 : -1;
 		cell.transform = CGAffineTransformMakeTranslation(0, cell.bounds.size.height * direction);
 		[UIView animateWithDuration:0.4f animations:^{
 			cell.transform = CGAffineTransformIdentity;
 		}];
-
 
 		if(cell.bounds.size.height * indexPath.row >= self.view.frame.size.height){
 			self.shouldAnimateViews = NO;
@@ -168,110 +165,42 @@
 	[self presentList:self.currentListType forChannel:self.channelOnDisplay orPost:self.postObject];
 }
 
-
-
--(void)putCommentingKeyboardBarOnScreen{
-    
-    CGFloat yPos = KEYBOARD_BAR_START_YPOS;
-    
-    
-    self.commentingKeyboard = [[CommentingKeyboardToolbar alloc] initWithFrame:CGRectMake(0.f, yPos, self.view.frame.size.width, COMMENTING_KEYBOARD_HEIGHT)];
-    self.commentingKeyboard.delegate = self;
-    [self.tableView addSubview:self.commentingKeyboard];
-    
-    // create hooks for keyboard
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardDidShowOrHide:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardDidShowOrHide:)
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
-}
-
-
--(void)keyboardDidShowOrHide:(NSNotification *)notification
-{
-    NSDictionary *userInfo = [notification userInfo];
-    NSTimeInterval animationDuration;
-    UIViewAnimationCurve animationCurve;
-    CGRect keyboardEndFrame;
-    
-    [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
-    [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
-    [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] getValue:&keyboardEndFrame];
-    
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:animationDuration];
-    [UIView setAnimationCurve:animationCurve];
-    
-    
-    CGFloat yPosKeyboardWithTableViewCord = keyboardEndFrame.origin.y + self.tableView.contentOffset.y;
-    
-    CGRect newFrame = self.commentingKeyboard.frame;
-    newFrame.origin.y =  yPosKeyboardWithTableViewCord - (self.commentingKeyboard.frame.size.height);
-    self.commentingKeyboard.frame = newFrame;
-    
-    [UIView commitAnimations];
-}
-
-
-
--(void)doneButtonSelectedWithFinalString:(NSString *) commentString{
-    Comment * newComment  = [[Comment alloc] initWithString:commentString andPostObject:self.postObject];
-    [self.commentObjectList addObject:newComment];
-    [self.tableView reloadData];
-}
-
 - (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+	[super didReceiveMemoryWarning];
+	// Dispose of any resources that can be recreated.
 }
 
 #pragma mark - Table View Delegate methods (view customization) -
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-	
-    if(self.currentListType == CommentList){
-        NSInteger objectIndex = indexPath.row;
-        Comment * comment = [self.commentObjectList objectAtIndex:objectIndex];
-        return [ChannelOrUsernameCV getHeightForCellFromCommentObject:comment];
-    }
-    
-    
-    return CHANNEL_USER_LIST_CELL_HEIGHT;
+	return CHANNEL_USER_LIST_CELL_HEIGHT;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	if(self.channelsToDisplay && (self.currentListType != CommentList)){
-		//this is some list of channels
+	//this is some list of channels
 
-		NSInteger objectIndex = indexPath.row - self.presentAllChannels;
+	NSInteger objectIndex = indexPath.row;
 
-		Channel * channel = [self.channelsToDisplay objectAtIndex:objectIndex];
-		PFUser * user = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
-		[user fetchIfNeededInBackgroundWithBlock:^
-		 (PFObject * _Nullable object, NSError * _Nullable error) {
-			 if(object){
-				 dispatch_async(dispatch_get_main_queue(), ^{
-					 [self presentProfileForUser:(PFUser *)object withStartChannel:channel];
-				 });
-			 }
-		 }];
-	}else {
-	}
+	Channel * channel = [self.channelsToDisplay objectAtIndex:objectIndex];
+	PFUser * user = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
+	[user fetchIfNeededInBackgroundWithBlock:^
+	 (PFObject * _Nullable object, NSError * _Nullable error) {
+		 if(object){
+			 dispatch_async(dispatch_get_main_queue(), ^{
+				 [self presentProfileForUser:(PFUser *)object withStartChannel:channel];
+			 });
+		 }
+	 }];
 }
 
 -(void)presentProfileForUser:(PFUser *) user
-			withStartChannel:(Channel *) startChannel{
-	if(![[user objectId] isEqualToString:[[PFUser currentUser] objectId]]){
+			withStartChannel:(Channel *) startChannel {
+	if(![[user objectId] isEqualToString:[[PFUser currentUser] objectId]]) {
+		//todo: push segue
 		ProfileVC *  userProfile = [[ProfileVC alloc] init];
-		BOOL isCurrentUserChannel = [[startChannel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
-		userProfile.isCurrentUserProfile = isCurrentUserChannel;
-		userProfile.isProfileTab = NO;
 		userProfile.ownerOfProfile = user;
 		userProfile.channel = startChannel;
-		[self presentViewController:userProfile animated:YES completion:nil];
+		[self.navigationController pushViewController:userProfile animated:YES];
 	}
 }
 
@@ -287,11 +216,9 @@
 			}];
 			break;
 		} case FollowersList: {
-			[channel getFollowersWithCompletionBlock:^{
-				[Channel getChannelsForUserList:[channel usersFollowingChannel] andCompletionBlock:^(NSMutableArray * channelList) {
-					self.channelsToDisplay = channelList;
-					block();
-				}];
+			[Channel_BackendObject getChannelsForFollowers:channel withCompletionBlock:^(NSArray *followersChannels) {
+				self.channelsToDisplay = followersChannels;
+				block();
 			}];
 			break;
 		} case FollowingList: {
@@ -300,96 +227,12 @@
 				block();
 			}];
 			break;
-        } case CommentList: {
-            
-            [Commenting_BackendObject getCommentsForObject:post withCompletionBlock:^(NSArray * parseCommentObjects) {
-                    self.commentObjectList = (parseCommentObjects == nil) ? [[NSMutableArray alloc] init] : [NSMutableArray arrayWithArray:parseCommentObjects];
-                    block();
-                [self putCommentingKeyboardBarOnScreen];
-            }];
-            
-        }
+		}
 	}
-}
-
-
-// NOT IN USE
--(void)presentAllVerbatmChannels{
-	//self.presentAllChannels = YES;
-	[Channel_BackendObject getAllChannelsWithCompletionBlock:^(NSMutableArray * channels) {
-		if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
-		[self.channelsToDisplay addObjectsFromArray:channels];
-		dispatch_async(dispatch_get_main_queue(), ^{
-			self.shouldAnimateViews = YES;
-			[self.tableView reloadData];
-		});
-	}];
-
-}
-
--(void)setTableViewHeader{
-	CGRect navBarFrame = CGRectMake(0.f, -(LIST_BAR_Y_OFFSET + STATUS_BAR_HEIGHT + CUSTOM_CHANNEL_LIST_BAR_HEIGHT), self.view.frame.size.width, STATUS_BAR_HEIGHT+ CUSTOM_CHANNEL_LIST_BAR_HEIGHT);
-
-	CGRect customBarFrame = CGRectMake(0.f, STATUS_BAR_HEIGHT, self.view.frame.size.width, CUSTOM_CHANNEL_LIST_BAR_HEIGHT);
-
-	self.navBar = [[UIView alloc]initWithFrame:navBarFrame];
-	self.navBar.backgroundColor = CHANNEL_LIST_HEADER_BACKGROUND_COLOR;
-
-	CustomNavigationBar * customNavBar =  [[CustomNavigationBar alloc] initWithFrame:customBarFrame andBackgroundColor:CHANNEL_LIST_HEADER_BACKGROUND_COLOR];
-
-	[customNavBar createLeftButtonWithTitle:nil orImage:[UIImage imageNamed:BACK_BUTTON_ICON]];
-
-	NSString * navBarMiddleText = FOLLOWERS_TEXT;
-	if(self.currentListType == LikersList){
-		navBarMiddleText = LIKERS_TEXT;
-	}else if (self.currentListType == FollowingList){
-		navBarMiddleText = FOLLOWING_TEXT;
-	}else if (self.currentListType == CommentList){
-        navBarMiddleText = COMMENTING_TEXT;
-    }
-
-	[customNavBar createMiddleButtonWithTitle:navBarMiddleText blackText:YES largeSize:YES];
-
-	customNavBar.delegate = self;
-	[self.navBar addSubview:customNavBar];
-	[self.navBar addShadowToView];
-	[self.view addSubview:self.navBar];
-	[self.view bringSubviewToFront:self.navBar];
-}
-
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-	return [[CustomNavigationBar alloc] initWithFrame:self.navBar.frame andBackgroundColor:[UIColor whiteColor]];;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
 	return 0.f;
-}
-
-// Exiting view
--(void) leftButtonPressed{
-	[self.presentingViewController dismissViewControllerAnimated:YES completion:^{}];
-}
-
--(UILabel *) getHeaderTitleForViewWithText:(NSString *) text{
-
-	CGRect labelFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width + 10, USER_CELL_VIEW_HEIGHT);
-	UILabel * titleLabel = [[UILabel alloc] initWithFrame:labelFrame];
-	titleLabel.backgroundColor = [UIColor whiteColor];
-
-	NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
-	paragraphStyle.alignment = NSTextAlignmentCenter;
-
-	NSDictionary * informationAttribute = @{NSForegroundColorAttributeName:
-												[UIColor clearColor],
-											NSFontAttributeName:
-												[UIFont fontWithName:INFO_LIST_HEADER_FONT size:INFO_LIST_HEADER_FONT_SIZE],
-											NSParagraphStyleAttributeName:paragraphStyle};
-
-	NSAttributedString * titleAttributed = [[NSAttributedString alloc] initWithString:text attributes:informationAttribute];
-
-	[titleLabel setAttributedText:titleAttributed];
-
-	return titleLabel;
 }
 
 #pragma mark - Table view data source
@@ -399,22 +242,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
-    if(self.currentListType == CommentList) return self.commentObjectList.count;
-    
-    return (self.channelsToDisplay.count + self.presentAllChannels);
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	[scrollView bringSubviewToFront:self.navBar];
-    CGRect newNavBarFrame = CGRectMake(0.f, scrollView.contentOffset.y, self.navBar.frame.size.width, self.navBar.frame.size.height);;
-    if(self.currentListType == CommentList){
-        CGFloat navBar_CommentBarDiff = self.commentingKeyboard.frame.origin.y - self.navBar.frame.origin.y;
-        self.commentingKeyboard.frame = CGRectMake(0.f, newNavBarFrame.origin.y + navBar_CommentBarDiff, self.commentingKeyboard.frame.size.width, self.commentingKeyboard.frame.size.height);
-    }
-    self.navBar.frame = newNavBarFrame;
-    
-
+	return self.channelsToDisplay.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -428,25 +256,9 @@
 		[cell removeFromSuperview];
 	}
 
-	if(self.presentAllChannels && indexPath.row == 0) {
-		
-        [cell setHeaderTitle];
-        
-    } else if(self.commentObjectList) {
-        
-        NSInteger objectIndex = indexPath.row;
-        Comment * comment = [self.commentObjectList objectAtIndex:objectIndex];
-        [cell presentComment:comment];
-        
-    } else {
-		
-        NSInteger objectIndex = self.presentAllChannels ? (indexPath.row - 1) : indexPath.row;
-		Channel *channel = [self.channelsToDisplay objectAtIndex:objectIndex];
+		Channel *channel = [self.channelsToDisplay objectAtIndex: indexPath.row];
 		[cell presentChannel:channel];
-        
-	}
-    
-	if(self.navBar)[self.view bringSubviewToFront:self.navBar];
+
 	return cell;
 }
 
@@ -454,8 +266,8 @@
 #pragma mark - Lazy Instantiation -
 
 
--(NSMutableArray *) channelsToDisplay{
-	if(!_channelsToDisplay)_channelsToDisplay = [[NSMutableArray alloc] init];
+-(NSArray *) channelsToDisplay {
+	if(!_channelsToDisplay) _channelsToDisplay = [[NSMutableArray alloc] init];
 	return _channelsToDisplay;
 }
 

@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SettingsVC : UIViewController
-@property (nonatomic) NSString * userName;
+@interface SettingsVC : UITableViewController
+
 @end

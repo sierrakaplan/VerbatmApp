@@ -26,13 +26,11 @@
 @property (strong, nonatomic) UIImage* videoImage;
 @property (strong, nonatomic) UIImageView* videoView;
 @property (strong, nonatomic) UIImageView *playVideoImageView;
-@property (strong, nonatomic) UIImage* playVideoIconHalf;
-@property (strong, nonatomic) UIImage* playVideoIconQuarter;
-@property (strong, nonatomic) UIImage* playVideoIconFull;
 
 #pragma mark Encoding Keys
 
 #define PINCHVIEWS_KEY @"child_pinchviews"
+#define TAP_TO_EDIT_OFFSET 20.f
 
 @end
 
@@ -73,12 +71,11 @@
 #pragma mark - Adding play button to video
 
 -(void) addPlayIcon {
-	self.playVideoIconFull = [UIImage imageNamed: PLAY_VIDEO_ICON];
-	self.playVideoIconHalf = [UIImage imageNamed: PLAY_VIDEO_ICON_HALF_CIRCLE];
-	self.playVideoIconQuarter = [UIImage imageNamed: PLAY_VIDEO_ICON_QUARTER_CIRCLE];
-	self.playVideoImageView = [[UIImageView alloc] initWithImage: self.playVideoIconFull];
+	UIImage *playVideoIcon = [UIImage imageNamed: PLAY_VIDEO_ICON];
+	self.playVideoImageView = [[UIImageView alloc] initWithImage: playVideoIcon];
 	self.playVideoImageView.alpha = PLAY_VIDEO_ICON_OPACITY;
 	self.playVideoImageView.frame = self.videoView.bounds;
+	self.playVideoImageView.contentMode = UIViewContentModeScaleAspectFit;
 	[self.videoView addSubview:self.playVideoImageView];
 }
 
@@ -123,7 +120,6 @@
 -(void)renderSingleMedia {
 	if(self.containsVideo){
 		self.videoView.frame = self.background.frame;
-		self.playVideoImageView.image = self.playVideoIconFull;
 	} else {
 		self.imageView.frame = self.background.frame;
 	}
@@ -137,7 +133,6 @@
 							   self.background.frame.size.width, self.background.frame.size.height/2.f);
 
 	self.videoView.frame = frame1;
-	self.playVideoImageView.image = self.playVideoIconHalf;
 	self.imageView.frame = frame2;
 }
 
@@ -170,9 +165,13 @@
 }
 
 -(CGRect) getCenterFrameForVideoView {
-	return CGRectMake(self.videoView.bounds.origin.x + self.videoView.bounds.size.width/4,
-					  self.videoView.bounds.origin.y + self.videoView.bounds.size.height/4,
-					  self.videoView.bounds.size.width/2, self.videoView.bounds.size.height/2);
+	CGRect frame = CGRectMake(self.videoView.bounds.origin.x + self.videoView.bounds.size.width/4.f,
+					  self.videoView.bounds.origin.y + self.videoView.bounds.size.height/4.f,
+					  self.videoView.bounds.size.width/2.f, self.videoView.bounds.size.height/2.f);
+	if (self.numTypesOfMedia > 1) {
+		frame = CGRectOffset(frame, 0.f, TAP_TO_EDIT_OFFSET);
+	}
+	return frame;
 }
 
 #pragma mark - Collection View Border -

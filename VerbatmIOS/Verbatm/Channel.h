@@ -16,8 +16,11 @@
 
 // Set to true if the user hasn't added their own blog yet
 @property (nonatomic) BOOL defaultBlogName;
-@property (nonatomic) NSDate *latestPostDate;
-@property (nonatomic, readonly) NSString *name;
+//this definition must match the name of the lower NSDate value
+#define CHANNEL_MOST_RECENT_POST_DATE_NAME @"dateOfMostRecentChannelPost"
+@property (nonatomic, readonly) NSDate * dateOfMostRecentChannelPost;
+@property (nonatomic, readonly) NSString *channelName;
+@property (nonatomic, readonly) NSString *userName;
 @property (nonatomic, readonly) NSString *blogDescription;
 @property (nonatomic, readonly) PFObject *parseChannelObject;
 @property (nonatomic, readonly) PFUser *channelCreator;
@@ -42,6 +45,8 @@
 
 -(void) updateLatestPostDate:(NSDate*)date;
 
+-(void) changeChannelOwnerName:(NSString*)newName;
+
 -(void) getChannelOwnerNameWithCompletionBlock:(void(^)(NSString *))block;
 
 -(void) getFollowersWithCompletionBlock:(void(^)(void))block;
@@ -52,9 +57,7 @@
 
 -(void) addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator;
 
-
 +(void) getChannelsForUserList:(NSArray *) userList andCompletionBlock:(void(^)(NSMutableArray *))block;
-
 
 -(void) storeCoverPhoto:(UIImage *) coverPhoto;
 
@@ -67,5 +70,5 @@
 -(void)registerStopedFollowingChannel:(Channel *)channel;
 
 -(void) updatePostDeleted:(PFObject*)post;
-
+-(void) resetLatestPostInfo;
 @end

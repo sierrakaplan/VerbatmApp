@@ -22,9 +22,9 @@
 
 #define FOLLOW_PFCLASS_KEY @"FollowClass"//we maintain all the follow relationships in their own table
 #define FOLLOW_USER_KEY @"UserFollowing"//the user doing the following
+#define FOLLOW_CHANNEL_FOLLOWING_KEY @"ChannelFollowing" //the channel of the user following
 #define FOLLOW_CHANNEL_FOLLOWED_KEY @"ChannelFollowed"//channel being followed by above user
 #define FOLLOW_LATEST_POST_DATE @"LatestPostSeen"
-
 
 #define COMMENT_PFCLASS_KEY @"CommentClass"
 #define COMMENT_USER_KEY @"UserCommenting"//the user doing the commenting
@@ -82,6 +82,10 @@
 
 #define POST_COMPLETED_SAVING @"PostDoneSaving"//we store
 
+
+
+//This class maintains the relatinship between posts and channels
+//we record a reference to the post and the channel it was posted to
 #define POST_CHANNEL_ACTIVITY_CLASS  @"PostChannelActivityClass"
 #define POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO @"PostChannelActivityChannelPosted"//channel that post is posted in 
 #define POST_CHANNEL_ACTIVITY_POST @"PostChannelActivityPost"

@@ -127,15 +127,55 @@
     return screenShotImage;
 }
 
-    
+- (CALayer*)addTopBorderWithColor:(UIColor *)color andWidth:(CGFloat) borderWidth {
+	CALayer *border = [CALayer layer];
+	border.backgroundColor = color.CGColor;
+
+	border.frame = CGRectMake(0, 0, self.frame.size.width, borderWidth);
+	[self.layer addSublayer:border];
+	return border;
+}
+
+- (CALayer*)addBottomBorderWithColor:(UIColor *)color andWidth:(CGFloat) borderWidth {
+	CALayer *border = [CALayer layer];
+	border.backgroundColor = color.CGColor;
+
+	border.frame = CGRectMake(0, self.frame.size.height - borderWidth, self.frame.size.width, borderWidth);
+	[self.layer addSublayer:border];
+	return border;
+}
+
+- (CALayer*)addLeftBorderWithColor:(UIColor *)color andWidth:(CGFloat) borderWidth {
+	CALayer *border = [CALayer layer];
+	border.backgroundColor = color.CGColor;
+
+	border.frame = CGRectMake(0, 0, borderWidth, self.frame.size.height);
+	[self.layer addSublayer:border];
+	return border;
+}
+
+- (CALayer*)addRightBorderWithColor:(UIColor *)color andWidth:(CGFloat) borderWidth {
+	CALayer *border = [CALayer layer];
+	border.backgroundColor = color.CGColor;
+
+	border.frame = CGRectMake(self.frame.size.width - borderWidth, 0, borderWidth, self.frame.size.height);
+	[self.layer addSublayer:border];
+	return border;
+}
+
+- (void) shake {
+	CABasicAnimation *animation =
+	[CABasicAnimation animationWithKeyPath:@"position"];
+	[animation setDuration:0.05];
+	[animation setRepeatCount: 4];
+	[animation setAutoreverses:YES];
+	[animation setFromValue:[NSValue valueWithCGPoint:
+							 CGPointMake([self center].x - 10.0f, [self center].y)]];
+	[animation setToValue:[NSValue valueWithCGPoint:
+						   CGPointMake([self center].x + 10.0f, [self center].y)]];
+	[[self layer] addAnimation:animation forKey:@"position"];
+}
+
 @end
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+

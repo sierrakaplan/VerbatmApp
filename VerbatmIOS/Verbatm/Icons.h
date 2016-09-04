@@ -11,10 +11,13 @@
 
 #define LOAD_ICON_IMAGE @"spinner_5"
 #define VERBATM_LOGO @"verbatm_logo"
+#define VERBATM_LOGO_TEXT @"verbatm_logo_text"
+
+#define BACKGROUND_IMAGE @"background_image"
 
 #pragma mark - Sign in -
 
-#define SIGN_IN_BACKGROUND @"background_sign_in"
+#define TERMS_AND_CONDITIONS @"terms_and_conditions"
 
 #pragma mark - Bottom Tab Bar -
 
@@ -25,12 +28,12 @@
 
 #define NOTIFICATION_ICON_SELECTED @"notification_icon_selected"
 #define NOTIFICATION_ICON_UNSELECTED @"notification_icon_unselected"
-#pragma mark - Profile -
 
-#define BLOCK_USER_ICON @"settings_icon"
+#pragma mark - Profile -
 
 #define SETTINGS_BUTTON_ICON @"settings_icon"
 #define BLOCK_ICON @"block_icon"
+#define MORE_INFO_ICON @"people_icon"
 
 #define BACK_BUTTON_ICON @"back_arrow_black"
 #define DOWN_ARROW_ICON @"down_arrow_white"
@@ -39,7 +42,7 @@
 
 #pragma mark - Feed -
 
-#define EXIT_POST_FULLSCREEN @"White X_ Exit"
+#define EXIT_POST_FULLSCREEN @"white_x"
 #define VIDEO_LOADING_ICON @"white_spin_icon"
 #define FOLLOWED_BY_ICON @"followed_by_icon"
 #define FOLLOW_ICON_LIGHT @"follow_icon_light"
@@ -55,7 +58,7 @@
 #define DEFAULT_TEXT_BACKGROUND_IMAGE TEXTAVE_BACKGROUND_FULLSCREEN_OPTIONS[0]
 
 #define MINIMIZE_ICON @"minimize_icon"
-#define ADK_BACKGROUND @"background_adk"
+#define ADK_BACKGROUND DISCOVER_BACKGROUND
 
 #define CHANNEL_SELECTOR_ARROW_LEFT @"white_selector_arrow_left"
 #define CHANNEL_SELECTOR_ARROW_RIGHT @"white_selector_arrow_right"
@@ -84,16 +87,16 @@
 #define TEXT_FONT_COLOR_BLACK @"text_toolbar_black_font_icon"
 #define TEXT_FONT_COLOR_WHITE @"text_toolbar_white_font_icon"
 
-#define CHANGE_FONT_SIZE_ICON_UNSELECTED @"Change Font size icon_unselected"
-#define CHANGE_FONT_SIZE_ICON_SELECTED @"Change Font size icon_selected"
+#define CHANGE_FONT_SIZE_ICON_UNSELECTED @"text_toolbar_change_size_unselected"
+#define CHANGE_FONT_SIZE_ICON_SELECTED @"text_toolbar_change_size_selected"
 
 #define CHANGE_TEXT_ALIGNMENT_ICON @"text_toolbar_alignment_icon"
 
 #define CHANGE_TEXT_COLOR_ICON_SELECTED @"text_toolbar_color_icon_selected"
 #define CHANGE_TEXT_COLOR_ICON_UNSELECTED @"text_toolbar_color_icon_unselected"
 
-#define CHANGE_FONT_TYPE_ICON_UNSELECTED @"Font type icon_unselected"
-#define CHANGE_FONT_TYPE_ICON_SELECTED @"Font type icon_selected"
+#define CHANGE_FONT_TYPE_ICON_UNSELECTED @"text_toolbar_change_font_unselected"
+#define CHANGE_FONT_TYPE_ICON_SELECTED @"text_toolbar_change_font_selected"
 
 #define CHANGE_TEXT_VIEW_BACKGROUND_SELECTED @"text_toolbar_change_background_selected"
 #define CHANGE_TEXT_VIEW_BACKGROUND_UNSELECTED @"text_toolbar_change_background_unselected"
@@ -118,8 +121,6 @@
 #define Pinch Views
 
 #define PLAY_VIDEO_ICON @"play_video_icon"
-#define PLAY_VIDEO_ICON_HALF_CIRCLE @"play_video_icon_half_circle"
-#define PLAY_VIDEO_ICON_QUARTER_CIRCLE @"play_video_icon_quarter_circle"
 
 #pragma mark Media Tile
 #define TEXT_BUTTON_ICON @"add_text_icon_pencil"
@@ -138,15 +139,14 @@
 
 #pragma mark Like Share Bar
 
-#define COMMENT_ICON @"Comment icon"
+#define COMMENT_ICON @"comment_icon"
 #define SMALL_COMMENT_ICON COMMENT_ICON
 
-#define LIKE_ICON_UNPRESSED @"Gray Heart"
-#define LIKE_ICON_PRESSED @"Red Heart"
+#define LIKE_ICON_UNPRESSED @"gray_heart"
+#define LIKE_ICON_PRESSED @"red_heart"
 
-
-#define SMALL_SHARE_ICON @"Gray Share icon"
-#define SHARE_ICON @"Blue Share icon"
+#define SMALL_SHARE_ICON @"gray_share_icon"
+#define SHARE_ICON @"blue_share_icon"
 
 #define UNMUTED_ICON @"sound_unmuted"
 #define MUTED_ICON @"sound_muted"
@@ -158,9 +158,8 @@
 
 #define FACEBOOK_LOGO @"facebook_logo"
 #define TWITTER_LOGO @"twitter_logo"
-
-#define SMS_ICON @"SMS icon"
-#define COPY_LINK_ICON @"Copy link"
+#define SMS_ICON @"sms_icon"
+#define COPY_LINK_ICON @"copy_link_icon"
 
 #pragma mark Edit Content View
 
@@ -188,16 +187,18 @@
 
 #pragma mark - Profile Information Header -
 
-#define ADD_COVER_PHOTO_ICON @"Add cover photo"
+#define ADD_COVER_PHOTO_ICON @"camera"
 #define FEEDBACK_NOTIFICATION_ICON @"FeedbackNotification"
+
+#define ADD_FIRST_POST_ICON @"Add First Post icon"
 
 #define PROFILE_UNDER_CONSTRUCTION_ICON @"ProfileUnderConstruction"
 
 #define NO_COVER_PHOTO_IMAGE @"Empty_Cover_Photo_Image"
-#define PROFILE_BACK_BUTTON_ICON @"back_arrow_white"
+#define PROFILE_BACK_BUTTON_ICON @"White X_ Exit"
 
-#define LOGIN_ICON @"Log In"
-#define CREATE_ACCOUNT @"Create Account"
+#define LOGIN_ICON @"log_in_text"
+#define CREATE_ACCOUNT @"create_account_text"
 
 
 #pragma mark - Notifications View Controller -
@@ -205,7 +206,7 @@
 #define NOTIFICATIONS_EMPTY_ICON @"NotificationsEmptyIcon"
 #define LIKE_NOTIFICATION_IMAGE_ICON @"HeartIcon"
 
-#define NOTIFICATIONS_LIST_BACKGROUND @"notifications_background"
+#define NOTIFICATIONS_LIST_BACKGROUND DISCOVER_BACKGROUND
 
 #define NOTIFICATION_POPUP_ICON @"notifications_alert"
 

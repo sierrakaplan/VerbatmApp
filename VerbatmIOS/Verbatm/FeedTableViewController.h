@@ -11,9 +11,11 @@
 
 @protocol FeedTableViewDelegate <NSObject>
 
--(void) showTabBar: (BOOL) show;
+-(void) goToDiscover;
+@optional
 
--(void)goToDiscover;
+-(void) refreshListOfContent;
+-(void) exitProfileList;
 
 @end
 
@@ -21,6 +23,5 @@
 
 @property (nonatomic, weak) id<FeedTableViewDelegate> delegate;
 
--(void) refreshListOfContent;
-
+-(void)setAndRefreshWithList:(NSMutableArray *) channelList withStartIndex:(NSInteger) startIndex;
 @end

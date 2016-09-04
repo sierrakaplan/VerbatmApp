@@ -11,29 +11,34 @@
 
 #pragma mark - Login -
 
-// from master vc
-#define SIGN_IN_SEGUE @"segue_id_sign_in"
-#define USER_SETTINGS_SEGUE @"segue_id_user_info"
-// unwind segues back to master
-#define UNWIND_SEGUE_FROM_LOGIN_TO_MASTER @"unwind_to_master_vc_from_login"
-#define UNWIND_SEGUE_FROM_USER_SETTINGS_TO_LOGIN @"unwind_to_master_from_settings"
+// From Master VC
+#define SEGUE_LOGIN_OR_SIGNUP @"login_or_signup_segue"
 
-#pragma mark - ADK -
+// Login (vs create account from first page)
+#define SEGUE_LOGIN @"login_segue"
 
+// Create account
+#define SEGUE_WELCOME @"welcome_to_verbatm_segue"
+#define SEGUE_TERMS_AND_CONDITIONS @"terms_and_conditions_segue"
+#define SEGUE_CREATE_ACCOUNT @"create_account_segue"
+#define SEGUE_FOLLOW_FRIENDS_FROM_FACEBOOK_LOGIN @"follow_friends_from_facebook"
+#define SEGUE_ENTER_PHONE_CONFIRMATION_CODE @"enter_phone_code_segue" //from either login or create account nav
+#define SEGUE_FOLLOW_FRIENDS @"follow_friends_segue"
+#define SEGUE_CREATE_NAME @"create_name_segue"
+#define SEGUE_CREATE_FIRST_POST @"first_post_segue"
+
+// segue from master vc to onboarding
+#define SEGUE_ONBOARDING_ALREADY_LOGGED_IN @"logged_in_onboarding_segue"
+
+// unwind segues back to master from login/onboarding
+#define UNWIND_SEGUE_PHONE_LOGIN_TO_MASTER @"phone_login_to_master_segue"
+#define UNWIND_SEGUE_FACEBOOK_LOGIN_TO_MASTER @"facebook_login_to_master_segue"
+#define UNWIND_SEGUE_FROM_ONBOARDING_TO_MASTER @"unwind_to_master_from_onboarding"
+
+// ADK
 #define ADK_SEGUE @"segue_id_adk"
 #define UNWIND_SEGUE_FROM_ADK_TO_MASTER @"unwind_to_master_vc_from_adk"
 
-#define BRING_UP_EDITCONTENT_SEGUE @"segue_id_edit_content_view"
-
-#define SEGUE_TO_QUESTION_PAGE @"segue_id_question_page"
-#define UNWIND_SEGUE_QUESTION_PAGE @"segue_id_unwind_from_question_page"
-
-#define SETTINGS_PAGE_MODAL_SEGUE @"presentSettingsPage"
-
-#define ARTICLE_DISPLAY_VC_ID @"article_display_vc"
-
-#define TERMS_CONDITIONS_VC_SEGUE_ID @"Accept_Terms_And_Conditions_Segue"
-
-#define SEGUE_ONBOARDING_BLOG_SELECT @"presentBlogSelect"
+#define SEGUE_TERMS_AND_CONDITIONS_FROM_SETTINGS @"terms_and_conditions_from_settings"
 
 #endif /* SegueIDs_h */

@@ -15,6 +15,7 @@
 #define STANDARD_VIEW_CORNER_RADIUS 10.f
 
 #define VERBATM_GOLD_COLOR [UIColor colorWithRed:1.0 green:0.85 blue:0.20 alpha:1.0]
+#define VERBATM_GOLD_COLOR_TRANSLUCENT [UIColor colorWithRed:1.0 green:0.5 blue:0.10 alpha:0.5]
 #define ORANGE_COLOR [UIColor colorWithRed:0.8 green:0.4 blue:0.01 alpha:1.0]
 
 #define REGULAR_FONT @"Raleway-Regular"//@"Quicksand-Regular"
@@ -24,6 +25,8 @@
 
 #define HEADER_TEXT_FONT REGULAR_FONT
 #define HEADER_TEXT_SIZE 20.f
+
+#define FOLLOW_TEXT_FONT_SIZE 12.f
 
 #pragma mark - Sign In -
 
@@ -73,12 +76,16 @@
 
 
 #pragma mark - Feed - 
+#define SELECTION_DOT_COLOR colorWithRed:0.f green:174.f/255.f blue:239.f/255.f alpha:1.f
 
 #define REPOST_BUTTON_TEXT_FONT_SIZE 15.f
 #define REPOST_VIEW_BACKGROUND_COLOR [UIColor colorWithWhite:0.f alpha:0.8]
 
 #define CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE 20.f
 #define CHANNEL_USER_LIST_USER_NAME_FONT_SIZE 15.f
+
+#define POSTLIST_USER_LIST_USER_NAME_FONT_SIZE 18.f
+
 
 #define NOTIFICATION_LIST_FONT_SIZE 17.f
 

@@ -10,6 +10,7 @@
 #import "UtilityFunctions.h"
 #import "Styles.h"
 #import "Icons.h"
+#import "SizesAndPositions.h"
 @interface AdjustTextAVEBackgroundToolBar()
 
 @property (nonatomic) NSMutableArray * selectionOptions;
@@ -18,6 +19,7 @@
 
 #define IMAGE_GAP 10.f
 #define IMAGE_SIZE (self.frame.size.height - 5.f)
+#define RIGHT_ICON_IFFSET
 @end
 
 
@@ -38,7 +40,7 @@
 }
 
 -(void)createScrollingViews{
-    CGFloat xAdvanced = IMAGE_GAP;
+    CGFloat xAdvanced = IMAGE_GAP + TEXT_TOOLBAR_BUTTON_OFFSET;
     for(int i = 0; i < self.circleButtonBackgrounds.count; i++) {
         CGRect  buttomFrame = CGRectMake(xAdvanced, 2.f, IMAGE_SIZE, IMAGE_SIZE);
         UIButton * button = [UtilityFunctions getButtonWithFrame:buttomFrame andIcon:self.circleButtonBackgrounds[i] andSelector:@selector(buttonSelected:) andTarget:self];

@@ -23,6 +23,8 @@
 //an nsarray of the channels
 + (void) getChannelsForUser:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock;
 
++ (void) getChannelsForFollowers:(Channel*)channel withCompletionBlock:(void(^)(NSArray *))completionBlock;
+
 // NOT IN USE
 + (void) getAllChannelsWithCompletionBlock:(void(^)(NSMutableArray *))completionBlock;
 

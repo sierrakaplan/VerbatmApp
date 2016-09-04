@@ -21,6 +21,8 @@
 
 -(void) clearFeedData;
 
+-(void) loadFriendsChannelsWithCompletionHandler:(void(^)(NSArray *, NSArray *))completionBlock;
+
 /* Reloads channels for current user's explore section, obviously excluding channels owned by the user
    or channels they already follow. Returns up to CHANNEL_DOWNLOAD_MAX_SIZE channels */
 -(void) refreshExploreChannelsWithCompletionHandler:(void(^)(NSArray *))completionBlock;

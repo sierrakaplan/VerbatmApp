@@ -28,7 +28,6 @@
 
 #import "GMImagePickerController.h"
 
-#import "Intro_Instruction_Notification_View.h"
 #import "ImagePinchView.h"
 #import "Icons.h"
 
@@ -65,16 +64,12 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 
-@interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,
-Intro_Notification_Delegate, GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate,
+@interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate, GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate,
 CustomNavigationBarDelegate,PreviewDisplayDelegate, VerbatmCameraViewDelegate,
 UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 
-@property (nonatomic) Intro_Instruction_Notification_View * introInstruction;
 
 @property (nonatomic) NSInteger totalPiecesOfMedia;
-
-@property (nonatomic) Channel *userChannel;
 
 #pragma mark Image Manager
 
@@ -174,6 +169,8 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 	[super viewDidLoad];
 	self.totalPiecesOfMedia = 0;
 	self.ourPosts = [[NSMutableArray alloc] init];
+	self.cameraView = [[VerbatmCameraView alloc] initWithFrame:self.view.bounds];
+	self.cameraView.delegate = self;
 	[self initializeVariables];
 	[self setFrameMainScrollView];
 	[self setElementDefaultFrames];
@@ -193,14 +190,6 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 	return YES;
 }
 
--(void)checkAdkSlideShowOnboarding {
-	if(![[UserSetupParameters sharedInstance] checkAdkOnboardingShown]) {
-		OnboardingADK* onboardingViewController = [[OnboardingADK alloc] init];
-		onboardingViewController.mainADK = self;
-		[self presentViewController:onboardingViewController animated:YES completion:nil];
-	}
-}
-
 -(void) addBackgroundImage {
 	UIImageView * backgroundView = [[UIImageView alloc] initWithFrame:self.view.bounds];
 	backgroundView.image =[UIImage imageNamed:ADK_BACKGROUND];
@@ -216,25 +205,10 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear: animated];
-//	[self checkIntroNotification];
-	[self checkAdkSlideShowOnboarding];
 }
 
-//don't want anymore
-//-(void) checkIntroNotification {
-//	if(![[UserSetupParameters sharedInstance] checkAndSetADKInstructionShown]) {
-//		self.introInstruction = [[Intro_Instruction_Notification_View alloc] initWithCenter:self.view.center andType:ADK];
-//		self.introInstruction.custom_delegate = self;
-//		[self.view addSubview:self.introInstruction];
-//		[self.view bringSubviewToFront:self.introInstruction];
-//	}
-//}
-
--(void) notificationDoneAnimatingOut {
-	if(self.introInstruction){
-		[self.introInstruction removeFromSuperview];
-		self.introInstruction = nil;
-	}
+-(void) viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
 }
 
 -(void) initializeVariables {
@@ -272,7 +246,7 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 -(void) formatNavBar {
 	[self.navBar createLeftButtonWithTitle:@"CLOSE" orImage:nil];
 	[self.navBar createRightButtonWithTitle:@"POST" orImage:nil];
-	[self.navBar createMiddleButtonWithTitle:@"UPDATE BLOG" blackText:YES largeSize:YES];
+	[self.navBar createMiddleButtonWithTitle:@"UPDATE BLOG" blackText:NO largeSize:YES];
 	self.navBar.delegate = self;
 	[self.view addSubview: self.navBar];
 }
@@ -1805,7 +1779,7 @@ andSaveInUserDefaults:(BOOL)save {
 	}
 }
 
-#pragma mark -Share Seletion View Protocol -
+#pragma mark - Share Seletion View Protocol -
 
 -(void)cancelButtonSelected{
 	[self removeSharePOVView];
@@ -1864,7 +1838,7 @@ andSaveInUserDefaults:(BOOL)save {
 	self.shareLinkView = nil;
 }
 
--(void) continueToPublish{
+-(void) continueToPublish {
 
 	[[PublishingProgressManager sharedInstance] publishPostToChannel:self.userChannel andFacebook:TRUE withCaption:self.fbCaption withPinchViews:self.pinchViewsToPublish
 												 withCompletionBlock:^(BOOL isAlreadyPublishing, BOOL noNetwork) {
@@ -1894,14 +1868,6 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 #pragma mark - Lazy Instantiation
-
--(VerbatmCameraView*) cameraView {
-	if (!_cameraView) {
-		_cameraView = [[VerbatmCameraView alloc] initWithFrame:self.view.bounds];
-		_cameraView.delegate = self;
-	}
-	return _cameraView;
-}
 
 -(PreviewDisplayView*) previewDisplayView {
 	if(!_previewDisplayView){

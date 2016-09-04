@@ -49,7 +49,10 @@
 	@synchronized(self) {
 		PFUser *currentUser = [PFUser currentUser];
 		self.ftue = [[currentUser objectForKey:USER_FTUE] boolValue];
+		//todo
+//		self.ftue = NO;
 		if (self.ftue) return;
+		//todo: remove this
 
 		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 		//because they are all saved together we can just check if one exists

@@ -51,6 +51,7 @@
 - (id)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.sessionManager = [[MediaSessionManager alloc] initSessionWithView:self];
 		self.photoEnabled = YES;
 		self.videoEnabled = YES;
 		self.backgroundColor = [UIColor blackColor];
@@ -389,15 +390,6 @@
 
 -(void) closeButtonTapped {
 	[self.delegate minimizeCameraViewButtonTapped];
-}
-
-#pragma mark - Lazy Instantiation -
-
--(MediaSessionManager*)sessionManager{
-	if(!_sessionManager){
-		_sessionManager = [[MediaSessionManager alloc] initSessionWithView:self];
-	}
-	return _sessionManager;
 }
 
 @end

@@ -1,3 +1,4 @@
+
 //
 //  verbatmMasterNavigationViewController.m
 //  Verbatm
@@ -8,13 +9,15 @@
 
 #import "Analytics.h"
 
-#import "CustomTabBarController.h"
 #import "ContentDevVC.h"
+#import "CurrentUserProfileVC.h"
 
 #import "Durations.h"
 
 #import "DiscoverVC.h"
 #import "FeedTableViewController.h"
+#import "FeedProfileListTVC.h"
+
 #import "Icons.h"
 #import "InstallationVariables.h"
 
@@ -25,7 +28,6 @@
 #import "Notification_BackendManager.h"
 
 #import "ParseBackendKeys.h"
-#import "ProfileVC.h"
 #import "PublishingProgressManager.h"
 #import <Parse/PFQuery.h>
 #import <Parse/PFInstallation.h>
@@ -42,11 +44,13 @@
 #import "UserSetupParameters.h"
 #import "UserManager.h"
 
+#import "VerbatmNavigationController.h"
+
 #import <Crashlytics/Crashlytics.h>
 
 
 @interface MasterNavigationVC () <UITabBarControllerDelegate, FeedTableViewDelegate,
-ProfileVCDelegate, NotificationsListTVCProtocol>
+ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 
 #pragma mark - Tab Bar Controller -
 
@@ -54,18 +58,23 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 
 @property (nonatomic) BOOL notificationIndicatorPresent;
 
-@property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
-@property (strong, nonatomic) CustomTabBarController* tabBarController;
 @property (nonatomic) BOOL tabBarHidden;
 @property (nonatomic) CGRect tabBarFrameOnScreen;
 @property (nonatomic) CGRect tabBarFrameOffScreen;
 
 #pragma mark View Controllers in tab bar Controller
 
-@property (strong,nonatomic) ProfileVC *profileVC;
-@property (strong,nonatomic) FeedTableViewController *feedVC;
+@property (nonatomic) VerbatmNavigationController *profileNavigationController;
+@property (strong,nonatomic) CurrentUserProfileVC *profileVC;
+
+@property (nonatomic) VerbatmNavigationController *discoverNavigationController;
 @property (strong,nonatomic) DiscoverVC *discoverVC;
-@property (strong, nonatomic) NotificationsListTVC * notificationVC;
+
+@property (nonatomic) VerbatmNavigationController *notificationsNavigationController;
+@property (strong, nonatomic) NotificationsListTVC *notificationVC;
+
+@property (nonatomic) VerbatmNavigationController *feedProfileListNavigationController;
+@property (strong, nonatomic) FeedProfileListTVC *feedProfileList;
 
 @property(strong,nonatomic) UIImageView * notificationIndicator;
 
@@ -98,16 +107,23 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	[super viewDidDisappear:animated];
 }
 
+- (void)viewWillLayoutSubviews {
+	CGRect tabFrame = self.tabBar.frame;
+	tabFrame.size.height = self.tabBarHeight ? self.tabBarHeight : 80;
+	tabFrame.origin.y = self.view.frame.size.height - tabFrame.size.height;
+	self.tabBar.frame = tabFrame;
+}
+
 - (UIStatusBarAnimation) preferredStatusBarUpdateAnimation {
 	return UIStatusBarAnimationSlide;
 }
 
 - (UIViewController *)childViewControllerForStatusBarHidden {
-	return self.tabBarController.selectedViewController;
+	return self.selectedViewController;
 }
 
 - (UIViewController *)childViewControllerForStatusBarStyle {
-	return self.tabBarController.selectedViewController;
+	return self.selectedViewController;
 }
 
 -(void) registerForNotifications {
@@ -161,12 +177,10 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 		[UserManager setFbId];
 	}
 	self.view.backgroundColor = [UIColor blackColor];
-	[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
+	//todo: show loading while this happens
+	[[UserInfoCache sharedInstance] loadUserChannelWithCompletionBlock:^{
 		[self setUpTabBarController];
 	}];
-	if(![[UserSetupParameters sharedInstance] checkFirstTimeFollowBlogShown]){
-		[self performSegueWithIdentifier:SEGUE_ONBOARDING_BLOG_SELECT sender:self];
-	}
 }
 
 #pragma mark - User Manager Delegate -
@@ -189,7 +203,8 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 #pragma mark - Tab bar controller -
 
 -(void) setUpTabBarController {
-	[self createTabBarViewController];
+	self.tabBarHeight = TAB_BAR_HEIGHT;
+	self.delegate = self;
 	[self createViewControllers];
 
 	UIViewController * deadView = [[UIViewController alloc] init];
@@ -201,12 +216,13 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	deadView.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:deadViewTabImage selectedImage:deadViewTabImage];
 	deadView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 
-	self.tabBarController.viewControllers = @[self.feedVC, self.discoverVC, deadView,self.notificationVC, self.profileVC];
+	self.viewControllers = @[self.feedProfileListNavigationController, self.discoverNavigationController,
+							 deadView, self.notificationsNavigationController, self.profileNavigationController];
 
 	if ([[InstallationVariables sharedInstance] launchedFromNotification]) {
-		self.tabBarController.selectedIndex = 3;
+		self.selectedIndex = 3;
 	} else {
-		self.tabBarController.selectedIndex = 1;
+		self.selectedIndex = 0;
 	}
 
 	[self addTabBarCenterButtonOverDeadView];
@@ -222,21 +238,21 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 }
 
 -(void) formatTabBar {
-	NSInteger numTabs = self.tabBarController.viewControllers.count;
-	CGSize tabBarItemSize = CGSizeMake(self.tabBarController.tabBar.frame.size.width/numTabs,
-									   self.tabBarController.tabBarHeight);
+	NSInteger numTabs = self.viewControllers.count;
+	CGSize tabBarItemSize = CGSizeMake(self.tabBar.frame.size.width/numTabs,
+									   self.tabBarHeight);
 	// Sets background of unselected UITabBarItem
-	[self.tabBarController.tabBar setBackgroundImage: [self getUnselectedTabBarItemImageWithSize: tabBarItemSize]];
-	[self.tabBarController.tabBar setBackgroundColor:[UIColor blackColor]];
+	[self.tabBar setBackgroundImage: [self getUnselectedTabBarItemImageWithSize: tabBarItemSize]];
+	[self.tabBar setBackgroundColor:[UIColor colorWithWhite:0.15f alpha:1.f]];
 	// Sets the background color of the selected UITabBarItem
-	[self.tabBarController.tabBar setSelectionIndicatorImage: [self getSelectedTabBarItemImageWithSize: tabBarItemSize]];
+	[self.tabBar setSelectionIndicatorImage: [self getSelectedTabBarItemImageWithSize: tabBarItemSize]];
 
 	//set two tab bar frames-- for when we want to remove the tab bar
-	self.tabBarFrameOnScreen = self.tabBarController.tabBar.frame;
-	self.tabBarFrameOffScreen = CGRectMake(self.tabBarController.tabBar.frame.origin.x,
+	self.tabBarFrameOnScreen = self.tabBar.frame;
+	self.tabBarFrameOffScreen = CGRectMake(self.tabBar.frame.origin.x,
 										   self.view.frame.size.height + ADK_BUTTON_SIZE/2.f,
-										   self.tabBarController.tabBar.frame.size.width,
-										   self.tabBarController.tabBarHeight);
+										   self.tabBar.frame.size.width,
+										   self.tabBarHeight);
 }
 
 -(UIImage*) getUnselectedTabBarItemImageWithSize: (CGSize) size {
@@ -251,28 +267,36 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 
 //the view controllers that will be tabbed
 -(void)createViewControllers {
-	self.discoverVC = [self.storyboard instantiateViewControllerWithIdentifier:FEATURED_CONTENT_VC_ID];
-	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
+	self.discoverNavigationController = [self.storyboard instantiateViewControllerWithIdentifier:
+										 DISCOVER_NAVIGATION_CONTROLLER_ID];
+	self.discoverVC = self.discoverNavigationController.viewControllers[0];
+	self.discoverVC.onboardingBlogSelection = NO;
+
+	self.profileNavigationController = [self.storyboard instantiateViewControllerWithIdentifier:
+										PROFILE_NAVIGATION_CONTROLLER_ID];
+	self.profileVC = self.profileNavigationController.viewControllers[0];
 	self.profileVC.delegate = self;
 	self.profileVC.ownerOfProfile = [PFUser currentUser];
-	self.profileVC.isCurrentUserProfile = YES;
 	self.profileVC.channel = [[UserInfoCache sharedInstance] getUserChannel];
-	self.profileVC.isProfileTab = YES;
 
-    self.feedVC = [[FeedTableViewController alloc] init];
-    self.feedVC.view.frame = self.view.bounds;
-	self.feedVC.delegate = self;
-    
-    self.notificationVC = [[NotificationsListTVC alloc] init];
-    self.notificationVC.view.frame = self.view.bounds;
+	self.feedProfileListNavigationController = [self.storyboard instantiateViewControllerWithIdentifier:
+												FEED_PROFILE_LIST_NAVIGATION_CONTROLLER_ID];
+	self.feedProfileList = self.feedProfileListNavigationController.viewControllers[0];
+    self.feedProfileList.delegate = self;
+
+	self.notificationsNavigationController = [self.storyboard instantiateViewControllerWithIdentifier: NOTIFICATIONS_NAVIGATION_CONTROLLER_ID];
+	self.notificationVC = self.notificationsNavigationController.viewControllers[0];
     self.notificationVC.delegate = self;
-	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
+
+	self.profileNavigationController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															  image:[UIImage imageNamed:PROFILE_NAV_ICON]
 													  selectedImage:[UIImage imageNamed:PROFILE_NAV_ICON]];
-	self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
-															  image:[UIImage imageNamed:HOME_NAV_ICON]
-													  selectedImage:[UIImage imageNamed:HOME_NAV_ICON]];
-	self.discoverVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
+	
+    self.feedProfileListNavigationController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
+                                                           image:[UIImage imageNamed:HOME_NAV_ICON]
+                                                   selectedImage:[UIImage imageNamed:HOME_NAV_ICON]];
+
+	self.discoverNavigationController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															   image:[UIImage imageNamed:DISCOVER_NAV_ICON]
 													   selectedImage:[UIImage imageNamed:DISCOVER_NAV_ICON]];
     
@@ -284,18 +308,14 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
                                                              imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
                                                scaledToSize:CGSizeMake(30.f, 30.f)];
     
-    self.notificationVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
+    self.notificationsNavigationController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
                                                                image:unselectedNotification
                                                        selectedImage:selectedNotification];
     
-    self.notificationVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
-    
-	self.profileVC.tabBarItem.imageInsets = self.discoverVC.tabBarItem.imageInsets =
-    self.feedVC.tabBarItem.imageInsets =  UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
-}
-
--(void)notificationListHideTabBar:(BOOL) shouldHide{
-    [self showTabBar:!shouldHide];
+    self.notificationsNavigationController.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+    self.discoverNavigationController.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+	self.profileNavigationController.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+    self.feedProfileListNavigationController.tabBarItem.imageInsets =  UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 }
 
 -(void)showNotificationIndicator{
@@ -323,24 +343,15 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
     [self.view bringSubviewToFront:self.notificationIndicator];
 }
 
--(void)createTabBarViewController {
-	self.tabBarControllerContainerView.frame = self.view.bounds;
-	self.tabBarController = [self.storyboard instantiateViewControllerWithIdentifier: TAB_BAR_CONTROLLER_ID];
-	self.tabBarController.tabBarHeight = TAB_BAR_HEIGHT;
-	[self.tabBarControllerContainerView addSubview:self.tabBarController.view];
-	[self addChildViewController:self.tabBarController];
-	self.tabBarController.delegate = self;
-}
-
 // Create a custom UIButton and add it over our adk icon
 -(void) addTabBarCenterButtonOverDeadView {
 
-	NSInteger numTabs = self.tabBarController.viewControllers.count;
-	CGFloat tabWidth = self.tabBarController.tabBar.frame.size.width/numTabs;
+	NSInteger numTabs = self.viewControllers.count;
+	CGFloat tabWidth = self.tabBar.frame.size.width/numTabs;
 	// covers up tab so that it won't go to blank view controller
 	// Center tab out of 3
 	UIView* tabView = [[UIView alloc] initWithFrame:CGRectMake(tabWidth*2, 0.f, tabWidth,
-															   self.tabBarController.tabBarHeight)];
+															   self.tabBarHeight)];
 	[tabView setBackgroundColor:[UIColor clearColor]];
 
 	UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -348,50 +359,48 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 	[button setBackgroundColor:[UIColor clearColor]];
 	[button addTarget:self action:@selector(revealADK) forControlEvents:UIControlEventTouchUpInside];
 
-	//[self.tabBarController.tabBar addSubview:tabView];
-	[self.tabBarController.tabBar addSubview:button];
+	//[self.tabBar addSubview:tabView];
+	[self.tabBar addSubview:button];
 }
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController
  shouldSelectViewController:(UIViewController *)viewController {
 	// Refresh feed if they tap the feed icon while on the feed
-	if (viewController == self.feedVC && self.tabBarController.selectedViewController == self.feedVC) {
-		[self.feedVC refreshListOfContent];
+	if (viewController == self.feedProfileListNavigationController &&
+		self.selectedViewController == self.feedProfileListNavigationController) {
+		//todo:[self.feedProfileList refreshListOfContent];
 	}
 	return YES;
 }
 
 -(void) revealADK {
-	//Clear memory from discover when bring up adk
-	NSNotification * not = [[NSNotification alloc]initWithName:NOTIFICATION_FREE_MEMORY_DISCOVER object:nil userInfo:nil];
-	[[NSNotificationCenter defaultCenter] postNotification:not];
 	[[Analytics getSharedInstance] newADKSession];
 	[self performSegueWithIdentifier:ADK_SEGUE sender:self];
 }
-
 
 -(void)userHasSignedOutNotification:(NSNotification *) notification{
 	[self bringUpLogin];
 }
 
-
 #pragma mark - Handle Login -
 
 //brings up the create account page if there is no user logged in
 -(void) bringUpLogin {
-	[self performSegueWithIdentifier:SIGN_IN_SEGUE sender:self];
+	[self performSegueWithIdentifier:SEGUE_LOGIN_OR_SIGNUP sender:self];
 }
 
 //catches the unwind segue from login / create account or adk
 - (IBAction) unwindToMasterNavVC: (UIStoryboardSegue *)segue {
     
-	if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER]) {
+	if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER] ||
+		[segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ONBOARDING_TO_MASTER]) {
 		if ([[PublishingProgressManager sharedInstance] currentlyPublishing]) {
-			[self.tabBarController setSelectedViewController:self.profileVC];
+			[self setSelectedViewController: self.profileNavigationController];
 		}
 		[[Analytics getSharedInstance] endOfADKSession];
-	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_USER_SETTINGS_TO_LOGIN] ||
-               [segue.identifier isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]) {
+	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FACEBOOK_LOGIN_TO_MASTER] ||
+               [segue.identifier isEqualToString: UNWIND_SEGUE_PHONE_LOGIN_TO_MASTER]) {
+		//todo
 	}
 }
 
@@ -403,13 +412,13 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 
 #pragma mark - Feed VC Delegate -
 
-
 -(void) goToDiscover{
-    [self.tabBarController setSelectedIndex:1];
+    [self setSelectedIndex: 1];
 }
 
+
 -(void) showTabBar:(BOOL)show {
-	if (show) {
+	if (show && self.tabBarHidden) {
 		self.tabBarHidden = NO;
         if (self.notificationIndicatorPresent) {
             [self showIndicator];
@@ -417,9 +426,9 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			[self setNeedsStatusBarAppearanceUpdate];
-			self.tabBarController.tabBar.frame = self.tabBarFrameOnScreen;
+			self.tabBar.frame = self.tabBarFrameOnScreen;
 		}];
-	} else {
+	} else if (!show && !self.tabBarHidden) {
 		self.tabBarHidden = YES;
         if(self.notificationIndicatorPresent){
             [self removeIndicator];
@@ -427,7 +436,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
         }
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			[self setNeedsStatusBarAppearanceUpdate];
-			self.tabBarController.tabBar.frame = self.tabBarFrameOffScreen;
+			self.tabBar.frame = self.tabBarFrameOffScreen;
 		}];
 	}
 }
@@ -469,7 +478,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 		[self.notificationVC refreshNotifications];
 		[self showIndicator];
 	} else {
-		NSLog(@"Received push notiication that cannot be shown in notifications tab.");
+//		NSLog(@"Received push notification that cannot be shown in notifications tab.");
 	}
 }
 
@@ -487,7 +496,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol>
 
 - (void)didReceiveMemoryWarning{
 	[super didReceiveMemoryWarning];
-	if (self.tabBarController.selectedViewController != self.discoverVC) {
+	if (self.selectedViewController != self.discoverVC) {
 		NSNotification * not = [[NSNotification alloc]initWithName:NOTIFICATION_FREE_MEMORY_DISCOVER object:nil userInfo:nil];
 		[[NSNotificationCenter defaultCenter] postNotification:not];
 	}

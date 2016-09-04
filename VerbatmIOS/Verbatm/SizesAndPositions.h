@@ -25,13 +25,11 @@
 #pragma mark - Log In/Sign Up -
 
 #define LOGIN_TOOLBAR_HEIGHT 50.f
-#define LOGIN_BUTTON_HEIGHT 100.f
-#define LOGIN_BUTTON_WIDTH 400.f
 
 #pragma mark - Main Tab bar -
 
 #define TAB_BUTTON_PADDING_X 12.f
-#define TAB_BUTTON_PADDING_Y 7.f
+#define TAB_BUTTON_PADDING_Y 0.f
 
 #define TAB_DIVIDER_WIDTH 2.f
 #define TAB_BAR_HEIGHT 40.f
@@ -57,7 +55,7 @@
 #define SIGN_UP_BUTTON_GAP 20.f
 #define OR_LABEL_WIDTH 50.f
 
-#define TOP_BUTTON_YOFFSET 200.f
+#define TOP_BUTTON_YOFFSET 250.f
 
 #define SIGNUP_BACK_BUTTON_SIZE 40.f
 
@@ -153,12 +151,10 @@
 #define TITLE_BAR_HEIGHT 60.f
 
 #pragma mark - Like Share Bar
+
 #define LIKE_SHARE_BAR_WIDTH 50.f
-
-#define SMALL_SQUARE_LIKESHAREBAR_HEIGHT 30.f
-
-
 #define LIKE_SHARE_BAR_HEIGHT 300.f
+#define SMALL_SQUARE_LIKESHAREBAR_HEIGHT 30.f
 #define MUTE_BUTTON_OFFSET 10
 
 #pragma mark - Page Views
@@ -176,33 +172,12 @@
 
 #pragma mark - Profile -
 
-#define POSTLIST_HEIGHT_EXTENSION 0.f //adds this as an extra buffer to increase post sizes
-
-#pragma mark Deprecated
-#define CHANNEL_CREATION_VIEW_HEIGHT 120.f
-#define CHANNEL_CREATION_VIEW_WIDTH 300.f
-#define CHANNEL_CREATION_VIEW_Y_OFFSET (PROFILE_NAV_BAR_HEIGHT + 140.f)
-#define USER_CELL_VIEW_HEIGHT 60.f
-#define CHANNEL_USER_LIST_CELL_HEIGHT 75.f
-#define PROFILE_NAV_BAR_HEIGHT (PROFILE_HEADER_HEIGHT + USER_CELL_VIEW_HEIGHT + STATUS_BAR_HEIGHT)
-#define THREAD_BAR_BUTTON_FONT_SIZE 17.f
-
-#pragma mark Profile Header
-#define PROFILE_INFO_BAR_HEIGHT 30.f
-#define PROFILE_HEADER_HEIGHT (self.view.frame.size.width)
-#define PROFILE_HEADER_XOFFSET 7.f
-
-#pragma mark Other profile
-#define NO_POSTS_LABEL_WIDTH 300.f
-
 
 #pragma mark - Discover/Search -
 
 #define DISCOVER_USERNAME_AND_FOLLOW_HEIGHT 20.f
 #define DISCOVER_USERNAME_LABEL_WIDTH (self.frame.size.width - (FOLLOW_BUTTON_WIDTH + OFFSET*2))
 #define DISCOVER_CHANNEL_NAME_HEIGHT 25.f
-
-#define FOLLOW_TEXT_FONT_SIZE 12.f
 
 #define PAGE_UP_ICON_SIZE 45.f
 
@@ -211,9 +186,11 @@
 #define LARGE_FOLLOW_BUTTON_WIDTH 100.f
 #define LARGE_FOLLOW_BUTTON_HEIGHT (LARGE_FOLLOW_BUTTON_WIDTH/3.f)
 
-#pragma mark -User and Channel List-
+#pragma mark - User and Channel List -
 
 #define CHANNEL_LIST_CELL_SEPERATOR_HEIGHT 0.6
+#define USER_CELL_VIEW_HEIGHT 60.f
+#define CHANNEL_USER_LIST_CELL_HEIGHT 75.f
 
 #endif
 

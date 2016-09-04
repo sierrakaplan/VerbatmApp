@@ -19,7 +19,10 @@
 
 @interface Channel ()
 
-@property (nonatomic, readwrite) NSString * name;
+@property (nonatomic, readwrite) NSDate *dateOfMostRecentChannelPost;
+@property (nonatomic, readwrite) NSString * channelName;
+@property (nonatomic, readwrite) NSString *userName;
+
 @property (nonatomic, readwrite) NSString *blogDescription;
 @property (nonatomic, readwrite) PFObject * parseChannelObject;
 @property (nonatomic, readwrite) PFUser *channelCreator;
@@ -43,11 +46,12 @@
     
     self = [super init];
     if(self){
-        self.name = channelName;
+        self.channelName = channelName;
 		self.followObject = followObject;
         if (parseChannelObject) {
             [self addParseChannelObject:parseChannelObject andChannelCreator:channelCreator];
             self.blogDescription = parseChannelObject[CHANNEL_DESCRIPTION_KEY];
+            self.userName = [parseChannelObject objectForKey:CHANNEL_CREATOR_NAME_KEY];
         }
         if (self.blogDescription == nil) {
             self.blogDescription = @"";
@@ -55,7 +59,6 @@
     }
     return self;
 }
-
 
 -(NSString *)getCoverPhotoUrl{
     NSString * url = [self.parseChannelObject valueForKey:CHANNEL_COVER_PHOTO_URL];
@@ -71,6 +74,7 @@
     block(imageData);
 }
 
+//todo: clean up and store cover photo once it's been loaded once
 -(void)loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*, NSData*))block{
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             NSString * url = [self.parseChannelObject valueForKey:CHANNEL_COVER_PHOTO_URL];
@@ -94,7 +98,7 @@
 
 -(void) changeTitle:(NSString*)title {
 	if (!title.length) return;
-	self.name = title;
+	self.channelName = title;
 	self.parseChannelObject[CHANNEL_NAME_KEY] = title;
 	[self.parseChannelObject saveInBackground];
 }
@@ -102,7 +106,7 @@
 -(void) changeTitle:(NSString*)title andDescription:(NSString*)description {
 	if (!title.length) return;
 	self.defaultBlogName = NO;
-    self.name = title;
+    self.channelName = title;
     self.blogDescription = description;
     self.parseChannelObject[CHANNEL_NAME_KEY] = title;
     self.parseChannelObject[CHANNEL_DESCRIPTION_KEY] = description;
@@ -131,6 +135,12 @@
 	[self.parseChannelObject saveInBackground];
 }
 
+-(void) changeChannelOwnerName:(NSString*)newName {
+	self.parseChannelObject[CHANNEL_CREATOR_NAME_KEY] = newName;
+	[self.parseChannelObject saveInBackground];
+}
+
+//todo:
 -(void)getChannelOwnerNameWithCompletionBlock:(void(^)(NSString *))block {
     if (!self.parseChannelObject) {
         block(@"");
@@ -145,6 +155,8 @@
         self.channelCreator = (PFUser*)object;
         [self.channelCreator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
             NSString * userName = [self.channelCreator valueForKey:VERBATM_USER_NAME_KEY];
+			self.parseChannelObject[CHANNEL_CREATOR_NAME_KEY] = userName;
+			[self.parseChannelObject saveInBackground];
             block(userName);
         }];
     }];
@@ -189,11 +201,11 @@
     return ([[PFUser currentUser].objectId isEqualToString:self.channelCreator.objectId]);
 }
 
--(void)addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator{
-    self.parseChannelObject = object;
-	self.latestPostDate = self.parseChannelObject[CHANNEL_LATEST_POST_DATE];
+-(void)addParseChannelObject:(PFObject *)parseChannelObject andChannelCreator:(PFUser *)channelCreator{
+    self.parseChannelObject = parseChannelObject;
+	self.dateOfMostRecentChannelPost = parseChannelObject[CHANNEL_LATEST_POST_DATE];
     self.channelCreator = channelCreator;
-    self.blogDescription = object[CHANNEL_DESCRIPTION_KEY];
+    self.blogDescription = parseChannelObject[CHANNEL_DESCRIPTION_KEY];
 }
 
 -(void)registerFollowingNewChannel:(Channel *)channel{
@@ -214,10 +226,12 @@
         }
     }
 }
-
+-(void)resetLatestPostInfo{
+    [Channel_BackendObject updateLatestPostDateForChannel:self.parseChannelObject];
+}
 -(void) updatePostDeleted:(PFObject*)post {
 	if ([(NSDate*)self.parseChannelObject[CHANNEL_LATEST_POST_DATE] compare: post.createdAt] == NSOrderedSame) {
-		[Channel_BackendObject updateLatestPostDateForChannel:self.parseChannelObject];
+        [self resetLatestPostInfo];
 	}
 }
 

@@ -27,4 +27,14 @@
 
 -(UIImage *)getViewScreenshot;
 
+- (CALayer*)addTopBorderWithColor:(UIColor *)color andWidth:(CGFloat) borderWidth;
+
+- (CALayer*)addBottomBorderWithColor:(UIColor *)color andWidth:(CGFloat) borderWidth;
+
+- (CALayer*)addLeftBorderWithColor:(UIColor *)color andWidth:(CGFloat) borderWidth;
+
+- (CALayer*)addRightBorderWithColor:(UIColor *)color andWidth:(CGFloat) borderWidth;
+
+- (void) shake;
+
 @end

@@ -9,9 +9,7 @@
 #import "FeedTableCell.h"
 #import "UtilityFunctions.h"
 
-@interface FeedTableCell ()<ProfileVCDelegate>
-
-@property (nonatomic) ProfileVC * currentProfile;
+@interface FeedTableCell () <ProfileVCDelegate>
 
 @end
 
@@ -30,6 +28,8 @@
 	ProfileVC * __block oldProfile = self.currentProfile;
 	self.currentProfile = newProfile;
 	self.currentProfile.delegate = self;
+	self.currentProfile.verbatmNavigationController = self.navigationController;
+	self.currentProfile.verbatmTabBarController = self.tabBarController;
 	[self addSubview:self.currentProfile.view];
 	self.clipsToBounds = YES;
 
@@ -45,9 +45,9 @@
 
 	dispatch_async(dispatch_get_global_queue(0, 0), ^{
 		self.currentProfile = [[ProfileVC alloc] init];
-		self.currentProfile.isCurrentUserProfile = NO;
+		self.currentProfile.verbatmNavigationController = self.navigationController;
+		self.currentProfile.verbatmTabBarController = self.tabBarController;
 		self.currentProfile.profileInFeed = YES;
-		self.currentProfile.isProfileTab = NO;
 		self.currentProfile.delegate = self;
 		self.currentProfile.ownerOfProfile = channel.channelCreator;
 		self.currentProfile.channel = channel;
@@ -61,14 +61,14 @@
 		});
 	});
 }
-
+-(void)updateDateOfLastPostSeen{
+    if(self.currentProfile){
+        [self.currentProfile updateDateOfLastPostSeen];
+    }
+}
 
 -(void)reloadProfile{
 	[self.currentProfile refreshProfile];
-}
-
--(void) showTabBar:(BOOL) show {
-	[self.delegate shouldHideTabBar:!show];
 }
 
 - (void)awakeFromNib {
@@ -76,10 +76,22 @@
 	// Initialization code
 }
 
+-(void) lockFeedScrollView:(BOOL)shouldLock{
+    [self.delegate lockFeedScrollView:shouldLock];
+}
+
+
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
 	[super setSelected:selected animated:animated];
 
 	// Configure the view for the selected state
 }
+
+#pragma mark - Profile Delegate -
+
+-(void) pushViewController:(UIViewController *)viewController {
+	[self.delegate pushViewController: viewController];
+}
+
 
 @end

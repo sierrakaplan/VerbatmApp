@@ -8,7 +8,20 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol OnboardingBlogsDelegate <NSObject>
+
+//todo: better way to do this
+//Lets parent know that there are friends to present
+-(void) followingFriends;
+
+@end
+
 
 @interface DiscoverVC : UITableViewController
+
 @property (nonatomic) BOOL onboardingBlogSelection;
+@property (nonatomic, weak) id<OnboardingBlogsDelegate> onboardingDelegate;
+
+-(void) followAllBlogs;
+
 @end

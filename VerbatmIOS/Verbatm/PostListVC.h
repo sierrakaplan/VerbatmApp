@@ -17,15 +17,20 @@
 -(void)noPostFound;
 -(void)postsFound;
 -(void)cellSelectedAtPostIndex:(NSIndexPath *) cellPath;
-
--(void)hideNavBarIfPresent;
+-(void)createPostPromptSelected;
 -(void)channelSelected:(Channel *) channel;
 -(void)removePostViewSelected;
--(void) shareToSmsSelectedToUrl:(NSString *) url;
+-(void)shareToSmsSelectedToUrl:(NSString *) url;
+
+-(void)showWhoLikedPost:(PFObject*) post;
 -(void)showWhoCommentedOnPost:(PFObject *) post;
+
 @end
 
 @interface PostListVC : UICollectionViewController
+
+@property (nonatomic, readonly) NSDate *latestPostSeen;
+
 
 @property (strong, nonatomic) PostsQueryManager *postsQueryManager;
 
@@ -35,9 +40,7 @@
 
 @property (nonatomic) BOOL inSmallMode;
 
-@property (nonatomic) NSDate *latestPostSeen;
-
-@property (nonatomic, readonly) NSMutableArray * parsePostObjects;
+@property (nonatomic, readonly) NSMutableArray * parsePostActivityObjects;
 @property (nonatomic) BOOL currentlyPublishing;
 
 
@@ -63,5 +66,5 @@ withOldParseObjects:(NSMutableArray *)newParseObjects;
 -(void) footerShowing: (BOOL) showing;
 
 -(void) startMonitoringPublishing;
-
+-(NSDate *)creationDateOfLastPostObjectInPostList;
 @end

@@ -16,6 +16,8 @@
 @property (strong, nonatomic) NSMutableArray* filteredImages;
 @property (nonatomic) NSInteger filterImageIndex;
 @property (nonatomic) CGPoint imageContentOffset; //stores position of image
+@property (nonatomic) CGRect imageContentFrame; //stores position of image
+
 @property (strong, nonatomic) NSString* phAssetLocalIdentifier;
 
 -(instancetype)initWithRadius:(CGFloat)radius withCenter:(CGPoint)center andImage:(UIImage*)image

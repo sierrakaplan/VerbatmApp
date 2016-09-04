@@ -7,6 +7,9 @@
 //
 
 #import "Like_BackendManager.h"
+
+#import "Notifications.h"
+
 #import <Parse/PFObject.h>
 #import "Page_BackendObject.h"
 #import "ParseBackendKeys.h"
@@ -29,7 +32,7 @@
 
 @property (nonatomic) BOOL footerUp;
 @property (nonatomic) PublishingProgressView * publishingProgressView;
-@property (nonatomic) BOOL hasPublishingView;
+@property (nonatomic) BOOL presentingPrompt;
 @property (nonatomic) BOOL hasShadow;
 
 @property (nonatomic) UIImageView * tapToExitNotification;
@@ -47,6 +50,8 @@
 @property (nonatomic) NSNumber * numLikes;
 @property (nonatomic) NSNumber * numShares;
 @property (nonatomic) NSNumber * numComments;
+
+@property (nonatomic) UIButton * createPostPrompt;
 
 #define POSTVIEW_FRAME ((self.inSmallMode) ? CGRectMake(0.f, SMALL_SQUARE_LIKESHAREBAR_HEIGHT, self.frame.size.width, self.frame.size.height - SMALL_SQUARE_LIKESHAREBAR_HEIGHT) : self.bounds)
 
@@ -70,6 +75,12 @@
 		[self clearViews];
 		[self setClipsToBounds:NO];
 		[self.layer setCornerRadius:POST_VIEW_CORNER_RADIUS];
+    
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(newCommentRegistered:)
+                                                     name:NOTIFICATION_NEW_COMMENT_USER
+                                                   object:nil];
+        
 
 	}
 
@@ -77,15 +88,18 @@
 
 }
 
--(void) clearViews {
 
-	if (self.currentPostView) {
-		[self.currentPostView removeFromSuperview];
-	}
 
-	[self removePublishingProgress];
-    
-	@autoreleasepool {
+-(void)newCommentRegistered:(NSNotification *)notification{
+    NSString * postCommentedOnObjectId = [[notification userInfo] objectForKey:POST_COMMENTED_ON_NOTIFICATION_USERINFO_KEY];
+    if(self.postBeingPresented && self.inSmallMode && [[self.postBeingPresented objectId] isEqualToString:postCommentedOnObjectId]){
+        self.numComments = [NSNumber numberWithInteger:([self.numComments integerValue]+1)];
+        [self clearLikeAndCommentInformation];
+        [self presentSmallLikeButton];
+    }
+}
+
+-(void)clearLikeAndCommentInformation{
         [self.numSharesLabel removeFromSuperview];
         [self.smallShareButton removeFromSuperview];
         [self.numLikeLabel removeFromSuperview];
@@ -98,14 +112,23 @@
         self.smallShareButton = nil;
         self.numLikeLabel = nil;
         self.smallLikeButton = nil;
-		self.currentPostView = nil;
-        self.currentPostActivityObject = nil;
-        self.postBeingPresented = nil;
+}
+
+-(void) clearViews {
+
+	if (self.currentPostView) {
+		[self.currentPostView removeFromSuperview];
 	}
-	
+
+	[self removePrompts];
+    [self clearLikeAndCommentInformation];
+    self.currentPostView = nil;
+    self.currentPostActivityObject = nil;
+    self.postBeingPresented = nil;
 
 	self.isOnScreen = NO;
 	self.isAlmostOnScreen = NO;
+    self.presentingPrompt = NO;
 }
 
 -(void) layoutSubviews {
@@ -118,46 +141,61 @@
 	}
 }
 
--(void)presentPublishingView{
-	if(self.presentingTapToExitNotification){
-		[self insertSubview:self.publishingProgressView belowSubview:self.tapToExitNotification];
-	}else{
-		[self addSubview:self.publishingProgressView];
-	}
-	self.hasPublishingView = YES;
+-(void)presentPromptView:(NSNumber *) promptType{
+    LastPostType type = [promptType integerValue];
+    if(type == PublishingPostPrompt){
+        [self addSubview:self.publishingProgressView];
+    }else{
+        [self addSubview:self.createPostPrompt];
+    }
+    self.presentingPrompt = YES;
+	
 }
 
--(void)removePublishingProgress{
-	if(_publishingProgressView != nil){
+-(void)removePrompts{
+	if(_publishingProgressView){
 		[self.publishingProgressView removeFromSuperview];
 		@autoreleasepool {
 			_publishingProgressView = nil;
 		}
 	}
+    
+    if(_createPostPrompt){
+        [self.createPostPrompt removeFromSuperview];
+        _createPostPrompt = nil;
+    }
+}
+
+
+-(BOOL)stillHasOriginalPost:(PFObject *)pfActivityObj{
+    
+    if (self.presentingPrompt || (self.currentPostActivityObject != nil && ![self.currentPostActivityObject.objectId isEqualToString:pfActivityObj.objectId])) {
+        return NO;
+    }
+    return YES;
 }
 
 -(void) presentPostFromPCActivityObj: (PFObject *) pfActivityObj andChannel:(Channel*) channelForList
 					withDeleteButton: (BOOL) withDelete andLikeShareBarUp:(BOOL) up {
 
-	[self removePublishingProgress];
-	self.hasPublishingView = NO;
+	[self removePrompts];
+	self.presentingPrompt = NO;
+    
 	self.footerUp = up;
 	self.currentPostActivityObject = pfActivityObj;
 	PFObject * post = [pfActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
-
+    self.postBeingPresented = post;
 	[post fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-		if (self.currentPostActivityObject != nil && ![self.currentPostActivityObject.objectId isEqualToString:pfActivityObj.objectId]) {
-			return;
-		}
+        if (![self stillHasOriginalPost:pfActivityObj]) return;
+        
 		self.numLikes = object[POST_NUM_LIKES];
 		self.numShares = object[POST_NUM_REBLOGS];
 		self.numComments = object[POST_NUM_COMMENTS];
 
 		[Page_BackendObject getPagesFromPost:object andCompletionBlock:^(NSArray * pages) {
 
-			if (self.currentPostActivityObject != nil && ![self.currentPostActivityObject.objectId isEqualToString:pfActivityObj.objectId]) {
-				return;
-			}
+			if (![self stillHasOriginalPost:pfActivityObj])return;
+            
 			self.currentPostView = [[PostView alloc] initWithFrame:POSTVIEW_FRAME
 									  andPostChannelActivityObject:pfActivityObj small:self.inSmallMode andPageObjects:pages];
 			if(self.inSmallMode)[self.currentPostView muteAllVideos:YES];
@@ -213,7 +251,7 @@
 
 -(void) almostOnScreen {
 	self.isAlmostOnScreen = YES;
-	if(!self.hasPublishingView){
+	if(!self.presentingPrompt){
 		if(self.currentPostView){
 			[self.currentPostView postAlmostOnScreen];
 		}
@@ -223,7 +261,7 @@
 -(void) onScreen {
 	self.isOnScreen = YES;
 	self.isAlmostOnScreen = NO;
-	if(!self.hasPublishingView){
+	if(!self.presentingPrompt){
 		if(self.currentPostView) {
 			[self.currentPostView postOnScreen];
 		}
@@ -284,6 +322,8 @@
 #pragma mark - Post view delegate -
 
 -(void)presentSmallLikeButton{
+    if(self.presentingPrompt) return;
+    
     if(self.numComments == nil){
         self.numComments = @(0);
     }
@@ -388,6 +428,24 @@
 
 -(void) flagButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post {
 	[self.cellDelegate flagOrBlockButtonSelectedOnPostView:postView withPostObject:post];
+}
+
+
+-(void)createPostPromptSelected{
+    [self.cellDelegate createPostPromptSelected];
+}
+
+-(UIButton *)createPostPrompt{
+    
+    if(!_createPostPrompt){
+        _createPostPrompt = [[UIButton alloc] initWithFrame:self.bounds];
+        [_createPostPrompt setImage:[UIImage imageNamed:ADD_FIRST_POST_ICON] forState:UIControlStateNormal];
+        _createPostPrompt.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        [_createPostPrompt addTarget:self action:@selector(createPostPromptSelected) forControlEvents:UIControlEventTouchDown];
+    }
+    
+    return _createPostPrompt;
+    
 }
 
 -(PublishingProgressView *)publishingProgressView{

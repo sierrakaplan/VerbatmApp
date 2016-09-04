@@ -13,7 +13,8 @@
 #import "ProfileVC.h"
 #import "UtilityFunctions.h"
 #import "Icons.h"
-
+#import "SizesAndPositions.h"
+#import "VerbatmNavigationController.h"
 
 @interface FeedTableViewController () <FeedCellDelegate>
 
@@ -22,6 +23,8 @@
 @property (nonatomic) ProfileVC *nextProfileToPresent;
 @property (nonatomic) NSInteger nextProfileIndex;
 @property (nonatomic) UIRefreshControl *refreshControl;
+
+@property (nonatomic) NSInteger startIndex;
 
 @property (nonatomic) UIImageView * emptyFeedNotification;
 
@@ -38,23 +41,38 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	[self.tableView registerClass:[FeedTableCell class] forCellReuseIdentifier:@"FeedTableCell"];
-	[self refreshListOfContent];
 	self.view.backgroundColor = [UIColor blackColor];
 	self.tableView.pagingEnabled = YES;
+	self.automaticallyAdjustsScrollViewInsets = NO;
 	self.tableView.allowsSelection = NO;
 	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 	[self setNeedsStatusBarAppearanceUpdate];
-	self.refreshControl = [[UIRefreshControl alloc] init];
-	[self.refreshControl addTarget:self action:@selector(refreshListOfContent) forControlEvents:UIControlEventValueChanged];
-	[self.tableView addSubview:self.refreshControl];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
 	[super viewWillAppear:animated];
+	[self.navigationController setNavigationBarHidden:NO];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundClear];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarTextColor:[UIColor whiteColor]];
+	NSArray * visibleCell = [self.tableView visibleCells];
+	if(visibleCell && visibleCell.count) {
+		FeedTableCell *cell = [visibleCell firstObject];
+		[cell.currentProfile viewWillAppear:animated];
+	}
+
 }
 
--(void)viewWillDisappear:(BOOL)animated {
+-(void) viewDidAppear:(BOOL)animated {
+	[super viewDidAppear:animated];
+}
 
+- (void)viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
+
+	if (self.isMovingFromParentViewController || self.isBeingDismissed) {
+		[self.navigationController setNavigationBarHidden:YES];
+		[self.delegate exitProfileList];
+	}
 }
 
 -(UIStatusBarStyle) preferredStatusBarStyle {
@@ -74,80 +92,24 @@
 }
 
 -(void) refreshListOfContent {
-
 	if (self.tableView.contentOffset.y > (self.view.frame.size.height - REFRESH_DISTANCE)) {
 		[self.tableView setContentOffset:CGPointZero animated:YES];
 	}
-	self.currentUserChannel = [[UserInfoCache sharedInstance] getUserChannel];
+    
+    [self.delegate refreshListOfContent];
+}
 
-	//todo: change how getfollowersandfollowing is used everywhere (also make sure one instance of updating followers is used)
-	[self.currentUserChannel getChannelsFollowingWithCompletionBlock:^{
-		[self.refreshControl endRefreshing];
-		if ([self.currentUserChannel channelsUserFollowing].count > 0) {
-			[self removeEmptyFeedNotification];
-		} else {
-			[self notifyNotFollowingAnyone];
-			return;
-		}
-
-		//No channels have been previously loaded
-		if (!self.followingProfileList || !self.followingProfileList.count) {
-			self.followingProfileList = [NSMutableArray arrayWithArray: [self.currentUserChannel channelsUserFollowing]];
-			[self.tableView reloadData];
-			return;
-		}
-
-		//Only update indices that have changed (remove channels not followed and add channels user is newly following)
-		NSMutableArray *newChannels = [NSMutableArray arrayWithArray: [self.currentUserChannel channelsUserFollowing]];
-		NSMutableArray *removedChannels = [NSMutableArray arrayWithArray: self.followingProfileList];
-
-		// First remove channels user is no longer following
-		[self removeObjectsFromArrayOfChannels:removedChannels inArray:newChannels];
-		NSMutableArray *removedIndices = [[NSMutableArray alloc] init];
-		NSMutableIndexSet *removedIndexSet = [[NSMutableIndexSet alloc] init];
-		//Note: this is slow but there will probably be few removed indices and alternatives are too complex
-		for (Channel *channel in removedChannels) {
-			NSUInteger removedIndex = [self indexOfChannel:channel inArray:self.followingProfileList];
-			[removedIndices addObject:[NSIndexPath indexPathForRow:removedIndex inSection:0]];
-			[removedIndexSet addIndex: removedIndex];
-		}
-
-		//Load newer channels that user is following
-		NSArray *remainingChannels = [self removeObjectsFromArrayOfChannels:newChannels inArray:self.followingProfileList];
-		NSMutableArray *addedIndices = [[NSMutableArray alloc] init];
-		NSMutableIndexSet *addedIndexSet = [[NSMutableIndexSet alloc] init];
-		//Note: this is slow but there will probably be few removed indices and alternatives are too complex
-		for (Channel *channel in newChannels) {
-			NSUInteger addedIndex = [self indexOfChannel:channel inArray:[self.currentUserChannel channelsUserFollowing]];
-			[addedIndices addObject:[NSIndexPath indexPathForRow:addedIndex inSection:0]];
-			[addedIndexSet addIndex: addedIndex];
-		}
-
-		if ([removedIndices count]) {
-			[self.followingProfileList removeObjectsAtIndexes: removedIndexSet];
-			[self.tableView deleteRowsAtIndexPaths:removedIndices withRowAnimation:UITableViewRowAnimationTop];
-		}
-		if ([addedIndices count]) {
-			[self.followingProfileList insertObjects:newChannels atIndexes: addedIndexSet];
-			[self.tableView insertRowsAtIndexPaths:addedIndices withRowAnimation:UITableViewRowAnimationTop];
-		}
-
-		// Reordering channels
-		for (Channel *channel in remainingChannels) {
-			NSUInteger newIndex = [self indexOfChannel:channel inArray:[self.currentUserChannel channelsUserFollowing]];
-			NSUInteger oldIndex = [self indexOfChannel:channel inArray:self.followingProfileList];
-
-			// Only need to move the channels that have moved up
-			if (newIndex < oldIndex) {
-				NSIndexPath *oldIndexPath = [NSIndexPath indexPathForRow:oldIndex inSection:0];
-				NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:newIndex inSection:0];
-				[self.followingProfileList removeObjectAtIndex: oldIndex];
-				[self.followingProfileList insertObject:channel atIndex:newIndex];
-				[self.tableView moveRowAtIndexPath:oldIndexPath toIndexPath:newIndexPath];
-			}
-		}
-
-	}];
+-(void)setAndRefreshWithList:(NSMutableArray *) channelList withStartIndex:(NSInteger) startIndex{
+    [self.followingProfileList removeAllObjects];
+    self.followingProfileList = channelList;
+	self.startIndex = startIndex;
+    [self.tableView reloadData];
+	if(self.startIndex >= 0) {
+		NSIndexPath * indexPath = [NSIndexPath indexPathForRow:self.startIndex inSection:0];
+		[self.tableView scrollToRowAtIndexPath:indexPath
+							  atScrollPosition:UITableViewScrollPositionTop
+									  animated:NO];
+	}
 }
 
 //Compares Channel* objects by their PFObject ids
@@ -208,7 +170,13 @@
 #pragma mark - Table View Delegate methods (view customization) -
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-	return self.view.frame.size.height;
+	CGFloat height = self.view.frame.size.height;
+	return height;
+}
+
+- (CGFloat) tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
+	CGFloat height = self.view.frame.size.height;
+	return height;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -222,9 +190,6 @@
 
 #pragma mark - Table view data source
 
--(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-	//[self.delegate showTabBar:YES];
-}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	return 1;
@@ -237,26 +202,27 @@
 -(void)prepareNextPostFromNextIndex:(NSInteger) nextIndex{
 	if(nextIndex < self.followingProfileList.count) {
 		Channel * nextChannel = self.followingProfileList[nextIndex];
-		BOOL isCurrentUserChannel = [[nextChannel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
 		self.nextProfileToPresent = nil;
 		self.nextProfileToPresent = [[ProfileVC alloc] init];
 		self.nextProfileToPresent.profileInFeed = YES;
-		self.nextProfileToPresent.isCurrentUserProfile = isCurrentUserChannel;
-		self.nextProfileToPresent.isProfileTab = NO;
 		self.nextProfileToPresent.ownerOfProfile = nextChannel.channelCreator;
 		self.nextProfileToPresent.channel = nextChannel;
 	}
 }
+
 - (void)tableView:(UITableView *)tableView
 didEndDisplayingCell:(UITableViewCell *)cell
 forRowAtIndexPath:(NSIndexPath *)indexPath{
 	FeedTableCell *feedCell = (FeedTableCell *) cell;
+    [feedCell updateDateOfLastPostSeen];
 	[feedCell clearProfile];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	FeedTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FeedTableCell" forIndexPath:indexPath];
 	cell.delegate = self;
+	cell.navigationController = (VerbatmNavigationController*)self.navigationController;
+	cell.tabBarController = (MasterNavigationVC*)self.tabBarController;
 	if(self.nextProfileToPresent && indexPath.row == self.nextProfileIndex){
 		[cell setProfileAlreadyLoaded:self.nextProfileToPresent];
 	} else {
@@ -269,12 +235,14 @@ forRowAtIndexPath:(NSIndexPath *)indexPath{
 }
 
 
-#pragma mark -Feed Cell Protocol-
--(void)shouldHideTabBar:(BOOL) shouldHide{
-	[self.delegate showTabBar:!shouldHide];
-	self.tableView.scrollEnabled = !shouldHide;
-	self.contentInFullScreen = shouldHide;
-	[self setNeedsStatusBarAppearanceUpdate];
+#pragma mark - Feed Cell Protocol -
+
+-(void) lockFeedScrollView:(BOOL)shouldLock{
+    [self.tableView setScrollEnabled:!shouldLock];
+}
+
+-(void) pushViewController:(UIViewController *)viewController {
+	[self.navigationController pushViewController:viewController animated:YES];
 }
 
 @end

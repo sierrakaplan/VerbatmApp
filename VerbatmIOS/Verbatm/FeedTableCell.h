@@ -10,10 +10,13 @@
 #import "Channel.h"
 #import "ProfileVC.h"
 
+@class VerbatmNavigationController;
+@class MasterNavigationVC;
 
 @protocol FeedCellDelegate <NSObject>
 
--(void)shouldHideTabBar:(BOOL) shouldHide;
+-(void) lockFeedScrollView:(BOOL)shouldLock;
+-(void) pushViewController:(UIViewController*)viewController;
 
 @end
 
@@ -21,11 +24,15 @@
 @interface FeedTableCell : UITableViewCell
 
 @property (nonatomic, weak) id<FeedCellDelegate> delegate;
+@property (nonatomic) VerbatmNavigationController *navigationController;
+@property (nonatomic) MasterNavigationVC *tabBarController;
+@property (nonatomic) ProfileVC * currentProfile;
 
 -(void)presentProfileForChannel:(Channel *) channel;
 
 -(void)setProfileAlreadyLoaded:(ProfileVC *) newProfile;
 -(void)reloadProfile;
 -(void)clearProfile;
+-(void)updateDateOfLastPostSeen;
 
 @end

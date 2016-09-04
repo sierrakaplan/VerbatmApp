@@ -6,151 +6,130 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+#import <Crashlytics/Crashlytics.h>
 #import "CustomNavigationBar.h"
+#import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
 #import "User_BackendObject.h"
 #import <MessageUI/MessageUI.h>
 #import "TermsAndConditionsVC.h"
 
 #import "SizesAndPositions.h"
+#import "SegueIDs.h"
 #import "SettingsVC.h"
 #import "Styles.h"
 
+#import "UserInfoCache.h"
 #import "UserManager.h"
 
-@interface SettingsVC () <CustomNavigationBarDelegate,
-MFMailComposeViewControllerDelegate,UITextFieldDelegate>
+@interface SettingsVC () <MFMailComposeViewControllerDelegate, UITableViewDelegate,
+UITableViewDataSource, UITextFieldDelegate>
 
+@property (weak, nonatomic) IBOutlet UITextField *userNameTextField;
+@property (weak, nonatomic) IBOutlet UILabel *feedbackLabel;
+@property (weak, nonatomic) IBOutlet UILabel *termsAndConditionsLabel;
+@property (weak, nonatomic) IBOutlet UILabel *signOutLabel;
 
-@property (weak, nonatomic) IBOutlet UIButton *contactUsButton;
-@property (weak, nonatomic) IBOutlet UIButton *termsAndConditionsButton;
-@property (weak, nonatomic) IBOutlet UIButton *signOutButton;
-@property (weak, nonatomic) IBOutlet UITextField *userNameField;
-@property (weak, nonatomic) IBOutlet UIImageView *profileIconImage;
+@property (nonatomic) NSString *oldUsername;
 
-@property (nonatomic) CustomNavigationBar * navigationBar;
+#define FONT_SIZE 16.f
+#define X_POS 5.f
 
-#define VIEW_OFFSET_Y 20.f
-#define PROFILE_ICON_WALL_OFFSET 15.f //distance of profile picture from left wall
-#define PROFILE_TEXTFILED_GAP 10.f //distance between the profile icon and the textField
+#define USER_NAME_CHAR_LIMIT 30
 #define VERBATM_HELP_EMAIL @"feedback@verbatm.io"
 #define HELP_EMAIL_SUBJECT @"Feedback to Verbatm team"
+
 @end
 
 @implementation SettingsVC
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    
-    [self createNavigationBar];
-    [self positionButtonViews];
+	self.userNameTextField.font = [UIFont fontWithName:ITALIC_FONT size:FONT_SIZE];
+	self.userNameTextField.text = [PFUser currentUser][VERBATM_USER_NAME_KEY];
+	self.userNameTextField.delegate = self;
+	self.userNameTextField.returnKeyType = UIReturnKeyDone;
+	self.feedbackLabel.font = [UIFont fontWithName:REGULAR_FONT size:FONT_SIZE];
+	self.termsAndConditionsLabel.font = [UIFont fontWithName:REGULAR_FONT size:FONT_SIZE];
+	self.signOutLabel.font = [UIFont fontWithName:BOLD_FONT size:FONT_SIZE];
+	self.tableView.delegate = self;
+	self.tableView.dataSource = self;
 }
 
 -(BOOL) prefersStatusBarHidden {
-	return YES;
+	return NO;
 }
 
--(void)createNavigationBar{
-    CGRect navBarFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT);
-    self.navigationBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:SETTINGS_NAV_BAR_COLOR];
-    self.navigationBar.delegate = self;
-    
-    [self.navigationBar createLeftButtonWithTitle:@"BACK" orImage:nil];
-    
-    [self.navigationBar createRightButtonWithTitle:@"SAVE" orImage:nil];
-    
-    [self.view addSubview:self.navigationBar];
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	NSInteger section = indexPath.section;
+	NSInteger row = indexPath.row;
+	if (section == 1) {
+		if (row == 0) {
+			[self sendFeedback];
+		} else {
+			[self showTermsAndConditions];
+		}
+	} else if (section == 2 && row == 0) {
+		[self logoutAlert];
+	}
 }
 
--(void) positionButtonViews{
-    
-    CGRect userNameFieldFrame = CGRectMake(PROFILE_ICON_WALL_OFFSET +
-                                           self.profileIconImage.frame.size.width +
-                                           PROFILE_TEXTFILED_GAP, CUSTOM_NAV_BAR_HEIGHT +
-                                  VIEW_OFFSET_Y, self.view.frame.size.width -
-                                           (self.profileIconImage.frame.size.width + PROFILE_ICON_WALL_OFFSET*2 +
-                                            PROFILE_TEXTFILED_GAP),
-                                           self.userNameField.frame.size.height);
-    
-    self.userNameField.frame = userNameFieldFrame;
-    self.userNameField.returnKeyType = UIReturnKeyDone;
-    self.userNameField.delegate = self;
-    
-    if(self.userName){
-        self.userNameField.text = self.userName;
-    }
-    
-    
-    CGFloat profileIconWidth = self.profileIconImage.frame.size.width;
-    CGFloat profileIconHeight = profileIconWidth * (47.f/35.f);
+#pragma mark - Editing text field -
 
-    CGRect profileIconFrame = CGRectMake(PROFILE_ICON_WALL_OFFSET,self.userNameField.center.y - (profileIconHeight/2.f) , profileIconWidth, profileIconHeight);
-    
-    self.profileIconImage.frame = profileIconFrame;
-
-	CGRect contactUsButtonFrame = CGRectMake(0.f, profileIconFrame.origin.y +
-											 profileIconFrame.size.height + VIEW_OFFSET_Y, self.view.frame.size.width, self.signOutButton.frame.size.height);
-
-	CGRect termsAndCondButtonFrame = CGRectMake(0.f, contactUsButtonFrame.origin.y +
-												contactUsButtonFrame.size.height + VIEW_OFFSET_Y , self.view.frame.size.width, self.termsAndConditionsButton.frame.size.height);
-
-	CGRect signOutButtonFrame = CGRectMake(0.f, termsAndCondButtonFrame.origin.y +
-										   termsAndCondButtonFrame.size.height + VIEW_OFFSET_Y, self.view.frame.size.width, self.contactUsButton.frame.size.height);
-
-
-    self.contactUsButton.frame= contactUsButtonFrame;
-    self.termsAndConditionsButton.frame = termsAndCondButtonFrame;
-    self.signOutButton.frame = signOutButtonFrame;
+-(BOOL) textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+	NSUInteger newLength = [textField.text length] + [string length] - range.length;
+	if (newLength < textField.text.length) {
+		return YES;
+	}
+	return newLength <= USER_NAME_CHAR_LIMIT;
 }
 
-//when the user is done editing their name then they can remove the keyboard
-- (BOOL)textFieldShouldReturn:(UITextField *)textField{
-    [textField resignFirstResponder];
-    return NO;
+-(void) textFieldDidBeginEditing:(UITextField *)textField {
+	self.oldUsername = textField.text;
 }
 
-//user selected cancel so remove settings view
--(void) leftButtonPressed{
-    [self exitSettingsPageWithCompletionBlock:nil];
+-(void) textFieldDidEndEditing:(UITextField *)textField {
+	if (textField.text.length < 1) {
+		textField.text = self.oldUsername;
+		return;
+	}
+	//todo: this should be atomic
+	NSString *newUserName = textField.text;
+	[PFUser currentUser][VERBATM_USER_NAME_KEY] = newUserName;
+	[[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+		if (error) {
+			[[Crashlytics sharedInstance] recordError:error];
+		} else {
+			//todo: send notification that user name changed and update everywhere
+			NSLog(@"User name saved successfully.");
+		}
+	}];
+	PFObject *channel =[[UserInfoCache sharedInstance] getUserChannel].parseChannelObject;
+	channel[CHANNEL_CREATOR_NAME_KEY] = textField.text;
+	[channel saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+		if (error) {
+			[[Crashlytics sharedInstance] recordError:error];
+		}
+	}];
 }
 
-//user selected done. Save their changes and exit view
--(void) rightButtonPressed {
-    //save changes made by user to username
-    [User_BackendObject updateUserNameOfCurrentUserTo:self.userNameField.text];
-    [self exitSettingsPageWithCompletionBlock:nil];
+-(BOOL) textFieldShouldReturn:(UITextField *)textField {
+	[textField resignFirstResponder];
+	return NO;
 }
 
+#pragma mark - Send Feedback -
 
--(void)exitSettingsPageWithCompletionBlock:(void(^)())block{
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
-            if(block)block();
-    }];
+-(void) sendFeedback {
+	[self presentEmailViewController];
 }
-
-- (IBAction)signOutButtonSelected:(id)sender {
-    //todo - exit app
-    [self exitSettingsPageWithCompletionBlock:^{
-		[[UserManager sharedInstance] logOutUser];
-    }];
-}
-
-
-#pragma mark -seding email functionality-
-
-- (IBAction)contactUsButtonSelected:(id)sender {
-    
-    [self presentEmailViewController];
-}
-
 
 -(void)presentEmailViewController {
     NSString *iOSVersion = [[UIDevice currentDevice] systemVersion];
     NSString *model = [[UIDevice currentDevice] model];
     MFMailComposeViewController *mailComposer = [[MFMailComposeViewController alloc] init];
     mailComposer.mailComposeDelegate = self;
-    [mailComposer setToRecipients:[NSArray arrayWithObjects:VERBATM_HELP_EMAIL,nil]];
+    [mailComposer setToRecipients:[NSArray arrayWithObjects:VERBATM_HELP_EMAIL, nil]];
     [mailComposer setSubject:HELP_EMAIL_SUBJECT];
     NSString *supportText = [NSString stringWithFormat:@"Device: %@\niOS Version:%@\n\n",model,iOSVersion];
     supportText = [supportText stringByAppendingString: @"Please give us feedback or describe your problem. \n Thank you!"];
@@ -169,18 +148,35 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
 }
 
 
-#pragma mark - Navigation
+#pragma mark - Terms and Conditions -
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-    
-    UIViewController * vc = [segue destinationViewController];
-    if([vc isKindOfClass:[TermsAndConditionsVC class]]){
-        ((TermsAndConditionsVC *)vc).userMustAcceptTerms = NO;
-    }
+-(void) showTermsAndConditions {
+	[self performSegueWithIdentifier:SEGUE_TERMS_AND_CONDITIONS_FROM_SETTINGS sender:self];
 }
 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+}
 
+#pragma mark - Logging Out -
+
+-(void) logoutAlert {
+	UIAlertController* alert = [UIAlertController alertControllerWithTitle:nil
+																   message:nil
+															preferredStyle:UIAlertControllerStyleActionSheet];
+
+	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
+														 handler:^(UIAlertAction * action) {}];
+	UIAlertAction* logoutAction = [UIAlertAction actionWithTitle:@"Log Out" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+		[self logout];
+	}];
+
+	[alert addAction: cancelAction];
+	[alert addAction: logoutAction];
+	[self presentViewController:alert animated:YES completion:nil];
+
+}
+
+-(void) logout {
+	[[UserManager sharedInstance] logOutUser];
+}
 @end
