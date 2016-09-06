@@ -415,10 +415,9 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 
 #pragma mark - Feed VC Delegate -
 
--(void) goToDiscover{
+-(void) goToDiscover {
     [self setSelectedIndex: 1];
 }
-
 
 -(void) showTabBar:(BOOL)show {
 	if (show && self.tabBarHidden) {

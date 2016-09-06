@@ -75,7 +75,7 @@ UIScrollViewDelegate, PostCollectionViewCellDelegate, FBSDKSharingDelegate>
 @property (nonatomic) PostCollectionViewCell *currentDisplayCell;
 @property (strong, nonatomic) PostCollectionViewCell *nextCellToPresent;
 @property (strong, nonatomic) PostCollectionViewCell *nextNextCell;
-@property (nonatomic, strong) UILabel * noContentLabel;
+@property (nonatomic, strong) UILabel *noContentLabel;
 
 @property (nonatomic) SharePostView *sharePostView;
 @property (nonatomic) BOOL shouldPlayVideos;
