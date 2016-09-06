@@ -77,7 +77,8 @@
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	[self setNeedsStatusBarAppearanceUpdate];
-	[self.navigationController setNavigationBarHidden:YES];
+	[self.navigationController setNavigationBarHidden:NO];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundColor:[UIColor whiteColor]];
 	if (!_exploreChannels || !self.exploreChannels.count) {
 		[self refreshChannels];
 	}
@@ -89,7 +90,7 @@
 }
 
 -(UIStatusBarStyle) preferredStatusBarStyle {
-	return UIStatusBarStyleLightContent;
+	return UIStatusBarStyleDefault;
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -118,15 +119,17 @@
 	self.searchResultsController.verbatmNavigationController = (VerbatmNavigationController*)self.navigationController;
 	self.searchController = [[UISearchController alloc] initWithSearchResultsController: self.searchResultsController];
 	self.searchController.searchResultsUpdater = self.searchResultsController;
-	self.tableView.tableHeaderView = self.searchController.searchBar;
+	self.searchController.hidesNavigationBarDuringPresentation = NO;
+	self.navigationItem.titleView = self.searchController.searchBar;
+//	self.tableView.tableHeaderView = self.searchController.searchBar;
 	self.definesPresentationContext = YES;
 	[self formatSearchBar: self.searchController.searchBar];
 	//	self.searchController.searchBar.scopeButtonTitles = @[@"Users", @"Blogs"];
 }
 
 -(void) formatSearchBar:(UISearchBar*)searchBar {
-	searchBar.barTintColor = [UIColor clearColor];
-	searchBar.tintColor = [UIColor whiteColor];
+	searchBar.barTintColor = [UIColor whiteColor];
+	searchBar.tintColor = [UIColor blueColor];
 	searchBar.backgroundColor = [UIColor clearColor];
 	searchBar.backgroundImage = [UIImage new];
 }

@@ -34,7 +34,7 @@
 
 -(void) viewDidLoad {
 	self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-	self.view.backgroundColor = [UIColor whiteColor];
+//	self.view.backgroundColor = [UIColor whiteColor];
 	self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
 
@@ -60,14 +60,11 @@
 
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
 	searchController.searchBar.placeholder = @"Search for usernames";
-//	searchController.searchBar.barTintColor = [UIColor whiteColor];
-//	searchController.searchBar.tintColor = [UIColor blueColor];
 	//set frame for activity indicator
 	NSString *searchText = searchController.searchBar.text;
 	if (!searchText.length) {
 		return;
 	}
-	[self setNeedsStatusBarAppearanceUpdate];
 	if (![self.spinner isAnimating]) {
 		UITextField *searchField = [searchController.searchBar valueForKey:@"_searchField"];
 		self.spinner.center = CGPointMake(searchField.frame.size.width - self.spinner.frame.size.width - 10.f,
