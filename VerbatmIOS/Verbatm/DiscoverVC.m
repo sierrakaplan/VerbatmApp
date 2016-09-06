@@ -113,6 +113,10 @@
 	self.tableView.scrollIndicatorInsets = inset;
 }
 
+-(void) addInviteFriendsHeader {
+
+}
+
 -(void) setUpSearchController {
 	self.searchResultsController = [[SearchResultsVC alloc] init];
 	self.searchResultsController.verbatmTabBarController = (MasterNavigationVC*)self.tabBarController;
@@ -120,6 +124,7 @@
 	self.searchController = [[UISearchController alloc] initWithSearchResultsController: self.searchResultsController];
 	self.searchController.searchResultsUpdater = self.searchResultsController;
 	self.searchController.hidesNavigationBarDuringPresentation = NO;
+	self.searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
 	self.navigationItem.titleView = self.searchController.searchBar;
 //	self.tableView.tableHeaderView = self.searchController.searchBar;
 	self.definesPresentationContext = YES;
@@ -128,10 +133,10 @@
 }
 
 -(void) formatSearchBar:(UISearchBar*)searchBar {
-	searchBar.barTintColor = [UIColor whiteColor];
+//	searchBar.barTintColor = [UIColor lightGrayColor];
 	searchBar.tintColor = [UIColor blueColor];
-	searchBar.backgroundColor = [UIColor clearColor];
-	searchBar.backgroundImage = [UIImage new];
+//	searchBar.backgroundColor = [UIColor clearColor];
+//	searchBar.backgroundImage = [UIImage new];
 }
 
 -(void) clearViews {

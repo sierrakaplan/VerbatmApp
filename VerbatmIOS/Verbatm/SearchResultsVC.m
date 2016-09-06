@@ -59,6 +59,7 @@
 }
 
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+	self.view.hidden = NO;
 	searchController.searchBar.placeholder = @"Search for usernames";
 	//set frame for activity indicator
 	NSString *searchText = searchController.searchBar.text;
