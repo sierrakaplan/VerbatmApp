@@ -9,6 +9,7 @@
 #import "Channel_BackendObject.h"
 #import "ExploreChannelCellView.h"
 #import "Icons.h"
+#import "InviteFriendsVC.h"
 #import "FeedQueryManager.h"
 #import "DiscoverVC.h"
 #import "FeaturedContentCellView.h"
@@ -59,6 +60,7 @@
 	self.loadingMoreChannels = NO;
 	self.refreshing = NO;
 	[self formatTableView];
+	[self addInviteFriendsHeader];
 
 	if (!self.onboardingBlogSelection) {
 		[self setUpSearchController];
@@ -114,7 +116,12 @@
 }
 
 -(void) addInviteFriendsHeader {
-
+	UIButton *inviteFriendsView = [[UIButton alloc] initWithFrame: CGRectMake(0.f, 0.f, self.view.frame.size.width, 30.f)];
+	inviteFriendsView.backgroundColor = [UIColor colorWithWhite:1.f alpha:0.2];
+	[inviteFriendsView setTitle:@"Invite friends to join Verbatm" forState:UIControlStateNormal];
+	inviteFriendsView.titleLabel.textColor = [UIColor grayColor];
+	[inviteFriendsView addTarget:self action:@selector(presentInviteFriendsView) forControlEvents:UIControlEventTouchUpInside];
+	self.tableView.tableHeaderView = inviteFriendsView;
 }
 
 -(void) setUpSearchController {
@@ -327,6 +334,13 @@
 	for (Channel* channel in self.exploreChannels) {
 		[Follow_BackendManager currentUserFollowChannel:channel];
 	}
+}
+
+#pragma mark - Invite friends -
+
+-(void) presentInviteFriendsView {
+	InviteFriendsVC *inviteFriendsVC = [[InviteFriendsVC alloc] init];
+	[self.navigationController pushViewController:inviteFriendsVC animated:YES];
 }
 
 #pragma mark - Lazy Instantiation -

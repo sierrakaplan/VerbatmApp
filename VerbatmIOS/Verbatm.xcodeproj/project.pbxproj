@@ -37,6 +37,7 @@
 		A55A59DF1BB4E07D00C7CE7A /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A55A59DE1BB4E07D00C7CE7A /* libsqlite3.tbd */; };
 		A55AA12C1BD5B79F00EB883A /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A55AA12B1BD5B79F00EB883A /* AdSupport.framework */; };
 		A55AA12E1BD5B7DC00EB883A /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A55AA12D1BD5B7DC00EB883A /* CoreMotion.framework */; };
+		A55D473C1D7F8E7F007F77C8 /* InviteFriendsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A55D473B1D7F8E7F007F77C8 /* InviteFriendsVC.m */; };
 		A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A562D50C1B506D2800F566F4 /* VideoPlayerView.m */; };
 		A56B5D1D1CA49A8100A61D27 /* UserInfoCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A56B5D1C1CA49A8100A61D27 /* UserInfoCache.m */; };
 		A56B5D201CA49B1E00A61D27 /* Post_Channel_RelationshipManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A56B5D1F1CA49B1E00A61D27 /* Post_Channel_RelationshipManager.m */; };
@@ -348,6 +349,8 @@
 		A55A59DE1BB4E07D00C7CE7A /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		A55AA12B1BD5B79F00EB883A /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		A55AA12D1BD5B7DC00EB883A /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		A55D473A1D7F8E7F007F77C8 /* InviteFriendsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteFriendsVC.h; sourceTree = "<group>"; };
+		A55D473B1D7F8E7F007F77C8 /* InviteFriendsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteFriendsVC.m; sourceTree = "<group>"; };
 		A562D50C1B506D2800F566F4 /* VideoPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayerView.m; sourceTree = "<group>"; };
 		A562D50E1B506D4500F566F4 /* VideoPlayerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoPlayerView.h; sourceTree = "<group>"; };
 		A56B5D1B1CA49A8100A61D27 /* UserInfoCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfoCache.h; sourceTree = "<group>"; };
@@ -786,6 +789,8 @@
 				A5C38AC01CC1B67B0067D077 /* DiscoverVC.m */,
 				A51A0AEB1D6CF7A1009D7CDD /* Table Cell Views */,
 				A51A0AD81D6CF0AC009D7CDD /* Search */,
+				A55D473A1D7F8E7F007F77C8 /* InviteFriendsVC.h */,
+				A55D473B1D7F8E7F007F77C8 /* InviteFriendsVC.m */,
 			);
 			name = Discover;
 			sourceTree = "<group>";
@@ -2005,6 +2010,7 @@
 				A5E73BF41D1770B400527ECF /* GTLVerbatmAppImage.m in Sources */,
 				A5E73BF31D1770B400527ECF /* GTLVerbatmAppIdentifierListWrapper.m in Sources */,
 				A5E73B8B1D16945600527ECF /* GTLJSONParser.m in Sources */,
+				A55D473C1D7F8E7F007F77C8 /* InviteFriendsVC.m in Sources */,
 				C761727B1C4DFB7700AB0D84 /* PostListVC.m in Sources */,
 				C7996CC31C8FCF74002E5DA6 /* LoadingIndicator.m in Sources */,
 				C788745C1C334AE80048B66E /* PostLikeAndShareBar.m in Sources */,

@@ -113,7 +113,7 @@
 														  NSError * _Nullable error) {
 		if (error) {
 			[[Crashlytics sharedInstance] recordError:error];
-			block (@[]);
+			block ([NSMutableArray array]);
 		} else {
 			NSMutableArray *channelObjects = [[NSMutableArray alloc] init];
 			for (PFObject *followObject in objects) {
@@ -135,7 +135,7 @@
 														  NSError * _Nullable error) {
 		if(error) {
 			[[Crashlytics sharedInstance] recordError:error];
-			block (@[]);
+			block ([NSMutableArray array]);
 		} else {
 			NSMutableArray *channelIDs = [[NSMutableArray alloc] init];
 			for (PFObject *followObject in followObjects) {
@@ -148,7 +148,7 @@
 			[channelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channelObjects, NSError * _Nullable error) {
 				if (error) {
 					[[Crashlytics sharedInstance] recordError: error];
-					block (@[]);
+					block ([NSMutableArray array]);
 				} else {
 					NSMutableArray *channels = [[NSMutableArray alloc] init];
 					for (PFObject *channelObject in channelObjects) {
