@@ -3646,7 +3646,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "344"
             endingLineNumber = "344"
-            landmarkName = "-getChannelsForFriends:withCompletionHandler:"
+            landmarkName = "-getPhoneContactsWithCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3662,7 +3662,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "354"
             endingLineNumber = "354"
-            landmarkName = "-getChannelsForFriends:withCompletionHandler:"
+            landmarkName = "-getAllContactsWithStore:andCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3678,7 +3678,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "357"
             endingLineNumber = "357"
-            landmarkName = "-getChannelsForFriends:withCompletionHandler:"
+            landmarkName = "-getAllContactsWithStore:andCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -5754,7 +5754,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "350"
             endingLineNumber = "350"
-            landmarkName = "-getChannelsForFriends:withCompletionHandler:"
+            landmarkName = "-getAllContactsWithStore:andCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
