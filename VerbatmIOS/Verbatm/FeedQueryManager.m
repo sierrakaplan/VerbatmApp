@@ -117,7 +117,7 @@
 -(void) loadMorePostsWithCompletionHandler:(void(^)(NSArray *))block {
 	//Needs to call refresh first
 	if (!self.channelsFollowed || !self.channelsFollowed.count || !self.currentFeedStart) {
-		block (@[]);
+		block ([NSMutableArray array]);
 		return;
 	}
 
@@ -130,7 +130,7 @@
 	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities, NSError * _Nullable error) {
 		if (error) {
 			[[Crashlytics sharedInstance] recordError:error];
-			block (@[]);
+			block ([NSMutableArray array]);
 			return;
 		}
 		NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
@@ -191,11 +191,11 @@
 					[exploreChannelsQuery orderByDescending:@"createdAt"];
 					[exploreChannelsQuery setLimit:CHANNEL_DOWNLOAD_MAX_SIZE];
 					[exploreChannelsQuery setSkip: skip];
-					[exploreChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
-
+					[exploreChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels,
+																			 NSError * _Nullable error) {
 						if(error || !channels) {
 							[[Crashlytics sharedInstance] recordError:error];
-							completionBlock (@[]);
+							completionBlock ([NSMutableArray array]);
 							return;
 						}
 						NSArray *exploreChannels = [Channel_BackendObject channelsFromParseChannelObjects: channels];
@@ -227,12 +227,11 @@
 		// Logged in with phone number
 		if (!isLinkedToFacebook) {
 			completionBlock(contactChannels, contactUsers);
+			return;
+		} else if (![[FBSDKAccessToken currentAccessToken] hasGranted:@"user_friends"]) {
+			completionBlock(contactChannels, contactUsers);
+			return;
 		} else {
-			if (![[FBSDKAccessToken currentAccessToken] hasGranted:@"user_friends"]) {
-				completionBlock(contactChannels, contactUsers);
-				return;
-			}
-
 			FBSDKGraphRequestConnection *connection = [[FBSDKGraphRequestConnection alloc] init];
 			FBSDKGraphRequest *requestMe = [[FBSDKGraphRequest alloc]
 											initWithGraphPath:@"me/friends" parameters:@{@"fields": @"id, name"}];
@@ -246,8 +245,8 @@
 						 // Create a list of friends' Facebook IDs
 						 for (NSDictionary *friendObject in friendObjects) {
 							 [friendIds addObject:[friendObject objectForKey:@"id"]];
-							 NSString *userName = [friendObject objectForKey:@"name"];
-							 NSLog(@"friend: %@", userName);
+							 //							 NSString *userName = [friendObject objectForKey:@"name"];
+							 //							 NSLog(@"friend: %@", userName);
 						 }
 						 PFQuery *friendQuery = [PFUser query];
 						 [friendQuery whereKey:USER_FB_ID containedIn:friendIds];
@@ -352,7 +351,7 @@
 	channelsForFriends.limit = 1000;
 	[channelsForFriends findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
 		if (error) {
-			completionBlock(@[]);
+			completionBlock([NSMutableArray array]);
 		} else {
 			self.friendChannels = channels;
 			completionBlock(channels);

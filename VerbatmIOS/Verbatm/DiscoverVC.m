@@ -9,6 +9,7 @@
 #import "Channel_BackendObject.h"
 #import "ExploreChannelCellView.h"
 #import "Icons.h"
+#import "InviteFriendsVC.h"
 #import "FeedQueryManager.h"
 #import "DiscoverVC.h"
 #import "FeaturedContentCellView.h"
@@ -59,6 +60,7 @@
 	self.loadingMoreChannels = NO;
 	self.refreshing = NO;
 	[self formatTableView];
+//	[self addInviteFriendsHeader];
 
 	if (!self.onboardingBlogSelection) {
 		[self setUpSearchController];
@@ -77,7 +79,8 @@
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	[self setNeedsStatusBarAppearanceUpdate];
-	[self.navigationController setNavigationBarHidden:YES];
+	[self.navigationController setNavigationBarHidden:NO];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundColor:[UIColor whiteColor]];
 	if (!_exploreChannels || !self.exploreChannels.count) {
 		[self refreshChannels];
 	}
@@ -89,7 +92,7 @@
 }
 
 -(UIStatusBarStyle) preferredStatusBarStyle {
-	return UIStatusBarStyleLightContent;
+	return UIStatusBarStyleDefault;
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -112,23 +115,35 @@
 	self.tableView.scrollIndicatorInsets = inset;
 }
 
+-(void) addInviteFriendsHeader {
+	UIButton *inviteFriendsView = [[UIButton alloc] initWithFrame: CGRectMake(0.f, 0.f, self.view.frame.size.width, 30.f)];
+	inviteFriendsView.backgroundColor = [UIColor colorWithWhite:1.f alpha:0.2];
+	[inviteFriendsView setTitle:@"Invite friends to join Verbatm" forState:UIControlStateNormal];
+	inviteFriendsView.titleLabel.textColor = [UIColor grayColor];
+	[inviteFriendsView addTarget:self action:@selector(presentInviteFriendsView) forControlEvents:UIControlEventTouchUpInside];
+	self.tableView.tableHeaderView = inviteFriendsView;
+}
+
 -(void) setUpSearchController {
 	self.searchResultsController = [[SearchResultsVC alloc] init];
 	self.searchResultsController.verbatmTabBarController = (MasterNavigationVC*)self.tabBarController;
 	self.searchResultsController.verbatmNavigationController = (VerbatmNavigationController*)self.navigationController;
 	self.searchController = [[UISearchController alloc] initWithSearchResultsController: self.searchResultsController];
 	self.searchController.searchResultsUpdater = self.searchResultsController;
-	self.tableView.tableHeaderView = self.searchController.searchBar;
+	self.searchController.hidesNavigationBarDuringPresentation = NO;
+	self.searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+	self.navigationItem.titleView = self.searchController.searchBar;
+//	self.tableView.tableHeaderView = self.searchController.searchBar;
 	self.definesPresentationContext = YES;
 	[self formatSearchBar: self.searchController.searchBar];
 	//	self.searchController.searchBar.scopeButtonTitles = @[@"Users", @"Blogs"];
 }
 
 -(void) formatSearchBar:(UISearchBar*)searchBar {
-	searchBar.barTintColor = [UIColor clearColor];
-	searchBar.tintColor = [UIColor whiteColor];
-	searchBar.backgroundColor = [UIColor clearColor];
-	searchBar.backgroundImage = [UIImage new];
+//	searchBar.barTintColor = [UIColor lightGrayColor];
+	searchBar.tintColor = [UIColor blueColor];
+//	searchBar.backgroundColor = [UIColor clearColor];
+//	searchBar.backgroundImage = [UIImage new];
 }
 
 -(void) clearViews {
@@ -319,6 +334,13 @@
 	for (Channel* channel in self.exploreChannels) {
 		[Follow_BackendManager currentUserFollowChannel:channel];
 	}
+}
+
+#pragma mark - Invite friends -
+
+-(void) presentInviteFriendsView {
+	InviteFriendsVC *inviteFriendsVC = [[InviteFriendsVC alloc] init];
+	[self.navigationController pushViewController:inviteFriendsVC animated:YES];
 }
 
 #pragma mark - Lazy Instantiation -
