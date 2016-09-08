@@ -275,6 +275,7 @@
 }
 
 -(void) getPhoneContactsWithCompletionHandler:(void(^)(NSArray *, NSArray *))completionBlock {
+<<<<<<< Updated upstream
 	CNContactStore *store = [[CNContactStore alloc] init];
 	[store requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted, NSError * _Nullable error) {
 		if (granted == YES) {
@@ -320,6 +321,71 @@
 			completionBlock(@[], @[]);
 		}
 	}];
+=======
+	CNContactStore *contactStore = [[CNContactStore alloc] init];
+	CNEntityType entityType = CNEntityTypeContacts;
+	if([CNContactStore authorizationStatusForEntityType:entityType] == CNAuthorizationStatusNotDetermined) {
+		// Request access for entity type returns on arbitrary queue
+		[contactStore requestAccessForEntityType:entityType completionHandler:^(BOOL granted, NSError * _Nullable error) {
+			dispatch_async(dispatch_get_main_queue(), ^{
+				if (granted && error == nil) {
+					[self getAllContactsWithStore:contactStore andCompletionHandler:^(NSArray *friendChannels, NSArray *friendUsers) {
+						completionBlock(friendChannels, friendUsers);
+					}];
+				} else {
+					completionBlock([NSMutableArray array], [NSMutableArray array]);
+				}
+			});
+		}];
+	} else if([CNContactStore authorizationStatusForEntityType:entityType]== CNAuthorizationStatusAuthorized) {
+		[self getAllContactsWithStore:contactStore andCompletionHandler:^(NSArray *friendChannels, NSArray *friendUsers) {
+			completionBlock(friendChannels, friendUsers);
+		}];
+	} else {
+		completionBlock([NSMutableArray array], [NSMutableArray array]);
+	}
+}
+
+-(void) getAllContactsWithStore:(CNContactStore*)store andCompletionHandler:(void(^)(NSArray *, NSArray *))completionBlock {
+		//keys with fetching properties
+		NSArray *keys = @[CNContactPhoneNumbersKey];
+		NSString *containerId = store.defaultContainerIdentifier;
+		NSPredicate *predicate = [CNContact predicateForContactsInContainerWithIdentifier:containerId];
+		NSError *error;
+		NSArray *cnContacts = [store unifiedContactsMatchingPredicate:predicate keysToFetch:keys error:&error];
+		if (error) {
+			NSLog(@"error fetching contacts %@", error);
+			[[Crashlytics sharedInstance] recordError: error];
+			completionBlock([NSMutableArray array], [NSMutableArray array]);
+		} else {
+			NSMutableArray *phoneNumbers = [[NSMutableArray alloc] init];
+			for (CNContact *contact in cnContacts) {
+				// copy data to my custom Contacts class.
+				for (CNLabeledValue *phoneNumberKey in contact.phoneNumbers) {
+					CNPhoneNumber *phoneNumber = phoneNumberKey.value;
+					NSString *plainPhoneNumber = [[phoneNumber.stringValue componentsSeparatedByCharactersInSet:
+												   [[NSCharacterSet decimalDigitCharacterSet] invertedSet]]
+												  componentsJoinedByString:@""];
+					if (![plainPhoneNumber isEqualToString:[PFUser currentUser].username]) {
+						[phoneNumbers addObject: plainPhoneNumber];
+					}
+				}
+			}
+			PFQuery *friendQuery = [PFUser query];
+			[friendQuery whereKey:@"username" containedIn: phoneNumbers];
+			// findObjects will return a list of PFUsers that are friends with the current user
+			[friendQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable friendUsers, NSError * _Nullable error) {
+				if (error || !friendUsers.count) {
+					completionBlock([NSMutableArray array], [NSMutableArray array]);
+				} else {
+					[self getChannelsForFriends:friendUsers withCompletionHandler:^(NSArray *friendChannels) {
+						completionBlock(friendChannels, friendUsers);
+					}];
+				}
+			}];
+		}
+
+>>>>>>> Stashed changes
 }
 
 //Returns the channels that the current user is not following associated with their friends

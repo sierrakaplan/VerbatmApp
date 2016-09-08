@@ -33,6 +33,7 @@
 -(void) signUpOrLoginUserFromFacebookToken:(FBSDKAccessToken *)accessToken {
 	[PFFacebookUtils logInInBackgroundWithAccessToken:[FBSDKAccessToken currentAccessToken] block:^(PFUser * _Nullable user, NSError * _Nullable error) {
 		if (error) {
+			//todo: fail error
 			[self notifyFailedLogin: error];
 			return;
 		} else {
@@ -89,6 +90,7 @@
 		 completionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
 			 if (error) {
 				 [[PFUser currentUser] deleteInBackground];
+				 //todo: fail error
 				 [self notifyFailedLogin: error];
 				 return;
 			 }
@@ -98,7 +100,7 @@
 			 NSString *fbId = [result objectForKey:@"id"];
 
 			 if(!email) {
-				 NSString *description = @"Facebook login failed.";
+				 NSString *description = @"Facebook login failed. Please try again.";
 				 NSDictionary *errorDictionary = @{ NSLocalizedDescriptionKey : description};
 				 //todo: don't hardcode error codes
 				 NSError *needEmailError = [NSError errorWithDomain:@"world" code:20 userInfo:errorDictionary];
