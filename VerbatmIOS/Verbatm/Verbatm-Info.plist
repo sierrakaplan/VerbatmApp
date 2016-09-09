@@ -2,6 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This allows you to use your photos to create beautiful multimedia posts. Your photos/videos will never leave your device until you explicitly publish something.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Enable microphone access to record videos on Verbatm.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Enable camera access to capture photos and videos on the Verbatm app. We won&apos;t upload any photos or videos until you publish them.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>We use your contacts to find out which of your friends are using Verbatm! We never spam them or store their information.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -17,7 +25,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.28</string>
+	<string>1.0.29</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -50,7 +58,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>4</string>
+	<string>2</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>

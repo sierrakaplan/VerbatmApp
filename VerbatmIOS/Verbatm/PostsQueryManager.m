@@ -75,7 +75,7 @@
 				block(finalPostObjects);
 			}
 		} else {
-			block(@[]);
+			block([NSMutableArray array]);
 		}
 	}];
 }
@@ -143,7 +143,7 @@
 // Loads newest posts in channel up to the given limit
 +(void) getPostsInChannel:(Channel*)channel withLimit:(NSInteger)limit withCompletionBlock:(void(^)(NSArray *))block {
 	if(!channel) {
-		block (@[]);
+		block ([NSMutableArray array]);
 		return;
 	}
 	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];

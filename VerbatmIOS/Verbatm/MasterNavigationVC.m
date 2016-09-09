@@ -318,11 +318,11 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
     self.feedProfileListNavigationController.tabBarItem.imageInsets =  UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 }
 
--(void)showNotificationIndicator{
+-(void)showNotificationIndicator {
     [self showIndicator];
 }
 
--(void)removeNotificationIndicator{
+-(void)removeNotificationIndicator {
     [self removeIndicator];
 }
 
@@ -334,13 +334,16 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 -(void)showIndicator {
     self.notificationIndicatorPresent = YES;
 	if (self.tabBarHidden) return;
+	if (self.notificationIndicator.superview) {
+		return;
+	}
     CGFloat tabBarItemWidth = self.view.frame.size.width/5.f;
 	CGFloat xpos = 1.f + (self.view.frame.size.width - (tabBarItemWidth *2)) + tabBarItemWidth/2.f;
 
-    CGRect frame = CGRectMake(xpos, self.view.frame.size.height - (TAB_BAR_HEIGHT + NOTIFICATION_INDICATOR_SIZE), NOTIFICATION_INDICATOR_SIZE, NOTIFICATION_INDICATOR_SIZE);
+    CGRect frame = CGRectMake(xpos, 0.f-NOTIFICATION_INDICATOR_SIZE,
+							  NOTIFICATION_INDICATOR_SIZE, NOTIFICATION_INDICATOR_SIZE);
     [self.notificationIndicator setFrame:frame];
-    [self.view addSubview:self.notificationIndicator];
-    [self.view bringSubviewToFront:self.notificationIndicator];
+    [self.tabBar addSubview:self.notificationIndicator];
 }
 
 // Create a custom UIButton and add it over our adk icon
@@ -412,10 +415,9 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 
 #pragma mark - Feed VC Delegate -
 
--(void) goToDiscover{
+-(void) goToDiscover {
     [self setSelectedIndex: 1];
 }
-
 
 -(void) showTabBar:(BOOL)show {
 	if (show && self.tabBarHidden) {

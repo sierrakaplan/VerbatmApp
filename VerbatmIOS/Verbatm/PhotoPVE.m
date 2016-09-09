@@ -56,12 +56,17 @@
 
 @property (nonatomic) BOOL photoVideoSubview;
 
-#define TEXT_VIEW_HEIGHT 70.f
-#define SLIDESHOW_ANIMATION_DURATION 1.5f
-#define OPEN_COLLECTION_FRAME_HEIGHT 70.f
-#define IMAGE_FADE_OUT_ANIMATION_DURATION 1.5f
+#pragma mark - Slideshow -
+
 @property (nonatomic) BOOL animating;
 @property (nonatomic) BOOL slideShowPlaying;
+@property (nonatomic) CAShapeLayer *slideshowProgressCircle;
+
+#define TEXT_VIEW_HEIGHT 70.f
+#define SLIDESHOW_ANIMATION_DURATION 0.9f
+#define OPEN_COLLECTION_FRAME_HEIGHT 70.f
+#define IMAGE_FADE_OUT_ANIMATION_DURATION 1.2f
+
 @end
 
 @implementation PhotoPVE
@@ -109,6 +114,7 @@
 }
 
 -(void) initialFormatting {
+	[self.layer addSublayer: self.slideshowProgressCircle];
 	[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
 }
 
@@ -451,6 +457,17 @@
 		_pauseToRearrangeButton = pauseToRearrangeButton;
 	}
 	return _pauseToRearrangeButton;
+}
+
+-(CAShapeLayer*) slideshowProgressCircle {
+	if (!_slideshowProgressCircle) {
+		_slideshowProgressCircle = [[CAShapeLayer alloc]init];
+		_slideshowProgressCircle.frame = self.bounds;
+		_slideshowProgressCircle.fillColor = [UIColor clearColor].CGColor;
+		_slideshowProgressCircle.strokeColor = [UIColor colorWithRed:0.f green:0.f blue:1.f alpha:1.f].CGColor;
+		_slideshowProgressCircle.lineWidth = 20.f;
+	}
+	return _slideshowProgressCircle;
 }
 
 -(void) dealloc {
