@@ -8,6 +8,8 @@
 
 #import "GMImagePickerController.h"
 
+#import <ReplayKit/ReplayKit.h>
+
 #import "CurrentUserProfileVC.h"
 #import "Icons.h"
 #import "ParseBackendKeys.h"
@@ -20,11 +22,12 @@
 #import "VerbatmNavigationController.h"
 #import "UserManager.h"
 
-@interface CurrentUserProfileVC() <ProfileHeaderViewDelegate, GMImagePickerControllerDelegate>
+@interface CurrentUserProfileVC() <ProfileHeaderViewDelegate, GMImagePickerControllerDelegate, RPPreviewViewControllerDelegate, RPScreenRecorderDelegate>
 
 @property (nonatomic) PHImageManager* imageManager;
 
 #define SETTINGS_BUTTON_SIZE 24.f
+@property (nonatomic) BOOL currentlyRecording;
 
 @end
 
@@ -32,11 +35,14 @@
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
+    [self addReplayKitGesture];
+    [RPScreenRecorder sharedRecorder].delegate = self;
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear: animated];
 	[(VerbatmNavigationController*)self.navigationController setNavigationBarTextColor:[UIColor blackColor]];
+    
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
@@ -58,12 +64,96 @@
 	[self presentGalleryToSelectImage];
 }
 
+
 -(void) settingsButtonTapped {
 	SettingsVC *settingsVC = [self.storyboard instantiateViewControllerWithIdentifier:SETTINGS_VC_ID];
 	[self.navigationController pushViewController:settingsVC animated:YES];
 }
 
-#pragma mark - Cover Photo -
+
+-(void)addReplayKitGesture{
+    UILongPressGestureRecognizer * longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(replayKitLongPress:)];
+    [self.profileHeaderView addGestureRecognizer:longPress];
+    
+}
+
+-(void)replayKitLongPress:(UILongPressGestureRecognizer *) longPress{
+    
+    switch (longPress.state) {
+        case UIGestureRecognizerStateBegan:
+            self.currentlyRecording = !self.currentlyRecording;
+            if(self.currentlyRecording){
+                
+                if([RPScreenRecorder sharedRecorder].available){
+                    NSLog(@"Replay Kit is available");
+                }else{
+                    NSLog(@"Can't user replay kit");
+                }
+                
+                [[RPScreenRecorder sharedRecorder] startRecordingWithMicrophoneEnabled:YES handler:^(NSError * _Nullable error) {
+                    if(error){
+                        NSLog(@"Error when starting to record. Desctiption: %@", error.description);
+                    }
+                }];
+                
+                
+            }else{
+              
+                 NSLog(@"Stopping recording");
+                //end recording
+                [[RPScreenRecorder sharedRecorder] stopRecordingWithHandler:^(RPPreviewViewController * _Nullable previewViewController, NSError * _Nullable error) {
+                    if(!error && previewViewController){
+                        NSLog(@"Presenting preview VC");
+                        previewViewController.previewControllerDelegate = self;
+                       // previewViewController.modalPresentationStyle = UIModalPresentationFullScreen;
+                        //[self presentViewController:previewViewController animated:NO completion:nil];
+                        [self.navigationController pushViewController:previewViewController animated:YES];
+                    }
+                }];
+            }
+            
+            break;
+        default:
+            break;
+    }
+    
+    
+}
+
+
+
+/*! @abstract Called when recording has stopped for any reason.
+ @param screenRecorder The instance of the screen recorder.
+ @param error An NSError describing why recording has stopped in the RPRecordingErrorDomain.
+ @param previewController If a partial movie is available before it was stopped, an instance of RPPreviewViewController will be returned.
+ */
+- (void)screenRecorder:(RPScreenRecorder *)screenRecorder didStopRecordingWithError:(NSError *)error previewViewController:(nullable RPPreviewViewController *)previewViewController{
+    if(error){
+        NSLog(@"%@", error.description);
+    }
+}
+
+/*! @abstract Called when the recorder becomes available or stops being available. Check the screen recorder's availability property to check the current availability state. Possible reasons for the recorder to be unavailable include an in-progress Airplay/TVOut session or unsupported hardware.
+ @param screenRecorder The instance of the screen recorder.
+ */
+- (void)screenRecorderDidChangeAvailability:(RPScreenRecorder *)screenRecorder{
+    if(!screenRecorder.available){
+        NSLog(@"Screen recorder stopped being available.");
+    }
+}
+#pragma mark -RPPreviewController-
+/* @abstract Called when the view controller is finished. */
+- (void)previewControllerDidFinish:(RPPreviewViewController *)previewController{
+    
+}
+
+/* @abstract Called when the view controller is finished and returns a set of activity types that the user has completed on the recording. The built in activity types are listed in UIActivity.h. */
+- (void)previewController:(RPPreviewViewController *)previewController didFinishWithActivityTypes:(NSSet <NSString *> *)activityTypes{
+    
+}
+
+
+#pragma mark -Cover Photo-
 
 -(void)presentGalleryToSelectImage {
 	GMImagePickerController *picker = [[GMImagePickerController alloc] init];

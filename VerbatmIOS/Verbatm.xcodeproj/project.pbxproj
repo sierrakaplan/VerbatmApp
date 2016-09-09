@@ -205,6 +205,7 @@
 		C764CD6F1D189A3B00F75760 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C764CD6E1D189A3B00F75760 /* Twitter.framework */; };
 		C764CD711D18A26200F75760 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C764CD701D18A26200F75760 /* MessageUI.framework */; };
 		C774040F19BE6538004C50EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C774040E19BE6538004C50EA /* Images.xcassets */; };
+		C77862081D7CEB37000F02E4 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C77862071D7CEB37000F02E4 /* ReplayKit.framework */; };
 		C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = C77C7D371A22E9FC00694B20 /* PinchView.m */; };
 		C78204EE1C32EAC500F56A63 /* CreatorAndChannelBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C78204ED1C32EAC500F56A63 /* CreatorAndChannelBar.m */; };
 		C788745C1C334AE80048B66E /* PostLikeAndShareBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C788745B1C334AE80048B66E /* PostLikeAndShareBar.m */; };
@@ -600,6 +601,7 @@
 		C764CD6E1D189A3B00F75760 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		C764CD701D18A26200F75760 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		C774040E19BE6538004C50EA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		C77862071D7CEB37000F02E4 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
 		C77C7D361A22E9FC00694B20 /* PinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinchView.h; sourceTree = "<group>"; };
 		C77C7D371A22E9FC00694B20 /* PinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PinchView.m; sourceTree = "<group>"; };
 		C78204EC1C32EAC500F56A63 /* CreatorAndChannelBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreatorAndChannelBar.h; sourceTree = "<group>"; };
@@ -695,6 +697,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C77862081D7CEB37000F02E4 /* ReplayKit.framework in Frameworks */,
 				C764CD711D18A26200F75760 /* MessageUI.framework in Frameworks */,
 				C764CD6F1D189A3B00F75760 /* Twitter.framework in Frameworks */,
 				C7F3EBD01C86249E007D23DF /* libcompression.tbd in Frameworks */,
@@ -895,6 +898,7 @@
 		A51A0ADC1D6CF2C7009D7CDD /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A51A0AD61D6CF03F009D7CDD /* FrontEnd */,
 				A5934B9F1C10F044007C7830 /* Fonts */,
 				C774040E19BE6538004C50EA /* Images.xcassets */,
 			);
@@ -1538,6 +1542,7 @@
 		C7BC4374199D97F5004B91A1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C77862071D7CEB37000F02E4 /* ReplayKit.framework */,
 				C764CD701D18A26200F75760 /* MessageUI.framework */,
 				C764CD6E1D189A3B00F75760 /* Twitter.framework */,
 				A5F94ABC1CCC115500341D01 /* PromiseKit.framework */,
@@ -1572,7 +1577,6 @@
 			children = (
 				A5BB65461D6F804000F5B01B /* Main.storyboard */,
 				A51A0ADC1D6CF2C7009D7CDD /* Resources */,
-				A51A0AD61D6CF03F009D7CDD /* FrontEnd */,
 				A51A0AD51D6CF036009D7CDD /* Framedation/Model */,
 				C7BC437C199D97F5004B91A1 /* Supporting Files */,
 				C716E9D31BD6CAAA001B769D /* Analytics */,
