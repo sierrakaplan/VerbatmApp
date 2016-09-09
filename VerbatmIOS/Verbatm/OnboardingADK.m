@@ -49,7 +49,7 @@
 	[self initializeVariables];
 	[self setFrameMainScrollView];
 	[self setElementDefaultFrames];
-	
+    [self addCamera];
 	self.firstSlideBackground = [[UIImageView alloc] initWithFrame:self.view.bounds];
 	self.firstSlideBackground.image = [UIImage imageNamed:@"ADK_slide_1"];
 	self.firstSlideBackground.contentMode = UIViewContentModeScaleAspectFill;
@@ -77,17 +77,16 @@
     
 	self.topNavLabel.text = @"All the media you capture will be saved here. Tap the camera icon to capture your media.";
     
-    
+    [self checkPermissionStatus];
 }
 
 -(void)progressFromMediaCheckWithAccessGranted:(BOOL)accessGranted{
     if(accessGranted){
         [self createCameraView];
-        [self addCamera];
     }else{
         //permissions were denied
         //prompt user to go to settings to and set permissions as allowed
-        
+        [self showAlertWithTitle];
     }
 }
 
@@ -170,6 +169,27 @@
 -(void) minimizeCameraViewButtonTapped {
 	[self.cameraView removeFromSuperview];
 	[self removeExcessMediaTiles];
+}
+
+-(void) showAlertWithTitle {
+    NSString * title = @"Verbatm does not have access to your Camera or Photos.";
+    NSString * message = @"To enable Camera access go to Settings>Privacy>Camera>Verbatm. To enable Photos access go to Settings>Privacy>Photos>Verbatm.";
+    
+    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:title message:message
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction1 = [UIAlertAction actionWithTitle:@"Go To Settings" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                              //launch settings application
+                                                              [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                                                          }];
+    
+    UIAlertAction* defaultAction2 = [UIAlertAction actionWithTitle:@"Exit" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                              //todo ; leave view
+                                                          }];
+    [newAlert addAction:defaultAction1];
+    [newAlert addAction:defaultAction2];
+    [self presentViewController:newAlert animated:YES completion:nil];
 }
 
 //not called

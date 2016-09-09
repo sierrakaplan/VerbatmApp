@@ -31,7 +31,7 @@
 @property (nonatomic) UILabel *codeSentToNumberLabel;
 
 @property (nonatomic) BOOL verifyingCode;
-
+@property (nonatomic) BOOL segueCalled;
 @property (nonatomic) UIButton *resendCodeButton;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 
@@ -65,6 +65,10 @@
 	[self formatNavigationItem];
 }
 
+-(void)viewWillAppear:(BOOL)animated{
+    self.segueCalled = NO;
+}
+
 -(BOOL) prefersStatusBarHidden {
 	return YES;
 }
@@ -75,7 +79,9 @@
 }
 
 -(void) sendCodeToUser:(NSString*) simplePhoneNumber {
-   // return;//todo: these lines lines allow testing create new accounts (use phone numbers no one has)
+    return;//todo: this line lines allow testing create new accounts (use phone numbers no one has)
+    
+    
 	[self disableResendCodeButtonWithText:@"Sending code..."];
 	//todo: include more languages
 	NSDictionary *params = @{@"phoneNumber" : simplePhoneNumber, @"language" : @"en"};
@@ -118,18 +124,25 @@
 	return attributedTitle;
 }
 
+-(void)goOnToCreateName{
+    if(self.segueCalled) return;
+    self.segueCalled = YES;
+    [self performSegueWithIdentifier:SEGUE_CREATE_NAME sender:self];
+    
+}
+
 -(void) verifyCode {
 	NSString *code = [self getCode];
 
 //	//todo: these lines lines allow testing create new accounts (use phone numbers no one has)
-//	PFUser *newUser = [PFUser user];
-//	newUser.username = self.simplePhoneNumber;
-//	newUser.password = code;
-//	[newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-//		[self performSegueWithIdentifier:SEGUE_CREATE_NAME sender:self];
-//	}];
-//
-//	return;
+	PFUser *newUser = [PFUser user];
+	newUser.username = self.simplePhoneNumber;
+	newUser.password = code;
+	[newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        [self goOnToCreateName];
+    }];
+
+	return;
 
 	if (self.verifyingCode) return;
 	self.verifyingCode = YES;
@@ -162,7 +175,7 @@
 							[user setObject:[NSNumber numberWithBool:NO] forKey:USER_FTUE];
 							[user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 								if(succeeded) {
-									[self performSegueWithIdentifier:SEGUE_CREATE_NAME sender:self];
+                                    [self goOnToCreateName];
 								}
 							}];
 						} else {
