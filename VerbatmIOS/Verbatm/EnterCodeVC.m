@@ -75,7 +75,7 @@
 }
 
 -(void) sendCodeToUser:(NSString*) simplePhoneNumber {
-//	return;
+   // return;//todo: these lines lines allow testing create new accounts (use phone numbers no one has)
 	[self disableResendCodeButtonWithText:@"Sending code..."];
 	//todo: include more languages
 	NSDictionary *params = @{@"phoneNumber" : simplePhoneNumber, @"language" : @"en"};
