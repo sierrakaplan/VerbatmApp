@@ -212,7 +212,10 @@
 -(void) pinchingHasEnded {
 	if (self.pinchInstructionShown) return;
 	self.pinchInstructionShown = YES;
-	self.topNavLabel.text = @"Each circle is a page in your story. Tap one open to see what you just made!";
+	self.topNavLabel.text = @"Each circle is a page in your post. Tap one open to see what you just made!";
+    
+    //once they have pinched onboarding is done effectively
+    [[UserSetupParameters sharedInstance] setOnboardingShown];
 }
 
 -(void) aboutToRemovePreview {

@@ -113,15 +113,15 @@
 }
 
 
--(BOOL) checkAdkOnboardingShown {
+-(BOOL)checkAdkOnboardingShown {
     if (self.ftue) return YES;
     @synchronized(self) {
-        BOOL shown = [(NSNumber*)[[NSUserDefaults standardUserDefaults] valueForKey:ADK_ONBOARDING_EXPERIENCE_KEY] boolValue];
-        if (!shown) {
-            [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:YES] forKey:ADK_ONBOARDING_EXPERIENCE_KEY];
-        }
-        return shown;
+         return [(NSNumber*)[[NSUserDefaults standardUserDefaults] valueForKey:ADK_ONBOARDING_EXPERIENCE_KEY] boolValue];
     }
+}
+
+-(void)registerAdkOnboardingShown{
+   [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:YES] forKey:ADK_ONBOARDING_EXPERIENCE_KEY];
 }
 
 -(BOOL) checkFirstTimeFollowBlogShown {

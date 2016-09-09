@@ -379,7 +379,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 
 -(void) revealADK {
 	[[Analytics getSharedInstance] newADKSession];
-    if([MediaSessionManager adkMediaPermissionsAllowed]){
+    if([MediaSessionManager adkMediaPermissionsAllowed] && [[UserSetupParameters sharedInstance] checkAdkOnboardingShown]){
         [self performSegueWithIdentifier:ADK_SEGUE sender:self];
     }else{
         [self performSegueWithIdentifier:SEGUE_CREATE_FIRST_POST_FROM_MASTER sender:self];
