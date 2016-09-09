@@ -14,6 +14,7 @@
 #import <Parse/PFQuery.h>
 #import "ProfileVC.h"
 #import "Icons.h"
+#import "Styles.h"
 #import "VerbatmNavigationController.h"
 
 #define SEARCH_RESULTS_LIMIT 50
@@ -34,7 +35,7 @@
 
 -(void) viewDidLoad {
 	self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-//	self.view.backgroundColor = [UIColor whiteColor];
+	self.view.backgroundColor = [UIColor blackColor];
 	self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
 
@@ -51,7 +52,7 @@
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
-	return UIStatusBarStyleDefault;
+	return UIStatusBarStyleLightContent;
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -145,6 +146,8 @@
 		blogText = [blogText stringByAppendingString:userName];
 	}
 	[cell.textLabel setText: blogText];
+	cell.textLabel.font = [UIFont fontWithName:REGULAR_FONT size:16.f];
+	cell.textLabel.textColor = [UIColor whiteColor];
     [self removeNoSearchResultsIcon];
 	return cell;
 }

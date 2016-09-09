@@ -1022,6 +1022,8 @@
 			children = (
 				A5E860051B97CC3C00E148D0 /* PreviewDisplayView.h */,
 				A5E860061B97CC3C00E148D0 /* PreviewDisplayView.m */,
+				C7C69A051BF820FC006B5260 /* EditMediaContentView.h */,
+				C7C69A061BF820FC006B5260 /* EditMediaContentView.m */,
 				A560EF9E1BA8DFCC003FB041 /* Page Type Analyzer */,
 				A51A0AED1D6CF81B009D7CDD /* Edit Views */,
 				A51A0AE31D6CF4E6009D7CDD /* Toolbars */,
@@ -1058,8 +1060,6 @@
 			children = (
 				A50E62441D542060007FD5AD /* GridView.h */,
 				A50E62451D542060007FD5AD /* GridView.m */,
-				C7C69A051BF820FC006B5260 /* EditMediaContentView.h */,
-				C7C69A061BF820FC006B5260 /* EditMediaContentView.m */,
 				A51B85251D2F474F006E90CC /* OpenCollectionView.h */,
 				A51B85261D2F474F006E90CC /* OpenCollectionView.m */,
 			);
