@@ -70,6 +70,7 @@
 		A5934BAD1C10F2C8007C7830 /* Quicksand-LightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = A5934BA61C10F2C8007C7830 /* Quicksand-LightItalic.otf */; };
 		A5934BAE1C10F2C8007C7830 /* Quicksand-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = A5934BA71C10F2C8007C7830 /* Quicksand-Regular.otf */; };
 		A5934BFD1C10F349007C7830 /* Roboto-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A5934BEB1C10F349007C7830 /* Roboto-Italic.ttf */; };
+		A59D64C31D8351B00028650C /* FollowFriendsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A59D64C21D8351B00028650C /* FollowFriendsCell.m */; };
 		A5B0A81B1C0E63D60062D7BF /* PageViewingExperience.m in Sources */ = {isa = PBXBuildFile; fileRef = A5B0A81A1C0E63D60062D7BF /* PageViewingExperience.m */; };
 		A5BB653F1D6E9E6800F5B01B /* FeedProfileListTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5BB653E1D6E9E6800F5B01B /* FeedProfileListTVC.m */; };
 		A5BB65421D6E9E8B00F5B01B /* FeedListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5BB65411D6E9E8B00F5B01B /* FeedListTableViewCell.m */; };
@@ -406,6 +407,8 @@
 		A5934BA61C10F2C8007C7830 /* Quicksand-LightItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Quicksand-LightItalic.otf"; sourceTree = "<group>"; };
 		A5934BA71C10F2C8007C7830 /* Quicksand-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Quicksand-Regular.otf"; sourceTree = "<group>"; };
 		A5934BEB1C10F349007C7830 /* Roboto-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Italic.ttf"; sourceTree = "<group>"; };
+		A59D64C11D8351B00028650C /* FollowFriendsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowFriendsCell.h; sourceTree = "<group>"; };
+		A59D64C21D8351B00028650C /* FollowFriendsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FollowFriendsCell.m; sourceTree = "<group>"; };
 		A5B0A8191C0E63D60062D7BF /* PageViewingExperience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PageViewingExperience.h; sourceTree = "<group>"; };
 		A5B0A81A1C0E63D60062D7BF /* PageViewingExperience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PageViewingExperience.m; sourceTree = "<group>"; };
 		A5BB653D1D6E9E6800F5B01B /* FeedProfileListTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedProfileListTVC.h; sourceTree = "<group>"; };
@@ -1022,6 +1025,8 @@
 			children = (
 				A5E860051B97CC3C00E148D0 /* PreviewDisplayView.h */,
 				A5E860061B97CC3C00E148D0 /* PreviewDisplayView.m */,
+				C7C69A051BF820FC006B5260 /* EditMediaContentView.h */,
+				C7C69A061BF820FC006B5260 /* EditMediaContentView.m */,
 				A560EF9E1BA8DFCC003FB041 /* Page Type Analyzer */,
 				A51A0AED1D6CF81B009D7CDD /* Edit Views */,
 				A51A0AE31D6CF4E6009D7CDD /* Toolbars */,
@@ -1032,10 +1037,12 @@
 		A51A0AEB1D6CF7A1009D7CDD /* Table Cell Views */ = {
 			isa = PBXGroup;
 			children = (
-				A5C38AC51CC1D1970067D077 /* FeaturedContentCellView.h */,
-				A5C38AC61CC1D1970067D077 /* FeaturedContentCellView.m */,
 				A5C38AC81CC1D1B80067D077 /* ExploreChannelCellView.h */,
 				A5C38AC91CC1D1B80067D077 /* ExploreChannelCellView.m */,
+				A59D64C11D8351B00028650C /* FollowFriendsCell.h */,
+				A59D64C21D8351B00028650C /* FollowFriendsCell.m */,
+				A5C38AC51CC1D1970067D077 /* FeaturedContentCellView.h */,
+				A5C38AC61CC1D1970067D077 /* FeaturedContentCellView.m */,
 				A5C38ACB1CC1D4120067D077 /* FeaturedContentChannelView.h */,
 				A5C38ACC1CC1D4120067D077 /* FeaturedContentChannelView.m */,
 			);
@@ -1058,8 +1065,6 @@
 			children = (
 				A50E62441D542060007FD5AD /* GridView.h */,
 				A50E62451D542060007FD5AD /* GridView.m */,
-				C7C69A051BF820FC006B5260 /* EditMediaContentView.h */,
-				C7C69A061BF820FC006B5260 /* EditMediaContentView.m */,
 				A51B85251D2F474F006E90CC /* OpenCollectionView.h */,
 				A51B85261D2F474F006E90CC /* OpenCollectionView.m */,
 			);
@@ -1979,6 +1984,7 @@
 				A5BB65501D70ECBF00F5B01B /* VerbatmNavigationController.m in Sources */,
 				A582D28D1D75F6E90004A017 /* CommentingViewController.m in Sources */,
 				A5E73B761D1634D300527ECF /* UserManager.m in Sources */,
+				A59D64C31D8351B00028650C /* FollowFriendsCell.m in Sources */,
 				C7E65F6F1B92EB650042AD99 /* PostView.m in Sources */,
 				C755DB0C1C74619200136F6E /* PublishingProgressManager.m in Sources */,
 				A56B5D201CA49B1E00A61D27 /* Post_Channel_RelationshipManager.m in Sources */,

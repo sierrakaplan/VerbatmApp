@@ -20,17 +20,12 @@
 #import <Parse/PFUser.h>
 #import "UserInfoCache.h"
 
-@interface ExploreChannelCellView() <UIScrollViewDelegate, UIGestureRecognizerDelegate>
+@interface ExploreChannelCellView() <UIGestureRecognizerDelegate>
 
-// view for content so that there can be a black footer in every cell
-@property (nonatomic, strong) UIView *mainView;
 @property (nonatomic, strong) UILabel *userNameLabel;
 @property (nonatomic, strong) UIButton *followButton;
 @property (nonatomic, strong) UILabel *numFollowersLabel;
-
-@property (strong, nonatomic) UIScrollView *horizontalScrollView;
-@property (strong, nonatomic) NSMutableArray *postViews;
-@property (nonatomic) NSInteger indexOnScreen;
+@property (nonatomic, strong) UIImageView *coverPhotoImage;
 
 @property (nonatomic) BOOL isFollowed;
 @property (nonatomic, strong) NSNumber *numFollowers;
@@ -38,39 +33,31 @@
 
 
 #define MAIN_VIEW_OFFSET 10.f
-#define POST_VIEW_OFFSET 5.f
 #define POST_VIEW_WIDTH 150.f
-#define OFFSET 3.f
+#define OFFSET 5.f
 #define NUM_FOLLOWERS_WIDTH 40.f
 
 @end
 
 @implementation ExploreChannelCellView
 
--(instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
-	self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+-(instancetype) initWithFrame:(CGRect)frame {
+	self = [super initWithFrame: frame];
 	if (self) {
-		self.indexOnScreen = 0;
-		self.backgroundColor = [UIColor clearColor];
-		[self addSubview: self.mainView];
-		[self.mainView addSubview:self.horizontalScrollView];
-
-		UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cellTapped:)];
-		tap.delegate = self;
-		[self addGestureRecognizer:tap];
+		self.backgroundColor = [UIColor blackColor];
         [self registerForFollowNotification];
 	}
 	return self;
 }
 
--(void)registerForFollowNotification{
+-(void)registerForFollowNotification {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(userFollowStatusChanged:)
                                                  name:NOTIFICATION_NOW_FOLLOWING_USER
                                                object:nil];
 }
 
--(void)userFollowStatusChanged:(NSNotification *) notification{
+-(void)userFollowStatusChanged:(NSNotification *) notification {
     
     NSDictionary * userInfo = [notification userInfo];
     if(userInfo){
@@ -86,37 +73,19 @@
     }
 }
 
--(void) cellTapped:(UITapGestureRecognizer*)gesture {
-	[self.delegate channelSelected:self.channelBeingPresented];
-}
-
 -(void) layoutSubviews {
-	self.mainView.frame = CGRectMake(MAIN_VIEW_OFFSET, MAIN_VIEW_OFFSET,
-									 self.frame.size.width - MAIN_VIEW_OFFSET*2,
-									 self.frame.size.height - MAIN_VIEW_OFFSET*2);
-	self.followButton.frame = CGRectMake(POST_VIEW_OFFSET, OFFSET, FOLLOW_BUTTON_WIDTH, DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
-	self.numFollowersLabel.frame = CGRectMake(self.followButton.frame.origin.x + FOLLOW_BUTTON_WIDTH + OFFSET, OFFSET, NUM_FOLLOWERS_WIDTH,
+	self.coverPhotoImage.frame = self.bounds;
+	CGFloat yOffset = self.frame.size.height - DISCOVER_USERNAME_AND_FOLLOW_HEIGHT - OFFSET;
+	self.followButton.frame = CGRectMake(self.frame.size.width - FOLLOW_BUTTON_WIDTH - OFFSET,
+										 yOffset, FOLLOW_BUTTON_WIDTH,
+										 DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
+	self.numFollowersLabel.frame = CGRectMake(self.followButton.frame.origin.x - FOLLOW_BUTTON_WIDTH - OFFSET,
+											  yOffset, NUM_FOLLOWERS_WIDTH,
 											  DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
 
-    self.userNameLabel.frame = CGRectMake(OFFSET, OFFSET + DISCOVER_USERNAME_AND_FOLLOW_HEIGHT,
-                                          self.mainView.frame.size.width - (OFFSET*2),
+    self.userNameLabel.frame = CGRectMake(OFFSET, OFFSET,
+                                          self.frame.size.width - (OFFSET*2),
                                           DISCOVER_CHANNEL_NAME_HEIGHT);
-
-	CGFloat postScrollViewOffset = self.userNameLabel.frame.origin.y + self.userNameLabel.frame.size.height;
-	self.horizontalScrollView.frame = CGRectMake(0.f, postScrollViewOffset, self.mainView.frame.size.width,
-												 self.mainView.frame.size.height - postScrollViewOffset);
-
-    self.horizontalScrollView.showsHorizontalScrollIndicator = NO;
-	CGFloat xCoordinate = POST_VIEW_OFFSET;
-	for (PostView *postView in self.postViews) {
-		CGRect frame = CGRectMake(xCoordinate, POST_VIEW_OFFSET, POST_VIEW_WIDTH,
-								  self.horizontalScrollView.frame.size.height - (POST_VIEW_OFFSET*2));
-		postView.frame = frame;
-		[postView showPageUpIndicator];
-		xCoordinate += POST_VIEW_WIDTH + POST_VIEW_OFFSET;
-	}
-	self.horizontalScrollView.contentSize = CGSizeMake(xCoordinate, self.horizontalScrollView.contentSize.height);
-	[self setPostsOnScreen];
 }
 
 -(void) presentChannel:(Channel *)channel {
@@ -124,61 +93,35 @@
 	self.channelBeingPresented = channel;
 
 	[self.userNameLabel setText: channel.userName];
-
-
-	__block CGFloat xCoordinate = POST_VIEW_OFFSET;
-	[PostsQueryManager getPostsInChannel:channel withLimit:3 withCompletionBlock:^(NSArray *postChannelActivityObjects) {
-		for (int i = 0; i < postChannelActivityObjects.count; i++) {
-			PFObject *postChannelActivityObj = postChannelActivityObjects[i];
-			PFObject *post = [postChannelActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
-			[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
-				CGRect frame = CGRectMake(xCoordinate, POST_VIEW_OFFSET, POST_VIEW_WIDTH,
-										  self.horizontalScrollView.frame.size.height - (POST_VIEW_OFFSET*2));
-				PostView *postView = [[PostView alloc] initWithFrame:frame andPostChannelActivityObject:post small:YES andPageObjects: pages];
-				[postView postOffScreen];
-				xCoordinate += POST_VIEW_WIDTH + POST_VIEW_OFFSET;
-				self.horizontalScrollView.contentSize = CGSizeMake(xCoordinate, self.horizontalScrollView.contentSize.height);
-				[self.horizontalScrollView addSubview: postView];
-				if (self.postViews.count >= self.indexOnScreen && self.postViews.count <= self.indexOnScreen+2) {
-					[postView postOnScreen];
-				} else if (self.postViews.count == (self.indexOnScreen+3)) {
-					[postView postAlmostOnScreen];
-				}
-				[postView showPageUpIndicator];
-				[postView muteAllVideos:YES];
-				if (i < self.postViews.count) [self.postViews insertObject:postView atIndex:i];
-				else [self.postViews addObject:postView];
-			}];
+	[self.channelBeingPresented loadCoverPhotoWithCompletionBlock:^(UIImage *coverPhoto, NSData *coverPhotoData) {
+		if (coverPhoto) {
+			self.coverPhotoImage.image = coverPhoto;
 		}
 	}];
+
+	[self addSubview: self.coverPhotoImage];
 
 	self.numFollowers = self.channelBeingPresented.parseChannelObject[CHANNEL_NUM_FOLLOWS];
 	[self changeNumFollowersLabel];
      BOOL isCurrentUserChannel = [[channel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
     if(!isCurrentUserChannel){
         [self updateFollowIcon];
-        [self.mainView addSubview:self.followButton];
+        [self addSubview:self.followButton];
     }
 	
-	[self.mainView addSubview:self.userNameLabel];
-	[self.mainView addSubview:self.numFollowersLabel];
+	[self addSubview:self.userNameLabel];
+	[self addSubview:self.numFollowersLabel];
 }
 
 -(void) clearViews {
-	[self offScreen];
 
 	self.channelBeingPresented = nil;
-	self.indexOnScreen = 0;
 
 	[self.userNameLabel removeFromSuperview];
 	[self.followButton removeFromSuperview];
 	self.userNameLabel = nil;
 	self.followButton = nil;
-
-	for (PostView *postView in self.postViews) {
-		[postView removeFromSuperview];
-	}
-	self.postViews = nil;
+	self.coverPhotoImage = nil;
 }
 
 -(void) followButtonPressed {
@@ -215,100 +158,22 @@
 	[self.numFollowersLabel setText:[self.numFollowers stringValue]];
 }
 
--(void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-	if (!decelerate) {
-		[self setPostsOnScreen];
+
+-(UIImageView*) coverPhotoImage {
+	if (!_coverPhotoImage) {
+		_coverPhotoImage = [[UIImageView alloc] initWithFrame:self.frame];
+		_coverPhotoImage.image = [UIImage imageNamed:NO_COVER_PHOTO_IMAGE];
+		_coverPhotoImage.contentMode = UIViewContentModeScaleAspectFill;
+		_coverPhotoImage.clipsToBounds = YES;
 	}
-}
-
--(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-	[self setPostsOnScreen];
-}
-
--(void) setPostsOnScreen {
-	CGFloat originX = self.horizontalScrollView.contentOffset.x;
-	//Round down/truncate
-	NSInteger postIndex = originX / (POST_VIEW_WIDTH + POST_VIEW_OFFSET);
-
-	//Three posts can be visible
-	for (NSInteger i = postIndex; i < postIndex+3; i++) {
-		// Set previous on screen posts off screen
-		NSInteger previousPostIndex = self.indexOnScreen+(i-postIndex);
-		if (previousPostIndex < self.postViews.count &&
-			(previousPostIndex < postIndex || previousPostIndex > postIndex+2)) {
-			[(PostView*)self.postViews[previousPostIndex] postOffScreen];
-		}
-		// set posts on screen
-		if (i < self.postViews.count) {
-			[(PostView*)self.postViews[i] postOnScreen];
-		}
-	}
-	// Prepare next view
-	if (postIndex + 3 < self.postViews.count) {
-		[(PostView*)self.postViews[postIndex+3] postAlmostOnScreen];
-	}
-}
-
--(void) setAllPostsOffScreen {
-	for (PostView* postView in self.postViews) {
-		[postView postOffScreen];
-	}
-}
-
--(void) offScreen {
-	[self setAllPostsOffScreen];
-}
-
--(void) onScreen {
-	[self setPostsOnScreen];
-}
-
--(void) almostOnScreen {
-	for (PostView* postView in self.postViews) {
-		[postView postAlmostOnScreen];
-	}
-}
-
--(void) pauseAllVideos {
-
-}
-
-#pragma mark - Lazy Instantiation -
-
--(UIView *) mainView {
-	if (!_mainView) {
-		_mainView = [[UIView alloc] init];
-		_mainView.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.2f];
-		_mainView.layer.borderColor = [UIColor whiteColor].CGColor;
-		_mainView.layer.borderWidth = 1.f;
-		_mainView.layer.cornerRadius = 5.f;
-	}
-	return _mainView;
-}
-
--(UIScrollView *) horizontalScrollView {
-	if (!_horizontalScrollView) {
-		_horizontalScrollView = [[UIScrollView alloc] init];
-		_horizontalScrollView.backgroundColor = [UIColor clearColor];
-		_horizontalScrollView.delegate = self;
-		_horizontalScrollView.showsVerticalScrollIndicator = NO;
-		_horizontalScrollView.showsHorizontalScrollIndicator = YES;
-	}
-	return _horizontalScrollView;
-}
-
--(NSMutableArray *) postViews {
-	if (!_postViews) {
-		_postViews = [[NSMutableArray alloc] init];
-	}
-	return _postViews;
+	return _coverPhotoImage;
 }
 
 -(UILabel *) userNameLabel {
 	if (!_userNameLabel) {
 		_userNameLabel = [[UILabel alloc] init];
         [_userNameLabel setAdjustsFontSizeToFitWidth:YES];
-        [_userNameLabel setTextAlignment:NSTextAlignmentCenter];
+        [_userNameLabel setTextAlignment:NSTextAlignmentRight];
         [_userNameLabel setFont:[UIFont fontWithName:INFO_LIST_HEADER_FONT size:DISCOVER_CHANNEL_NAME_FONT_SIZE]];
         [_userNameLabel setTextColor:[UIColor whiteColor]];
 	}
@@ -333,7 +198,7 @@
 	if (!_numFollowersLabel) {
 		_numFollowersLabel = [[UILabel alloc] init];
 		[_numFollowersLabel setAdjustsFontSizeToFitWidth:YES];
-		[_numFollowersLabel setTextAlignment:NSTextAlignmentLeft];
+		[_numFollowersLabel setTextAlignment:NSTextAlignmentRight];
 		[_numFollowersLabel setFont:[UIFont fontWithName:REGULAR_FONT size:DISCOVER_USER_NAME_FONT_SIZE]];
 		[_numFollowersLabel setTextColor:[UIColor whiteColor]];
 	}

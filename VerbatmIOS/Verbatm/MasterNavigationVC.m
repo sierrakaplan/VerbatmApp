@@ -270,7 +270,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 	self.discoverNavigationController = [self.storyboard instantiateViewControllerWithIdentifier:
 										 DISCOVER_NAVIGATION_CONTROLLER_ID];
 	self.discoverVC = self.discoverNavigationController.viewControllers[0];
-	self.discoverVC.onboardingBlogSelection = NO;
 
 	self.profileNavigationController = [self.storyboard instantiateViewControllerWithIdentifier:
 										PROFILE_NAVIGATION_CONTROLLER_ID];

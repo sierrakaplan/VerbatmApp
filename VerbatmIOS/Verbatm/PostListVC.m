@@ -364,7 +364,7 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 	[self.postsQueryManager loadOlderPostsInChannel:self.channelForList withCompletionBlock:self.loadOlderPostsCompletion];
 }
 
-#pragma mark - Table view methods -
+#pragma mark - Collection view methods -
 
 //register our custom cell class
 -(void)registerClassForCustomCells {

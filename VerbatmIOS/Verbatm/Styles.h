@@ -178,7 +178,7 @@
 #pragma mark - Discover/Search -
 
 #define CHANNEL_LIST_CELL_SEPERATOR_COLOR [UIColor grayColor]
-#define DISCOVER_CHANNEL_NAME_FONT_SIZE 20.f
+#define DISCOVER_CHANNEL_NAME_FONT_SIZE 16.f
 #define DISCOVER_USER_NAME_FONT_SIZE 14.f
 
 

@@ -174,7 +174,7 @@
 
 #define EXIT_ICON @"exit"
 
-#pragma mark -Photo Slideshow icons-
+#pragma mark - Photo Slideshow icons -
 
 #define PAUSE_SLIDESHOW_ICON @"Pause_slideshow_icon"
 #define PLAY_SLIDESHOW_ICON @"Play_slideshow_icon"
@@ -184,6 +184,9 @@
 #define DISCOVER_BACKGROUND @"background_discover"
 
 #define EMPTY_SEARCH_RESULTS_ICON @"EmptySearchResultsIcon"
+
+#define INVITE_FRIENDS_ICON @"invite_icon"
+#define FOLLOW_FRIENDS_ICON @"white_person_icon"
 
 #pragma mark - Profile Information Header -
 

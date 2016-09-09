@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
@@ -347,7 +347,7 @@
         <scene sceneID="Ztj-7g-WJd">
             <objects>
                 <viewController storyboardIdentifier="featured_content_vc" id="i9B-d6-FOW" customClass="DiscoverVC" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Cf5-tW-Arb" customClass="UITableView">
+                    <view key="view" contentMode="scaleToFill" id="Cf5-tW-Arb">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -569,6 +569,6 @@
     <inferredMetricsTieBreakers>
         <segue reference="HDC-3z-u8g"/>
         <segue reference="Ju6-jE-1sM"/>
-        <segue reference="GGt-59-v8o"/>
+        <segue reference="9Cn-wT-pt5"/>
     </inferredMetricsTieBreakers>
 </document>

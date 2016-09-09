@@ -194,8 +194,8 @@
 
 		[Page_BackendObject getPagesFromPost:object andCompletionBlock:^(NSArray * pages) {
 
-			if (![self stillHasOriginalPost:pfActivityObj])return;
-            
+			if (![self stillHasOriginalPost:pfActivityObj]) return;
+
 			self.currentPostView = [[PostView alloc] initWithFrame:POSTVIEW_FRAME
 									  andPostChannelActivityObject:pfActivityObj small:self.inSmallMode andPageObjects:pages];
 			if(self.inSmallMode)[self.currentPostView muteAllVideos:YES];

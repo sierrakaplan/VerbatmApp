@@ -67,8 +67,8 @@
 
 -(void)addListVC {
     self.discoverList = [self.storyboard instantiateViewControllerWithIdentifier:FEATURED_CONTENT_VC_ID];
-    self.discoverList.onboardingBlogSelection = YES;
-	self.discoverList.onboardingDelegate = self;
+//    self.discoverList.onboardingBlogSelection = YES;
+//	self.discoverList.onboardingDelegate = self;
     [self.tableContainerView addSubview: self.discoverList.view];
     [self addChildViewController: self.discoverList];
     [self.discoverList didMoveToParentViewController:self];

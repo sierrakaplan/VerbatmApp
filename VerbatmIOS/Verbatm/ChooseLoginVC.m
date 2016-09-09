@@ -187,8 +187,8 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 // Only called for fb login errors now
 -(void) loginFailed: (NSNotification*) notification {
-//	NSError* error = notification.object;
-	[self errorInSignInAnimation: @"We're sorry, something went wrong!"];
+	NSError* error = notification.object;
+	[self errorInSignInAnimation: error.localizedDescription];
 }
 
 #pragma mark - Error message animation -

@@ -16,4 +16,6 @@
 
 -(void) setNavigationBarTextColor: (UIColor*)textColor;
 
+-(void) setNavigationBarShadowColor:(UIColor*)shadowColor;
+
 @end

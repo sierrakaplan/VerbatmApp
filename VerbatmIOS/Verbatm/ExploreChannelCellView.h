@@ -15,7 +15,7 @@
 
 @end
 
-@interface ExploreChannelCellView : UITableViewCell
+@interface ExploreChannelCellView : UICollectionViewCell
 
 @property (weak, nonatomic) id<ExploreChannelCellViewDelegate> delegate;
 @property (weak, readonly) Channel *channelBeingPresented;
@@ -24,11 +24,11 @@
 
 // Makes cell ready to present new channel
 -(void)clearViews;
-
--(void)onScreen;
-
--(void)almostOnScreen;
-
--(void)offScreen;
+//
+//-(void)onScreen;
+//
+//-(void)almostOnScreen;
+//
+//-(void)offScreen;
 
 @end
