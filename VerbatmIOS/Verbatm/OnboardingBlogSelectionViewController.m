@@ -138,7 +138,7 @@
 
 -(void)exitDiscover {
 	[self.doneButton removeFromSuperview];
-	[self performSegueWithIdentifier:SEGUE_CREATE_FIRST_POST sender: self];
+	[self performSegueWithIdentifier:SEGUE_CREATE_FIRST_POST_FROM_ONBOARDING sender: self];
 }
 
 -(void) addBackgroundImage {

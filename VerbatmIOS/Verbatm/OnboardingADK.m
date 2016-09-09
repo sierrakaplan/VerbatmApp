@@ -59,9 +59,14 @@
 
 -(void) viewWillAppear:(BOOL)animated {
 	//do not want super method's called
-	UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(startTutorial)];
-	[self.firstSlideBackground addGestureRecognizer: tapGesture];
-	self.firstSlideBackground.userInteractionEnabled = YES;
+    if(self.firstSlideBackground){
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(startTutorial)];
+        [self.firstSlideBackground addGestureRecognizer: tapGesture];
+        self.firstSlideBackground.userInteractionEnabled = YES;
+    }else{
+        //maybe we left the app to check settings then came back
+        [self checkPermissionStatus];
+    }
 }
 
 -(void)createCameraView{
@@ -71,6 +76,7 @@
 
 -(void) startTutorial {
 	[self.firstSlideBackground removeFromSuperview];
+    self.firstSlideBackground = nil;
 	[self addBackgroundImage];
     
 	[self.view addSubview: self.topNavMessage];
@@ -179,17 +185,25 @@
                                                                 preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction* defaultAction1 = [UIAlertAction actionWithTitle:@"Go To Settings" style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {
+                                                              dispatch_async(dispatch_get_main_queue(), ^{
                                                               //launch settings application
                                                               [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                                                              });
                                                           }];
     
     UIAlertAction* defaultAction2 = [UIAlertAction actionWithTitle:@"Exit" style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {
                                                               //todo ; leave view
+                                                              [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ONBOARDING_TO_MASTER sender:self];
                                                           }];
     [newAlert addAction:defaultAction1];
     [newAlert addAction:defaultAction2];
-    [self presentViewController:newAlert animated:YES completion:nil];
+    //not always called in the main queue
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self presentViewController:newAlert animated:YES completion:nil];
+    });
+    
+    
 }
 
 //not called

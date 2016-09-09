@@ -22,6 +22,7 @@
 #import "InstallationVariables.h"
 
 #import "MasterNavigationVC.h"
+#import "MediaSessionManager.h"
 
 #import "Notifications.h"
 #import "NotificationsListTVC.h"
@@ -378,7 +379,11 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 
 -(void) revealADK {
 	[[Analytics getSharedInstance] newADKSession];
-	[self performSegueWithIdentifier:ADK_SEGUE sender:self];
+    if([MediaSessionManager adkMediaPermissionsAllowed]){
+        [self performSegueWithIdentifier:ADK_SEGUE sender:self];
+    }else{
+        [self performSegueWithIdentifier:SEGUE_CREATE_FIRST_POST_FROM_MASTER sender:self];
+    }
 }
 
 -(void)userHasSignedOutNotification:(NSNotification *) notification{

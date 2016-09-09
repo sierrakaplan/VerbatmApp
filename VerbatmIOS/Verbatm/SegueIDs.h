@@ -25,8 +25,9 @@
 #define SEGUE_ENTER_PHONE_CONFIRMATION_CODE @"enter_phone_code_segue" //from either login or create account nav
 #define SEGUE_FOLLOW_FRIENDS @"follow_friends_segue"
 #define SEGUE_CREATE_NAME @"create_name_segue"
-#define SEGUE_CREATE_FIRST_POST @"first_post_segue"
+#define SEGUE_CREATE_FIRST_POST_FROM_ONBOARDING @"first_post_segue"
 
+#define SEGUE_CREATE_FIRST_POST_FROM_MASTER @"OnboardSegueFromMasterView"
 // segue from master vc to onboarding
 #define SEGUE_ONBOARDING_ALREADY_LOGGED_IN @"logged_in_onboarding_segue"
 

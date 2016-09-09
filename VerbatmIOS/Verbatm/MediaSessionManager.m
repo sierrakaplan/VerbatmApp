@@ -273,27 +273,25 @@
 }
 
 +(void)askUserForADKPermissionsWithCompletiongBlock:(void(^)(BOOL)) block{
-    
+    //though the permission process can fail at the top of the chain
+    //we make sure we request all the permissions so that they appaer in the settings for manual activation
+    __block BOOL succeeded = YES;
     [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
-        if(status == PHAuthorizationStatusAuthorized){
-            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted1) {
-                if(granted1){
-                    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted2) {
-                        if(granted2){
-                             block(YES);
-                        }else{
-                             block(NO);
-                        }
-                    }];
-                    
-                }else{
-                     block(NO);
-                }
-            }];
-            
-        }else{
-            block(NO);
+        if(status == PHAuthorizationStatusDenied){
+            succeeded = NO;
         }
+            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted1) {
+                if(!granted1){
+                    succeeded = NO;
+                }
+                    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted2) {
+                        if(!granted2){
+                            succeeded = NO;
+                        }
+                             block(succeeded);
+                        
+                    }];
+            }];
     }];
     
 }
