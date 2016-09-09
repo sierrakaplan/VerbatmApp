@@ -253,6 +253,51 @@
 
 #pragma mark - Save Asset -
 
+
++(BOOL)adkMediaPermissionsAllowed{
+    if([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusAuthorized &&
+       [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo] ==  PHAuthorizationStatusAuthorized &&
+       [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio] == PHAuthorizationStatusAuthorized){
+        return YES;
+    }
+    return NO;
+}
+
++(BOOL)adKMediaPermissionActivelyDenied{
+    if([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusNotDetermined &&
+       [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo] == PHAuthorizationStatusNotDetermined &&
+       [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio] == PHAuthorizationStatusNotDetermined){
+        return NO;
+    }
+    return YES;
+}
+
++(void)askUserForADKPermissionsWithCompletiongBlock:(void(^)(BOOL)) block{
+    
+    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+        if(status == PHAuthorizationStatusAuthorized){
+            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted1) {
+                if(granted1){
+                    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted2) {
+                        if(granted2){
+                             block(YES);
+                        }else{
+                             block(NO);
+                        }
+                    }];
+                    
+                }else{
+                     block(NO);
+                }
+            }];
+            
+        }else{
+            block(NO);
+        }
+    }];
+    
+}
+
 -(void)checkSavePermissionsWithCompletionBlock:(void(^)(void))block{
     if([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusNotDetermined){
         [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {

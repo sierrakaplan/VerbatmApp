@@ -10,6 +10,7 @@
 #import "PinchView.h"
 #import "OnboardingADK.h"
 #import "MediaSelectTile.h"
+#import "MediaSessionManager.h"
 #import "PublishingProgressManager.h"
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
@@ -48,8 +49,7 @@
 	[self initializeVariables];
 	[self setFrameMainScrollView];
 	[self setElementDefaultFrames];
-	self.cameraView = [[VerbatmCameraView alloc] initWithFrame:self.view.bounds];
-	self.cameraView.delegate = self;
+	
 	self.firstSlideBackground = [[UIImageView alloc] initWithFrame:self.view.bounds];
 	self.firstSlideBackground.image = [UIImage imageNamed:@"ADK_slide_1"];
 	self.firstSlideBackground.contentMode = UIViewContentModeScaleAspectFill;
@@ -64,13 +64,45 @@
 	self.firstSlideBackground.userInteractionEnabled = YES;
 }
 
+-(void)createCameraView{
+    self.cameraView = [[VerbatmCameraView alloc] initWithFrame:self.view.bounds];
+    self.cameraView.delegate = self;
+}
+
 -(void) startTutorial {
 	[self.firstSlideBackground removeFromSuperview];
 	[self addBackgroundImage];
+    
 	[self.view addSubview: self.topNavMessage];
+    
 	self.topNavLabel.text = @"All the media you capture will be saved here. Tap the camera icon to capture your media.";
-	[self addCamera];
+    
+    
 }
+
+-(void)progressFromMediaCheckWithAccessGranted:(BOOL)accessGranted{
+    if(accessGranted){
+        [self createCameraView];
+        [self addCamera];
+    }else{
+        //permissions were denied
+        //prompt user to go to settings to and set permissions as allowed
+        
+    }
+}
+
+-(void)checkPermissionStatus{
+    if(![MediaSessionManager adKMediaPermissionActivelyDenied]){
+        //we haven't asked for permission yet so lets do that :)
+        [MediaSessionManager askUserForADKPermissionsWithCompletiongBlock:^(BOOL allPermissionsGranted) {
+            [self progressFromMediaCheckWithAccessGranted:allPermissionsGranted];
+        }];
+    }else{
+        
+        [self progressFromMediaCheckWithAccessGranted:[MediaSessionManager adkMediaPermissionsAllowed]];
+    }
+}
+
 
 -(void) addCamera {
 	CGRect scrollViewFrame = CGRectMake(0, NAV_MESSAGE_HEIGHT + OFFSET_Y*2,
