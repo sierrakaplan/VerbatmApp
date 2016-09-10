@@ -4334,11 +4334,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/UserManager.m"
-            timestampString = "495164975.747146"
+            timestampString = "495171092.030576"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "149"
-            endingLineNumber = "149"
+            startingLineNumber = "154"
+            endingLineNumber = "154"
             landmarkName = "-daysBetweenDate:andDate:"
             landmarkType = "5">
          </BreakpointContent>
@@ -5454,12 +5454,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/DiscoverVC.m"
-            timestampString = "490935018.04983"
+            timestampString = "495171292.107574"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "189"
-            endingLineNumber = "189"
-            landmarkName = "-loadExploreChannels"
+            startingLineNumber = "196"
+            endingLineNumber = "196"
+            landmarkName = "-refreshChannels"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8725,11 +8725,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MediaSessionManager.m"
-            timestampString = "495156755.208376"
+            timestampString = "495172255.492645"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "313"
-            endingLineNumber = "313"
+            startingLineNumber = "315"
+            endingLineNumber = "315"
             landmarkName = "-saveAssetFromImage:orVideoFile:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8741,11 +8741,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MediaSessionManager.m"
-            timestampString = "495156755.208376"
+            timestampString = "495172255.492645"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "299"
-            endingLineNumber = "299"
+            startingLineNumber = "301"
+            endingLineNumber = "301"
             landmarkName = "-checkSavePermissionsWithCompletionBlock:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8757,11 +8757,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MediaSessionManager.m"
-            timestampString = "495156755.208376"
+            timestampString = "495172255.492645"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "301"
-            endingLineNumber = "301"
+            startingLineNumber = "303"
+            endingLineNumber = "303"
             landmarkName = "-checkSavePermissionsWithCompletionBlock:"
             landmarkType = "5">
             <Locations>
@@ -8805,11 +8805,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MediaSessionManager.m"
-            timestampString = "495156755.208376"
+            timestampString = "495172255.492645"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "318"
-            endingLineNumber = "318"
+            startingLineNumber = "320"
+            endingLineNumber = "320"
             landmarkName = "-saveAssetFromImage:orVideoFile:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8821,27 +8821,27 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MediaSessionManager.m"
-            timestampString = "495156755.208376"
+            timestampString = "495172255.492645"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "329"
+            endingLineNumber = "329"
+            landmarkName = "-saveAssetFromImage:orVideoFile:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/MediaSessionManager.m"
+            timestampString = "495172255.492645"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "327"
             endingLineNumber = "327"
-            landmarkName = "-saveAssetFromImage:orVideoFile:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/MediaSessionManager.m"
-            timestampString = "495156755.208376"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "325"
-            endingLineNumber = "325"
             landmarkName = "-saveAssetFromImage:orVideoFile:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8869,11 +8869,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MediaSessionManager.m"
-            timestampString = "495143643.061553"
+            timestampString = "495172255.492645"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "119"
-            endingLineNumber = "119"
+            startingLineNumber = "121"
+            endingLineNumber = "121"
             landmarkName = "-initializeVerbatmAlbum"
             landmarkType = "5">
          </BreakpointContent>
@@ -8885,11 +8885,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MediaSessionManager.m"
-            timestampString = "495144668.161381"
+            timestampString = "495172255.492645"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "120"
-            endingLineNumber = "120"
+            startingLineNumber = "122"
+            endingLineNumber = "122"
             landmarkName = "-initializeVerbatmAlbum"
             landmarkType = "5">
          </BreakpointContent>
@@ -8901,11 +8901,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MediaSessionManager.m"
-            timestampString = "495156755.208376"
+            timestampString = "495172255.492645"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "302"
-            endingLineNumber = "302"
+            startingLineNumber = "304"
+            endingLineNumber = "304"
             landmarkName = "-checkSavePermissionsWithCompletionBlock:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8933,11 +8933,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MediaSessionManager.m"
-            timestampString = "495153486.741196"
+            timestampString = "495172255.492645"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "121"
-            endingLineNumber = "121"
+            startingLineNumber = "123"
+            endingLineNumber = "123"
             landmarkName = "-initializeVerbatmAlbum"
             landmarkType = "5">
          </BreakpointContent>

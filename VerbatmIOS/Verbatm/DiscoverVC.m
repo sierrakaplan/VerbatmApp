@@ -110,7 +110,8 @@
 	self.tableView.backgroundView.layer.zPosition -= 1;
 	[self.view setBackgroundColor:[UIColor clearColor]];
 	//avoid covering status bar and last item in uitableview
-	UIEdgeInsets inset = UIEdgeInsetsMake(STATUS_BAR_HEIGHT, 0, TAB_BAR_HEIGHT + STATUS_BAR_HEIGHT, 0);
+    
+    UIEdgeInsets inset = UIEdgeInsetsMake(STATUS_BAR_HEIGHT, 0, TAB_BAR_HEIGHT + STATUS_BAR_HEIGHT, 0);
 	self.tableView.contentInset = inset;
 	self.tableView.scrollIndicatorInsets = inset;
 }

@@ -34,6 +34,8 @@
 #define TAB_DIVIDER_WIDTH 2.f
 #define TAB_BAR_HEIGHT 40.f
 
+#define HEADER_VIEW_HEIGHT STATUS_BAR_HEIGHT + 60.f
+
 
 #pragma mark - Custom Navigation Bar -
 

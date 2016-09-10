@@ -113,7 +113,8 @@
 				 [self notifyFailedLogin: needEmailError];
 				 return;
 			 }
-
+             
+             
 			 PFQuery *query = [PFUser query];
 			 [query whereKey:@"email" equalTo: email];
 			 [query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
@@ -124,8 +125,10 @@
 					 [loginManager logOut];
 					 NSError* accountWithEmailExistsError = [NSError errorWithDomain:@"world" code: kPFErrorUserEmailTaken userInfo:nil];
 					 [self notifyFailedLogin: accountWithEmailExistsError];
-				 } else {
-					 [self updateCurrentUserWithName:name andEmail:email andFbId:fbId];
+				 
+                 } else {
+					
+                     [self updateCurrentUserWithName:name andEmail:email andFbId:fbId];
 					 //						NSString* pictureURL = result[@"picture"][@"data"][@"url"];
 					 //						NSLog(@"profile picture url: %@", pictureURL);
 
@@ -134,7 +137,9 @@
 				 }
 
 			 }];
-		 }];
+		 
+         }];
+    
 	[connection start];
 }
 

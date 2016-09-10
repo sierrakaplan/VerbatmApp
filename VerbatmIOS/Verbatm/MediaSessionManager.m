@@ -50,7 +50,9 @@
 
 		//start the session running
 		[self.session startRunning];
-	}
+	
+    }
+    
 	return self;
 }
 
