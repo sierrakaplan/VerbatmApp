@@ -42,7 +42,8 @@
 				[self getUserInfoFromFacebookToken: accessToken];
 			} else {
 				NSLog(@"User had already created account. Successfully logged in with Facebook.");
-                if(![[UserSetupParameters sharedInstance] checkAdkOnboardingShown]){
+                
+                if(![[UserSetupParameters sharedInstance] checkOnboardingShown]){
                     if(loginVC)[loginVC userHasNotCompletedOnboardingPresentOnboardingADK];
                 }else{
                     [self notifySuccessfulLogin];

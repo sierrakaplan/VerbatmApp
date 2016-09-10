@@ -565,7 +565,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
 
-	if(![[UserSetupParameters sharedInstance] checkAndSetTapOutOfFullscreenInstructionShown]&&
+	if(![[UserSetupParameters sharedInstance] checkOnboardingShown]&&
 	   !self.inSmallMode){
 		[self.collectionView setScrollEnabled:NO];
 		PostCollectionViewCell * currentCell = (PostCollectionViewCell *)cell;

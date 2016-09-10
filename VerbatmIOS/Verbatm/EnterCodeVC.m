@@ -181,7 +181,7 @@
 							}];
 						} else {
                             
-                            if(![[UserSetupParameters sharedInstance] checkAdkOnboardingShown]){
+                            if(![[UserSetupParameters sharedInstance] checkOnboardingShown]){
                                 NSString * userName = user[VERBATM_USER_NAME_KEY];
                                 if(userName && userName.length){
                                     //go to onboarding adk

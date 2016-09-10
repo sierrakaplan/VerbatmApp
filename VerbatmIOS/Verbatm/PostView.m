@@ -249,7 +249,7 @@
 	}
 
 	//todo: check timing
-	if(![[UserSetupParameters sharedInstance] checkAndSetSwipeInstructionShown] && self.pageViews.count > 1) {
+	if(![[UserSetupParameters sharedInstance] checkOnboardingShown] && self.pageViews.count > 1) {
 		[self presentSwipeUpAndDownInstruction];
 	}
 }

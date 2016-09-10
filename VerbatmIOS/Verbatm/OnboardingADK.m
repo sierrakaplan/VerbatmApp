@@ -97,8 +97,9 @@
 }
 
 -(void)checkPermissionStatus{
-    if(![MediaSessionManager adKMediaPermissionActivelyDenied]){
-        //we haven't asked for permission yet so lets do that :)
+    BOOL weHaveNotRequestedPermission = ![MediaSessionManager adKMediaPermissionActivelyDenied];
+    if(weHaveNotRequestedPermission){
+        //we have not asked for permission yet so lets do that :)
         [MediaSessionManager askUserForADKPermissionsWithCompletiongBlock:^(BOOL allPermissionsGranted) {
             [self progressFromMediaCheckWithAccessGranted:allPermissionsGranted];
         }];

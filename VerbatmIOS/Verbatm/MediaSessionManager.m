@@ -128,7 +128,6 @@
 
 // creates a Verbatm Album in the PHPhotoLibrary
 -(void)createVerbatmAlbum {
-    [self checkSavePermissionsWithCompletionBlock:^{
             __block PHObjectPlaceholder *albumPlaceholder;
             [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
                 PHAssetCollectionChangeRequest* changeRequest = [PHAssetCollectionChangeRequest creationRequestForAssetCollectionWithTitle:VERBATM_ALBUM_NAME];
@@ -148,7 +147,6 @@
                     }
                 }
             }];
-    }];
 }
 
 // lists all albums and finds the one named Verbatm, then saves it
@@ -204,11 +202,11 @@
                 UIImage* capturedImage = [[UIImage alloc] initWithData: dataForImage];
                 capturedImage = [capturedImage getImageWithOrientationUp];
                 [self.delegate capturedImage: capturedImage];
-                [self checkSavePermissionsWithCompletionBlock:^{
-                    [self saveAssetFromImage:capturedImage orVideoFile:nil];
-                }];
+                
+                [self saveAssetFromImage:capturedImage orVideoFile:nil];
                 
             }
+            
 		} else {
 			[[Crashlytics sharedInstance] recordError: error];
 		}
@@ -246,9 +244,7 @@
 
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error {
     
-    [self checkSavePermissionsWithCompletionBlock:^{
         [self saveAssetFromImage:nil orVideoFile:outputFileURL];
-    }];
     
 	
 }
@@ -296,18 +292,6 @@
             }];
     }];
     
-}
-
--(void)checkSavePermissionsWithCompletionBlock:(void(^)(void))block{
-    if([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusNotDetermined){
-        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
-            if(status == PHAuthorizationStatusAuthorized){
-                block();
-            }
-        }];
-    }else if ([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusAuthorized){
-        block();
-    }
 }
 
 

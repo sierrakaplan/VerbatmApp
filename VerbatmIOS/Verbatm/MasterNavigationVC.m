@@ -105,7 +105,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 		[self bringUpLogin];
     }else{
         //todo: did we crash during onboarding?
-        BOOL appCrashedInOnboarding = (![[UserSetupParameters sharedInstance] checkAdkOnboardingShown] && !self.justLeftOnboarding);
+        BOOL appCrashedInOnboarding = (![[UserSetupParameters sharedInstance] checkOnboardingShown] && !self.justLeftOnboarding);
         if(appCrashedInOnboarding){
             //
             
@@ -392,7 +392,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 
 -(void) revealADK {
 	[[Analytics getSharedInstance] newADKSession];
-    if([MediaSessionManager adkMediaPermissionsAllowed] && [[UserSetupParameters sharedInstance] checkAdkOnboardingShown]){
+    if([MediaSessionManager adkMediaPermissionsAllowed] && [[UserSetupParameters sharedInstance] checkOnboardingShown]){
         [self performSegueWithIdentifier:ADK_SEGUE sender:self];
     }else{
         [self performSegueWithIdentifier:SEGUE_CREATE_FIRST_POST_FROM_MASTER sender:self];

@@ -1639,7 +1639,7 @@ andSaveInUserDefaults:(BOOL)save {
 	[self removeExcessMediaTiles];
     self.screenInCameraMode = NO;
     if(self.numPinchViews > 1.f && !self.currentlyPresentingInstruction &&
-       ![[UserSetupParameters sharedInstance] checkAndSetPinchInstructionShown]){
+       ![[UserSetupParameters sharedInstance] checkOnboardingShown]){
         [self presentPinchInstruction];
     }
 }
