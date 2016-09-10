@@ -16,7 +16,9 @@
 #import "Styles.h"
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
+
 #import "UserManager.h"
+#import "UserSetupParameters.h"
 #import "UtilityFunctions.h"
 
 @interface ChooseLoginVC() <UITextFieldDelegate, LoginKeyboardToolBarDelegate, FBSDKLoginButtonDelegate>
@@ -134,7 +136,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	//	NSSet* declinedPermissions = result.declinedPermissions;
 	//batch request for user info as well as friends
 	if ([FBSDKAccessToken currentAccessToken]) {
-		[[UserManager sharedInstance] signUpOrLoginUserFromFacebookToken: [FBSDKAccessToken currentAccessToken] fromLoginVC:self];
+		[[UserManager sharedInstance] signUpOrLoginUserFromFacebookToken: [FBSDKAccessToken currentAccessToken]];
 	} else {
 		//  [self.delegate errorInSignInWithError: @"Facebook login failed."];
 	}
@@ -180,13 +182,23 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 }
 
 -(void) loginSucceeded: (NSNotification*) notification {
-	// viewController is visible
+	// check viewController is visible
 	if (self.isViewLoaded && self.view.window) {
-		if (self.creatingAccount) {
-			[self performSegueWithIdentifier:SEGUE_FOLLOW_FRIENDS_FROM_FACEBOOK_LOGIN sender:self];
-		} else {
- 			[self performSegueWithIdentifier:UNWIND_SEGUE_FACEBOOK_LOGIN_TO_MASTER sender:self];
-		}
+        
+        if(![[UserSetupParameters sharedInstance] checkOnboardingShown]) {
+            
+            [self userHasNotCompletedOnboardingPresentOnboardingADK];
+        
+        }else{
+            
+            if (self.creatingAccount) {
+                [self performSegueWithIdentifier:SEGUE_FOLLOW_FRIENDS_FROM_FACEBOOK_LOGIN sender:self];
+            } else {
+                [self performSegueWithIdentifier:UNWIND_SEGUE_FACEBOOK_LOGIN_TO_MASTER sender:self];
+            }
+            
+        }
+		
 	}
 }
 

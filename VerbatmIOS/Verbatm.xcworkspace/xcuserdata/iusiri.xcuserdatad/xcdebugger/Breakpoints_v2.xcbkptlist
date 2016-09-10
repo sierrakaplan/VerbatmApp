@@ -671,7 +671,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "35"
             endingLineNumber = "35"
-            landmarkName = "-signUpOrLoginUserFromFacebookToken:fromLoginVC:"
+            landmarkName = "-signUpOrLoginUserFromFacebookToken:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4334,11 +4334,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/UserManager.m"
-            timestampString = "495176097.803028"
+            timestampString = "495176499.532332"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "155"
-            endingLineNumber = "155"
+            startingLineNumber = "151"
+            endingLineNumber = "151"
             landmarkName = "-daysBetweenDate:andDate:"
             landmarkType = "5">
          </BreakpointContent>

@@ -24,7 +24,7 @@
 
 +(void) setFbId;
 
--(void) signUpOrLoginUserFromFacebookToken:(FBSDKAccessToken *)accessToken fromLoginVC:(ChooseLoginVC *)loginVC;
+-(void) signUpOrLoginUserFromFacebookToken:(FBSDKAccessToken *)accessToken;
 -(void) logOutUser;
 -(BOOL) shouldRequestForUserFeedback;
 
