@@ -76,12 +76,12 @@
 }
 
 -(void) addSendInvitesButton {
-	UIButton *sendInvitesButton = [[UIButton alloc] initWithFrame:CGRectMake(0.f, self.view.frame.size.height - SEND_INVITES_BUTTON_HEIGHT - 40.f,
+	UIButton *sendInvitesButton = [[UIButton alloc] initWithFrame:CGRectMake(0.f, self.view.frame.size.height - SEND_INVITES_BUTTON_HEIGHT - 60.f,
 																			 self.view.frame.size.width, SEND_INVITES_BUTTON_HEIGHT)];
-	sendInvitesButton.backgroundColor = VERBATM_GOLD_COLOR;
-	sendInvitesButton.titleLabel.text = @"Send Invites";
+	sendInvitesButton.backgroundColor = [UIColor blackColor];
+	sendInvitesButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+	[sendInvitesButton setTitle:@"Send Invites" forState:UIControlStateNormal];
 	sendInvitesButton.titleLabel.font = [UIFont fontWithName:REGULAR_FONT size:SEND_INVITES_FONT_SIZE];
-	sendInvitesButton.titleLabel.textColor = [UIColor whiteColor];
 	[sendInvitesButton addTarget:self action:@selector(sendInvites) forControlEvents:UIControlEventTouchUpInside];
 	[self.view addSubview: sendInvitesButton];
 }
@@ -183,7 +183,7 @@
 
 -(void) sendInvites {
 	MFMessageComposeViewController *controller = [[MFMessageComposeViewController alloc] init];
-	NSString *message = @"Follow my blog on Verbatm! Download here:";
+	NSString *message = @"Follow me on the visual storytelling app Verbatm! Download here:";
 	NSString *appStoreUrl = @" itms://itunes.apple.com/us/app/verbatm/id1015766146?mt=8";
 	controller.body = [message stringByAppendingString: appStoreUrl];
 	controller.messageComposeDelegate = self;

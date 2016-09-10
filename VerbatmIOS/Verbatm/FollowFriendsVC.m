@@ -211,4 +211,11 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 	}
 }
 
+-(NSMutableArray*) friendChannels {
+	if (!_friendChannels) {
+		_friendChannels = [[NSMutableArray alloc] init];
+	}
+	return _friendChannels;
+}
+
 @end
