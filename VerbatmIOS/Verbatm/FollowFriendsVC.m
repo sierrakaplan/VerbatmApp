@@ -46,6 +46,7 @@
 	[self addRefreshFeature];
 	[self refreshChannels];
 
+	self.navigationItem.title = @"Follow Your Friends";
 	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@""
 																			 style:self.navigationItem.backBarButtonItem.style
 																			target:nil action:nil];
@@ -56,11 +57,16 @@
 	[self setNeedsStatusBarAppearanceUpdate];
 	[(MasterNavigationVC*)self.tabBarController showTabBar:YES];
 	[self.navigationController setNavigationBarHidden:NO];
+	[(VerbatmNavigationController*) self.navigationController setNavigationBarTextColor:[UIColor whiteColor]];
 	[(VerbatmNavigationController*) self.navigationController setNavigationBarBackgroundColor:[UIColor blackColor]];
 	[(VerbatmNavigationController*) self.navigationController setNavigationBarShadowColor:[UIColor lightGrayColor]];
 	if (!_friendChannels || !self.friendChannels.count) {
 		[self refreshChannels];
 	}
+}
+
+-(UIStatusBarStyle) preferredStatusBarStyle {
+	return UIStatusBarStyleLightContent;
 }
 
 -(void) createCollectionView {

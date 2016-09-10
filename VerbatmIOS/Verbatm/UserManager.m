@@ -18,7 +18,7 @@
 
 @implementation UserManager
 
-+ (UserManager *)sharedInstance {
++ (instancetype)sharedInstance {
 	static UserManager *_sharedInstance = nil;
 	static dispatch_once_t onceSecurePredicate;
 	dispatch_once(&onceSecurePredicate,^{
@@ -26,6 +26,21 @@
 	});
 
 	return _sharedInstance;
+}
+
+-(instancetype) init {
+	self = [super init];
+	if (self) {
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(userHasSignedOut)
+													 name:NOTIFICATION_USER_SIGNED_OUT
+												   object:nil];
+	}
+	return self;
+}
+
+-(void) userHasSignedOut {
+	self.currentCoverPhoto = nil;
 }
 
 #pragma mark - Creating Account (Signing up user) -

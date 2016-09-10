@@ -11,6 +11,7 @@
 #import "Channel_BackendObject.h"
 #import <Crashlytics/Crashlytics.h>
 #import "FeedQueryManager.h"
+#import "Notifications.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFQuery.h>
 #import <PromiseKit/PromiseKit.h>
@@ -22,9 +23,6 @@
 @import Contacts;
 
 @interface FeedQueryManager ()
-
-@property (nonatomic) NSInteger postsInFeed;
-@property (nonatomic, strong) NSDate *currentFeedStart;
 
 @property (nonatomic, strong) NSMutableArray *channelsFollowed;
 @property (nonatomic, strong) NSMutableArray *channelsFollowedIds;
@@ -54,16 +52,28 @@
 -(instancetype)init{
 	self = [super init];
 	if(self) {
-		self.followedChannelsRefreshing = NO;
-		self.channelsRefreshingCondition = [[NSCondition alloc] init];
 		[self clearFeedData];
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(userHasSignedOut)
+													 name:NOTIFICATION_USER_SIGNED_OUT
+												   object:nil];
 	}
 	return self;
 }
 
+-(void) userHasSignedOut {
+	[self clearFeedData];
+}
+
 -(void) clearFeedData {
-	self.postsInFeed = 0;
-	self.currentFeedStart = nil;
+	self.channelsFollowed = nil;
+	self.channelsFollowedIds = nil;
+	self.followedChannelsRefreshing = NO;
+	self.channelsRefreshingCondition = [[NSCondition alloc] init];
+	self.exploreChannelsLoaded = 0;
+	self.usersWhoHaveBlockedUser = nil;
+	self.friendUsers = nil;
+	self.friendChannels = nil;
 }
 
 //todo: cloud code
@@ -114,41 +124,12 @@
 	});
 }
 
--(void) loadMorePostsWithCompletionHandler:(void(^)(NSArray *))block {
-	//Needs to call refresh first
-	if (!self.channelsFollowed || !self.channelsFollowed.count || !self.currentFeedStart) {
-		block ([NSMutableArray array]);
-		return;
-	}
-
-	// Get POST_DOWNLOAD_MAX_SIZE more posts older than the ones returned so far
-	PFQuery *postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
-	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO containedIn:self.channelsFollowed];
-	[postQuery orderByDescending:@"createdAt"];
-	[postQuery setLimit: POST_DOWNLOAD_MAX_SIZE];
-	[postQuery setSkip: self.postsInFeed];
-	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities, NSError * _Nullable error) {
-		if (error) {
-			[[Crashlytics sharedInstance] recordError:error];
-			block ([NSMutableArray array]);
-			return;
-		}
-		NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
-		for(PFObject *postChannelActivity in activities) {
-			PFObject *post = [postChannelActivity objectForKey:POST_CHANNEL_ACTIVITY_POST];
-			[post fetchIfNeededInBackground];
-			[finalPostObjects addObject:postChannelActivity];
-		}
-
-		self.postsInFeed += finalPostObjects.count;
-		block(finalPostObjects);
-	}];
-}
-
 //Gets all the channels on Verbatm except the provided user and channels owned by people who have blocked user.
 //Often this will be the current user
 -(void) refreshExploreChannelsWithCompletionHandler:(void(^)(NSArray *))completionBlock {
 	self.exploreChannelsLoaded = 0;
+	self.friendChannels = nil;
+	self.friendUsers = nil;
 	[self loadExploreChannelsWithSkip:0 andCompletionHandler:^(NSArray *channels) {
 		completionBlock(channels);
 	}];

@@ -6,6 +6,7 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+#import "Notifications.h"
 #import "VideoDownloadManager.h"
 #import "UtilityFunctions.h"
 @import Foundation;
@@ -24,9 +25,26 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [[VideoDownloadManager alloc] init];
-        sharedInstance.counter = [NSNumber numberWithInt:0];
     });
     return sharedInstance;
+}
+
+-(instancetype) init {
+	self = [super init];
+	if (self) {
+		self.counter = [NSNumber numberWithInt:0];
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(userHasSignedOut)
+													 name:NOTIFICATION_USER_SIGNED_OUT
+												   object:nil];
+	}
+	return self;
+}
+
+-(void) userHasSignedOut {
+	self.videoAssetList = nil;
+	self.urlsBeingDownloaded = nil;
+	self.counter = [NSNumber numberWithInt:0];
 }
 
 -(BOOL)containsEntryForUrl:(NSURL *) url{

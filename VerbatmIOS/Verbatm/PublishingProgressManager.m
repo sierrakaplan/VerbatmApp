@@ -72,7 +72,31 @@
 	return sharedInstance;
 }
 
--(void)storeLocationToShare:(SelectedPlatformsToShareLink)locationToShare withCaption:(NSString *) caption{
+-(instancetype) init {
+	self = [super init];
+	if (self) {
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(userHasSignedOut)
+													 name:NOTIFICATION_USER_SIGNED_OUT
+												   object:nil];
+	}
+	return self;
+}
+
+-(void) userHasSignedOut {
+	[[UIApplication sharedApplication] endBackgroundTask: self.publishingTask];
+	self.publishingTask = UIBackgroundTaskInvalid;
+	self.channelManager = nil;
+	self.currentPublishingChannel = nil;
+	self.progressAccountant = nil;
+	self.currentParsePostObject = nil;
+	self.externalShareObject = nil;
+	self.shareToFB = NO;
+	self.publishingProgressBackgroundImage = nil;
+	self.captionToShare = nil;
+}
+
+-(void)storeLocationToShare:(SelectedPlatformsToShareLink)locationToShare withCaption:(NSString *) caption {
     self.locationToShare = locationToShare;
     self.captionToShare = caption;
 }
