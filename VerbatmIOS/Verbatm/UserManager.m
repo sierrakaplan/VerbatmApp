@@ -59,6 +59,7 @@
 		if(error) {
 			[[Crashlytics sharedInstance] recordError:error];
 		}
+		[self notifySuccessfulLogin];
 	}];
 }
 
@@ -103,7 +104,6 @@
 			 //						NSString* pictureURL = result[@"picture"][@"data"][@"url"];
 			 //						NSLog(@"profile picture url: %@", pictureURL);
 
-			 [self notifySuccessfulLogin];
 		 }];
 	[connection start];
 }

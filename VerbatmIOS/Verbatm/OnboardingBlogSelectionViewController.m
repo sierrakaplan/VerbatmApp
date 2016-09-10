@@ -17,6 +17,7 @@
 #import <Parse/PFUser.h>
 #import "SegueIDs.h"
 #import "Styles.h"
+#import "VerbatmNavigationController.h"
 
 @interface OnboardingBlogSelectionViewController () <OnboardingBlogsDelegate, UIGestureRecognizerDelegate>
 
@@ -52,8 +53,15 @@
 	return YES;
 }
 
+-(void) viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
+	VerbatmNavigationController* navigationController = (VerbatmNavigationController*)self.navigationController;
+	[navigationController setNavigationBarHidden:YES];
+}
+
 -(void) viewDidAppear:(BOOL)animated {
-	[super viewDidAppear:animated];
+	[self setNeedsStatusBarAppearanceUpdate];
+	[self.navigationController setNavigationBarHidden:YES];
 }
 
 -(BOOL) gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
@@ -70,6 +78,7 @@
     self.discoverList.onboardingBlogSelection = YES;
 	self.discoverList.onboardingDelegate = self;
     [self.tableContainerView addSubview: self.discoverList.view];
+	self.discoverList.view.backgroundColor = [UIColor colorWithRed:0.13 green:0.34 blue:0.6 alpha:1.f];
     [self addChildViewController: self.discoverList];
     [self.discoverList didMoveToParentViewController:self];
 }
