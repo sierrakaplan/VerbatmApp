@@ -99,7 +99,7 @@
 				 [self notifyFailedLogin: error];
 				 return;
 			 }
-
+             
 			 NSString *name = result[@"name"];
 			 NSString *email = result[@"email"];
 			 NSString *fbId = [result objectForKey:@"id"];
