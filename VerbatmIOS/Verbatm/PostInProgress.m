@@ -7,6 +7,7 @@
 //
 
 #import "CollectionPinchView.h"
+#import "Notifications.h"
 #import "PostInProgress.h"
 #import "PromiseKit/PromiseKit.h"
 
@@ -23,7 +24,7 @@
 
 @implementation PostInProgress
 
-+ (PostInProgress *)sharedInstance {
++ (instancetype)sharedInstance {
 	static PostInProgress *_sharedInstance = nil;
 	static dispatch_once_t onceSecurePredicate;
 	dispatch_once(&onceSecurePredicate,^{
@@ -31,6 +32,23 @@
 	});
 
 	return _sharedInstance;
+}
+
+-(instancetype) init {
+	self = [super init];
+	if (self) {
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(userHasSignedOut)
+													 name:NOTIFICATION_USER_SIGNED_OUT
+												   object:nil];
+	}
+	return self;
+}
+
+-(void) userHasSignedOut {
+	self.pinchViewsAsData = nil;
+	self.pinchViews = nil;
+	self.title = nil;
 }
 
 -(void) addTitle: (NSString*) title {
