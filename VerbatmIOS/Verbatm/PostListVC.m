@@ -267,12 +267,12 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 			[weakSelf.postListDelegate postsFound];
 			[weakSelf.parsePostActivityObjects removeAllObjects];
 			[weakSelf.parsePostActivityObjects addObjectsFromArray:posts];
-			[weakSelf scrollToLastElementInList];
 		} else if (!weakSelf.currentlyPublishing) {
 			[weakSelf.postListDelegate noPostFound];
 		}
 		if(weakSelf.isCurrentUserProfile)[weakSelf.parsePostActivityObjects addObject:weakSelf.publishingProgressViewPositionHolder];
 		[weakSelf.collectionView reloadData];
+		[weakSelf scrollToLastElementInList];
 	};
 
 	self.loadOlderPostsCompletion = ^void(NSArray *posts) {
