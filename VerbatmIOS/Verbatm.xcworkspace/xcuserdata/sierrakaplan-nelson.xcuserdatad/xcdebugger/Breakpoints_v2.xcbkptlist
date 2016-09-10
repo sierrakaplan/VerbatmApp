@@ -2630,7 +2630,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedQueryManager.m"
@@ -3667,7 +3667,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedQueryManager.m"
@@ -4119,7 +4119,11 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/PostListVC.m"
+<<<<<<< HEAD
                   timestampString = "495173481.084721"
+=======
+                  timestampString = "495165975.511856"
+>>>>>>> 3073428... resetting all shared instance variables when someone logs out
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "962"
@@ -4134,7 +4138,11 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/PostListVC.m"
+<<<<<<< HEAD
                   timestampString = "495173481.084826"
+=======
+                  timestampString = "495165975.511953"
+>>>>>>> 3073428... resetting all shared instance variables when someone logs out
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "962"
@@ -4167,7 +4175,11 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/PostListVC.m"
+<<<<<<< HEAD
                   timestampString = "495173481.085487"
+=======
+                  timestampString = "495165975.512586"
+>>>>>>> 3073428... resetting all shared instance variables when someone logs out
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "960"
@@ -4182,7 +4194,11 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/PostListVC.m"
+<<<<<<< HEAD
                   timestampString = "495173481.085581"
+=======
+                  timestampString = "495165975.512706"
+>>>>>>> 3073428... resetting all shared instance variables when someone logs out
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "961"
@@ -7126,7 +7142,11 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+<<<<<<< HEAD
             shouldBeEnabled = "No"
+=======
+            shouldBeEnabled = "Yes"
+>>>>>>> 3073428... resetting all shared instance variables when someone logs out
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FollowFriendsVC.m"
@@ -7139,6 +7159,7 @@
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
+<<<<<<< HEAD
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
@@ -7347,5 +7368,7 @@
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
+=======
+>>>>>>> 3073428... resetting all shared instance variables when someone logs out
    </Breakpoints>
 </Bucket>

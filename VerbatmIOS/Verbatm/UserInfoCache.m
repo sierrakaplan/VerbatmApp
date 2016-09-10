@@ -32,12 +32,27 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [[UserInfoCache alloc] init];
-        [[NSNotificationCenter defaultCenter] addObserver:sharedInstance
-                                                 selector:@selector(reloadUserChannels)
-                                                     name:NOTIFICATION_POST_PUBLISHED
-                                                   object:nil];
     });
     return sharedInstance;
+}
+
+-(instancetype) init {
+	self = [super init];
+	if (self) {
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(reloadUserChannels)
+													 name:NOTIFICATION_POST_PUBLISHED
+												   object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(userHasSignedOut)
+													 name:NOTIFICATION_USER_SIGNED_OUT
+												   object:nil];
+	}
+	return self;
+}
+
+-(void) userHasSignedOut {
+	self.userChannel = nil;
 }
 
 -(void)loadUserChannelWithCompletionBlock:(void(^)())block {
@@ -101,7 +116,6 @@
 -(Channel *) getUserChannel {
     return self.userChannel;
 }
-
 
 -(void)registerNewFollower{
     [[self getUserChannel].parseChannelObject incrementKey:CHANNEL_NUM_FOLLOWING];
