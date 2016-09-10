@@ -63,7 +63,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "57"
             endingLineNumber = "57"
-            landmarkName = "-updateCurrentUserWithName:andEmail:andFbId:"
+            landmarkName = "-signUpOrLoginUserFromFacebookToken:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -111,7 +111,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "139"
             endingLineNumber = "139"
-            landmarkName = "-shouldRequestForUserFeedback"
+            landmarkName = "-daysBetweenDate:andDate:"
             landmarkType = "5">
             <Locations>
                <Location
