@@ -671,7 +671,11 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "35"
             endingLineNumber = "35"
+<<<<<<< HEAD
             landmarkName = "-signUpOrLoginUserFromFacebookToken:fromLoginVC:"
+=======
+            landmarkName = "-signUpOrLoginUserFromFacebookToken:"
+>>>>>>> TestPhoneLogin
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4334,11 +4338,19 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/UserManager.m"
+<<<<<<< HEAD
             timestampString = "495171092.030576"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "154"
             endingLineNumber = "154"
+=======
+            timestampString = "495176499.532332"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "151"
+            endingLineNumber = "151"
+>>>>>>> TestPhoneLogin
             landmarkName = "-daysBetweenDate:andDate:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4355,7 +4367,11 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "251"
             endingLineNumber = "251"
+<<<<<<< HEAD
             landmarkName = "-formatNavBar"
+=======
+            landmarkName = "-createBaseSelector"
+>>>>>>> TestPhoneLogin
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -5373,6 +5389,7 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
+<<<<<<< HEAD
             filePath = "Verbatm/UserSetupParameters.m"
             timestampString = "490780116.783298"
             startingColumnNumber = "9223372036854775807"
@@ -5389,6 +5406,8 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
+=======
+>>>>>>> TestPhoneLogin
             filePath = "Verbatm/NotificationPostPreview.m"
             timestampString = "493337662.154558"
             startingColumnNumber = "9223372036854775807"
@@ -5459,7 +5478,11 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "196"
             endingLineNumber = "196"
+<<<<<<< HEAD
             landmarkName = "-loadExploreChannels"
+=======
+            landmarkName = "-refreshChannels"
+>>>>>>> TestPhoneLogin
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -6179,7 +6202,11 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "714"
             endingLineNumber = "714"
+<<<<<<< HEAD
             landmarkName = "-pinchingHasEnded"
+=======
+            landmarkName = "-animateRemoveNewMediaTile"
+>>>>>>> TestPhoneLogin
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8677,12 +8704,21 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/OnboardingADK.m"
+<<<<<<< HEAD
             timestampString = "495159489.15587"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "170"
             endingLineNumber = "170"
             landmarkName = "-tappedToPublish"
+=======
+            timestampString = "495176097.803028"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "171"
+            endingLineNumber = "171"
+            landmarkName = "-videoAssetCaptured:"
+>>>>>>> TestPhoneLogin
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8721,6 +8757,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+<<<<<<< HEAD
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -8737,16 +8774,27 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+=======
+>>>>>>> TestPhoneLogin
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MediaSessionManager.m"
+<<<<<<< HEAD
             timestampString = "495172255.492645"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "301"
             endingLineNumber = "301"
             landmarkName = "-checkSavePermissionsWithCompletionBlock:"
+=======
+            timestampString = "495176097.803028"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "299"
+            endingLineNumber = "299"
+            landmarkName = "-saveAssetFromImage:orVideoFile:"
+>>>>>>> TestPhoneLogin
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8757,6 +8805,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MediaSessionManager.m"
+<<<<<<< HEAD
             timestampString = "495172255.492645"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
@@ -8810,6 +8859,13 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "320"
             endingLineNumber = "320"
+=======
+            timestampString = "495176097.803028"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "304"
+            endingLineNumber = "304"
+>>>>>>> TestPhoneLogin
             landmarkName = "-saveAssetFromImage:orVideoFile:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8817,6 +8873,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+<<<<<<< HEAD
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -8826,6 +8883,17 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "329"
             endingLineNumber = "329"
+=======
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/MediaSessionManager.m"
+            timestampString = "495176097.803028"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "313"
+            endingLineNumber = "313"
+>>>>>>> TestPhoneLogin
             landmarkName = "-saveAssetFromImage:orVideoFile:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8833,6 +8901,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+<<<<<<< HEAD
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -8842,6 +8911,17 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "327"
             endingLineNumber = "327"
+=======
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/MediaSessionManager.m"
+            timestampString = "495176097.803028"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "311"
+            endingLineNumber = "311"
+>>>>>>> TestPhoneLogin
             landmarkName = "-saveAssetFromImage:orVideoFile:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8900,6 +8980,7 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
+<<<<<<< HEAD
             filePath = "Verbatm/MediaSessionManager.m"
             timestampString = "495172255.492645"
             startingColumnNumber = "9223372036854775807"
@@ -8916,6 +8997,8 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
+=======
+>>>>>>> TestPhoneLogin
             filePath = "Verbatm/CreateNameVC.m"
             timestampString = "495152914.249298"
             startingColumnNumber = "9223372036854775807"
@@ -8993,6 +9076,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+<<<<<<< HEAD
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -9019,12 +9103,25 @@
             startingLineNumber = "146"
             endingLineNumber = "146"
             landmarkName = "-pinchingHasEnded"
+=======
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/MediaSessionManager.m"
+            timestampString = "495175143.815954"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "300"
+            endingLineNumber = "300"
+            landmarkName = "-saveAssetFromImage:orVideoFile:"
+>>>>>>> TestPhoneLogin
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+<<<<<<< HEAD
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -9035,6 +9132,18 @@
             startingLineNumber = "713"
             endingLineNumber = "713"
             landmarkName = "-pinchingHasEnded"
+=======
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/MediaSessionManager.m"
+            timestampString = "495175145.056179"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "301"
+            endingLineNumber = "301"
+            landmarkName = "-saveAssetFromImage:orVideoFile:"
+>>>>>>> TestPhoneLogin
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

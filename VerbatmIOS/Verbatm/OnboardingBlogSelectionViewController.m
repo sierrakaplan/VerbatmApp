@@ -28,7 +28,6 @@
 @property (nonatomic) DiscoverVC *discoverList;
 @property (nonatomic) UIButton *followAllButton;
 
-#define HEADER_VIEW_HEIGHT STATUS_BAR_HEIGHT + 60.f
 #define DONE_BUTTON_WIDTH 70.f
 #define HEADER_Y_OFFSET 15.f
 #define HEADER_X_OFFSET 5.f
@@ -147,7 +146,7 @@
 
 -(void)exitDiscover {
 	[self.doneButton removeFromSuperview];
-	[self performSegueWithIdentifier:SEGUE_CREATE_FIRST_POST sender: self];
+	[self performSegueWithIdentifier:SEGUE_CREATE_FIRST_POST_FROM_ONBOARDING sender: self];
 }
 
 -(void) addBackgroundImage {

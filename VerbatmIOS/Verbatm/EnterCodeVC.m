@@ -16,6 +16,8 @@
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "UIView+Effects.h"
+#import "UserSetupParameters.h"
+
 #import <Parse/PFUser.h>
 #import "ParseBackendKeys.h"
 
@@ -31,7 +33,7 @@
 @property (nonatomic) UILabel *codeSentToNumberLabel;
 
 @property (nonatomic) BOOL verifyingCode;
-
+@property (nonatomic) BOOL segueCalled;
 @property (nonatomic) UIButton *resendCodeButton;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 
@@ -65,6 +67,10 @@
 	[self formatNavigationItem];
 }
 
+-(void)viewWillAppear:(BOOL)animated{
+    self.segueCalled = NO;
+}
+
 -(BOOL) prefersStatusBarHidden {
 	return YES;
 }
@@ -75,7 +81,12 @@
 }
 
 -(void) sendCodeToUser:(NSString*) simplePhoneNumber {
+<<<<<<< HEAD
 	return;
+=======
+   // return;//todo: this line lines allow testing create new accounts (use phone numbers no one has)
+    
+>>>>>>> TestPhoneLogin
 	[self disableResendCodeButtonWithText:@"Sending code..."];
 	//todo: include more languages
 	NSDictionary *params = @{@"phoneNumber" : simplePhoneNumber, @"language" : @"en"};
@@ -118,10 +129,18 @@
 	return attributedTitle;
 }
 
+-(void)goOnToCreateName{
+    if(self.segueCalled) return;
+    self.segueCalled = YES;
+    [self performSegueWithIdentifier:SEGUE_CREATE_NAME sender:self];
+    
+}
+
 -(void) verifyCode {
 	NSString *code = [self getCode];
 
 //	//todo: these lines lines allow testing create new accounts (use phone numbers no one has)
+<<<<<<< HEAD
 	PFUser *newUser = [PFUser user];
 	newUser.username = self.simplePhoneNumber;
 	newUser.password = code;
@@ -130,6 +149,16 @@
 	}];
 
 	return;
+=======
+//	PFUser *newUser = [PFUser user];
+//	newUser.username = self.simplePhoneNumber;
+//	newUser.password = code;
+//	[newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+//        [self goOnToCreateName];
+//    }];
+//
+//	return;
+>>>>>>> TestPhoneLogin
 
 	if (self.verifyingCode) return;
 	self.verifyingCode = YES;
@@ -162,12 +191,24 @@
 							[user setObject:[NSNumber numberWithBool:NO] forKey:USER_FTUE];
 							[user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 								if(succeeded) {
-									[self performSegueWithIdentifier:SEGUE_CREATE_NAME sender:self];
+                                    [self goOnToCreateName];
 								}
 							}];
 						} else {
-							[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
-							[self performSegueWithIdentifier:UNWIND_SEGUE_PHONE_LOGIN_TO_MASTER sender:self];
+                            
+                            if(![[UserSetupParameters sharedInstance] checkOnboardingShown]){
+                                NSString * userName = user[VERBATM_USER_NAME_KEY];
+                                if(userName && userName.length){
+                                    //go to onboarding adk
+                                    [self performSegueWithIdentifier:SEGUE_ONBOARD_FROM_ENTER_CODE sender:self];
+                                }else{
+                                    [self goOnToCreateName];
+                                }
+                                
+                            }else{
+                                [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
+                                [self performSegueWithIdentifier:UNWIND_SEGUE_PHONE_LOGIN_TO_MASTER sender:self];
+                            }
 						}
 					}
 				}];

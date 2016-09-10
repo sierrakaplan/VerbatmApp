@@ -13,6 +13,7 @@
 #import <Parse/PFQuery.h>
 #import <ParseFacebookutilsV4/PFFacebookUtils.h>
 #import <PromiseKit/PromiseKit.h>
+#import "ChooseLoginVC.h"
 
 @class GTLVerbatmAppVerbatmUser;
 @class PovInfo;
@@ -23,8 +24,7 @@
 
 +(void) setFbId;
 
--(void) signUpOrLoginUserFromFacebookToken: (FBSDKAccessToken*) accessToken;
-
+-(void) signUpOrLoginUserFromFacebookToken:(FBSDKAccessToken *)accessToken;
 -(void) logOutUser;
 -(BOOL) shouldRequestForUserFeedback;
 

@@ -767,8 +767,7 @@
 				A51A0ACD1D6CE847009D7CDD /* WelcomeVC.m */,
 				C70E1C521C3BF74C00346A25 /* TermsAndConditionsVC.h */,
 				C70E1C531C3BF74C00346A25 /* TermsAndConditionsVC.m */,
-				A5BB65481D6F9A9E00F5B01B /* CreateNameVC.h */,
-				A5BB65491D6F9A9E00F5B01B /* CreateNameVC.m */,
+				C7BD22E71D836EF9004F13CB /* Create Username */,
 			);
 			name = Login/Onboarding;
 			sourceTree = "<group>";
@@ -1615,6 +1614,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		C7BD22E71D836EF9004F13CB /* Create Username */ = {
+			isa = PBXGroup;
+			children = (
+				A5BB65481D6F9A9E00F5B01B /* CreateNameVC.h */,
+				A5BB65491D6F9A9E00F5B01B /* CreateNameVC.m */,
+			);
+			name = "Create Username";
+			sourceTree = "<group>";
+		};
 		C7BD53C61B5B790B00EE6241 /* Constants  */ = {
 			isa = PBXGroup;
 			children = (
@@ -2253,7 +2261,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.myVerbatm.Verbatm;
+				PRODUCT_BUNDLE_IDENTIFIER = com.44Verbatm.Verbatm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				USER_HEADER_SEARCH_PATHS = "\"${PODS_ROOT}/BuildHeaders\"/** $(inherited)";
@@ -2292,7 +2300,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.myVerbatm.Verbatm;
+				PRODUCT_BUNDLE_IDENTIFIER = com.44Verbatm.Verbatm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "dfcbf4c0-b5f5-42fb-ba20-69e094e85ac0";
 				USER_HEADER_SEARCH_PATHS = "\"${PODS_ROOT}/BuildHeaders\"/** $(inherited)";

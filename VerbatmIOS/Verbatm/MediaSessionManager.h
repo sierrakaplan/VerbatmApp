@@ -19,6 +19,13 @@
 
 @end
 @interface MediaSessionManager : NSObject
+//Checks if permissions have been given
++(BOOL)adkMediaPermissionsAllowed;
+//check if the user has been actively prompted for permissions
++(BOOL)adKMediaPermissionActivelyDenied;
+
+//prompt user for permission
++(void)askUserForADKPermissionsWithCompletiongBlock:(void(^)(BOOL)) block;
 
 
 -(instancetype)initSessionWithView:(UIView*)containerView;

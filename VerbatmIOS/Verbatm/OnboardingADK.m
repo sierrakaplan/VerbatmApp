@@ -10,6 +10,7 @@
 #import "PinchView.h"
 #import "OnboardingADK.h"
 #import "MediaSelectTile.h"
+#import "MediaSessionManager.h"
 #import "PublishingProgressManager.h"
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
@@ -48,8 +49,7 @@
 	[self initializeVariables];
 	[self setFrameMainScrollView];
 	[self setElementDefaultFrames];
-	self.cameraView = [[VerbatmCameraView alloc] initWithFrame:self.view.bounds];
-	self.cameraView.delegate = self;
+    [self addCamera];
 	self.firstSlideBackground = [[UIImageView alloc] initWithFrame:self.view.bounds];
 	self.firstSlideBackground.image = [UIImage imageNamed:@"ADK_slide_1"];
 	self.firstSlideBackground.contentMode = UIViewContentModeScaleAspectFill;
@@ -59,18 +59,60 @@
 
 -(void) viewWillAppear:(BOOL)animated {
 	//do not want super method's called
-	UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(startTutorial)];
-	[self.firstSlideBackground addGestureRecognizer: tapGesture];
-	self.firstSlideBackground.userInteractionEnabled = YES;
+    if(self.firstSlideBackground){
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(startTutorial)];
+        [self.firstSlideBackground addGestureRecognizer: tapGesture];
+        self.firstSlideBackground.userInteractionEnabled = YES;
+    }else{
+        //maybe we left the app to check settings then came back
+        [self checkPermissionStatus];
+    }
+}
+
+-(void)createCameraView{
+    self.cameraView = [[VerbatmCameraView alloc] initWithFrame:self.view.bounds];
+    self.cameraView.delegate = self;
 }
 
 -(void) startTutorial {
 	[self.firstSlideBackground removeFromSuperview];
+    self.firstSlideBackground = nil;
 	[self addBackgroundImage];
+    
 	[self.view addSubview: self.topNavMessage];
+<<<<<<< HEAD
 	self.topNavLabel.text = @"TAP the CAMERA ICON to capture media.";
 	[self addCamera];
+=======
+    
+	self.topNavLabel.text = @"All the media you capture will be saved here. Tap the camera icon to capture your media.";
+    
+    [self checkPermissionStatus];
+>>>>>>> TestPhoneLogin
 }
+
+-(void)progressFromMediaCheckWithAccessGranted:(BOOL)accessGranted{
+    if(accessGranted){
+        [self createCameraView];
+    }else{
+        //permissions were denied
+        //prompt user to go to settings to and set permissions as allowed
+        [self showAlertWithTitle];
+    }
+}
+
+-(void)checkPermissionStatus{
+    BOOL weHaveNotRequestedPermission = ![MediaSessionManager adKMediaPermissionActivelyDenied];
+    if(weHaveNotRequestedPermission){
+        //we have not asked for permission yet so lets do that :)
+        [MediaSessionManager askUserForADKPermissionsWithCompletiongBlock:^(BOOL allPermissionsGranted) {
+            [self progressFromMediaCheckWithAccessGranted:allPermissionsGranted];
+        }];
+    }else{
+        [self progressFromMediaCheckWithAccessGranted:[MediaSessionManager adkMediaPermissionsAllowed]];
+    }
+}
+
 
 -(void) addCamera {
 	CGRect scrollViewFrame = CGRectMake(0, NAV_MESSAGE_HEIGHT + OFFSET_Y*2,
@@ -87,8 +129,13 @@
 	[self.pageElementScrollViews addObject:baseMediaTileSelectorScrollView];
 }
 
--(void) cameraButtonPressedOnTile:(MediaSelectTile *)tile {
-	[self.view addSubview:self.cameraView];
+-(void) cameraButtonPressedOnTile:(MediaSelectTile *)tile { 
+    if(![MediaSessionManager adkMediaPermissionsAllowed]){
+        [self checkPermissionStatus];
+        return;
+    }
+    
+    [self.view addSubview:self.cameraView];
 	[self.cameraView createAndInstantiateGestures];
 	if (self.captureMediaInstructionShown) {
 		[self.cameraView enableCapturingPhoto: YES];
@@ -140,13 +187,45 @@
 	[self removeExcessMediaTiles];
 }
 
+-(void) showAlertWithTitle {
+    NSString * title = @"Verbatm does not have access to your Camera or Photos.";
+    NSString * message = @"To enable Camera access go to Settings>Privacy>Camera>Verbatm. To enable Photos access go to Settings>Privacy>Photos>Verbatm.";
+    
+    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:title message:message
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction1 = [UIAlertAction actionWithTitle:@"Go To Settings" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                              dispatch_async(dispatch_get_main_queue(), ^{
+                                                              //launch settings application
+                                                              [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                                                              });
+                                                          }];
+    
+    UIAlertAction* defaultAction2 = [UIAlertAction actionWithTitle:@"Exit" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                              //todo ; leave view
+                                                              [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ONBOARDING_TO_MASTER sender:self];
+                                                          }];
+    [newAlert addAction:defaultAction1];
+    [newAlert addAction:defaultAction2];
+    //not always called in the main queue
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self presentViewController:newAlert animated:YES completion:nil];
+    });
+    
+    
+}
+
 //not called
 -(void) pinchviewSelected:(PinchView *)pinchView {}
 
 -(void) pinchingHasEnded {
 	if (self.pinchInstructionShown) return;
 	self.pinchInstructionShown = YES;
-	self.topNavLabel.text = @"Each circle is a page in your story. Tap one open to see what you just made!";
+	self.topNavLabel.text = @"Each circle is a page in your post. Tap one open to see what you just made!";
+    
+    //once they have pinched onboarding is done effectively
+    [[UserSetupParameters sharedInstance] setOnboardingShown];
 }
 
 -(void) aboutToRemovePreview {

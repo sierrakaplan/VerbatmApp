@@ -7,11 +7,12 @@
 //
 
 #import <Crashlytics/Crashlytics.h>
+
 #import "Notifications.h"
 #import "ParseBackendKeys.h"
 #import "ProfileVC.h"
 #import "UserManager.h"
-
+#import "UserSetupParameters.h"
 @interface UserManager()
 @property (nonatomic) UIImage * currentCoverPhoto;
 @end
@@ -45,7 +46,7 @@
 
 #pragma mark - Creating Account (Signing up user) -
 
--(void) signUpOrLoginUserFromFacebookToken:(FBSDKAccessToken *)accessToken {
+-(void) signUpOrLoginUserFromFacebookToken:(FBSDKAccessToken *)accessToken{
 	[PFFacebookUtils logInInBackgroundWithAccessToken:[FBSDKAccessToken currentAccessToken] block:^(PFUser * _Nullable user, NSError * _Nullable error) {
 		if (error) {
 			//todo: fail error
@@ -56,7 +57,8 @@
 				[self getUserInfoFromFacebookToken: accessToken];
 			} else {
 				NSLog(@"User had already created account. Successfully logged in with Facebook.");
-				[self notifySuccessfulLogin];
+                [self notifySuccessfulLogin];
+                
 			}
 		}
 	}];
@@ -110,16 +112,55 @@
 				 [self notifyFailedLogin: error];
 				 return;
 			 }
-
+             
 			 NSString *name = result[@"name"];
 			 NSString *email = result[@"email"];
 			 NSString *fbId = [result objectForKey:@"id"];
 
+<<<<<<< HEAD
 			 [self updateCurrentUserWithName:name andEmail:email andFbId:fbId];
 			 //						NSString* pictureURL = result[@"picture"][@"data"][@"url"];
 			 //						NSLog(@"profile picture url: %@", pictureURL);
 
 		 }];
+=======
+			 if(!email) {
+				 NSString *description = @"Facebook login failed. Please try again.";
+				 NSDictionary *errorDictionary = @{ NSLocalizedDescriptionKey : description};
+				 //todo: don't hardcode error codes
+				 NSError *needEmailError = [NSError errorWithDomain:@"world" code:20 userInfo:errorDictionary];
+				 [[PFUser currentUser] deleteInBackground];
+				 [self notifyFailedLogin: needEmailError];
+				 return;
+			 }
+             
+             
+			 PFQuery *query = [PFUser query];
+			 [query whereKey:@"email" equalTo: email];
+			 [query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+				 if (!error && object) {
+					 // delete the user created by fb login
+					 [[PFUser currentUser] deleteInBackground];
+					 FBSDKLoginManager *loginManager = [[FBSDKLoginManager alloc] init];
+					 [loginManager logOut];
+					 NSError* accountWithEmailExistsError = [NSError errorWithDomain:@"world" code: kPFErrorUserEmailTaken userInfo:nil];
+					 [self notifyFailedLogin: accountWithEmailExistsError];
+				 
+                 } else {
+					
+                     [self updateCurrentUserWithName:name andEmail:email andFbId:fbId];
+					 //						NSString* pictureURL = result[@"picture"][@"data"][@"url"];
+					 //						NSLog(@"profile picture url: %@", pictureURL);
+
+					 [self notifySuccessfulLogin];
+
+				 }
+
+			 }];
+		 
+         }];
+    
+>>>>>>> TestPhoneLogin
 	[connection start];
 }
 

@@ -17,29 +17,9 @@
 @interface UserSetupParameters : NSObject
 
 +(instancetype)sharedInstance;
+-(void) setUpParameters;
 
-//initializes everything
--(void)setUpParameters;
-
-/*check if these conditions have been met and set them otherwise*/
--(BOOL) checkTermsShown;
--(void) setTermsShown;
 -(BOOL) checkOnboardingShown;
 -(void) setOnboardingShown;
 
--(BOOL) checkAndSetFeedInstructionShown;
--(BOOL) checkAndSetProfileInstructionShown;
--(BOOL) checkAndSetADKInstructionShown;
-
--(BOOL) checkAndSetPinchInstructionShown;
--(BOOL) checkAndSetEditPinchViewInstructionShown;
--(BOOL) checkAndSetFilterInstructionShown;
--(BOOL) checkAndSetSwipeInstructionShown;
--(BOOL) checkAndSetAddTextInstructionShown;
-
--(BOOL) checkAdkOnboardingShown;
--(BOOL) checkFirstTimeFollowBlogShown;
-
--(BOOL) checkEditButtonNotification;
--(BOOL) checkAndSetTapOutOfFullscreenInstructionShown;
 @end

@@ -50,7 +50,9 @@
 
 		//start the session running
 		[self.session startRunning];
-	}
+	
+    }
+    
 	return self;
 }
 
@@ -126,19 +128,25 @@
 
 // creates a Verbatm Album in the PHPhotoLibrary
 -(void)createVerbatmAlbum {
-	__block PHObjectPlaceholder *albumPlaceholder;
-	[[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
-		PHAssetCollectionChangeRequest* changeRequest = [PHAssetCollectionChangeRequest creationRequestForAssetCollectionWithTitle:VERBATM_ALBUM_NAME];
-		albumPlaceholder = changeRequest.placeholderForCreatedAssetCollection;
-	} completionHandler:^(BOOL success, NSError * _Nullable error) {
-		if (success) {
-			PHFetchResult *fetchResult = [PHAssetCollection fetchAssetCollectionsWithLocalIdentifiers:@[albumPlaceholder.localIdentifier] options:nil];
-			self.verbatmAlbum = fetchResult.firstObject;
-		} else {
-			[[Crashlytics sharedInstance] recordError: error];
-			[[NSUserDefaults standardUserDefaults] setBool:NO forKey:VERBATM_ALBUM_PREVIOUSLY_CREATED_KEY];
-		}
-	}];
+            __block PHObjectPlaceholder *albumPlaceholder;
+            [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+                PHAssetCollectionChangeRequest* changeRequest = [PHAssetCollectionChangeRequest creationRequestForAssetCollectionWithTitle:VERBATM_ALBUM_NAME];
+                albumPlaceholder = changeRequest.placeholderForCreatedAssetCollection;
+            } completionHandler:^(BOOL success, NSError * _Nullable error) {
+                if (success) {
+                    PHFetchResult *fetchResult = [PHAssetCollection fetchAssetCollectionsWithLocalIdentifiers:@[albumPlaceholder.localIdentifier] options:nil];
+                    self.verbatmAlbum = fetchResult.firstObject;
+                } else {
+                    NSLog(@"Error creating album with description: %@", error.description);
+                    [[Crashlytics sharedInstance] recordError: error];
+                    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:VERBATM_ALBUM_PREVIOUSLY_CREATED_KEY];
+                    //no permission to access the PHPhotoLibrary
+                    if(error.code == 2047){
+        //                    [self createVerbatmAlbum];
+                        NSLog(@"Error - no permission to access gallery");
+                    }
+                }
+            }];
 }
 
 // lists all albums and finds the one named Verbatm, then saves it
@@ -194,8 +202,11 @@
                 UIImage* capturedImage = [[UIImage alloc] initWithData: dataForImage];
                 capturedImage = [capturedImage getImageWithOrientationUp];
                 [self.delegate capturedImage: capturedImage];
+                
                 [self saveAssetFromImage:capturedImage orVideoFile:nil];
+                
             }
+            
 		} else {
 			[[Crashlytics sharedInstance] recordError: error];
 		}
@@ -232,14 +243,62 @@
 }
 
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error {
-	[self saveAssetFromImage:nil orVideoFile:outputFileURL];
+    
+        [self saveAssetFromImage:nil orVideoFile:outputFileURL];
+    
+	
 }
 
 #pragma mark - Save Asset -
 
+
++(BOOL)adkMediaPermissionsAllowed{
+    if([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusAuthorized &&
+       [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo] ==  PHAuthorizationStatusAuthorized &&
+       [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio] == PHAuthorizationStatusAuthorized){
+        return YES;
+    }
+    return NO;
+}
+
++(BOOL)adKMediaPermissionActivelyDenied{
+    if([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusNotDetermined &&
+       [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo] == PHAuthorizationStatusNotDetermined &&
+       [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio] == PHAuthorizationStatusNotDetermined){
+        return NO;
+    }
+    return YES;
+}
+
++(void)askUserForADKPermissionsWithCompletiongBlock:(void(^)(BOOL)) block{
+    //though the permission process can fail at the top of the chain
+    //we make sure we request all the permissions so that they appaer in the settings for manual activation
+    __block BOOL succeeded = YES;
+    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+        if(status == PHAuthorizationStatusDenied){
+            succeeded = NO;
+        }
+            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted1) {
+                if(!granted1){
+                    succeeded = NO;
+                }
+                    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted2) {
+                        if(!granted2){
+                            succeeded = NO;
+                        }
+                             block(succeeded);
+                        
+                    }];
+            }];
+    }];
+    
+}
+
+
 // Pass nil for the other one you're not saving
 -(void) saveAssetFromImage: (UIImage*) image orVideoFile: (NSURL*) outputFileURL {
 	__block PHObjectPlaceholder *assetPlaceholder;
+    
 	[[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
 		PHAssetChangeRequest* assetChangeRequest;
 		if (image) {
@@ -258,6 +317,9 @@
 				[self.delegate didFinishSavingMediaToAsset:savedAsset];
 			});
 		} else {
+            
+            NSLog(@"Saving failed with error %@", error.description);
+            
 			[[Crashlytics sharedInstance] recordError: error];
 		}
 	}];
