@@ -8,6 +8,6 @@
 
 #import "DiscoverVC.h"
 
-@interface FollowFriendsVC : DiscoverVC
+@interface FollowFriendsVC : UIViewController
 
 @end

@@ -14,7 +14,9 @@
 #import "DiscoverVC.h"
 #import "FeaturedContentCellView.h"
 #import "FollowFriendsCell.h"
+#import "FollowFriendsVC.h"
 #import "Follow_BackendManager.h"
+#import "MasterNavigationVC.h"
 #import "Notifications.h"
 #import "ProfileVC.h"
 #import "SearchResultsVC.h"
@@ -79,6 +81,7 @@ UICollectionViewDataSource>
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	[self setNeedsStatusBarAppearanceUpdate];
+	[(MasterNavigationVC*)self.tabBarController showTabBar:YES];
 	[self.navigationController setNavigationBarHidden:NO];
 	[(VerbatmNavigationController*) self.navigationController setNavigationBarBackgroundColor:[UIColor blackColor]];
 	[(VerbatmNavigationController*) self.navigationController setNavigationBarShadowColor:[UIColor lightGrayColor]];
@@ -128,9 +131,9 @@ UICollectionViewDataSource>
 	self.collectionView.allowsMultipleSelection = NO;
 	self.collectionView.delegate = self;
 	self.collectionView.dataSource = self;
-//	UIImageView * backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:DISCOVER_BACKGROUND]];
-//	[self.tableView setBackgroundView:backgroundView];
-//	self.tableView.backgroundView.layer.zPosition -= 1;
+	//	UIImageView * backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:DISCOVER_BACKGROUND]];
+	//	[self.tableView setBackgroundView:backgroundView];
+	//	self.tableView.backgroundView.layer.zPosition -= 1;
 	self.collectionView.backgroundColor = [UIColor blackColor];
 	//avoid covering status bar and last item in uitableview
 	UIEdgeInsets inset = UIEdgeInsetsMake(STATUS_BAR_HEIGHT, CELL_SPACING_LARGE, TAB_BAR_HEIGHT + STATUS_BAR_HEIGHT, CELL_SPACING_LARGE);
@@ -152,8 +155,8 @@ UICollectionViewDataSource>
 -(void) formatSearchBar:(UISearchBar*)searchBar {
 	searchBar.barTintColor = [UIColor whiteColor];
 	searchBar.tintColor = [UIColor whiteColor];
-//	searchBar.backgroundColor = [UIColor blackColor];
-//	searchBar.backgroundImage = [UIImage new];
+	//	searchBar.backgroundColor = [UIColor blackColor];
+	//	searchBar.backgroundImage = [UIImage new];
 }
 
 -(void) clearViews {
@@ -173,9 +176,9 @@ UICollectionViewDataSource>
 -(void) offScreen {
 	for (NSIndexPath *indexPath in [self.collectionView indexPathsForVisibleItems]) {
 		if (indexPath.section == 1) {
-//			ExploreChannelCellView *cellView = (ExploreChannelCellView*)[self.collectionView
-//																		 cellForItemAtIndexPath:indexPath];
-//			[(ExploreChannelCellView*)cellView offScreen];
+			//			ExploreChannelCellView *cellView = (ExploreChannelCellView*)[self.collectionView
+			//																		 cellForItemAtIndexPath:indexPath];
+			//			[(ExploreChannelCellView*)cellView offScreen];
 		}
 	}
 }
@@ -185,26 +188,7 @@ UICollectionViewDataSource>
 	self.refreshing = YES;
 	self.loadingMoreChannels = NO;
 	if (![self.refreshControl isRefreshing]) [self.loadMoreSpinner startAnimating];
-	//todo: different onboarding view
-//	if (self.onboardingBlogSelection) {
-//		[[FeedQueryManager sharedInstance] loadFriendsChannelsWithCompletionHandler:^(NSArray *friendChannelObjects, NSArray *friendObjects) {
-//			NSArray *friendChannels = [Channel_BackendObject channelsFromParseChannelObjects: friendChannelObjects];
-//			if (friendChannels.count > MIN_FRIEND_CHANNELS) {
-//				self.followingFriends = YES;
-//				if (self.onboardingDelegate) [self.onboardingDelegate followingFriends];
-//				[self.exploreChannels removeAllObjects];
-//				[self.refreshControl endRefreshing];
-//				[self.loadMoreSpinner stopAnimating];
-//				[self.exploreChannels addObjectsFromArray: friendChannels];
-//				[self.tableView reloadData];
-//				self.refreshing = NO;
-//			} else {
-//				[self loadExploreChannels];
-//			}
-//		}];
-//	} else {
-		[self loadExploreChannels];
-//	}
+	[self loadExploreChannels];
 }
 
 -(void) loadExploreChannels {
@@ -240,19 +224,15 @@ UICollectionViewDataSource>
 	self.loadMoreSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
 	self.loadMoreSpinner.hidesWhenStopped = YES;
 	//todo: add supplementary view for load more
-//	self.collectionView. = self.loadMoreSpinner;
+	//	self.collectionView. = self.loadMoreSpinner;
 }
 
 //todo: different view controller for onboarding
 -(void) channelSelected:(Channel *)channel {
-	BOOL isCurrentUserChannel = [[channel.channelCreator objectId] isEqualToString:[[PFUser currentUser] objectId]];
-//	if(!self.onboardingBlogSelection && !isCurrentUserChannel) {
-		ProfileVC * userProfile = [[ProfileVC alloc] init];
-		userProfile.ownerOfProfile = channel.channelCreator;
-		userProfile.channel = channel;
-		[self.navigationController pushViewController:userProfile animated:YES];
-//	}
-
+	ProfileVC * userProfile = [[ProfileVC alloc] init];
+	userProfile.ownerOfProfile = channel.channelCreator;
+	userProfile.channel = channel;
+	[self.navigationController pushViewController:userProfile animated:YES];
 }
 
 #pragma mark - Collection view delegate methods -
@@ -268,7 +248,7 @@ UICollectionViewDataSource>
 	} else {
 		return self.exploreChannels.count;
 	}
- }
+}
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	NSInteger section = indexPath.section;
@@ -309,7 +289,7 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView
-				  layout:(UICollectionViewLayout *)collectionViewLayout
+				   layout:(UICollectionViewLayout *)collectionViewLayout
 minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 	if (section == 0) {
 		return 1.f;
@@ -317,16 +297,6 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 		return CELL_SPACING_LARGE;
 	}
 }
-
-
-//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-//	if (self.followingFriends) {
-//		return CELL_HEIGHT_FRIEND;
-//	} else {
-//		return CELL_HEIGHT_EXPLORE;
-//	}
-//}
-
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
 	NSInteger section = indexPath.section;
@@ -355,51 +325,12 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 	}
 }
 
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//	NSString *identifier = [NSString stringWithFormat:@"cell,%ld%ld", (long)indexPath.section, (long)indexPath.row % 10]; // reuse cells every 10
-//
-//	if (self.followingFriends) {
-//		FollowFriendCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-//		if (cell == nil) {
-//			cell = [[FollowFriendCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
-//			[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-//		}
-//		Channel *channel = [self.exploreChannels objectAtIndex: indexPath.row];
-//		[cell presentFriendChannel: channel];
-//		return cell;
-//	} else {
-//		ExploreChannelCellView *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-//		if(cell == nil) {
-//			cell = [[ExploreChannelCellView alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
-//			[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-//			cell.delegate = self;
-//		}
-//		Channel *channel = [self.exploreChannels objectAtIndex: indexPath.row];
-//		if (cell.channelBeingPresented != channel) {
-//			[cell clearViews];
-//			[cell presentChannel: channel];
-//		}
-//		[cell onScreen];
-//
-//		if (self.exploreChannels.count - indexPath.row <= LOAD_MORE_CUTOFF &&
-//			!self.loadingMoreChannels && !self.refreshing) {
-//			[self loadMoreChannels];
-//		}
-//		return cell;
-//	}
-//}
 
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell
 	forItemAtIndexPath:(NSIndexPath *)indexPath {
 	// If the indexpath is not within visible objects then it is offscreen
 	if (indexPath.section == 1 && [collectionView.indexPathsForVisibleItems indexOfObject:indexPath] == NSNotFound) {
-//		[(ExploreChannelCellView*)cell offScreen];
-	}
-}
-
--(void) followAllBlogs {
-	for (Channel* channel in self.exploreChannels) {
-		[Follow_BackendManager currentUserFollowChannel:channel];
+		//		[(ExploreChannelCellView*)cell offScreen];
 	}
 }
 
@@ -411,7 +342,8 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 -(void) showFollowFriendsView {
-	//todo:
+	FollowFriendsVC *followFriendsVC = [[FollowFriendsVC alloc] init];
+	[self.navigationController pushViewController:followFriendsVC animated:YES];
 }
 
 #pragma mark - Lazy Instantiation -

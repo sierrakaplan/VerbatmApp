@@ -44,7 +44,8 @@
 	[self loadContacts];
 }
 
--(void) viewDidAppear:(BOOL)animated {
+-(void) viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
 	[(MasterNavigationVC*)self.tabBarController showTabBar:NO];
 	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundColor:[UIColor whiteColor]];
 	[(VerbatmNavigationController*)self.navigationController setNavigationBarShadowColor:[UIColor lightGrayColor]];

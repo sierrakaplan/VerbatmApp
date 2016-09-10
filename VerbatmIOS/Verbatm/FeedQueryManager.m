@@ -273,6 +273,13 @@
 	}];
 }
 
+-(void) getChannelsForAllFriendsWithCompletionHandler:(void(^)(NSArray *))completionBlock {
+	[self loadFriendsChannelsWithCompletionHandler:^(NSArray *channelObjects, NSArray *users) {
+		NSArray *friendChannels = [Channel_BackendObject channelsFromParseChannelObjects: channelObjects];
+		completionBlock(friendChannels);
+	}];
+}
+
 -(void) getChannelsForPhoneContactsWithCompletionHandler:(void(^)(NSArray *))completionBlock {
 	[self getPhoneContactsWithCompletionHandler:^(NSArray *channelObjects, NSArray *users) {
 		NSArray *friendChannels = [Channel_BackendObject channelsFromParseChannelObjects: channelObjects];

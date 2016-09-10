@@ -21,7 +21,8 @@
 
 -(void) clearFeedData;
 
--(void) loadFriendsChannelsWithCompletionHandler:(void(^)(NSArray *, NSArray *))completionBlock;
+// Resolves to an array of Channels
+-(void) getChannelsForAllFriendsWithCompletionHandler:(void(^)(NSArray *))completionBlock;
 
 // Resolves to an array of Channels
 -(void) getChannelsForPhoneContactsWithCompletionHandler:(void(^)(NSArray *))completionBlock;
