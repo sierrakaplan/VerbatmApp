@@ -267,13 +267,12 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 			[weakSelf.postListDelegate postsFound];
 			[weakSelf.parsePostActivityObjects removeAllObjects];
 			[weakSelf.parsePostActivityObjects addObjectsFromArray:posts];
-			if(weakSelf.isCurrentUserProfile)[weakSelf.parsePostActivityObjects addObject:weakSelf.publishingProgressViewPositionHolder];
-			[weakSelf.collectionView reloadData];
-			[weakSelf scrollToLastElementInList];
 		} else if (!weakSelf.currentlyPublishing) {
-			if(weakSelf.isCurrentUserProfile)[weakSelf.parsePostActivityObjects addObject:weakSelf.publishingProgressViewPositionHolder];
 			[weakSelf.postListDelegate noPostFound];
 		}
+		if(weakSelf.isCurrentUserProfile)[weakSelf.parsePostActivityObjects addObject:weakSelf.publishingProgressViewPositionHolder];
+		[weakSelf.collectionView reloadData];
+		[weakSelf scrollToLastElementInList];
 	};
 
 	self.loadOlderPostsCompletion = ^void(NSArray *posts) {
@@ -565,7 +564,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
 
-	if(![[UserSetupParameters sharedInstance] checkAndSetTapOutOfFullscreenInstructionShown]&&
+	if(![[UserSetupParameters sharedInstance] checkOnboardingShown]&&
 	   !self.inSmallMode){
 		[self.collectionView setScrollEnabled:NO];
 		PostCollectionViewCell * currentCell = (PostCollectionViewCell *)cell;
@@ -635,8 +634,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		NSIndexPath *indexPath =[NSIndexPath indexPathForRow:i inSection:0];
 		[self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
 	} completion:^(BOOL finished) {
-		if(finished){
-			if (self.parsePostActivityObjects.count < 1) {
+		if(finished) {
+			if (self.parsePostActivityObjects.count < 2) {
 				[self.postListDelegate noPostFound];
 			}
 			self.performingUpdate = NO;
@@ -837,7 +836,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}
 }
 
-
 -(void) shareToSmsSelected{
 	NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];
 	if(url){
@@ -847,7 +845,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		[self reportLinkError];
 	}
 }
-
 
 -(void) copyLinkSelected{
 	NSString * url = [self.postToShare valueForKey:POST_SHARE_LINK];

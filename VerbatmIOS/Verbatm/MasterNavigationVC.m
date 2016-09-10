@@ -22,6 +22,7 @@
 #import "InstallationVariables.h"
 
 #import "MasterNavigationVC.h"
+#import "MediaSessionManager.h"
 
 #import "Notifications.h"
 #import "NotificationsListTVC.h"
@@ -59,6 +60,8 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 @property (nonatomic) BOOL notificationIndicatorPresent;
 
 @property (nonatomic) BOOL tabBarHidden;
+@property (nonatomic) BOOL justLeftOnboarding;
+
 @property (nonatomic) CGRect tabBarFrameOnScreen;
 @property (nonatomic) CGRect tabBarFrameOffScreen;
 
@@ -100,6 +103,15 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 	[super viewDidAppear:animated];
 	if (![PFUser currentUser].isAuthenticated) {
 		[self bringUpLogin];
+    }else{
+        //todo: did we crash during onboarding?
+        BOOL appCrashedInOnboarding = (![[UserSetupParameters sharedInstance] checkOnboardingShown] && !self.justLeftOnboarding);
+        if(appCrashedInOnboarding){
+            //
+            
+            //this means we are here without going thro
+            [self revealADK];
+        }
     }
 }
 
@@ -170,13 +182,15 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 	PFInstallation *currentInstallation = [PFInstallation currentInstallation];
 	currentInstallation[@"user"] = [PFUser currentUser];
 	[currentInstallation saveInBackground];
-
+    
 	[[UserSetupParameters sharedInstance] setUpParameters];
 	NSString *facebookId = [PFUser currentUser][USER_FB_ID];
 	if (!facebookId) {
 		[UserManager setFbId];
 	}
-	self.view.backgroundColor = [UIColor blackColor];
+	
+    self.view.backgroundColor = [UIColor blackColor];
+    
 	//todo: show loading while this happens
 	[[UserInfoCache sharedInstance] loadUserChannelWithCompletionBlock:^{
 		[self setUpTabBarController];
@@ -377,7 +391,11 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 
 -(void) revealADK {
 	[[Analytics getSharedInstance] newADKSession];
-	[self performSegueWithIdentifier:ADK_SEGUE sender:self];
+    if([MediaSessionManager adkMediaPermissionsAllowed] && [[UserSetupParameters sharedInstance] checkOnboardingShown]){
+        [self performSegueWithIdentifier:ADK_SEGUE sender:self];
+    }else{
+        [self performSegueWithIdentifier:SEGUE_CREATE_FIRST_POST_FROM_MASTER sender:self];
+    }
 }
 
 -(void)userHasSignedOutNotification:(NSNotification *) notification{
@@ -396,10 +414,19 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
     
 	if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER] ||
 		[segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ONBOARDING_TO_MASTER]) {
+        
+        if([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ONBOARDING_TO_MASTER]){
+            self.justLeftOnboarding = YES;
+        }
+        
+        
 		if ([[PublishingProgressManager sharedInstance] currentlyPublishing]) {
 			[self setSelectedViewController: self.profileNavigationController];
 		}
 		[[Analytics getSharedInstance] endOfADKSession];
+        
+        
+        
 	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FACEBOOK_LOGIN_TO_MASTER] ||
                [segue.identifier isEqualToString: UNWIND_SEGUE_PHONE_LOGIN_TO_MASTER]) {
 		//todo

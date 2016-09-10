@@ -16,7 +16,9 @@
 #import "Styles.h"
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
+
 #import "UserManager.h"
+#import "UserSetupParameters.h"
 #import "UtilityFunctions.h"
 
 @interface ChooseLoginVC() <UITextFieldDelegate, LoginKeyboardToolBarDelegate, FBSDKLoginButtonDelegate>
@@ -48,6 +50,10 @@
 	[self.view sendSubviewToBack:self.backgroundImageView];
 	//todo: if creating account make them enter a name
 	[self registerForNotifications];
+}
+
+-(void) viewDidAppear:(BOOL)animated {
+	[self setNeedsStatusBarAppearanceUpdate];
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -117,6 +123,11 @@
 #pragma mark - Facebook Button Delegate  -
 
 
+-(void)userHasNotCompletedOnboardingPresentOnboardingADK{
+    [self performSegueWithIdentifier:SEGUE_ONBOARD_FROM_CHOOSE_LOGIN sender:self];
+}
+
+
 - (void)  loginButton:(FBSDKLoginButton *)loginButton
 didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 				error:(NSError *)error {
@@ -175,13 +186,23 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 }
 
 -(void) loginSucceeded: (NSNotification*) notification {
-	// viewController is visible
+	// check viewController is visible
 	if (self.isViewLoaded && self.view.window) {
-		if (self.creatingAccount) {
-			[self performSegueWithIdentifier:SEGUE_FOLLOW_FRIENDS_FROM_FACEBOOK_LOGIN sender:self];
-		} else {
- 			[self performSegueWithIdentifier:UNWIND_SEGUE_FACEBOOK_LOGIN_TO_MASTER sender:self];
-		}
+        
+        if(![[UserSetupParameters sharedInstance] checkOnboardingShown]) {
+            
+            [self userHasNotCompletedOnboardingPresentOnboardingADK];
+        
+        }else{
+            
+            if (self.creatingAccount) {
+                [self performSegueWithIdentifier:SEGUE_FOLLOW_FRIENDS_FROM_FACEBOOK_LOGIN sender:self];
+            } else {
+                [self performSegueWithIdentifier:UNWIND_SEGUE_FACEBOOK_LOGIN_TO_MASTER sender:self];
+            }
+            
+        }
+		
 	}
 }
 

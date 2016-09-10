@@ -102,7 +102,7 @@ UICollectionViewDataSource>
 }
 
 -(UIStatusBarStyle) preferredStatusBarStyle {
-	return UIStatusBarStyleLightContent;
+	return UIStatusBarStyleDefault;
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -116,7 +116,7 @@ UICollectionViewDataSource>
 	self.searchController = [[UISearchController alloc] initWithSearchResultsController: self.searchResultsController];
 	self.searchController.searchResultsUpdater = self.searchResultsController;
 	self.searchController.hidesNavigationBarDuringPresentation = NO;
-	self.searchController.searchBar.searchBarStyle = UISearchBarStyleProminent;
+	self.searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
 	self.navigationItem.titleView = self.searchController.searchBar;
 	self.definesPresentationContext = YES;
 	[self formatSearchBar: self.searchController.searchBar];
