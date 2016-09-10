@@ -101,6 +101,12 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 	[super viewDidAppear:animated];
 	if (![PFUser currentUser].isAuthenticated) {
 		[self bringUpLogin];
+    }else{
+        
+        //todo: did we crash during onboarding?
+//        if(![[UserSetupParameters sharedInstance] checkAdkOnboardingShown]){
+//            [self revealADK];
+//        }
     }
 }
 
@@ -171,13 +177,15 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 	PFInstallation *currentInstallation = [PFInstallation currentInstallation];
 	currentInstallation[@"user"] = [PFUser currentUser];
 	[currentInstallation saveInBackground];
-
+    
 	[[UserSetupParameters sharedInstance] setUpParameters];
 	NSString *facebookId = [PFUser currentUser][USER_FB_ID];
 	if (!facebookId) {
 		[UserManager setFbId];
 	}
-	self.view.backgroundColor = [UIColor blackColor];
+	
+    self.view.backgroundColor = [UIColor blackColor];
+    
 	//todo: show loading while this happens
 	[[UserInfoCache sharedInstance] loadUserChannelWithCompletionBlock:^{
 		[self setUpTabBarController];

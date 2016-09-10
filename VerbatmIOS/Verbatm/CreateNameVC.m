@@ -59,7 +59,7 @@
 -(void) nextButtonPressed {
 	NSString *name = self.enterNameField.text;
 	if (name.length < 1) {
-		[self showAlertWithTitle:nil andMessage:@"Please enter a username"];
+		[self showAlertWithTitle:nil andMessage:@"Enter your name."];
 	} else {
 		if (self.savingName) return;
 		self.savingName = YES;
@@ -137,12 +137,13 @@
 	return _enterNameField;
 }
 
+
 -(UILabel*) enterNameLabel {
 	if(!_enterNameLabel) {
 		CGRect frame = CGRectMake(self.view.center.x - ENTER_NAME_LABEL_WIDTH/2.f, ENTER_NAME_LABEL_Y_POS,
 								  ENTER_NAME_LABEL_WIDTH, ENTER_NAME_LABEL_HEIGHT);
 		_enterNameLabel = [[UILabel alloc] initWithFrame:frame];
-		_enterNameLabel.text = @"Please add a username!";
+		_enterNameLabel.text = @"Enter your name!";
 		_enterNameLabel.textAlignment = NSTextAlignmentCenter;
 		[_enterNameLabel setBackgroundColor:[UIColor clearColor]];
 		[_enterNameLabel setTextColor:[UIColor whiteColor]];
