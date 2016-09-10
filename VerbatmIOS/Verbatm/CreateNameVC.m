@@ -52,6 +52,11 @@
 	[self.enterNameField becomeFirstResponder];
 }
 
+-(void) viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
+	[self.navigationController setNavigationBarHidden:YES];
+}
+
 -(BOOL) prefersStatusBarHidden {
 	return YES;
 }

@@ -73,14 +73,16 @@
 												 name:NOTIFICATION_FREE_MEMORY_DISCOVER object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshChannels)
 												 name:NOTIFICATION_REFRESH_DISCOVER object:nil];
-	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
+	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@""
+																			 style:self.navigationItem.backBarButtonItem.style
+																			target:nil action:nil];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	[self setNeedsStatusBarAppearanceUpdate];
 	[self.navigationController setNavigationBarHidden:NO];
-	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundColor:[UIColor whiteColor]];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundColor:[UIColor blackColor]];
 	if (!_exploreChannels || !self.exploreChannels.count) {
 		[self refreshChannels];
 	}
@@ -92,7 +94,7 @@
 }
 
 -(UIStatusBarStyle) preferredStatusBarStyle {
-	return UIStatusBarStyleDefault;
+	return UIStatusBarStyleLightContent;
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -105,10 +107,10 @@
 	self.tableView.showsHorizontalScrollIndicator = NO;
 	self.tableView.showsVerticalScrollIndicator = NO;
 	self.tableView.delegate = self;
-	UIImageView * backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:DISCOVER_BACKGROUND]];
-	[self.tableView setBackgroundView:backgroundView];
-	self.tableView.backgroundView.layer.zPosition -= 1;
-	[self.view setBackgroundColor:[UIColor clearColor]];
+//	UIImageView * backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:DISCOVER_BACKGROUND]];
+//	[self.tableView setBackgroundView:backgroundView];
+//	self.tableView.backgroundView.layer.zPosition -= 1;
+	[self.view setBackgroundColor:[UIColor blackColor]];
 	//avoid covering status bar and last item in uitableview
 	UIEdgeInsets inset = UIEdgeInsetsMake(STATUS_BAR_HEIGHT, 0, TAB_BAR_HEIGHT + STATUS_BAR_HEIGHT, 0);
 	self.tableView.contentInset = inset;
@@ -131,18 +133,17 @@
 	self.searchController = [[UISearchController alloc] initWithSearchResultsController: self.searchResultsController];
 	self.searchController.searchResultsUpdater = self.searchResultsController;
 	self.searchController.hidesNavigationBarDuringPresentation = NO;
-	self.searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+	self.searchController.searchBar.searchBarStyle = UISearchBarStyleProminent;
 	self.navigationItem.titleView = self.searchController.searchBar;
-//	self.tableView.tableHeaderView = self.searchController.searchBar;
 	self.definesPresentationContext = YES;
 	[self formatSearchBar: self.searchController.searchBar];
 	//	self.searchController.searchBar.scopeButtonTitles = @[@"Users", @"Blogs"];
 }
 
 -(void) formatSearchBar:(UISearchBar*)searchBar {
-//	searchBar.barTintColor = [UIColor lightGrayColor];
-	searchBar.tintColor = [UIColor blueColor];
-//	searchBar.backgroundColor = [UIColor clearColor];
+	searchBar.barTintColor = [UIColor whiteColor];
+	searchBar.tintColor = [UIColor whiteColor];
+	searchBar.backgroundColor = [UIColor blackColor];
 //	searchBar.backgroundImage = [UIImage new];
 }
 

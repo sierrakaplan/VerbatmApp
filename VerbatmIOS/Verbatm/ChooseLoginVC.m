@@ -50,6 +50,10 @@
 	[self registerForNotifications];
 }
 
+-(void) viewDidAppear:(BOOL)animated {
+	[self setNeedsStatusBarAppearanceUpdate];
+}
+
 -(BOOL) prefersStatusBarHidden {
 	return YES;
 }
