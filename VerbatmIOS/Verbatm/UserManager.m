@@ -7,11 +7,12 @@
 //
 
 #import <Crashlytics/Crashlytics.h>
+
 #import "Notifications.h"
 #import "ParseBackendKeys.h"
 #import "ProfileVC.h"
 #import "UserManager.h"
-
+#import "UserSetupParameters.h"
 @interface UserManager()
 @property (nonatomic) UIImage * currentCoverPhoto;
 @end
@@ -30,7 +31,7 @@
 
 #pragma mark - Creating Account (Signing up user) -
 
--(void) signUpOrLoginUserFromFacebookToken:(FBSDKAccessToken *)accessToken {
+-(void) signUpOrLoginUserFromFacebookToken:(FBSDKAccessToken *)accessToken fromLoginVC:(ChooseLoginVC *)loginVC{
 	[PFFacebookUtils logInInBackgroundWithAccessToken:[FBSDKAccessToken currentAccessToken] block:^(PFUser * _Nullable user, NSError * _Nullable error) {
 		if (error) {
 			//todo: fail error
@@ -41,7 +42,11 @@
 				[self getUserInfoFromFacebookToken: accessToken];
 			} else {
 				NSLog(@"User had already created account. Successfully logged in with Facebook.");
-				[self notifySuccessfulLogin];
+                if(![[UserSetupParameters sharedInstance] checkAdkOnboardingShown]){
+                    if(loginVC)[loginVC userHasNotCompletedOnboardingPresentOnboardingADK];
+                }else{
+                    [self notifySuccessfulLogin];
+                }
 			}
 		}
 	}];

@@ -60,6 +60,8 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 @property (nonatomic) BOOL notificationIndicatorPresent;
 
 @property (nonatomic) BOOL tabBarHidden;
+@property (nonatomic) BOOL justLeftOnboarding;
+
 @property (nonatomic) CGRect tabBarFrameOnScreen;
 @property (nonatomic) CGRect tabBarFrameOffScreen;
 
@@ -104,9 +106,10 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
     }else{
         
         //todo: did we crash during onboarding?
-//        if(![[UserSetupParameters sharedInstance] checkAdkOnboardingShown]){
-//            [self revealADK];
-//        }
+        if(!([[UserSetupParameters sharedInstance] checkAdkOnboardingShown] && self.justLeftOnboarding)){
+            //this means we are here without going thro
+            [self revealADK];
+        }
     }
 }
 
@@ -410,10 +413,19 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
     
 	if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER] ||
 		[segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ONBOARDING_TO_MASTER]) {
+        
+        if([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ONBOARDING_TO_MASTER]){
+            self.justLeftOnboarding = YES;
+        }
+        
+        
 		if ([[PublishingProgressManager sharedInstance] currentlyPublishing]) {
 			[self setSelectedViewController: self.profileNavigationController];
 		}
 		[[Analytics getSharedInstance] endOfADKSession];
+        
+        
+        
 	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FACEBOOK_LOGIN_TO_MASTER] ||
                [segue.identifier isEqualToString: UNWIND_SEGUE_PHONE_LOGIN_TO_MASTER]) {
 		//todo

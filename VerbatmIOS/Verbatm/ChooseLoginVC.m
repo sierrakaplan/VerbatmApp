@@ -117,6 +117,11 @@
 #pragma mark - Facebook Button Delegate  -
 
 
+-(void)userHasNotCompletedOnboardingPresentOnboardingADK{
+    [self performSegueWithIdentifier:SEGUE_ONBOARD_FROM_CHOOSE_LOGIN sender:self];
+}
+
+
 - (void)  loginButton:(FBSDKLoginButton *)loginButton
 didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 				error:(NSError *)error {
@@ -129,7 +134,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	//	NSSet* declinedPermissions = result.declinedPermissions;
 	//batch request for user info as well as friends
 	if ([FBSDKAccessToken currentAccessToken]) {
-		[[UserManager sharedInstance] signUpOrLoginUserFromFacebookToken: [FBSDKAccessToken currentAccessToken]];
+		[[UserManager sharedInstance] signUpOrLoginUserFromFacebookToken: [FBSDKAccessToken currentAccessToken] fromLoginVC:self];
 	} else {
 		//  [self.delegate errorInSignInWithError: @"Facebook login failed."];
 	}

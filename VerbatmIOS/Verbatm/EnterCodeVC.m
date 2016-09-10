@@ -16,6 +16,8 @@
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "UIView+Effects.h"
+#import "UserSetupParameters.h"
+
 #import <Parse/PFUser.h>
 #import "ParseBackendKeys.h"
 
@@ -79,7 +81,7 @@
 }
 
 -(void) sendCodeToUser:(NSString*) simplePhoneNumber {
-//    return;//todo: this line lines allow testing create new accounts (use phone numbers no one has)
+    return;//todo: this line lines allow testing create new accounts (use phone numbers no one has)
     
 	[self disableResendCodeButtonWithText:@"Sending code..."];
 	//todo: include more languages
@@ -134,14 +136,14 @@
 	NSString *code = [self getCode];
 
 //	//todo: these lines lines allow testing create new accounts (use phone numbers no one has)
-//	PFUser *newUser = [PFUser user];
-//	newUser.username = self.simplePhoneNumber;
-//	newUser.password = code;
-//	[newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-//        [self goOnToCreateName];
-//    }];
-//
-//	return;
+	PFUser *newUser = [PFUser user];
+	newUser.username = self.simplePhoneNumber;
+	newUser.password = code;
+	[newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        [self goOnToCreateName];
+    }];
+
+	return;
 
 	if (self.verifyingCode) return;
 	self.verifyingCode = YES;
@@ -178,8 +180,20 @@
 								}
 							}];
 						} else {
-							[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
-							[self performSegueWithIdentifier:UNWIND_SEGUE_PHONE_LOGIN_TO_MASTER sender:self];
+                            
+                            if(![[UserSetupParameters sharedInstance] checkAdkOnboardingShown]){
+                                NSString * userName = user[VERBATM_USER_NAME_KEY];
+                                if(userName && userName.length){
+                                    //go to onboarding adk
+                                    [self performSegueWithIdentifier:SEGUE_ONBOARD_FROM_ENTER_CODE sender:self];
+                                }else{
+                                    [self goOnToCreateName];
+                                }
+                                
+                            }else{
+                                [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
+                                [self performSegueWithIdentifier:UNWIND_SEGUE_PHONE_LOGIN_TO_MASTER sender:self];
+                            }
 						}
 					}
 				}];
