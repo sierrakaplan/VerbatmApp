@@ -10,6 +10,10 @@
 
 @interface InviteFriendCell : UITableViewCell
 
+@property (nonatomic) BOOL buttonIsSelected;
+
+-(void) toggleButton;
+
 -(void) setContactName: (NSString*)name andPhoneNumber:(NSString*)phoneNumber;
 
 @end

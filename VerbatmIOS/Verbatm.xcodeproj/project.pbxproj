@@ -798,9 +798,8 @@
 				A5C38AC01CC1B67B0067D077 /* DiscoverVC.m */,
 				A51A0AEB1D6CF7A1009D7CDD /* Table Cell Views */,
 				A51A0AD81D6CF0AC009D7CDD /* Search */,
+				A59D64CB1D8396560028650C /* FollowFriends */,
 				A59D64C71D838C730028650C /* Invite Friends */,
-				A59D64C41D83750E0028650C /* FollowFriendsVC.h */,
-				A59D64C51D83750E0028650C /* FollowFriendsVC.m */,
 			);
 			name = Discover;
 			sourceTree = "<group>";
@@ -1262,6 +1261,15 @@
 				A59D64C91D838C9B0028650C /* InviteFriendCell.m */,
 			);
 			name = "Invite Friends";
+			sourceTree = "<group>";
+		};
+		A59D64CB1D8396560028650C /* FollowFriends */ = {
+			isa = PBXGroup;
+			children = (
+				A59D64C41D83750E0028650C /* FollowFriendsVC.h */,
+				A59D64C51D83750E0028650C /* FollowFriendsVC.m */,
+			);
+			name = FollowFriends;
 			sourceTree = "<group>";
 		};
 		A5BFA5971CA89A90002C3884 /* Publishing */ = {

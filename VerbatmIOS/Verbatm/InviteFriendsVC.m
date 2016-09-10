@@ -10,6 +10,7 @@
 #import "InviteFriendCell.h"
 #import "InviteFriendsVC.h"
 #import "FeedQueryManager.h"
+#import "MasterNavigationVC.h"
 #import <MessageUI/MFMessageComposeViewController.h>
 #import "Styles.h"
 #import "VerbatmNavigationController.h"
@@ -24,6 +25,7 @@
 @property (nonatomic) NSMutableArray *contacts;
 @property (nonatomic) NSMutableArray *selectedNumbers;
 
+#define CELL_HEIGHT 60.f
 #define SEND_INVITES_BUTTON_HEIGHT 100.f
 #define SEND_INVITES_FONT_SIZE 24.f
 
@@ -43,8 +45,10 @@
 }
 
 -(void) viewDidAppear:(BOOL)animated {
+	[(MasterNavigationVC*)self.tabBarController showTabBar:NO];
 	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundColor:[UIColor whiteColor]];
 	[(VerbatmNavigationController*)self.navigationController setNavigationBarShadowColor:[UIColor lightGrayColor]];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarTextColor:[UIColor blackColor]];
 }
 
 -(void) loadContacts {
@@ -71,9 +75,10 @@
 }
 
 -(void) addSendInvitesButton {
-	UIButton *sendInvitesButton = [[UIButton alloc] initWithFrame:CGRectMake(0.f, self.view.frame.size.height - SEND_INVITES_BUTTON_HEIGHT,
+	UIButton *sendInvitesButton = [[UIButton alloc] initWithFrame:CGRectMake(0.f, self.view.frame.size.height - SEND_INVITES_BUTTON_HEIGHT - 40.f,
 																			 self.view.frame.size.width, SEND_INVITES_BUTTON_HEIGHT)];
 	sendInvitesButton.backgroundColor = VERBATM_GOLD_COLOR;
+	sendInvitesButton.titleLabel.text = @"Send Invites";
 	sendInvitesButton.titleLabel.font = [UIFont fontWithName:REGULAR_FONT size:SEND_INVITES_FONT_SIZE];
 	sendInvitesButton.titleLabel.textColor = [UIColor whiteColor];
 	[sendInvitesButton addTarget:self action:@selector(sendInvites) forControlEvents:UIControlEventTouchUpInside];
@@ -82,7 +87,8 @@
 
 -(void) displayContactsFromContactStore:(CNContactStore*)store {
 	//keys with fetching properties
-	NSArray *keys = @[CNContactPhoneNumbersKey, CNContactGivenNameKey, CNContactFamilyNameKey];
+	id<CNKeyDescriptor> nameKeys = [CNContactFormatter descriptorForRequiredKeysForStyle:CNContactFormatterStyleFullName];
+	NSArray *keys = @[CNContactPhoneNumbersKey, nameKeys];
 	NSString *containerId = store.defaultContainerIdentifier;
 	NSPredicate *predicate = [CNContact predicateForContactsInContainerWithIdentifier:containerId];
 	NSError *error;
@@ -134,13 +140,17 @@
 	return 1;
 }
 
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+	return CELL_HEIGHT;
+}
+
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	return self.contacts.count;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSString *identifier = [NSString stringWithFormat:@"cell,%ld", (long)indexPath.row];
-	InviteFriendCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier forIndexPath: indexPath];
+	InviteFriendCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
 	if (!cell) {
 		cell = [[InviteFriendCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
 	}
@@ -160,8 +170,14 @@
 }
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	NSString *phoneNumber;
-	[self.selectedNumbers addObject: phoneNumber];
+	NSString *phoneNumber = self.phoneNumbers[indexPath.row];
+	InviteFriendCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+	[cell toggleButton];
+	if (cell.buttonIsSelected) {
+		[self.selectedNumbers addObject: phoneNumber];
+	} else {
+		[self.selectedNumbers removeObject: phoneNumber];
+	}
 }
 
 -(void) sendInvites {
@@ -177,7 +193,9 @@
 #pragma mark - Message delegate -
 
 -(void) messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
+	[controller dismissViewControllerAnimated:YES completion:^{
 
+	}];
 }
 
 #pragma mark - Lazy Instantiation -
