@@ -60,7 +60,7 @@
 	self.loadingMoreChannels = NO;
 	self.refreshing = NO;
 	[self formatTableView];
-	[self addInviteFriendsHeader];
+//	[self addInviteFriendsHeader];
 
 	if (!self.onboardingBlogSelection) {
 		[self setUpSearchController];
