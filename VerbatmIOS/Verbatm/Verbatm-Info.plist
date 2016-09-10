@@ -50,11 +50,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-<<<<<<< HEAD
-	<string>1</string>
-=======
 	<string>4</string>
->>>>>>> TestPhoneLogin
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>

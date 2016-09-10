@@ -80,15 +80,10 @@
 	[self addBackgroundImage];
     
 	[self.view addSubview: self.topNavMessage];
-<<<<<<< HEAD
-	self.topNavLabel.text = @"TAP the CAMERA ICON to capture media.";
-	[self addCamera];
-=======
-    
-	self.topNavLabel.text = @"All the media you capture will be saved here. Tap the camera icon to capture your media.";
-    
+
+    self.topNavLabel.text = @"TAP the CAMERA ICON to capture media.";
     [self checkPermissionStatus];
->>>>>>> TestPhoneLogin
+
 }
 
 -(void)progressFromMediaCheckWithAccessGranted:(BOOL)accessGranted{
