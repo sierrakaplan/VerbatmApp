@@ -107,6 +107,7 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 		[(MasterNavigationVC*)self.tabBarController showTabBar:!self.inFullScreenMode];
 		[self.navigationController setNavigationBarHidden: self.inFullScreenMode];
 		[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundClear];
+		[(VerbatmNavigationController*)self.navigationController setNavigationBarShadowColor:[UIColor clearColor]];
 		[(VerbatmNavigationController*)self.navigationController setNavigationBarTextColor:[UIColor whiteColor]];
 	}
 	// In feed list
@@ -114,6 +115,7 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 		[self.verbatmTabBarController showTabBar:!self.inFullScreenMode];
 		[self.verbatmNavigationController setNavigationBarHidden:self.inFullScreenMode];
 		[self.verbatmNavigationController setNavigationBarBackgroundClear];
+		[(VerbatmNavigationController*)self.navigationController setNavigationBarShadowColor:[UIColor clearColor]];
 		[self.verbatmNavigationController setNavigationBarTextColor:[UIColor whiteColor]];
 	}
 }

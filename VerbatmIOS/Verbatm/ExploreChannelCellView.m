@@ -79,7 +79,7 @@
 	self.followButton.frame = CGRectMake(self.frame.size.width - FOLLOW_BUTTON_WIDTH - OFFSET,
 										 yOffset, FOLLOW_BUTTON_WIDTH,
 										 DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
-	self.numFollowersLabel.frame = CGRectMake(self.followButton.frame.origin.x - FOLLOW_BUTTON_WIDTH - OFFSET,
+	self.numFollowersLabel.frame = CGRectMake(self.followButton.frame.origin.x - FOLLOW_BUTTON_WIDTH,
 											  yOffset, NUM_FOLLOWERS_WIDTH,
 											  DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
 

@@ -81,7 +81,7 @@ UICollectionViewDataSource>
 	[self setNeedsStatusBarAppearanceUpdate];
 	[self.navigationController setNavigationBarHidden:NO];
 	[(VerbatmNavigationController*) self.navigationController setNavigationBarBackgroundColor:[UIColor blackColor]];
-//	[(VerbatmNavigationController*) self.navigationController setNavigationBarShadowColor:[UIColor lightGrayColor]];
+	[(VerbatmNavigationController*) self.navigationController setNavigationBarShadowColor:[UIColor lightGrayColor]];
 	if (!_exploreChannels || !self.exploreChannels.count) {
 		[self refreshChannels];
 	}
@@ -173,8 +173,8 @@ UICollectionViewDataSource>
 -(void) offScreen {
 	for (NSIndexPath *indexPath in [self.collectionView indexPathsForVisibleItems]) {
 		if (indexPath.section == 1) {
-			ExploreChannelCellView *cellView = (ExploreChannelCellView*)[self.collectionView
-																		 cellForItemAtIndexPath:indexPath];
+//			ExploreChannelCellView *cellView = (ExploreChannelCellView*)[self.collectionView
+//																		 cellForItemAtIndexPath:indexPath];
 //			[(ExploreChannelCellView*)cellView offScreen];
 		}
 	}
