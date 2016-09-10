@@ -248,6 +248,9 @@
 
 -(void) continueToPublish {
 	self.userChannel = [[UserInfoCache sharedInstance] getUserChannel];
+    //once they have pinched onboarding is done effectively
+    [[UserSetupParameters sharedInstance] setOnboardingShown];
+    
 	[[PublishingProgressManager sharedInstance] publishPostToChannel:self.userChannel
 														 andFacebook:TRUE withCaption:@""
 													  withPinchViews:self.pinchViewsToPublish

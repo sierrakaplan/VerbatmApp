@@ -58,8 +58,10 @@
 }
 
 -(void) setOnboardingShown {
-    
+    if(self.ftue) return;
+    self.ftue = YES;
     [[PFUser currentUser] setValue:[NSNumber numberWithBool:YES] forKey:USER_FTUE];
+    [[PFUser currentUser]saveInBackground];
 
 }
 
