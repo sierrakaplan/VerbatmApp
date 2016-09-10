@@ -81,7 +81,7 @@
 }
 
 -(void) sendCodeToUser:(NSString*) simplePhoneNumber {
-    return;//todo: this line lines allow testing create new accounts (use phone numbers no one has)
+    //return;//todo: this line lines allow testing create new accounts (use phone numbers no one has)
     
 	[self disableResendCodeButtonWithText:@"Sending code..."];
 	//todo: include more languages
@@ -136,14 +136,14 @@
 	NSString *code = [self getCode];
 
 //	//todo: these lines lines allow testing create new accounts (use phone numbers no one has)
-	PFUser *newUser = [PFUser user];
-	newUser.username = self.simplePhoneNumber;
-	newUser.password = code;
-	[newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        [self goOnToCreateName];
-    }];
-
-	return;
+//	PFUser *newUser = [PFUser user];
+//	newUser.username = self.simplePhoneNumber;
+//	newUser.password = code;
+//	[newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+//        [self goOnToCreateName];
+//    }];
+//
+//	return;
 
 	if (self.verifyingCode) return;
 	self.verifyingCode = YES;

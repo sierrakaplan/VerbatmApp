@@ -104,9 +104,11 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 	if (![PFUser currentUser].isAuthenticated) {
 		[self bringUpLogin];
     }else{
-        
         //todo: did we crash during onboarding?
-        if(!([[UserSetupParameters sharedInstance] checkAdkOnboardingShown] && self.justLeftOnboarding)){
+        BOOL appCrashedInOnboarding = (![[UserSetupParameters sharedInstance] checkAdkOnboardingShown] && !self.justLeftOnboarding);
+        if(appCrashedInOnboarding){
+            //
+            
             //this means we are here without going thro
             [self revealADK];
         }
