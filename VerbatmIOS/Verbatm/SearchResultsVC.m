@@ -35,7 +35,7 @@
 
 -(void) viewDidLoad {
 	self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-	self.view.backgroundColor = [UIColor blackColor];
+	self.view.backgroundColor = [UIColor whiteColor];
 	self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
 
@@ -52,7 +52,7 @@
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
-	return UIStatusBarStyleLightContent;
+	return UIStatusBarStyleDefault;
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -147,7 +147,7 @@
 	}
 	[cell.textLabel setText: blogText];
 	cell.textLabel.font = [UIFont fontWithName:REGULAR_FONT size:16.f];
-	cell.textLabel.textColor = [UIColor whiteColor];
+	cell.textLabel.textColor = [UIColor blackColor];
     [self removeNoSearchResultsIcon];
 	return cell;
 }

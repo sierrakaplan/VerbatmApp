@@ -82,7 +82,8 @@
 	[super viewWillAppear:animated];
 	[self setNeedsStatusBarAppearanceUpdate];
 	[self.navigationController setNavigationBarHidden:NO];
-	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundColor:[UIColor blackColor]];
+//	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundColor:[UIColor blackColor]];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundColor:[UIColor whiteColor]];
 	if (!_exploreChannels || !self.exploreChannels.count) {
 		[self refreshChannels];
 	}
@@ -94,7 +95,7 @@
 }
 
 -(UIStatusBarStyle) preferredStatusBarStyle {
-	return UIStatusBarStyleLightContent;
+	return UIStatusBarStyleDefault;
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -107,10 +108,10 @@
 	self.tableView.showsHorizontalScrollIndicator = NO;
 	self.tableView.showsVerticalScrollIndicator = NO;
 	self.tableView.delegate = self;
-//	UIImageView * backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:DISCOVER_BACKGROUND]];
-//	[self.tableView setBackgroundView:backgroundView];
-//	self.tableView.backgroundView.layer.zPosition -= 1;
-	[self.view setBackgroundColor:[UIColor blackColor]];
+	UIImageView * backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:DISCOVER_BACKGROUND]];
+	[self.tableView setBackgroundView:backgroundView];
+	self.tableView.backgroundView.layer.zPosition -= 1;
+//	[self.view setBackgroundColor:[UIColor blackColor]];
 	//avoid covering status bar and last item in uitableview
     
     UIEdgeInsets inset = UIEdgeInsetsMake(STATUS_BAR_HEIGHT, 0, TAB_BAR_HEIGHT + STATUS_BAR_HEIGHT, 0);
@@ -134,7 +135,7 @@
 	self.searchController = [[UISearchController alloc] initWithSearchResultsController: self.searchResultsController];
 	self.searchController.searchResultsUpdater = self.searchResultsController;
 	self.searchController.hidesNavigationBarDuringPresentation = NO;
-	self.searchController.searchBar.searchBarStyle = UISearchBarStyleProminent;
+	self.searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
 	self.navigationItem.titleView = self.searchController.searchBar;
 	self.definesPresentationContext = YES;
 	[self formatSearchBar: self.searchController.searchBar];
@@ -143,8 +144,8 @@
 
 -(void) formatSearchBar:(UISearchBar*)searchBar {
 	searchBar.barTintColor = [UIColor whiteColor];
-	searchBar.tintColor = [UIColor whiteColor];
-	searchBar.backgroundColor = [UIColor blackColor];
+	searchBar.tintColor = [UIColor blueColor];
+	searchBar.backgroundColor = [UIColor clearColor];
 //	searchBar.backgroundImage = [UIImage new];
 }
 
