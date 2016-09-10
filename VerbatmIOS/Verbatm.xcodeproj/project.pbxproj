@@ -903,7 +903,6 @@
 		A51A0ADC1D6CF2C7009D7CDD /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				A51A0AD61D6CF03F009D7CDD /* FrontEnd */,
 				A5934B9F1C10F044007C7830 /* Fonts */,
 				C774040E19BE6538004C50EA /* Images.xcassets */,
 			);
@@ -1573,6 +1572,7 @@
 			isa = PBXGroup;
 			children = (
 				A5BB65461D6F804000F5B01B /* Main.storyboard */,
+				A51A0AD61D6CF03F009D7CDD /* FrontEnd */,
 				A51A0ADC1D6CF2C7009D7CDD /* Resources */,
 				A51A0AD51D6CF036009D7CDD /* Framedation/Model */,
 				C7BC437C199D97F5004B91A1 /* Supporting Files */,

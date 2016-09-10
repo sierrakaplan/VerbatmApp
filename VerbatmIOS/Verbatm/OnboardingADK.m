@@ -68,7 +68,7 @@
 	[self.firstSlideBackground removeFromSuperview];
 	[self addBackgroundImage];
 	[self.view addSubview: self.topNavMessage];
-	self.topNavLabel.text = @"All the media you capture will be saved here. Tap the camera icon to capture your media.";
+	self.topNavLabel.text = @"TAP the CAMERA ICON to capture media.";
 	[self addCamera];
 }
 
@@ -97,7 +97,7 @@
 	}
 	[self.cameraView enableCapturingPhoto: NO];
 	[self.view bringSubviewToFront: self.topNavMessage];
-	self.topNavLabel.text = @"Press and hold to capture a short video of what you're doing.";
+	self.topNavLabel.text = @"PRESS AND HOLD to capture a video.";
 }
 
 // These should not be called, as the gallery button and text button are disabled
@@ -121,7 +121,7 @@
 		self.captureMediaInstructionShown = YES;
 		[self.baseMediaTileSelector enableGalleryButton:YES];
 		[self.baseMediaTileSelector enableTextButton:YES];
-		self.topNavLabel.text = @"Pinch two of the circles together!";
+		self.topNavLabel.text = @"This is your creation space! \n PINCH two circles together.";
 	}
 }
 
@@ -152,7 +152,7 @@
 -(void) aboutToRemovePreview {
 	[super aboutToRemovePreview];
 	if (!self.pinchInstructionShown) return;
-	self.topNavLabel.text = @"Now tap here to publish your post!";
+	self.topNavLabel.text = @"TAP HERE to publish your post!";
 	UITapGestureRecognizer *tapToPublishGesture = [[UITapGestureRecognizer alloc]
 												   initWithTarget:self action:@selector(tappedToPublish)];
 	[self.topNavMessage addGestureRecognizer: tapToPublishGesture];
