@@ -103,7 +103,6 @@
             [self progressFromMediaCheckWithAccessGranted:allPermissionsGranted];
         }];
     }else{
-        
         [self progressFromMediaCheckWithAccessGranted:[MediaSessionManager adkMediaPermissionsAllowed]];
     }
 }
@@ -124,8 +123,13 @@
 	[self.pageElementScrollViews addObject:baseMediaTileSelectorScrollView];
 }
 
--(void) cameraButtonPressedOnTile:(MediaSelectTile *)tile {
-	[self.view addSubview:self.cameraView];
+-(void) cameraButtonPressedOnTile:(MediaSelectTile *)tile { 
+    if(![MediaSessionManager adkMediaPermissionsAllowed]){
+        [self checkPermissionStatus];
+        return;
+    }
+    
+    [self.view addSubview:self.cameraView];
 	[self.cameraView createAndInstantiateGestures];
 	if (self.captureMediaInstructionShown) {
 		[self.cameraView enableCapturingPhoto: YES];

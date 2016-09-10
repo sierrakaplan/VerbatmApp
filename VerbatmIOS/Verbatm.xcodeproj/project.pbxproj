@@ -2257,7 +2257,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.12Verbatm.Verbatm;
+				PRODUCT_BUNDLE_IDENTIFIER = com.20Verbatm.Verbatm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				USER_HEADER_SEARCH_PATHS = "\"${PODS_ROOT}/BuildHeaders\"/** $(inherited)";
@@ -2296,7 +2296,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.12Verbatm.Verbatm;
+				PRODUCT_BUNDLE_IDENTIFIER = com.20Verbatm.Verbatm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "dfcbf4c0-b5f5-42fb-ba20-69e094e85ac0";
 				USER_HEADER_SEARCH_PATHS = "\"${PODS_ROOT}/BuildHeaders\"/** $(inherited)";
