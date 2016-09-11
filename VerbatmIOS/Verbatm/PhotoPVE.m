@@ -366,7 +366,7 @@
 			[self bringSubviewToFront:self.panGestureSensingViewVertical];
 			[self bringSubviewToFront:self.panGestureSensingViewHorizontal];
             //create press and hold to pause gesture
-            if(!self.inPreviewMode){
+            if(!self.inPreviewMode && !self.small){
                 [self addPauseTapGesture];
             }
 
