@@ -59,16 +59,23 @@
 #pragma mark - Slideshow -
 
 
+@property (nonatomic) CABasicAnimation * circlePathAnimation;
 
 @property (nonatomic) BOOL animating;
 @property (nonatomic) BOOL slideShowPlaying;
+@property (nonatomic) BOOL slideShowPaused;//when not in preview mode
+
 @property (nonatomic) CAShapeLayer *slideshowProgressCircle;
+@property (nonatomic) NSTimer * photoSlideShowTimer;
+@property (nonatomic) NSDate * timerStarted;
+@property (nonatomic) NSTimeInterval timerElapsed;
 
 #define TEXT_VIEW_HEIGHT 70.f
-#define SLIDESHOW_ANIMATION_DURATION 0.9f
 #define OPEN_COLLECTION_FRAME_HEIGHT 70.f
-#define IMAGE_FADE_OUT_ANIMATION_DURATION 1.2f
-#define SLIDESHOW_SPEED_SECONDS 2.f
+
+#define IMAGE_FADE_OUT_ANIMATION_DURATION 1.f
+
+#define CIRCLE_ANIMATION_DURATION ((PHOTO_SLIDESHOW_PROGRESS_PATH_SECTION_SPEED + IMAGE_FADE_OUT_ANIMATION_DURATION) * self.imageContainerViews.count)
 
 @end
 
@@ -117,7 +124,6 @@
 }
 
 -(void) initialFormatting {
-	[self.layer addSublayer: self.slideshowProgressCircle];
 	[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
 }
 
@@ -282,22 +288,55 @@
 
 -(void)addPauseTapGesture{
     UILongPressGestureRecognizer * pauseGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureFelt:)];
+    pauseGesture.minimumPressDuration = 0.f;
+    pauseGesture.delegate = self;
     [self.panGestureSensingViewVertical addGestureRecognizer:pauseGesture];
+    
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
 }
 
 -(void)longPressGestureFelt:(UILongPressGestureRecognizer *) gesture{
     switch (gesture.state) {
         case UIGestureRecognizerStateBegan:
-            [self stopSlideshow];
+            self.slideShowPaused = YES;
+            [self pauseSlideShow];
+            [self pauseSlideShowCircleAnimation];
             break;
         case UIGestureRecognizerStateEnded:
-            [self playWithSpeed:SLIDESHOW_SPEED_SECONDS];
+            [self continePlaySlideShow];
+            [self continueSlideShowAnimation];
+            //this has to be after playWithSpeed function
+            self.slideShowPaused = NO;
             break;
         default:
             break;
     }
 }
 
+
+-(void)pauseSlideShow{
+    self.slideShowPlaying = NO;
+    //pause timer
+    [self killCurrentTimer];
+    self.timerElapsed = [[NSDate date] timeIntervalSinceDate:self.timerStarted];
+}
+
+-(void)continePlaySlideShow{
+    [self killCurrentTimer];
+    self.slideShowPlaying = YES;
+    CGFloat timerSecondsLeft = ((CGFloat)SLIDESHOW_SPEED_SECONDS - ((CGFloat)self.timerElapsed));
+    if(timerSecondsLeft >= 0)self.photoSlideShowTimer = [NSTimer scheduledTimerWithTimeInterval: timerSecondsLeft target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
+    else [self startBaseSlideshowTimer];
+}
+
+-(void)startBaseSlideshowTimer{
+    [self killCurrentTimer];
+    self.photoSlideShowTimer = [NSTimer scheduledTimerWithTimeInterval:SLIDESHOW_SPEED_SECONDS target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
+    self.timerStarted = [NSDate date];
+}
 
 -(void)playWithSpeed:(CGFloat) speed {
 	if(!self.animating){
@@ -332,13 +371,21 @@
             }
 
 		}
-		[NSTimer scheduledTimerWithTimeInterval:SLIDESHOW_ANIMATION_DURATION target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
+        
+        [self startBaseSlideshowTimer];
+		
+        if([self okToAnimatePath] && !self.slideShowPaused)[self animateCirclePathNext];
 	}
     
     
 	self.slideShowPlaying = YES;
 }
 
+
+
+
+
+// Create circle view showing video progress
 -(void)stopSlideshow {
 	self.slideShowPlaying = NO;
 	if(self.inPreviewMode){
@@ -346,11 +393,30 @@
 		self.panGestureSensingViewHorizontal = nil;
 		[self.panGestureSensingViewVertical removeFromSuperview];
 		self.panGestureSensingViewVertical = nil;
-	}
+    }
+}
+
+-(void)pauseSlideShowCircleAnimation{
+    if(self.circlePathAnimation){
+        CFTimeInterval pausedTime = [self.slideshowProgressCircle convertTime:CACurrentMediaTime() fromLayer:nil];
+        self.slideshowProgressCircle.speed = 0.0;
+        self.slideshowProgressCircle.timeOffset = pausedTime;
+    }
+}
+-(void)continueSlideShowAnimation{
+    
+    CFTimeInterval pausedTime = [self.slideshowProgressCircle timeOffset];
+    self.slideshowProgressCircle.speed = 1.0;
+    self.slideshowProgressCircle.timeOffset = 0.0;
+    self.slideshowProgressCircle.beginTime = 0.0;
+    CFTimeInterval timeSincePause = [self.slideshowProgressCircle convertTime:CACurrentMediaTime() fromLayer:nil] - pausedTime;
+    self.slideshowProgressCircle.beginTime = timeSincePause;
+    
 }
 
 -(void)animateNextView{
 	__weak PhotoPVE * weakSelf = self;
+    NSInteger nextIndex = weakSelf.currentPhotoIndex + 1;
 	if(weakSelf.slideShowPlaying && !weakSelf.animating){
 		//todo: This is a hack. Find where animations get disabled
 		if(![UIView areAnimationsEnabled]){
@@ -358,17 +424,34 @@
 			[UIView setAnimationsEnabled:YES];
 		}
 		[UIView animateWithDuration:IMAGE_FADE_OUT_ANIMATION_DURATION animations:^{
-			weakSelf.animating = YES;
-			[weakSelf setImageViewsToLocation:(weakSelf.currentPhotoIndex + 1)];
+            weakSelf.animating = YES;
+            
+			[weakSelf setImageViewsToLocation:nextIndex];
 		} completion:^(BOOL finished) {
 			weakSelf.animating = NO;
-			[NSTimer scheduledTimerWithTimeInterval:SLIDESHOW_ANIMATION_DURATION target:weakSelf selector:@selector(animateNextView) userInfo:nil repeats:NO];
+            
+            if(nextIndex >= weakSelf.imageContainerViews.count && [self okToAnimatePath]){
+                [self clearCircleVideoProgressView];
+                [self animateCirclePathNext];
+            }
+            
+            [self startBaseSlideshowTimer];
 		}];
 
 	}
 }
 
 
+-(void)killCurrentTimer{
+    if(self.photoSlideShowTimer){
+        [self.photoSlideShowTimer invalidate];
+        self.photoSlideShowTimer = nil;
+    }
+}
+
+-(BOOL)okToAnimatePath{
+    return (!self.inPreviewMode);
+}
 #pragma mark OpenCollectionView delegate method
 
 -(void) collectionClosedWithFinalArray:(NSMutableArray *) pinchViews {
@@ -501,11 +584,52 @@
 		_slideshowProgressCircle = [[CAShapeLayer alloc]init];
 		_slideshowProgressCircle.frame = self.bounds;
 		_slideshowProgressCircle.fillColor = [UIColor clearColor].CGColor;
-		_slideshowProgressCircle.strokeColor = [UIColor colorWithRed:0.f green:0.f blue:1.f alpha:1.f].CGColor;
-		_slideshowProgressCircle.lineWidth = 20.f;
+		_slideshowProgressCircle.strokeColor = [UIColor whiteColor].CGColor;
+		_slideshowProgressCircle.lineWidth = SLIDESHOW_PROGRESS_CIRCLE_THICKNESS;
+        [self.panGestureSensingViewVertical.layer addSublayer: self.slideshowProgressCircle];
 	}
 	return _slideshowProgressCircle;
 }
+
+
+
+-(void)animateCirclePathNext{
+    self.circlePathAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+    self.circlePathAnimation.duration = CIRCLE_ANIMATION_DURATION;
+    self.circlePathAnimation.fromValue = [NSNumber numberWithFloat:0.0f];
+    self.circlePathAnimation.toValue = [NSNumber numberWithFloat:1.0f];
+    self.circlePathAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+    [self.slideshowProgressCircle addAnimation:self.circlePathAnimation forKey:@"strokeEnd"];
+    [self animateSlideshowProgressPath];
+    if(self.slideShowPaused)[self pauseSlideShowCircleAnimation];
+}
+
+// Animate circle view showing video progress
+-(void) animateSlideshowProgressPath {
+    
+    CGMutablePathRef path = CGPathCreateMutable();
+    
+    CGFloat yPos =   5.f + ((self.photoVideoSubview) ? 2.f : CREATOR_CHANNEL_BAR_HEIGHT + STATUS_BAR_HEIGHT);
+    
+    
+    CGRect frame =CGRectMake(10.f,yPos , SLIDESHOW_PROGRESS_CIRCLE_SIZE, SLIDESHOW_PROGRESS_CIRCLE_SIZE);
+
+    float midX = CGRectGetMidX(frame);
+    float midY = CGRectGetMidY(frame);
+    CGAffineTransform t = CGAffineTransformConcat(
+                                                  CGAffineTransformConcat(
+                                                                          CGAffineTransformMakeTranslation(-midX, -midY),
+                                                                          CGAffineTransformMakeRotation(-(M_PI/2.f))),
+                                                  CGAffineTransformMakeTranslation(midX, midY));
+    CGPathAddEllipseInRect(path, &t, frame);
+    self.slideshowProgressCircle.path = path;
+}
+
+-(void) clearCircleVideoProgressView {
+    [_slideshowProgressCircle removeFromSuperlayer];
+    _slideshowProgressCircle = nil;
+}
+
 
 -(void) dealloc {
 }
