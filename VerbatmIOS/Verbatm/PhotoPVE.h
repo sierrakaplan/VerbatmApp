@@ -26,10 +26,13 @@
 // Will start loading icon until displayPhotos is called if halfScreen is false
 -(instancetype) initWithFrame:(CGRect)frame small:(BOOL) small isPhotoVideoSubview:(BOOL)halfScreen;
 
+//FOR REGULAR VIEWS IN FEED AND PROFILE
 //Photos is array of UIImage
 -(void) displayPhotos:(NSArray*) photos;
 
-// initializer for preview mode
+
+
+// initializer for PREVIEW MODE
 // PinchView can be either ImagePinchView or CollectionPinchView
 -(instancetype) initWithFrame:(CGRect)frame andPinchView:(PinchView *)pinchView
 				inPreviewMode: (BOOL)inPreviewMode isPhotoVideoSubview:(BOOL)halfScreen;

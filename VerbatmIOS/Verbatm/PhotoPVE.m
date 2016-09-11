@@ -58,6 +58,8 @@
 
 #pragma mark - Slideshow -
 
+
+
 @property (nonatomic) BOOL animating;
 @property (nonatomic) BOOL slideShowPlaying;
 @property (nonatomic) CAShapeLayer *slideshowProgressCircle;
@@ -66,6 +68,7 @@
 #define SLIDESHOW_ANIMATION_DURATION 0.9f
 #define OPEN_COLLECTION_FRAME_HEIGHT 70.f
 #define IMAGE_FADE_OUT_ANIMATION_DURATION 1.2f
+#define SLIDESHOW_SPEED_SECONDS 2.f
 
 @end
 
@@ -88,7 +91,7 @@
 	[self.customActivityIndicator removeFromSuperview];
 	if ([photos count]) {
 		[self addPhotos:photos];
-	}
+    }
 	if (self.currentlyOnScreen) {
 		[self onScreen];
 	}
@@ -259,7 +262,7 @@
 		}
 		[self.pauseToRearrangeButton setImage:[UIImage imageNamed:PAUSE_SLIDESHOW_ICON] forState:UIControlStateNormal];
 		[self.rearrangeView exitView];
-		[self playWithSpeed:2.f];
+		[self playWithSpeed:SLIDESHOW_SPEED_SECONDS];
 	}
 }
 
@@ -276,11 +279,38 @@
 	[self setImageViewsToLocation:imageIndex];
 }
 
+
+-(void)addPauseTapGesture{
+    UILongPressGestureRecognizer * pauseGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureFelt:)];
+    [self.panGestureSensingViewVertical addGestureRecognizer:pauseGesture];
+}
+
+-(void)longPressGestureFelt:(UILongPressGestureRecognizer *) gesture{
+    switch (gesture.state) {
+        case UIGestureRecognizerStateBegan:
+            [self stopSlideshow];
+            break;
+        case UIGestureRecognizerStateEnded:
+            [self playWithSpeed:SLIDESHOW_SPEED_SECONDS];
+            break;
+        default:
+            break;
+    }
+}
+
+
 -(void)playWithSpeed:(CGFloat) speed {
 	if(!self.animating){
-		CGRect v_frame = CGRectMake(0.f, 0.f, self.frame.size.width, self.pauseToRearrangeButton.frame.origin.y);
-		CGRect h_frame = CGRectMake(0.f, self.pauseToRearrangeButton.frame.origin.y,self.pauseToRearrangeButton.frame.origin.x - 10.f,
+        CGRect v_frame;
+        CGRect h_frame;
+        if(self.inPreviewMode){
+             v_frame= CGRectMake(0.f, 0.f, self.frame.size.width, self.pauseToRearrangeButton.frame.origin.y);
+             h_frame= CGRectMake(0.f, self.pauseToRearrangeButton.frame.origin.y,self.pauseToRearrangeButton.frame.origin.x - 10.f,
 									self.frame.size.height - self.pauseToRearrangeButton.frame.origin.y);
+        }else{
+            v_frame= self.bounds;
+            h_frame= CGRectMake(0.f,0.f,0.f,0.f);
+        }
 
 		//create view to sense swiping
 		if(self.panGestureSensingViewHorizontal == nil){
@@ -296,9 +326,16 @@
 
 			[self bringSubviewToFront:self.panGestureSensingViewVertical];
 			[self bringSubviewToFront:self.panGestureSensingViewHorizontal];
+            //create press and hold to pause gesture
+            if(!self.inPreviewMode){
+                [self addPauseTapGesture];
+            }
+
 		}
 		[NSTimer scheduledTimerWithTimeInterval:SLIDESHOW_ANIMATION_DURATION target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
 	}
+    
+    
 	self.slideShowPlaying = YES;
 }
 
@@ -386,7 +423,7 @@
 	}
 	if(self.imageContainerViews.count > 1){
 		if(!self.slideShowPlaying){
-			[self playWithSpeed:2.f];
+			[self playWithSpeed:SLIDESHOW_SPEED_SECONDS];
 		}
 	}else{
 		if([self.pinchView isKindOfClass:[SingleMediaAndTextPinchView class]]){
