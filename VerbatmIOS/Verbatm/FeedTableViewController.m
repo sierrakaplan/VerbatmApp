@@ -213,25 +213,35 @@
 - (void)tableView:(UITableView *)tableView
 didEndDisplayingCell:(UITableViewCell *)cell
 forRowAtIndexPath:(NSIndexPath *)indexPath{
-	FeedTableCell *feedCell = (FeedTableCell *) cell;
+    FeedTableCell *feedCell = (FeedTableCell *) cell;
     [feedCell updateDateOfLastPostSeen];
 	[feedCell clearProfile];
+    
 }
 
+//- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+//    FeedTableCell *feedCell = (FeedTableCell *) cell;
+//    [feedCell updateDateOfLastPostSeen];
+//}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	FeedTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FeedTableCell" forIndexPath:indexPath];
+	
+    FeedTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FeedTableCell" forIndexPath:indexPath];
 	cell.delegate = self;
 	cell.navigationController = (VerbatmNavigationController*)self.navigationController;
 	cell.tabBarController = (MasterNavigationVC*)self.tabBarController;
+    
 	if(self.nextProfileToPresent && indexPath.row == self.nextProfileIndex){
 		[cell setProfileAlreadyLoaded:self.nextProfileToPresent];
 	} else {
 		[cell presentProfileForChannel:self.followingProfileList[indexPath.row]];
 	}
+    
 	self.nextProfileIndex = indexPath.row + 1;
 	[self prepareNextPostFromNextIndex:self.nextProfileIndex];
 	[self removeEmptyFeedNotification];
 	return cell;
+    
 }
 
 

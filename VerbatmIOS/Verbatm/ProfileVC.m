@@ -116,10 +116,13 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 		[self.verbatmNavigationController setNavigationBarBackgroundClear];
 		[self.verbatmNavigationController setNavigationBarTextColor:[UIColor whiteColor]];
 	}
+    
+    
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
+   
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -472,6 +475,7 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 -(void)postsFound{
 	if(!self.isCurrentUserProfile) {
 		[self.noPostsView removeFromSuperview];
+        [self updateDateOfLastPostSeen];
 	}
 }
 

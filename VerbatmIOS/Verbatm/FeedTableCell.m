@@ -25,7 +25,7 @@
 
 -(void)setProfileAlreadyLoaded:(ProfileVC *) newProfile{
 
-	ProfileVC * __block oldProfile = self.currentProfile;
+	ProfileVC * oldProfile = self.currentProfile;
 	self.currentProfile = newProfile;
 	self.currentProfile.delegate = self;
 	self.currentProfile.verbatmNavigationController = self.navigationController;
@@ -35,13 +35,12 @@
 
 	if(oldProfile && oldProfile != newProfile){
 		[oldProfile clearOurViews];
-		oldProfile = nil;
 	}
 }
 
 -(void)presentProfileForChannel:(Channel *) channel{
 
-	ProfileVC * __block oldProfile = self.currentProfile;
+	ProfileVC * oldProfile = self.currentProfile;
 
 	dispatch_async(dispatch_get_global_queue(0, 0), ^{
 		self.currentProfile = [[ProfileVC alloc] init];
@@ -56,7 +55,6 @@
 			[self addSubview:self.currentProfile.view];
 			if(oldProfile){
 				[oldProfile clearOurViews];
-				oldProfile = nil;
 			}
 		});
 	});

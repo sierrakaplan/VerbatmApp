@@ -83,6 +83,7 @@
 // Finds all posts newer than latest date (if there are any) or if latest date is nil
 // just finds newest posts
 -(void) loadNewerPostsInChannel:(Channel *)channel withCompletionBlock:(void(^)(NSArray *))block {
+    if(!channel)return;
 	PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
 	[postQuery orderByDescending:@"createdAt"];
