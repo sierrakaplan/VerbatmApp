@@ -116,7 +116,7 @@ UICollectionViewDataSource>
 	self.searchController = [[UISearchController alloc] initWithSearchResultsController: self.searchResultsController];
 	self.searchController.searchResultsUpdater = self.searchResultsController;
 	self.searchController.hidesNavigationBarDuringPresentation = NO;
-	self.searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+	self.searchController.searchBar.searchBarStyle = UISearchBarStyleProminent;
 	self.navigationItem.titleView = self.searchController.searchBar;
 	self.definesPresentationContext = YES;
 	[self formatSearchBar: self.searchController.searchBar];
@@ -281,11 +281,7 @@ UICollectionViewDataSource>
 - (CGFloat)collectionView:(UICollectionView *)collectionView
 							layout:(UICollectionViewLayout *)collectionViewLayout
 minimumLineSpacingForSectionAtIndex:(NSInteger)section {
-	if (section == 0) {
-		return CELL_SPACING_LARGE;
-	} else {
-		return CELL_SPACING_LARGE;
-	}
+	return CELL_SPACING_LARGE;
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView

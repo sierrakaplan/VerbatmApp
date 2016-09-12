@@ -140,8 +140,9 @@
 }
 
 -(void) followAll {
-	[self.discoverList followAllBlogs];
-	[self setFollowButtonFollowingAll];
+	//todo:
+//	[self.discoverList followAllBlogs];
+//	[self setFollowButtonFollowingAll];
 }
 
 -(void)exitDiscover {

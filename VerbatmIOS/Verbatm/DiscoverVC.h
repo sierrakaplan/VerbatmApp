@@ -16,6 +16,6 @@
 
 @interface DiscoverVC : UIViewController
 
--(void) followAllBlogs;
+//-(void) followAllBlogs;
 
 @end
