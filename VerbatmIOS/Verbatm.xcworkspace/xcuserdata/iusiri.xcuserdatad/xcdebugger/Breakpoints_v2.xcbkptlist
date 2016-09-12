@@ -8747,12 +8747,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/CreateNameVC.m"
-            timestampString = "495152914.249298"
+            timestampString = "495399716.437975"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "60"
-            endingLineNumber = "60"
-            landmarkName = "-nextButtonPressed"
+            startingLineNumber = "67"
+            endingLineNumber = "67"
+            landmarkName = "-prefersStatusBarHidden"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8779,11 +8779,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/CreateNameVC.m"
-            timestampString = "495160801.755113"
+            timestampString = "495399223.762553"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "70"
-            endingLineNumber = "70"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
             landmarkName = "-nextButtonPressed"
             landmarkType = "5">
          </BreakpointContent>
@@ -9071,6 +9071,70 @@
             startingLineNumber = "36"
             endingLineNumber = "36"
             landmarkName = "+updateUserNameOfCurrentUserTo:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/CreateNameVC.m"
+            timestampString = "495399737.583084"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "91"
+            endingLineNumber = "91"
+            landmarkName = "-nextButtonPressed"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/CreateNameVC.m"
+            timestampString = "495399740.518757"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "85"
+            endingLineNumber = "85"
+            landmarkName = "-nextButtonPressed"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/CreateNameVC.m"
+            timestampString = "495399743.773067"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "72"
+            endingLineNumber = "72"
+            landmarkName = "-nextButtonPressed"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/CreateNameVC.m"
+            timestampString = "495399753.72049"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "82"
+            endingLineNumber = "82"
+            landmarkName = "-nextButtonPressed"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

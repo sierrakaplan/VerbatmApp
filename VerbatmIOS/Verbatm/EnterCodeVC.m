@@ -82,7 +82,7 @@
 
 -(void) sendCodeToUser:(NSString*) simplePhoneNumber {
 
-   // return;//todo: this line lines allow testing create new accounts (use phone numbers no one has)
+    return;//todo: this line lines allow testing create new accounts (use phone numbers no one has)
     [self disableResendCodeButtonWithText:@"Sending code..."];
 	//todo: include more languages
 	NSDictionary *params = @{@"phoneNumber" : simplePhoneNumber, @"language" : @"en"};
@@ -132,18 +132,23 @@
     
 }
 
+//hacky code -- just for testing
+//be sure to call return after calling
+-(void)shortCircuitLoginVerification{
+    PFUser *newUser = [PFUser user];
+    newUser.username = self.simplePhoneNumber;
+    newUser.password = [self getCode];
+    [newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        [self goOnToCreateName];
+    }];
+}
+
 -(void) verifyCode {
 	NSString *code = [self getCode];
 
 //	//todo: these lines lines allow testing create new accounts (use phone numbers no one has)
-//	PFUser *newUser = [PFUser user];
-//	newUser.username = self.simplePhoneNumber;
-//	newUser.password = code;
-//	[newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-//        [self goOnToCreateName];
-//    }];
-//
-//	return;
+    [self shortCircuitLoginVerification];
+	return;
 
 	if (self.verifyingCode) return;
 	self.verifyingCode = YES;

@@ -235,7 +235,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4ee-sW-UG5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-699" y="-1402"/>
+            <point key="canvasLocation" x="-2331" y="-890"/>
         </scene>
         <!--Terms And ConditionsVC-->
         <scene sceneID="Igc-tv-5Nf">
@@ -429,7 +429,7 @@
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="bd2-Q3-x8H">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                         <sections>
                             <tableViewSection headerTitle="Username:" id="ECc-pQ-89D">
                                 <cells>
@@ -464,7 +464,7 @@
                                                     <rect key="frame" x="8" y="11" width="196" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -481,7 +481,7 @@
                                                     <rect key="frame" x="8" y="3" width="203" height="35.5"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -572,7 +572,7 @@
     <inferredMetricsTieBreakers>
         <segue reference="Ju6-jE-1sM"/>
         <segue reference="36i-3g-zoT"/>
-        <segue reference="3Kk-mQ-iiI"/>
+        <segue reference="Q88-7E-gAn"/>
         <segue reference="GGt-59-v8o"/>
     </inferredMetricsTieBreakers>
 </document>
