@@ -8,17 +8,22 @@
 
 #import <Crashlytics/Crashlytics.h>
 #import "CustomNavigationBar.h"
+
+#import <MessageUI/MessageUI.h>
+
+#import "Notifications.h"
+
 #import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
-#import "User_BackendObject.h"
-#import <MessageUI/MessageUI.h>
-#import "TermsAndConditionsVC.h"
 
 #import "SizesAndPositions.h"
 #import "SegueIDs.h"
 #import "SettingsVC.h"
 #import "Styles.h"
+#import "TermsAndConditionsVC.h"
 
+
+#import "User_BackendObject.h"
 #import "UserInfoCache.h"
 #import "UserManager.h"
 
@@ -94,23 +99,9 @@ UITableViewDataSource, UITextFieldDelegate>
 		return;
 	}
 	//todo: this should be atomic
-	NSString *newUserName = textField.text;
-	[PFUser currentUser][VERBATM_USER_NAME_KEY] = newUserName;
-	[[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-		if (error) {
-			[[Crashlytics sharedInstance] recordError:error];
-		} else {
-			//todo: send notification that user name changed and update everywhere
-			NSLog(@"User name saved successfully.");
-		}
-	}];
-	PFObject *channel =[[UserInfoCache sharedInstance] getUserChannel].parseChannelObject;
-	channel[CHANNEL_CREATOR_NAME_KEY] = textField.text;
-	[channel saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-		if (error) {
-			[[Crashlytics sharedInstance] recordError:error];
-		}
-	}];
+	NSString *newUserName = textField.text;    
+    [User_BackendObject updateUserNameOfCurrentUserTo:newUserName];
+
 }
 
 -(BOOL) textFieldShouldReturn:(UITextField *)textField {

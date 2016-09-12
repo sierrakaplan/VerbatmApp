@@ -11,6 +11,7 @@
 #import "ProfileHeaderView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
+#import "Notifications.h"
 #import "UIView+Effects.h"
 
 @interface ProfileHeaderView()
@@ -65,11 +66,29 @@
 			[self addSubview: self.addCoverPhotoButton];
 			[self addSubview: self.settingsButton];
 		}
-
+        [self registerForNameChangeNotification];
 		UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(headerTapped)];
 		[self.coverPhotoImageView addGestureRecognizer: tapGesture];
 	}
 	return self;
+}
+
+
+-(void)registerForNameChangeNotification{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(nameChanged:)
+                                                 name:NOTIFICATION_USERNAME_CHANGED_SUCCESFULLY
+                                               object:nil];
+}
+
+
+-(void)nameChanged:(NSNotification *) notification {
+    
+    [self.userNameLabel removeFromSuperview];
+    self.userNameLabel = nil;
+    
+    self.userName = [notification object];
+    [self addSubview: self.userNameLabel];
 }
 
 -(void) setNewCoverPhoto: (UIImage*)coverPhoto {
