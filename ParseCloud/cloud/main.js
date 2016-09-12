@@ -198,12 +198,71 @@ Parse.Cloud.beforeSave("FollowClass", function(request, response) {
 // DEFAULT PUBLIC READ FOR USER
 
 Parse.Cloud.beforeSave(Parse.User, function(request, response) {
-  var newACL = new Parse.ACL();
-  newACL.setPublicReadAccess(true);
-  request.object.setACL(newACL);
+  	var newACL = new Parse.ACL();
+  	newACL.setPublicReadAccess(true);
+ 	request.object.setACL(newACL);
+
+  	var user = request.object;
+	
 
   //todo: send notifications to this user's fb friends that they've joined
-  response.success();
+  
+});
+
+// GET DISCOVER CHANNELS
+
+Parse.Cloud.define("getFacebookFriendsChannels", function(req, res) {
+
+});
+
+// Returns a promise that resolves to an array of fb friends of user 
+// as User objects, if they are logged in with Facebook. Otherwise 
+// rejects with an error or null.
+function getFacebookFriends(user) {
+	var promise = new Parse.Promise();
+	if (Parse.FacebookUtils.isLinked(user)) {
+	    Parse.Cloud.httpRequest({
+	        url:'https://graph.facebook.com/me/friends?fields=id,name&access_token='+user.get('authData').facebook.access_token,
+	        success:function(httpResponse) {
+	        	var friendObjects = httpResponse.data;
+	        	var friendIds = [];
+	        	for (friendObject in friendObjects) {
+	        		friendIds.push(friendObject["id"]);
+	        	}
+	        	var friendQuery = new Parse.Query(Parse.User);
+	        	friendQuery.containedIn("FbID", friendIds);
+	        	friendQuery.find({
+				  success: function(results) {
+				  	promise.resolve(results);
+				  },
+
+				  error: function(error) {
+				    console.error(httpResponse);
+				    promise.reject(error);
+				  }
+				});
+	        },
+	        error:function(httpResponse) {
+	        	console.error(httpResponse);
+	        	promise.reject(httpResponse);
+	        }
+	    });
+	} else {
+		promise.reject(null);
+	}
+	return promise;
+}
+
+Parse.Cloud.define("getPhoneContactsChannels", function(req, res) {
+
+});
+
+Parse.Cloud.define("getFriendsChannels", function(req, res) {
+
+});
+
+Parse.Cloud.define("getDiscoverChannels", function(req, res) {
+
 });
 
 // CHANNELS FOR LIKES/SHARES
@@ -256,24 +315,6 @@ Parse.Cloud.define("getChannelFollowers", function(req, res) {
 		});
 });
 
-// GET DISCOVER CHANNELS
-
-Parse.Cloud.define("getFacebookFriendsChannels", function(req, res) {
-
-});
-
-Parse.Cloud.define("getPhoneContactsChannels", function(req, res) {
-
-});
-
-Parse.Cloud.define("getFriendsChannels", function(req, res) {
-
-});
-
-Parse.Cloud.define("getDiscoverChannels", function(req, res) {
-
-});
-
 // PHONE LOGIN
 
 Parse.Cloud.define("sendCode", function(req, res) {
@@ -281,7 +322,7 @@ Parse.Cloud.define("sendCode", function(req, res) {
 	phoneNumber = phoneNumber.replace(/\D/g, '');
 
 	var lang = req.params.language;
-  if(lang !== undefined && languages.indexOf(lang) != -1) {
+  	if(lang !== undefined && languages.indexOf(lang) != -1) {
 		language = lang;
 	}
 
@@ -348,7 +389,7 @@ function sendCodeSms(phoneNumber, code, language) {
 		phoneNumber = phoneNumber.substring(1);
 	} else if (typeof language !== undefined && language == "pt-BR") {
 		prefix = "+55";
-  }
+  	}
 
 	var promise = new Parse.Promise();
 	twilio.sendSms({
