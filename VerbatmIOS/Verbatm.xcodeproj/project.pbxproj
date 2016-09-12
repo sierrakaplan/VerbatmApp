@@ -70,6 +70,9 @@
 		A5934BAD1C10F2C8007C7830 /* Quicksand-LightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = A5934BA61C10F2C8007C7830 /* Quicksand-LightItalic.otf */; };
 		A5934BAE1C10F2C8007C7830 /* Quicksand-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = A5934BA71C10F2C8007C7830 /* Quicksand-Regular.otf */; };
 		A5934BFD1C10F349007C7830 /* Roboto-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A5934BEB1C10F349007C7830 /* Roboto-Italic.ttf */; };
+		A59D64C31D8351B00028650C /* FollowFriendsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A59D64C21D8351B00028650C /* FollowFriendsCell.m */; };
+		A59D64C61D83750E0028650C /* FollowFriendsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A59D64C51D83750E0028650C /* FollowFriendsVC.m */; };
+		A59D64CA1D838C9B0028650C /* InviteFriendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A59D64C91D838C9B0028650C /* InviteFriendCell.m */; };
 		A5B0A81B1C0E63D60062D7BF /* PageViewingExperience.m in Sources */ = {isa = PBXBuildFile; fileRef = A5B0A81A1C0E63D60062D7BF /* PageViewingExperience.m */; };
 		A5BB653F1D6E9E6800F5B01B /* FeedProfileListTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5BB653E1D6E9E6800F5B01B /* FeedProfileListTVC.m */; };
 		A5BB65421D6E9E8B00F5B01B /* FeedListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5BB65411D6E9E8B00F5B01B /* FeedListTableViewCell.m */; };
@@ -407,6 +410,12 @@
 		A5934BA61C10F2C8007C7830 /* Quicksand-LightItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Quicksand-LightItalic.otf"; sourceTree = "<group>"; };
 		A5934BA71C10F2C8007C7830 /* Quicksand-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Quicksand-Regular.otf"; sourceTree = "<group>"; };
 		A5934BEB1C10F349007C7830 /* Roboto-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Italic.ttf"; sourceTree = "<group>"; };
+		A59D64C11D8351B00028650C /* FollowFriendsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowFriendsCell.h; sourceTree = "<group>"; };
+		A59D64C21D8351B00028650C /* FollowFriendsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FollowFriendsCell.m; sourceTree = "<group>"; };
+		A59D64C41D83750E0028650C /* FollowFriendsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowFriendsVC.h; sourceTree = "<group>"; };
+		A59D64C51D83750E0028650C /* FollowFriendsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FollowFriendsVC.m; sourceTree = "<group>"; };
+		A59D64C81D838C9B0028650C /* InviteFriendCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteFriendCell.h; sourceTree = "<group>"; };
+		A59D64C91D838C9B0028650C /* InviteFriendCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteFriendCell.m; sourceTree = "<group>"; };
 		A5B0A8191C0E63D60062D7BF /* PageViewingExperience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PageViewingExperience.h; sourceTree = "<group>"; };
 		A5B0A81A1C0E63D60062D7BF /* PageViewingExperience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PageViewingExperience.m; sourceTree = "<group>"; };
 		A5BB653D1D6E9E6800F5B01B /* FeedProfileListTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedProfileListTVC.h; sourceTree = "<group>"; };
@@ -791,8 +800,8 @@
 				A5C38AC01CC1B67B0067D077 /* DiscoverVC.m */,
 				A51A0AEB1D6CF7A1009D7CDD /* Table Cell Views */,
 				A51A0AD81D6CF0AC009D7CDD /* Search */,
-				A55D473A1D7F8E7F007F77C8 /* InviteFriendsVC.h */,
-				A55D473B1D7F8E7F007F77C8 /* InviteFriendsVC.m */,
+				A59D64CB1D8396560028650C /* FollowFriends */,
+				A59D64C71D838C730028650C /* Invite Friends */,
 			);
 			name = Discover;
 			sourceTree = "<group>";
@@ -1036,10 +1045,12 @@
 		A51A0AEB1D6CF7A1009D7CDD /* Table Cell Views */ = {
 			isa = PBXGroup;
 			children = (
-				A5C38AC51CC1D1970067D077 /* FeaturedContentCellView.h */,
-				A5C38AC61CC1D1970067D077 /* FeaturedContentCellView.m */,
 				A5C38AC81CC1D1B80067D077 /* ExploreChannelCellView.h */,
 				A5C38AC91CC1D1B80067D077 /* ExploreChannelCellView.m */,
+				A59D64C11D8351B00028650C /* FollowFriendsCell.h */,
+				A59D64C21D8351B00028650C /* FollowFriendsCell.m */,
+				A5C38AC51CC1D1970067D077 /* FeaturedContentCellView.h */,
+				A5C38AC61CC1D1970067D077 /* FeaturedContentCellView.m */,
 				A5C38ACB1CC1D4120067D077 /* FeaturedContentChannelView.h */,
 				A5C38ACC1CC1D4120067D077 /* FeaturedContentChannelView.m */,
 			);
@@ -1241,6 +1252,26 @@
 				A5BFA5A91CA8C506002C3884 /* Raleway-ThinItalic.ttf */,
 			);
 			path = Fonts;
+			sourceTree = "<group>";
+		};
+		A59D64C71D838C730028650C /* Invite Friends */ = {
+			isa = PBXGroup;
+			children = (
+				A55D473A1D7F8E7F007F77C8 /* InviteFriendsVC.h */,
+				A55D473B1D7F8E7F007F77C8 /* InviteFriendsVC.m */,
+				A59D64C81D838C9B0028650C /* InviteFriendCell.h */,
+				A59D64C91D838C9B0028650C /* InviteFriendCell.m */,
+			);
+			name = "Invite Friends";
+			sourceTree = "<group>";
+		};
+		A59D64CB1D8396560028650C /* FollowFriends */ = {
+			isa = PBXGroup;
+			children = (
+				A59D64C41D83750E0028650C /* FollowFriendsVC.h */,
+				A59D64C51D83750E0028650C /* FollowFriendsVC.m */,
+			);
+			name = FollowFriends;
 			sourceTree = "<group>";
 		};
 		A5BFA5971CA89A90002C3884 /* Publishing */ = {
@@ -1928,6 +1959,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A57A92FF1B55A551006C2597 /* CameraFocusSquare.m in Sources */,
+				A59D64C61D83750E0028650C /* FollowFriendsVC.m in Sources */,
 				A5076D0E1BED6EF000303746 /* SingleMediaAndTextPinchView.m in Sources */,
 				A5E73BF81D1770B400527ECF /* GTLVerbatmAppPOVInfo.m in Sources */,
 				A535E5031BC44B6900A087D1 /* UITextView+Utilities.m in Sources */,
@@ -1991,6 +2023,7 @@
 				A5BB65501D70ECBF00F5B01B /* VerbatmNavigationController.m in Sources */,
 				A582D28D1D75F6E90004A017 /* CommentingViewController.m in Sources */,
 				A5E73B761D1634D300527ECF /* UserManager.m in Sources */,
+				A59D64C31D8351B00028650C /* FollowFriendsCell.m in Sources */,
 				C7E65F6F1B92EB650042AD99 /* PostView.m in Sources */,
 				C755DB0C1C74619200136F6E /* PublishingProgressManager.m in Sources */,
 				A56B5D201CA49B1E00A61D27 /* Post_Channel_RelationshipManager.m in Sources */,
@@ -2036,6 +2069,7 @@
 				C7C69A071BF820FC006B5260 /* EditMediaContentView.m in Sources */,
 				A51A0AF71D6D135A009D7CDD /* ChooseLoginVC.m in Sources */,
 				C73766791D650B1900933A81 /* Comment.m in Sources */,
+				A59D64CA1D838C9B0028650C /* InviteFriendCell.m in Sources */,
 				A5C38ACD1CC1D4120067D077 /* FeaturedContentChannelView.m in Sources */,
 				C71FA3281D477E16003989F3 /* TextPinchView.m in Sources */,
 				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,

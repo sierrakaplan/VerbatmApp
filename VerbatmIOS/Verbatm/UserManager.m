@@ -101,7 +101,7 @@
 - (void) getUserInfoFromFacebookToken: (FBSDKAccessToken*) accessToken {
 
 	FBSDKGraphRequestConnection *connection = [[FBSDKGraphRequestConnection alloc] init];
-	NSDictionary* userFields =  [NSDictionary dictionaryWithObject: @"id,name,email,picture" forKey:@"fields"];
+	NSDictionary* userFields =  [NSDictionary dictionaryWithObject: @"id,email,name,picture" forKey:@"fields"];
 	FBSDKGraphRequest *requestMe = [[FBSDKGraphRequest alloc]
 									initWithGraphPath:@"me" parameters:userFields];
 	[connection addRequest:requestMe

@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface InviteFriendsVC : UITableViewController
+@interface InviteFriendsVC : UIViewController
 
 @end

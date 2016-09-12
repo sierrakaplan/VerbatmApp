@@ -254,6 +254,20 @@
 	}];
 }
 
+-(void) getChannelsForAllFriendsWithCompletionHandler:(void(^)(NSArray *))completionBlock {
+	[self loadFriendsChannelsWithCompletionHandler:^(NSArray *channelObjects, NSArray *users) {
+		NSArray *friendChannels = [Channel_BackendObject channelsFromParseChannelObjects: channelObjects];
+		completionBlock(friendChannels);
+	}];
+}
+
+-(void) getChannelsForPhoneContactsWithCompletionHandler:(void(^)(NSArray *))completionBlock {
+	[self getPhoneContactsWithCompletionHandler:^(NSArray *channelObjects, NSArray *users) {
+		NSArray *friendChannels = [Channel_BackendObject channelsFromParseChannelObjects: channelObjects];
+		completionBlock(friendChannels);
+	}];
+}
+
 -(void) getPhoneContactsWithCompletionHandler:(void(^)(NSArray *, NSArray *))completionBlock {
 	CNContactStore *contactStore = [[CNContactStore alloc] init];
 	CNEntityType entityType = CNEntityTypeContacts;

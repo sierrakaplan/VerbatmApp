@@ -94,6 +94,7 @@
 	[(MasterNavigationVC*) self.tabBarController showTabBar:NO];
 	[self.navigationController setNavigationBarHidden:NO];
 	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundColor:[UIColor whiteColor]];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarShadowColor:[UIColor lightGrayColor]];
 	[(VerbatmNavigationController*)self.navigationController setNavigationBarTextColor:[UIColor blackColor]];
 }
 
@@ -256,8 +257,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 		[cell removeFromSuperview];
 	}
 
-		Channel *channel = [self.channelsToDisplay objectAtIndex: indexPath.row];
-		[cell presentChannel:channel];
+	Channel *channel = [self.channelsToDisplay objectAtIndex: indexPath.row];
+	[cell presentChannel:channel];
 
 	return cell;
 }

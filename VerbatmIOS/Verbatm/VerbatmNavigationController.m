@@ -6,6 +6,7 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+#import "UIImage+ImageEffectsAndTransforms.h"
 #import "Styles.h"
 #import "VerbatmNavigationController.h"
 
@@ -14,6 +15,7 @@
 -(void) viewDidLoad {
 	[self formatNavigationBar];
 	[self setNavigationBarHidden:YES animated:NO];
+	[self.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
 }
 
 -(void) setNavigationBarHidden:(BOOL)navigationBarHidden {
@@ -26,14 +28,21 @@
 }
 
 -(void) setNavigationBarBackgroundClear {
-	[self.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-	self.navigationBar.shadowImage = [UIImage new];
 	self.navigationBar.translucent = YES;
 }
 
 -(void) setNavigationBarBackgroundColor:(UIColor*)backgroundColor {
 	self.navigationBar.translucent = NO;
 	self.navigationBar.barTintColor = backgroundColor;
+}
+
+-(void) setNavigationBarShadowColor:(UIColor*)shadowColor {
+	if (shadowColor == [UIColor clearColor]) {
+		self.navigationBar.shadowImage = [UIImage new];
+	} else {
+		UIImage *shadowImage = [UIImage makeImageWithColorAndSize:shadowColor andSize:CGSizeMake(1, 1)];
+		self.navigationBar.shadowImage = shadowImage;
+	}
 }
 
 -(void) setNavigationBarTextColor: (UIColor*)textColor {

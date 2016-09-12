@@ -74,8 +74,8 @@
 
 -(void)addListVC {
     self.discoverList = [self.storyboard instantiateViewControllerWithIdentifier:FEATURED_CONTENT_VC_ID];
-    self.discoverList.onboardingBlogSelection = YES;
-	self.discoverList.onboardingDelegate = self;
+//    self.discoverList.onboardingBlogSelection = YES;
+//	self.discoverList.onboardingDelegate = self;
     [self.tableContainerView addSubview: self.discoverList.view];
 	self.discoverList.view.backgroundColor = [UIColor colorWithRed:0.13 green:0.34 blue:0.6 alpha:1.f];
     [self addChildViewController: self.discoverList];
@@ -140,8 +140,9 @@
 }
 
 -(void) followAll {
-	[self.discoverList followAllBlogs];
-	[self setFollowButtonFollowingAll];
+	//todo:
+//	[self.discoverList followAllBlogs];
+//	[self setFollowButtonFollowingAll];
 }
 
 -(void)exitDiscover {

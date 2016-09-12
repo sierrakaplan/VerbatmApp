@@ -68,6 +68,7 @@
 	[super viewWillAppear:animated];
 	[self.navigationController setNavigationBarHidden:NO];
 	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundClear];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarShadowColor:[UIColor clearColor]];
 	[(VerbatmNavigationController*)self.navigationController setNavigationBarTextColor:[UIColor whiteColor]];
 }
 

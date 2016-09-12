@@ -10,18 +10,12 @@
 
 @protocol OnboardingBlogsDelegate <NSObject>
 
-//todo: better way to do this
-//Lets parent know that there are friends to present
--(void) followingFriends;
 
 @end
 
 
-@interface DiscoverVC : UITableViewController
+@interface DiscoverVC : UIViewController
 
-@property (nonatomic) BOOL onboardingBlogSelection;
-@property (nonatomic, weak) id<OnboardingBlogsDelegate> onboardingDelegate;
-
--(void) followAllBlogs;
+//-(void) followAllBlogs;
 
 @end

@@ -29,6 +29,10 @@
 #define NOTIFICATION_XOFFSET 10.f
 #define NOTIFICATION_YOFFSET 30.f
 
+#define RESULT_FONT_SIZE 20.f
+
+#define RESULT_CELL_HEIGHT 50.f
+
 @end
 
 @implementation SearchResultsVC
@@ -69,7 +73,7 @@
 	}
 	if (![self.spinner isAnimating]) {
 		UITextField *searchField = [searchController.searchBar valueForKey:@"_searchField"];
-		self.spinner.center = CGPointMake(searchField.frame.size.width - self.spinner.frame.size.width - 10.f,
+		self.spinner.center = CGPointMake(searchField.frame.size.width - self.spinner.frame.size.width - 20.f,
 										  searchController.searchBar.center.y);
 		[searchController.searchBar addSubview: self.spinner];
 		[self.spinner startAnimating];
@@ -97,16 +101,16 @@
 		} else {
 			self.searchResults = objects;
             [self.tableView reloadData];
-            if(!objects || objects.count == 0){
+            if(!objects || objects.count == 0) {
                 [self presentNoSearchResultsIcon];
-            }else{
+            } else {
                 [self removeNoSearchResultsIcon];
             }
 		}
 	}];
 }
 
--(void)presentNoSearchResultsIcon{
+-(void)presentNoSearchResultsIcon {
     if(!self.noSearchResults){
         CGFloat width = self.view.frame.size.width - (2 * NOTIFICATION_XOFFSET);
         self.noSearchResults = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EMPTY_SEARCH_RESULTS_ICON]];
@@ -121,6 +125,10 @@
         [self.noSearchResults removeFromSuperview];
         self.noSearchResults = nil;
     }
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+	return RESULT_CELL_HEIGHT;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -140,14 +148,15 @@
 	PFObject *result = self.searchResults[indexPath.row];
 	[result[CHANNEL_CREATOR_KEY] fetchIfNeededInBackground];
 	NSString *userName = result[CHANNEL_CREATOR_NAME_KEY];
-	NSString *blogText = result[CHANNEL_NAME_KEY];
-	if(userName) {
-		blogText = [blogText stringByAppendingString:@" by "];
-		blogText = [blogText stringByAppendingString:userName];
-	}
-	[cell.textLabel setText: blogText];
-	cell.textLabel.font = [UIFont fontWithName:REGULAR_FONT size:16.f];
-	cell.textLabel.textColor = [UIColor blackColor];
+//	NSString *blogText = result[CHANNEL_NAME_KEY];
+//	if(userName) {
+//		blogText = [blogText stringByAppendingString:@" by "];
+//		blogText = [blogText stringByAppendingString:userName];
+//	}
+	[cell.textLabel setText: userName];
+	cell.textLabel.font = [UIFont fontWithName:REGULAR_FONT size:RESULT_FONT_SIZE];
+	cell.textLabel.textColor = [UIColor whiteColor];
+	cell.backgroundColor = [UIColor blackColor];
     [self removeNoSearchResultsIcon];
 	return cell;
 }
