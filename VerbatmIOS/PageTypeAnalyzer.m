@@ -26,6 +26,7 @@
 #import "UtilityFunctions.h"
 
 #import "VideoPinchView.h"
+#import "VideoPveEditingView.h"
 #import "VideoPVE.h"
 #import "Video_BackendObject.h"
 #import "VideoDownloadManager.h"
@@ -62,11 +63,11 @@
 	} else if (pinchView.containsImage) {
         PhotoPVE *photoPageView;
         
-            photoPageView = [[PhotoPveEditView alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:YES isPhotoVideoSubview:NO];
+            photoPageView = [[PhotoPveEditView alloc] initWithFrame:frame andPinchView:pinchView isPhotoVideoSubview:NO];
 		return photoPageView;
 
 	} else {
-		VideoPVE *videoPageView = [[VideoPVE alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:YES isPhotoVideoSubview:NO];
+		VideoPveEditingView *videoPageView = [[VideoPveEditingView alloc] initWithFrame:frame andPinchView:pinchView isPhotoVideoSubview:NO];
 		return videoPageView;
 	}
 }

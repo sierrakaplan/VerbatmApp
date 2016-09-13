@@ -29,8 +29,7 @@
 */
 
 
--(instancetype) initWithFrame:(CGRect)frame andPinchView:(PinchView *)pinchView
-                inPreviewMode: (BOOL) inPreviewMode isPhotoVideoSubview:(BOOL)halfScreen {
+-(instancetype) initWithFrame:(CGRect)frame andPinchView:(PinchView *)pinchView isPhotoVideoSubview:(BOOL)halfScreen {
     self = [super initWithFrame:frame];
     if (self) {
         self.hasLoadedMedia = YES;

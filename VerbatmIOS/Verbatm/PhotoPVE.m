@@ -86,10 +86,6 @@
 	for (NSArray* photoText in photosTextArray) {
 		[self.imageContainerViews addObject:[self getImageContainerViewFromPhotoTextArray:photoText]];
 	}
-
-	// Has to add duplicate of first photo to bottom so that you can fade from the last photo into the first
-	//NSArray* firstPhotoText = photosTextArray[0];
-	//[self addSubview: [self getImageContainerViewFromPhotoTextArray: firstPhotoText]];
 	[self layoutContainerViews];
 }
 

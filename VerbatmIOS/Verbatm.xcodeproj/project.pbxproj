@@ -244,6 +244,7 @@
 		C7D5963B1C66E47100161136 /* Follow_BackendManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C7D5963A1C66E47100161136 /* Follow_BackendManager.m */; };
 		C7E2C88F1BB7E97600D83668 /* UtilityFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E2C88E1BB7E97600D83668 /* UtilityFunctions.m */; };
 		C7E566D91D8766A30036F1C6 /* PhotoPveEditView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E566D81D8766A30036F1C6 /* PhotoPveEditView.m */; };
+		C7E566DC1D878D2F0036F1C6 /* VideoPveEditingView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E566DB1D878D2F0036F1C6 /* VideoPveEditingView.m */; };
 		C7E65F691B9245200042AD99 /* ProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F681B9245200042AD99 /* ProfileVC.m */; };
 		C7E65F6F1B92EB650042AD99 /* PostView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F6E1B92EB650042AD99 /* PostView.m */; };
 		C7E6C13F1A4E394600863893 /* PhotoVideoPVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C1301A4E394600863893 /* PhotoVideoPVE.m */; };
@@ -668,6 +669,8 @@
 		C7E2C88E1BB7E97600D83668 /* UtilityFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UtilityFunctions.m; sourceTree = "<group>"; };
 		C7E566D71D8766A30036F1C6 /* PhotoPveEditView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoPveEditView.h; sourceTree = "<group>"; };
 		C7E566D81D8766A30036F1C6 /* PhotoPveEditView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoPveEditView.m; sourceTree = "<group>"; };
+		C7E566DA1D878D2F0036F1C6 /* VideoPveEditingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPveEditingView.h; sourceTree = "<group>"; };
+		C7E566DB1D878D2F0036F1C6 /* VideoPveEditingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPveEditingView.m; sourceTree = "<group>"; };
 		C7E65F671B9245200042AD99 /* ProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileVC.h; sourceTree = "<group>"; };
 		C7E65F681B9245200042AD99 /* ProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileVC.m; sourceTree = "<group>"; };
 		C7E65F6D1B92EB650042AD99 /* PostView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostView.h; sourceTree = "<group>"; };
@@ -1675,6 +1678,8 @@
 				A5B0A81A1C0E63D60062D7BF /* PageViewingExperience.m */,
 				C7E566D71D8766A30036F1C6 /* PhotoPveEditView.h */,
 				C7E566D81D8766A30036F1C6 /* PhotoPveEditView.m */,
+				C7E566DA1D878D2F0036F1C6 /* VideoPveEditingView.h */,
+				C7E566DB1D878D2F0036F1C6 /* VideoPveEditingView.m */,
 			);
 			name = "Page Viewing Experiences";
 			sourceTree = "<group>";
@@ -2047,6 +2052,7 @@
 				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,
 				A51B851A1D2F39B1006E90CC /* UIView+DTDebug.m in Sources */,
 				A51B85201D2F3C43006E90CC /* DTLog.m in Sources */,
+				C7E566DC1D878D2F0036F1C6 /* VideoPveEditingView.m in Sources */,
 				C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */,
 				A5E73B7F1D16365400527ECF /* GTLObject.m in Sources */,
 				A5E73BFB1D1770B400527ECF /* GTLVerbatmAppVerbatmUser.m in Sources */,
