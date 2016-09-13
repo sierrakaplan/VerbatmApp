@@ -524,7 +524,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void)addTapGestureToCell:(PostCollectionViewCell *) cell{
-
+    if(!self.inSmallMode) return;//only have tap for small views -- for large ones we use the tap for photoaves
+    
 	if(cell && !cell.cellHasTapGesture){
 		[cell addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cellTapped:)]];
 		cell.cellHasTapGesture = YES;

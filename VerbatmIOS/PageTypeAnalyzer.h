@@ -23,8 +23,10 @@ typedef enum PageTypes{
 
 @interface PageTypeAnalyzer : NSObject
 
-+(NSMutableArray*) getPageViewsFromPinchViews:(NSArray*) pinchViews withFrame:(CGRect)frame inPreviewMode: (BOOL) inPreviewMode ;
+//for POVs in contentdev
++(NSMutableArray*) getPreviewPagesFromPinchviews:(NSArray*) pinchViews withFrame:(CGRect)frame;
 
+//for povs already published
 +(void) getPageMediaFromPage: (PFObject *)page withCompletionBlock:(void(^)(NSArray *))block;
 
 

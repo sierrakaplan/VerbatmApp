@@ -9,12 +9,16 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <AVKit/AVKit.h>
+
 #import <MediaPlayer/MediaPlayer.h>
-#import <UIKit/UIKit.h>
+
+#import "OpenCollectionView.h"
 
 #import "PageViewingExperience.h"
 #import "PinchView.h"
 #import "TextOverMediaView.h"
+
+#import <UIKit/UIKit.h>
 #import "VideoPlayerView.h"
 
 @interface VideoPVE : PageViewingExperience
@@ -26,10 +30,13 @@
 
 -(void)setThumbnailImage:(UIImage *) image andVideo: (NSURL *)videoURL;
 
-// Initializer for preview mode
--(instancetype) initWithFrame:(CGRect)frame andPinchView: (PinchView*) pinchView
-				inPreviewMode: (BOOL) inPreviewMode isPhotoVideoSubview:(BOOL)halfScreen;
-
+-(void) fuseVideoArray: (NSArray*) videoList;
 -(void) muteVideo: (BOOL) mute;
 
+@property (nonatomic) BOOL hasBeenSetUp;
+
+
+@property (nonatomic) UIImageView * thumbnailView;
+@property (nonatomic) AVAsset *videoAsset;
+@property (nonatomic) BOOL photoVideoSubview;
 @end

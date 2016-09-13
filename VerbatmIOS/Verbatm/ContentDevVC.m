@@ -1181,7 +1181,10 @@ andSaveInUserDefaults:(BOOL)save {
 
 // Handle users moving elements around on the screen using long press
 -(void) longPressSensed:(UILongPressGestureRecognizer *)sender {
-	switch (sender.state) {
+    //long press can be sensed by through the preview view
+    if(self.currentlyPreviewingContent) return;
+    
+    switch (sender.state) {
 		case UIGestureRecognizerStateEnded: {
 			[self finishMovingSelectedItem];
 			[self removeExcessMediaTiles];
@@ -1806,7 +1809,7 @@ andSaveInUserDefaults:(BOOL)save {
 
 -(void)capturePublishingProgressImageWithPinchViews:(NSMutableArray *) pinchViews{
 
-	NSMutableArray* pages = [PageTypeAnalyzer getPageViewsFromPinchViews: @[[pinchViews firstObject]] withFrame: self.view.bounds inPreviewMode:YES];
+	NSMutableArray* pages = [PageTypeAnalyzer getPreviewPagesFromPinchviews: @[[pinchViews firstObject]] withFrame: self.view.bounds];
 
 	//temporarily create POV to screenshot
 	PostView * postView = [[PostView alloc] initWithFrame: self.view.bounds andPostChannelActivityObject:nil small:NO andPageObjects:nil];
