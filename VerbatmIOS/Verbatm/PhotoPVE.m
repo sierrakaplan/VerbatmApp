@@ -405,7 +405,14 @@
     
     CGMutablePathRef path = CGPathCreateMutable();
     
-    CGFloat yPos =   5.f + ((self.photoVideoSubview) ? 2.f : CREATOR_CHANNEL_BAR_HEIGHT + STATUS_BAR_HEIGHT);
+    CGFloat yPos;
+    
+    if(self.small){
+        yPos = 8.f;
+    }else{
+        yPos = 5.f + ((self.photoVideoSubview) ? 2.f : CREATOR_CHANNEL_BAR_HEIGHT + STATUS_BAR_HEIGHT);
+    }
+    
     
     
     CGRect frame =CGRectMake(10.f,yPos , SLIDESHOW_PROGRESS_CIRCLE_SIZE, SLIDESHOW_PROGRESS_CIRCLE_SIZE);
