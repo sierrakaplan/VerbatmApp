@@ -22,7 +22,6 @@
 #import "PostInProgress.h"
 #import "PhotoPVE.h"
 
-#import "OpenCollectionView.h"
 
 #import "SizesAndPositions.h"
 #import "Styles.h"
@@ -32,50 +31,19 @@
 #import "UIImage+ImageEffectsAndTransforms.h"
 
 
-@interface PhotoPVE() <UIGestureRecognizerDelegate, OpenCollectionViewDelegate, EditContentViewDelegate>
+@interface PhotoPVE() <UIGestureRecognizerDelegate>
 
-@property (strong, nonatomic) NSMutableArray* imageContainerViews;
-@property (nonatomic) NSInteger currentPhotoIndex;
-
-//When a view is animating it doesn't sense gestures very well. This makes it tough for users
-// to scroll up and down while their photo slideshow is playing.
-//To manage this we add to clear views above the animating views to catch the gestures.
-//We add two views instead of one because of the buttons on the bottom right -- don't want
-// to cover them.
-@property (nonatomic, weak) UIView * panGestureSensingViewVertical;
-@property (nonatomic, weak) UIView * panGestureSensingViewHorizontal;
-
-#pragma mark - In Preview Mode -
-
-@property (nonatomic, weak) PinchView *pinchView;
-@property (nonatomic, weak) UIButton * pauseToRearrangeButton;
-@property (nonatomic, weak) OpenCollectionView * rearrangeView;
-
-// Tells whether should display smaller sized images
-@property (nonatomic) BOOL small;
-
-@property (nonatomic) BOOL photoVideoSubview;
 
 #pragma mark - Slideshow -
 
 
 @property (nonatomic) CABasicAnimation * circlePathAnimation;
 
-@property (nonatomic) BOOL animating;
-@property (nonatomic) BOOL slideShowPlaying;
-@property (nonatomic) BOOL slideShowPaused;//when not in preview mode
-
 @property (nonatomic) CAShapeLayer *slideshowProgressCircle;
 @property (nonatomic) NSTimer * photoSlideShowTimer;
 @property (nonatomic) NSDate * timerStarted;
 @property (nonatomic) NSTimeInterval timerElapsed;
 
-#define TEXT_VIEW_HEIGHT 70.f
-#define OPEN_COLLECTION_FRAME_HEIGHT 70.f
-
-#define IMAGE_FADE_OUT_ANIMATION_DURATION 1.f
-
-#define CIRCLE_ANIMATION_DURATION ((PHOTO_SLIDESHOW_PROGRESS_PATH_SECTION_SPEED + IMAGE_FADE_OUT_ANIMATION_DURATION) * self.imageContainerViews.count)
 
 @end
 
@@ -104,89 +72,10 @@
 	}
 }
 
--(instancetype) initWithFrame:(CGRect)frame andPinchView:(PinchView *)pinchView
-				inPreviewMode: (BOOL) inPreviewMode isPhotoVideoSubview:(BOOL)halfScreen {
-	self = [super initWithFrame:frame];
-	if (self) {
-		self.hasLoadedMedia = YES;
-		self.small = NO;
-		self.inPreviewMode = inPreviewMode;
-		self.photoVideoSubview = halfScreen;
-		self.pinchView = pinchView;
-		if([self.pinchView isKindOfClass:[CollectionPinchView class]]){
-			[self addContentFromImagePinchViews:((CollectionPinchView *)self.pinchView).imagePinchViews];
-		}else{
-			[self addContentFromImagePinchViews:[NSMutableArray arrayWithObject:pinchView]];
-		}
-		[self initialFormatting];
-	}
-	return self;
-}
-
 -(void) initialFormatting {
 	[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
 }
 
-
-#pragma mark - Preview mode -
-
--(void) addContentFromImagePinchViews:(NSMutableArray *)pinchViewArray{
-	NSMutableArray* photosTextArray = [[NSMutableArray alloc] init];
-
-	for (ImagePinchView *imagePinchView in pinchViewArray) {
-		if (self.inPreviewMode) {
-			EditMediaContentView *editMediaContentView = [self getEditContentViewFromPinchView:imagePinchView];
-			[self.imageContainerViews addObject:editMediaContentView];
-		} else {
-			[photosTextArray addObject: [imagePinchView getPhotosWithText][0]];
-		}
-	}
-	if (!self.inPreviewMode) {
-		[self addPhotos: photosTextArray];
-	} else {
-		[self layoutContainerViews];
-		if(pinchViewArray.count > 1) {
-			[self createRearrangeButton];
-		}
-	}
-}
-
--(EditMediaContentView *) getEditContentViewFromPinchView: (ImagePinchView *)pinchView {
-	EditMediaContentView * editMediaContentView = [[EditMediaContentView alloc] initWithFrame:self.bounds];
-	//this has to be set before we set the text view information
-	editMediaContentView.pinchView = pinchView;
-	editMediaContentView.povViewMasterScrollView = self.postScrollView;
-	editMediaContentView.delegate = self;
-
-	PHImageRequestOptions *options = [PHImageRequestOptions new];
-	options.synchronous = YES;
-	__weak PhotoPVE * weakSelf = self;
-	[pinchView getLargerImageWithHalfSize:weakSelf.photoVideoSubview].then(^(UIImage *image) {
-		[editMediaContentView displayImage:image isHalfScreen:self.photoVideoSubview
-						 withContentOffset:pinchView.imageContentOffset];
-
-		BOOL textColorBlack = [pinchView.textColor isEqual:[UIColor blackColor]];
-		[editMediaContentView setText:pinchView.text
-					 andTextYPosition:[pinchView.textYPosition floatValue]
-					andTextColorBlack:textColorBlack
-					 andTextAlignment:[pinchView.textAlignment integerValue]
-						  andTextSize:[pinchView.textSize floatValue] andFontName:pinchView.fontName];
-		if (self.imageContainerViews.count < 2) {
-			[editMediaContentView showTextToolbar:YES];
-		}
-		if (self.currentlyOnScreen) {
-			[editMediaContentView onScreen];
-		}
-	});
-	return editMediaContentView;
-}
-
--(void)layoutContainerViews{
-	//adding subviews in reverse order so that imageview at index 0 on top
-	for (int i = (int)[self.imageContainerViews count]-1; i >= 0; i--) {
-		[self addSubview:[self.imageContainerViews objectAtIndex:i]];
-	}
-}
 
 #pragma mark - Not preview mode -
 
@@ -202,6 +91,13 @@
 	//NSArray* firstPhotoText = photosTextArray[0];
 	//[self addSubview: [self getImageContainerViewFromPhotoTextArray: firstPhotoText]];
 	[self layoutContainerViews];
+}
+
+-(void)layoutContainerViews{
+    //adding subviews in reverse order so that imageview at index 0 on top
+    for (int i = (int)[self.imageContainerViews count]-1; i >= 0; i--) {
+        [self addSubview:[self.imageContainerViews objectAtIndex:i]];
+    }
 }
 
 -(TextOverMediaView*) getImageContainerViewFromPhotoTextArray: (NSArray*) photoTextArray {
@@ -230,63 +126,8 @@
 	return textAndImageView;
 }
 
-#pragma mark - Rearrange content (preview mode) -
 
--(void)createRearrangeButton {
-	[self.pauseToRearrangeButton setImage:[UIImage imageNamed:PAUSE_SLIDESHOW_ICON] forState:UIControlStateNormal];
-	self.pauseToRearrangeButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-	[self.pauseToRearrangeButton addTarget:self action:@selector(pauseToRearrangeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-	[self bringSubviewToFront:self.pauseToRearrangeButton];
-}
-
--(void) pauseToRearrangeButtonPressed {
-	// Pausing slideshow
-	if(![self.pinchView isKindOfClass:[CollectionPinchView class]])return;
-
-	if(!self.rearrangeView) {
-		for (UIView * view in self.imageContainerViews) {
-			if([view isKindOfClass:[EditMediaContentView class]]){
-				[((EditMediaContentView *)view) showTextToolbar:YES];
-			}
-		}
-
-		[self offScreen];
-		CGFloat y_pos = (self.photoVideoSubview) ? 0.f : CUSTOM_NAV_BAR_HEIGHT;
-		CGRect frame = CGRectMake(0.f,y_pos, self.frame.size.width, OPEN_COLLECTION_FRAME_HEIGHT);
-		OpenCollectionView *rearrangeView = [[OpenCollectionView alloc] initWithFrame:frame
-																	andPinchViewArray:((CollectionPinchView*)self.pinchView).imagePinchViews];
-		[self insertSubview: rearrangeView belowSubview:self.pauseToRearrangeButton];
-		self.rearrangeView = rearrangeView;
-		self.rearrangeView.delegate = self;
-		[self.pauseToRearrangeButton setImage:[UIImage imageNamed:PLAY_SLIDESHOW_ICON] forState:UIControlStateNormal];
-	} else {
-		for (UIView * view in self.imageContainerViews) {
-			if([view isKindOfClass:[EditMediaContentView class]]){
-				[((EditMediaContentView *)view) exiting];
-				[((EditMediaContentView *)view) showTextToolbar: NO];
-			}
-		}
-		[self.pauseToRearrangeButton setImage:[UIImage imageNamed:PAUSE_SLIDESHOW_ICON] forState:UIControlStateNormal];
-		[self.rearrangeView exitView];
-		[self playWithSpeed:SLIDESHOW_SPEED_SECONDS];
-	}
-}
-
-//new pinchview tapped in rearange view so we need to change what's presented
--(void)pinchViewSelected:(PinchView *) pv{
-	NSInteger imageIndex = 0;
-	for(NSInteger index = 0; index < self.imageContainerViews.count; index++){
-		EditMediaContentView *eview = self.imageContainerViews[index];
-		if(eview.pinchView == pv){
-			imageIndex = index;
-			break;
-		}
-	}
-	[self setImageViewsToLocation:imageIndex];
-}
-
-
--(void)addPauseTapGesture{
+-(void)addPauseLongPressGesture{
     UILongPressGestureRecognizer * pauseGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureFelt:)];
     pauseGesture.minimumPressDuration = 0.f;
     pauseGesture.delegate = self;
@@ -338,18 +179,15 @@
     self.timerStarted = [NSDate date];
 }
 
--(void)playWithSpeed:(CGFloat) speed {
+
+
+-(void)playSlideshow{
 	if(!self.animating){
         CGRect v_frame;
         CGRect h_frame;
-        if(self.inPreviewMode){
-             v_frame= CGRectMake(0.f, 0.f, self.frame.size.width, self.pauseToRearrangeButton.frame.origin.y);
-             h_frame= CGRectMake(0.f, self.pauseToRearrangeButton.frame.origin.y,self.pauseToRearrangeButton.frame.origin.x - 10.f,
-									self.frame.size.height - self.pauseToRearrangeButton.frame.origin.y);
-        }else{
-            v_frame= self.bounds;
-            h_frame= CGRectMake(0.f,0.f,0.f,0.f);
-        }
+        
+        v_frame= self.bounds;
+        h_frame= CGRectMake(0.f,0.f,0.f,0.f);
 
 		//create view to sense swiping
 		if(self.panGestureSensingViewHorizontal == nil){
@@ -366,17 +204,16 @@
 			[self bringSubviewToFront:self.panGestureSensingViewVertical];
 			[self bringSubviewToFront:self.panGestureSensingViewHorizontal];
             //create press and hold to pause gesture
-            if(!self.inPreviewMode && !self.small){
-                [self addPauseTapGesture];
+            if(!self.small){
+                [self addPauseLongPressGesture];
             }
 
 		}
         
         [self startBaseSlideshowTimer];
 		
-        if([self okToAnimatePath] && !self.slideShowPaused)[self animateCirclePathNext];
+        if(!self.slideShowPaused)[self animateCirclePathNext];
 	}
-    
     
 	self.slideShowPlaying = YES;
 }
@@ -430,7 +267,7 @@
 		} completion:^(BOOL finished) {
 			weakSelf.animating = NO;
             
-            if(nextIndex >= weakSelf.imageContainerViews.count && [self okToAnimatePath]){
+            if(nextIndex >= weakSelf.imageContainerViews.count){
                 [self clearCircleVideoProgressView];
                 [self animateCirclePathNext];
             }
@@ -449,22 +286,8 @@
     }
 }
 
--(BOOL)okToAnimatePath{
-    return (!self.inPreviewMode);
-}
-#pragma mark OpenCollectionView delegate method
 
--(void) collectionClosedWithFinalArray:(NSMutableArray *) pinchViews {
-	if(self.rearrangeView){
-		[self.rearrangeView removeFromSuperview];
-		self.rearrangeView = nil;
-	}
-	self.imageContainerViews = nil;
-	((CollectionPinchView*)self.pinchView).imagePinchViews = pinchViews;
-	[[PostInProgress sharedInstance] removePinchViewAtIndex:self.indexInPost andReplaceWithPinchView:self.pinchView];
-	[self.pinchView renderMedia];
-	[self addContentFromImagePinchViews: pinchViews];
-}
+
 
 #pragma mark Change image views locations and visibility
 
@@ -493,8 +316,6 @@
 	}
 }
 
-#pragma mark - Gesture Recognizer Delegate methods -
-
 
 #pragma mark - Overriding ArticleViewingExperience methods -
 
@@ -506,7 +327,7 @@
 	}
 	if(self.imageContainerViews.count > 1){
 		if(!self.slideShowPlaying){
-			[self playWithSpeed:SLIDESHOW_SPEED_SECONDS];
+			[self playSlideshow];
 		}
 	}else{
 		if([self.pinchView isKindOfClass:[SingleMediaAndTextPinchView class]]){
@@ -528,27 +349,6 @@
 	if(self.rearrangeView)[self.rearrangeView exitView];
 }
 
-#pragma mark - EditContentViewDelegate methods -
-
--(void) textIsEditing {
-
-	if (self.imageContainerViews.count > 1) {
-		// Pause slideshow
-		if(!self.rearrangeView) {
-			[self pauseToRearrangeButtonPressed];
-		}
-		[self.rearrangeView setHidden:YES];
-		[self.pauseToRearrangeButton setHidden:YES];
-	}
-
-	if([self.textEntryDelegate respondsToSelector:@selector(editContentViewTextIsEditing)])[self.textEntryDelegate editContentViewTextIsEditing];
-}
-
--(void) textDoneEditing {
-	[self.pauseToRearrangeButton setHidden:NO];
-	[self.rearrangeView setHidden:NO];
-	if([self.textEntryDelegate respondsToSelector:@selector(editContentViewTextDoneEditing)])[self.textEntryDelegate editContentViewTextDoneEditing];
-}
 
 
 #pragma mark - Lazy Instantiation

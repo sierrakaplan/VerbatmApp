@@ -19,7 +19,7 @@
 #import "PinchView.h"
 #import "ParseBackendKeys.h"
 #import "Photo_BackendObject.h"
-
+#import "PhotoPveEditView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
@@ -41,12 +41,12 @@
 @implementation PageTypeAnalyzer
 
 
-+(NSMutableArray*) getPageViewsFromPinchViews:(NSArray*) pinchViews withFrame:(CGRect)frame inPreviewMode: (BOOL) inPreviewMode {
++(NSMutableArray*) getPreviewPagesFromPinchviews:(NSArray*) pinchViews withFrame:(CGRect)frame{
 	NSMutableArray* results = [[NSMutableArray alloc] init];
 	
     for(int i = 0; i < pinchViews.count; i++) {
 		PinchView *pinchView = pinchViews[i];
-		PageViewingExperience *pageView = [self getPageViewFromPinchView:pinchView withFrame:frame inPreviewMode:inPreviewMode];
+		PageViewingExperience *pageView = [self getPageViewFromPinchView:pinchView withFrame:frame];
 		pageView.indexInPost = i;
 		[results addObject:pageView];
 	}
@@ -54,18 +54,19 @@
 	return results;
 }
 
-+(PageViewingExperience *) getPageViewFromPinchView: (PinchView*) pinchView withFrame: (CGRect) frame inPreviewMode: (BOOL) inPreviewMode {
++(PageViewingExperience *) getPageViewFromPinchView: (PinchView*) pinchView withFrame: (CGRect) frame {
 	if (pinchView.containsImage && pinchView.containsVideo) {
-		PhotoVideoPVE *photoVideoPageView = [[PhotoVideoPVE alloc] initWithFrame:frame andPinchView:(CollectionPinchView *)pinchView inPreviewMode:inPreviewMode];
+		PhotoVideoPVE *photoVideoPageView = [[PhotoVideoPVE alloc] initWithFrame:frame andPinchView:(CollectionPinchView *)pinchView inPreviewMode:YES];
 		return photoVideoPageView;
 
 	} else if (pinchView.containsImage) {
-		PhotoPVE *photoPageView = [[PhotoPVE alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:inPreviewMode isPhotoVideoSubview:NO];
+        PhotoPVE *photoPageView;
+        
+            photoPageView = [[PhotoPveEditView alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:YES isPhotoVideoSubview:NO];
 		return photoPageView;
 
 	} else {
-		VideoPVE *videoPageView = [[VideoPVE alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:inPreviewMode
-											  isPhotoVideoSubview:NO];
+		VideoPVE *videoPageView = [[VideoPVE alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:YES isPhotoVideoSubview:NO];
 		return videoPageView;
 	}
 }

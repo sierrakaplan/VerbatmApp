@@ -17,6 +17,7 @@
 #import "Notifications.h"
 
 #import "PhotoPVE.h"
+#import "PhotoPveEditView.h"
 #import "PhotoVideoPVE.h"
 
 #import "Styles.h"
@@ -75,8 +76,7 @@
 		self.pinchView = pinchView;
 		[self initialFormatting];
 
-		self.photosView = [[PhotoPVE alloc] initWithFrame:self.photoAveFrame andPinchView:pinchView
-											inPreviewMode: previewMode isPhotoVideoSubview:YES];
+		self.photosView = [[PhotoPveEditView alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:YES isPhotoVideoSubview:YES];
 		self.photosView.textEntryDelegate = self;
 		self.videoView = [[VideoPVE alloc]initWithFrame:self.videoAveFrame
 										   andPinchView:pinchView inPreviewMode: previewMode isPhotoVideoSubview:YES];
