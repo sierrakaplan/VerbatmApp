@@ -11,6 +11,7 @@
 #import "OnboardingADK.h"
 #import "MediaSelectTile.h"
 #import "MediaSessionManager.h"
+#import "ParseBackendKeys.h"
 #import "PublishingProgressManager.h"
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
@@ -18,7 +19,8 @@
 #import "VerbatmCameraView.h"
 #import "VerbatmScrollView.h"
 #import "UserInfoCache.h"
-#import "UserSetupParameters.h"
+
+#import <Parse/PFUser.h>
 
 @interface OnboardingADK() <MediaSelectTileDelegate, UIScrollViewDelegate, ContentPageElementScrollViewDelegate, VerbatmCameraViewDelegate>
 
@@ -220,7 +222,8 @@
 	self.topNavLabel.text = @"Each circle is a page in your post. Tap one open to see what you just made!";
     
     //once they have pinched onboarding is done effectively
-    [[UserSetupParameters sharedInstance] setOnboardingShown];
+	[PFUser currentUser][USER_FTUE] = [NSNumber numberWithBool:YES];
+	[[PFUser currentUser] saveInBackground];
 }
 
 -(void) aboutToRemovePreview {
@@ -249,8 +252,9 @@
 -(void) continueToPublish {
 	self.userChannel = [[UserInfoCache sharedInstance] getUserChannel];
     //once they have pinched onboarding is done effectively
-    [[UserSetupParameters sharedInstance] setOnboardingShown];
-    
+	[PFUser currentUser][USER_FTUE] = [NSNumber numberWithBool:YES];
+	[[PFUser currentUser] saveInBackground];
+
 	[[PublishingProgressManager sharedInstance] publishPostToChannel:self.userChannel
 														 andFacebook:TRUE withCaption:@""
 													  withPinchViews:self.pinchViewsToPublish

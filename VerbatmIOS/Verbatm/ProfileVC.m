@@ -40,7 +40,6 @@
 #import "UIView+Effects.h"
 #import "User_BackendObject.h"
 #import "UserInfoCache.h"
-#import "UserSetupParameters.h"
 #import "UserAndChannelListsTVC.h"
 #import "UserInfoCache.h"
 #import "UtilityFunctions.h"

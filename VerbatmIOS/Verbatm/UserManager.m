@@ -10,11 +10,12 @@
 
 #import "Notifications.h"
 #import "ParseBackendKeys.h"
-#import "ProfileVC.h"
 #import "UserManager.h"
-#import "UserSetupParameters.h"
+
 @interface UserManager()
+
 @property (nonatomic) UIImage * currentCoverPhoto;
+
 @end
 
 @implementation UserManager
@@ -64,13 +65,13 @@
 	}];
 }
 
--(void)updateCurrentUserWithName:(NSString *) name andEmail:(NSString *) email andFbId:(NSString*)fbId {
+-(void)updateCurrentUserWithName:(NSString *) name andEmail:(NSString *) email andFbId:(NSString*)fbId andFTUE:(BOOL)ftue {
 	// update current user
 	PFUser* currentUser = [PFUser currentUser];
 	//we don't set the username because that's set by facebook.
 	if(email) currentUser.email = email;
 	if(name) [currentUser setObject: name forKey:VERBATM_USER_NAME_KEY];
-	[currentUser setObject:[NSNumber numberWithBool:NO] forKey:USER_FTUE];
+	if (!ftue) [currentUser setObject:[NSNumber numberWithBool: NO] forKey:USER_FTUE];
 	[currentUser setObject:fbId forKey:USER_FB_ID];
 	[currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 		if(error) {
@@ -117,7 +118,7 @@
 			 NSString *email = result[@"email"];
 			 NSString *fbId = [result objectForKey:@"id"];
 
-			 [self updateCurrentUserWithName:name andEmail:email andFbId:fbId];
+			 [self updateCurrentUserWithName:name andEmail:email andFbId:fbId andFTUE:NO];
 			 //						NSString* pictureURL = result[@"picture"][@"data"][@"url"];
 			 //						NSLog(@"profile picture url: %@", pictureURL);
 

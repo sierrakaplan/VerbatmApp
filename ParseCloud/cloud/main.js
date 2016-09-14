@@ -29,6 +29,7 @@ var NotificationClass = Parse.Object.extend("NotificationClass");
 var LikeClass = Parse.Object.extend("LikeClass");
 var FollowClass = Parse.Object.extend("FollowClass");
 var ChannelClass = Parse.Object.extend("ChannelClass");
+var BlockClass = Parse.Object.extend("BlockClass");
 
 // NOTIFICATIONS - PUSH
 
@@ -45,6 +46,7 @@ Parse.Cloud.beforeSave("NotificationClass", function(request, response) {
 	// Let existing object updates go through
 	if (!request.object.isNew()) {
       response.success();
+      return;
     }
 	var query = new Parse.Query(NotificationClass);
 	var notificationSender = request.object.get("NotificationSender");
@@ -76,7 +78,7 @@ Parse.Cloud.beforeSave("NotificationClass", function(request, response) {
 			    } else if (notificationType == 2) {
 			    	notificationText = notificationSenderName + " liked your post!";
 			    } else if (notificationType == 4) {
-			    	notificationText = "Your friend " + notificationSenderName + " has joined Verbatm";
+			    	notificationText = "Your friend " + notificationSenderName + " just joined Verbatm!";
 			    } else if (notificationType == 8) {
 			    	notificationText = notificationSenderName + " shared your post on social media!";
 			    } else if (notificationType == 16) {
@@ -111,6 +113,7 @@ Parse.Cloud.beforeSave("NotificationClass", function(request, response) {
 Parse.Cloud.beforeSave("PostChannelActivityClass", function(request, response) {
 	if (!request.object.isNew()) {
 		response.success();
+		return;
 	}
 	var userWhoPosted = request.object.get("RelationshipOwner");
 	var channelPostedIn = request.object.get("PostChannelActivityChannelPosted");
@@ -165,6 +168,7 @@ Parse.Cloud.beforeSave("LikeClass", function(request, response) {
 	// Let existing object updates go through
 	if (!request.object.isNew()) {
       response.success();
+      return;
     }
 	var query = new Parse.Query(LikeClass);
 	query.equalTo("UserLiking", request.object.get("UserLiking"));
@@ -182,6 +186,7 @@ Parse.Cloud.beforeSave("FollowClass", function(request, response) {
 	// Let existing object updates go through
 	if (!request.object.isNew()) {
       response.success();
+      return;
     }
 	var query = new Parse.Query(FollowClass);
 	query.equalTo("ChannelFollowed", request.object.get("ChannelFollowed"));
@@ -198,21 +203,62 @@ Parse.Cloud.beforeSave("FollowClass", function(request, response) {
 // DEFAULT PUBLIC READ FOR USER
 
 Parse.Cloud.beforeSave(Parse.User, function(request, response) {
+	if (!request.object.isNew()) {
+      response.success();
+      return;
+    }
+
   	var newACL = new Parse.ACL();
   	newACL.setPublicReadAccess(true);
  	request.object.setACL(newACL);
 
   	var user = request.object;
-	
-
-  //todo: send notifications to this user's fb friends that they've joined
-  
+  	var notificationSenderName = user.get("VerbatmName");
+	var promise = getFacebookFriends(user);
+    promise.then(function(friends) {
+		var promises = [];
+	    for (var i = 0; i < friends.length; i++) {
+	    	var friend = results[i];
+	    	var notification = new NotificationClass();
+	    	notification.set("IsNewNotification", true);
+	    	notification.set("NotificationSender", user);
+	    	notification.set("NotificationReceiver", friend);
+	    	notification.set("NotificationType", 4); // friend joined verbatm
+	    	promises.push(notification.save(null,{
+			  success:function(notification) { 
+			    // do nothing
+			  },
+			  error:function(error) {
+			    console.log(error);
+			  }
+			}));
+	    }
+	    Parse.Promise.when(promises).then(function(results) {
+			console.log(results); 
+			response.success(); 
+		});
+	}, function(err) {
+		response.error(err);
+	});  
 });
 
 // GET DISCOVER CHANNELS
 
-Parse.Cloud.define("getFacebookFriendsChannels", function(req, res) {
-
+// Pass a user id
+Parse.Cloud.define("getFacebookFriends", function(req, res) {
+	var user = new Parse.User();
+	user.id = req.params.userId;
+	user.fetch().then(function(user) {
+        var promise = getFacebookFriends(user);
+        promise.then(function(friends) {
+			res.success(friends);
+		}, function(err) {
+			res.error(err);
+		});
+    },
+    function(error) {
+        res.error(error);
+    });
 });
 
 // Returns a promise that resolves to an array of fb friends of user 
@@ -224,13 +270,15 @@ function getFacebookFriends(user) {
 	    Parse.Cloud.httpRequest({
 	        url:'https://graph.facebook.com/me/friends?fields=id,name&access_token='+user.get('authData').facebook.access_token,
 	        success:function(httpResponse) {
-	        	var friendObjects = httpResponse.data;
+	        	var friendObjects = httpResponse.data.data;
 	        	var friendIds = [];
-	        	for (friendObject in friendObjects) {
+	        	for (var i = 0; i < friendObjects.length; i++) {
+		    		var friendObject = friendObjects[i];
 	        		friendIds.push(friendObject["id"]);
 	        	}
 	        	var friendQuery = new Parse.Query(Parse.User);
 	        	friendQuery.containedIn("FbID", friendIds);
+	        	friendQuery.limit = 1000;
 	        	friendQuery.find({
 				  success: function(results) {
 				  	promise.resolve(results);
@@ -254,11 +302,102 @@ function getFacebookFriends(user) {
 }
 
 Parse.Cloud.define("getPhoneContactsChannels", function(req, res) {
-
+	var phoneNumbers = req.params.phoneNumbers;
+	var promise = getPhoneContacts(phoneNumbers);
+	promise.then(function(friends) {
+		res.success(friends);
+	}, function(err) {
+		res.error(err);
+	});
 });
 
-Parse.Cloud.define("getFriendsChannels", function(req, res) {
+// Returns a promise that resolves to an array of PFUsers,
+// or an error.
+function getPhoneContacts(phoneNumbers) {
+	var promise = new Parse.Promise();
+	var friendQuery = new Parse.Query(Parse.User);
+	friendQuery.containedIn("username", phoneNumbers);
+	friendQuery.limit = 1000;
+	friendQuery.find({
+	  success: function(results) {
+	  	promise.resolve(results);
+	  },
 
+	  error: function(error) {
+	    console.error(httpResponse);
+	    promise.reject(error);
+	  }
+	});
+	return promise;
+}
+
+function getChannelsFromUsers(users, usersWhoBlocked, channelsFollowed) {
+	var promise = new Parse.Promise();
+	var channelsQuery = new Parse.Query(ChannelClass);
+	channelsQuery.containedIn("ChannelCreator", users);
+	channelsQuery.notContainedIn("ChannelCreator", usersWhoBlocked);
+	channelsQuery.notContainedIn("objectId", channelsFollowed);
+	channelsQuery.limit = 1000;
+	channelsQuery.find({
+	  success: function(results) {
+	  	promise.resolve(results);
+	  },
+
+	  error: function(error) {
+	    console.error(httpResponse);
+	    promise.reject(error);
+	  }
+	});
+	return promise;
+}
+
+function getUsersWhoHaveBlockedUser(user) {
+	var promise = new Parse.Promise();
+	var blockQuery = new Parse.Query(BlockClass);
+	blockQuery.equalTo("BlockUserBlocked", user);
+	blockQuery.limit(1000);
+	blockQuery.find({
+		  success: function(results) {
+		  	var usersWhoBlocked = [];
+		    for (var i = 0; i < results.length; i++) {
+		    	var blockObject = results[i];
+		    	var userBlocking = blockObject.get("BlockUserBlocking");
+		    	usersWhoBlocked.push(userBlocking);
+		    }
+		    promise.resolve(usersWhoBlocked);
+		  },
+
+		  error: function(error) {
+		    promise.reject(error);
+		  }
+		});
+	return promise;
+}
+
+Parse.Cloud.define("getFriendsChannels", function(req, res) {
+	var user = new Parse.User();
+	user.id = req.params.userID;
+	var phoneNumbers = req.params.phoneNumbers;
+	var data = {};
+	user.fetch().then(function(user) {
+		return getUsersWhoHaveBlockedUser(user);
+	}).then(function(usersWhoBlocked) {
+		data.usersWhoBlocked = usersWhoBlocked;
+		return getChannelsFollowed(user);
+	}).then(function(channelsFollowed) {
+		data.channelsFollowed = channelsFollowed;
+		return getPhoneContacts(phoneNumbers);
+	}).then(function(phoneContactFriends) {
+		data.phoneContactFriends = phoneContactFriends;
+		return getFacebookFriends(user);
+	}).then(function(facebookFriends) {
+		var friends = data.phoneContactFriends.concat(facebookFriends);
+		return getChannelsFromUsers(friends, data.usersWhoBlocked, data.channelsFollowed);
+	}).then(function(channels) {
+		res.success(channels);
+	}, function(err) {
+		res.error(err);
+	});
 });
 
 Parse.Cloud.define("getDiscoverChannels", function(req, res) {
@@ -278,8 +417,43 @@ Parse.Cloud.define("getChannelsForShares", function(req, res) {
 // CHANNELS FOLLOWED/FOLLOWING
 
 Parse.Cloud.define("getChannelsFollowed", function(req, res) {
-
+	var user = new Parse.User();
+	user.id = req.params.userID;
+	user.fetch().then(function(user) {
+		var promise = getChannelsFollowed(user);
+		promise.then(function(channels) {
+			res.success(channels);
+		}, function(err) {
+			res.error(err);
+		});
+	},
+    function(error) {
+        res.error(error);
+    });
 });
+
+function getChannelsFollowed(user) {
+	var promise = new Parse.Promise();
+	var query = new Parse.Query(FollowClass);
+	query.equalTo("UserFollowing", user);
+	query.limit(1000);
+	query.find({
+		  success: function(results) {
+		  	var channelsFollowed = [];
+		    for (var i = 0; i < results.length; i++) {
+		    	var followObject = results[i];
+		    	var channel = followObject.get("ChannelFollowed");
+		    	channelsFollowed.push(channel);
+		    }
+		    promise.resolve(channelsFollowed);
+		  },
+
+		  error: function(error) {
+		    promise.reject(error);
+		  }
+		});
+	return promise;
+}
 
 Parse.Cloud.define("getChannelFollowers", function(req, res) {
 	var channel = new ChannelClass();
@@ -295,7 +469,6 @@ Parse.Cloud.define("getChannelFollowers", function(req, res) {
 		    	var userFollowing = followObject.get("UserFollowing");
 		    	usersFollowing.push(userFollowing);
 		    }
-		    console.log(usersFollowing);
 		    var query = new Parse.Query(ChannelClass);
 		    query.containedIn("ChannelCreator", usersFollowing);
 		    query.limit(1000);

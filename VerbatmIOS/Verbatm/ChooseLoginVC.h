@@ -14,6 +14,5 @@
 
 @property (nonatomic) BOOL creatingAccount;
 
--(void)userHasNotCompletedOnboardingPresentOnboardingADK;
 
 @end

@@ -60,7 +60,6 @@
 		FeedTableCell *cell = [visibleCell firstObject];
 		[cell.currentProfile viewWillAppear:animated];
 	}
-
 }
 
 -(void) viewDidAppear:(BOOL)animated {

@@ -15,7 +15,6 @@
 #import "Notifications.h"
 
 #import "UserManager.h"
-#import "UserSetupParameters.h"
 
 #pragma mark Frameworks
 
