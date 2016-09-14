@@ -22,7 +22,6 @@
 #import "PostInProgress.h"
 #import "PhotoPVE.h"
 
-#import "OpenCollectionView.h"
 
 #import "SizesAndPositions.h"
 #import "Styles.h"
@@ -32,40 +31,19 @@
 #import "UIImage+ImageEffectsAndTransforms.h"
 
 
-@interface PhotoPVE() <UIGestureRecognizerDelegate, OpenCollectionViewDelegate, EditContentViewDelegate>
+@interface PhotoPVE() <UIGestureRecognizerDelegate>
 
-@property (strong, nonatomic) NSMutableArray* imageContainerViews;
-@property (nonatomic) NSInteger currentPhotoIndex;
-
-//When a view is animating it doesn't sense gestures very well. This makes it tough for users
-// to scroll up and down while their photo slideshow is playing.
-//To manage this we add to clear views above the animating views to catch the gestures.
-//We add two views instead of one because of the buttons on the bottom right -- don't want
-// to cover them.
-@property (nonatomic, weak) UIView * panGestureSensingViewVertical;
-@property (nonatomic, weak) UIView * panGestureSensingViewHorizontal;
-
-#pragma mark - In Preview Mode -
-
-@property (nonatomic, weak) PinchView *pinchView;
-@property (nonatomic, weak) UIButton * pauseToRearrangeButton;
-@property (nonatomic, weak) OpenCollectionView * rearrangeView;
-
-// Tells whether should display smaller sized images
-@property (nonatomic) BOOL small;
-
-@property (nonatomic) BOOL photoVideoSubview;
 
 #pragma mark - Slideshow -
 
-@property (nonatomic) BOOL animating;
-@property (nonatomic) BOOL slideShowPlaying;
-@property (nonatomic) CAShapeLayer *slideshowProgressCircle;
 
-#define TEXT_VIEW_HEIGHT 70.f
-#define SLIDESHOW_ANIMATION_DURATION 0.9f
-#define OPEN_COLLECTION_FRAME_HEIGHT 70.f
-#define IMAGE_FADE_OUT_ANIMATION_DURATION 1.2f
+@property (nonatomic) CABasicAnimation * circlePathAnimation;
+
+@property (nonatomic) CAShapeLayer *slideshowProgressCircle;
+@property (nonatomic) NSTimer * photoSlideShowTimer;
+@property (nonatomic) NSDate * timerStarted;
+@property (nonatomic) NSTimeInterval timerElapsed;
+
 
 @end
 
@@ -88,96 +66,16 @@
 	[self.customActivityIndicator removeFromSuperview];
 	if ([photos count]) {
 		[self addPhotos:photos];
-	}
+    }
 	if (self.currentlyOnScreen) {
 		[self onScreen];
 	}
 }
 
--(instancetype) initWithFrame:(CGRect)frame andPinchView:(PinchView *)pinchView
-				inPreviewMode: (BOOL) inPreviewMode isPhotoVideoSubview:(BOOL)halfScreen {
-	self = [super initWithFrame:frame];
-	if (self) {
-		self.hasLoadedMedia = YES;
-		self.small = NO;
-		self.inPreviewMode = inPreviewMode;
-		self.photoVideoSubview = halfScreen;
-		self.pinchView = pinchView;
-		if([self.pinchView isKindOfClass:[CollectionPinchView class]]){
-			[self addContentFromImagePinchViews:((CollectionPinchView *)self.pinchView).imagePinchViews];
-		}else{
-			[self addContentFromImagePinchViews:[NSMutableArray arrayWithObject:pinchView]];
-		}
-		[self initialFormatting];
-	}
-	return self;
-}
-
 -(void) initialFormatting {
-	[self.layer addSublayer: self.slideshowProgressCircle];
 	[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
 }
 
-
-#pragma mark - Preview mode -
-
--(void) addContentFromImagePinchViews:(NSMutableArray *)pinchViewArray{
-	NSMutableArray* photosTextArray = [[NSMutableArray alloc] init];
-
-	for (ImagePinchView *imagePinchView in pinchViewArray) {
-		if (self.inPreviewMode) {
-			EditMediaContentView *editMediaContentView = [self getEditContentViewFromPinchView:imagePinchView];
-			[self.imageContainerViews addObject:editMediaContentView];
-		} else {
-			[photosTextArray addObject: [imagePinchView getPhotosWithText][0]];
-		}
-	}
-	if (!self.inPreviewMode) {
-		[self addPhotos: photosTextArray];
-	} else {
-		[self layoutContainerViews];
-		if(pinchViewArray.count > 1) {
-			[self createRearrangeButton];
-		}
-	}
-}
-
--(EditMediaContentView *) getEditContentViewFromPinchView: (ImagePinchView *)pinchView {
-	EditMediaContentView * editMediaContentView = [[EditMediaContentView alloc] initWithFrame:self.bounds];
-	//this has to be set before we set the text view information
-	editMediaContentView.pinchView = pinchView;
-	editMediaContentView.povViewMasterScrollView = self.postScrollView;
-	editMediaContentView.delegate = self;
-
-	PHImageRequestOptions *options = [PHImageRequestOptions new];
-	options.synchronous = YES;
-	__weak PhotoPVE * weakSelf = self;
-	[pinchView getLargerImageWithHalfSize:weakSelf.photoVideoSubview].then(^(UIImage *image) {
-		[editMediaContentView displayImage:image isHalfScreen:self.photoVideoSubview
-						 withContentOffset:pinchView.imageContentOffset];
-
-		BOOL textColorBlack = [pinchView.textColor isEqual:[UIColor blackColor]];
-		[editMediaContentView setText:pinchView.text
-					 andTextYPosition:[pinchView.textYPosition floatValue]
-					andTextColorBlack:textColorBlack
-					 andTextAlignment:[pinchView.textAlignment integerValue]
-						  andTextSize:[pinchView.textSize floatValue] andFontName:pinchView.fontName];
-		if (self.imageContainerViews.count < 2) {
-			[editMediaContentView showTextToolbar:YES];
-		}
-		if (self.currentlyOnScreen) {
-			[editMediaContentView onScreen];
-		}
-	});
-	return editMediaContentView;
-}
-
--(void)layoutContainerViews{
-	//adding subviews in reverse order so that imageview at index 0 on top
-	for (int i = (int)[self.imageContainerViews count]-1; i >= 0; i--) {
-		[self addSubview:[self.imageContainerViews objectAtIndex:i]];
-	}
-}
 
 #pragma mark - Not preview mode -
 
@@ -188,11 +86,14 @@
 	for (NSArray* photoText in photosTextArray) {
 		[self.imageContainerViews addObject:[self getImageContainerViewFromPhotoTextArray:photoText]];
 	}
-
-	// Has to add duplicate of first photo to bottom so that you can fade from the last photo into the first
-	//NSArray* firstPhotoText = photosTextArray[0];
-	//[self addSubview: [self getImageContainerViewFromPhotoTextArray: firstPhotoText]];
 	[self layoutContainerViews];
+}
+
+-(void)layoutContainerViews{
+    //adding subviews in reverse order so that imageview at index 0 on top
+    for (int i = (int)[self.imageContainerViews count]-1; i >= 0; i--) {
+        [self addSubview:[self.imageContainerViews objectAtIndex:i]];
+    }
 }
 
 -(TextOverMediaView*) getImageContainerViewFromPhotoTextArray: (NSArray*) photoTextArray {
@@ -221,66 +122,68 @@
 	return textAndImageView;
 }
 
-#pragma mark - Rearrange content (preview mode) -
 
--(void)createRearrangeButton {
-	[self.pauseToRearrangeButton setImage:[UIImage imageNamed:PAUSE_SLIDESHOW_ICON] forState:UIControlStateNormal];
-	self.pauseToRearrangeButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-	[self.pauseToRearrangeButton addTarget:self action:@selector(pauseToRearrangeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-	[self bringSubviewToFront:self.pauseToRearrangeButton];
+-(void)addPauseLongPressGesture{
+    UILongPressGestureRecognizer * pauseGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureFelt:)];
+    pauseGesture.minimumPressDuration = 0.f;
+    pauseGesture.delegate = self;
+    [self.panGestureSensingViewVertical addGestureRecognizer:pauseGesture];
+    
 }
 
--(void) pauseToRearrangeButtonPressed {
-	// Pausing slideshow
-	if(![self.pinchView isKindOfClass:[CollectionPinchView class]])return;
-
-	if(!self.rearrangeView) {
-		for (UIView * view in self.imageContainerViews) {
-			if([view isKindOfClass:[EditMediaContentView class]]){
-				[((EditMediaContentView *)view) showTextToolbar:YES];
-			}
-		}
-
-		[self offScreen];
-		CGFloat y_pos = (self.photoVideoSubview) ? 0.f : CUSTOM_NAV_BAR_HEIGHT;
-		CGRect frame = CGRectMake(0.f,y_pos, self.frame.size.width, OPEN_COLLECTION_FRAME_HEIGHT);
-		OpenCollectionView *rearrangeView = [[OpenCollectionView alloc] initWithFrame:frame
-																	andPinchViewArray:((CollectionPinchView*)self.pinchView).imagePinchViews];
-		[self insertSubview: rearrangeView belowSubview:self.pauseToRearrangeButton];
-		self.rearrangeView = rearrangeView;
-		self.rearrangeView.delegate = self;
-		[self.pauseToRearrangeButton setImage:[UIImage imageNamed:PLAY_SLIDESHOW_ICON] forState:UIControlStateNormal];
-	} else {
-		for (UIView * view in self.imageContainerViews) {
-			if([view isKindOfClass:[EditMediaContentView class]]){
-				[((EditMediaContentView *)view) exiting];
-				[((EditMediaContentView *)view) showTextToolbar: NO];
-			}
-		}
-		[self.pauseToRearrangeButton setImage:[UIImage imageNamed:PAUSE_SLIDESHOW_ICON] forState:UIControlStateNormal];
-		[self.rearrangeView exitView];
-		[self playWithSpeed:2.f];
-	}
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
 }
 
-//new pinchview tapped in rearange view so we need to change what's presented
--(void)pinchViewSelected:(PinchView *) pv{
-	NSInteger imageIndex = 0;
-	for(NSInteger index = 0; index < self.imageContainerViews.count; index++){
-		EditMediaContentView *eview = self.imageContainerViews[index];
-		if(eview.pinchView == pv){
-			imageIndex = index;
-			break;
-		}
-	}
-	[self setImageViewsToLocation:imageIndex];
+-(void)longPressGestureFelt:(UILongPressGestureRecognizer *) gesture{
+    switch (gesture.state) {
+        case UIGestureRecognizerStateBegan:
+            self.slideShowPaused = YES;
+            [self pauseSlideShow];
+            [self pauseSlideShowCircleAnimation];
+            break;
+        case UIGestureRecognizerStateEnded:
+            [self continePlaySlideShow];
+            [self continueSlideShowAnimation];
+            //this has to be after playWithSpeed function
+            self.slideShowPaused = NO;
+            break;
+        default:
+            break;
+    }
 }
 
--(void)playWithSpeed:(CGFloat) speed {
+
+-(void)pauseSlideShow{
+    self.slideShowPlaying = NO;
+    //pause timer
+    [self killCurrentTimer];
+    self.timerElapsed = [[NSDate date] timeIntervalSinceDate:self.timerStarted];
+}
+
+-(void)continePlaySlideShow{
+    [self killCurrentTimer];
+    self.slideShowPlaying = YES;
+    CGFloat timerSecondsLeft = ((CGFloat)SLIDESHOW_SPEED_SECONDS - ((CGFloat)self.timerElapsed));
+    if(timerSecondsLeft >= 0)self.photoSlideShowTimer = [NSTimer scheduledTimerWithTimeInterval: timerSecondsLeft target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
+    else [self startBaseSlideshowTimer];
+}
+
+-(void)startBaseSlideshowTimer{
+    [self killCurrentTimer];
+    self.photoSlideShowTimer = [NSTimer scheduledTimerWithTimeInterval:SLIDESHOW_SPEED_SECONDS target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
+    self.timerStarted = [NSDate date];
+}
+
+
+
+-(void)playSlideshow{
 	if(!self.animating){
-		CGRect v_frame = CGRectMake(0.f, 0.f, self.frame.size.width, self.pauseToRearrangeButton.frame.origin.y);
-		CGRect h_frame = CGRectMake(0.f, self.pauseToRearrangeButton.frame.origin.y,self.pauseToRearrangeButton.frame.origin.x - 10.f,
-									self.frame.size.height - self.pauseToRearrangeButton.frame.origin.y);
+        CGRect v_frame;
+        CGRect h_frame;
+        
+        v_frame= self.bounds;
+        h_frame= CGRectMake(0.f,0.f,0.f,0.f);
 
 		//create view to sense swiping
 		if(self.panGestureSensingViewHorizontal == nil){
@@ -296,12 +199,26 @@
 
 			[self bringSubviewToFront:self.panGestureSensingViewVertical];
 			[self bringSubviewToFront:self.panGestureSensingViewHorizontal];
+            //create press and hold to pause gesture
+            if(!self.small){
+                [self addPauseLongPressGesture];
+            }
+
 		}
-		[NSTimer scheduledTimerWithTimeInterval:SLIDESHOW_ANIMATION_DURATION target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
+        
+        [self startBaseSlideshowTimer];
+		
+        if(!self.slideShowPaused)[self animateCirclePathNext];
 	}
+    
 	self.slideShowPlaying = YES;
 }
 
+
+
+
+
+// Create circle view showing video progress
 -(void)stopSlideshow {
 	self.slideShowPlaying = NO;
 	if(self.inPreviewMode){
@@ -309,11 +226,30 @@
 		self.panGestureSensingViewHorizontal = nil;
 		[self.panGestureSensingViewVertical removeFromSuperview];
 		self.panGestureSensingViewVertical = nil;
-	}
+    }
+}
+
+-(void)pauseSlideShowCircleAnimation{
+    if(self.circlePathAnimation){
+        CFTimeInterval pausedTime = [self.slideshowProgressCircle convertTime:CACurrentMediaTime() fromLayer:nil];
+        self.slideshowProgressCircle.speed = 0.0;
+        self.slideshowProgressCircle.timeOffset = pausedTime;
+    }
+}
+-(void)continueSlideShowAnimation{
+    
+    CFTimeInterval pausedTime = [self.slideshowProgressCircle timeOffset];
+    self.slideshowProgressCircle.speed = 1.0;
+    self.slideshowProgressCircle.timeOffset = 0.0;
+    self.slideshowProgressCircle.beginTime = 0.0;
+    CFTimeInterval timeSincePause = [self.slideshowProgressCircle convertTime:CACurrentMediaTime() fromLayer:nil] - pausedTime;
+    self.slideshowProgressCircle.beginTime = timeSincePause;
+    
 }
 
 -(void)animateNextView{
 	__weak PhotoPVE * weakSelf = self;
+    NSInteger nextIndex = weakSelf.currentPhotoIndex + 1;
 	if(weakSelf.slideShowPlaying && !weakSelf.animating){
 		//todo: This is a hack. Find where animations get disabled
 		if(![UIView areAnimationsEnabled]){
@@ -321,30 +257,33 @@
 			[UIView setAnimationsEnabled:YES];
 		}
 		[UIView animateWithDuration:IMAGE_FADE_OUT_ANIMATION_DURATION animations:^{
-			weakSelf.animating = YES;
-			[weakSelf setImageViewsToLocation:(weakSelf.currentPhotoIndex + 1)];
+            weakSelf.animating = YES;
+            
+			[weakSelf setImageViewsToLocation:nextIndex];
 		} completion:^(BOOL finished) {
 			weakSelf.animating = NO;
-			[NSTimer scheduledTimerWithTimeInterval:SLIDESHOW_ANIMATION_DURATION target:weakSelf selector:@selector(animateNextView) userInfo:nil repeats:NO];
+            
+            if(nextIndex >= weakSelf.imageContainerViews.count){
+                [self clearCircleVideoProgressView];
+                [self animateCirclePathNext];
+            }
+            
+            [self startBaseSlideshowTimer];
 		}];
 
 	}
 }
 
 
-#pragma mark OpenCollectionView delegate method
-
--(void) collectionClosedWithFinalArray:(NSMutableArray *) pinchViews {
-	if(self.rearrangeView){
-		[self.rearrangeView removeFromSuperview];
-		self.rearrangeView = nil;
-	}
-	self.imageContainerViews = nil;
-	((CollectionPinchView*)self.pinchView).imagePinchViews = pinchViews;
-	[[PostInProgress sharedInstance] removePinchViewAtIndex:self.indexInPost andReplaceWithPinchView:self.pinchView];
-	[self.pinchView renderMedia];
-	[self addContentFromImagePinchViews: pinchViews];
+-(void)killCurrentTimer{
+    if(self.photoSlideShowTimer){
+        [self.photoSlideShowTimer invalidate];
+        self.photoSlideShowTimer = nil;
+    }
 }
+
+
+
 
 #pragma mark Change image views locations and visibility
 
@@ -373,8 +312,6 @@
 	}
 }
 
-#pragma mark - Gesture Recognizer Delegate methods -
-
 
 #pragma mark - Overriding ArticleViewingExperience methods -
 
@@ -386,7 +323,7 @@
 	}
 	if(self.imageContainerViews.count > 1){
 		if(!self.slideShowPlaying){
-			[self playWithSpeed:2.f];
+			[self playSlideshow];
 		}
 	}else{
 		if([self.pinchView isKindOfClass:[SingleMediaAndTextPinchView class]]){
@@ -408,27 +345,6 @@
 	if(self.rearrangeView)[self.rearrangeView exitView];
 }
 
-#pragma mark - EditContentViewDelegate methods -
-
--(void) textIsEditing {
-
-	if (self.imageContainerViews.count > 1) {
-		// Pause slideshow
-		if(!self.rearrangeView) {
-			[self pauseToRearrangeButtonPressed];
-		}
-		[self.rearrangeView setHidden:YES];
-		[self.pauseToRearrangeButton setHidden:YES];
-	}
-
-	if([self.textEntryDelegate respondsToSelector:@selector(editContentViewTextIsEditing)])[self.textEntryDelegate editContentViewTextIsEditing];
-}
-
--(void) textDoneEditing {
-	[self.pauseToRearrangeButton setHidden:NO];
-	[self.rearrangeView setHidden:NO];
-	if([self.textEntryDelegate respondsToSelector:@selector(editContentViewTextDoneEditing)])[self.textEntryDelegate editContentViewTextDoneEditing];
-}
 
 
 #pragma mark - Lazy Instantiation
@@ -464,11 +380,59 @@
 		_slideshowProgressCircle = [[CAShapeLayer alloc]init];
 		_slideshowProgressCircle.frame = self.bounds;
 		_slideshowProgressCircle.fillColor = [UIColor clearColor].CGColor;
-		_slideshowProgressCircle.strokeColor = [UIColor colorWithRed:0.f green:0.f blue:1.f alpha:1.f].CGColor;
-		_slideshowProgressCircle.lineWidth = 20.f;
+		_slideshowProgressCircle.strokeColor = [UIColor whiteColor].CGColor;
+		_slideshowProgressCircle.lineWidth = SLIDESHOW_PROGRESS_CIRCLE_THICKNESS;
+        [self.panGestureSensingViewVertical.layer addSublayer: self.slideshowProgressCircle];
 	}
 	return _slideshowProgressCircle;
 }
+
+
+
+-(void)animateCirclePathNext{
+    self.circlePathAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+    self.circlePathAnimation.duration = CIRCLE_ANIMATION_DURATION;
+    self.circlePathAnimation.fromValue = [NSNumber numberWithFloat:0.0f];
+    self.circlePathAnimation.toValue = [NSNumber numberWithFloat:1.0f];
+    self.circlePathAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+    [self.slideshowProgressCircle addAnimation:self.circlePathAnimation forKey:@"strokeEnd"];
+    [self animateSlideshowProgressPath];
+    if(self.slideShowPaused)[self pauseSlideShowCircleAnimation];
+}
+
+// Animate circle view showing video progress
+-(void) animateSlideshowProgressPath {
+    
+    CGMutablePathRef path = CGPathCreateMutable();
+    
+    CGFloat yPos;
+    
+    if(self.small){
+        yPos = 8.f;
+    }else{
+        yPos = 5.f + ((self.photoVideoSubview) ? 2.f : CREATOR_CHANNEL_BAR_HEIGHT + STATUS_BAR_HEIGHT);
+    }
+    
+    
+    
+    CGRect frame =CGRectMake(10.f,yPos , SLIDESHOW_PROGRESS_CIRCLE_SIZE, SLIDESHOW_PROGRESS_CIRCLE_SIZE);
+
+    float midX = CGRectGetMidX(frame);
+    float midY = CGRectGetMidY(frame);
+    CGAffineTransform t = CGAffineTransformConcat(
+                                                  CGAffineTransformConcat(
+                                                                          CGAffineTransformMakeTranslation(-midX, -midY),
+                                                                          CGAffineTransformMakeRotation(-(M_PI/2.f))),
+                                                  CGAffineTransformMakeTranslation(midX, midY));
+    CGPathAddEllipseInRect(path, &t, frame);
+    self.slideshowProgressCircle.path = path;
+}
+
+-(void) clearCircleVideoProgressView {
+    [_slideshowProgressCircle removeFromSuperlayer];
+    _slideshowProgressCircle = nil;
+}
+
 
 -(void) dealloc {
 }

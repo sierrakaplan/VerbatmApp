@@ -17,12 +17,13 @@
 #import "Notifications.h"
 
 #import "PhotoPVE.h"
+#import "PhotoPveEditView.h"
 #import "PhotoVideoPVE.h"
 
 #import "Styles.h"
 #import "VideoPVE.h"
 #import "VideoPinchView.h"
-
+#import "VideoPveEditingView.h"
 @interface PhotoVideoPVE() <UIScrollViewDelegate, PhotoPVETextEntryDelegate>
 
 @property (strong, nonatomic) PhotoPVE* photosView;
@@ -75,13 +76,13 @@
 		self.pinchView = pinchView;
 		[self initialFormatting];
 
-		self.photosView = [[PhotoPVE alloc] initWithFrame:self.photoAveFrame andPinchView:pinchView
-											inPreviewMode: previewMode isPhotoVideoSubview:YES];
+		self.photosView = [[PhotoPveEditView alloc] initWithFrame:self.photoAveFrame andPinchView:pinchView isPhotoVideoSubview:YES];
 		self.photosView.textEntryDelegate = self;
-		self.videoView = [[VideoPVE alloc]initWithFrame:self.videoAveFrame
-										   andPinchView:pinchView inPreviewMode: previewMode isPhotoVideoSubview:YES];
-		[self addSubview:self.videoView];
+		self.videoView = [[VideoPveEditingView alloc]initWithFrame:self.videoAveFrame
+										   andPinchView:pinchView isPhotoVideoSubview:YES];
+		
 		[self addSubview:self.photosView];
+        [self addSubview:self.videoView];
 	}
 	return self;
 }

@@ -123,14 +123,8 @@
 	NSString *code = [self getCode];
 
 //	//todo: these lines lines allow testing create new accounts (use phone numbers no one has)
-//	PFUser *newUser = [PFUser user];
-//	newUser.username = self.simplePhoneNumber;
-//	newUser.password = code;
-//	[newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-//        [self goOnToCreateName];
-//    }];
-//
-//	return;
+    //[self shortCircuitLoginVerification];
+	//return;
 
 	if (self.verifyingCode) return;
 	self.verifyingCode = YES;

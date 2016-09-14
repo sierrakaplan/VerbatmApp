@@ -7,13 +7,18 @@
 //
 
 #import "CreateNameVC.h"
+
 #import "LoginKeyboardToolBar.h"
+
 #import "Notifications.h"
+
 #import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
+
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
+
 #import "UserInfoCache.h"
 
 @interface CreateNameVC() <LoginKeyboardToolBarDelegate, UITextFieldDelegate>
@@ -22,6 +27,8 @@
 @property (nonatomic) UILabel *enterNameLabel;
 @property (nonatomic) UITextField *enterNameField;
 @property (nonatomic) BOOL savingName;
+
+@property (nonatomic) UIActivityIndicatorView *loadingIndicator;
 
 #define ENTER_NAME_LABEL_Y_POS 100.f
 #define ENTER_NAME_FIELD_Y_POS 200.f
@@ -67,6 +74,7 @@
 		[self showAlertWithTitle:nil andMessage:@"Enter your name."];
 	} else {
 		if (self.savingName) return;
+        [self.loadingIndicator startAnimating];
 		self.savingName = YES;
 		//todo: show loading
 		[PFUser currentUser][VERBATM_USER_NAME_KEY] = name;
@@ -74,11 +82,13 @@
 			if (!succeeded || error) {
 				self.savingName = NO;
 				//todo: error handling?
+                [self.loadingIndicator stopAnimating];
 			} else {
 				[[UserInfoCache sharedInstance] loadUserChannelWithCompletionBlock:^{
 					Channel *channel = [[UserInfoCache sharedInstance] getUserChannel];
 					channel.parseChannelObject[CHANNEL_CREATOR_NAME_KEY] = name;
 					[channel.parseChannelObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+                        [self.loadingIndicator stopAnimating];
 						if (!succeeded || error) {
 							self.savingName = NO;
 						} else {
@@ -142,6 +152,17 @@
 	return _enterNameField;
 }
 
+
+-(UIActivityIndicatorView *) loadingIndicator {
+    if(!_loadingIndicator) {
+        _loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhiteLarge];
+        CGFloat yPos = self.enterNameField.frame.origin.y + self.enterNameField.frame.size.height + _loadingIndicator.frame.size.height +  5.f;
+        _loadingIndicator.center = CGPointMake(self.view.frame.size.width/2.f, yPos);
+        _loadingIndicator.hidesWhenStopped = YES;
+        [self.view addSubview:_loadingIndicator];
+    }
+    return _loadingIndicator;
+}
 
 -(UILabel*) enterNameLabel {
 	if(!_enterNameLabel) {

@@ -305,7 +305,7 @@
 	self.videoProgressCircle.frame = self.bounds;
 	self.videoProgressCircle.fillColor = [UIColor clearColor].CGColor;
 	self.videoProgressCircle.strokeColor = [UIColor colorWithRed:1.f green:0.f blue:0.f alpha:PROGRESS_CIRCLE_OPACITY].CGColor;
-	self.videoProgressCircle.lineWidth = PROGRESS_CIRCLE_THICKNESS;
+	self.videoProgressCircle.lineWidth = VIDEO_PROGRESS_CIRCLE_THICKNESS;
 	[self.layer addSublayer:self.videoProgressCircle];
 
 	CABasicAnimation* animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
@@ -323,7 +323,7 @@
 	CGMutablePathRef path = CGPathCreateMutable();
 	CGPoint center = CGPointMake((self.frame.size.width)/2.f,
 								 self.frame.size.height - CAPTURE_MEDIA_BUTTON_OFFSET - CAPTURE_MEDIA_BUTTON_SIZE/2.f);
-	CGRect frame = CGRectMake(center.x - PROGRESS_CIRCLE_SIZE/2.f, center.y -PROGRESS_CIRCLE_SIZE/2.f, PROGRESS_CIRCLE_SIZE, PROGRESS_CIRCLE_SIZE);
+	CGRect frame = CGRectMake(center.x - VIDEO_PROGRESS_CIRCLE_SIZE/2.f, center.y -VIDEO_PROGRESS_CIRCLE_SIZE/2.f, VIDEO_PROGRESS_CIRCLE_SIZE, VIDEO_PROGRESS_CIRCLE_SIZE);
 	float midX = CGRectGetMidX(frame);
 	float midY = CGRectGetMidY(frame);
 	CGAffineTransform t = CGAffineTransformConcat(

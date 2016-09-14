@@ -85,7 +85,7 @@
 		return;
 	}
 
-	NSMutableArray* pages = [PageTypeAnalyzer getPageViewsFromPinchViews: pinchViews withFrame: self.viewingFrame inPreviewMode:YES];
+	NSMutableArray* pages = [PageTypeAnalyzer getPreviewPagesFromPinchviews: pinchViews withFrame: self.viewingFrame];
 	self.postView = [[PostView alloc] initWithFrame: self.bounds andPostChannelActivityObject:nil
 											  small:NO andPageObjects:nil];
 	[self.postView displayPageViews: pages];

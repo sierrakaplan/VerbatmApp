@@ -28,6 +28,8 @@
 @property (nonatomic) UILabel *orLabel;
 @property (strong, nonatomic) UITextField *phoneLoginField;
 @property (nonatomic) UILabel *sendTextLabel;
+@property (nonatomic) UIActivityIndicatorView *loadingIndicator;
+
 
 #define PHONE_FIELD_WIDTH 200.f
 #define PHONE_FIELD_HEIGHT 50.f
@@ -135,6 +137,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	//	NSSet* declinedPermissions = result.declinedPermissions;
 	//batch request for user info as well as friends
 	if ([FBSDKAccessToken currentAccessToken]) {
+        [self.loadingIndicator startAnimating];
 		[[UserManager sharedInstance] signUpOrLoginUserFromFacebookToken: [FBSDKAccessToken currentAccessToken]];
 	} else {
 		//  [self.delegate errorInSignInWithError: @"Facebook login failed."];
@@ -183,6 +186,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 -(void) loginSucceeded: (NSNotification*) notification {
 	// check viewController is visible
 	if (self.isViewLoaded && self.view.window) {
+		[self.loadingIndicator stopAnimating];
         if(![PFUser currentUser][USER_FTUE] || !((NSNumber*)[PFUser currentUser][USER_FTUE]).boolValue) {
             [self performSegueWithIdentifier:SEGUE_FOLLOW_FRIENDS_FROM_FACEBOOK_LOGIN sender:self];
         } else {
@@ -193,6 +197,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 // Only called for fb login errors now
 -(void) loginFailed: (NSNotification*) notification {
+    [self.loadingIndicator stopAnimating];
 	NSError* error = notification.object;
 	[self errorInSignInAnimation: error.localizedDescription];
 }
@@ -288,5 +293,18 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	}
 	return _phoneLoginField;
 }
+
+-(UIActivityIndicatorView *) loadingIndicator {
+    if(!_loadingIndicator) {
+        _loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhiteLarge];
+        CGFloat yPos = self.sendTextLabel.frame.origin.y + self.sendTextLabel.frame.size.height + _loadingIndicator.frame.size.height +  5.f;
+        _loadingIndicator.center = CGPointMake(self.view.frame.size.width/2.f, yPos);
+        _loadingIndicator.hidesWhenStopped = YES;
+        [self.view addSubview:_loadingIndicator];
+    }
+    return _loadingIndicator;
+}
+
+
 
 @end
