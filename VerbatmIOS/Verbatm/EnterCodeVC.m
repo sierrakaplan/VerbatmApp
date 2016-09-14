@@ -82,7 +82,7 @@
 
 -(void) sendCodeToUser:(NSString*) simplePhoneNumber {
 
-    return;//todo: this line lines allow testing create new accounts (use phone numbers no one has)
+   // return;//todo: this line lines allow testing create new accounts (use phone numbers no one has)
     [self disableResendCodeButtonWithText:@"Sending code..."];
 	//todo: include more languages
 	NSDictionary *params = @{@"phoneNumber" : simplePhoneNumber, @"language" : @"en"};
@@ -147,8 +147,8 @@
 	NSString *code = [self getCode];
 
 //	//todo: these lines lines allow testing create new accounts (use phone numbers no one has)
-    [self shortCircuitLoginVerification];
-	return;
+    //[self shortCircuitLoginVerification];
+	//return;
 
 	if (self.verifyingCode) return;
 	self.verifyingCode = YES;
