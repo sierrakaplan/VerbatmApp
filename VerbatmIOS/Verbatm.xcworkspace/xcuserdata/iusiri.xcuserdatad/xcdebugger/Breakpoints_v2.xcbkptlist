@@ -3325,7 +3325,11 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "365"
             endingLineNumber = "365"
+<<<<<<< HEAD
             landmarkName = "-pauseToRearrangeButton"
+=======
+            landmarkName = "-setImageViewsToLocation:"
+>>>>>>> LoginNameSaveIndicator
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3705,7 +3709,11 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "328"
             endingLineNumber = "328"
+<<<<<<< HEAD
             landmarkName = "-onScreen"
+=======
+            landmarkName = "-animateNextView"
+>>>>>>> LoginNameSaveIndicator
             landmarkType = "5">
             <Locations>
                <Location
@@ -3753,7 +3761,11 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "272"
             endingLineNumber = "272"
+<<<<<<< HEAD
             landmarkName = "-animateNextView"
+=======
+            landmarkName = "-pinchViewSelected:"
+>>>>>>> LoginNameSaveIndicator
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4765,8 +4777,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "908"
             endingLineNumber = "908"
-            landmarkName = "@implementation PostListVC"
-            landmarkType = "3">
+            landmarkName = "-sharer:didFailWithError:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -5635,7 +5647,11 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "273"
             endingLineNumber = "273"
+<<<<<<< HEAD
             landmarkName = "-animateNextView"
+=======
+            landmarkName = "-pinchViewSelected:"
+>>>>>>> LoginNameSaveIndicator
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -5907,8 +5923,13 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "70"
             endingLineNumber = "70"
+<<<<<<< HEAD
             landmarkName = "-displayPhotos:"
             landmarkType = "5">
+=======
+            landmarkName = "@interface PhotoPVE()"
+            landmarkType = "2">
+>>>>>>> LoginNameSaveIndicator
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -5923,8 +5944,13 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "58"
             endingLineNumber = "58"
+<<<<<<< HEAD
             landmarkName = "-initWithFrame:small:isPhotoVideoSubview:"
             landmarkType = "5">
+=======
+            landmarkName = "@interface PhotoPVE()"
+            landmarkType = "2">
+>>>>>>> LoginNameSaveIndicator
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -6115,7 +6141,11 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "344"
             endingLineNumber = "344"
+<<<<<<< HEAD
             landmarkName = "-offScreen"
+=======
+            landmarkName = "-collectionClosedWithFinalArray:"
+>>>>>>> LoginNameSaveIndicator
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8752,6 +8782,7 @@
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PhotoPVE.m"
             timestampString = "495490477.131955"
+<<<<<<< HEAD
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "138"
@@ -8773,6 +8804,13 @@
             startingLineNumber = "63"
             endingLineNumber = "63"
             landmarkName = "-displayPhotos:"
+=======
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "138"
+            endingLineNumber = "138"
+            landmarkName = "-addContentFromImagePinchViews:"
+>>>>>>> LoginNameSaveIndicator
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8786,10 +8824,17 @@
             timestampString = "495421837.51274"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
+<<<<<<< HEAD
             startingLineNumber = "52"
             endingLineNumber = "52"
             landmarkName = "-initWithFrame:small:isPhotoVideoSubview:"
             landmarkType = "5">
+=======
+            startingLineNumber = "63"
+            endingLineNumber = "63"
+            landmarkName = "slideshowProgressCircle"
+            landmarkType = "19">
+>>>>>>> LoginNameSaveIndicator
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -8799,13 +8844,44 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PhotoPVE.m"
+            timestampString = "495421837.51274"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+<<<<<<< HEAD
+            startingLineNumber = "69"
+            endingLineNumber = "69"
+            landmarkName = "-displayPhotos:"
+            landmarkType = "5">
+=======
+            startingLineNumber = "52"
+            endingLineNumber = "52"
+            landmarkName = "rearrangeView"
+            landmarkType = "19">
+>>>>>>> LoginNameSaveIndicator
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/PhotoPVE.m"
+<<<<<<< HEAD
+            timestampString = "495490477.131955"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "204"
+            endingLineNumber = "204"
+            landmarkName = "-playSlideshow"
+=======
             timestampString = "495421837.51274"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "69"
             endingLineNumber = "69"
-            landmarkName = "-displayPhotos:"
-            landmarkType = "5">
+            landmarkName = "@interface PhotoPVE()"
+            landmarkType = "2">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -8820,7 +8896,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "204"
             endingLineNumber = "204"
-            landmarkName = "-playSlideshow"
+            landmarkName = "-getImageContainerViewFromPhotoTextArray:"
+>>>>>>> LoginNameSaveIndicator
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8852,7 +8929,11 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "393"
             endingLineNumber = "393"
+<<<<<<< HEAD
             landmarkName = "-animateCirclePathNext"
+=======
+            landmarkName = "-onScreen"
+>>>>>>> LoginNameSaveIndicator
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8868,7 +8949,11 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "168"
             endingLineNumber = "168"
+<<<<<<< HEAD
             landmarkName = "-continePlaySlideShow"
+=======
+            landmarkName = "-getEditContentViewFromPinchView:"
+>>>>>>> LoginNameSaveIndicator
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -8884,7 +8969,11 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "250"
             endingLineNumber = "250"
+<<<<<<< HEAD
             landmarkName = "-animateNextView"
+=======
+            landmarkName = "-pauseToRearrangeButtonPressed"
+>>>>>>> LoginNameSaveIndicator
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
