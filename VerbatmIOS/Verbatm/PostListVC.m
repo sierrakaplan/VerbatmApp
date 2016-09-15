@@ -54,8 +54,6 @@
 #import "UserAndChannelListsTVC.h"
 #import "User_BackendObject.h"
 #import "UserInfoCache.h"
-#import "UserSetupParameters.h"
-
 
 @interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource,
 SharePostViewDelegate,
@@ -564,13 +562,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
-
-	if(![[UserSetupParameters sharedInstance] checkOnboardingShown]&&
-	   !self.inSmallMode){
-		[self.collectionView setScrollEnabled:NO];
-		PostCollectionViewCell * currentCell = (PostCollectionViewCell *)cell;
-		[currentCell presentTapToExitNotification];
-	}
 }
 
 -(void) footerShowing: (BOOL) showing {

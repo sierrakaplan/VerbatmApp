@@ -23,7 +23,6 @@
 
 #import "TextAveKeyboardToolbar.h"
 
-#import "UserSetupParameters.h"
 #import "UITextView+Utilities.h"
 
 @interface EditMediaContentView () <TextAveKeyboardToolbarDelegate, UITextViewDelegate, UIGestureRecognizerDelegate>

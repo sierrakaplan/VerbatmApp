@@ -42,7 +42,6 @@
 #import "UserAndChannelListsTVC.h"
 #import "User_BackendObject.h"
 #import "UserInfoCache.h"
-#import "UserSetupParameters.h"
 #import "UserManager.h"
 
 #import "VerbatmNavigationController.h"
@@ -103,12 +102,11 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 	[super viewDidAppear:animated];
 	if (![PFUser currentUser].isAuthenticated) {
 		[self bringUpLogin];
-    }else{
+    } else {
         //todo: did we crash during onboarding?
-        BOOL appCrashedInOnboarding = (![[UserSetupParameters sharedInstance] checkOnboardingShown] && !self.justLeftOnboarding);
+        BOOL appCrashedInOnboarding = ((![PFUser currentUser][USER_FTUE] || !((NSNumber*)[PFUser currentUser][USER_FTUE]).boolValue)
+									   && !self.justLeftOnboarding);
         if(appCrashedInOnboarding){
-            //
-            
             //this means we are here without going thro
             [self revealADK];
         }
@@ -182,8 +180,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 	PFInstallation *currentInstallation = [PFInstallation currentInstallation];
 	currentInstallation[@"user"] = [PFUser currentUser];
 	[currentInstallation saveInBackground];
-    
-	[[UserSetupParameters sharedInstance] setUpParameters];
+
 	NSString *facebookId = [PFUser currentUser][USER_FB_ID];
 	if (!facebookId) {
 		[UserManager setFbId];
@@ -391,7 +388,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 
 -(void) revealADK {
 	[[Analytics getSharedInstance] newADKSession];
-    if([MediaSessionManager adkMediaPermissionsAllowed] && [[UserSetupParameters sharedInstance] checkOnboardingShown]){
+    if([MediaSessionManager adkMediaPermissionsAllowed] && ((NSNumber*)[PFUser currentUser][USER_FTUE]).boolValue){
         [self performSegueWithIdentifier:ADK_SEGUE sender:self];
     }else{
         [self performSegueWithIdentifier:SEGUE_CREATE_FIRST_POST_FROM_MASTER sender:self];

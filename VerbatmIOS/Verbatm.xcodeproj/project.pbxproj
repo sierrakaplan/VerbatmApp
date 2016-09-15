@@ -183,7 +183,6 @@
 		C716E9D21BD6C338001B769D /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = C716E9D11BD6C338001B769D /* Analytics.m */; };
 		C7178E081D21101900B90643 /* FeedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7178E071D21101900B90643 /* FeedTableViewController.m */; };
 		C7178E0B1D21A12000B90643 /* FeedTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C7178E0A1D21A12000B90643 /* FeedTableCell.m */; };
-		C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4091BA615B50075CA80 /* UserSetupParameters.m */; };
 		C71FA3221D474FAB003989F3 /* AdjustTextFontToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C71FA3211D474FAB003989F3 /* AdjustTextFontToolBar.m */; };
 		C71FA3251D476D91003989F3 /* AdjustTextAVEBackgroundToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C71FA3241D476D91003989F3 /* AdjustTextAVEBackgroundToolBar.m */; };
 		C71FA3281D477E16003989F3 /* TextPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = C71FA3271D477E16003989F3 /* TextPinchView.m */; };
@@ -568,8 +567,6 @@
 		C7178E071D21101900B90643 /* FeedTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedTableViewController.m; sourceTree = "<group>"; };
 		C7178E091D21A12000B90643 /* FeedTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedTableCell.h; sourceTree = "<group>"; };
 		C7178E0A1D21A12000B90643 /* FeedTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedTableCell.m; sourceTree = "<group>"; };
-		C719A4081BA615B50075CA80 /* UserSetupParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserSetupParameters.h; sourceTree = "<group>"; };
-		C719A4091BA615B50075CA80 /* UserSetupParameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserSetupParameters.m; sourceTree = "<group>"; };
 		C71FA3201D474FAB003989F3 /* AdjustTextFontToolBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdjustTextFontToolBar.h; sourceTree = "<group>"; };
 		C71FA3211D474FAB003989F3 /* AdjustTextFontToolBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdjustTextFontToolBar.m; sourceTree = "<group>"; };
 		C71FA3231D476D91003989F3 /* AdjustTextAVEBackgroundToolBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdjustTextAVEBackgroundToolBar.h; sourceTree = "<group>"; };
@@ -1189,8 +1186,6 @@
 		A560EF991BA88F8B003FB041 /* User App Preferences */ = {
 			isa = PBXGroup;
 			children = (
-				C719A4081BA615B50075CA80 /* UserSetupParameters.h */,
-				C719A4091BA615B50075CA80 /* UserSetupParameters.m */,
 			);
 			name = "User App Preferences";
 			sourceTree = "<group>";
@@ -2087,7 +2082,6 @@
 				A51B851A1D2F39B1006E90CC /* UIView+DTDebug.m in Sources */,
 				A51B85201D2F3C43006E90CC /* DTLog.m in Sources */,
 				C7E566DC1D878D2F0036F1C6 /* VideoPveEditingView.m in Sources */,
-				C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */,
 				A5E73B7F1D16365400527ECF /* GTLObject.m in Sources */,
 				A5E73BFB1D1770B400527ECF /* GTLVerbatmAppVerbatmUser.m in Sources */,
 				A5E73C031D177DBF00527ECF /* Reachability.m in Sources */,

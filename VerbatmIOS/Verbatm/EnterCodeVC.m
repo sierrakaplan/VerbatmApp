@@ -16,7 +16,6 @@
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "UIView+Effects.h"
-#import "UserSetupParameters.h"
 
 #import <Parse/PFUser.h>
 #import "ParseBackendKeys.h"
@@ -33,7 +32,6 @@
 @property (nonatomic) UILabel *codeSentToNumberLabel;
 
 @property (nonatomic) BOOL verifyingCode;
-@property (nonatomic) BOOL segueCalled;
 @property (nonatomic) UIButton *resendCodeButton;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 
@@ -65,10 +63,6 @@
 	[self.view sendSubviewToBack:self.backgroundImageView];
 	[self.digitOneField becomeFirstResponder];
 	[self formatNavigationItem];
-}
-
--(void)viewWillAppear:(BOOL)animated{
-    self.segueCalled = NO;
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -125,24 +119,6 @@
 	return attributedTitle;
 }
 
--(void)goOnToCreateName{
-    if(self.segueCalled) return;
-    self.segueCalled = YES;
-    [self performSegueWithIdentifier:SEGUE_CREATE_NAME sender:self];
-    
-}
-
-//hacky code -- just for testing
-//be sure to call return after calling
--(void)shortCircuitLoginVerification{
-    PFUser *newUser = [PFUser user];
-    newUser.username = self.simplePhoneNumber;
-    newUser.password = [self getCode];
-    [newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        [self goOnToCreateName];
-    }];
-}
-
 -(void) verifyCode {
 	NSString *code = [self getCode];
 
@@ -162,44 +138,31 @@
 		//todo: show something's happening
 		NSDictionary *params = @{@"phoneNumber": self.simplePhoneNumber, @"codeEntry": code};
 		[PFCloud callFunctionInBackground:@"logIn" withParameters:params
-									block:^(id  _Nullable object, NSError * _Nullable error) {
+									block:^(NSString* token, NSError * _Nullable error) {
 			if (error) {
 				[self showWrongCode];
 			} else {
 				// This is the session token for the user
-				NSString *token = (NSString*)object;
-
 				[PFUser becomeInBackground:token block:^(PFUser * _Nullable user, NSError * _Nullable error) {
 					if (error) {
 						[self showAlertWithTitle:@"Login Error" andMessage:error.localizedDescription];
 						[self enableResendCodeButton];
 						self.verifyingCode = NO;
 					} else {
-						if (self.creatingAccount) {
-							//todo: enter name
-							//						[user setObject:self.verbatmName forKey:VERBATM_USER_NAME_KEY];
-							[user setObject:[NSNumber numberWithBool:NO] forKey:USER_FTUE];
-							[user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-								if(succeeded) {
-                                    [self goOnToCreateName];
-								}
-							}];
+						if(![PFUser currentUser][USER_FTUE] || !((NSNumber*)[PFUser currentUser][USER_FTUE]).boolValue) {
+							NSString * userName = user[VERBATM_USER_NAME_KEY];
+							if(userName && userName.length){
+								//go to onboarding adk
+								[self performSegueWithIdentifier:SEGUE_ONBOARD_FROM_ENTER_CODE sender:self];
+							} else {
+								[self performSegueWithIdentifier:SEGUE_CREATE_NAME sender:self];
+							}
+
 						} else {
-                            
-                            if(![[UserSetupParameters sharedInstance] checkOnboardingShown]){
-                                NSString * userName = user[VERBATM_USER_NAME_KEY];
-                                if(userName && userName.length){
-                                    //go to onboarding adk
-                                    [self performSegueWithIdentifier:SEGUE_ONBOARD_FROM_ENTER_CODE sender:self];
-                                }else{
-                                    [self goOnToCreateName];
-                                }
-                                
-                            }else{
-                                [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
-                                [self performSegueWithIdentifier:UNWIND_SEGUE_PHONE_LOGIN_TO_MASTER sender:self];
-                            }
+							[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
+							[self performSegueWithIdentifier:UNWIND_SEGUE_PHONE_LOGIN_TO_MASTER sender:self];
 						}
+
 					}
 				}];
 			}
@@ -226,7 +189,6 @@
 -(void) showWrongCode {
 	[self enableResendCodeButton];
 	self.verifyingCode = NO;
-	//todo:
 	[self setTextColor: [UIColor redColor] andShakeView:YES];
 }
 

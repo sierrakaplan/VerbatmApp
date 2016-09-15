@@ -9,6 +9,7 @@
 #import "EnterCodeVC.h"
 #import "ChooseLoginVC.h"
 #import <Crashlytics/Crashlytics.h>
+#import "ParseBackendKeys.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import "LoginKeyboardToolBar.h"
@@ -18,7 +19,6 @@
 #import "SizesAndPositions.h"
 
 #import "UserManager.h"
-#import "UserSetupParameters.h"
 #import "UtilityFunctions.h"
 
 @interface ChooseLoginVC() <UITextFieldDelegate, LoginKeyboardToolBarDelegate, FBSDKLoginButtonDelegate>
@@ -125,11 +125,6 @@
 #pragma mark - Facebook Button Delegate  -
 
 
--(void)userHasNotCompletedOnboardingPresentOnboardingADK{
-    [self performSegueWithIdentifier:SEGUE_ONBOARD_FROM_CHOOSE_LOGIN sender:self];
-}
-
-
 - (void)  loginButton:(FBSDKLoginButton *)loginButton
 didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 				error:(NSError *)error {
@@ -191,19 +186,12 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 -(void) loginSucceeded: (NSNotification*) notification {
 	// check viewController is visible
 	if (self.isViewLoaded && self.view.window) {
-        [self.loadingIndicator stopAnimating];
-        if(![[UserSetupParameters sharedInstance] checkOnboardingShown]) {
-            //official onboaring
-            if (self.creatingAccount) {
-                [self performSegueWithIdentifier:SEGUE_FOLLOW_FRIENDS_FROM_FACEBOOK_LOGIN sender:self];
-            } else {
-                //on boarding crashed for some reason so we are taking them to the ADK
-                [self userHasNotCompletedOnboardingPresentOnboardingADK];
-            }
-        }else{
-                [self performSegueWithIdentifier:UNWIND_SEGUE_FACEBOOK_LOGIN_TO_MASTER sender:self];
+		[self.loadingIndicator stopAnimating];
+        if(![PFUser currentUser][USER_FTUE] || !((NSNumber*)[PFUser currentUser][USER_FTUE]).boolValue) {
+            [self performSegueWithIdentifier:SEGUE_FOLLOW_FRIENDS_FROM_FACEBOOK_LOGIN sender:self];
+        } else {
+            [self performSegueWithIdentifier:UNWIND_SEGUE_FACEBOOK_LOGIN_TO_MASTER sender:self];
         }
-		
 	}
 }
 

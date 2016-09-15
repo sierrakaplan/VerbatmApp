@@ -32,7 +32,6 @@
 
 #import "TermsAndConditionsVC.h"
 
-#import "UserSetupParameters.h"
 #import "UserManager.h"
 #import "VerbatmNavigationController.h"
 

@@ -10,7 +10,6 @@
 #import "Styles.h"
 #import "SizesAndPositions.h"
 #import "TermsAndConditionsVC.h"
-#import "UserSetupParameters.h"
 
 @interface TermsAndConditionsVC ()<CustomNavigationBarDelegate>
 

@@ -31,7 +31,6 @@
 #import "Styles.h"
 
 #import "UserManager.h"
-#import "UserSetupParameters.h"
 #import "UIView+Effects.h"
 
 #import "VideoPVE.h"
@@ -248,12 +247,10 @@
 		[self displayMediaOnCurrentPage];
 	}
 
-	//todo: check timing
-	if(![[UserSetupParameters sharedInstance] checkOnboardingShown] && self.pageViews.count > 1) {
+	if((![PFUser currentUser][USER_FTUE] || !((NSNumber*)[PFUser currentUser][USER_FTUE]).boolValue)) {
 		[self presentSwipeUpAndDownInstruction];
 	}
 }
-
 
 -(void) checkIfUserHasLikedThePost {
     __weak PostView *weakSelf = self;

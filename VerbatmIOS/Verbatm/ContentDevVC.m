@@ -53,7 +53,6 @@
 
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "UserInfoCache.h"
-#import "UserSetupParameters.h"
 #import "UIView+Effects.h"
 
 #import "VerbatmCameraView.h"
@@ -1641,10 +1640,6 @@ andSaveInUserDefaults:(BOOL)save {
 	[self.cameraView removeFromSuperview];
 	[self removeExcessMediaTiles];
     self.screenInCameraMode = NO;
-    if(self.numPinchViews > 1.f && !self.currentlyPresentingInstruction &&
-       ![[UserSetupParameters sharedInstance] checkOnboardingShown]){
-        [self presentPinchInstruction];
-    }
 }
 
 #pragma mark - Gallery + Image picker -

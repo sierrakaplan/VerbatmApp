@@ -31,9 +31,6 @@
 // segue from master vc to onboarding
 #define SEGUE_ONBOARDING_ALREADY_LOGGED_IN @"logged_in_onboarding_segue"
 
-
-#define SEGUE_ONBOARD_FROM_CHOOSE_LOGIN @"OnboardFromChooseLogin"
-
 #define SEGUE_ONBOARD_FROM_ENTER_CODE @"OnboardFromEnterCodeSegue"
 
 // unwind segues back to master from login/onboarding
