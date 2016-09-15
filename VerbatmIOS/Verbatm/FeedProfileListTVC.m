@@ -51,12 +51,7 @@
     self.tableView.allowsSelection = YES;
     self.tableView.delegate = self;
 	[self formatNavigationItem];
-    
-    //avoid covering last item in uitableview
-//    UIEdgeInsets inset = UIEdgeInsetsMake(CELL_HEIGHT, 0, 0, 0);
-//    self.tableView.contentInset = inset;
-//    self.tableView.scrollIndicatorInsets = inset;
-//    [self createLogoBar];
+
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refreshListOfContent) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:self.refreshControl];
@@ -67,9 +62,8 @@
 	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 }
 
--(void)viewDidAppear:(BOOL)animated{
+-(void)viewWillAppear:(BOOL)animated{
     [self refreshListOfContent];
-//    if(self.logoBar)[self.view bringSubviewToFront:self.logoBar];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -79,11 +73,6 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
--(void)createLogoBar {
-//    self.logoBar = [[ProfileVerbatmLogoBar alloc] initWithFrame:CGRectMake(0.f, -1 * CELL_HEIGHT, self.view.frame.size.width, CELL_HEIGHT)];
-//    [self.tableView addSubview:self.logoBar];
 }
 
 -(void)findUpdatedPosts{
@@ -97,9 +86,6 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-//    [scrollView bringSubviewToFront:self.logoBar];
-//    CGRect newNavBarFrame = CGRectMake(0.f, scrollView.contentOffset.y, self.logoBar.frame.size.width, self.logoBar.frame.size.height);;
-//    self.logoBar.frame = newNavBarFrame;
 }
 
 
@@ -225,6 +211,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
         [self findUpdatedPosts];
         [self.refreshControl endRefreshing];
         [self.tableView reloadData];
+        
     }];
 }
 

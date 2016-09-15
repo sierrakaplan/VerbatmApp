@@ -193,16 +193,15 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	if (self.isViewLoaded && self.view.window) {
         [self.loadingIndicator stopAnimating];
         if(![[UserSetupParameters sharedInstance] checkOnboardingShown]) {
-            [self userHasNotCompletedOnboardingPresentOnboardingADK];
-        
-        }else{
-            
+            //official onboaring
             if (self.creatingAccount) {
                 [self performSegueWithIdentifier:SEGUE_FOLLOW_FRIENDS_FROM_FACEBOOK_LOGIN sender:self];
             } else {
-                [self performSegueWithIdentifier:UNWIND_SEGUE_FACEBOOK_LOGIN_TO_MASTER sender:self];
+                //on boarding crashed for some reason so we are taking them to the ADK
+                [self userHasNotCompletedOnboardingPresentOnboardingADK];
             }
-            
+        }else{
+                [self performSegueWithIdentifier:UNWIND_SEGUE_FACEBOOK_LOGIN_TO_MASTER sender:self];
         }
 		
 	}
