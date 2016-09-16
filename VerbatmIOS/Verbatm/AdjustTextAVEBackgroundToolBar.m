@@ -40,7 +40,7 @@
 }
 
 -(void)createScrollingViews{
-    CGFloat xAdvanced = IMAGE_GAP + TEXT_TOOLBAR_BUTTON_OFFSET;
+    CGFloat xAdvanced = 2.5*(IMAGE_GAP + TEXT_TOOLBAR_BUTTON_OFFSET);
     for(int i = 0; i < self.circleButtonBackgrounds.count; i++) {
         CGRect  buttomFrame = CGRectMake(xAdvanced, 2.f, IMAGE_SIZE, IMAGE_SIZE);
         UIButton * button = [UtilityFunctions getButtonWithFrame:buttomFrame andIcon:self.circleButtonBackgrounds[i] andSelector:@selector(buttonSelected:) andTarget:self];
