@@ -1556,13 +1556,31 @@ andSaveInUserDefaults:(BOOL)save {
 	self.currentlyPreviewingContent = YES;
 }
 
+-(BOOL)isEmptyTextPinchview:(PinchView *) pv{
+    
+    if([pv isKindOfClass:[TextPinchView class]]){
+        NSString * stringNoSpaces = [((TextPinchView *)pv).text stringByReplacingOccurrencesOfString:@" " withString:@""];
+        if([stringNoSpaces isEqualToString:@""]){
+            return YES;
+        }
+    }
+    return NO;
+}
+
 -(void) aboutToRemovePreview {
- 	for (ContentPageElementScrollView* contentScrollView in self.pageElementScrollViews) {
+    for (NSInteger i = 0; i < self.pageElementScrollViews.count; i++) {
+        ContentPageElementScrollView* contentScrollView = self.pageElementScrollViews[i];
+        
 		if ([contentScrollView.pageElement isKindOfClass:[PinchView class]]) {
-			PinchView *pinchView = (PinchView*)contentScrollView.pageElement;
-			[pinchView renderMedia];
+            if([self isEmptyTextPinchview:(PinchView *)contentScrollView.pageElement]){
+                [self deleteScrollView:contentScrollView];
+            }else{
+                PinchView *pinchView = (PinchView*)contentScrollView.pageElement;
+                [pinchView renderMedia];
+            }
 		}
 	}
+    [self removeExcessMediaTiles];
 	self.currentlyPreviewingContent = NO;
 }
 
