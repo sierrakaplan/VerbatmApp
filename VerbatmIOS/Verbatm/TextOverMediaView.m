@@ -298,10 +298,6 @@ andTextAlignment:(NSTextAlignment) textAlignment
 -(void) changeTextColor:(UIColor *)textColor {
 	self.textView.textColor = textColor;
 	self.textView.tintColor = textColor;
-	if([self.textView isFirstResponder]) {
-		[self.textView resignFirstResponder];
-		[self.textView becomeFirstResponder];
-	}
 }
 
 -(void) changeTextAlignment:(NSTextAlignment)textAlignment {

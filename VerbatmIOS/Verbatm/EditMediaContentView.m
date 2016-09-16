@@ -298,7 +298,11 @@ andTextAlignment:(NSTextAlignment)textAlignment
 }
 
 -(void)keyboardDidHide:(NSNotification *) notification {
-	[self addToolBarToViewWithTextColorBlack:NO];
+    if(self.textAndImageView){
+        [self addToolBarToViewWithTextColorBlack:self.textAndImageView.blackTextColor];
+    }else{
+       [self addToolBarToViewWithTextColorBlack:NO];
+    }
     if(![self.textAndImageView getText].length)[self.permanentOnScreenKeyboard hideTextEditingOptions];
     else [self.permanentOnScreenKeyboard presentTextEditingOptions];
 }
