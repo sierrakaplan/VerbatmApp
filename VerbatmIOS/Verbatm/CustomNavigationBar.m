@@ -47,7 +47,9 @@
 		[leftButton setImage:image forState:UIControlStateNormal];
 	}
 	[self addSubview: leftButton];
-	[leftButton addTarget:self action:@selector(leftButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+	[leftButton addTarget:self action:@selector(leftButtonPressed:) forControlEvents:UIControlEventTouchDown];
+    [leftButton setBackgroundColor:[UIColor redColor]];
+    
 }
 
 -(void) createMiddleButtonWithTitle: (NSString*) title orImage: (UIImage*) image {
