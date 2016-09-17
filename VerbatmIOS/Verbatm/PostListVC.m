@@ -763,7 +763,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 													handler:^(UIAlertAction * action) {
 
 														NSMutableArray *channels = [[NSMutableArray alloc] init];
-
+                                                        
+                                                        [Share_BackendManager currentUserReblogPost:self.postToShare toChannel:[[UserInfoCache sharedInstance] getUserChannel].parseChannelObject];
+                                                        
 														[channels addObject:[[UserInfoCache sharedInstance] getUserChannel]];
 
 														[Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{

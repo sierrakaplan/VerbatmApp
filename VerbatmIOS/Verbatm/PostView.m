@@ -368,7 +368,6 @@
 			}
 			break;
 		case Share:
-			[Share_BackendManager currentUserReblogPost:post toChannel:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO]];
 			[self.delegate shareOptionSelectedForParsePostObject:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
 			break;
         case CommentListPresent:
