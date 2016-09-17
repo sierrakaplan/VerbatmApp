@@ -635,7 +635,7 @@
 }
 
 -(void)showPageUpIndicator {
-    if(!self.pageUpIndicatorDisplayed){
+    if(!self.pageUpIndicatorDisplayed && self.pageObjects.count > 1){
         self.pageUpIndicatorDisplayed = YES;
         if(!self.pageUpIndicator && self.pageViews.count) {
             UIImage * arrowImage = [UIImage imageNamed:PAGE_UP_ICON_IMAGE];

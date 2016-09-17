@@ -219,6 +219,7 @@
 
 			if (self.inSmallMode){
 				[self.currentPostView checkIfUserHasLikedThePost];
+                [self.currentPostView showPageUpIndicator];
 			} else {
 				[self.currentPostView createLikeAndShareBarWithNumberOfLikes: self.numLikes
 															  numberOfShares: self.numShares numberOfComments: self.numComments
