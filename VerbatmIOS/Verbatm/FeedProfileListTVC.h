@@ -10,7 +10,7 @@
 
 
 /*
- List of people that you are following on Verbatm.
+ List of names of people that you are following on Verbatm.
  */
 
 @protocol FeedProfileListProtocol <NSObject>

@@ -35,6 +35,8 @@
 
 @interface UserAndChannelListsTVC () <CustomNavigationBarDelegate>
 
+@property (nonatomic) UIImageView * emptyStateView;
+
 @property (nonatomic) Channel *channelOnDisplay;
 @property (nonatomic) PFObject *postObject;
 
@@ -121,12 +123,50 @@
 	self.channelOnDisplay = channel;
 	self.postObject = post;
 	[self refreshDataForListType:listType forChannel:channel orPost:post withCompletionBlock:^{
+        
+        if(!self.channelsToDisplay.count){
+            [self setEmptyStateForList];
+        }else{
+            [self removeEmptyState];
+        }
+        
 		self.shouldAnimateViews = YES;
 		[self.loadMoreSpinner stopAnimating];
 		[self.refreshControl endRefreshing];
 		[self.tableView reloadData];
 	}];
 	[self setNavigationItemTitle];
+}
+
+
+-(void)setEmptyStateForList{
+    if(self.emptyStateView) return;
+    
+    NSString * emptyStateString = @"";
+    switch (self.currentListType) {
+        case FollowingList:
+            emptyStateString = FOLLOWING_LIST_EMPTY_STATE;
+            break;
+        case FollowersList:
+            emptyStateString = FOLLOWERS_LIST_EMPTY_STATE;
+            break;
+        case LikersList:
+            //this should never be called
+            break;
+    }
+
+    UIImage * emptyStateImage = [UIImage imageNamed:emptyStateString];
+    self.emptyStateView = [[UIImageView alloc] initWithImage:emptyStateImage];
+    self.emptyStateView.contentMode = UIViewContentModeScaleAspectFit;
+    self.emptyStateView.frame = CGRectMake(10.f, 0.f, self.view.frame.size.width - 20.f, self.view.frame.size.height);;
+    [self.view addSubview:self.emptyStateView];
+}
+
+-(void)removeEmptyState{
+    if(self.emptyStateView){
+        [self.emptyStateView removeFromSuperview];
+        self.emptyStateView = nil;
+    }
 }
 
 -(void)viewDidLayoutSubviews {

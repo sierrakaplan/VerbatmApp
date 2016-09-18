@@ -17,7 +17,7 @@
 #import "ProfileListHeader.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
-
+#import "Icons.h"
 #import "UserInfoCache.h"
 
 @interface FeedProfileListTVC ()<FeedTableViewDelegate,UITableViewDelegate>
@@ -27,6 +27,9 @@
 @property (nonatomic) NSMutableArray *channelsRecentlyUpdated;
 @property (nonatomic) Channel *currentUserChannel;
 @property (nonatomic) UIView *headerView;
+
+
+@property (nonatomic) UIImageView * emptyStateView;
 
 @end
 
@@ -52,11 +55,6 @@
     self.tableView.delegate = self;
 	[self formatNavigationItem];
     
-    //avoid covering last item in uitableview
-//    UIEdgeInsets inset = UIEdgeInsetsMake(CELL_HEIGHT, 0, 0, 0);
-//    self.tableView.contentInset = inset;
-//    self.tableView.scrollIndicatorInsets = inset;
-//    [self createLogoBar];
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refreshListOfContent) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:self.refreshControl];
@@ -69,7 +67,6 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     [self refreshListOfContent];
-//    if(self.logoBar)[self.view bringSubviewToFront:self.logoBar];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -81,9 +78,22 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)createLogoBar {
-//    self.logoBar = [[ProfileVerbatmLogoBar alloc] initWithFrame:CGRectMake(0.f, -1 * CELL_HEIGHT, self.view.frame.size.width, CELL_HEIGHT)];
-//    [self.tableView addSubview:self.logoBar];
+
+
+-(void)clearEmptyState{
+    if(self.emptyStateView){
+        [self.emptyStateView removeFromSuperview];
+        self.emptyStateView = nil;
+    }
+}
+-(void)createEmptyStateView{
+    if(self.emptyStateView) return;
+    UIImage * emptyStateImage = [UIImage imageNamed:PROFILE_NAME_LIST_EMPTY_STATE];
+    self.emptyStateView = [[UIImageView alloc] initWithImage:emptyStateImage];
+    self.emptyStateView.contentMode = UIViewContentModeScaleAspectFit;
+    self.emptyStateView.frame = CGRectMake(10.f, 0.f, self.view.frame.size.width - 20.f, self.view.frame.size.height);
+    [self.view addSubview:self.emptyStateView];
+
 }
 
 -(void)findUpdatedPosts{
@@ -124,7 +134,6 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-//    [self.logoBar removeFromSuperview];
 
     NSInteger startIndex = (indexPath.section == 0) ? indexPath.row : indexPath.row + self.channelsRecentlyUpdated.count;
 
@@ -138,7 +147,7 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return (self.emptyStateView) ? 0 : 2;//if there's nothing then we don't have sections
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -223,6 +232,13 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
             return [[leftObj userName] caseInsensitiveCompare:[rightObj userName]];
         }];
         [self findUpdatedPosts];
+        
+        if(!self.channelsUserFollowing || self.channelsUserFollowing.count == 0){
+            [self createEmptyStateView];
+        }else{
+            [self clearEmptyState];
+        }
+        
         [self.refreshControl endRefreshing];
         [self.tableView reloadData];
     }];
