@@ -11,6 +11,8 @@
 #import "FeedListTableViewCell.h"
 #import "FeedTableViewController.h"
 
+#import "Icons.h"
+
 #import "Notifications.h"
 
 #import "ParseBackendKeys.h"
@@ -29,6 +31,7 @@
 @property (nonatomic) NSMutableArray *channelsRecentlyUpdated;
 @property (nonatomic) Channel *currentUserChannel;
 @property (nonatomic) UIView *headerView;
+@property (nonatomic) UIImageView * noInternetState;
 
 @end
 
@@ -68,8 +71,17 @@
     NSNumber * connectivity =  [not userInfo][INTERNET_CONNECTION_KEY];
     if(![connectivity boolValue]){
         
-    }else{
+        if(self.noInternetState) return;
+        self.noInternetState = [[UIImageView alloc] initWithFrame:self.view.bounds];
+        [self.noInternetState setImage:[UIImage imageNamed:NO_INTERNET_ICON]];
+        [self.view addSubview:self.noInternetState];
+        [self.tableView reloadData];
         
+    }else{
+        if(!self.noInternetState) return;
+        [self.noInternetState removeFromSuperview];
+        self.noInternetState = nil;
+        [self refreshListOfContent];
     }
 }
 
@@ -142,7 +154,7 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return (self.noInternetState) ? 0: 2;//if there is no internet then don't present anything
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
