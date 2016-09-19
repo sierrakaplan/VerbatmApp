@@ -46,12 +46,16 @@
 	return _sharedInstance;
 }
 
+-(BOOL)isThereConnectivity{
+    return self.thereIsConnection;
+}
+
 -(void)prepareReachabilityInfo {
     //register to receive notifications whenever the status of connectivity changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
     
-    //start at no
-    self.thereIsConnection = NO;
+    //start at YES - makes sense since the app is loaded
+    self.thereIsConnection = YES;
     self.justReceivedNoConnectionSignal = NO;
     self.internetReachability = [Reachability reachabilityForInternetConnection];
     [self.internetReachability startNotifier];

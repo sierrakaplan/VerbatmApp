@@ -12,6 +12,7 @@
 
 #import "CurrentUserProfileVC.h"
 #import "Icons.h"
+#import "InternetConnectionMonitor.h"
 #import "ParseBackendKeys.h"
 #import "ProfileHeaderView.h"
 #import "ProfileMoreInfoView.h"
@@ -35,6 +36,9 @@
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
+    if(![[InternetConnectionMonitor sharedInstance] isThereConnectivity]){
+        [self updateNetworkStateView:[[InternetConnectionMonitor sharedInstance] isThereConnectivity]];
+    }
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(networkConnectionUpdate:)
@@ -43,22 +47,30 @@
 }
 
 -(void)networkConnectionUpdate:(NSNotification *) notification {
-    
     NSNumber * connectivity =  [notification userInfo][INTERNET_CONNECTION_KEY];
-    if(![connectivity boolValue]){
+    [self updateNetworkStateView:[connectivity boolValue]];
+    
+}
+
+-(void)updateNetworkStateView:(BOOL)thereIsConnectivity{
+    if(thereIsConnectivity){
+        if(!self.noInternetState) return;
+        [self.noInternetState removeFromSuperview];
+        self.noInternetState = nil;
+        [self reloadProfile];
+    }else{
+        
         if(self.noInternetState) return;
         [self clearOurViews];
         self.noInternetState = [[UIImageView alloc] initWithFrame:self.view.bounds];
         [self.noInternetState setImage:[UIImage imageNamed:NO_INTERNET_ICON]];
         [self.view addSubview:self.noInternetState];
-    }else{
-        if(!self.noInternetState) return;
-        [self.noInternetState removeFromSuperview];
-        self.noInternetState = nil;
-        [self reloadProfile];
+        
+        
+        
     }
-    
 }
+
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear: animated];

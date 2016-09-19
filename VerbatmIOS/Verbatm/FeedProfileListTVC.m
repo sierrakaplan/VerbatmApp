@@ -11,6 +11,7 @@
 #import "FeedListTableViewCell.h"
 #import "FeedTableViewController.h"
 
+#import "InternetConnectionMonitor.h"
 #import "Icons.h"
 
 #import "Notifications.h"
@@ -46,6 +47,14 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    
+    if([[InternetConnectionMonitor sharedInstance] isThereConnectivity]){
+        [super viewDidLoad];
+    }else{
+        [self updateNetworkStateView:[[InternetConnectionMonitor sharedInstance] isThereConnectivity]];
+    }
+    
     self.view.backgroundColor = [UIColor blackColor];
 	self.headerView = [[UIView alloc] initWithFrame:CGRectMake(0.f, 0.f, self.view.frame.size.width,
 																		  STATUS_BAR_HEIGHT)];
@@ -69,7 +78,18 @@
 
 -(void)networkConnectionUpdate:(NSNotification *)not{
     NSNumber * connectivity =  [not userInfo][INTERNET_CONNECTION_KEY];
-    if(![connectivity boolValue]){
+    [self updateNetworkStateView:[connectivity boolValue]];
+}
+
+-(void)updateNetworkStateView:(BOOL)thereIsConnectivity{
+    if(thereIsConnectivity){
+        if(!self.noInternetState) return;
+        [self.noInternetState removeFromSuperview];
+        self.noInternetState = nil;
+        [self refreshListOfContent];
+
+        
+    }else{
         
         if(self.noInternetState) return;
         self.noInternetState = [[UIImageView alloc] initWithFrame:self.view.bounds];
@@ -77,14 +97,9 @@
         [self.view addSubview:self.noInternetState];
         [self.tableView reloadData];
         
-    }else{
-        if(!self.noInternetState) return;
-        [self.noInternetState removeFromSuperview];
-        self.noInternetState = nil;
-        [self refreshListOfContent];
     }
+    
 }
-
 -(void) formatNavigationItem {
 	self.navigationItem.title = @"Profile List";
 	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];

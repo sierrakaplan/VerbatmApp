@@ -19,4 +19,9 @@
 //tells you if the app is connected to the internet asynchronously;
 -(void) isConnectedToInternet_asynchronous;
 
+//tells you the most recent update state
+//so this could return true but a new update could occur right after saying there's no connection
+//all you know is that this is the state of the most recent update that has occured
+//use this in tandem with notifications that send more accurate updates
+-(BOOL)isThereConnectivity;
 @end
