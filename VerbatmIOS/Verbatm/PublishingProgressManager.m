@@ -112,7 +112,7 @@
 // Blocks is publishing something else, no network
 -(void)publishPostToChannel:(Channel *)channel andFacebook:(BOOL)externalShare withCaption:(NSString *)caption withPinchViews:(NSArray *)pinchViews
 		withCompletionBlock:(void(^)(BOOL, BOOL))publishHasStartedSuccessfully {
-    
+        
     self.externalShareObject = [[ExternalShare alloc] initWithCaption:caption];
 	self.shareToFB = externalShare;
 

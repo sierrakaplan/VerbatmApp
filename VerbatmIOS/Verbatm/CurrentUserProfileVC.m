@@ -18,14 +18,14 @@
 #import "SettingsVC.h"
 #import "VerbatmNavigationController.h"
 #import "StoryboardVCIdentifiers.h"
-
+#import "Notifications.h"
 #import "VerbatmNavigationController.h"
 #import "UserManager.h"
 
 @interface CurrentUserProfileVC() <ProfileHeaderViewDelegate, GMImagePickerControllerDelegate, RPPreviewViewControllerDelegate, RPScreenRecorderDelegate>
 
 @property (nonatomic) PHImageManager* imageManager;
-
+@property (nonatomic) UIImageView * noInternetState;
 #define SETTINGS_BUTTON_SIZE 24.f
 @property (nonatomic) BOOL currentlyRecording;
 
@@ -35,8 +35,29 @@
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
-    [self addReplayKitGesture];
-    [RPScreenRecorder sharedRecorder].delegate = self;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(networkConnectionUpdate:)
+                                                 name:INTERNET_CONNECTION_NOTIFICATION
+                                               object:nil];
+}
+
+-(void)networkConnectionUpdate:(NSNotification *) notification {
+    
+    NSNumber * connectivity =  [notification userInfo][INTERNET_CONNECTION_KEY];
+    if(![connectivity boolValue]){
+        if(self.noInternetState) return;
+        [self clearOurViews];
+        self.noInternetState = [[UIImageView alloc] initWithFrame:self.view.bounds];
+        [self.noInternetState setImage:[UIImage imageNamed:NO_INTERNET_ICON]];
+        [self.view addSubview:self.noInternetState];
+    }else{
+        if(!self.noInternetState) return;
+        [self.noInternetState removeFromSuperview];
+        self.noInternetState = nil;
+        [self reloadProfile];
+    }
+    
 }
 
 -(void) viewWillAppear:(BOOL)animated {

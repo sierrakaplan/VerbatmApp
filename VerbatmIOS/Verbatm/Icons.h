@@ -203,6 +203,8 @@
 #define LOGIN_ICON @"log_in_text"
 #define CREATE_ACCOUNT @"create_account_text"
 
+#pragma mark - No Internet -
+#define NO_INTERNET_ICON @"Text for No Internet"
 
 #pragma mark - Notifications View Controller -
 

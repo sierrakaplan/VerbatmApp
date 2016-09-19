@@ -20,6 +20,7 @@
 
 #import "Icons.h"
 #import "InstallationVariables.h"
+#import "InternetConnectionMonitor.h"
 
 #import "MasterNavigationVC.h"
 #import "MediaSessionManager.h"
@@ -171,6 +172,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 											 selector:@selector(newPushNotification:)
 												 name:NOTIFICATION_NEW_PUSH_NOTIFICATION
 											   object:nil];
+    
 }
 
 #pragma mark - Setting up environment on startup -
@@ -192,6 +194,9 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 	[[UserInfoCache sharedInstance] loadUserChannelWithCompletionBlock:^{
 		[self setUpTabBarController];
 	}];
+    
+    //this sets up the monitor
+    [[InternetConnectionMonitor sharedInstance] isConnectedToInternet_asynchronous];
 }
 
 #pragma mark - User Manager Delegate -

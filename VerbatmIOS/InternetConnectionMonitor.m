@@ -85,18 +85,17 @@
     switch (netStatus){
         case NotReachable:{
             //mark there is not internet connection
-            //[self weHaveNoConneciton];
+            [self weHaveNoConneciton];
             break;
         }
         case ReachableViaWWAN:{
             self.thereIsConnection = YES;
-               // [self weHaveConnection];
+                [self weHaveConnection];
             break;
         }
         case ReachableViaWiFi:{
                 self.thereIsConnection = YES;
-              //  [self weHaveConnection];
-            //we have conneciton by wifi
+                [self weHaveConnection];
             break;
         }
     }

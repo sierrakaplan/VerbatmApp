@@ -178,9 +178,17 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 	[self buildHeaderView];
 }
 
+-(void)reloadProfile{
+    [self loadContentToPostList];
+    [self buildHeaderView];
+}
+
 -(void)clearOurViews {
-	if(self.postListVC)[self.postListVC offScreen];
-	if(self.postListVC)[self.postListVC clearViews];
+    if(self.postListVC){
+        [self.postListVC offScreen];
+        [self.postListVC clearViews];
+    }
+    
 	[self.profileHeaderView removeFromSuperview];
 	self.profileHeaderView = nil;
 }

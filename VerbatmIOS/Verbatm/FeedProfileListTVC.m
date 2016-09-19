@@ -11,7 +11,7 @@
 #import "FeedListTableViewCell.h"
 #import "FeedTableViewController.h"
 
-#import "UINavigationBar+CustomHeight.h"
+#import "Notifications.h"
 
 #import "ParseBackendKeys.h"
 #import "ProfileListHeader.h"
@@ -19,6 +19,8 @@
 #import "Styles.h"
 
 #import "UserInfoCache.h"
+#import "UINavigationBar+CustomHeight.h"
+
 
 @interface FeedProfileListTVC ()<FeedTableViewDelegate,UITableViewDelegate>
 
@@ -55,12 +57,28 @@
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refreshListOfContent) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:self.refreshControl];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(networkConnectionUpdate:)
+                                                 name:INTERNET_CONNECTION_NOTIFICATION
+                                               object:nil];
+}
+
+-(void)networkConnectionUpdate:(NSNotification *)not{
+    NSNumber * connectivity =  [not userInfo][INTERNET_CONNECTION_KEY];
+    if(![connectivity boolValue]){
+        
+    }else{
+        
+    }
 }
 
 -(void) formatNavigationItem {
 	self.navigationItem.title = @"Profile List";
 	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 }
+
+
 
 -(void)viewWillAppear:(BOOL)animated{
     [self refreshListOfContent];

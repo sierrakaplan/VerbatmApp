@@ -73,9 +73,25 @@ UICollectionViewDataSource>
 												 name:NOTIFICATION_FREE_MEMORY_DISCOVER object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshChannels)
 												 name:NOTIFICATION_REFRESH_DISCOVER object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(networkConnectionUpdate:)
+                                                 name:INTERNET_CONNECTION_NOTIFICATION
+                                               object:nil];
 	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@""
 																			 style:self.navigationItem.backBarButtonItem.style
 																			target:nil action:nil];
+}
+
+
+
+
+-(void)networkConnectionUpdate:(NSNotification *)not{
+    NSNumber * connectivity =  [not userInfo][INTERNET_CONNECTION_KEY];
+    if(![connectivity boolValue]){
+        
+    }else{
+        
+    }
 }
 
 -(void) viewWillAppear:(BOOL)animated {
