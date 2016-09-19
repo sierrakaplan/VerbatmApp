@@ -14,7 +14,7 @@
 #import "MasterNavigationVC.h"
 #import "VerbatmNavigationController.h"
 
-@interface CommentingViewController() <UITableViewDelegate, UITableViewDataSource, CommentingKeyboardToolbarProtocol>
+@interface CommentingViewController() <UITableViewDelegate, UITableViewDataSource, CommentingKeyboardToolbarProtocol, VerbatmNameLabelViewProtocol>
 
 @property (nonatomic) PFObject *postObject;
 @property (strong, nonatomic) UITableView *tableView;
@@ -111,6 +111,15 @@
 	[self refreshData];
 }
 
+#pragma mark - Deleting Comments -
+//viewcell delegate method
+-(void)deleteCommentSelected:(Comment *)comment{
+    [Commenting_BackendObject deleteCommentObject:comment.parseCommentObject];
+    NSUInteger commentIndex = [self.commentObjectList indexOfObject:comment];
+    [self.commentObjectList removeObject:comment];
+    [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:commentIndex inSection:0]] withRowAnimation:UITableViewRowAnimationLeft];
+}
+
 #pragma mark - Table view delegate methods -
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -133,6 +142,7 @@
 	if(cell == nil) {
 		cell = [[ChannelOrUsernameCV alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier isChannel:YES];
 		[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+        cell.delegate = self;
 	} else {
 		[cell removeFromSuperview];
 	}

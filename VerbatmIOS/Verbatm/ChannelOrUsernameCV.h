@@ -10,8 +10,19 @@
 #import "Channel.h"
 #import "Comment.h"
 
+
+/*
+ Cells that display different names in V. from comments to usernames
+ */
+@protocol VerbatmNameLabelViewProtocol <NSObject>
+
+-(void)deleteCommentSelected:(Comment *)comment;
+
+@end
+
 @interface ChannelOrUsernameCV : UITableViewCell
 
+@property(nonatomic, weak) id <VerbatmNameLabelViewProtocol> delegate;
 
 - (instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier isChannel:(BOOL) isChannel;
 

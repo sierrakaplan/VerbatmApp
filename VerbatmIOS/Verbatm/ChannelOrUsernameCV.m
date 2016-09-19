@@ -21,8 +21,9 @@
 
 @import UIKit;
 
-@interface ChannelOrUsernameCV ()
+@interface ChannelOrUsernameCV ()<UIScrollViewDelegate>
 @property (nonatomic) Channel *channel;
+@property (nonatomic) Comment  *commentObject;
 
 @property (nonatomic) BOOL isAChannel;
 @property (nonatomic) BOOL isAChannelIFollow;
@@ -46,6 +47,12 @@
 @property (nonatomic) UIButton *followButton;
 @property (nonatomic) BOOL currentUserFollowingChannelUser;
 
+@property(nonatomic) UIView * labelHolder;//needed for sliding effect - holds the name labels
+@property (nonatomic) UIScrollView * deleteButtonScrollView;
+@property (nonatomic) UIButton * deleteCommentButton;
+
+
+#define DELETE_BUTTON_WIDTH 100.f
 
 #define MAX_WIDTH (self.followButton.frame.origin.x - (TAB_BUTTON_PADDING_X * 2))
 @end
@@ -113,9 +120,49 @@
 #pragma mark - Edit Cell formatting -
 
 -(void)presentComment:(Comment *) commentObject{
+    self.commentObject = commentObject;
 	[commentObject getCommentCreatorWithCompletionBlock:^(NSString * creatorName) {
 		[self setLabelsForComment:[commentObject commentString] andUserName:creatorName];
+        [self prepareDeleteIcon:commentObject];
 	}];
+}
+
+
+-(void)prepareDeleteIcon:(Comment *) comment{
+    PFUser * creator = [comment.parseCommentObject valueForKey:COMMENT_USER_KEY];
+    if(creator && [[creator objectId] isEqualToString:[[PFUser currentUser] objectId]]){
+        self.deleteCommentButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - DELETE_BUTTON_WIDTH, 0.f, DELETE_BUTTON_WIDTH, self.frame.size.height)];
+        self.deleteCommentButton.backgroundColor = [UIColor redColor];
+        [self.deleteCommentButton setTitle:@"Delete" forState:UIControlStateNormal];
+        [self.deleteCommentButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [self.deleteCommentButton addTarget:self action:@selector(deleteCommentButtonSelected) forControlEvents:UIControlEventTouchDown];
+        [self addSubview:self.deleteCommentButton];
+        [self bringSubviewToFront:self.deleteButtonScrollView];
+        self.deleteButtonScrollView.contentSize = CGSizeMake(self.frame.size.width + DELETE_BUTTON_WIDTH, 0.f);
+        self.deleteButtonScrollView.pagingEnabled = YES;
+        self.deleteButtonScrollView.bounces = NO;
+        self.deleteButtonScrollView.showsHorizontalScrollIndicator = NO;
+        self.deleteButtonScrollView.delegate = self;
+        [self bringSubviewToFront:self.seperatorView];
+    }
+}
+
+-(void)deleteCommentButtonSelected{
+    if(self.delegate){
+        [self.delegate deleteCommentSelected:self.commentObject];
+        self.commentObject = nil;
+    }
+}
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    [self sendSubviewToBack:self.deleteCommentButton];
+}
+
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+    if(scrollView.contentOffset.x > 0){
+        [self bringSubviewToFront:self.deleteCommentButton];
+        [self bringSubviewToFront:self.seperatorView];
+    }
 }
 
 -(void)setHeaderTitle{
@@ -240,6 +287,16 @@
 		[self.commentUserNameLabel removeFromSuperview];
 		self.commentUserNameLabel = nil;
 	}
+    
+    if(self.deleteButtonScrollView){
+        [self.deleteButtonScrollView removeFromSuperview];
+        self.deleteButtonScrollView = nil;
+    }
+    
+    if(self.deleteCommentButton){
+        [self.deleteCommentButton removeFromSuperview];
+        self.deleteCommentButton = nil;
+    }
 }
 
 -(void) setLabelsForChannel {
@@ -269,8 +326,21 @@
 
 	self.commentLabel = [ChannelOrUsernameCV getTextView:comment withOrigin:commentStringLabelOrigin
 										   andAttributes:self.commentStringLabelAttributes withMaxWidth:maxWidth];
-	[self addSubview: self.commentLabel];
-	[self addSubview: self.commentUserNameLabel];
+    
+   
+    self.labelHolder = [[UIView alloc] initWithFrame:self.bounds];
+    self.labelHolder.backgroundColor = self.backgroundColor;
+    
+    self.deleteButtonScrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
+    self.deleteButtonScrollView.backgroundColor = [UIColor clearColor];
+    
+    [self addSubview:self.deleteButtonScrollView];
+    
+    [self.deleteButtonScrollView addSubview:self.labelHolder];
+    
+	[self.labelHolder addSubview: self.commentLabel];
+	[self.labelHolder addSubview: self.commentUserNameLabel];
+    [self bringSubviewToFront:self.seperatorView];
 }
 
 -(UILabel *) getLabel:(NSString *) title withOrigin:(CGPoint) origin

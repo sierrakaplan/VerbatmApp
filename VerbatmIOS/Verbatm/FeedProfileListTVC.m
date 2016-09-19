@@ -86,15 +86,23 @@
         self.emptyStateView = nil;
     }
 }
+
+
 -(void)createEmptyStateView{
     if(self.emptyStateView) return;
     UIImage * emptyStateImage = [UIImage imageNamed:PROFILE_NAME_LIST_EMPTY_STATE];
     self.emptyStateView = [[UIImageView alloc] initWithImage:emptyStateImage];
     self.emptyStateView.contentMode = UIViewContentModeScaleAspectFit;
     self.emptyStateView.frame = CGRectMake(10.f, 0.f, self.view.frame.size.width - 20.f, self.view.frame.size.height);
+    
+    UITapGestureRecognizer * goToDiscoverTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(goToDiscoverTapGesture:)];
+    [self.emptyStateView addGestureRecognizer:goToDiscoverTap];
+    [self.tableView setCanCancelContentTouches:NO];
     [self.view addSubview:self.emptyStateView];
-
+    [self.view bringSubviewToFront:self.emptyStateView];
+    
 }
+
 
 -(void)findUpdatedPosts{
     [self.channelsRecentlyUpdated removeAllObjects];
@@ -106,11 +114,6 @@
     }
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-//    [scrollView bringSubviewToFront:self.logoBar];
-//    CGRect newNavBarFrame = CGRectMake(0.f, scrollView.contentOffset.y, self.logoBar.frame.size.width, self.logoBar.frame.size.height);;
-//    self.logoBar.frame = newNavBarFrame;
-}
 
 
 #pragma mark - Table view data source -
@@ -155,7 +158,6 @@
     if(section == 0) {
         return self.channelsRecentlyUpdated.count;
     }
-    
     return (self.channelsUserFollowing) ? self.channelsUserFollowing.count : 0;
 }
 
@@ -188,7 +190,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void)viewDidLayoutSubviews {
-//	self.navigationController.navigationBar.frame = CGRectMake(0.f, 0.f, self.view.frame.size.width, NAVIGATION_BAR_HEIGHT);
+
     [super viewDidLayoutSubviews];
     if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
         [self.tableView setSeparatorInset:UIEdgeInsetsZero];
@@ -197,9 +199,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([self.tableView respondsToSelector:@selector(setLayoutMargins:)]) {
         [self.tableView setLayoutMargins:UIEdgeInsetsZero];
     }
-//    if(self.logoBar){
-//        [self.view bringSubviewToFront:self.logoBar];
-//    }
 }
 
 
@@ -214,7 +213,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.tableView setScrollEnabled:YES];
 }
 
--(void)goToDiscover {
+-(void)goToDiscoverTapGesture:(UITapGestureRecognizer *) gesture {
     [self.delegate goToDiscover];
 }
 
@@ -223,7 +222,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     //todo: change how getfollowersandfollowing is used everywhere (also make sure one instance of updating followers is used)
     [self.currentUserChannel getChannelsFollowingWithCompletionBlock:^{
         
-        //No channels have been previously loaded
+//        //No channels have been previously loaded
         self.channelsUserFollowing = [NSMutableArray arrayWithArray: [self.currentUserChannel channelsUserFollowing]];
         [self.channelsUserFollowing sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
             Channel * leftObj = obj1;

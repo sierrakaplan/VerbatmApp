@@ -48,7 +48,6 @@
 	}
 	[self addSubview: leftButton];
 	[leftButton addTarget:self action:@selector(leftButtonPressed:) forControlEvents:UIControlEventTouchDown];
-    [leftButton setBackgroundColor:[UIColor redColor]];
     
 }
 

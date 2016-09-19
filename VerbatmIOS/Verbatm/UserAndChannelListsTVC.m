@@ -158,7 +158,7 @@
     UIImage * emptyStateImage = [UIImage imageNamed:emptyStateString];
     self.emptyStateView = [[UIImageView alloc] initWithImage:emptyStateImage];
     self.emptyStateView.contentMode = UIViewContentModeScaleAspectFit;
-    self.emptyStateView.frame = CGRectMake(10.f, 0.f, self.view.frame.size.width - 20.f, self.view.frame.size.height);;
+    self.emptyStateView.frame = CGRectMake(10.f, 0.f, self.view.frame.size.width - 20.f, self.view.frame.size.height);
     [self.view addSubview:self.emptyStateView];
 }
 

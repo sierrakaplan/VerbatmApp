@@ -92,6 +92,11 @@
     }];
 }
 
++(void)deleteCommentObject:(PFObject *)comment{
+    if(comment){
+        [comment deleteInBackground];
+    }
+}
 
 +(void)notifyNewCommentOnPost:(PFObject *)postParseObject{
     NSDictionary * userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[postParseObject objectId],POST_COMMENTED_ON_NOTIFICATION_USERINFO_KEY,nil];
