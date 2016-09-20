@@ -6,22 +6,33 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
-#import "NotificationsListTVC.h"
-#import "SizesAndPositions.h"
-#import "NotificationTableCell.h"
-#import "Notification_BackendManager.h"
-#import "ParseBackendKeys.h"
+
 #import "Channel_BackendObject.h"
 #import "Channel.h"
 #import "CommentingViewController.h"
-#import "Styles.h"
 #import "CustomNavigationBar.h"
+
+#import "Durations.h"
+
+#import "Icons.h"
+#import "InternetConnectionMonitor.h"
+
+#import "MasterNavigationVC.h"
+
+#import "NotificationPostPreview.h"
+#import "NotificationTableCell.h"
+#import "Notification_BackendManager.h"
+#import "NotificationsListTVC.h"
+#import "Notifications.h"
+
+#import "ParseBackendKeys.h"
+
+#import "Styles.h"
+#import "SizesAndPositions.h"
+
 #import "ProfileVC.h"
 #import <Parse/PFQuery.h>
-#import "MasterNavigationVC.h"
-#import "NotificationPostPreview.h"
-#import "Durations.h"
-#import "Icons.h"
+
 #import "UserAndChannelListsTVC.h"
 #import "VerbatmNavigationController.h"
 
@@ -37,6 +48,7 @@
 @property (nonatomic) NotificationPostPreview * postPreview;
 
 @property (nonatomic) UIImageView * noNotificationsNotification;
+@property (nonatomic) UIImageView * noInternetState;
 
 @property (nonatomic) BOOL isFirstLoad;
 @property (nonatomic) BOOL currentlyBeingViewed;
@@ -73,8 +85,41 @@
 
 	UIEdgeInsets inset = UIEdgeInsetsMake(CUSTOM_BAR_HEIGHT + STATUS_BAR_HEIGHT, 0, CUSTOM_BAR_HEIGHT, 0);
 	self.tableView.contentInset = inset;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(networkConnectionUpdate:)
+                                                 name:INTERNET_CONNECTION_NOTIFICATION
+                                               object:nil];
 
 	[self createHeader];
+}
+
+-(void)networkConnectionUpdate:(NSNotification *) notification {
+    NSNumber * connectivity =  [notification userInfo][INTERNET_CONNECTION_KEY];
+    [self updateNetworkStateView:[connectivity boolValue]];
+    
+}
+
+-(void)updateNetworkStateView:(BOOL)thereIsConnectivity{
+    if(thereIsConnectivity){
+        if(!self.noInternetState) return;
+        [self.noInternetState removeFromSuperview];
+        self.noInternetState = nil;
+        [self refreshNotifications];
+    }else{
+        
+        if(self.noInternetState) return;
+        [self clearView];
+        self.noInternetState = [[UIImageView alloc] initWithFrame:self.view.bounds];
+        [self.noInternetState setImage:[UIImage imageNamed:NO_INTERNET_ICON]];
+        [self.view addSubview:self.noInternetState];
+        
+    }
+}
+
+-(void)clearView{
+    if(self.parseNotificationObjects)[self.parseNotificationObjects removeAllObjects];
+    [self.tableView reloadData];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -134,6 +179,14 @@
 
 -(void)refreshNotifications {
 	if(self.refreshing) return;
+    
+    if(![[InternetConnectionMonitor sharedInstance] isThereConnectivity]){
+        [self.loadMoreSpinner stopAnimating];
+        [self.refreshControl endRefreshing];
+        [self updateNetworkStateView:NO];
+        return;
+    }
+    
 	self.refreshing = YES;
 	if (![self.refreshControl isRefreshing]) [self.loadMoreSpinner startAnimating];
 	[Notification_BackendManager getNotificationsForUserAfterDate:nil withCompletionBlock:^(NSArray * notificationObjects) {

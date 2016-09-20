@@ -7,21 +7,32 @@
 //
 
 #import "Channel_BackendObject.h"
-#import "ExploreChannelCellView.h"
-#import "Icons.h"
-#import "InviteFriendsVC.h"
-#import "FeedQueryManager.h"
+
 #import "DiscoverVC.h"
+
+#import "ExploreChannelCellView.h"
+
+#import "FeedQueryManager.h"
 #import "FeaturedContentCellView.h"
 #import "FollowFriendsCell.h"
 #import "FollowFriendsVC.h"
 #import "Follow_BackendManager.h"
+
+#import "Icons.h"
+#import "InviteFriendsVC.h"
+#import "InternetConnectionMonitor.h"
+
+
 #import "MasterNavigationVC.h"
+
 #import "Notifications.h"
+
 #import "ProfileVC.h"
+
 #import "SearchResultsVC.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
+
 #import "VerbatmNavigationController.h"
 
 @interface DiscoverVC() <UIScrollViewDelegate, ExploreChannelCellViewDelegate, UICollectionViewDelegate,

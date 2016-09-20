@@ -180,6 +180,9 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 #pragma mark - Setting up environment on startup -
 
 -(void) setUpStartUpEnvironment {
+    //this sets up the monitor - begins checking for connectivity
+    [InternetConnectionMonitor sharedInstance];
+    
 	// Associate the device with a user
 	PFInstallation *currentInstallation = [PFInstallation currentInstallation];
 	currentInstallation[@"user"] = [PFUser currentUser];
@@ -196,8 +199,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 		[self setUpTabBarController];
 	}];
     
-    //this sets up the monitor
-    [[InternetConnectionMonitor sharedInstance] isConnectedToInternet_asynchronous];
+    
 }
 
 #pragma mark - User Manager Delegate -
