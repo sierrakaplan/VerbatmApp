@@ -83,9 +83,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 
 #define ANIMATION_NOTIFICATION_DURATION 0.5
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
-#define DARK_GRAY 0.6f
 #define ADK_BUTTON_SIZE 40.f
-#define SELECTED_TAB_ICON_COLOR [UIColor colorWithRed:0.5 green:0.1 blue:0.1 alpha:1.f]
 #define NOTIFICATION_INDICATOR_SIZE 40.f
 @end
 
@@ -94,9 +92,13 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	[self registerForNotifications];
+    self.view.backgroundColor = [UIColor whiteColor];
+
 	if ([PFUser currentUser].isAuthenticated) {
 		[self setUpStartUpEnvironment];
-	}
+	}else if(![[InternetConnectionMonitor sharedInstance] isThereConnectivity]){
+        
+    }
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -188,7 +190,6 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 		[UserManager setFbId];
 	}
 	
-    self.view.backgroundColor = [UIColor blackColor];
     
 	//todo: show loading while this happens
 	[[UserInfoCache sharedInstance] loadUserChannelWithCompletionBlock:^{

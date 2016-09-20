@@ -48,13 +48,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
-    if([[InternetConnectionMonitor sharedInstance] isThereConnectivity]){
-        [super viewDidLoad];
-    }else{
-        [self updateNetworkStateView:[[InternetConnectionMonitor sharedInstance] isThereConnectivity]];
-    }
-    
     self.view.backgroundColor = [UIColor blackColor];
 	self.headerView = [[UIView alloc] initWithFrame:CGRectMake(0.f, 0.f, self.view.frame.size.width,
 																		  STATUS_BAR_HEIGHT)];
@@ -74,6 +67,10 @@
                                              selector:@selector(networkConnectionUpdate:)
                                                  name:INTERNET_CONNECTION_NOTIFICATION
                                                object:nil];
+    
+    if(![[InternetConnectionMonitor sharedInstance] isThereConnectivity]){
+        [self updateNetworkStateView:[[InternetConnectionMonitor sharedInstance] isThereConnectivity]];
+    }
 }
 
 -(void)networkConnectionUpdate:(NSNotification *)not{
@@ -108,7 +105,7 @@
 
 
 -(void)viewWillAppear:(BOOL)animated{
-    [self refreshListOfContent];
+   if([[InternetConnectionMonitor sharedInstance] isThereConnectivity])[self refreshListOfContent];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
@@ -368,6 +368,7 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="zsx-Ws-hd9">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" red="0.023776376619935036" green="0.011354535818099976" blue="0.032032694667577744" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -378,6 +379,7 @@
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="oVg-ZI-QOp">
                     <rect key="frame" x="0.0" y="0.0" width="240" height="34"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" red="0.023776376619935036" green="0.011354535818099976" blue="0.032032694667577744" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <fontDescription key="fontDescription" name="Quicksand-Bold" family="Quicksand" pointSize="35"/>
                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
@@ -569,9 +571,9 @@
         <image name="verbatm_logo_text" width="364" height="43"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="aU6-h0-9qV"/>
-        <segue reference="Ju6-jE-1sM"/>
+        <segue reference="HDC-3z-u8g"/>
         <segue reference="zhT-Hb-wNZ"/>
+        <segue reference="UYB-Wl-fI6"/>
         <segue reference="GGt-59-v8o"/>
     </inferredMetricsTieBreakers>
 </document>

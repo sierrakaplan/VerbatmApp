@@ -30,7 +30,7 @@
 
 #import "ImagePinchView.h"
 #import "Icons.h"
-
+#import "InternetConnectionMonitor.h"
 #import <Social/SLRequest.h>
 
 #import "TextPinchView.h"
@@ -1817,10 +1817,19 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 -(void) publishOurStoryWithPinchViews:(NSMutableArray *)pinchViews {
-	self.pinchViewsToPublish = pinchViews;
-	[self capturePublishingProgressImageWithPinchViews:pinchViews];
-	[self presentShareLinkView];
-
+	
+    if([[InternetConnectionMonitor sharedInstance] isThereConnectivity]){
+        self.pinchViewsToPublish = pinchViews;
+        [self capturePublishingProgressImageWithPinchViews:pinchViews];
+        [self presentShareLinkView];
+    }else{
+        UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Sorry - poor connection." message:@"Please make sure you're connected to a network and try again." preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {}];
+        [newAlert addAction:defaultAction];
+        [self presentViewController:newAlert animated:YES completion:nil];
+    }
+    
 }
 
 -(void)presentShareLinkView{
