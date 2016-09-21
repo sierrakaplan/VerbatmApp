@@ -1,4 +1,4 @@
-//
+ //
 //  ProfileVC.m
 //  Verbatm
 //
@@ -117,10 +117,13 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 		[(VerbatmNavigationController*)self.navigationController setNavigationBarShadowColor:[UIColor clearColor]];
 		[self.verbatmNavigationController setNavigationBarTextColor:[UIColor whiteColor]];
 	}
+    
+    
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
+   
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -473,6 +476,7 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 -(void)postsFound{
 	if(!self.isCurrentUserProfile) {
 		[self.noPostsView removeFromSuperview];
+        [self updateDateOfLastPostSeen];
 	}
 }
 

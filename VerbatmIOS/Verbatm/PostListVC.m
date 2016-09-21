@@ -262,9 +262,9 @@ isCurrentUserProfile:(BOOL)isCurrentUserProfile andStartingDate:(NSDate*)date {
 		weakSelf.isRefreshing = NO;
 		if(weakSelf.exitedView) return; // Already left page
 		if(posts.count) {
-			[weakSelf.postListDelegate postsFound];
 			[weakSelf.parsePostActivityObjects removeAllObjects];
 			[weakSelf.parsePostActivityObjects addObjectsFromArray:posts];
+            [weakSelf.postListDelegate postsFound];
 		} else if (!weakSelf.currentlyPublishing) {
 			[weakSelf.postListDelegate noPostFound];
 		}
