@@ -51,4 +51,6 @@
 //get button
 + (UIButton *) getButtonWithFrame:(CGRect)frame andIcon:(NSString*)iconName andSelector:(SEL)action andTarget:(id) target;
 
++(BOOL)isEmptyText:(NSString *) string;
+
 @end

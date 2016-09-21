@@ -55,6 +55,7 @@
 #import "UserInfoCache.h"
 #import "UserSetupParameters.h"
 #import "UIView+Effects.h"
+#import "UtilityFunctions.h"
 
 #import "VerbatmCameraView.h"
 #import "VideoPinchView.h"
@@ -1556,13 +1557,9 @@ andSaveInUserDefaults:(BOOL)save {
 	self.currentlyPreviewingContent = YES;
 }
 
--(BOOL)isEmptyTextPinchview:(PinchView *) pv{
-    
-    if([pv isKindOfClass:[TextPinchView class]]){
-        NSString * stringNoSpaces = [((TextPinchView *)pv).text stringByReplacingOccurrencesOfString:@" " withString:@""];
-        if([stringNoSpaces isEqualToString:@""]){
-            return YES;
-        }
+-(BOOL)isEmptyTextPinchview:(PinchView *) pinchView{
+    if([pinchView isKindOfClass:[TextPinchView class]]){
+        return [UtilityFunctions isEmptyText:((TextPinchView *)pinchView).text];
     }
     return NO;
 }

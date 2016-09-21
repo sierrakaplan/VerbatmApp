@@ -473,8 +473,4 @@ typedef enum {
     return _adjustBackgroundBar;
 }
 
--(void)setTextIsBlack:(BOOL)textIsBlack{
-    _textIsBlack = textIsBlack;
-}
-
 @end

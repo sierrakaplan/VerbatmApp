@@ -93,9 +93,7 @@
 }
 
 +(void)deleteCommentObject:(PFObject *)comment{
-    if(comment){
         [comment deleteInBackground];
-    }
 }
 
 +(void)notifyNewCommentOnPost:(PFObject *)postParseObject{

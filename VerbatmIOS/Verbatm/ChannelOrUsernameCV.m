@@ -40,7 +40,7 @@
 @property (strong, nonatomic) NSDictionary* commentStringLabelAttributes;
 
 
-@property (nonatomic) UIView *seperatorView;
+@property (nonatomic) UIView *separatorView;
 
 @property (nonatomic) UILabel *headerTitle;//makes the cell a header for the table view
 @property (nonatomic) BOOL isHeaderTile;
@@ -143,7 +143,7 @@
         self.deleteButtonScrollView.bounces = NO;
         self.deleteButtonScrollView.showsHorizontalScrollIndicator = NO;
         self.deleteButtonScrollView.delegate = self;
-        [self bringSubviewToFront:self.seperatorView];
+        [self bringSubviewToFront:self.separatorView];
     }
 }
 
@@ -161,7 +161,7 @@
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     if(scrollView.contentOffset.x > 0){
         [self bringSubviewToFront:self.deleteCommentButton];
-        [self bringSubviewToFront:self.seperatorView];
+        [self bringSubviewToFront:self.separatorView];
     }
 }
 
@@ -265,10 +265,10 @@
 }
 
 -(void)addCellSeperator{
-	if(!self.seperatorView){
-		self.seperatorView = [[UIView alloc] initWithFrame:CGRectMake(0.f, self.frame.size.height - CHANNEL_LIST_CELL_SEPERATOR_HEIGHT, self.frame.size.width,CHANNEL_LIST_CELL_SEPERATOR_HEIGHT)];
-		self.seperatorView.backgroundColor = [UIColor lightGrayColor];
-		[self addSubview:self.seperatorView];
+	if(!self.separatorView){
+		self.separatorView = [[UIView alloc] initWithFrame:CGRectMake(0.f, self.frame.size.height - CHANNEL_LIST_CELL_SEPERATOR_HEIGHT, self.frame.size.width,CHANNEL_LIST_CELL_SEPERATOR_HEIGHT)];
+		self.separatorView.backgroundColor = [UIColor lightGrayColor];
+		[self addSubview:self.separatorView];
 	}
 }
 
@@ -340,7 +340,7 @@
     
 	[self.labelHolder addSubview: self.commentLabel];
 	[self.labelHolder addSubview: self.commentUserNameLabel];
-    [self bringSubviewToFront:self.seperatorView];
+    [self bringSubviewToFront:self.separatorView];
 }
 
 -(UILabel *) getLabel:(NSString *) title withOrigin:(CGPoint) origin
