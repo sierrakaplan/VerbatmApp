@@ -94,7 +94,11 @@
     PFQuery * query = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
     [query whereKey:POST_CHANNEL_ACTIVITY_POST equalTo:postObject];
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-        [self getAndPresentPost:[objects firstObject] andChannel:channel];
+        if(error || objects.count == 0){
+            [self.delegate exitPreview];
+        }else{
+            [self getAndPresentPost:[objects firstObject] andChannel:channel];
+        }
     }];
     [self.loadingIndicator startAnimating];
 }

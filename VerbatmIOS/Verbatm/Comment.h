@@ -16,6 +16,7 @@
 -(instancetype)initWithString:(NSString *) comment andPostObject:(PFObject *) postObject;
 
 @property (nonatomic) NSString * commentString;
+@property (nonatomic) PFObject * parseCommentObject;
 
 -(void)getCommentCreatorWithCompletionBlock:(void(^)(NSString *)) block;
 

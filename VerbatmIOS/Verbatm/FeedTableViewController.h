@@ -8,12 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-
+/*
+ List of actual profiles that you are following
+ */
 @protocol FeedTableViewDelegate <NSObject>
-
--(void) goToDiscover;
 @optional
-
+-(void) goToDiscover;
 -(void) refreshListOfContent;
 -(void) exitProfileList;
 

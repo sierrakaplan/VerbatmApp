@@ -15,7 +15,6 @@
 #import "UserManager.h"
 
 @interface Comment ()
-@property (nonatomic) PFObject * parseCommentObject;
 @property (nonatomic) PFObject * parsePostObject;
 @property (nonatomic) NSString * commentCreatorName;
 @end

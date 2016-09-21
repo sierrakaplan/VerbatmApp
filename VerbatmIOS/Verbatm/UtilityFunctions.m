@@ -122,6 +122,15 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 }
 
 
++(BOOL)isEmptyText:(NSString *) string{
+    
+    NSString * stringNoSpaces = [string stringByReplacingOccurrencesOfString:@" " withString:@""];
+    if([stringNoSpaces isEqualToString:@""]){
+        return YES;
+    }
+    return NO;
+}
+
 // Promise wrapper for asynchronous request to get image data (or any data) from the url
 - (AnyPromise*) loadCachedPhotoDataFromURL: (NSURL*) url {
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
