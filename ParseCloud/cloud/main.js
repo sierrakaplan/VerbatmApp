@@ -203,43 +203,42 @@ Parse.Cloud.beforeSave("FollowClass", function(request, response) {
 // DEFAULT PUBLIC READ FOR USER
 
 Parse.Cloud.beforeSave(Parse.User, function(request, response) {
-	if (!request.object.isNew()) {
-      response.success();
-      return;
-    }
-
   	var newACL = new Parse.ACL();
   	newACL.setPublicReadAccess(true);
  	request.object.setACL(newACL);
+ 	response.success();
+});
 
-  	var user = request.object;
-  	var notificationSenderName = user.get("VerbatmName");
-	var promise = getFacebookFriends(user);
-    promise.then(function(friends) {
-		var promises = [];
-	    for (var i = 0; i < friends.length; i++) {
-	    	var friend = results[i];
-	    	var notification = new NotificationClass();
-	    	notification.set("IsNewNotification", true);
-	    	notification.set("NotificationSender", user);
-	    	notification.set("NotificationReceiver", friend);
-	    	notification.set("NotificationType", 4); // friend joined verbatm
-	    	promises.push(notification.save(null,{
-			  success:function(notification) { 
-			    // do nothing
-			  },
-			  error:function(error) {
-			    console.log(error);
-			  }
-			}));
-	    }
-	    Parse.Promise.when(promises).then(function(results) {
-			console.log(results); 
+Parse.Cloud.define("notifyFacebookFriends", function(req, res) {
+	var user = request.object;
+	  	var notificationSenderName = user.get("VerbatmName");
+		var promise = getFacebookFriends(user);
+	    promise.then(function(friends) {
+			var promises = [];
+		    for (var i = 0; i < friends.length; i++) {
+		    	var friend = results[i];
+		    	var notification = new NotificationClass();
+		    	notification.set("IsNewNotification", true);
+		    	notification.set("NotificationSender", user);
+		    	notification.set("NotificationReceiver", friend);
+		    	notification.set("NotificationType", 4); // friend joined verbatm
+		    	promises.push(notification.save(null,{
+				  success:function(notification) { 
+				    // do nothing
+				  },
+				  error:function(error) {
+				    console.log(error);
+				  }
+				}));
+		    }
+		    Parse.Promise.when(promises).then(function(results) {
+				console.log(results); 
+				response.success(); 
+			});
+		}, function(err) {
+			console.log(err);
 			response.success(); 
 		});
-	}, function(err) {
-		response.error(err);
-	});  
 });
 
 // GET DISCOVER CHANNELS
