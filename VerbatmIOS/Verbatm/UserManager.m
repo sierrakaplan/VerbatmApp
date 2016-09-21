@@ -48,13 +48,14 @@
 #pragma mark - Creating Account (Signing up user) -
 
 -(void) signUpOrLoginUserFromFacebookToken:(FBSDKAccessToken *)accessToken{
+	
 	[PFFacebookUtils logInInBackgroundWithAccessToken:[FBSDKAccessToken currentAccessToken] block:^(PFUser * _Nullable user, NSError * _Nullable error) {
 		if (error) {
 			//todo: fail error
 			[self notifyFailedLogin: error];
 			return;
 		} else {
-			if (user.isNew) {
+			if (user.isNew || !user.email) {
 				[self getUserInfoFromFacebookToken: accessToken];
 			} else {
 				NSLog(@"User had already created account. Successfully logged in with Facebook.");

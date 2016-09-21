@@ -138,7 +138,18 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	//batch request for user info as well as friends
 	if ([FBSDKAccessToken currentAccessToken]) {
         [self.loadingIndicator startAnimating];
-		[[UserManager sharedInstance] signUpOrLoginUserFromFacebookToken: [FBSDKAccessToken currentAccessToken]];
+//		if (![[FBSDKAccessToken currentAccessToken] hasGranted:@"email"]
+//			|| ![[FBSDKAccessToken currentAccessToken] hasGranted:@"user_friends"]) {
+//			FBSDKLoginManager *loginManager = [[FBSDKLoginManager alloc] init];
+//			[loginManager logInWithReadPermissions:@[@"public_profile", @"email", @"user_friends"]
+//								fromViewController:self
+//										   handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+//				[[UserManager sharedInstance] signUpOrLoginUserFromFacebookToken: [FBSDKAccessToken currentAccessToken]];
+//			}];
+//		} else {
+			[[UserManager sharedInstance] signUpOrLoginUserFromFacebookToken: [FBSDKAccessToken currentAccessToken]];
+//		}
+
 	} else {
 		//  [self.delegate errorInSignInWithError: @"Facebook login failed."];
 	}
@@ -230,7 +241,10 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	if (!_facebookLoginButton) {
 		CGFloat yPosition = (self.view.frame.size.height - PHONE_FIELD_HEIGHT*2 - VERTICAL_SPACING*2 - OR_LABEL_WIDTH)/2.f - KEYBOARD_HEIGHT;
 		CGRect frame = CGRectMake(self.view.center.x - PHONE_FIELD_WIDTH/2.f, yPosition, PHONE_FIELD_WIDTH, PHONE_FIELD_HEIGHT);
+
 		_facebookLoginButton = [[FBSDKLoginButton alloc] initWithFrame:frame];
+		_facebookLoginButton.readPermissions = @[@"public_profile", @"email", @"user_friends"];
+		_facebookLoginButton.publishPermissions = @[@"publish_actions"];
 		_facebookLoginButton.delegate = self;
 	}
 	return _facebookLoginButton;

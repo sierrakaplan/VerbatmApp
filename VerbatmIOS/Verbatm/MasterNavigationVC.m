@@ -47,6 +47,7 @@
 #import "VerbatmNavigationController.h"
 
 #import <Crashlytics/Crashlytics.h>
+#import <Parse/PFCloud.h>
 
 
 @interface MasterNavigationVC () <UITabBarControllerDelegate, FeedTableViewDelegate,
@@ -96,6 +97,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 	if ([PFUser currentUser].isAuthenticated) {
 		[self setUpStartUpEnvironment];
 	}
+
 }
 
 -(void)viewDidAppear:(BOOL)animated {

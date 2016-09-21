@@ -131,7 +131,6 @@ Parse.Cloud.beforeSave("PostChannelActivityClass", function(request, response) {
 			  	// pushQuery.equalTo('deviceType', 'ios');
 			  	var targetUser = new Parse.User();
 				targetUser.id = userFollowing.id;
-				console.log("user following id " + targetUser.id);
 			  	pushQuery.equalTo('user', targetUser);
 			  	var notificationText = notificationSenderName + " just posted in their Verbatm blog!";
 		    	promises.push(Parse.Push.send({
@@ -210,35 +209,29 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
 });
 
 Parse.Cloud.define("notifyFacebookFriends", function(req, res) {
-	var user = request.object;
+	var user = new Parse.User();
+	user.id = req.params.userId;
+	user.fetch().then(function(user) {
+		console.log("Fetched user");
 	  	var notificationSenderName = user.get("VerbatmName");
 		var promise = getFacebookFriends(user);
 	    promise.then(function(friends) {
-			var promises = [];
 		    for (var i = 0; i < friends.length; i++) {
-		    	var friend = results[i];
+		    	var friend = friends[i];
+		    	console.log("Friend: " + friend);
 		    	var notification = new NotificationClass();
 		    	notification.set("IsNewNotification", true);
 		    	notification.set("NotificationSender", user);
 		    	notification.set("NotificationReceiver", friend);
 		    	notification.set("NotificationType", 4); // friend joined verbatm
-		    	promises.push(notification.save(null,{
-				  success:function(notification) { 
-				    // do nothing
-				  },
-				  error:function(error) {
-				    console.log(error);
-				  }
-				}));
+		    	notification.save(null,null);
 		    }
-		    Parse.Promise.when(promises).then(function(results) {
-				console.log(results); 
-				response.success(); 
-			});
+			res.success(); 
+			
 		}, function(err) {
-			console.log(err);
-			response.success(); 
+			res.error(err);
 		});
+	});
 });
 
 // GET DISCOVER CHANNELS
@@ -295,6 +288,7 @@ function getFacebookFriends(user) {
 	        }
 	    });
 	} else {
+		console.log("New user not linked to facebook.");
 		promise.reject(null);
 	}
 	return promise;

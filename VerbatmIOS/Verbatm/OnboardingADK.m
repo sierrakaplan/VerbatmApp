@@ -20,6 +20,7 @@
 #import "VerbatmScrollView.h"
 #import "UserInfoCache.h"
 
+#import <Parse/PFCloud.h>
 #import <Parse/PFUser.h>
 
 @interface OnboardingADK() <MediaSelectTileDelegate, UIScrollViewDelegate, ContentPageElementScrollViewDelegate, VerbatmCameraViewDelegate>
@@ -254,6 +255,13 @@
     //once they have pinched onboarding is done effectively
 	[PFUser currentUser][USER_FTUE] = [NSNumber numberWithBool:YES];
 	[[PFUser currentUser] saveInBackground];
+	//Notify fb friends (if logged in with facebook)
+	NSDictionary *params = @{@"userId" : [PFUser currentUser].objectId};
+	[PFCloud callFunctionInBackground:@"notifyFacebookFriends"
+					   withParameters:params block:^(id  _Nullable response,
+													 NSError * _Nullable error) {
+
+	}];
 
 	[[PublishingProgressManager sharedInstance] publishPostToChannel:self.userChannel
 														 andFacebook:TRUE withCaption:@""

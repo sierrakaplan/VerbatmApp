@@ -91,7 +91,6 @@
 		}
 		self.codeSentToNumberLabel.text = [_codeSentToNumberLabel.text stringByAppendingString: self.phoneNumber];
 	}];
-	
 }
 
 -(void) disableResendCodeButtonWithText:(NSString*)text {
