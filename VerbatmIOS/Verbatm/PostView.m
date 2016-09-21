@@ -365,7 +365,6 @@
 			}
 			break;
 		case Share:
-			[Share_BackendManager currentUserReblogPost:post toChannel:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO]];
 			[self.delegate shareOptionSelectedForParsePostObject:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
 			break;
         case CommentListPresent:
@@ -633,7 +632,7 @@
 }
 
 -(void)showPageUpIndicator {
-    if(!self.pageUpIndicatorDisplayed){
+    if(!self.pageUpIndicatorDisplayed && self.pageObjects.count > 1){
         self.pageUpIndicatorDisplayed = YES;
         if(!self.pageUpIndicator && self.pageViews.count) {
             UIImage * arrowImage = [UIImage imageNamed:PAGE_UP_ICON_IMAGE];

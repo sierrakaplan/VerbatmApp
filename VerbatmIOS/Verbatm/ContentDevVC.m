@@ -54,6 +54,7 @@
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "UserInfoCache.h"
 #import "UIView+Effects.h"
+#import "UtilityFunctions.h"
 
 #import "VerbatmCameraView.h"
 #import "VideoPinchView.h"
@@ -1555,13 +1556,27 @@ andSaveInUserDefaults:(BOOL)save {
 	self.currentlyPreviewingContent = YES;
 }
 
+-(BOOL)isEmptyTextPinchview:(PinchView *) pinchView{
+    if([pinchView isKindOfClass:[TextPinchView class]]){
+        return [UtilityFunctions isEmptyText:((TextPinchView *)pinchView).text];
+    }
+    return NO;
+}
+
 -(void) aboutToRemovePreview {
- 	for (ContentPageElementScrollView* contentScrollView in self.pageElementScrollViews) {
+    for (NSInteger i = 0; i < self.pageElementScrollViews.count; i++) {
+        ContentPageElementScrollView* contentScrollView = self.pageElementScrollViews[i];
+        
 		if ([contentScrollView.pageElement isKindOfClass:[PinchView class]]) {
-			PinchView *pinchView = (PinchView*)contentScrollView.pageElement;
-			[pinchView renderMedia];
+            if([self isEmptyTextPinchview:(PinchView *)contentScrollView.pageElement]){
+                [self deleteScrollView:contentScrollView];
+            }else{
+                PinchView *pinchView = (PinchView*)contentScrollView.pageElement;
+                [pinchView renderMedia];
+            }
 		}
 	}
+    [self removeExcessMediaTiles];
 	self.currentlyPreviewingContent = NO;
 }
 

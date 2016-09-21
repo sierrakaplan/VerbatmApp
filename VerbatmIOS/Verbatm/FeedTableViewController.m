@@ -155,7 +155,7 @@
 
 -(void)goToDiscover{
 	if(self.emptyFeedNotification){
-		[self.delegate goToDiscover];
+		if([self.delegate respondsToSelector:@selector(goToDiscover)])[self.delegate goToDiscover];
 	}
 }
 

@@ -16,4 +16,5 @@
 +(void)getCommentsForObject:(PFObject *) postParseObject withCompletionBlock:(void(^)(NSArray *))block;
 +(void)storeComment:(NSString *) commentString forPost:(PFObject *) postParseObject;
 +(void)addUserToConversationList:(PFUser *)user toPost:(PFObject *)postParseObject;
++(void)deleteCommentObject:(PFObject *)comment;
 @end

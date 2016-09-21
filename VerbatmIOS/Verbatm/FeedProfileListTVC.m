@@ -17,7 +17,7 @@
 #import "ProfileListHeader.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
-
+#import "Icons.h"
 #import "UserInfoCache.h"
 
 @interface FeedProfileListTVC ()<FeedTableViewDelegate,UITableViewDelegate>
@@ -27,6 +27,9 @@
 @property (nonatomic) NSMutableArray *channelsRecentlyUpdated;
 @property (nonatomic) Channel *currentUserChannel;
 @property (nonatomic) UIView *headerView;
+
+
+@property (nonatomic) UIImageView * emptyStateView;
 
 @end
 
@@ -51,7 +54,6 @@
     self.tableView.allowsSelection = YES;
     self.tableView.delegate = self;
 	[self formatNavigationItem];
-
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refreshListOfContent) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:self.refreshControl];
@@ -75,6 +77,31 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+-(void)clearEmptyState{
+    if(self.emptyStateView){
+        [self.emptyStateView removeFromSuperview];
+        self.emptyStateView = nil;
+    }
+}
+
+
+-(void)createEmptyStateView{
+    if(self.emptyStateView) return;
+    UIImage * emptyStateImage = [UIImage imageNamed:PROFILE_NAME_LIST_EMPTY_STATE];
+    self.emptyStateView = [[UIImageView alloc] initWithImage:emptyStateImage];
+    self.emptyStateView.contentMode = UIViewContentModeScaleAspectFit;
+    self.emptyStateView.frame = CGRectMake(10.f, 0.f, self.view.frame.size.width - 20.f, self.view.frame.size.height);
+    
+    UITapGestureRecognizer * goToDiscoverTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(goToDiscoverTapGesture:)];
+    [self.emptyStateView addGestureRecognizer:goToDiscoverTap];
+    [self.tableView setCanCancelContentTouches:NO];
+    [self.view addSubview:self.emptyStateView];
+    [self.view bringSubviewToFront:self.emptyStateView];
+    
+}
+
+
 -(void)findUpdatedPosts{
     [self.channelsRecentlyUpdated removeAllObjects];
     for(Channel * channel in self.channelsUserFollowing){
@@ -83,9 +110,6 @@
             [self.channelsRecentlyUpdated addObject:channel];
         }
     }
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 }
 
 
@@ -110,7 +134,6 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-//    [self.logoBar removeFromSuperview];
 
     NSInteger startIndex = (indexPath.section == 0) ? indexPath.row : indexPath.row + self.channelsRecentlyUpdated.count;
 
@@ -124,7 +147,7 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return (self.emptyStateView) ? 0 : 2;//if there's nothing then we don't have sections
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -132,7 +155,6 @@
     if(section == 0) {
         return self.channelsRecentlyUpdated.count;
     }
-    
     return (self.channelsUserFollowing) ? self.channelsUserFollowing.count : 0;
 }
 
@@ -165,7 +187,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void)viewDidLayoutSubviews {
-//	self.navigationController.navigationBar.frame = CGRectMake(0.f, 0.f, self.view.frame.size.width, NAVIGATION_BAR_HEIGHT);
+
     [super viewDidLayoutSubviews];
     if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
         [self.tableView setSeparatorInset:UIEdgeInsetsZero];
@@ -174,9 +196,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([self.tableView respondsToSelector:@selector(setLayoutMargins:)]) {
         [self.tableView setLayoutMargins:UIEdgeInsetsZero];
     }
-//    if(self.logoBar){
-//        [self.view bringSubviewToFront:self.logoBar];
-//    }
 }
 
 
@@ -191,7 +210,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.tableView setScrollEnabled:YES];
 }
 
--(void)goToDiscover {
+-(void)goToDiscoverTapGesture:(UITapGestureRecognizer *) gesture {
     [self.delegate goToDiscover];
 }
 
@@ -200,7 +219,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     //todo: change how getfollowersandfollowing is used everywhere (also make sure one instance of updating followers is used)
     [self.currentUserChannel getChannelsFollowingWithCompletionBlock:^{
         
-        //No channels have been previously loaded
+//        //No channels have been previously loaded
         self.channelsUserFollowing = [NSMutableArray arrayWithArray: [self.currentUserChannel channelsUserFollowing]];
         [self.channelsUserFollowing sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
             Channel * leftObj = obj1;
@@ -209,6 +228,13 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
             return [[leftObj userName] caseInsensitiveCompare:[rightObj userName]];
         }];
         [self findUpdatedPosts];
+        
+        if(!self.channelsUserFollowing || self.channelsUserFollowing.count == 0){
+            [self createEmptyStateView];
+        }else{
+            [self clearEmptyState];
+        }
+        
         [self.refreshControl endRefreshing];
         [self.tableView reloadData];
         

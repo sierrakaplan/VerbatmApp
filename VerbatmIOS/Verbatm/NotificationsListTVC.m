@@ -226,6 +226,9 @@
 }
 
 -(void)presentPost:(PFObject *)postObject andChannel:(Channel *) channel{
+
+    //prevents the touch gesturs competing between the x and the tableview
+    [self.tableView setAllowsSelection:NO];
 //todo: push segue
 	if(postObject && channel){
         if(!self.postPreview){
@@ -243,6 +246,7 @@
 }
 
 -(void)removePreview {
+    [self.tableView setAllowsSelection:YES];
 	self.cellSelected = NO;
 	if(self.postPreview){
 		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{

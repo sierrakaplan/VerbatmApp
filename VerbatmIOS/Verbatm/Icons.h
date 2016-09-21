@@ -206,6 +206,11 @@
 
 #pragma mark - Notifications View Controller -
 
+#define PROFILE_NAME_LIST_EMPTY_STATE @"Profile List Empty State icon"
+
+#define FOLLOWING_LIST_EMPTY_STATE @"Following List Empty State"
+#define FOLLOWERS_LIST_EMPTY_STATE @"Followers List Empty State"
+
 #define NOTIFICATIONS_EMPTY_ICON @"NotificationsEmptyIcon"
 #define LIKE_NOTIFICATION_IMAGE_ICON @"HeartIcon"
 
