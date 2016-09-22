@@ -45,6 +45,8 @@
 @property (nonatomic) NSTimeInterval timerElapsed;
 
 
+#define CIRCLE_ANIMATION_XPOS (self.frame.size.width - SLIDESHOW_PROGRESS_CIRCLE_SIZE - 15.f)
+
 @end
 
 @implementation PhotoPVE
@@ -405,17 +407,15 @@
     
     CGMutablePathRef path = CGPathCreateMutable();
     
-    CGFloat yPos;
-    
-    if(self.small){
-        yPos = 8.f;
-    }else{
-        yPos = 5.f + ((self.photoVideoSubview) ? 2.f : CREATOR_CHANNEL_BAR_HEIGHT + STATUS_BAR_HEIGHT);
+    CGFloat yPos = 13.f;
+    CGFloat xPos = CIRCLE_ANIMATION_XPOS;
+    if(!self.small){
+        yPos = yPos + ((self.photoVideoSubview) ? 2.f : CREATOR_CHANNEL_BAR_HEIGHT + STATUS_BAR_HEIGHT);
     }
     
     
     
-    CGRect frame =CGRectMake(10.f,yPos , SLIDESHOW_PROGRESS_CIRCLE_SIZE, SLIDESHOW_PROGRESS_CIRCLE_SIZE);
+    CGRect frame =CGRectMake(xPos,yPos , SLIDESHOW_PROGRESS_CIRCLE_SIZE, SLIDESHOW_PROGRESS_CIRCLE_SIZE);
 
     float midX = CGRectGetMidX(frame);
     float midY = CGRectGetMidY(frame);

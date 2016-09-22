@@ -158,7 +158,7 @@
 #pragma mark - Like Share Bar
 
 #define LIKE_SHARE_BAR_WIDTH 50.f
-#define LIKE_SHARE_BAR_HEIGHT 300.f
+#define LIKE_SHARE_BAR_HEIGHT 250.f
 #define SMALL_SQUARE_LIKESHAREBAR_HEIGHT 30.f
 #define MUTE_BUTTON_OFFSET 10
 
