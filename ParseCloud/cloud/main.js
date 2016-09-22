@@ -381,7 +381,7 @@ Parse.Cloud.define("getFriendsChannels", function(req, res) {
 		data.channelsFollowedIds = [];
 		for (var i = 0; i < channelsFollowed.length; i++) {
 		    var channel = channelsFollowed[i];
-		    data.channelsFollowedIds.push(channel.objectId);
+		    data.channelsFollowedIds.push(channel.id);
 		}
 		return getPhoneContacts(phoneNumbers);
 	}).then(function(phoneContactFriends) {
@@ -413,7 +413,7 @@ Parse.Cloud.define("getDiscoverChannels", function(req, res) {
 		data.channelsFollowedIds = [];
 		for (var i = 0; i < channelsFollowed.length; i++) {
 		    var channel = channelsFollowed[i];
-		    data.channelsFollowedIds.push(channel.objectId);
+		    data.channelsFollowedIds.push(channel.id);
 		}
 		return getPhoneContacts(phoneNumbers);
 	}).then(function(phoneContactFriends) {
@@ -433,10 +433,10 @@ function getExploreChannels(usersToFilter, channelsFollowed, skip) {
 	var promise = new Parse.Promise();
 	var channelsQuery = new Parse.Query(ChannelClass);
 	channelsQuery.notContainedIn("ChannelCreator", usersToFilter);
+	console.log("channels followed: " + channelsFollowed);
 	channelsQuery.notContainedIn("objectId", channelsFollowed);
 	channelsQuery.limit(30);
 	channelsQuery.exists("ChannelLatestPostDate");
-	console.log("skip: " + skip);
 	channelsQuery.skip(skip);
 	channelsQuery.descending("ChannelNumFollows");
 	channelsQuery.find({
