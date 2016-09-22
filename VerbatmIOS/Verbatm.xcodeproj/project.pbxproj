@@ -55,6 +55,7 @@
 		A57A92FF1B55A551006C2597 /* CameraFocusSquare.m in Sources */ = {isa = PBXBuildFile; fileRef = A57A92FE1B55A551006C2597 /* CameraFocusSquare.m */; };
 		A57A93051B55E835006C2597 /* VerbatmCameraView.m in Sources */ = {isa = PBXBuildFile; fileRef = A57A93041B55E835006C2597 /* VerbatmCameraView.m */; };
 		A57A93071B55E95B006C2597 /* VerbatmCameraView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A57A93061B55E95B006C2597 /* VerbatmCameraView.xib */; };
+		A57D2C7B1D9461C50036062F /* View.xib in Resources */ = {isa = PBXBuildFile; fileRef = A57D2C7A1D9461C50036062F /* View.xib */; };
 		A582D28D1D75F6E90004A017 /* CommentingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A582D28C1D75F6E90004A017 /* CommentingViewController.m */; };
 		A58656681B61FD99008E358C /* PhotoPVE.m in Sources */ = {isa = PBXBuildFile; fileRef = A58656671B61FD99008E358C /* PhotoPVE.m */; };
 		A586566D1B620E60008E358C /* PointObject.m in Sources */ = {isa = PBXBuildFile; fileRef = A586566C1B620E60008E358C /* PointObject.m */; };
@@ -389,6 +390,7 @@
 		A57A93031B55E835006C2597 /* VerbatmCameraView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmCameraView.h; sourceTree = "<group>"; };
 		A57A93041B55E835006C2597 /* VerbatmCameraView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmCameraView.m; sourceTree = "<group>"; };
 		A57A93061B55E95B006C2597 /* VerbatmCameraView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VerbatmCameraView.xib; sourceTree = "<group>"; };
+		A57D2C7A1D9461C50036062F /* View.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = View.xib; sourceTree = "<group>"; };
 		A582D28B1D75F6E90004A017 /* CommentingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentingViewController.h; sourceTree = "<group>"; };
 		A582D28C1D75F6E90004A017 /* CommentingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentingViewController.m; sourceTree = "<group>"; };
 		A58656661B61FD99008E358C /* PhotoPVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoPVE.h; sourceTree = "<group>"; };
@@ -1186,6 +1188,7 @@
 		A560EF991BA88F8B003FB041 /* User App Preferences */ = {
 			isa = PBXGroup;
 			children = (
+				A57D2C7A1D9461C50036062F /* View.xib */,
 			);
 			name = "User App Preferences";
 			sourceTree = "<group>";
@@ -1849,6 +1852,7 @@
 				A57A93071B55E95B006C2597 /* VerbatmCameraView.xib in Resources */,
 				A5BFA5BE1CA8C506002C3884 /* Raleway-LightItalic.ttf in Resources */,
 				A5934BAC1C10F2C8007C7830 /* Quicksand-Light.otf in Resources */,
+				A57D2C7B1D9461C50036062F /* View.xib in Resources */,
 				A5934BAE1C10F2C8007C7830 /* Quicksand-Regular.otf in Resources */,
 				A5FB5D561BCB122300634A96 /* GMEmptyFolder@1x.png in Resources */,
 				C774040F19BE6538004C50EA /* Images.xcassets in Resources */,

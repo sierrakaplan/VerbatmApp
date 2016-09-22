@@ -324,26 +324,6 @@ function getPhoneContacts(phoneNumbers) {
 	return promise;
 }
 
-function getChannelsFromUsers(users, usersWhoBlocked, channelsFollowed) {
-	var promise = new Parse.Promise();
-	var channelsQuery = new Parse.Query(ChannelClass);
-	channelsQuery.containedIn("ChannelCreator", users);
-	channelsQuery.notContainedIn("ChannelCreator", usersWhoBlocked);
-	channelsQuery.notContainedIn("objectId", channelsFollowed);
-	channelsQuery.limit = 1000;
-	channelsQuery.find({
-	  success: function(results) {
-	  	promise.resolve(results);
-	  },
-
-	  error: function(error) {
-	    console.error(httpResponse);
-	    promise.reject(error);
-	  }
-	});
-	return promise;
-}
-
 function getUsersWhoHaveBlockedUser(user) {
 	var promise = new Parse.Promise();
 	var blockQuery = new Parse.Query(BlockClass);
@@ -367,6 +347,26 @@ function getUsersWhoHaveBlockedUser(user) {
 	return promise;
 }
 
+function getChannelsFromUsers(users, usersWhoBlocked, channelsFollowed) {
+	var promise = new Parse.Promise();
+	var channelsQuery = new Parse.Query(ChannelClass);
+	channelsQuery.containedIn("ChannelCreator", users);
+	channelsQuery.notContainedIn("ChannelCreator", usersWhoBlocked);
+	channelsQuery.notContainedIn("objectId", channelsFollowed);
+	channelsQuery.limit = 1000;
+	channelsQuery.find({
+	  success: function(results) {
+	  	promise.resolve(results);
+	  },
+
+	  error: function(error) {
+	    console.error(error);
+	    promise.reject(error);
+	  }
+	});
+	return promise;
+}
+
 Parse.Cloud.define("getFriendsChannels", function(req, res) {
 	var user = new Parse.User();
 	user.id = req.params.userID;
@@ -378,14 +378,18 @@ Parse.Cloud.define("getFriendsChannels", function(req, res) {
 		data.usersWhoBlocked = usersWhoBlocked;
 		return getChannelsFollowed(user);
 	}).then(function(channelsFollowed) {
-		data.channelsFollowed = channelsFollowed;
+		data.channelsFollowedIds = [];
+		for (var i = 0; i < channelsFollowed.length; i++) {
+		    var channel = channelsFollowed[i];
+		    data.channelsFollowedIds.push(channel.objectId);
+		}
 		return getPhoneContacts(phoneNumbers);
 	}).then(function(phoneContactFriends) {
 		data.phoneContactFriends = phoneContactFriends;
 		return getFacebookFriends(user);
 	}).then(function(facebookFriends) {
 		var friends = data.phoneContactFriends.concat(facebookFriends);
-		return getChannelsFromUsers(friends, data.usersWhoBlocked, data.channelsFollowed);
+		return getChannelsFromUsers(friends, data.usersWhoBlocked, data.channelsFollowedIds);
 	}).then(function(channels) {
 		res.success(channels);
 	}, function(err) {
@@ -394,8 +398,59 @@ Parse.Cloud.define("getFriendsChannels", function(req, res) {
 });
 
 Parse.Cloud.define("getDiscoverChannels", function(req, res) {
-
+	var user = new Parse.User();
+	user.id = req.params.userID;
+	var phoneNumbers = req.params.phoneNumbers;
+	var skip = req.params.skip;
+	var data = {};
+	user.fetch().then(function(user) {
+		return getUsersWhoHaveBlockedUser(user);
+	}).then(function(usersWhoBlocked) {
+		data.usersToFilter = usersWhoBlocked;
+		data.usersToFilter.push(user);
+		return getChannelsFollowed(user);
+	}).then(function(channelsFollowed) {
+		data.channelsFollowedIds = [];
+		for (var i = 0; i < channelsFollowed.length; i++) {
+		    var channel = channelsFollowed[i];
+		    data.channelsFollowedIds.push(channel.objectId);
+		}
+		return getPhoneContacts(phoneNumbers);
+	}).then(function(phoneContactFriends) {
+		data.usersToFilter = data.usersToFilter.concat(phoneContactFriends);
+		return getFacebookFriends(user);
+	}).then(function(facebookFriends) {
+		data.usersToFilter = data.usersToFilter.concat(facebookFriends);
+		return getExploreChannels(data.usersToFilter, data.channelsFollowedIds, skip);
+	}).then(function(channels) {
+		res.success(channels);
+	}, function(err) {
+		res.error(err);
+	});
 });
+
+function getExploreChannels(usersToFilter, channelsFollowed, skip) {
+	var promise = new Parse.Promise();
+	var channelsQuery = new Parse.Query(ChannelClass);
+	channelsQuery.notContainedIn("ChannelCreator", usersToFilter);
+	channelsQuery.notContainedIn("objectId", channelsFollowed);
+	channelsQuery.limit(30);
+	channelsQuery.exists("ChannelLatestPostDate");
+	console.log("skip: " + skip);
+	channelsQuery.skip(skip);
+	channelsQuery.descending("ChannelNumFollows");
+	channelsQuery.find({
+	  success: function(results) {
+	  	promise.resolve(results);
+	  },
+
+	  error: function(error) {
+	    console.error(httpResponse);
+	    promise.reject(error);
+	  }
+	});
+	return promise;
+}
 
 // CHANNELS FOR LIKES/SHARES
 

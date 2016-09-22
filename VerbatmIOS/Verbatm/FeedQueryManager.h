@@ -24,9 +24,6 @@
 // Resolves to an array of Channels
 -(void) getChannelsForAllFriendsWithCompletionHandler:(void(^)(NSArray *))completionBlock;
 
-// Resolves to an array of Channels
--(void) getChannelsForPhoneContactsWithCompletionHandler:(void(^)(NSArray *))completionBlock;
-
 /* Reloads channels for current user's explore section, obviously excluding channels owned by the user
    or channels they already follow. Returns up to CHANNEL_DOWNLOAD_MAX_SIZE channels */
 -(void) refreshExploreChannelsWithCompletionHandler:(void(^)(NSArray *))completionBlock;

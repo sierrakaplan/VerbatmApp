@@ -83,7 +83,7 @@
 	[PFCloud callFunctionInBackground:@"getChannelFollowers" withParameters:params block:^(NSArray* followerChannels,
 																						   NSError * _Nullable error) {
 		if (error) {
-
+			//todo: show error
 		} else {
 			NSMutableArray *channels = [[NSMutableArray alloc] initWithCapacity: followerChannels.count];
 			for (PFObject *channelObject in followerChannels) {
