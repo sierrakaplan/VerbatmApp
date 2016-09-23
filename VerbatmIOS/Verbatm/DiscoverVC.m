@@ -7,12 +7,11 @@
 //
 
 #import "Channel_BackendObject.h"
-#import "ExploreChannelCellView.h"
+#import "DiscoverCollectionViewCell.h"
 #import "Icons.h"
 #import "InviteFriendsVC.h"
 #import "FeedQueryManager.h"
 #import "DiscoverVC.h"
-#import "FeaturedContentCellView.h"
 #import "FollowFriendsCell.h"
 #import "FollowFriendsVC.h"
 #import "Follow_BackendManager.h"
@@ -24,7 +23,7 @@
 #import "Styles.h"
 #import "VerbatmNavigationController.h"
 
-@interface DiscoverVC() <UIScrollViewDelegate, ExploreChannelCellViewDelegate, UICollectionViewDelegate,
+@interface DiscoverVC() <UIScrollViewDelegate, UICollectionViewDelegate,
 UICollectionViewDataSource>
 
 @property (strong, nonatomic) UISearchController *searchController;
@@ -97,12 +96,12 @@ UICollectionViewDataSource>
 
 //register our custom cell class
 -(void)registerClassForCustomCells {
-	[self.collectionView registerClass:[ExploreChannelCellView class] forCellWithReuseIdentifier:EXPLORE_CELL_ID];
+	[self.collectionView registerNib:[UINib nibWithNibName:@"DiscoverCollectionViewCell" bundle: nil] forCellWithReuseIdentifier:EXPLORE_CELL_ID];
 	[self.collectionView registerClass:[FollowFriendsCell class] forCellWithReuseIdentifier:SHOW_FRIEND_CELL_ID];
 }
 
 -(UIStatusBarStyle) preferredStatusBarStyle {
-	return UIStatusBarStyleDefault;
+	return UIStatusBarStyleLightContent;
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -160,13 +159,13 @@ UICollectionViewDataSource>
 }
 
 -(void) clearViews {
-	for (NSIndexPath *indexPath in [self.collectionView indexPathsForVisibleItems]) {
-		if (indexPath.section == 1) {
-			ExploreChannelCellView *cellView = (ExploreChannelCellView*)[self.collectionView
-																		 cellForItemAtIndexPath:indexPath];
-			[(ExploreChannelCellView*)cellView clearViews];
-		}
-	}
+//	for (NSIndexPath *indexPath in [self.collectionView indexPathsForVisibleItems]) {
+//		if (indexPath.section == 1) {
+//			Discocver *cellView = (ExploreChannelCellView*)[self.collectionView
+//																		 cellForItemAtIndexPath:indexPath];
+//			[(ExploreChannelCellView*)cellView clearViews];
+//		}
+//	}
 	self.loadingMoreChannels = NO;
 	self.refreshing = NO;
 	_exploreChannels = nil;
@@ -261,7 +260,7 @@ UICollectionViewDataSource>
 			[self showFollowFriendsView];
 		}
 	} else if (section == 1) {
-		ExploreChannelCellView *cell = (ExploreChannelCellView*)[self.collectionView cellForItemAtIndexPath:indexPath];
+		DiscoverCollectionViewCell *cell = (DiscoverCollectionViewCell*)[self.collectionView cellForItemAtIndexPath:indexPath];
 		Channel *channel = cell.channelBeingPresented;
 		[self channelSelected:channel];
 	}
@@ -306,7 +305,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 		}
 		return cell;
 	} else {
-		ExploreChannelCellView *cell = [collectionView dequeueReusableCellWithReuseIdentifier:EXPLORE_CELL_ID
+		DiscoverCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:EXPLORE_CELL_ID
 																				 forIndexPath:indexPath];
 		Channel *channel = [self.exploreChannels objectAtIndex: indexPath.row];
 		if (cell.channelBeingPresented != channel) {

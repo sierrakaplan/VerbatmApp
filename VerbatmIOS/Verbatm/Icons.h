@@ -188,6 +188,9 @@
 #define INVITE_FRIENDS_ICON @"invite_icon"
 #define FOLLOW_FRIENDS_ICON @"white_person_icon"
 
+#define FOLLOW_ICON @"follow_icon"
+#define CHECK_MARK @"check_mark"
+
 #pragma mark - Profile Information Header -
 
 #define ADD_COVER_PHOTO_ICON @"camera"

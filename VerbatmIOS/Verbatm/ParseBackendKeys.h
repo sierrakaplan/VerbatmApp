@@ -90,9 +90,8 @@
 #define POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO @"PostChannelActivityChannelPosted"//channel that post is posted in 
 #define POST_CHANNEL_ACTIVITY_POST @"PostChannelActivityPost"
 
-
 #define FLAG_PFCLASS_KEY @"FlagClass"
-#define FLAG_USER_KEY @"FlagUser"
+#define FLAG_USER_KEY @"FlagUser" 
 #define FLAG_POST_FLAGGED_KEY @"FlagPost"
 
 #define BLOCK_PFCLASS_KEY @"BlockClass"

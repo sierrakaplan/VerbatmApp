@@ -76,24 +76,18 @@
 
 //todo: clean up and store cover photo once it's been loaded once
 -(void)loadCoverPhotoWithCompletionBlock: (void(^)(UIImage*, NSData*))block{
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            NSString * url = [self.parseChannelObject valueForKey:CHANNEL_COVER_PHOTO_URL];
-            if(url) {
-                NSString *smallImageUrl = [UtilityFunctions addSuffixToPhotoUrl:url forSize: HALFSCREEN_IMAGE_SIZE];
-                [[UtilityFunctions sharedInstance] loadCachedPhotoDataFromURL: [NSURL URLWithString: smallImageUrl]].then(^(NSData* data) {
-                    if(data){
-                        UIImage * photo = [UIImage imageWithData:data];
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            block(photo, data);
-                        });
-                    } else {
-                        block(nil, nil);
-                    }
-                });
-            } else {
-                block(nil, nil);
-            }
-    });
+
+	NSString * url = [self.parseChannelObject valueForKey:CHANNEL_COVER_PHOTO_URL];
+		NSString *smallImageUrl = [UtilityFunctions addSuffixToPhotoUrl:url forSize: HALFSCREEN_IMAGE_SIZE];
+		[[UtilityFunctions sharedInstance] loadCachedPhotoDataFromURL: [NSURL URLWithString: smallImageUrl]].then(^(NSData* data) {
+			if(data) {
+				UIImage * photo = [UIImage imageWithData:data];
+				block(photo, data);
+			} else {
+				block(nil, nil);
+			}
+		});
+
 }
 
 -(void) changeTitle:(NSString*)title {

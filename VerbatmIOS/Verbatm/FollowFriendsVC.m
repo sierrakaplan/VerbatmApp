@@ -6,7 +6,7 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
-#import "ExploreChannelCellView.h"
+#import "DiscoverCollectionViewCell.h"
 #import "FeedQueryManager.h"
 #import "Follow_BackendManager.h"
 #import "FollowFriendsVC.h"
@@ -90,7 +90,8 @@
 
 //register our custom cell class
 -(void)registerClassForCustomCells {
-	[self.collectionView registerClass:[ExploreChannelCellView class] forCellWithReuseIdentifier:EXPLORE_CELL_ID];
+	[self.collectionView registerNib:[UINib nibWithNibName:@"DiscoverCollectionViewCell" bundle:nil]
+		  forCellWithReuseIdentifier:EXPLORE_CELL_ID];
 }
 
 -(UICollectionViewFlowLayout * )getFlowLayout {
@@ -152,7 +153,7 @@
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-	ExploreChannelCellView *cell = (ExploreChannelCellView*)[self.collectionView cellForItemAtIndexPath:indexPath];
+	DiscoverCollectionViewCell *cell = (DiscoverCollectionViewCell*)[self.collectionView cellForItemAtIndexPath:indexPath];
 	Channel *channel = cell.channelBeingPresented;
 	[self channelSelected:channel];
 }
@@ -185,7 +186,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
 
-		ExploreChannelCellView *cell = [collectionView dequeueReusableCellWithReuseIdentifier:EXPLORE_CELL_ID
+		DiscoverCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:EXPLORE_CELL_ID
 																				 forIndexPath:indexPath];
 		Channel *channel = [self.friendChannels objectAtIndex: indexPath.row];
 		if (cell.channelBeingPresented != channel) {

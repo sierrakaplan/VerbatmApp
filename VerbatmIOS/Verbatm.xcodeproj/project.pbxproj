@@ -55,7 +55,8 @@
 		A57A92FF1B55A551006C2597 /* CameraFocusSquare.m in Sources */ = {isa = PBXBuildFile; fileRef = A57A92FE1B55A551006C2597 /* CameraFocusSquare.m */; };
 		A57A93051B55E835006C2597 /* VerbatmCameraView.m in Sources */ = {isa = PBXBuildFile; fileRef = A57A93041B55E835006C2597 /* VerbatmCameraView.m */; };
 		A57A93071B55E95B006C2597 /* VerbatmCameraView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A57A93061B55E95B006C2597 /* VerbatmCameraView.xib */; };
-		A57D2C7B1D9461C50036062F /* View.xib in Resources */ = {isa = PBXBuildFile; fileRef = A57D2C7A1D9461C50036062F /* View.xib */; };
+		A57D2C811D95C8EE0036062F /* DiscoverCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A57D2C7F1D95C8EE0036062F /* DiscoverCollectionViewCell.m */; };
+		A57D2C821D95C8EE0036062F /* DiscoverCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A57D2C801D95C8EE0036062F /* DiscoverCollectionViewCell.xib */; };
 		A582D28D1D75F6E90004A017 /* CommentingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A582D28C1D75F6E90004A017 /* CommentingViewController.m */; };
 		A58656681B61FD99008E358C /* PhotoPVE.m in Sources */ = {isa = PBXBuildFile; fileRef = A58656671B61FD99008E358C /* PhotoPVE.m */; };
 		A586566D1B620E60008E358C /* PointObject.m in Sources */ = {isa = PBXBuildFile; fileRef = A586566C1B620E60008E358C /* PointObject.m */; };
@@ -120,9 +121,6 @@
 		A5BFA5CD1CA8C506002C3884 /* Raleway-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A5BFA5A91CA8C506002C3884 /* Raleway-ThinItalic.ttf */; };
 		A5C09BE61BA1F43600C0AD86 /* MediaUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BE51BA1F43600C0AD86 /* MediaUploader.m */; };
 		A5C38AC11CC1B67B0067D077 /* DiscoverVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38AC01CC1B67B0067D077 /* DiscoverVC.m */; };
-		A5C38AC71CC1D1970067D077 /* FeaturedContentCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38AC61CC1D1970067D077 /* FeaturedContentCellView.m */; };
-		A5C38ACA1CC1D1B80067D077 /* ExploreChannelCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38AC91CC1D1B80067D077 /* ExploreChannelCellView.m */; };
-		A5C38ACD1CC1D4120067D077 /* FeaturedContentChannelView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38ACC1CC1D4120067D077 /* FeaturedContentChannelView.m */; };
 		A5CA61151B9A013E009D9D11 /* AdjustableBlurEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CA61141B9A013E009D9D11 /* AdjustableBlurEffect.m */; };
 		A5D893731D667A0E007B33B9 /* OnboardingADK.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D893721D667A0E007B33B9 /* OnboardingADK.m */; };
 		A5E73B761D1634D300527ECF /* UserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E73B751D1634D300527ECF /* UserManager.m */; };
@@ -390,7 +388,9 @@
 		A57A93031B55E835006C2597 /* VerbatmCameraView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmCameraView.h; sourceTree = "<group>"; };
 		A57A93041B55E835006C2597 /* VerbatmCameraView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmCameraView.m; sourceTree = "<group>"; };
 		A57A93061B55E95B006C2597 /* VerbatmCameraView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VerbatmCameraView.xib; sourceTree = "<group>"; };
-		A57D2C7A1D9461C50036062F /* View.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = View.xib; sourceTree = "<group>"; };
+		A57D2C7E1D95C8EE0036062F /* DiscoverCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiscoverCollectionViewCell.h; sourceTree = "<group>"; };
+		A57D2C7F1D95C8EE0036062F /* DiscoverCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiscoverCollectionViewCell.m; sourceTree = "<group>"; };
+		A57D2C801D95C8EE0036062F /* DiscoverCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DiscoverCollectionViewCell.xib; sourceTree = "<group>"; };
 		A582D28B1D75F6E90004A017 /* CommentingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentingViewController.h; sourceTree = "<group>"; };
 		A582D28C1D75F6E90004A017 /* CommentingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentingViewController.m; sourceTree = "<group>"; };
 		A58656661B61FD99008E358C /* PhotoPVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoPVE.h; sourceTree = "<group>"; };
@@ -456,12 +456,6 @@
 		A5C09BE51BA1F43600C0AD86 /* MediaUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaUploader.m; sourceTree = "<group>"; };
 		A5C38ABF1CC1B67B0067D077 /* DiscoverVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiscoverVC.h; sourceTree = "<group>"; };
 		A5C38AC01CC1B67B0067D077 /* DiscoverVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiscoverVC.m; sourceTree = "<group>"; };
-		A5C38AC51CC1D1970067D077 /* FeaturedContentCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeaturedContentCellView.h; sourceTree = "<group>"; };
-		A5C38AC61CC1D1970067D077 /* FeaturedContentCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeaturedContentCellView.m; sourceTree = "<group>"; };
-		A5C38AC81CC1D1B80067D077 /* ExploreChannelCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreChannelCellView.h; sourceTree = "<group>"; };
-		A5C38AC91CC1D1B80067D077 /* ExploreChannelCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreChannelCellView.m; sourceTree = "<group>"; };
-		A5C38ACB1CC1D4120067D077 /* FeaturedContentChannelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeaturedContentChannelView.h; sourceTree = "<group>"; };
-		A5C38ACC1CC1D4120067D077 /* FeaturedContentChannelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeaturedContentChannelView.m; sourceTree = "<group>"; };
 		A5CA61131B9A013E009D9D11 /* AdjustableBlurEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdjustableBlurEffect.h; sourceTree = "<group>"; };
 		A5CA61141B9A013E009D9D11 /* AdjustableBlurEffect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdjustableBlurEffect.m; sourceTree = "<group>"; };
 		A5D893711D667A0E007B33B9 /* OnboardingADK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnboardingADK.h; sourceTree = "<group>"; };
@@ -1050,14 +1044,11 @@
 		A51A0AEB1D6CF7A1009D7CDD /* Table Cell Views */ = {
 			isa = PBXGroup;
 			children = (
-				A5C38AC81CC1D1B80067D077 /* ExploreChannelCellView.h */,
-				A5C38AC91CC1D1B80067D077 /* ExploreChannelCellView.m */,
 				A59D64C11D8351B00028650C /* FollowFriendsCell.h */,
 				A59D64C21D8351B00028650C /* FollowFriendsCell.m */,
-				A5C38AC51CC1D1970067D077 /* FeaturedContentCellView.h */,
-				A5C38AC61CC1D1970067D077 /* FeaturedContentCellView.m */,
-				A5C38ACB1CC1D4120067D077 /* FeaturedContentChannelView.h */,
-				A5C38ACC1CC1D4120067D077 /* FeaturedContentChannelView.m */,
+				A57D2C7E1D95C8EE0036062F /* DiscoverCollectionViewCell.h */,
+				A57D2C7F1D95C8EE0036062F /* DiscoverCollectionViewCell.m */,
+				A57D2C801D95C8EE0036062F /* DiscoverCollectionViewCell.xib */,
 			);
 			name = "Table Cell Views";
 			sourceTree = "<group>";
@@ -1188,7 +1179,6 @@
 		A560EF991BA88F8B003FB041 /* User App Preferences */ = {
 			isa = PBXGroup;
 			children = (
-				A57D2C7A1D9461C50036062F /* View.xib */,
 			);
 			name = "User App Preferences";
 			sourceTree = "<group>";
@@ -1606,8 +1596,8 @@
 			isa = PBXGroup;
 			children = (
 				A5BB65461D6F804000F5B01B /* Main.storyboard */,
-				A51A0AD61D6CF03F009D7CDD /* FrontEnd */,
 				A51A0ADC1D6CF2C7009D7CDD /* Resources */,
+				A51A0AD61D6CF03F009D7CDD /* FrontEnd */,
 				A51A0AD51D6CF036009D7CDD /* Framedation/Model */,
 				C7BC437C199D97F5004B91A1 /* Supporting Files */,
 				C716E9D31BD6CAAA001B769D /* Analytics */,
@@ -1827,6 +1817,7 @@
 				A5FB5D571BCB122300634A96 /* GMEmptyFolder@2x.png in Resources */,
 				A5BFA5CA1CA8C506002C3884 /* Raleway-Thin.ttf in Resources */,
 				A5934BA81C10F2C8007C7830 /* Quicksand_Dash.otf in Resources */,
+				A57D2C821D95C8EE0036062F /* DiscoverCollectionViewCell.xib in Resources */,
 				A5BFA5B01CA8C506002C3884 /* Raleway-BoldItalic.ttf in Resources */,
 				A5BFA5B21CA8C506002C3884 /* Raleway-ExtraBold.ttf in Resources */,
 				A5FB5D4B1BCB11BA00634A96 /* GMImagePicker 14-24-03-208.strings in Resources */,
@@ -1852,7 +1843,6 @@
 				A57A93071B55E95B006C2597 /* VerbatmCameraView.xib in Resources */,
 				A5BFA5BE1CA8C506002C3884 /* Raleway-LightItalic.ttf in Resources */,
 				A5934BAC1C10F2C8007C7830 /* Quicksand-Light.otf in Resources */,
-				A57D2C7B1D9461C50036062F /* View.xib in Resources */,
 				A5934BAE1C10F2C8007C7830 /* Quicksand-Regular.otf in Resources */,
 				A5FB5D561BCB122300634A96 /* GMEmptyFolder@1x.png in Resources */,
 				C774040F19BE6538004C50EA /* Images.xcassets in Resources */,
@@ -2013,7 +2003,6 @@
 				A5076D141BF2B25100303746 /* TextOverMediaView.m in Sources */,
 				A56D19EF1D74BC94003B6907 /* CurrentUserProfileVC.m in Sources */,
 				A58656681B61FD99008E358C /* PhotoPVE.m in Sources */,
-				A5C38AC71CC1D1970067D077 /* FeaturedContentCellView.m in Sources */,
 				A5C38AC11CC1B67B0067D077 /* DiscoverVC.m in Sources */,
 				C7F22B311C38408E00E56EA7 /* SharePostView.m in Sources */,
 				A51A0AFA1D6E82DB009D7CDD /* FollowFriendCell.m in Sources */,
@@ -2056,9 +2045,9 @@
 				C7F3EBCC1C814313007D23DF /* VideoDownloadManager.m in Sources */,
 				A5E73B851D16368400527ECF /* GTLDateTime.m in Sources */,
 				A5E73BFC1D1770B400527ECF /* GTLVerbatmAppVideo.m in Sources */,
+				A57D2C811D95C8EE0036062F /* DiscoverCollectionViewCell.m in Sources */,
 				A5BB65421D6E9E8B00F5B01B /* FeedListTableViewCell.m in Sources */,
 				A5E73BF71D1770B400527ECF /* GTLVerbatmAppPOV.m in Sources */,
-				A5C38ACA1CC1D1B80067D077 /* ExploreChannelCellView.m in Sources */,
 				C7BF1AAB1C57F60600CEDE4B /* Video_BackendObject.m in Sources */,
 				A5BB653F1D6E9E6800F5B01B /* FeedProfileListTVC.m in Sources */,
 				A5E73BF41D1770B400527ECF /* GTLVerbatmAppImage.m in Sources */,
@@ -2080,7 +2069,6 @@
 				A51A0AF71D6D135A009D7CDD /* ChooseLoginVC.m in Sources */,
 				C73766791D650B1900933A81 /* Comment.m in Sources */,
 				A59D64CA1D838C9B0028650C /* InviteFriendCell.m in Sources */,
-				A5C38ACD1CC1D4120067D077 /* FeaturedContentChannelView.m in Sources */,
 				C71FA3281D477E16003989F3 /* TextPinchView.m in Sources */,
 				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,
 				A51B851A1D2F39B1006E90CC /* UIView+DTDebug.m in Sources */,
