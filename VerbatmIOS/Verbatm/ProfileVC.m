@@ -118,7 +118,6 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 		[self.verbatmNavigationController setNavigationBarTextColor:[UIColor whiteColor]];
 	}
     
-    
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
@@ -129,6 +128,9 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 -(void)viewDidAppear:(BOOL)animated{
 	[super viewDidAppear:animated];
 	[self setNeedsStatusBarAppearanceUpdate];
+    if(self.postListVC){
+        [self.postListVC viewDidAppear:YES];
+    }
 }
 
 -(BOOL) prefersStatusBarHidden {
