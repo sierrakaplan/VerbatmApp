@@ -45,7 +45,7 @@
 @property (nonatomic) NSTimeInterval timerElapsed;
 
 
-#define CIRCLE_ANIMATION_XPOS (self.frame.size.width - SLIDESHOW_PROGRESS_CIRCLE_SIZE - 15.f)
+#define CIRCLE_ANIMATION_XPOS (self.frame.size.width - SLIDESHOW_PROGRESS_CIRCLE_SIZE - 17.f)
 
 @end
 
@@ -407,7 +407,7 @@
     
     CGMutablePathRef path = CGPathCreateMutable();
     
-    CGFloat yPos = 13.f;
+    CGFloat yPos = 15.f;
     CGFloat xPos = CIRCLE_ANIMATION_XPOS;
     if(!self.small){
         yPos = yPos + ((self.photoVideoSubview) ? 2.f : CREATOR_CHANNEL_BAR_HEIGHT + STATUS_BAR_HEIGHT);
