@@ -97,6 +97,7 @@ UICollectionViewDataSource>
 //register our custom cell class
 -(void)registerClassForCustomCells {
 	[self.collectionView registerNib:[UINib nibWithNibName:@"DiscoverCollectionViewCell" bundle: nil] forCellWithReuseIdentifier:EXPLORE_CELL_ID];
+	[self.collectionView registerClass:[UIActivityIndicatorView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FooterView"];
 	[self.collectionView registerClass:[FollowFriendsCell class] forCellWithReuseIdentifier:SHOW_FRIEND_CELL_ID];
 }
 
@@ -328,6 +329,17 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 		//		[(ExploreChannelCellView*)cell offScreen];
 	}
 }
+
+// Loading indicator footer
+
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+	if (kind == UICollectionElementKindSectionFooter) {
+		UICollectionReusableView *footerview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FooterView" forIndexPath:indexPath];
+		return footerview;
+	}
+}
+
 
 #pragma mark - Invite friends -
 
