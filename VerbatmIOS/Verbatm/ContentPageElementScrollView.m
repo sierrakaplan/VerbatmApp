@@ -95,9 +95,29 @@
 
 #pragma mark - Change Page Element -
 
+// new collections allowed
+
+// photo video
+// photo text
+// photo text video
+
 //checks if the two scroll views can be pinched together
 -(BOOL) okToPinchWith:(ContentPageElementScrollView*)otherScrollView {
-	return [self.pageElement isKindOfClass:[PinchView class]] && [otherScrollView.pageElement isKindOfClass:[PinchView class]];
+	BOOL isPinchView = [self.pageElement isKindOfClass:[PinchView class]] && [otherScrollView.pageElement isKindOfClass:[PinchView class]];
+	if (!isPinchView) return NO;
+
+	PinchView *otherPinchView;
+	if ([self.pageElement isKindOfClass:[ImagePinchView class]]) {
+		otherPinchView = (PinchView*)otherScrollView.pageElement;
+	} else if ([otherScrollView.pageElement isKindOfClass:[ImagePinchView class]]) {
+		otherPinchView = (PinchView*)self.pageElement;
+	} else {
+		return NO;
+	}
+
+	if ([otherPinchView isKindOfClass:[SingleMediaAndTextPinchView class]]) return YES;
+
+	return NO;
 }
 
 -(PinchView*) pinchWith:(ContentPageElementScrollView*)otherScrollView currentIndex:(NSInteger)currentIndex otherIndex:(NSInteger)otherIndex {
