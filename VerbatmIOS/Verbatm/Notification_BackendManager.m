@@ -13,11 +13,20 @@
 #import "UserInfoCache.h"
 
 @interface Notification_BackendManager ()
+
 #define LOAD_MAX_AMOUNT 20
 @end
 
 @implementation Notification_BackendManager
 
+NSInteger const VALID_NOTIFICATION_TYPE = (NotificationTypeNewFollower | NotificationTypeLike | NotificationTypeFriendJoinedVerbatm |
+										   NotificationTypeShare | NotificationTypeFriendsFirstPost | NotificationTypeReblog |
+										   NotificationTypeNewComment | NotificationTypeCommentReply);
+
+NSInteger const NOTIFICATION_TYPE_WITH_POST = (NotificationTypeLike | NotificationTypeShare | NotificationTypeFriendsFirstPost | NotificationTypeReblog |
+											   NotificationTypeNewComment | NotificationTypeCommentReply);
+
+NSInteger const NOTIFICATION_NEW_POST = 20;
 
 + (void)createNotificationWithType:(NotificationType) notType receivingUser:(PFUser *) receivingUser relevantPostObject:(PFObject *) post {
 	if (![[UserInfoCache sharedInstance] getUserChannel]) return; // Don't send notification if for some reason user hasn't saved channel
