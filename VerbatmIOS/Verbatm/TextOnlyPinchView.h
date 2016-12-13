@@ -7,7 +7,9 @@
 //
 
 #import "PinchView.h"
+#import "SingleMediaAndTextPinchView.h"
 
-@interface TextOnlyPinchView : PinchView
+@interface TextOnlyPinchView : SingleMediaAndTextPinchView
+
 
 @end

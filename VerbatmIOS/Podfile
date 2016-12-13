@@ -11,7 +11,7 @@ end
 
 target "Verbatm" do
        pod 'AFNetworking', '~> 3.0'
-       pod 'PromiseKit', :git => 'https://github.com/philippeauriach/PromiseKit.git', :commit => '266cfeb5073277b757efc4a37aa049efc96c596f'
+       pod 'PromiseKit'
        pod 'TwitterKit'       
        pod 'Fabric'
        pod 'Crashlytics'
