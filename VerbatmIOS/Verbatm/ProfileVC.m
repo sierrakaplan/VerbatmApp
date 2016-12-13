@@ -35,6 +35,8 @@
 
 #import "MediaSessionManager.h"
 
+#import "Notifications.h"
+
 #import "SharePostView.h"
 #import "SizesAndPositions.h"
 #import "SegueIDs.h"
@@ -96,12 +98,50 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
+	[self registerForNotifications];
 	//todo: delete
 	[PFUser logOutInBackground];
 //	if ([PFUser currentUser].isAuthenticated) {
 //		[self setUpProfile];
 //	}
 
+}
+
+-(void) registerForNotifications {
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(loginFailed:)
+												 name:NOTIFICATION_USER_LOGIN_FAILED
+											   object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(loginSucceeded:)
+												 name:NOTIFICATION_USER_LOGIN_SUCCEEDED
+											   object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(userHasSignedOutNotification:)
+												 name:NOTIFICATION_USER_SIGNED_OUT
+											   object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(successfullyPublishedNotification:)
+												 name:NOTIFICATION_POST_PUBLISHED
+											   object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(publishingFailedNotification:)
+												 name:NOTIFICATION_POST_FAILED_TO_PUBLISH
+											   object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(followingSuccessfulNotification:)
+												 name:NOTIFICATION_NOW_FOLLOWING_USER
+											   object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(newPushNotification:)
+												 name:NOTIFICATION_NEW_PUSH_NOTIFICATION
+											   object:nil];
 }
 
 -(void) setUpProfile {
@@ -131,6 +171,7 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 }
 
 -(void)userHasSignedOutNotification:(NSNotification *) notification{
+	[self clearOurViews];
 	[self performSegueWithIdentifier:SEGUE_LOGIN_OR_SIGNUP sender:self];
 }
 
@@ -160,7 +201,6 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style
 																			target:nil action:nil];
 }
-
 
 - (UIInterfaceOrientationMask) supportedInterfaceOrientations {
 	//return supported orientation masks
