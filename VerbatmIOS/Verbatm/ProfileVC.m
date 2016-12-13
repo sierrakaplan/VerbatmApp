@@ -51,6 +51,8 @@
 
 #import "VerbatmNavigationController.h"
 
+#import <Crashlytics/Crashlytics.h>
+
 @interface ProfileVC() <ProfileHeaderViewDelegate, ProfileMoreInfoViewDelegate,
 UIScrollViewDelegate, PostListVCProtocol,
 UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
@@ -128,6 +130,11 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 	}
 }
 
+-(void)userHasSignedOutNotification:(NSNotification *) notification{
+	[self performSegueWithIdentifier:SEGUE_LOGIN_OR_SIGNUP sender:self];
+}
+
+
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
    
@@ -153,6 +160,65 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 	self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style
 																			target:nil action:nil];
 }
+
+
+- (UIInterfaceOrientationMask) supportedInterfaceOrientations {
+	//return supported orientation masks
+	return UIInterfaceOrientationMaskPortrait;
+}
+
+//catches the unwind segue from login / create account or adk
+- (IBAction) unwindToProfileVC: (UIStoryboardSegue *)segue {
+	if ([segue.identifier isEqualToString: UNWIND_SEGUE_FACEBOOK_LOGIN_TO_MASTER] ||
+			   [segue.identifier isEqualToString: UNWIND_SEGUE_PHONE_LOGIN_TO_MASTER]) {
+		//todo
+	}
+}
+
+#pragma mark - Publishing Alerts -
+
+-(void)successfullyPublishedNotification:(NSNotification *) notification {
+
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Successfully Published!"
+																	   message:@"Remember to share your post! :D"
+																preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* action = [UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleDefault
+												   handler:^(UIAlertAction * action) {}];
+	[newAlert addAction:action];
+	[self presentViewController:newAlert animated:YES completion:nil];
+}
+
+-(void)publishingFailedNotification:(NSNotification *) notification{
+	NSError *error = notification.object;
+	NSString* message = @"Don't worry - we saved all your stuff! Try to publish again later!";
+	if (error.code == -1000 && [error.domain isEqualToString:@"com.alamofire.error.serialization.request"]) {
+		message = @"We couldn't publish one of your pieces of media - the file was unreadable.";
+	}
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Publishing Failed" message:message preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* action = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+												   handler:^(UIAlertAction * action) {}];
+	[newAlert addAction:action];
+	[self presentViewController:newAlert animated:YES completion:nil];
+}
+
+#pragma mark - User Manager Delegate -
+
+-(void) loginSucceeded:(NSNotification*) notification {
+	PFUser * user = notification.object;
+	[[Crashlytics sharedInstance] setUserIdentifier: [user username]];
+	[[Crashlytics sharedInstance] setUserName: [user objectForKey:VERBATM_USER_NAME_KEY]];
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[self setUpProfile];
+	});
+}
+
+-(void) loginFailed:(NSNotification *) notification {
+	NSError* error = (NSError*) notification.object;
+	[[Crashlytics sharedInstance] recordError: error];
+	//TODO: only do this if have a connection, or only a certain number of times
+}
+
+#pragma mark - Profile class -
 
 -(void)updateDateOfLastPostSeen {
 	if(!self.isCurrentUserProfile && [self.channel dateOfMostRecentChannelPost]){
@@ -478,10 +544,11 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 -(void)createPostPromptSelected{
 	if(self.inFullScreenMode)[self createNewPostViewFromCellIndexPath:nil];
 	[[Analytics getSharedInstance] newADKSession];
-	if([MediaSessionManager adkMediaPermissionsAllowed] && ((NSNumber*)[PFUser currentUser][USER_FTUE]).boolValue){
+	if([MediaSessionManager adkMediaPermissionsAllowed]){
 		[self performSegueWithIdentifier:ADK_SEGUE sender:self];
 	}else{
-		[self performSegueWithIdentifier:SEGUE_CREATE_FIRST_POST_FROM_MASTER sender:self];
+		//todo:
+//		[self performSegueWithIdentifier:SEGUE_CREATE_FIRST_POST_FROM_MASTER sender:self];
 	}
 }
 

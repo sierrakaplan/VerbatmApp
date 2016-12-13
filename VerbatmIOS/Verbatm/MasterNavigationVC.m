@@ -95,18 +95,18 @@
 }
 
 -(void)viewDidAppear:(BOOL)animated {
-	[super viewDidAppear:animated];
-	if (![PFUser currentUser].isAuthenticated) {
-		[self bringUpLogin];
-    } else {
-        //todo: did we crash during onboarding?
-        BOOL appCrashedInOnboarding = ((![PFUser currentUser][USER_FTUE] || !((NSNumber*)[PFUser currentUser][USER_FTUE]).boolValue)
-									   && !self.justLeftOnboarding);
-        if(appCrashedInOnboarding){
-            //this means we are here without going thro
-            [self revealADK];
-        }
-    }
+//	[super viewDidAppear:animated];
+//	if (![PFUser currentUser].isAuthenticated) {
+//		[self bringUpLogin];
+//    } else {
+//        //todo: did we crash during onboarding?
+//        BOOL appCrashedInOnboarding = ((![PFUser currentUser][USER_FTUE] || !((NSNumber*)[PFUser currentUser][USER_FTUE]).boolValue)
+//									   && !self.justLeftOnboarding);
+//        if(appCrashedInOnboarding){
+//            //this means we are here without going thro
+//            [self revealADK];
+//        }
+//    }
 }
 
 -(void)viewDidDisappear:(BOOL)animated {
@@ -379,55 +379,55 @@
 //	return YES;
 //}
 
--(void) revealADK {
-	[[Analytics getSharedInstance] newADKSession];
-    if([MediaSessionManager adkMediaPermissionsAllowed] && ((NSNumber*)[PFUser currentUser][USER_FTUE]).boolValue){
-        [self performSegueWithIdentifier:ADK_SEGUE sender:self];
-    }else{
-        [self performSegueWithIdentifier:SEGUE_CREATE_FIRST_POST_FROM_MASTER sender:self];
-    }
-}
+//-(void) revealADK {
+//	[[Analytics getSharedInstance] newADKSession];
+//    if([MediaSessionManager adkMediaPermissionsAllowed] && ((NSNumber*)[PFUser currentUser][USER_FTUE]).boolValue){
+//        [self performSegueWithIdentifier:ADK_SEGUE sender:self];
+//    }else{
+//        [self performSegueWithIdentifier:SEGUE_CREATE_FIRST_POST_FROM_MASTER sender:self];
+//    }
+//}
 
--(void)userHasSignedOutNotification:(NSNotification *) notification{
-	[self bringUpLogin];
-}
+//-(void)userHasSignedOutNotification:(NSNotification *) notification{
+//	[self bringUpLogin];
+//}
 
 #pragma mark - Handle Login -
 
 //brings up the create account page if there is no user logged in
--(void) bringUpLogin {
-	[self performSegueWithIdentifier:SEGUE_LOGIN_OR_SIGNUP sender:self];
-}
-
-//catches the unwind segue from login / create account or adk
-- (IBAction) unwindToMasterNavVC: (UIStoryboardSegue *)segue {
-    
-	if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER] ||
-		[segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ONBOARDING_TO_MASTER]) {
-        
-        if([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ONBOARDING_TO_MASTER]){
-            self.justLeftOnboarding = YES;
-        }
-        
-        
-		if ([[PublishingProgressManager sharedInstance] currentlyPublishing]) {
-//			[self setSelectedViewController: self.profileNavigationController];
-		}
-		[[Analytics getSharedInstance] endOfADKSession];
-        
-        
-        
-	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FACEBOOK_LOGIN_TO_MASTER] ||
-               [segue.identifier isEqualToString: UNWIND_SEGUE_PHONE_LOGIN_TO_MASTER]) {
-		//todo
-	}
-}
+//-(void) bringUpLogin {
+//	[self performSegueWithIdentifier:SEGUE_LOGIN_OR_SIGNUP sender:self];
+//}
+//
+////catches the unwind segue from login / create account or adk
+//- (IBAction) unwindToMasterNavVC: (UIStoryboardSegue *)segue {
+//    
+//	if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER] ||
+//		[segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ONBOARDING_TO_MASTER]) {
+//        
+//        if([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ONBOARDING_TO_MASTER]){
+//            self.justLeftOnboarding = YES;
+//        }
+//        
+//        
+//		if ([[PublishingProgressManager sharedInstance] currentlyPublishing]) {
+////			[self setSelectedViewController: self.profileNavigationController];
+//		}
+//		[[Analytics getSharedInstance] endOfADKSession];
+//        
+//        
+//        
+//	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FACEBOOK_LOGIN_TO_MASTER] ||
+//               [segue.identifier isEqualToString: UNWIND_SEGUE_PHONE_LOGIN_TO_MASTER]) {
+//		//todo
+//	}
+//}
 
 #pragma mark - Profile VC Delegate -
 
--(void) userCreateFirstPost{
-    [self revealADK];
-}
+//-(void) userCreateFirstPost{
+//    [self revealADK];
+//}
 
 #pragma mark - Feed VC Delegate -
 

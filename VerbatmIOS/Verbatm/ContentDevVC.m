@@ -343,10 +343,10 @@ UITextFieldDelegate,UIGestureRecognizerDelegate,ShareLinkViewProtocol>
 
 #pragma mark Close Button
 
--(void) leftButtonPressed {
-	self.view.clipsToBounds = YES;
-	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
-}
+//-(void) leftButtonPressed {
+//	self.view.clipsToBounds = YES;
+//	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
+//}
 
 -(void) middleButtonPressed {
 
@@ -1861,7 +1861,7 @@ andSaveInUserDefaults:(BOOL)save {
 														 errorMessage = @"Something went wrong - please check your network connection and try again.";
 													 } else {
 														 //Everything went ok
-														 [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
+														 [self.navigationController popViewControllerAnimated:YES];
 														 [self cleanUp];
 														 return;
 													 }

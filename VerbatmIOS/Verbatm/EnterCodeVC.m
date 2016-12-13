@@ -76,8 +76,8 @@
 
 -(void) sendCodeToUser:(NSString*) simplePhoneNumber {
 
-   // return;//todo: this line lines allow testing create new accounts (use phone numbers no one has)
-    [self disableResendCodeButtonWithText:@"Sending code..."];
+	// return;//todo: this line lines allow testing create new accounts (use phone numbers no one has)
+	[self disableResendCodeButtonWithText:@"Sending code..."];
 	//todo: include more languages
 	NSDictionary *params = @{@"phoneNumber" : simplePhoneNumber, @"language" : @"en"};
 	[PFCloud callFunctionInBackground:@"sendCode" withParameters:params block:^(id  _Nullable response, NSError * _Nullable error) {
@@ -121,8 +121,8 @@
 -(void) verifyCode {
 	NSString *code = [self getCode];
 
-//	//todo: these lines lines allow testing create new accounts (use phone numbers no one has)
-    //[self shortCircuitLoginVerification];
+	//	//todo: these lines lines allow testing create new accounts (use phone numbers no one has)
+	//[self shortCircuitLoginVerification];
 	//return;
 
 	if (self.verifyingCode) return;
@@ -138,34 +138,28 @@
 		NSDictionary *params = @{@"phoneNumber": self.simplePhoneNumber, @"codeEntry": code};
 		[PFCloud callFunctionInBackground:@"logIn" withParameters:params
 									block:^(NSString* token, NSError * _Nullable error) {
-			if (error) {
-				[self showWrongCode];
-			} else {
-				// This is the session token for the user
-				[PFUser becomeInBackground:token block:^(PFUser * _Nullable user, NSError * _Nullable error) {
-					if (error) {
-						[self showAlertWithTitle:@"Login Error" andMessage:error.localizedDescription];
-						[self enableResendCodeButton];
-						self.verifyingCode = NO;
-					} else {
-						if(![PFUser currentUser][USER_FTUE] || !((NSNumber*)[PFUser currentUser][USER_FTUE]).boolValue) {
-							NSString * userName = user[VERBATM_USER_NAME_KEY];
-							if(userName && userName.length){
-								//go to onboarding adk
-								[self performSegueWithIdentifier:SEGUE_ONBOARD_FROM_ENTER_CODE sender:self];
-							} else {
-								[self performSegueWithIdentifier:SEGUE_CREATE_NAME sender:self];
-							}
+										if (error) {
+											[self showWrongCode];
+										} else {
+											// This is the session token for the user
+											[PFUser becomeInBackground:token block:^(PFUser * _Nullable user, NSError * _Nullable error) {
+												if (error) {
+													[self showAlertWithTitle:@"Login Error" andMessage:error.localizedDescription];
+													[self enableResendCodeButton];
+													self.verifyingCode = NO;
+												} else {
+													NSString * userName = user[VERBATM_USER_NAME_KEY];
+													if(userName && userName.length){
+														[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
+														[self performSegueWithIdentifier:UNWIND_SEGUE_PHONE_LOGIN_TO_MASTER sender:self];
+													} else {
+														[self performSegueWithIdentifier:SEGUE_CREATE_NAME sender:self];
+													}
 
-						} else {
-							[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
-							[self performSegueWithIdentifier:UNWIND_SEGUE_PHONE_LOGIN_TO_MASTER sender:self];
-						}
-
-					}
-				}];
-			}
-		}];
+												}
+											}];
+										}
+									}];
 	}
 }
 
@@ -339,9 +333,9 @@
 								  RESEND_CODE_BUTTON_WIDTH, RESEND_CODE_BUTTON_HEIGHT);
 		_resendCodeButton = [[UIButton alloc] initWithFrame:frame];
 		_resendCodeButton.layer.cornerRadius = 5.f;
-//		_resendCodeButton.layer.borderColor = [UIColor whiteColor].CGColor;
-//		_resendCodeButton.layer.borderWidth = 1.f;
-//		_resendCodeButton.backgroundColor = [UIColor colorWithWhite:1.f alpha:0.2];
+		//		_resendCodeButton.layer.borderColor = [UIColor whiteColor].CGColor;
+		//		_resendCodeButton.layer.borderWidth = 1.f;
+		//		_resendCodeButton.backgroundColor = [UIColor colorWithWhite:1.f alpha:0.2];
 		[_resendCodeButton addTarget:self action:@selector(resendCodeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 	}
 	return _resendCodeButton;

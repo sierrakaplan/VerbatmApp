@@ -128,7 +128,7 @@
                     <connections>
                         <outlet property="backgroundImageView" destination="7pa-Dd-DEK" id="Hw6-ed-GJi"/>
                         <segue destination="1pv-4Z-lkV" kind="push" identifier="enter_phone_code_segue" id="zfG-Mc-Ztx"/>
-                        <segue destination="eGE-W9-4FL" kind="unwind" identifier="facebook_login_to_master_segue" unwindAction="unwindToMasterNavVC:" id="yXb-7C-68u"/>
+                        <segue destination="eGE-W9-4FL" kind="unwind" identifier="facebook_login_to_master_segue" unwindAction="unwindToProfileVC:" id="jhj-T8-6o6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BRE-XP-PYf" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -154,8 +154,8 @@
                     <navigationItem key="navigationItem" id="Pp8-8i-LZM"/>
                     <connections>
                         <outlet property="backgroundImageView" destination="HpM-Vt-aSk" id="zeo-4v-erl"/>
-                        <segue destination="2Qj-OJ-2ty" kind="unwind" identifier="phone_login_to_master_segue" unwindAction="unwindToMasterNavVC:" id="sfd-yX-JTr"/>
                         <segue destination="3si-ZS-cVs" kind="push" identifier="create_name_segue" id="c17-Fa-fR4"/>
+                        <segue destination="2Qj-OJ-2ty" kind="unwind" identifier="phone_login_to_master_segue" unwindAction="unwindToProfileVC:" id="cOM-qu-Z9D"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ajB-r0-04Y" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -181,9 +181,11 @@
                     <navigationItem key="navigationItem" id="3d2-Ub-xxA"/>
                     <connections>
                         <outlet property="backgroundImageView" destination="t0m-NU-sxK" id="ujN-kP-C04"/>
+                        <segue destination="HcZ-zA-yoq" kind="unwind" identifier="create_name_to_profile_unwind_segue" unwindAction="unwindToProfileVC:" id="lFH-ba-mmo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4ee-sW-UG5" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="HcZ-zA-yoq" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="-2331" y="-890"/>
         </scene>
@@ -212,12 +214,8 @@
                         <gestureRecognizers/>
                     </view>
                     <navigationItem key="navigationItem" id="sqn-EE-Emp"/>
-                    <connections>
-                        <segue destination="C4V-vK-ZzO" kind="unwind" identifier="unwind_to_master_vc_from_adk" unwindAction="unwindToMasterNavVC:" id="yjg-P8-9ke"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qHO-Sg-QFP" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="C4V-vK-ZzO" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="-3853" y="-2674"/>
         </scene>
@@ -253,7 +251,7 @@
                             <tableViewSection headerTitle="Username:" id="ECc-pQ-89D">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="KHL-Ci-RUl">
-                                        <rect key="frame" x="0.0" y="55.5" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="56" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KHL-Ci-RUl" id="QIM-TT-o80">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
@@ -273,7 +271,7 @@
                             <tableViewSection id="EnP-cy-IA1">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" id="vO7-L5-rfb">
-                                        <rect key="frame" x="0.0" y="135.5" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="136" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="vO7-L5-rfb" id="Gya-er-L4i">
                                             <rect key="frame" x="0.0" y="0.0" width="342" height="43"/>
@@ -290,7 +288,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" id="Vl1-oI-vlD">
-                                        <rect key="frame" x="0.0" y="179.5" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="180" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Vl1-oI-vlD" id="oPT-iw-Loh">
                                             <rect key="frame" x="0.0" y="0.0" width="342" height="43"/>
@@ -311,7 +309,7 @@
                             <tableViewSection id="E2c-sV-6Bs">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="bs9-gP-AOF">
-                                        <rect key="frame" x="0.0" y="259.5" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="260" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="bs9-gP-AOF" id="r1n-nJ-yjl">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
@@ -365,10 +363,10 @@
             </objects>
             <point key="canvasLocation" x="-4801" y="-2673"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Verbatm Navigation Controller-->
         <scene sceneID="ncZ-uK-TJH">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="4Uh-Wb-Szz" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="4Uh-Wb-Szz" customClass="VerbatmNavigationController" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="boL-uz-kcI">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -394,7 +392,7 @@
         <simulatedScreenMetrics key="destination" type="retina4_7.fullscreen"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
+        <segue reference="Ju6-jE-1sM"/>
         <segue reference="GGt-59-v8o"/>
-        <segue reference="UYB-Wl-fI6"/>
     </inferredMetricsTieBreakers>
 </document>

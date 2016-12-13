@@ -93,7 +93,9 @@
 							self.savingName = NO;
 						} else {
 							[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:[PFUser currentUser]];
-							[self performSegueWithIdentifier:SEGUE_FOLLOW_FRIENDS sender:self];
+							[self dismissViewControllerAnimated:YES completion:^{
+
+							}];
 						}
 					}];
 				}];
