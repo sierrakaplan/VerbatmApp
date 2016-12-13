@@ -60,6 +60,7 @@
 @implementation ChannelOrUsernameCV
 
 - (void)awakeFromNib {
+	[super awakeFromNib];
 	// Initialization code
 }
 

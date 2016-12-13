@@ -11,8 +11,6 @@
 
 @interface TextOnlyPinchView()
 
-@property (strong) NSString *text;
-
 @end
 
 @implementation TextOnlyPinchView

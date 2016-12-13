@@ -229,7 +229,7 @@ ProfileVCDelegate, NotificationsListTVCProtocol,FeedProfileListProtocol>
 	deadView.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:deadViewTabImage selectedImage:deadViewTabImage];
 	deadView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 
-	self.viewControllers = @[deadView, self.profileNavigationController];
+	self.viewControllers = @[self.profileNavigationController];
 
 	if ([[InstallationVariables sharedInstance] launchedFromNotification]) {
 		self.selectedIndex = 0;
