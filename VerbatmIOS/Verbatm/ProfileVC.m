@@ -94,6 +94,15 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
+	//todo: delete
+	[PFUser logOutInBackground];
+//	if ([PFUser currentUser].isAuthenticated) {
+//		[self setUpProfile];
+//	}
+
+}
+
+-(void) setUpProfile {
 	self.ownerOfProfile = [PFUser currentUser];
 	[[UserInfoCache sharedInstance] loadUserChannelWithCompletionBlock:^{
 		self.channel = [[UserInfoCache sharedInstance] getUserChannel];
@@ -110,22 +119,13 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-	if (self.navigationController) {
-//		[(MasterNavigationVC*)self.tabBarController showTabBar:!self.inFullScreenMode];
-		[self.navigationController setNavigationBarHidden: self.inFullScreenMode];
-		[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundClear];
-		[(VerbatmNavigationController*)self.navigationController setNavigationBarShadowColor:[UIColor clearColor]];
-		[(VerbatmNavigationController*)self.navigationController setNavigationBarTextColor:[UIColor whiteColor]];
+	[self.navigationController setNavigationBarHidden: self.inFullScreenMode];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundClear];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarShadowColor:[UIColor clearColor]];
+	[(VerbatmNavigationController*)self.navigationController setNavigationBarTextColor:[UIColor whiteColor]];
+	if (![PFUser currentUser].isAuthenticated) {
+		[self performSegueWithIdentifier:SEGUE_LOGIN_OR_SIGNUP sender:self];
 	}
-	// In feed list
-	else {
-//		[self.verbatmTabBarController showTabBar:!self.inFullScreenMode];
-		[self.verbatmNavigationController setNavigationBarHidden:self.inFullScreenMode];
-		[self.verbatmNavigationController setNavigationBarBackgroundClear];
-		[(VerbatmNavigationController*)self.navigationController setNavigationBarShadowColor:[UIColor clearColor]];
-		[self.verbatmNavigationController setNavigationBarTextColor:[UIColor whiteColor]];
-	}
-    
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
