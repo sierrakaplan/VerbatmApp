@@ -99,11 +99,9 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 -(void) viewDidLoad {
 	[super viewDidLoad];
 	[self registerForNotifications];
-	//todo: delete
-	[PFUser logOutInBackground];
-//	if ([PFUser currentUser].isAuthenticated) {
-//		[self setUpProfile];
-//	}
+	if ([PFUser currentUser].isAuthenticated) {
+		[self setUpProfile];
+	}
 
 }
 
@@ -175,10 +173,8 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 	[self performSegueWithIdentifier:SEGUE_LOGIN_OR_SIGNUP sender:self];
 }
 
-
 -(void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
-   
 }
 
 -(void)viewDidAppear:(BOOL)animated{
