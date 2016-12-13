@@ -5,15 +5,53 @@
 
 This is a repository of our open source iOS SDK, and the information presented here serves as a reference manual for our iOS SDK. See the table of contents below for a complete list of the content featured in this document.
 
+___
+
+## iOS Reference
+
+1. External resources
+  + [Full integration guide](https://dev.branch.io/getting-started/sdk-integration-guide/guide/ios/)
+  + [Change log](https://github.com/BranchMetrics/ios-branch-deep-linking/blob/master/ChangeLog.md)
+  + [Testing resources](https://dev.branch.io/getting-started/integration-testing/guide/ios/)
+  + [Support portal](http://support.branch.io)
+  + [Test app resources](#get-the-demo-app)
+
+2. Getting started
+  + [Library installation](#installation)
+  + [Register for Branch key](#register-your-app)
+  + [Add your Branch key](#add-your-branch-key-to-your-project)
+  + [Register a URI scheme](#register-a-uri-scheme-direct-deep-linking-optional-but-recommended)
+  + [Support Universal Links](#support-universal-linking-ios-9)
+
+3. Branch general methods
+  + [Get a Branch singleton](#get-a-singleton-branch-instance)
+  + [Initialize Branch and register deep link router](#init-branch-session-and-deep-link-routing-function)
+  + [Register view controller for auto deep linking](#register-a-deep-link-controller)
+  + [Retrieve latest deep linking params](#retrieve-session-install-or-open-parameters)
+  + [Retrieve the user's first deep linking params](#retrieve-install-install-only-parameters)
+  + [Setting the user id for tracking influencers](#persistent-identities)
+  + [Logging a user out](#logout)
+  + [Tracking custom events](#register-custom-events)
+  + [Tracking Apple Search Ad Attribution](#apple-search-ads)
+
+4. Branch Universal Objects
+  + [Instantiate a Branch Universal Object](#branch-universal-object)
+  + [Register user actions on an object](#register-user-actions-on-an-object)
+  + [List content on Spotlight](#list-content-on-spotlight)
+  + [Configuring link properties](link-properties-parameters)
+  + [Creating a short link referencing the object](#shortened-links)
+  + [Triggering a share sheet to share a link](#uiactivityview-share-sheet)
+
+5. Referral rewards methods
+  + [Get reward balance](#get-reward-balance)
+  + [Redeem rewards](#redeem-all-or-some-of-the-reward-balance-store-state)
+  + [Get credit history](#get-credit-history)
+
+___
+
 ## Get the Demo App
 
 There's a full demo app embedded in this repository, but you can also check out our live demo: [Branch Monster Factory](https://itunes.apple.com/us/app/id917737838). We've [open sourced the Branchster's app](https://github.com/BranchMetrics/Branchster-iOS) as well if you're ready to dig in.
-
-## Additional Resources
-- [Integration guide](https://dev.branch.io/recipes/add_the_sdk/ios/) *Start Here*
-- [Changelog](https://github.com/BranchMetrics/iOS-Deferred-Deep-Linking-SDK/blob/master/ChangeLog.md)
-- [Testing](https://dev.branch.io/recipes/testing_your_integration/ios/)
-- [Support portal, FAQ](http://support.branch.io)
 
 ## Installation
 
@@ -31,9 +69,8 @@ pod "Branch"
 To integrate Branch into your project using Carthage add the following to your `Cartfile`:
 
 ```ruby
-github "BranchMetrics/iOS-Deferred-Deep-Linking-SDK"
+github "BranchMetrics/ios-branch-deep-linking"
 ```
-
 
 ### Download the Raw Files
 
@@ -174,7 +211,7 @@ To deep link, Branch must initialize a session to check if the user originated f
 
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *restorableObjects))restorationHandler {
     BOOL handledByBranch = [[Branch getInstance] continueUserActivity:userActivity];
-    
+
     return handledByBranch;
 }
 
@@ -185,33 +222,50 @@ To deep link, Branch must initialize a session to check if the user originated f
 
 ###### Swift
 ```swift
-func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-    let branch: Branch = Branch.getInstance()
-    branch.initSessionWithLaunchOptions(launchOptions, andRegisterDeepLinkHandler: { params, error in
-    	// route the user based on what's in params
-    })
-    return true
-}
-
-func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
-    if (!Branch.getInstance().handleDeepLink(url)) {
-        // do other deep link routing for the Facebook SDK, Pinterest SDK, etc
+func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+  let branch: Branch = Branch.getInstance()
+  branch?.initSession(launchOptions: launchOptions, deepLinkHandler: { params, error in
+    if error == nil {
+        // params are the deep linked params associated with the link that the user clicked -> was re-directed to this app
+        print("params: %@", params.description)
     }
-
-    return true
+   })
+  return true
 }
 
-func application(application: UIApplication, continueUserActivity userActivity: NSUserActivity, restorationHandler: ([AnyObject]?) -> Void) -> Bool {
+func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
     // pass the url to the handle deep link call
-    Branch.getInstance().continueUserActivity(userActivity);
+    Branch.getInstance().handleDeepLink(url)
 
     return true
 }
 
-func application(application: UIApplication, didReceiveRemoteNotification launchOptions: [NSObject: AnyObject]?) -> Void {
+func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
+    Branch.getInstance().continue(userActivity)
+
+    return true
+}
+
+func application(_ application: UIApplication, didReceiveRemoteNotification launchOptions: [AnyHashable: Any]) -> Void {
     Branch.getInstance().handlePushNotification(launchOptions)
 }
 ```
+
+
+Note:  If your application delegate declares the method:
+
+```
+- (BOOL) application:willFinishLaunchingWithOptions:
+```
+
+In Swift:
+
+```
+optional func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool
+```
+
+it must return ```YES``` for Branch to work.
+
 
 #### Parameters
 
@@ -383,7 +437,8 @@ Branch.getInstance().setIdentity(your user id)  // your user id should not excee
 
 #### Parameters
 
-None
+**identity** (NSString *) _required_
+: This is the alias you'd like to label your user in the Branch system. Note that we only support a single alias per user.
 
 ### Logout
 
@@ -449,11 +504,83 @@ Some example events you might want to track:
 
 ####Parameters
 
-None
+
+**event** (NSString *) _required_
+: This is the event string you'd like to send to Branch. You can view the attribution of which links drove events to occur in the analytics.
+
+**state** (NSDictionary *) _optional_
+: If you'd like to pass additional metadata along with the event, you should use this dictionary. For example, this is how you pass revenue into Branch using the BNCPurchaseAmount constant as a key.
+
+### Apple Search Ads
+
+Branch can help track your Apple Search Ad campaigns by fetching the search ad attribution from
+Apple at app install.  You can then use the parameters you've set in the Apple Search Ad dashboard,
+parameters such as the campaign name, and take special action in you app after an install, or simply
+track the effectiveness of a campaign in the Branch dashboard, along with other your other Branch
+statistics, such as total installs, referrals, and app link statistics.
+
+1. External resources
+  + [Apple Search Ads](https://searchads.apple.com/)
+  + [Apple Search Ads for Developers](https://developer.apple.com/app-store/search-ads/)
+  + [Apple Search Ads WWDC](https://developer.apple.com/videos/play/wwdc2016/302/)
+
+
+#### Methods
+
+##### `- (void) delayInitToCheckForSearchAds`
+
+Call this method to enable checking for Apple Search Ads before Branch initialization.  This method
+must be called before you initialize your Branch session.
+
+Note that this will add about 1 second from call to initSession to callback due to Apple's latency.
+
+###### Objective-C
+```objc
+[[Branch getInstance] delayInitToCheckForSearchAds];
+```
+
+###### Swift
+```swift
+Branch.getInstance().delayInitToCheckForSearchAds
+```
+
+##### `- (void) setAppleSearchAdsDebugMode`
+
+The `setAppleSearchAdsDebugMode` method sets the SDK into Apple Search Ad debug mode.  In this mode
+fake campaign params are returned 100% of the time.  This is for testing only.
+
+Warning: This should not be used in production.
+
+###### Objective-C
+```objc
+[[Branch getInstance] setAppleSearchAdsDebugMode];
+```
+
+###### Swift
+```swift
+Branch.getInstance().setAppleSearchAdsDebugMode
+```
+
 
 ## Branch Universal Object (for deep links, content analytics and indexing)
 
 As more methods have evolved in iOS, we've found that it was increasingly hard to manage them all. We abstracted as many as we could into the concept of a Branch Universal Object. This is the object that is associated with the thing you want to share (content or user). You can set all the metadata associated with the object and then call action methods on it to get a link or index in Spotlight.
+
+### Branch Universal Object best practices
+
+Here are a set of best practices to ensure that your analytics are correct, and your content is ranking on Spotlight effectively.
+
+1. Set the `canonicalIdentifier` to a unique, de-duped value across instances of the app
+2. Ensure that the `title`, `contentDescription` and `imageUrl` properly represent the object
+3. Initialize the Branch Universal Object and call `userCompletedAction` with the `BNCRegisterViewEvent` **on page load**
+4. Call `showShareSheet` and `createShortLink` later in the life cycle, when the user takes an action that needs a link
+5. Call the additional object events (purchase, share completed, etc) when the corresponding user action is taken
+
+Practices to _avoid_:
+1. Don't set the same `title`, `contentDescription` and `imageUrl` across all objects
+2. Don't wait to initialize the object and register views until the user goes to share
+3. Don't wait to initialize the object until you conveniently need a link
+4. Don't create many objects at once and register views in a `for` loop.
 
 ### Branch Universal Object
 
@@ -497,11 +624,11 @@ branchUniversalObject.addMetadataKey("property2", value: "red")
 
 **metadata**: These are any extra parameters you'd like to associate with the Branch Universal Object. These will be made available to you after the user clicks the link and opens up the app. To add more keys/values, just use the method `addMetadataKey`.
 
-**type**: This is a label for the type of content present. Apple recommends that you use uniform type identifier as [described here](https://developer.apple.com/library/prerelease/ios/documentation/MobileCoreServices/Reference/UTTypeRef/index.html). Currently, this is only used for Spotlight indexing but will be used by Branch in the future.
+**price**: The price of the item to be used in conjunction with the commerce related events below.
+
+**currency**: The currency representing the price in [ISO 4217 currency code](http://en.wikipedia.org/wiki/ISO_4217). Default is USD.
 
 **contentIndexMode**: Can be set to the ENUM of either `ContentIndexModePublic` or `ContentIndexModePrivate`. Public indicates that you'd like this content to be discovered by other apps. Currently, this is only used for Spotlight indexing but will be used by Branch in the future.
-
-**keywords**: Keywords for which this content should be discovered by. Just assign an array of strings with the keywords you'd like to use. Currently, this is only used for Spotlight indexing but will be used by Branch in the future.
 
 **expirationDate**: The date when the content will not longer be available or valid. Currently, this is only used for Spotlight indexing but will be used by Branch in the future.
 
@@ -509,22 +636,32 @@ branchUniversalObject.addMetadataKey("property2", value: "red")
 
 None
 
-### Register Views for Content Analytics
+### Register User Actions On An Object
 
-If you want to track how many times a user views a particular piece of content, you can call this method in `viewDidLoad` or `viewDidAppear` to tell Branch that this content was viewed.
+We've added a series of custom events that you'll want to start tracking for rich analytics and targeting. Here's a list below with a sample snippet that calls the register view event.
+
+| Key | Value
+| --- | ---
+| BNCRegisterViewEvent | User viewed the object
+| BNCAddToWishlistEvent | User added the object to their wishlist
+| BNCAddToCartEvent | User added object to cart
+| BNCPurchaseInitiatedEvent | User started to check out
+| BNCPurchasedEvent | User purchased the item
+| BNCShareInitiatedEvent | User started to share the object
+| BNCShareCompletedEvent | User completed a share
 
 #### Methods
 
 ###### Objective-C
 
 ```objc
-[branchUniversalObject registerView];
+[branchUniversalObject userCompletedAction:BNCRegisterViewEvent];
 ```
 
 ###### Swift
 
 ```swift
-branchUniversalObject.registerView()
+branchUniversalObject.userCompletedAction(BNCRegisterViewEvent)
 ```
 
 #### Parameters
@@ -578,11 +715,11 @@ linkProperties.addControlParam("$ios_url", withValue: "http://example.com/ios")
 ```
 
 ```swift
-branchUniversalObject.getShortUrlWithLinkProperties(linkProperties,  andCallback: { (url: String?, error: NSError?) -> Void in
+branchUniversalObject.getShortUrl(with: linkProperties) { (url, error) in
     if error == nil {
         NSLog("got my Branch link to share: %@", url)
     }
-})
+}
 ```
 
 #### Link Properties Parameters
@@ -630,13 +767,13 @@ You have the ability to control the direct deep linking of each link by insertin
 
 ### UIActivityView Share Sheet
 
-UIActivityView is the standard way of allowing users to share content from your app. Once you've created your `Branch Universal Object`, which is the reference to the content you're interested in, you can then automatically share it _without having to create a link_ using the mechanism below..
+UIActivityView is the standard way of allowing users to share content from your app. Once you've created your `Branch Universal Object`, which is the reference to the content you're interested in, you can then automatically share it _without having to create a link_ using the mechanism below.
 
 **Sample UIActivityView Share Sheet**
 
-![UIActivityView Share Sheet](https://dev.branch.io/img/ingredients/sdk_links/ios_share_sheet.jpg)
+![UIActivityView Share Sheet](https://dev.branch.io/img/pages/getting-started/branch-universal-object/ios_share_sheet.png)
 
-The Branch iOS SDK includes a wrapper on the UIActivityViewController, that will generate a Branch short URL and automatically tag it with the channel the user selects (Facebook, Twitter, etc.).
+The Branch iOS SDK includes a wrapper on the UIActivityViewController, that will generate a Branch short URL and automatically tag it with the channel the user selects (Facebook, Twitter, etc.). Note that certain channels restrict access to certain fields. For example, Facebook prohibits you from pre-populating a message.
 
 #### Methods
 
@@ -656,8 +793,8 @@ linkProperties.feature = @"sharing";
 ```objc
 [branchUniversalObject showShareSheetWithLinkProperties:linkProperties
                                            andShareText:@"Super amazing thing I want to share!"
-                                     fromViewController:self 
-                                            andCallback:^{
+                                     fromViewController:self
+                                             completion:^(NSString *activityType, BOOL completed){
     NSLog(@"finished presenting");
 }];
 ```
@@ -672,12 +809,11 @@ linkProperties.addControlParam("$ios_url", withValue: "http://example.com/ios")
 ```
 
 ```swift
-branchUniversalObject.showShareSheetWithLinkProperties(linkProperties, 
-                                        andShareText: "Super amazing thing I want to share!",
-                                        fromViewController: self,
-                                        andCallback: { () -> Void in
+branchUniversalObject.showShareSheet(with: linkProperties,
+                                     andShareText: "Super amazing thing I want to share!",
+                                     from: self) { (activityType, completed) in
     NSLog("done showing share sheet!")
-})
+}
 ```
 
 #### Show Share Sheet Parameters
@@ -686,9 +822,21 @@ branchUniversalObject.showShareSheetWithLinkProperties(linkProperties,
 
 **andShareText**: A dictionary to use while building up the Branch link.
 
-**fromViewController**: 
+**fromViewController**:
 
-**andCallback**: 
+**completion**:
+
+#### Further Customization
+
+The majority of share options only include one string of text, except email, which has a subject and a body. The share text will fill in the body and you can specify the email subject in the link properties as shown below.
+
+```objc
+[linkProperties addControlParam:@"$email_subject" withValue:@"This one weird trick."];
+```
+
+```swift
+linkProperties.addControlParam("$email_subject", withValue: "Therapists hate him.")
+```
 
 #### Returns
 
@@ -696,28 +844,22 @@ None
 
 ### List Content On Spotlight
 
-If you'd like to list your Branch Universal Object in Spotlight, this is the method you'll call.
+If you'd like to list your Branch Universal Object in Spotlight local and cloud index, this is the method you'll call. You'll want to register views every time the page loads as this contributes to your global ranking in search.
 
 #### Methods
 
 ###### Objective-C
 
 ```objc
-[branchUniversalObject listOnSpotlightWithCallback:^(NSString *url, NSError *error) {
-    if (!error) {
-        NSLog(@"success getting url! %@", url);
-    }
-}];
+branchUniversalObject.automaticallyListOnSpotlight = YES;
+[branchUniversalObject userCompletedAction:BNCRegisterViewEvent];
 ```
 
 ###### Swift
 
 ```swift
-branchUniversalObject.listOnSpotlightWithCallback((url: String?, error: NSError?) -> Void in
-    if error == nil {
-        NSLog("got my Branch link to share: %@", url)
-    }
-})
+branchUniversalObject.automaticallyListOnSpotlight = true
+branchUniversalObject.userCompletedAction(BNCRegisterViewEvent)
 ```
 
 #### Parameters
@@ -750,7 +892,7 @@ Reward balances change randomly on the backend when certain actions are taken (d
 ###### Swift
 
 ```swift
-Branch.getInstance().loadRewardsWithCallback { (changed: Bool, error: NSError!) -> Void in
+Branch.getInstance().loadRewards { (changed, error) in
     // changed boolean will indicate if the balance changed from what is currently in memory
 
     // will return the balance of the current user's credits
@@ -805,8 +947,8 @@ This call will retrieve the entire history of credits and redemptions from the i
 ###### Swift
 
 ```swift
-Branch.getInstance().getCreditHistoryWithCallback { (history: [AnyObject]!, error: NSError!) -> Void in
-    if (error == nil) {
+Branch.getInstance().getCreditHistory { (creditHistory, error) in
+    if error == nil {
         // process history
     }
 }

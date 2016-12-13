@@ -72,6 +72,7 @@
 		A5934BAD1C10F2C8007C7830 /* Quicksand-LightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = A5934BA61C10F2C8007C7830 /* Quicksand-LightItalic.otf */; };
 		A5934BAE1C10F2C8007C7830 /* Quicksand-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = A5934BA71C10F2C8007C7830 /* Quicksand-Regular.otf */; };
 		A5934BFD1C10F349007C7830 /* Roboto-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A5934BEB1C10F349007C7830 /* Roboto-Italic.ttf */; };
+		A598C3C11DFE2F26008FDB10 /* TextOnlyPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A598C3C01DFE2F26008FDB10 /* TextOnlyPinchView.m */; };
 		A59D64C31D8351B00028650C /* FollowFriendsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A59D64C21D8351B00028650C /* FollowFriendsCell.m */; };
 		A59D64C61D83750E0028650C /* FollowFriendsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A59D64C51D83750E0028650C /* FollowFriendsVC.m */; };
 		A59D64CA1D838C9B0028650C /* InviteFriendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A59D64C91D838C9B0028650C /* InviteFriendCell.m */; };
@@ -413,6 +414,8 @@
 		A5934BA61C10F2C8007C7830 /* Quicksand-LightItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Quicksand-LightItalic.otf"; sourceTree = "<group>"; };
 		A5934BA71C10F2C8007C7830 /* Quicksand-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Quicksand-Regular.otf"; sourceTree = "<group>"; };
 		A5934BEB1C10F349007C7830 /* Roboto-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Italic.ttf"; sourceTree = "<group>"; };
+		A598C3BF1DFE2F26008FDB10 /* TextOnlyPinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextOnlyPinchView.h; sourceTree = "<group>"; };
+		A598C3C01DFE2F26008FDB10 /* TextOnlyPinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextOnlyPinchView.m; sourceTree = "<group>"; };
 		A59D64C11D8351B00028650C /* FollowFriendsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowFriendsCell.h; sourceTree = "<group>"; };
 		A59D64C21D8351B00028650C /* FollowFriendsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FollowFriendsCell.m; sourceTree = "<group>"; };
 		A59D64C41D83750E0028650C /* FollowFriendsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowFriendsVC.h; sourceTree = "<group>"; };
@@ -1485,6 +1488,8 @@
 				A5076D0D1BED6EF000303746 /* SingleMediaAndTextPinchView.m */,
 				C71FA3261D477E16003989F3 /* TextPinchView.h */,
 				C71FA3271D477E16003989F3 /* TextPinchView.m */,
+				A598C3BF1DFE2F26008FDB10 /* TextOnlyPinchView.h */,
+				A598C3C01DFE2F26008FDB10 /* TextOnlyPinchView.m */,
 			);
 			name = "Pinch Views";
 			sourceTree = "<group>";
@@ -1966,6 +1971,7 @@
 				A5E73BF21D1770B400527ECF /* GTLVerbatmAppConstants.m in Sources */,
 				C74BC2901D2CDD2800C1FD80 /* Notification_BackendManager.m in Sources */,
 				C70E1C4E1C3BC06100346A25 /* SettingsVC.m in Sources */,
+				A598C3C11DFE2F26008FDB10 /* TextOnlyPinchView.m in Sources */,
 				A552F0111D47760600286C54 /* InstallationVariables.m in Sources */,
 				A5337BC11CCDD96E00551394 /* PostsQueryManager.m in Sources */,
 				A57A93051B55E835006C2597 /* VerbatmCameraView.m in Sources */,

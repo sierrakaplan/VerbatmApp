@@ -13,6 +13,8 @@
 #import "BNCEncodingUtils.h"
 #import "BranchViewHandler.h"
 #import "BNCFabricAnswers.h"
+#import "BranchContentDiscoveryManifest.h"
+#import "BranchContentDiscoverer.h"
 
 @interface BranchOpenRequest ()
 
@@ -44,7 +46,6 @@
     }
     
     params[BRANCH_REQUEST_KEY_BRANCH_IDENTITY] = preferenceHelper.identityID;
-    params[BRANCH_REQUEST_KEY_IS_REFERRABLE] = @(preferenceHelper.isReferrable);
     params[BRANCH_REQUEST_KEY_DEBUG] = @(preferenceHelper.isDebug);
     
     [self safeSetValue:[BNCSystemObserver getBundleID] forKey:BRANCH_REQUEST_KEY_BUNDLE_ID onDict:params];
@@ -57,6 +58,25 @@
     [self safeSetValue:preferenceHelper.spotlightIdentifier forKey:BRANCH_REQUEST_KEY_SPOTLIGHT_IDENTIFIER onDict:params];
     [self safeSetValue:preferenceHelper.universalLinkUrl forKey:BRANCH_REQUEST_KEY_UNIVERSAL_LINK_URL onDict:params];
     [self safeSetValue:preferenceHelper.externalIntentURI forKey:BRANCH_REQUEST_KEY_EXTERNAL_INTENT_URI onDict:params];
+    
+    NSMutableDictionary *cdDict = [[NSMutableDictionary alloc] init];
+    BranchContentDiscoveryManifest *contentDiscoveryManifest = [BranchContentDiscoveryManifest getInstance];
+    [cdDict setObject:[contentDiscoveryManifest getManifestVersion] forKey:BRANCH_MANIFEST_VERSION_KEY];
+    [cdDict setObject:[BNCSystemObserver getBundleID] forKey:BRANCH_BUNDLE_IDENTIFIER];
+    [self safeSetValue:cdDict forKey:BRANCH_CONTENT_DISCOVER_KEY onDict:params];    
+
+    if (preferenceHelper.appleSearchAdDetails) {
+        NSString *encodedSearchData = nil;
+        @try {
+            NSData *jsonData = [BNCEncodingUtils encodeDictionaryToJsonData:preferenceHelper.appleSearchAdDetails];
+            encodedSearchData = [BNCEncodingUtils base64EncodeData:jsonData];
+        } @catch (id e) { }
+        [self safeSetValue:encodedSearchData
+                    forKey:BRANCH_REQUEST_KEY_SEARCH_AD
+                    onDict:params];
+    }
+    /**/
+
     [serverInterface postRequest:params url:[preferenceHelper getAPIURL:BRANCH_REQUEST_ENDPOINT_OPEN] key:key callback:callback];
 }
 
@@ -112,12 +132,26 @@
         }
     }
     
+    NSString *referredUrl = nil;
+    if (preferenceHelper.universalLinkUrl) {
+        referredUrl = preferenceHelper.universalLinkUrl;
+    }
+    else if (preferenceHelper.externalIntentURI) {
+        referredUrl = preferenceHelper.externalIntentURI;
+    }
+    BranchContentDiscoveryManifest *cdManifest = [BranchContentDiscoveryManifest getInstance];
+    [cdManifest onBranchInitialised:data withUrl:referredUrl];
+    if ([cdManifest isCDEnabled]) {
+        [[BranchContentDiscoverer getInstance:cdManifest] startContentDiscoveryTask];
+    }
+    
     // Clear link identifiers so they don't get reused on the next open
     preferenceHelper.checkedFacebookAppLinks = NO;
     preferenceHelper.linkClickIdentifier = nil;
     preferenceHelper.spotlightIdentifier = nil;
     preferenceHelper.universalLinkUrl = nil;
     preferenceHelper.externalIntentURI = nil;
+    preferenceHelper.appleSearchAdDetails = nil;
     
     if (data[BRANCH_RESPONSE_KEY_BRANCH_IDENTITY]) {
         preferenceHelper.identityID = data[BRANCH_RESPONSE_KEY_BRANCH_IDENTITY];

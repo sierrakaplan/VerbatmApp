@@ -101,6 +101,8 @@
 // photo text
 // photo text video
 
+// todo: should allow videos to be pinched together
+
 //checks if the two scroll views can be pinched together
 -(BOOL) okToPinchWith:(ContentPageElementScrollView*)otherScrollView {
 	BOOL isPinchView = [self.pageElement isKindOfClass:[PinchView class]] && [otherScrollView.pageElement isKindOfClass:[PinchView class]];
