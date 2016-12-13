@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
+
+#import "Analytics.h"
 #import "Channel_BackendObject.h"
 #import "CommentingViewController.h"
 #import "CurrentUserProfileVC.h"
@@ -30,6 +32,8 @@
 #import "PostCollectionViewCell.h"
 
 #import "PublishingProgressManager.h"
+
+#import "MediaSessionManager.h"
 
 #import "SharePostView.h"
 #import "SizesAndPositions.h"
@@ -90,20 +94,24 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
-	self.isBlocked = NO;
+	self.ownerOfProfile = [PFUser currentUser];
+	[[UserInfoCache sharedInstance] loadUserChannelWithCompletionBlock:^{
+		self.channel = [[UserInfoCache sharedInstance] getUserChannel];
+		[self buildHeaderView];
+		[self loadContentToPostList];
+	}];
 	self.isCurrentUserProfile = [self isKindOfClass:[CurrentUserProfileVC class]];
+	self.isBlocked = NO;
 	self.moreInfoViewOnScreen = NO;
 	self.automaticallyAdjustsScrollViewInsets = NO;
 	self.view.backgroundColor = [UIColor blackColor];
-	[self buildHeaderView];
-	[self loadContentToPostList];
 	[self formatNavigationItem];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	if (self.navigationController) {
-		[(MasterNavigationVC*)self.tabBarController showTabBar:!self.inFullScreenMode];
+//		[(MasterNavigationVC*)self.tabBarController showTabBar:!self.inFullScreenMode];
 		[self.navigationController setNavigationBarHidden: self.inFullScreenMode];
 		[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundClear];
 		[(VerbatmNavigationController*)self.navigationController setNavigationBarShadowColor:[UIColor clearColor]];
@@ -111,7 +119,7 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 	}
 	// In feed list
 	else {
-		[self.verbatmTabBarController showTabBar:!self.inFullScreenMode];
+//		[self.verbatmTabBarController showTabBar:!self.inFullScreenMode];
 		[self.verbatmNavigationController setNavigationBarHidden:self.inFullScreenMode];
 		[self.verbatmNavigationController setNavigationBarBackgroundClear];
 		[(VerbatmNavigationController*)self.navigationController setNavigationBarShadowColor:[UIColor clearColor]];
@@ -147,7 +155,7 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 }
 
 -(void)updateDateOfLastPostSeen {
-	if(!self.isCurrentUserProfile && self.profileInFeed && [self.channel dateOfMostRecentChannelPost]){
+	if(!self.isCurrentUserProfile && [self.channel dateOfMostRecentChannelPost]){
 		NSDate * finalDate = [self.postListVC creationDateOfLastPostObjectInPostList];
 		if(finalDate){
 			[self.channel.followObject setObject:finalDate forKey:FOLLOW_LATEST_POST_DATE];
@@ -353,7 +361,7 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 			[self.navigationController pushViewController:userProfile animated:YES];
 		} else {
 			userProfile.verbatmNavigationController = self.verbatmNavigationController;
-			userProfile.verbatmTabBarController = self.verbatmTabBarController;
+//			userProfile.verbatmTabBarController = self.verbatmTabBarController;
 			[self.verbatmNavigationController pushViewController:userProfile animated:YES];
 		}
 	}
@@ -392,14 +400,13 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 	if (self.navigationController) {
         
 		[self.navigationController setNavigationBarHidden: !inSmallMode];
-		[(MasterNavigationVC*)self.tabBarController showTabBar: inSmallMode];
-        
+//		[(MasterNavigationVC*)self.tabBarController showTabBar: inSmallMode];
+
 	} else {
         
         //in feed
 		[self.verbatmNavigationController setNavigationBarHidden: !inSmallMode];
-		[self.verbatmTabBarController showTabBar: inSmallMode];
-        [self.delegate lockFeedScrollView:!inSmallMode];
+//		[self.verbatmTabBarController showTabBar: inSmallMode];
 	}
     
 	[self.postListVC.view removeFromSuperview];
@@ -469,9 +476,12 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 }
 
 -(void)createPostPromptSelected{
-	if([self.delegate respondsToSelector:@selector(userCreateFirstPost)]){
-		if(self.inFullScreenMode)[self createNewPostViewFromCellIndexPath:nil];
-		[self.delegate userCreateFirstPost];
+	if(self.inFullScreenMode)[self createNewPostViewFromCellIndexPath:nil];
+	[[Analytics getSharedInstance] newADKSession];
+	if([MediaSessionManager adkMediaPermissionsAllowed] && ((NSNumber*)[PFUser currentUser][USER_FTUE]).boolValue){
+		[self performSegueWithIdentifier:ADK_SEGUE sender:self];
+	}else{
+		[self performSegueWithIdentifier:SEGUE_CREATE_FIRST_POST_FROM_MASTER sender:self];
 	}
 }
 

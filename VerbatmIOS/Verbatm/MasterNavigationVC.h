@@ -7,10 +7,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MasterNavigationVC : UITabBarController
+@interface MasterNavigationVC : UIViewController
 
-@property (nonatomic) CGFloat tabBarHeight;
+//@property (nonatomic) CGFloat tabBarHeight;
 
--(void) showTabBar:(BOOL)show;
+//-(void) showTabBar:(BOOL)show;
 
 @end

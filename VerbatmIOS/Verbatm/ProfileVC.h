@@ -27,10 +27,6 @@
 
 @interface ProfileVC : UIViewController
 
-@property (nonatomic) BOOL profileInFeed;
-
-@property (weak, nonatomic) id<ProfileVCDelegate> delegate;
-
 // Only used in feed list
 @property (nonatomic) VerbatmNavigationController *verbatmNavigationController;
 @property (nonatomic) MasterNavigationVC *verbatmTabBarController;

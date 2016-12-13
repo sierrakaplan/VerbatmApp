@@ -93,7 +93,7 @@
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	[self setNeedsStatusBarAppearanceUpdate];
-	[(MasterNavigationVC*) self.tabBarController showTabBar:NO];
+//	[(MasterNavigationVC*) self.tabBarController showTabBar:NO];
 	[self.navigationController setNavigationBarHidden:NO];
 	[(VerbatmNavigationController*)self.navigationController setNavigationBarBackgroundColor:[UIColor whiteColor]];
 	[(VerbatmNavigationController*)self.navigationController setNavigationBarShadowColor:[UIColor lightGrayColor]];
