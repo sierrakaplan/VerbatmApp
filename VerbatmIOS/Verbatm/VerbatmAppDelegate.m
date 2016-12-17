@@ -129,8 +129,12 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
 	// https://parse.com/docs/ios_guide#localdatastore/iOS
 	//[Parse enableLocalDatastore];
 	// Initialize Parse.
-	[Parse setApplicationId:@"rzSvJWHhiN8KUnhDVXTlapJkJ4eCe3xAlmEscSK3"
-				  clientKey:@"qmXzBTKKMNqm5A3eogopkL2ZY6SeKGcWah0zP9kk"];
+	ParseClientConfiguration *config  = [ParseClientConfiguration configurationWithBlock:^(id<ParseMutableClientConfiguration> configuration) {
+		configuration.applicationId = @"rzSvJWHhiN8KUnhDVXTlapJkJ4eCe3xAlmEscSK3";
+		configuration.clientKey = @"qmXzBTKKMNqm5A3eogopkL2ZY6SeKGcWah0zP9kk";
+		configuration.server = @"https://serene-everglades-29931.herokuapp.com/";
+	}];
+	[Parse initializeWithConfiguration:config];
 
 	// [Optional] Track statistics around application opens.
 	[PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
