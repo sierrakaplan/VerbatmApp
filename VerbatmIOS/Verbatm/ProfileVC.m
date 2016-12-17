@@ -131,15 +131,6 @@ UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate>
 												 name:NOTIFICATION_POST_FAILED_TO_PUBLISH
 											   object:nil];
 
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(followingSuccessfulNotification:)
-												 name:NOTIFICATION_NOW_FOLLOWING_USER
-											   object:nil];
-
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(newPushNotification:)
-												 name:NOTIFICATION_NEW_PUSH_NOTIFICATION
-											   object:nil];
 }
 
 -(void) setUpProfile {

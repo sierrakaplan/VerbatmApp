@@ -234,7 +234,6 @@
 		C7E65F6F1B92EB650042AD99 /* PostView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F6E1B92EB650042AD99 /* PostView.m */; };
 		C7E6C13F1A4E394600863893 /* PhotoVideoPVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C1301A4E394600863893 /* PhotoVideoPVE.m */; };
 		C7E6C1461A4E394600863893 /* VideoPVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C13E1A4E394600863893 /* VideoPVE.m */; };
-		C7EF5BB61B0CD5E500E7915B /* MasterNavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */; };
 		C7F22B311C38408E00E56EA7 /* SharePostView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F22B301C38408E00E56EA7 /* SharePostView.m */; };
 		C7F22B381C3841AD00E56EA7 /* SelectSharingOption.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F22B371C3841AD00E56EA7 /* SelectSharingOption.m */; };
 		C7F22B3B1C38B2A600E56EA7 /* SelectOptionButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F22B3A1C38B2A600E56EA7 /* SelectOptionButton.m */; };
@@ -633,8 +632,6 @@
 		C7E6C1301A4E394600863893 /* PhotoVideoPVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoVideoPVE.m; sourceTree = "<group>"; };
 		C7E6C13D1A4E394600863893 /* VideoPVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPVE.h; sourceTree = "<group>"; };
 		C7E6C13E1A4E394600863893 /* VideoPVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPVE.m; sourceTree = "<group>"; };
-		C7EF5BB41B0CD5E500E7915B /* MasterNavigationVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MasterNavigationVC.h; sourceTree = "<group>"; };
-		C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MasterNavigationVC.m; sourceTree = "<group>"; };
 		C7F22B2F1C38408E00E56EA7 /* SharePostView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharePostView.h; sourceTree = "<group>"; };
 		C7F22B301C38408E00E56EA7 /* SharePostView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharePostView.m; sourceTree = "<group>"; };
 		C7F22B361C3841AD00E56EA7 /* SelectSharingOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectSharingOption.h; sourceTree = "<group>"; };
@@ -748,7 +745,6 @@
 				A51A0ADD1D6CF326009D7CDD /* Common */,
 				A560EF991BA88F8B003FB041 /* User App Preferences */,
 				A51A0AD01D6CEFCC009D7CDD /* Login/Onboarding */,
-				A51A0AD91D6CF0D6009D7CDD /* MainTabController */,
 				A51A0ACF1D6CEFC2009D7CDD /* ADK */,
 				A51A0ADB1D6CF1E2009D7CDD /* PostList/Posts */,
 				A56D19EC1D74BC50003B6907 /* Profile */,
@@ -770,15 +766,6 @@
 				A51A0AE01D6CF44A009D7CDD /* Custom Views */,
 			);
 			name = UserAuth;
-			sourceTree = "<group>";
-		};
-		A51A0AD91D6CF0D6009D7CDD /* MainTabController */ = {
-			isa = PBXGroup;
-			children = (
-				C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */,
-				C7EF5BB41B0CD5E500E7915B /* MasterNavigationVC.h */,
-			);
-			name = MainTabController;
 			sourceTree = "<group>";
 		};
 		A51A0ADA1D6CF1D6009D7CDD /* User/Channel/Comment List */ = {
@@ -1591,7 +1578,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = verbatm;
-				LastUpgradeCheck = 0810;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = Verbatm;
 				TargetAttributes = {
 					C7BC4371199D97F5004B91A1 = {
@@ -1837,7 +1824,6 @@
 				A56B5D1D1CA49A8100A61D27 /* UserInfoCache.m in Sources */,
 				A5BB654A1D6F9A9E00F5B01B /* CreateNameVC.m in Sources */,
 				A5337BBA1CCD60CF00551394 /* LoginKeyboardToolBar.m in Sources */,
-				C7EF5BB61B0CD5E500E7915B /* MasterNavigationVC.m in Sources */,
 				A5E73BF51D1770B400527ECF /* GTLVerbatmAppPage.m in Sources */,
 				C7A58ABD1D471789006C3607 /* AdjustTextAlignmentToolBar.m in Sources */,
 				A51E74641C898C4E00CF8DEA /* PostInProgress.m in Sources */,
