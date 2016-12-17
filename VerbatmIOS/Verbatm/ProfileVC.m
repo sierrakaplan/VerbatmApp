@@ -20,7 +20,6 @@
 
 #import "LoadingIndicator.h"
 
-#import "MasterNavigationVC.h"
 #import <MessageUI/MFMessageComposeViewController.h>
 
 #import "ParseBackendKeys.h"

@@ -30,7 +30,6 @@
 
 #import "QuartzCore/QuartzCore.h"
 
-#import "MasterNavigationVC.h"
 #import "VerbatmNavigationController.h"
 
 @interface UserAndChannelListsTVC () <CustomNavigationBarDelegate>

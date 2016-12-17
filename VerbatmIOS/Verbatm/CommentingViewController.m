@@ -11,7 +11,6 @@
 #import "Commenting_BackendObject.h"
 #import "CommentingKeyboardToolbar.h"
 #import "CommentingViewController.h"
-#import "MasterNavigationVC.h"
 #import "VerbatmNavigationController.h"
 
 @interface CommentingViewController() <UITableViewDelegate, UITableViewDataSource, CommentingKeyboardToolbarProtocol, VerbatmNameLabelViewProtocol>
